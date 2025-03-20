@@ -121,7 +121,6 @@ const pageVariables = new ProductPageVariables();
 class ProductLoadPage {
     static async LoadPageDataFirst() {
         try {
-            WindowControl.showLoading()
             // Gọi nhiều AJAX song song
             let [baseUnits] = await Promise.all([
                 $.fn.callAjax2({ url: pageElements.$url_script.attr('data-url-unit'), method: 'GET' }),
@@ -134,7 +133,7 @@ class ProductLoadPage {
         } catch (error) {
             console.error("Load page data error!!!", error);
         } finally {
-            WindowControl.hideLoading()
+            console.error("Load page data done!!!", error);
         }
     }
     // general tab

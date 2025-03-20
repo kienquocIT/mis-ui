@@ -449,7 +449,7 @@ class QuotationLoadDataHandle {
                 for (let termData of term) {
                     let isNum = parseFloat(termData?.['value']);
                     if (!isNum) {  // balance
-                        termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
+                        termData['value'] = String(QuotationLoadDataHandle.loadParseBalanceOfTerm());
                     }
                 }
             }
@@ -1404,7 +1404,7 @@ class QuotationLoadDataHandle {
     };
 
     // PAYMENT TERM
-    static loadBalanceValPaymentTerm() {
+    static loadParseBalanceOfTerm() {
         let totalValue = 0;
         let term = [];
         if (QuotationLoadDataHandle.paymentSelectEle.val()) {
@@ -1606,6 +1606,22 @@ class QuotationLoadDataHandle {
                         }
                     }
                 }
+            }
+        }
+        return true;
+    };
+
+    static loadChangePSAmount(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+            let valTaxEle = row.querySelector('.table-row-value-tax');
+            let valTotalEle = row.querySelector('.table-row-value-total');
+            if (valBeforeEle && valTaxEle && valTotalEle) {
+                $(valTotalEle).attr('value', String($(valBeforeEle).valCurrency() + $(valTaxEle).valCurrency()));
+                $.fn.initMaskMoney2();
+                QuotationLoadDataHandle.loadMinusBalance();
+                QuotationStoreDataHandle.storeDtbData(5);
             }
         }
         return true;
@@ -1856,6 +1872,21 @@ class QuotationLoadDataHandle {
                 $.fn.initMaskMoney2();
             }
         });
+    };
+
+    static loadCheckSameMixTax() {
+        let listTax = [];
+        QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
+            let row = this.node();
+            let taxEle = row.querySelector('.table-row-tax');
+            if (taxEle) {
+                if ($(taxEle).val()) {
+                    let taxData = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
+                    listTax.push(taxData?.['id']);
+                }
+            }
+        });
+        return listTax.every(val => val === listTax[0]) ? "same" : "mixed";
     };
 
     // TABLE COST
@@ -4185,12 +4216,17 @@ class QuotationDataTableHandle {
                     targets: 7,
                     width: '12%',
                     render: (data, type, row) => {
+                        let readonly = "readonly";
+                        let check = QuotationLoadDataHandle.loadCheckSameMixTax();
+                        if (check === "mixed") {
+                            readonly = "";
+                        }
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-value-before-tax text-black" 
                                     value="${row?.['value_before_tax'] ? row?.['value_before_tax'] : '0'}"
                                     data-return-type="number"
-                                    readonly
+                                    ${readonly}
                                 >`;
                     }
                 },
@@ -4221,26 +4257,41 @@ class QuotationDataTableHandle {
                     targets: 9,
                     width: '6%',
                     render: () => {
-                        return `<select
-                                    class="form-select table-row-tax"
-                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
-                                    data-method="GET"
-                                    data-keyResp="tax_list"
-                                    readonly
-                                >
-                                </select>`;
+                        let hiddenS2 = "";
+                        let hiddenSpan = "hidden";
+                        let check = QuotationLoadDataHandle.loadCheckSameMixTax();
+                        if (check === "mixed") {
+                            hiddenS2 = "hidden";
+                            hiddenSpan = "";
+                        }
+                        return `<div ${hiddenS2}>
+                                    <select
+                                        class="form-select table-row-tax"
+                                        data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                        data-method="GET"
+                                        data-keyResp="tax_list"
+                                        readonly
+                                    >
+                                    </select>
+                                </div>
+                                <span ${hiddenSpan}>${QuotationLoadDataHandle.transEle.attr('data-mixed')}</span>`;
                     }
                 },
                 {
                     targets: 10,
                     width: '10%',
                     render: (data, type, row) => {
+                        let readonly = "readonly";
+                        let check = QuotationLoadDataHandle.loadCheckSameMixTax();
+                        if (check === "mixed") {
+                            readonly = "";
+                        }
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-value-tax text-black" 
                                     value="${row?.['value_tax'] ? row?.['value_tax'] : '0'}"
                                     data-return-type="number"
-                                    readonly
+                                    ${readonly}
                                 >`;
                     }
                 },
@@ -4248,12 +4299,17 @@ class QuotationDataTableHandle {
                     targets: 11,
                     width: '12%',
                     render: (data, type, row) => {
+                        let readonly = "readonly";
+                        let check = QuotationLoadDataHandle.loadCheckSameMixTax();
+                        if (check === "mixed") {
+                            readonly = "";
+                        }
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-value-total text-black" 
                                     value="${row?.['value_total'] ? row?.['value_total'] : '0'}"
                                     data-return-type="number"
-                                    readonly
+                                    ${readonly}
                                 >`;
                     }
                 },
@@ -4281,7 +4337,7 @@ class QuotationDataTableHandle {
                             for (let termData of term) {
                                 let isNum = parseFloat(termData?.['value']);
                                 if (!isNum) {  // balance
-                                    termData['value'] = String(QuotationLoadDataHandle.loadBalanceValPaymentTerm());
+                                    termData['value'] = String(QuotationLoadDataHandle.loadParseBalanceOfTerm());
                                 }
                             }
                         }
@@ -4423,25 +4479,40 @@ class QuotationDataTableHandle {
                     targets: 4,
                     width: '10%',
                     render: () => {
-                        return `<select
-                                    class="form-select table-row-tax"
-                                    data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
-                                    data-method="GET"
-                                    data-keyResp="tax_list"
-                                >
-                                </select>`;
+                        let hiddenS2 = "";
+                        let hiddenSpan = "hidden";
+                        let check = QuotationLoadDataHandle.loadCheckSameMixTax();
+                        if (check === "mixed") {
+                            hiddenS2 = "hidden";
+                            hiddenSpan = "";
+                        }
+                        return `<div ${hiddenS2}>
+                                    <select
+                                        class="form-select table-row-tax"
+                                        data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
+                                        data-method="GET"
+                                        data-keyResp="tax_list"
+                                    >
+                                    </select>
+                                </div>
+                                <span ${hiddenSpan}>${QuotationLoadDataHandle.transEle.attr('data-mixed')}</span>`;
                     }
                 },
                 {
                     targets: 5,
                     width: '15%',
                     render: (data, type, row) => {
+                        let readonly = "readonly";
+                        let check = QuotationLoadDataHandle.loadCheckSameMixTax();
+                        if (check === "mixed") {
+                            readonly = "";
+                        }
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-total text-black" 
                                     value="${row?.['total'] ? row?.['total'] : '0'}"
                                     data-return-type="number"
-                                    readonly
+                                    ${readonly}
                                 >`;
                     }
                 },
@@ -4911,6 +4982,7 @@ class QuotationDataTableHandle {
                 // Select the appended button from the DOM and attach the event listener
                 $('#btn-add-product-quotation-create').on('click', function () {
                     QuotationLoadDataHandle.loadModalSProduct();
+                    QuotationLoadDataHandle.loadChangePaymentTerm();
                     indicatorHandle.loadIndicator();
                 });
                 $('#btn-add-product-group-quotation').on('click', function () {

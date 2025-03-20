@@ -821,6 +821,17 @@ $(function () {
             LeaseOrderLoadDataHandle.loadModalSTerm(this);
         });
 
+        LeaseOrderDataTableHandle.$tableInvoice.on('change', '.table-row-total', function () {
+            let row = this.closest('tr');
+            if (row) {
+                let balanceEle = row.querySelector('.table-row-balance');
+                if (balanceEle) {
+                    $(balanceEle).attr('value', String($(this).valCurrency()));
+                    $.fn.initMaskMoney2();
+                }
+            }
+        });
+
         LeaseOrderLoadDataHandle.$btnSaveTerm.on('click', function () {
            LeaseOrderLoadDataHandle.loadSaveSTerm();
         });
@@ -829,7 +840,7 @@ $(function () {
             LeaseOrderLoadDataHandle.loadAddPaymentStage();
         });
 
-        LeaseOrderDataTableHandle.$tablePayment.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-issue-invoice, .table-row-value-total, .table-row-due-date', function () {
+        LeaseOrderDataTableHandle.$tablePayment.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-issue-invoice, .table-row-value-tax, .table-row-value-total, .table-row-due-date', function () {
             let row = this.closest('tr');
             if ($(this).hasClass('table-row-date')) {
                 let isCheck = true;
@@ -873,6 +884,12 @@ $(function () {
                         }
                     }
                 }
+            }
+            if ($(this).hasClass('table-row-value-before-tax')) {
+                LeaseOrderLoadDataHandle.loadChangePSAmount(this);
+            }
+            if ($(this).hasClass('table-row-value-tax')) {
+                LeaseOrderLoadDataHandle.loadChangePSAmount(this);
             }
         });
 

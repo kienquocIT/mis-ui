@@ -272,8 +272,6 @@ $(function () {
                 deletePromotionRows(tableProduct, false, true);
                 // Re Calculate all data of rows & total
                 QuotationCalculateCaseHandle.commonCalculate(tableProduct, row);
-                // change value before tax table payment
-                QuotationLoadDataHandle.loadChangePSValueBTAll();
             }
         });
 
@@ -755,7 +753,7 @@ $(function () {
                     QuotationLoadDataHandle.loadChangeInstallment(this);
                 }
                 if ($(this).hasClass('table-row-ratio')) {
-                    QuotationLoadDataHandle.loadPSValueBeforeTax(this);
+                    QuotationLoadDataHandle.loadPaymentValues(this);
                     let valBeforeEle = row.querySelector('.table-row-value-before-tax');
                     validatePSValue(valBeforeEle);
                 }

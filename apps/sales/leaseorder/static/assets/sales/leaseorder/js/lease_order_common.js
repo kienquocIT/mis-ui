@@ -1390,7 +1390,7 @@ class LeaseOrderLoadDataHandle {
             if (eleDetail && eleDetail.length > 0) {
                 if (eleDetail.val()) {
                     dataDetail = JSON.parse(eleDetail.val());
-                    tableData = dataDetail?.['sale_order_invoice'];
+                    tableData = dataDetail?.['lease_invoice'];
                 }
             }
         } else {
@@ -1408,7 +1408,7 @@ class LeaseOrderLoadDataHandle {
                 if (eleDetail && eleDetail.length > 0) {
                     if (eleDetail.val()) {
                         dataDetail = JSON.parse(eleDetail.val());
-                        tableData = dataDetail?.['sale_order_invoice'];
+                        tableData = dataDetail?.['lease_invoice'];
                     }
                 }
             }
@@ -1533,7 +1533,7 @@ class LeaseOrderLoadDataHandle {
                 if (dataSelected?.['value']) {
                     if (dataSelected?.['unit_type'] === 0 || dataSelected?.['unit_type'] === 2) {
                         $(ratioEle).val(parseFloat(dataSelected?.['value']));
-                        LeaseOrderLoadDataHandle.loadPSValueBeforeTax(ratioEle);
+                        LeaseOrderLoadDataHandle.loadPaymentValues(ratioEle);
                     }
                     if (dataSelected?.['unit_type'] === 1) {
                         $(valBeforeEle).attr('value', String(dataSelected?.['value']));
@@ -1651,39 +1651,36 @@ class LeaseOrderLoadDataHandle {
         return true;
     };
 
-    static loadPSValueBeforeTax(ele, ratio) {
-        let valueSO = 0;
-        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
-        if (tableProductWrapper) {
-            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-            if (tableProductFt) {
-                let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
-                let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
-                if (elePretax && eleDiscount) {
-                    valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
-                    if (ratio) {
-                        let value = (parseFloat(ratio) * valueSO) / 100;
-                        $(ele).attr('value', String(value));
-                        // mask money
-                        $.fn.initMaskMoney2();
+    static loadPaymentValues(ele) {
+        let row = ele.closest('tr');
+        if (row && $(ele).val()) {
+            let ratio = parseFloat($(ele).val());
+            let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+            let valTotalEle = row.querySelector('.table-row-value-total');
+            if (valBeforeEle && valTotalEle) {
+                let valueSO = 0;
+                let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+                if (tableProductWrapper) {
+                    let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                    if (tableProductFt) {
+                        let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+                        let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+                        if (elePretax && eleDiscount) {
+                            valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
+                            if (ratio) {
+                                let value = ratio * valueSO / 100;
+                                $(valBeforeEle).attr('value', String(value));
+                                $(valTotalEle).attr('value', String(value));
+                                // mask money
+                                $.fn.initMaskMoney2();
+                            }
+                        }
                     }
                 }
             }
         }
-        return true;
-    };
 
-    static loadChangePSValueBTAll() {
-        let $table = $('#datable-quotation-payment-stage');
-        $table.DataTable().rows().every(function () {
-            let row = this.node();
-            let eleInstallment = row.querySelector('.table-row-installment');
-            let eleRatio = row.querySelector('.table-row-ratio');
-            let eleValueBT = row.querySelector('.table-row-value-before-tax');
-            if (eleInstallment && eleRatio && eleValueBT) {
-                LeaseOrderLoadDataHandle.loadPSValueBeforeTax(eleValueBT, $(eleRatio).val());
-            }
-        });
+        return true;
     };
 
     static loadAddInvoice() {
@@ -3070,7 +3067,6 @@ class LeaseOrderLoadDataHandle {
         let tableCost = LeaseOrderDataTableHandle.$tableCost;
         let tableExpense = LeaseOrderDataTableHandle.$tableExpense;
         let tableIndicator = $('#datable-quotation-create-indicator');
-        let tablePaymentStage = LeaseOrderDataTableHandle.$tablePayment;
         let products_data = data?.['lease_products_data'];
         let costs_data = data?.['lease_costs_data'];
         let expenses_data = data?.['lease_expenses_data'];
@@ -3129,39 +3125,12 @@ class LeaseOrderLoadDataHandle {
         }
         // load table payment stage
         if (data?.['lease_payment_stage']) {
-            tablePaymentStage.DataTable().clear().draw();
-            tablePaymentStage.DataTable().rows.add(data?.['lease_payment_stage']).draw();
-            tablePaymentStage.DataTable().rows().every(function () {
-                let row = this.node();
-                if (row.querySelector('.table-row-date')) {
-                    $(row.querySelector('.table-row-date')).daterangepicker({
-                        singleDatePicker: true,
-                        timepicker: false,
-                        showDropdowns: false,
-                        minYear: 2023,
-                        locale: {
-                            format: 'DD/MM/YYYY'
-                        },
-                        maxYear: parseInt(moment().format('YYYY'), 10),
-                        drops: 'up',
-                        autoApply: true,
-                    });
-                }
-                if (row.querySelector('.table-row-due-date')) {
-                    $(row.querySelector('.table-row-due-date')).daterangepicker({
-                        singleDatePicker: true,
-                        timepicker: false,
-                        showDropdowns: false,
-                        minYear: 2023,
-                        locale: {
-                            format: 'DD/MM/YYYY'
-                        },
-                        maxYear: parseInt(moment().format('YYYY'), 10),
-                        drops: 'up',
-                        autoApply: true,
-                    });
-                }
-            })
+            LeaseOrderDataTableHandle.$tablePayment.DataTable().clear().draw();
+            LeaseOrderDataTableHandle.$tablePayment.DataTable().rows.add(data?.['lease_payment_stage']).draw();
+        }
+        if (data?.['lease_invoice']) {
+            LeaseOrderDataTableHandle.$tableInvoice.DataTable().clear().draw();
+            LeaseOrderDataTableHandle.$tableInvoice.DataTable().rows.add(data?.['lease_invoice']).draw();
         }
         // load indicators & set attr disabled for detail page
         if ($(form).attr('data-method').toLowerCase() === 'get') {
@@ -3172,7 +3141,7 @@ class LeaseOrderLoadDataHandle {
             LeaseOrderLoadDataHandle.loadTableDisabled(tableProduct);
             LeaseOrderLoadDataHandle.loadTableDisabled(tableCost);
             LeaseOrderLoadDataHandle.loadTableDisabled(tableExpense);
-            LeaseOrderLoadDataHandle.loadTableDisabled(tablePaymentStage);
+            LeaseOrderLoadDataHandle.loadTableDisabled(LeaseOrderDataTableHandle.$tablePayment);
             // mask money
             $.fn.initMaskMoney2();
         }

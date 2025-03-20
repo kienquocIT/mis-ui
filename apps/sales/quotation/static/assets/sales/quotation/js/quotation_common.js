@@ -1493,7 +1493,7 @@ class QuotationLoadDataHandle {
                 if (dataSelected?.['value']) {
                     if (dataSelected?.['unit_type'] === 0 || dataSelected?.['unit_type'] === 2) {
                         $(ratioEle).val(parseFloat(dataSelected?.['value']));
-                        QuotationLoadDataHandle.loadPSValueBeforeTax(ratioEle);
+                        QuotationLoadDataHandle.loadPaymentValues(ratioEle);
                     }
                     if (dataSelected?.['unit_type'] === 1) {
                         $(valBeforeEle).attr('value', String(dataSelected?.['value']));
@@ -1611,7 +1611,7 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadPSValueBeforeTax(ele) {
+    static loadPaymentValues(ele) {
         let row = ele.closest('tr');
         if (row && $(ele).val()) {
             let ratio = parseFloat($(ele).val());
@@ -1641,19 +1641,6 @@ class QuotationLoadDataHandle {
         }
 
         return true;
-    };
-
-    static loadChangePSValueBTAll() {
-        let $table = $('#datable-quotation-payment-stage');
-        $table.DataTable().rows().every(function () {
-            let row = this.node();
-            let eleInstallment = row.querySelector('.table-row-installment');
-            let eleRatio = row.querySelector('.table-row-ratio');
-            let eleValueBT = row.querySelector('.table-row-value-before-tax');
-            if (eleInstallment && eleRatio && eleValueBT) {
-                QuotationLoadDataHandle.loadPSValueBeforeTax(eleRatio);
-            }
-        });
     };
 
     static loadAddInvoice() {

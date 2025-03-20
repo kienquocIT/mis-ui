@@ -278,8 +278,6 @@ $(function () {
                 deletePromotionRows(tableProduct, false, true);
                 // Re Calculate all data of rows & total
                 LeaseOrderCalculateCaseHandle.commonCalculate(tableProduct, row);
-                // change value before tax table payment
-                LeaseOrderLoadDataHandle.loadChangePSValueBTAll();
             }
         });
 
@@ -854,7 +852,7 @@ $(function () {
                 LeaseOrderLoadDataHandle.loadChangeInstallment(this);
             }
             if ($(this).hasClass('table-row-ratio')) {
-                LeaseOrderLoadDataHandle.loadPSValueBeforeTax(this);
+                LeaseOrderLoadDataHandle.loadPaymentValues(this);
                 let valBeforeEle = row.querySelector('.table-row-value-before-tax');
                 validatePSValue(valBeforeEle);
             }

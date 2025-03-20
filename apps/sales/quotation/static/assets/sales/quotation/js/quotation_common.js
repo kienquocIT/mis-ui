@@ -1818,7 +1818,7 @@ class QuotationLoadDataHandle {
                     reconcile += dataRow?.['value_total'];
                     reconcileData.push(dataRow);
                 }
-                if (valBeforeEle && valReconcileEle && reconcileDataEle && taxEle && valTaxEle && valTotalEle && reconcile > 0) {
+                if (valBeforeEle && valReconcileEle && reconcileDataEle && taxEle && valTaxEle && valTotalEle) {
                     $(valReconcileEle).attr('value', reconcile);
                     let dataTax = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
                     let tax = dataTax?.['rate'] ? dataTax?.['rate'] : 0;

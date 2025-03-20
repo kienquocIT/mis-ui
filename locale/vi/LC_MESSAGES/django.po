@@ -11314,3 +11314,35 @@ msgstr "Dữ liệu Ngân hàng dùng chung"
 #
 msgid "Recon account"
 msgstr "TK cấn trừ"
+
+#
+msgid "Reconcile"
+msgstr "Cấn trừ"
+
+#
+msgid "Payment before tax"
+msgstr "Thanh toán trước thuế"
+
+#
+msgid "Percentage"
+msgstr "Phần trăm"
+
+#
+msgid "Invoice issue"
+msgstr "Số hóa đơn"
+
+#
+msgid "Balance due"
+msgstr "Dư nợ phải trả"
+
+#
+msgid "Invoice plan"
+msgstr "Kế hoạch hóa đơn"
+
+#
+msgid "Payment plan"
+msgstr "Kế hoạch thanh toán"
+
+#
+msgid "Specific amount"
+msgstr "Số tiền cụ thể"

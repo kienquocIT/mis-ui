@@ -4218,17 +4218,12 @@ class QuotationDataTableHandle {
                     targets: 7,
                     width: '12%',
                     render: (data, type, row) => {
-                        let readonly = "readonly";
-                        let check = QuotationLoadDataHandle.loadCheckSameMixTax();
-                        if (check?.['check'] === "mixed") {
-                            readonly = "";
-                        }
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-value-before-tax text-black" 
                                     value="${row?.['value_before_tax'] ? row?.['value_before_tax'] : '0'}"
                                     data-return-type="number"
-                                    ${readonly}
+                                    readonly
                                 >`;
                     }
                 },
@@ -4259,14 +4254,7 @@ class QuotationDataTableHandle {
                     targets: 9,
                     width: '6%',
                     render: () => {
-                        let hiddenS2 = "";
-                        let hiddenSpan = "hidden";
-                        let check = QuotationLoadDataHandle.loadCheckSameMixTax();
-                        if (check?.['check'] === "mixed") {
-                            hiddenS2 = "hidden";
-                            hiddenSpan = "";
-                        }
-                        return `<div ${hiddenS2}>
+                        return `<div class="table-row-tax-area">
                                     <select
                                         class="form-select table-row-tax"
                                         data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
@@ -4276,24 +4264,19 @@ class QuotationDataTableHandle {
                                     >
                                     </select>
                                 </div>
-                                <span ${hiddenSpan}>${QuotationLoadDataHandle.transEle.attr('data-mixed')}</span>`;
+                                <span class="table-row-tax-check" hidden>${QuotationLoadDataHandle.transEle.attr('data-mixed')}</span>`;
                     }
                 },
                 {
                     targets: 10,
                     width: '10%',
                     render: (data, type, row) => {
-                        let readonly = "readonly";
-                        let check = QuotationLoadDataHandle.loadCheckSameMixTax();
-                        if (check?.['check'] === "mixed") {
-                            readonly = "";
-                        }
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-value-tax text-black" 
                                     value="${row?.['value_tax'] ? row?.['value_tax'] : '0'}"
                                     data-return-type="number"
-                                    ${readonly}
+                                    readonly
                                 >`;
                     }
                 },
@@ -4301,17 +4284,12 @@ class QuotationDataTableHandle {
                     targets: 11,
                     width: '12%',
                     render: (data, type, row) => {
-                        let readonly = "readonly";
-                        let check = QuotationLoadDataHandle.loadCheckSameMixTax();
-                        if (check?.['check'] === "mixed") {
-                            readonly = "";
-                        }
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-value-total text-black" 
                                     value="${row?.['value_total'] ? row?.['value_total'] : '0'}"
                                     data-return-type="number"
-                                    ${readonly}
+                                    readonly
                                 >`;
                     }
                 },
@@ -4328,8 +4306,15 @@ class QuotationDataTableHandle {
                 let dateEle = row.querySelector('.table-row-date');
                 let dueDateEle = row.querySelector('.table-row-due-date');
                 let invoiceDataEle = row.querySelector('.table-row-invoice-data');
+                let valBeforeEle = row.querySelector('.table-row-value-before-tax');
                 let reconcileDataEle = row.querySelector('.table-row-reconcile-data');
+                let taxAreaEle = row.querySelector('.table-row-tax-area');
                 let taxEle = row.querySelector('.table-row-tax');
+                let taxCheckEle = row.querySelector('.table-row-tax-check');
+                let valTaxEle = row.querySelector('.table-row-value-tax');
+                let valTotalEle = row.querySelector('.table-row-value-total');
+
+                let check = QuotationLoadDataHandle.loadCheckSameMixTax();
                 if (installmentEle) {
                     let term = [];
                     if (QuotationLoadDataHandle.paymentSelectEle.val()) {
@@ -4389,15 +4374,35 @@ class QuotationDataTableHandle {
                 if (invoiceDataEle) {
                     $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : []));
                 }
+                if (valBeforeEle) {
+                    if (check?.['check'] === "mixed") {
+                        valBeforeEle.removeAttribute('readonly');
+                    }
+                }
                 if (reconcileDataEle) {
                     $(reconcileDataEle).val(JSON.stringify(data?.['reconcile_data'] ? data?.['reconcile_data'] : []));
                 }
-                if (taxEle) {
+                if (taxEle && taxAreaEle && taxCheckEle) {
                     let dataS2 = [];
                     if (data?.['tax_data']) {
                         dataS2 = [data?.['tax_data']];
                     }
                     QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
+
+                    if (check?.['check'] === "mixed") {
+                        taxAreaEle.setAttribute('hidden', 'true');
+                        taxCheckEle.removeAttribute('hidden');
+                    }
+                }
+                if (valTaxEle) {
+                    if (check?.['check'] === "mixed") {
+                        valTaxEle.removeAttribute('readonly');
+                    }
+                }
+                if (valTotalEle) {
+                    if (check?.['check'] === "mixed") {
+                        valTotalEle.removeAttribute('readonly');
+                    }
                 }
             },
             drawCallback: function () {
@@ -4481,45 +4486,28 @@ class QuotationDataTableHandle {
                     targets: 4,
                     width: '10%',
                     render: () => {
-                        let readonlyS2 = "";
-                        let hiddenS2 = "";
-                        let hiddenSpan = "hidden";
-                        let check = QuotationLoadDataHandle.loadCheckSameMixTax();
-                        if (check?.['check'] === "same") {
-                            readonlyS2 = "readonly";
-                        }
-                        if (check?.['check'] === "mixed") {
-                            hiddenS2 = "hidden";
-                            hiddenSpan = "";
-                        }
-                        return `<div ${hiddenS2}>
+                        return `<div class="table-row-tax-area">
                                     <select
                                         class="form-select table-row-tax"
                                         data-url="${QuotationLoadDataHandle.urlEle.attr('data-md-tax')}"
                                         data-method="GET"
                                         data-keyResp="tax_list"
-                                        ${readonlyS2}
                                     >
                                     </select>
                                 </div>
-                                <span class="" ${hiddenSpan}>${QuotationLoadDataHandle.transEle.attr('data-mixed')}</span>`;
+                                <span class="table-row-tax-check" hidden>${QuotationLoadDataHandle.transEle.attr('data-mixed')}</span>`;
                     }
                 },
                 {
                     targets: 5,
                     width: '15%',
                     render: (data, type, row) => {
-                        let readonly = "readonly";
-                        let check = QuotationLoadDataHandle.loadCheckSameMixTax();
-                        if (check?.['check'] === "mixed") {
-                            readonly = "";
-                        }
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-total text-black" 
                                     value="${row?.['total'] ? row?.['total'] : '0'}"
                                     data-return-type="number"
-                                    ${readonly}
+                                    readonly
                                 >`;
                     }
                 },
@@ -4527,10 +4515,6 @@ class QuotationDataTableHandle {
                     targets: 6,
                     width: '15%',
                     render: (data, type, row) => {
-                        let hidden = "hidden";
-                        if (row?.['total'] > 0 && row?.['balance'] === 0) {
-                            hidden = "";
-                        }
                         return `<div class="row">
                                     <div class=input-group">
                                         <span class="input-affix-wrapper">
@@ -4541,7 +4525,7 @@ class QuotationDataTableHandle {
                                                 data-return-type="number"
                                                 readonly
                                             >
-                                            <span class="input-suffix"><i class="far fa-check-circle text-success paid-full" ${hidden}></i></span>
+                                            <span class="input-suffix"><i class="far fa-check-circle text-success paid-full" hidden></i></span>
                                         </span>
                                     </div>
                                 </div>`;
@@ -4557,8 +4541,14 @@ class QuotationDataTableHandle {
             ],
             rowCallback: function (row, data, index) {
                 let dateEle = row.querySelector('.table-row-date');
+                let taxAreaEle = row.querySelector('.table-row-tax-area');
                 let taxEle = row.querySelector('.table-row-tax');
+                let taxCheckEle = row.querySelector('.table-row-tax-check');
                 let termDataEle = row.querySelector('.table-row-term-data');
+                let totalEle = row.querySelector('.table-row-total');
+                let paidFullEle = row.querySelector('.paid-full');
+
+                let check = QuotationLoadDataHandle.loadCheckSameMixTax();
                 if (dateEle) {
                     $(dateEle).daterangepicker({
                         singleDatePicker: true,
@@ -4577,15 +4567,34 @@ class QuotationDataTableHandle {
                         $(dateEle).val(moment(data?.['date']).format('DD/MM/YYYY'));
                     }
                 }
-                if (taxEle) {
+                if (taxEle && taxAreaEle && taxCheckEle) {
                     let dataS2 = [];
                     if (data?.['tax_data']) {
                         dataS2 = [data?.['tax_data']];
                     }
                     QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
+
+                    if (check?.['check'] === "same") {
+                        taxEle.setAttribute('readonly', 'true');
+                        QuotationLoadDataHandle.loadInitS2($(taxEle), check?.['list_tax']);
+                    }
+                    if (check?.['check'] === "mixed") {
+                        taxAreaEle.setAttribute('hidden', 'true');
+                        taxCheckEle.removeAttribute('hidden');
+                    }
                 }
                 if (termDataEle) {
                     $(termDataEle).val(JSON.stringify(data?.['term_data'] ? data?.['term_data'] : []));
+                }
+                if (totalEle) {
+                    if (check?.['check'] === "mixed") {
+                        totalEle.removeAttribute('readonly');
+                    }
+                }
+                if (paidFullEle) {
+                    if (data?.['total'] > 0 && data?.['balance'] === 0) {
+                        paidFullEle.removeAttribute('hidden');
+                    }
                 }
             },
             drawCallback: function () {

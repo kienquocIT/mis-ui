@@ -1661,7 +1661,7 @@ class LeaseOrderLoadDataHandle {
                 $(valTotalEle).attr('value', String($(valBeforeEle).valCurrency() + $(valTaxEle).valCurrency()));
                 $.fn.initMaskMoney2();
                 LeaseOrderLoadDataHandle.loadMinusBalance();
-                QuotationStoreDataHandle.storeDtbData(5);
+                LeaseOrderStoreDataHandle.storeDtbData(5);
             }
         }
         return true;
@@ -4924,17 +4924,12 @@ class LeaseOrderDataTableHandle {
                     targets: 7,
                     width: '12%',
                     render: (data, type, row) => {
-                        let readonly = "readonly";
-                        let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
-                        if (check?.['check'] === "mixed") {
-                            readonly = "";
-                        }
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-value-before-tax text-black" 
                                     value="${row?.['value_before_tax'] ? row?.['value_before_tax'] : '0'}"
                                     data-return-type="number"
-                                    ${readonly}
+                                    readonly
                                 >`;
                     }
                 },
@@ -4965,14 +4960,7 @@ class LeaseOrderDataTableHandle {
                     targets: 9,
                     width: '6%',
                     render: () => {
-                        let hiddenS2 = "";
-                        let hiddenSpan = "hidden";
-                        let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
-                        if (check?.['check'] === "mixed") {
-                            hiddenS2 = "hidden";
-                            hiddenSpan = "";
-                        }
-                        return `<div ${hiddenS2}>
+                        return `<div class="table-row-tax-area">
                                     <select
                                         class="form-select table-row-tax"
                                         data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-tax')}"
@@ -4982,24 +4970,19 @@ class LeaseOrderDataTableHandle {
                                     >
                                     </select>
                                 </div>
-                                <span ${hiddenSpan}>${LeaseOrderLoadDataHandle.transEle.attr('data-mixed')}</span>`;
+                                <span class="table-row-tax-check" hidden>${LeaseOrderLoadDataHandle.transEle.attr('data-mixed')}</span>`;
                     }
                 },
                 {
                     targets: 10,
                     width: '10%',
                     render: (data, type, row) => {
-                        let readonly = "readonly";
-                        let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
-                        if (check?.['check'] === "mixed") {
-                            readonly = "";
-                        }
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-value-tax text-black" 
                                     value="${row?.['value_tax'] ? row?.['value_tax'] : '0'}"
                                     data-return-type="number"
-                                    ${readonly}
+                                    readonly
                                 >`;
                     }
                 },
@@ -5007,17 +4990,12 @@ class LeaseOrderDataTableHandle {
                     targets: 11,
                     width: '12%',
                     render: (data, type, row) => {
-                        let readonly = "readonly";
-                        let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
-                        if (check?.['check'] === "mixed") {
-                            readonly = "";
-                        }
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-value-total text-black" 
                                     value="${row?.['value_total'] ? row?.['value_total'] : '0'}"
                                     data-return-type="number"
-                                    ${readonly}
+                                    readonly
                                 >`;
                     }
                 },
@@ -5034,8 +5012,15 @@ class LeaseOrderDataTableHandle {
                 let dateEle = row.querySelector('.table-row-date');
                 let dueDateEle = row.querySelector('.table-row-due-date');
                 let invoiceDataEle = row.querySelector('.table-row-invoice-data');
+                let valBeforeEle = row.querySelector('.table-row-value-before-tax');
                 let reconcileDataEle = row.querySelector('.table-row-reconcile-data');
+                let taxAreaEle = row.querySelector('.table-row-tax-area');
                 let taxEle = row.querySelector('.table-row-tax');
+                let taxCheckEle = row.querySelector('.table-row-tax-check');
+                let valTaxEle = row.querySelector('.table-row-value-tax');
+                let valTotalEle = row.querySelector('.table-row-value-total');
+
+                let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
                 if (installmentEle) {
                     let term = [];
                     if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
@@ -5095,15 +5080,35 @@ class LeaseOrderDataTableHandle {
                 if (invoiceDataEle) {
                     $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : []));
                 }
+                if (valBeforeEle) {
+                    if (check?.['check'] === "mixed") {
+                        valBeforeEle.removeAttribute('readonly');
+                    }
+                }
                 if (reconcileDataEle) {
                     $(reconcileDataEle).val(JSON.stringify(data?.['reconcile_data'] ? data?.['reconcile_data'] : []));
                 }
-                if (taxEle) {
+                if (taxEle && taxAreaEle && taxCheckEle) {
                     let dataS2 = [];
                     if (data?.['tax_data']) {
                         dataS2 = [data?.['tax_data']];
                     }
                     LeaseOrderLoadDataHandle.loadInitS2($(taxEle), dataS2);
+
+                    if (check?.['check'] === "mixed") {
+                        taxAreaEle.setAttribute('hidden', 'true');
+                        taxCheckEle.removeAttribute('hidden');
+                    }
+                }
+                if (valTaxEle) {
+                    if (check?.['check'] === "mixed") {
+                        valTaxEle.removeAttribute('readonly');
+                    }
+                }
+                if (valTotalEle) {
+                    if (check?.['check'] === "mixed") {
+                        valTotalEle.removeAttribute('readonly');
+                    }
                 }
             },
             drawCallback: function () {
@@ -5187,14 +5192,7 @@ class LeaseOrderDataTableHandle {
                     targets: 4,
                     width: '10%',
                     render: () => {
-                        let hiddenS2 = "";
-                        let hiddenSpan = "hidden";
-                        let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
-                        if (check?.['check'] === "mixed") {
-                            hiddenS2 = "hidden";
-                            hiddenSpan = "";
-                        }
-                        return `<div ${hiddenS2}>
+                        return `<div class="table-row-tax-area">
                                     <select
                                         class="form-select table-row-tax"
                                         data-url="${LeaseOrderLoadDataHandle.urlEle.attr('data-md-tax')}"
@@ -5203,24 +5201,19 @@ class LeaseOrderDataTableHandle {
                                     >
                                     </select>
                                 </div>
-                                <span ${hiddenSpan}>${LeaseOrderLoadDataHandle.transEle.attr('data-mixed')}</span>`;
+                                <span class="table-row-tax-check" hidden>${LeaseOrderLoadDataHandle.transEle.attr('data-mixed')}</span>`;
                     }
                 },
                 {
                     targets: 5,
                     width: '15%',
                     render: (data, type, row) => {
-                        let readonly = "readonly";
-                        let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
-                        if (check?.['check'] === "mixed") {
-                            readonly = "";
-                        }
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-total text-black" 
                                     value="${row?.['total'] ? row?.['total'] : '0'}"
                                     data-return-type="number"
-                                    ${readonly}
+                                    readonly
                                 >`;
                     }
                 },
@@ -5228,10 +5221,6 @@ class LeaseOrderDataTableHandle {
                     targets: 6,
                     width: '15%',
                     render: (data, type, row) => {
-                        let hidden = "hidden";
-                        if (row?.['total'] > 0 && row?.['balance'] === 0) {
-                            hidden = "";
-                        }
                         return `<div class="row">
                                     <div class=input-group">
                                         <span class="input-affix-wrapper">
@@ -5242,7 +5231,7 @@ class LeaseOrderDataTableHandle {
                                                 data-return-type="number"
                                                 readonly
                                             >
-                                            <span class="input-suffix"><i class="far fa-check-circle text-success paid-full" ${hidden}></i></span>
+                                            <span class="input-suffix"><i class="far fa-check-circle text-success paid-full" hidden></i></span>
                                         </span>
                                     </div>
                                 </div>`;
@@ -5258,8 +5247,14 @@ class LeaseOrderDataTableHandle {
             ],
             rowCallback: function (row, data, index) {
                 let dateEle = row.querySelector('.table-row-date');
+                let taxAreaEle = row.querySelector('.table-row-tax-area');
                 let taxEle = row.querySelector('.table-row-tax');
+                let taxCheckEle = row.querySelector('.table-row-tax-check');
                 let termDataEle = row.querySelector('.table-row-term-data');
+                let totalEle = row.querySelector('.table-row-total');
+                let paidFullEle = row.querySelector('.paid-full');
+
+                let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
                 if (dateEle) {
                     $(dateEle).daterangepicker({
                         singleDatePicker: true,
@@ -5278,15 +5273,34 @@ class LeaseOrderDataTableHandle {
                         $(dateEle).val(moment(data?.['date']).format('DD/MM/YYYY'));
                     }
                 }
-                if (taxEle) {
+                if (taxEle && taxAreaEle && taxCheckEle) {
                     let dataS2 = [];
                     if (data?.['tax_data']) {
                         dataS2 = [data?.['tax_data']];
                     }
                     LeaseOrderLoadDataHandle.loadInitS2($(taxEle), dataS2);
+
+                    if (check?.['check'] === "same") {
+                        taxEle.setAttribute('readonly', 'true');
+                        LeaseOrderLoadDataHandle.loadInitS2($(taxEle), check?.['list_tax']);
+                    }
+                    if (check?.['check'] === "mixed") {
+                        taxAreaEle.setAttribute('hidden', 'true');
+                        taxCheckEle.removeAttribute('hidden');
+                    }
                 }
                 if (termDataEle) {
                     $(termDataEle).val(JSON.stringify(data?.['term_data'] ? data?.['term_data'] : []));
+                }
+                if (totalEle) {
+                    if (check?.['check'] === "mixed") {
+                        totalEle.removeAttribute('readonly');
+                    }
+                }
+                if (paidFullEle) {
+                    if (data?.['total'] > 0 && data?.['balance'] === 0) {
+                        paidFullEle.removeAttribute('hidden');
+                    }
                 }
             },
             drawCallback: function () {
@@ -5562,6 +5576,7 @@ class LeaseOrderDataTableHandle {
                 // Select the appended button from the DOM and attach the event listener
                 $('#btn-add-product-quotation-create').on('click', function () {
                     LeaseOrderLoadDataHandle.loadModalSProduct();
+                    LeaseOrderLoadDataHandle.loadChangePaymentTerm();
                     LeaseOrderIndicatorHandle.loadIndicator();
                 });
                 $('#btn-add-shipping').on('click', function () {

@@ -5418,8 +5418,6 @@ class WindowControl {
                     title += $.fn.gettext("Updating");
                 } else if (loadingTitleAction === "DELETE") {
                     title += $.fn.gettext("Deleting")
-                } else if (loadingTitleAction === "GET_PAGE_INIT_DATA") {
-                    title += $.fn.gettext("Loading page init data")
                 }
             }
             let loadingTitleMore = opts?.['loadingTitleMore'] || '';
@@ -5445,9 +5443,6 @@ class WindowControl {
                 } else if (loadingTitleAction === "DELETE") {
                     icon = '/static/assets/images/systems/delete_doc.gif';
                     decor_class = 'danger';
-                } else if (loadingTitleAction === "GET_PAGE_INIT_DATA") {
-                    icon = '/static/assets/images/systems/get_doc.gif';
-                    decor_class = 'primary';
                 }
             }
             return [icon, decor_class]

@@ -18,7 +18,7 @@ $(document).ready(async function () {
         event.preventDefault();
         let combinesData = ProductHandler.CombinesData($(this), false);
         if (combinesData) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
             $.fn.callAjax2(combinesData)
                 .then(
                     (resp) => {

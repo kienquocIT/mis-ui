@@ -8,7 +8,7 @@ $(document).ready(async function () {
         event.preventDefault();
         let combinesData = ProductHandler.CombinesData($(this), true);
         if (combinesData) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             $.fn.callAjax2(combinesData)
                 .then(
                     (resp) => {

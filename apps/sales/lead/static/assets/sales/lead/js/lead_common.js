@@ -82,7 +82,7 @@ $create_contact_btn.on('click', function () {
             reverseButtons: true,
         }).then((result) => {
             if (result.value) {
-                WindowControl.showLoading();
+                WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
                 let combinesData_convert_contact = {
                     url: $create_contact_btn.attr('data-url'),
                     method: 'POST',
@@ -184,7 +184,7 @@ $convert_opp_btn.on('click', function () {
                     reverseButtons: true,
                 }).then((result) => {
                     if (result.value) {
-                        WindowControl.showLoading();
+                        WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
                         let combinesData_convert_opp = {
                             url: $convert_opp_btn.attr('data-url'),
                             method: 'POST',
@@ -242,7 +242,7 @@ $convert_opp_btn.on('click', function () {
                     reverseButtons: true,
                 }).then((result) => {
                     if (result.value) {
-                        WindowControl.showLoading();
+                        WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
                         let combinesData_convert_opp = {
                             url: $convert_opp_btn.attr('data-url-map-opp'),
                             method: 'PUT',
@@ -558,7 +558,7 @@ function LoadStage(stage_list, level, page='create') {
                     reverseButtons: true,
                 }).then((result) => {
                     if (result.value) {
-                        WindowControl.showLoading();
+                        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
                         let combinesData = {
                             url: $('#form-detail-lead').attr('data-url'),
                             method: 'PUT',

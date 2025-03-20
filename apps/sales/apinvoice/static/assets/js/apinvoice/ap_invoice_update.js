@@ -8,7 +8,7 @@ $(document).ready(function () {
         event.preventDefault();
         let combinesData = new APInvoiceHandle().combinesData($(this), true);
         if (combinesData) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             $.fn.callAjax2(combinesData)
                 .then(
                     (resp) => {

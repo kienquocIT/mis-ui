@@ -97,7 +97,7 @@ $(document).ready(function () {
         event.preventDefault();
         let combinesData = combinesDataCreateMeetingRoom($(this));
         if (combinesData) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
             $.fn.callAjax2(combinesData)
                 .then(
                     (resp) => {
@@ -127,7 +127,7 @@ $(document).ready(function () {
         event.preventDefault();
         let combinesData = combinesDataCreateMeetingRoom($(this), true, $(this).attr('data-current-id'));
         if (combinesData) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             $.fn.callAjax2(combinesData)
                 .then(
                     (resp) => {

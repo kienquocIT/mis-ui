@@ -22,7 +22,7 @@ $(document).ready(function () {
         let combinesData = new AccountHandle().combinesData($(this));
         // console.log(combinesData)
         if (combinesData) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
             $.fn.callAjax2(combinesData)
                 .then(
                     (resp) => {

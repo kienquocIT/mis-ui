@@ -47,34 +47,40 @@
         <div class="row">
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="form-group">
-                    <label for="general-select-box-product-type" class="form-label required">{% trans "Product Type" %}</label>
-                    <select id="general-select-box-product-type" class="form-select select2" data-method="GET"
+                    <label for="general-product-type" class="form-label required">{% trans "Product Type" %}</label>
+                    <select id="general-product-type" class="form-select select2" data-method="GET"
                             data-url="{% url 'ProductTypeListAPI' %}"></select>
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
-                    <label for="general-select-box-product-category" class="form-label required">{% trans "Product Category" %}</label>
-                    <select id="general-select-box-product-category" class="form-select" data-method="GET"
+                    <label for="general-product-category" class="form-label required">{% trans "Product Category" %}</label>
+                    <select id="general-product-category" class="form-select" data-method="GET"
                             data-url="{% url "ProductCategoryListAPI" %}"></select>
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
-                    <label for="general-select-box-uom-group" class="form-label required">{% trans "UoM Group" %}</label>
-                    <select id="general-select-box-uom-group" class="form-select" data-method="GET"
+                    <label for="general-uom-group" class="form-label required">{% trans "UoM Group" %}</label>
+                    <select id="general-uom-group" class="form-select" data-method="GET"
                             data-url="{% url "UnitOfMeasureGroupListAPI" %}"
                             data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
-                    <label for="general-select-box-traceability-method" class="form-label">{% trans "Traceability method" %}</label>
-                    <select id="general-select-box-traceability-method" class="form-select" data-method="GET">
+                    <label for="general-traceability-method" class="form-label">{% trans "Traceability method" %}</label>
+                    <select id="general-traceability-method" class="form-select" data-method="GET">
                         <option value="0">{% trans "None" %}</option>
                         <option value="1">{% trans "Batch/Lot number" %}</option>
                         <option value="2">{% trans "Serial number" %}</option>
                     </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-2">
+                <div class="form-group">
+                    <label for="general-standard-price" class="form-label">{% trans "Standard cost" %}</label>
+                    <input id="general-standard-price" class="form-control mask-money" value="0">
                 </div>
             </div>
         </div>
@@ -159,15 +165,15 @@
                 <div class="row">
                     <div class="col-12 col-md-12 col-lg-6">
                         <div class="form-group">
-                            <label for="sale-select-box-default-uom" class="form-label required">{% trans "Default UoM" %}</label>
-                            <select id="sale-select-box-default-uom" class="form-select" data-method="GET"
+                            <label for="sale-uom" class="form-label required">{% trans "Default UoM" %}</label>
+                            <select id="sale-uom" class="form-select" data-method="GET"
                                     data-url="{% url "UnitOfMeasureListAPI" %}"></select>
                         </div>
                     </div>
                     <div class="col-12 col-md-12 col-lg-6">
                         <div class="form-group">
-                            <label for="sale-select-box-tax-code" class="form-label required">{% trans "Tax" %}</label>
-                            <select id="sale-select-box-tax-code" class="form-select" data-method="GET"
+                            <label for="sale-tax" class="form-label required">{% trans "Tax" %}</label>
+                            <select id="sale-tax" class="form-select" data-method="GET"
                                     data-url="{% url "TaxListAPI" %}"></select>
                         </div>
                     </div>
@@ -231,8 +237,8 @@
         <div hidden class="row mt-5">
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
-                    <label for="inventory-select-box-uom-name" class="form-label required">{% trans "UoM Name" %}</label>
-                    <select id="inventory-select-box-uom-name" class="form-select" data-method="GET"
+                    <label for="inventory-uom" class="form-label required">{% trans "UoM Name" %}</label>
+                    <select id="inventory-uom" class="form-select" data-method="GET"
                             data-url="{% url 'UnitOfMeasureListAPI' %}">
                     </select>
                 </div>
@@ -264,12 +270,6 @@
                         <option value="1">{% trans 'Weighted average' %}</option>
 {#                        <option value="2" disabled>{% trans 'Specific identification method' %}</option>#}
                     </select>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-2">
-                <div class="form-group">
-                    <label for="standard_price" class="form-label">{% trans "Standard cost" %}</label>
-                    <input id="standard_price" class="form-control mask-money" value="0">
                 </div>
             </div>
         </div>
@@ -319,15 +319,15 @@
         <div hidden class="row mt-5">
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
-                    <label for="purchase-select-box-default-uom" class="form-label required">{% trans "Default UoM" %}</label>
-                    <select id="purchase-select-box-default-uom" class="form-select" data-method="GET"
+                    <label for="purchase-uom" class="form-label required">{% trans "Default UoM" %}</label>
+                    <select id="purchase-uom" class="form-select" data-method="GET"
                             data-url="{% url "UnitOfMeasureListAPI" %}"></select>
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
-                    <label for="purchase-select-box-tax-code" class="form-label required">{% trans "Tax" %}</label>
-                    <select id="purchase-select-box-tax-code" class="form-select" data-method="GET"
+                    <label for="purchase-tax" class="form-label required">{% trans "Tax" %}</label>
+                    <select id="purchase-tax" class="form-select" data-method="GET"
                             data-url="{% url "TaxListAPI" %}"></select>
                 </div>
             </div>

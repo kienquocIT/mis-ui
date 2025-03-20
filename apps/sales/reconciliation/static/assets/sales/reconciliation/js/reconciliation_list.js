@@ -48,7 +48,7 @@ $(document).ready(function () {
                         data: 'customer_data',
                         className: 'wrap-text w-45',
                         render: (data, type, row) => {
-                            return `<span class="text-muted">${row?.['customer_data']?.['name']}</span>`
+                            return `<span class="text-muted">${row?.['business_partner_data']?.['name']}</span>`
                         }
                     },
                     {

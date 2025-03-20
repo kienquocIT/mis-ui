@@ -36,7 +36,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'wrap-text w-20',
+                        className: 'wrap-text w-25',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}"><span class="text-primary" data-id="${row?.['id']}" data-title="${row?.['title']}"><b>${row?.['title']}</b></span></a>`
@@ -46,7 +46,7 @@ $(document).ready(function () {
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
                             if (row?.['sale_order_mapped_data']?.['id']) {
-                                return `<span class="badge badge-soft-blue badge-outline badge-sm">${row?.['sale_order_mapped_data']?.['code']}</span>`
+                                return `<span class="badge badge-soft-secondary badge-outline badge-sm">${row?.['sale_order_mapped_data']?.['code']}</span>`
                             }
                             else {
                                 return ``
@@ -54,18 +54,12 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'wrap-text w-20',
+                        className: 'wrap-text w-30',
                         render: (data, type, row) => {
                             if (row?.['customer_mapped_data']?.['id']) {
                                 return `${row?.['customer_mapped_data']?.['name']}`
                             }
                             return ``
-                        }
-                    },
-                    {
-                        className: 'wrap-text w-15',
-                        render: (data, type, row) => {
-                            return `${row?.['invoice_number'] !== '0' ? `<span class="text-primary">${row?.['invoice_number']}</span>` : `<span class="text-danger small">Chưa cấp số</span>`}`
                         }
                     },
                     {

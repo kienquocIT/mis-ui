@@ -372,87 +372,6 @@ function loadFunctionNumberTable(option='detail', table_detail_data = []) {
     })
 }
 
-function loadCompanyBankAccountTable(option='detail', call_ajax=false, table_data = [], data_param={}) {
-    let dtb = $('#table-company-bank-account')
-    let col_cfg = [
-        {
-            className: 'wrap-text w-5',
-            render: () => {
-                return ``;
-            }
-        }, {
-            data: 'function',
-            className: 'wrap-text w-15',
-            render: (data, type, row) => {
-                return `<span class="badge badge-secondary">${row?.['bank_code']}</span>`;
-            }
-        }, {
-            data: 'function',
-            className: 'wrap-text w-25',
-            render: (data, type, row) => {
-                return `<span class="text-muted">${row?.['bank_name']}</span>${row?.['is_default'] ? `<span class="ml-1 badge badge-sm badge-blue">${trans_script_ele.attr('data-trans-default')}</span>` : ''}`;
-            }
-        }, {
-            data: 'function',
-            className: 'wrap-text w-20',
-            render: (data, type, row) => {
-                return `<span class="text-muted">${row?.['bank_account_name']}</span>`;
-            }
-        }, {
-            data: 'function',
-            className: 'wrap-text w-25',
-            render: (data, type, row) => {
-                return `<span class="text-muted">${row?.['bank_account_number']}</span>`;
-            }
-        }, {
-            data: 'function',
-            className: 'wrap-text w-10',
-            render: (data, type, row) => {
-                return `<div class="form-check form-switch">
-                    <input data-id="${row?.['id']}" ${option === 'detail' ? 'disabled' : ''} ${row?.['is_active'] ? 'checked' : ''} type="checkbox" class="form-check-input activate_bank_account">
-                    <label class="form-check-label"></label>
-                </div>`;
-            }
-        },
-    ]
-    dtb.DataTable().clear().destroy()
-    if (call_ajax === false) {
-        dtb.DataTableDefault({
-            styleDom: 'hide-foot',
-            rowIdx: true,
-            scrollX: '100vw',
-            scrollY: '40h',
-            scrollCollapse: true,
-            paging: false,
-            data: table_data,
-            columns: col_cfg
-        })
-    }
-    else {
-        dtb.DataTableDefault({
-            styleDom: 'hide-foot',
-            rowIdx: true,
-            scrollX: '100vw',
-            scrollY: '40h',
-            scrollCollapse: true,
-            paging: false,
-            ajax: {
-                url: dtb.attr('data-url'),
-                type: 'GET',
-                data: data_param,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && data.hasOwnProperty('company_bank_account_list')) {
-                        return resp.data['company_bank_account_list'] ? resp.data['company_bank_account_list'] : [];
-                    }
-                    throw Error('Call data raise errors.')
-                },
-            },
-            columns: col_cfg
-        })
-    }
-}
-
 function LoadCountry(ele, data) {
     ele.initSelect2({
         ajax: {
@@ -541,33 +460,6 @@ class CompanyHandle {
             };
         }
     }
-
-    combinesDataCompanyBankAccount(frmEle, for_update=false) {
-        let frm = new SetupFormSubmit($(frmEle));
-
-        frm.dataForm['country'] = $('#country-select-box-id').val();
-        frm.dataForm['bank_name'] = $('#bank-name-id').val();
-        frm.dataForm['bank_code'] = $('#bank-code-id').val();
-        frm.dataForm['bank_account_name'] = $('#bank-account-name-id').val();
-        frm.dataForm['bank_account_number'] = $('#bank-account-number-id').val();
-        frm.dataForm['bic_swift_code'] = $('#bic-swift-code-id').val();
-        frm.dataForm['is_default'] = $('#make-default-bank-account').prop('checked');
-        if (for_update) {
-            return {
-                url: frmEle.attr('data-url-detail').format_url_with_uuid(pk),
-                method: frm.dataMethod,
-                data: frm.dataForm,
-                urlRedirect: frm.dataUrlRedirect,
-            };
-        } else {
-            return {
-                url: frm.dataUrl,
-                method: frm.dataMethod,
-                data: frm.dataForm,
-                urlRedirect: frm.dataUrlRedirect,
-            };
-        }
-    }
 }
 
 function Disable(option) {
@@ -579,7 +471,6 @@ function Disable(option) {
         $('#cost-per-warehouse').prop('disabled', true);
         $('#cost-per-lot').prop('disabled', true);
         $('#cost-per-prj').prop('disabled', true);
-        $('#btn-add-bank').prop('hidden', true);
     }
 }
 
@@ -648,7 +539,6 @@ function LoadDetailCompany(frm, option) {
         }
 
         loadFunctionNumberTable(option, data0?.['company_function_number'])
-        loadCompanyBankAccountTable(option, false, data0?.['company_bank_data'])
 
         $.fn.initMaskMoney2();
 

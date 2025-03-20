@@ -5404,7 +5404,7 @@ class WindowControl {
     }
 
     static showLoading(opts) {
-        // loadingTitleAction: GET (default), CREATE, UPDATE, DELETE
+        // loadingTitleAction: GET (default), CREATE, UPDATE, DELETE, GET_PAGE_INIT_DATA
         function resolve_title() {
             let title = '';
             let loadingTitleKeepDefault = opts?.['loadingTitleKeepDefault'] || true;
@@ -5425,6 +5425,29 @@ class WindowControl {
             return title;
         }
 
+        function resolve_icon() {
+            let icon = '';
+            let decor_class = '';
+            let loadingTitleKeepDefault = opts?.['loadingTitleKeepDefault'] || true;
+            if (loadingTitleKeepDefault === true) {
+                let loadingTitleAction = opts?.['loadingTitleAction'] || 'GET';
+                if (loadingTitleAction === 'GET') {
+                    icon = '/static/assets/images/systems/get_doc.gif';
+                    decor_class = 'primary';
+                } else if (loadingTitleAction === 'CREATE') {
+                    icon = '/static/assets/images/systems/create_doc.gif';
+                    decor_class = 'success';
+                } else if (loadingTitleAction === 'UPDATE') {
+                    icon = '/static/assets/images/systems/edit_doc.gif';
+                    decor_class = 'blue';
+                } else if (loadingTitleAction === "DELETE") {
+                    icon = '/static/assets/images/systems/delete_doc.gif';
+                    decor_class = 'danger';
+                }
+            }
+            return [icon, decor_class]
+        }
+
         let didOpenStartSetup = opts?.['didOpenStart'] || null;
         if (didOpenStartSetup) delete opts['didOpenStart'];
 
@@ -5436,13 +5459,24 @@ class WindowControl {
 
         let didDestroyEndSetup = opts?.['didDestroyEnd'] || null;
         if (didDestroyEndSetup) delete opts['didDestroyEnd'];
+
         Swal.fire({
-            icon: 'info',
-            title: resolve_title(),
-            text: `${$.fn.gettext('Please wait')}...`,
+            html:
+            `<div class="d-flex align-items-center">
+                <div class="me-3"><img style="width: 60px; height: 60px" src="${resolve_icon()[0]}" alt="icon"></div>
+                <div>
+                    <h4 class="text-${resolve_icon()[1]}">${resolve_title()}</h4>
+                    <p>${$.fn.gettext('Please wait')}...</p>
+                </div>
+                <div class="ms-auto"><div class="swal2-loader" style="display: flex;"></div></div>
+            </div>`,
+            customClass: {
+                container: 'swal2-has-bg',
+                htmlContainer: 'bg-transparent text-start',
+                actions: 'w-100'
+            },
             allowOutsideClick: false,
             showConfirmButton: false,
-            timerProgressBar: true,
             didOpen: () => {
                 if (didOpenStartSetup instanceof Function) didOpenStartSetup();
                 Swal.showLoading();

@@ -43,3 +43,23 @@
 .rect_info.show{
     display: inline-block;
 }
+rect.bar {
+    cursor: pointer;
+}
+#internal-employees-table .form-check{
+    padding-left: 0;
+}
+#internal-employees-table .form-check .form-check-input{
+    margin-left: 0;
+    transform: translateX(-50%);
+}
+.dataTables_scrollHead,
+.dataTables_wrapper .dataTables_scrollBody{
+    scrollbar-gutter: stable both-edges;
+}
+.dataTables_scrollHead::-webkit-scrollbar{
+    width: 0.5rem;
+}
+.dataTables_scrollHead .dataTables_scrollHeadInner{
+    padding-right:0!important;
+}

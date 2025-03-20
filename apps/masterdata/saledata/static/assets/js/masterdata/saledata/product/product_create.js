@@ -1,12 +1,24 @@
 $(document).ready(async function () {
-    loadPriceList([]);
-    await new ProductHandle().load();
+    await ProductLoadPage.LoadPageDataFirst()
+    ProductEventHandler.InitPageEven()
+    ProductLoadPage.LoadGeneralProductType()
+    ProductLoadPage.LoadGeneralProductCategory()
+    ProductLoadPage.LoadGeneralUoMGroup()
+    ProductLoadPage.LoadSaleTax()
+    ProductLoadPage.LoadSaleUom()
+    ProductLoadPage.LoadSalePriceListForSaleOnline(null, [])
+    ProductLoadPage.LoadInventoryUom()
+    ProductLoadPage.LoadPriceListTable([])
+    ProductLoadPage.LoadWareHouseListDetail()
+    ProductLoadPage.LoadWareHouseOverViewDetail()
+    ProductLoadPage.LoadPurchaseUom()
+    ProductLoadPage.LoadPurchaseTax()
 
     $('#form-create-product').submit(function (event) {
         event.preventDefault();
-        let combinesData = new ProductHandle().combinesData($(this), false);
+        let combinesData = ProductHandler.CombinesData($(this), false);
         if (combinesData) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
             $.fn.callAjax2(combinesData)
                 .then(
                     (resp) => {
@@ -30,5 +42,5 @@ $(document).ready(async function () {
                     }
                 )
         }
-    });
+    })
 })

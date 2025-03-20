@@ -1,6 +1,18 @@
 $(document).ready(async function () {
     await ProductLoadPage.LoadPageDataFirst()
-    await ProductHandler.LoadPage()
+    ProductEventHandler.InitPageEven()
+    ProductLoadPage.LoadGeneralProductType()
+    ProductLoadPage.LoadGeneralProductCategory()
+    ProductLoadPage.LoadGeneralUoMGroup()
+    ProductLoadPage.LoadSaleTax()
+    ProductLoadPage.LoadSaleUom()
+    ProductLoadPage.LoadSalePriceListForSaleOnline(null, [])
+    ProductLoadPage.LoadInventoryUom()
+    ProductLoadPage.LoadPriceListTable([])
+    ProductLoadPage.LoadWareHouseListDetail()
+    ProductLoadPage.LoadWareHouseOverViewDetail()
+    ProductLoadPage.LoadPurchaseUom()
+    ProductLoadPage.LoadPurchaseTax()
 
     $('#form-create-product').submit(function (event) {
         event.preventDefault();

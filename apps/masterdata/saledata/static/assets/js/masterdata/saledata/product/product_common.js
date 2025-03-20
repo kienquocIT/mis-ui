@@ -133,7 +133,7 @@ class ProductLoadPage {
         } catch (error) {
             console.error("Load page data error!!!", error);
         } finally {
-            console.error("Load page data done!!!", error);
+            console.log("Load page data done!!!");
         }
     }
     // general tab
@@ -272,10 +272,7 @@ class ProductLoadPage {
         })
     }
     static LoadPriceListTable(price_list_from_detail, option) {
-        let disabled_all_input = ''
-        if (option === 'detail') {
-            disabled_all_input = 'disabled readonly'
-        }
+        let disabled_all_input = option === 'detail' ? 'disabled readonly' : ''
         pageElements.$table_price_list.DataTableDefault({
             styleDom: 'hide-foot',
             paging: false,
@@ -349,7 +346,7 @@ class ProductLoadPage {
                 }, {
                     className: 'wrap-text w-5',
                     render: (data, type, row) => {
-                        return `<input ${disabled_all_input} ${row.hidden} class="select_price_list" type="checkbox" data-id="${row.id}" ${row.checked} ${row.disabled}>`
+                        return `<div class="form-check"><input ${disabled_all_input} ${row.hidden} class="select_price_list form-check-input" type="checkbox" data-id="${row.id}" ${row.checked} ${row.disabled}><label class="form-check-label" for="select_price_list"></label></div>`
                     }
                 }, {
                     className: 'wrap-text w-30',
@@ -934,73 +931,73 @@ class ProductLoadPage {
     }
     // account determination tab
     static LoadAccountDeterminationTable() {
-    if (!$.fn.DataTable.isDataTable('#product-account-determination-table')) {
-        let frm = new SetupFormSubmit(pageElements.$product_account_determination_table);
-        pageElements.$product_account_determination_table.DataTableDefault({
-            useDataServer: true,
-            rowIdx: true,
-            reloadCurrency: true,
-            paging: false,
-            ajax: {
-                url: frm.dataUrl,
-                data: {'product_mapped_id': $.fn.getPkDetail()},
-                type: frm.dataMethod,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        let data_list = resp.data['product_account_determination_list'] ? resp.data['product_account_determination_list'] : []
-                        data_list.sort((a, b) => {
-                            const typeA = a?.['account_determination_type_convert'];
-                            const typeB = b?.['account_determination_type_convert'];
-                            if (typeA < typeB) return -1;
-                            if (typeA > typeB) return 1;
+        if (!$.fn.DataTable.isDataTable('#product-account-determination-table')) {
+            let frm = new SetupFormSubmit(pageElements.$product_account_determination_table);
+            pageElements.$product_account_determination_table.DataTableDefault({
+                useDataServer: true,
+                rowIdx: true,
+                reloadCurrency: true,
+                paging: false,
+                ajax: {
+                    url: frm.dataUrl,
+                    data: {'product_mapped_id': $.fn.getPkDetail()},
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let data_list = resp.data['product_account_determination_list'] ? resp.data['product_account_determination_list'] : []
+                            data_list.sort((a, b) => {
+                                const typeA = a?.['account_determination_type_convert'];
+                                const typeB = b?.['account_determination_type_convert'];
+                                if (typeA < typeB) return -1;
+                                if (typeA > typeB) return 1;
 
-                            const accCodeA = parseInt(a?.['account_mapped']?.['acc_code'], 10);
-                            const accCodeB = parseInt(b?.['account_mapped']?.['acc_code'], 10);
-                            return accCodeA - accCodeB;
-                        });
-                        return data_list ? data_list : [];
-                    }
-                    return [];
+                                const accCodeA = parseInt(a?.['account_mapped']?.['acc_code'], 10);
+                                const accCodeB = parseInt(b?.['account_mapped']?.['acc_code'], 10);
+                                return accCodeA - accCodeB;
+                            });
+                            return data_list ? data_list : [];
+                        }
+                        return [];
+                    },
                 },
-            },
-            columns: pageVariables.columns_cfg,
-            rowGroup: {
-                dataSrc: 'account_determination_type_convert'
-            },
-            columnDefs: [
-                {
-                    "visible": false,
-                    "targets": [1]
-                }
-            ],
-            initComplete: function () {
-                pageElements.$product_account_determination_table.find('tbody tr .selected-accounts').each(function () {
-                    let account_mapped = $(this).attr('data-account-mapped') ? JSON.parse($(this).attr('data-account-mapped')) : []
-                    $(this).initSelect2({
-                        data: (account_mapped ? account_mapped : null),
-                        ajax: {
-                            url: pageElements.$product_account_determination_table.attr('data-chart-of-account-url'),
-                            method: 'GET',
-                        },
-                        keyResp: 'chart_of_accounts_list',
-                        keyId: 'id',
-                        keyText: 'acc_code',
-                        templateResult: function (state) {
-                            return $(`<span class="badge badge-light">${state.data?.['acc_code']}</span> <span>${state.data?.['acc_name']}</span> <span class="small">(${state.data?.['foreign_acc_name']})</span>`);
-                        },
-                    })
-
-                    for (let i = 0; i < account_mapped.length; i++) {
-                        $(this).closest('tr').find('.selected-accounts-des').append(
-                            `<h6 class="text-muted">${account_mapped[i]?.['acc_name']}</h6><h6 class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</h6>`
-                        )
+                columns: pageVariables.columns_cfg,
+                rowGroup: {
+                    dataSrc: 'account_determination_type_convert'
+                },
+                columnDefs: [
+                    {
+                        "visible": false,
+                        "targets": [1]
                     }
-                })
-            }
-        });
+                ],
+                initComplete: function () {
+                    pageElements.$product_account_determination_table.find('tbody tr .selected-accounts').each(function () {
+                        let account_mapped = $(this).attr('data-account-mapped') ? JSON.parse($(this).attr('data-account-mapped')) : []
+                        $(this).initSelect2({
+                            data: (account_mapped ? account_mapped : null),
+                            ajax: {
+                                url: pageElements.$product_account_determination_table.attr('data-chart-of-account-url'),
+                                method: 'GET',
+                            },
+                            keyResp: 'chart_of_accounts_list',
+                            keyId: 'id',
+                            keyText: 'acc_code',
+                            templateResult: function (state) {
+                                return $(`<span class="badge badge-light">${state.data?.['acc_code']}</span> <span>${state.data?.['acc_name']}</span> <span class="small">(${state.data?.['foreign_acc_name']})</span>`);
+                            },
+                        })
+
+                        for (let i = 0; i < account_mapped.length; i++) {
+                            $(this).closest('tr').find('.selected-accounts-des').append(
+                                `<h6 class="text-muted">${account_mapped[i]?.['acc_name']}</h6><h6 class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</h6>`
+                            )
+                        }
+                    })
+                }
+            });
+        }
     }
-}
 }
 // endregion
 
@@ -1013,21 +1010,6 @@ class ProductHandler {
         pageElements.$btn_add_row_variant_attributes.prop('disabled', true);
     }
 }
-    static LoadPage() {
-        ProductEventHandler.InitPageEven()
-        ProductLoadPage.LoadGeneralProductType()
-        ProductLoadPage.LoadGeneralProductCategory()
-        ProductLoadPage.LoadGeneralUoMGroup()
-        ProductLoadPage.LoadSaleTax()
-        ProductLoadPage.LoadSaleUom()
-        ProductLoadPage.LoadSalePriceListForSaleOnline(null, [])
-        ProductLoadPage.LoadInventoryUom()
-        ProductLoadPage.LoadWareHouseListDetail()
-        ProductLoadPage.LoadWareHouseOverViewDetail()
-        ProductLoadPage.LoadPurchaseUom()
-        ProductLoadPage.LoadPurchaseTax()
-        ProductLoadPage.LoadPriceListTable([])
-    }
     static GetDataForm() {
         let data = {
             'code': pageElements.$code.val(),
@@ -1531,6 +1513,7 @@ class ProductHandler {
 
                     pageElements.$account_deter_referenced_by.val(product_detail['account_deter_referenced_by']).prop('disabled', true)
                     pageElements.$product_account_determination_table.prop('hidden', product_detail['account_deter_referenced_by'] !== 2)
+                    ProductLoadPage.LoadAccountDeterminationTable()
 
                     $.fn.initMaskMoney2();
 
@@ -1926,11 +1909,6 @@ class ProductEventHandler {
             $(this).addClass('bg-primary-light-5');
         })
         // for account determination
-        $('#accounting-determination-tab').on('click', function () {
-            if (pageVariables.data_detail?.['account_deter_referenced_by'] === 2) {
-                ProductLoadPage.LoadAccountDeterminationTable()
-            }
-        })
         pageElements.$account_deter_referenced_by.on('change', function () {
             $('#account-deter-create-noti').prop('hidden', $(this).val() !== '2')
         })

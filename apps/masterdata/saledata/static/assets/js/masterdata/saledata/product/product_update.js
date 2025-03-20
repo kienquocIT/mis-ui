@@ -1,7 +1,6 @@
 $(document).ready(async function () {
     await ProductLoadPage.LoadPageDataFirst()
-    await ProductHandler.LoadPage();
-
+    ProductEventHandler.InitPageEven()
     ProductHandler.LoadDetailProduct('update');
 
     let pk = $.fn.getPkDetail()

@@ -4098,7 +4098,7 @@ class UtilControl {
             let format = opts?.['format'] || "YYYY-MM-DD HH:mm:ss";
             let outputFormat = opts?.['outputFormat'] || "DD-MM-YYYY HH:mm:ss";
             let callback = opts?.['callback'] || function (data) {
-                return opts?.['in_row'] === true ? `<small>${data.relate}</small> (<small>${data.output}</small>)` : `<p>${data.relate}</p><small>${data.output}</small>`;
+                return `<span>${data.output}</span> <span class="small text-primary">(${data.relate})</span>`;
             }
             const objDT = moment(dataStr, format);
             let relateTimeStr = objDT.fromNow();

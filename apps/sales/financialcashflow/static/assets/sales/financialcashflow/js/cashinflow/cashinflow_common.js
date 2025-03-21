@@ -43,13 +43,13 @@ const selected_payment_stage_table_cfg = [
     {
         className: 'wrap-text w-10',
         render: (data, type, row) => {
-            return row?.['is_ar_invoice'] ? `<span class="text-muted issue-invoice">${row?.['issue_invoice'] ? row?.['issue_invoice'] : ''}</span>` : '--';
+            return row?.['is_ar_invoice'] ? `<span class="text-muted no-invoice">${row?.['invoice'] ? row?.['invoice'] : ''}</span>` : '--';
         }
     },
     {
         className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            return row?.['is_ar_invoice'] ? `<span class="mask-money detail-invoice-value" data-init-money="${row?.['value_after_tax'] ? row?.['value_after_tax'] : 0}"></span>` : '--';
+            return row?.['is_ar_invoice'] ? `<span class="mask-money detail-invoice-value" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>` : '--';
         }
     },
     {
@@ -619,6 +619,16 @@ class CashInflowHandle {
                         }
                     }
                     else {
+                        if (data?.['cash_in_customer_advance_data'].length > 0) {
+                            $('#cif_type_label').text($('#cif_type .dropdown-item:eq(0)').text()).attr('data-value', '0')
+                            $('#area_table_customer_advance').prop('hidden', false)
+                            $('#area_table_ar_invoice').prop('hidden', true)
+                        }
+                        else if (data?.['cash_in_ar_invoice_data'].length > 0) {
+                            $('#cif_type_label').text($('#cif_type .dropdown-item:eq(1)').text()).attr('data-value', '1')
+                            $('#area_table_customer_advance').prop('hidden', true)
+                            $('#area_table_ar_invoice').prop('hidden', false)
+                        }
                         CashInflowAction.LoadCustomerAdvanceTable(
                             {'sale_order__customer_id': $customer.val()},
                             data?.['cash_in_customer_advance_data'],
@@ -724,11 +734,10 @@ $(document).on('click', '.btn_selected_payment_stage', function () {
 })
 
 $(document).on('change', '.selected_payment_stage', function () {
-    let this_issue_invoice = $(this).closest('tr').find('.issue-invoice').text()
+    let this_invoice = $(this).closest('tr').find('.no-invoice').text()
     if ($(this).prop('checked')) {
-        $('.issue-invoice').each(function () {
-            console.log($(this))
-            if ($(this).text() === this_issue_invoice) {
+        $('.no-invoice').each(function () {
+            if ($(this).text() === this_invoice) {
                 $(this).closest('tr').find('.selected_payment_stage').prop('disabled', false)
             }
             else {

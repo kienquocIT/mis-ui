@@ -1221,10 +1221,7 @@ class OpportunityActivity {
                     targets: 5,
                     className: 'text-right',
                     render: (data, type, row) => {
-                        return $x.fn.displayRelativeTime(row?.['date_created'], {
-                            'outputFormat': 'DD/MM/YYYY',
-                            'in_row': true
-                        })
+                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY',})
                     }
                 }
             ],

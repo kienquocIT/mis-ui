@@ -45,7 +45,7 @@
 <div class="tab-content">
     <div class="tab-pane fade show active" id="tab_general">
         <div class="row">
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="general-product-type" class="form-label required">{% trans "Product Type" %}</label>
                     <select id="general-product-type" class="form-select select2" data-method="GET"
@@ -69,6 +69,13 @@
             </div>
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
+                    <label for="general-manufacturer" class="form-label">{% trans "Manufacturer" %}</label>
+                    <select id="general-manufacturer" class="form-select" data-method="GET"
+                            data-url="{% url "ManufacturerListAPI" %}"></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-2">
+                <div class="form-group">
                     <label for="general-traceability-method" class="form-label">{% trans "Traceability method" %}</label>
                     <select id="general-traceability-method" class="form-select" data-method="GET">
                         <option value="0">{% trans "None" %}</option>
@@ -85,7 +92,7 @@
             </div>
         </div>
         <div class="row mt-3">
-            <div class="col-12 col-lg-4">
+            <div class="col-12 col-lg-6">
                 <div class="card">
                     <div class="card-header">
                         <h6 class="heading-wth-icon text-primary" id="label-dimension">

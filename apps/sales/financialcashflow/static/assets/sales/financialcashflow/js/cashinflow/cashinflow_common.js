@@ -43,13 +43,13 @@ const selected_payment_stage_table_cfg = [
     {
         className: 'wrap-text w-10',
         render: (data, type, row) => {
-            return row?.['is_ar_invoice'] ? `<span class="text-muted issue-invoice">${row?.['issue_invoice'] ? row?.['issue_invoice'] : ''}</span>` : '--';
+            return row?.['is_ar_invoice'] ? `<span class="text-muted no-invoice">${row?.['invoice'] ? row?.['invoice'] : ''}</span>` : '--';
         }
     },
     {
         className: 'wrap-text text-right w-15',
         render: (data, type, row) => {
-            return row?.['is_ar_invoice'] ? `<span class="mask-money detail-invoice-value" data-init-money="${row?.['value_after_tax'] ? row?.['value_after_tax'] : 0}"></span>` : '--';
+            return row?.['is_ar_invoice'] ? `<span class="mask-money detail-invoice-value" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>` : '--';
         }
     },
     {
@@ -460,7 +460,7 @@ class CashInflowAction {
         $total_payment.attr('value', total_payment)
         $total_payment_in_modal.attr('value', $total_payment.attr('value'))
         $btn_modal_payment_method.prop('disabled', total_payment === 0)
-        $btn_modal_payment_method.removeClass('btn-outline-success').addClass('btn-outline-danger')
+        $btn_modal_payment_method.removeClass('btn-success').addClass('btn-danger')
         $icon_done_payment_method.prop('hidden', true)
         $.fn.initMaskMoney2()
     }
@@ -619,6 +619,16 @@ class CashInflowHandle {
                         }
                     }
                     else {
+                        if (data?.['cash_in_customer_advance_data'].length > 0) {
+                            $('#cif_type_label').text($('#cif_type .dropdown-item:eq(0)').text()).attr('data-value', '0')
+                            $('#area_table_customer_advance').prop('hidden', false)
+                            $('#area_table_ar_invoice').prop('hidden', true)
+                        }
+                        else if (data?.['cash_in_ar_invoice_data'].length > 0) {
+                            $('#cif_type_label').text($('#cif_type .dropdown-item:eq(1)').text()).attr('data-value', '1')
+                            $('#area_table_customer_advance').prop('hidden', true)
+                            $('#area_table_ar_invoice').prop('hidden', false)
+                        }
                         CashInflowAction.LoadCustomerAdvanceTable(
                             {'sale_order__customer_id': $customer.val()},
                             data?.['cash_in_customer_advance_data'],
@@ -640,7 +650,7 @@ class CashInflowHandle {
                     }
                     $btn_modal_payment_method.prop('disabled', false)
                     $btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
-                    $btn_modal_payment_method.removeClass('btn-outline-danger').addClass('btn-outline-success')
+                    $btn_modal_payment_method.removeClass('btn-danger').addClass('btn-success')
                     $icon_done_payment_method.prop('hidden', false)
                     $total_payment_in_modal.attr('value', data?.['total_value'])
                     $cash_value.attr('value', data?.['cash_value'])
@@ -703,13 +713,13 @@ $save_changes_payment_method.on('click', function () {
                 'company_bank_account_id': $company_bank_account.val(),
             }
             $btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
-            $btn_modal_payment_method.removeClass('btn-outline-danger').addClass('btn-outline-success')
+            $btn_modal_payment_method.removeClass('btn-danger').addClass('btn-success')
             $icon_done_payment_method.prop('hidden', false)
             $payment_method_modal.modal('hide')
         }
     }
     else {
-        $btn_modal_payment_method.removeClass('btn-outline-success').addClass('btn-outline-danger')
+        $btn_modal_payment_method.removeClass('btn-success').addClass('btn-danger')
         $icon_done_payment_method.prop('hidden', true)
         $.fn.notifyB({description: `Error value or missing information`}, 'failure');
     }
@@ -724,11 +734,10 @@ $(document).on('click', '.btn_selected_payment_stage', function () {
 })
 
 $(document).on('change', '.selected_payment_stage', function () {
-    let this_issue_invoice = $(this).closest('tr').find('.issue-invoice').text()
+    let this_invoice = $(this).closest('tr').find('.no-invoice').text()
     if ($(this).prop('checked')) {
-        $('.issue-invoice').each(function () {
-            console.log($(this))
-            if ($(this).text() === this_issue_invoice) {
+        $('.no-invoice').each(function () {
+            if ($(this).text() === this_invoice) {
                 $(this).closest('tr').find('.selected_payment_stage').prop('disabled', false)
             }
             else {

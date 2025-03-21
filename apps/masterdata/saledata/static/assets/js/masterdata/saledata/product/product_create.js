@@ -4,6 +4,7 @@ $(document).ready(async function () {
     ProductLoadPage.LoadGeneralProductType()
     ProductLoadPage.LoadGeneralProductCategory()
     ProductLoadPage.LoadGeneralUoMGroup()
+    ProductLoadPage.LoadGeneralManufacturer()
     ProductLoadPage.LoadSaleTax()
     ProductLoadPage.LoadSaleUom()
     ProductLoadPage.LoadSalePriceListForSaleOnline(null, [])

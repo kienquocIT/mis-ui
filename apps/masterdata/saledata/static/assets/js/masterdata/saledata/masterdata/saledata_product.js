@@ -404,6 +404,90 @@ $(document).ready(function () {
             ],
         });
     }
+    function loadManufacturer() {
+        let tbl = $('#datatable-manufacturer-list');
+        let frm = new SetupFormSubmit(tbl);
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('manufacturer_list')) {
+                        return resp.data['manufacturer_list'] ? resp.data['manufacturer_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return '';
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text w-20',
+                    render: (data, type, row) => {
+                        if (row?.['is_default']) {
+                            return `<span class="badge badge-light w-70">${row?.['code']}</span>`
+                        } else {
+                            return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
+                        }
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text w-30',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `${data}`
+                        }
+                        return `<b>${data}</b>`
+                    }
+                },
+                {
+                    data: 'description',
+                    className: 'wrap-text w-35',
+                    render: (data) => {
+                        return `<span class="initial-wrap">${data}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-10',
+                    render: (data, type, row) => {
+                        let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-manufacturer"
+                           data-id="${row?.['id']}"
+                           data-code="${row?.['code']}"
+                           data-title="${row?.['title']}"
+                           data-description="${row?.['description']}"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modal-update-manufacturer"
+                           data-bs-placement="top" title=""
+                           >
+                           <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                        </a>`
+                        let delete_btn = `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete"
+                                data-id="${row?.['id']}">
+                            <span class="btn-icon-wrap">
+                                <span class="feather-icon text-danger">
+                                    <i class="bi bi-trash"></i>
+                                </span>
+                            </span>
+                        </a>`
+                        if (!row?.['is_default']) {
+                            return `${edit_btn}${delete_btn}`
+                        }
+                        return ``
+                    }
+                }
+            ],
+        });
+    }
     function loadUnitOfMeasureGroup() {
         let tbl = $('#datatable-unit-measure-group-list');
         let frm = new SetupFormSubmit(tbl);
@@ -659,6 +743,7 @@ $(document).ready(function () {
 
     loadProductType()
     loadProductCategory()
+    loadManufacturer()
     loadSelectBoxUnitMeasureGroup($('#select-box-uom-group'))
     loadUnitOfMeasureGroup()
     loadUnitOfMeasure()
@@ -848,6 +933,78 @@ $(document).ready(function () {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-product-category').modal('hide')
                         loadProductCategory()
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
+
+    let frm_create_manufacturer = $('#form-create-manufacturer')
+    let frm_update_manufacturer = $('#form-update-manufacturer')
+
+    $(document).on("click", '.btn-update-manufacturer', function () {
+        let modal = $('#modal-update-manufacturer')
+        modal.find('#inp-edit-code-manufacturer').val($(this).attr('data-code'))
+        modal.find('#inp-edit-name-manufacturer').val($(this).attr('data-title'))
+        modal.find('#inp-edit-description-manufacturer').val($(this).attr('data-description'))
+        let raw_url = frm_update_manufacturer.attr('data-url-raw')
+        frm_update_manufacturer.attr('data-url', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
+    })
+
+    new SetupFormSubmit(frm_create_manufacturer).validate({
+        rules: {
+            code: {
+                required: true,
+            },
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-new-manufacturer').modal('hide')
+                        $('#modal-new-manufacturer form')[0].reset()
+                        loadManufacturer()
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
+
+    new SetupFormSubmit(frm_update_manufacturer).validate({
+        rules: {
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-update-manufacturer').modal('hide')
+                        loadManufacturer()
                     }
                 },
                 (errs) => {

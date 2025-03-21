@@ -113,6 +113,53 @@ class ProductCategoryDetailAPI(APIView):
         return resp.auto_return(key_success='product_category')
 
 
+class ManufacturerListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.MANUFACTURER_LIST).get(params)
+        return resp.auto_return(key_success='manufacturer_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.MANUFACTURER_LIST).post(request.data)
+        return resp.auto_return()
+
+
+class ManufacturerDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.MANUFACTURER_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='manufacturer')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.MANUFACTURER_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='manufacturer')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PRODUCT_CATEGORY_DETAIL.fill_key(pk=pk)).delete(request.data)
+        return resp.auto_return(key_success='manufacturer')
+
+
 class BaseUnitListAPI(APIView):
     permission_classes = [IsAuthenticated]
 

@@ -42,7 +42,7 @@ $(document).ready(function() {
                         }
                     },
                     {
-                        className: 'wrap-text w-45',
+                        className: 'wrap-text w-30',
                         render: (data, type, row) => {
                             if (row?.['je_transaction_data']?.['code']) {
                                 return `<span class="badge badge-light">${row?.['je_transaction_data']?.['code']}</span>`
@@ -50,6 +50,12 @@ $(document).ready(function() {
                             else {
                                 return ``
                             }
+                        }
+                    },
+                    {
+                        className: 'wrap-text w-15',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY',});
                         }
                     },
                     {

@@ -11348,5 +11348,13 @@ msgid "Specific amount"
 msgstr "Số tiền cụ thể"
 
 #
+msgid "Mixed"
+msgstr "Hỗn hợp"
+
+#
+msgid "Paid in full"
+msgstr "Thanh toán đủ"
+
+#
 msgid "Manufacturer"
 msgstr "Hãng sản xuất"

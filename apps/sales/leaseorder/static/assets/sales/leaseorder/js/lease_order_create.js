@@ -93,6 +93,14 @@ $(function () {
 
         LeaseOrderLoadDataHandle.paymentSelectEle.on('change', function () {
             LeaseOrderLoadDataHandle.loadChangePaymentTerm();
+            $('#btn-load-payment-stage')[0].setAttribute('hidden', 'true');
+            $('#btn-add-payment-stage')[0].setAttribute('hidden', 'true');
+            if (!LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                $('#btn-add-payment-stage')[0].removeAttribute('hidden');
+            }
+            if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                $('#btn-load-payment-stage')[0].removeAttribute('hidden');
+            }
         });
 
 // PRODUCT
@@ -866,6 +874,7 @@ $(function () {
                 LeaseOrderLoadDataHandle.loadPaymentValues(this);
                 let valBeforeEle = row.querySelector('.table-row-value-before-tax');
                 validatePSValue(valBeforeEle);
+                LeaseOrderLoadDataHandle.loadMinusBalance();
             }
             if ($(this).hasClass('table-row-issue-invoice')) {
                 LeaseOrderLoadDataHandle.loadChangePSIssueInvoice(this);
@@ -886,10 +895,12 @@ $(function () {
                 }
             }
             if ($(this).hasClass('table-row-value-before-tax')) {
-                LeaseOrderLoadDataHandle.loadChangePSAmount(this);
+                LeaseOrderLoadDataHandle.loadPaymentValues(this);
+                LeaseOrderLoadDataHandle.loadMinusBalance();
             }
             if ($(this).hasClass('table-row-value-tax')) {
-                LeaseOrderLoadDataHandle.loadChangePSAmount(this);
+                LeaseOrderLoadDataHandle.loadPaymentValues(this);
+                LeaseOrderLoadDataHandle.loadMinusBalance();
             }
         });
 

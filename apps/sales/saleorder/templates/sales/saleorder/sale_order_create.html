@@ -63,7 +63,7 @@
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
                     {% trans 'Select Sale Person' as inherit_title %}
-                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-process-prj-inherit' opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-process-prj-inherit' opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True inherit_readonly=True %}
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
@@ -987,7 +987,7 @@
                                 <tr class="bg-light">
                                     <th class="w-15">{% trans 'Invoice issue' %}</th>
                                     <th class="w-25">{% trans 'Description' %}</th>
-                                    <th class="w-10">{% trans 'Percentage' %}</th>
+                                    <th class="w-20">{% trans 'Percentage' %}</th>
                                     <th class="w-15">{% trans 'Tax' %}</th>
                                     <th class="w-25">{% trans 'Total value' %}</th>
                                 </tr>
@@ -1027,7 +1027,7 @@
                                 <tr class="bg-light">
                                     <th class="w-15">{% trans 'Invoice issue' %}</th>
                                     <th class="w-25">{% trans 'Description' %}</th>
-                                    <th class="w-10">{% trans 'Percentage' %}</th>
+                                    <th class="w-20">{% trans 'Percentage' %}</th>
                                     <th class="w-15">{% trans 'Tax' %}</th>
                                     <th class="w-25">{% trans 'Total value' %}</th>
                                 </tr>
@@ -1067,7 +1067,7 @@
         data-copy-successfully="{% trans "Copy successfully" %}"
         data-validate-due-date="{% trans "Invalid due date" %}"
         data-validate-total-ratio-payment="{% trans "Total payment ratio must be 100%" %}"
-        data-validate-total-payment="{% trans "Paid in full" %}"
+        data-paid-in-full="{% trans "Paid in full" %}"
         data-validate-ss-role="{% trans "Opportunity is disabled because employee in short sales roles" %}"
         data-promotion="{% trans "Promotion" %}"
         data-shipping="{% trans "Shipping fee" %}"

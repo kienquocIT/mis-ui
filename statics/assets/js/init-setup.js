@@ -5698,7 +5698,7 @@ class WindowControl {
                     htmlContainer: 'bg-transparent text-start',
                     actions: 'w-100',
                 },
-                allowOutsideClick: true,
+                allowOutsideClick: false,
                 confirmButtonColor: '#3085d6',
                 showConfirmButton: true,
                 confirmButtonText: $.fn.gettext('Login page'),
@@ -5712,8 +5712,19 @@ class WindowControl {
 
     static showSVErrors() {
         Swal.fire({
-            title: $.fn.gettext("Internal Server Errors"),
-            icon: 'error',
+            html:
+            `<div class="d-flex align-items-center">
+                <div class="me-3"><img style="width: 60px; height: 60px" src="/static/assets/images/systems/error.gif" alt="icon"></div>
+                <div>
+                    <h4 class="text-danger">${$.fn.gettext("Internal Server Errors")}</h4>
+                    <p>${$.fn.gettext('You will be logged out!')}</p>
+                </div>
+            </div>`,
+            customClass: {
+                container: 'swal2-has-bg',
+                htmlContainer: 'bg-transparent text-start',
+                actions: 'w-100',
+            },
             allowOutsideClick: true,
             showDenyButton: true,
             denyButtonText: $.fn.gettext('Home Page'),

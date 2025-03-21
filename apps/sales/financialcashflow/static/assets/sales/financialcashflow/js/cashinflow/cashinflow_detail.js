@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    CashInflowHandle.LoadDetailCIF('detail');
+    CIFHandler.LoadDetailCIF('detail');
 })

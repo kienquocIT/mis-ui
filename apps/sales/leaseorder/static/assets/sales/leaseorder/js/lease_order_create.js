@@ -874,6 +874,7 @@ $(function () {
                 LeaseOrderLoadDataHandle.loadPaymentValues(this);
                 let valBeforeEle = row.querySelector('.table-row-value-before-tax');
                 validatePSValue(valBeforeEle);
+                LeaseOrderLoadDataHandle.loadMinusBalance();
             }
             if ($(this).hasClass('table-row-issue-invoice')) {
                 LeaseOrderLoadDataHandle.loadChangePSIssueInvoice(this);
@@ -895,9 +896,11 @@ $(function () {
             }
             if ($(this).hasClass('table-row-value-before-tax')) {
                 LeaseOrderLoadDataHandle.loadPaymentValues(this);
+                LeaseOrderLoadDataHandle.loadMinusBalance();
             }
             if ($(this).hasClass('table-row-value-tax')) {
                 LeaseOrderLoadDataHandle.loadPaymentValues(this);
+                LeaseOrderLoadDataHandle.loadMinusBalance();
             }
         });
 

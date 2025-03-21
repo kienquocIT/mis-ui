@@ -775,6 +775,7 @@ $(function () {
                     QuotationLoadDataHandle.loadPaymentValues(this);
                     let valBeforeEle = row.querySelector('.table-row-value-before-tax');
                     validatePSValue(valBeforeEle);
+                    QuotationLoadDataHandle.loadMinusBalance();
                 }
                 if ($(this).hasClass('table-row-issue-invoice')) {
                     QuotationLoadDataHandle.loadChangePSIssueInvoice(this);
@@ -796,9 +797,11 @@ $(function () {
                 }
                 if ($(this).hasClass('table-row-value-before-tax')) {
                     QuotationLoadDataHandle.loadPaymentValues(this);
+                    QuotationLoadDataHandle.loadMinusBalance();
                 }
                 if ($(this).hasClass('table-row-value-tax')) {
                     QuotationLoadDataHandle.loadPaymentValues(this);
+                    QuotationLoadDataHandle.loadMinusBalance();
                 }
             }
         });

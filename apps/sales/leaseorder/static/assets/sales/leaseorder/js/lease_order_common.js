@@ -5260,6 +5260,7 @@ class LeaseOrderDataTableHandle {
                 let totalEle = row.querySelector('.table-row-total');
                 let paidFullEle = row.querySelector('.paid-full');
 
+                let $termMD = QuotationLoadDataHandle.paymentSelectEle;
                 let checkTax = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
                 if (dateEle) {
                     $(dateEle).daterangepicker({
@@ -5299,7 +5300,7 @@ class LeaseOrderDataTableHandle {
                     $(termDataEle).val(JSON.stringify(data?.['term_data'] ? data?.['term_data'] : []));
                 }
                 if (totalEle) {
-                    if (checkTax?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
                         totalEle.removeAttribute('readonly');
                     }
                 }

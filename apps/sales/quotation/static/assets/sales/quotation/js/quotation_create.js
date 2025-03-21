@@ -795,10 +795,10 @@ $(function () {
                     }
                 }
                 if ($(this).hasClass('table-row-value-before-tax')) {
-                    QuotationLoadDataHandle.loadChangePSAmount(this);
+                    QuotationLoadDataHandle.loadPaymentValues(this);
                 }
                 if ($(this).hasClass('table-row-value-tax')) {
-                    QuotationLoadDataHandle.loadChangePSAmount(this);
+                    QuotationLoadDataHandle.loadPaymentValues(this);
                 }
             }
         });

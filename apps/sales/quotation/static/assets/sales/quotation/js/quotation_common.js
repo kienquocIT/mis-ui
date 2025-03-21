@@ -1611,62 +1611,46 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadChangePSAmount(ele) {
-        let row = ele.closest('tr');
-        if (row) {
-            let valBeforeEle = row.querySelector('.table-row-value-before-tax');
-            let valTaxEle = row.querySelector('.table-row-value-tax');
-            let valTotalEle = row.querySelector('.table-row-value-total');
-            if (valBeforeEle && valTaxEle && valTotalEle) {
-                $(valTotalEle).attr('value', String($(valBeforeEle).valCurrency() + $(valTaxEle).valCurrency()));
-                $.fn.initMaskMoney2();
-                QuotationLoadDataHandle.loadMinusBalance();
-                QuotationStoreDataHandle.storeDtbData(5);
-            }
-        }
-        return true;
-    };
-
     static loadPaymentValues(ele) {
         let row = ele.closest('tr');
-        if (row && $(ele).val()) {
-            let ratio = parseFloat($(ele).val());
+        if (row) {
             let ratioEle = row.querySelector('.table-row-ratio');
             let valBeforeEle = row.querySelector('.table-row-value-before-tax');
             let taxEle = row.querySelector('.table-row-tax');
             let valTaxEle = row.querySelector('.table-row-value-tax');
             let valTotalEle = row.querySelector('.table-row-value-total');
             if (ratioEle && valBeforeEle && taxEle && valTaxEle && valTotalEle) {
+                let valBefore = $(valBeforeEle).valCurrency();
                 if ($(ratioEle).val()) {
                     let ratio = parseFloat($(ratioEle).val());
                     if (ratio > 0) {
-
-                    }
-                }
-
-
-                let valueSO = 0;
-                let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
-                if (tableProductWrapper) {
-                    let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-                    if (tableProductFt) {
-                        let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
-                        let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
-                        if (elePretax && eleDiscount) {
-                            valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
-                            if (ratio) {
-                                let value = ratio * valueSO / 100;
-                                let taxData = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
-                                let datasRelateTax = QuotationCalculateCaseHandle.getDatasRelateTax(value, taxData?.['rate']);
-                                $(valBeforeEle).attr('value', datasRelateTax?.['valBefore']);
-                                $(valTaxEle).attr('value', datasRelateTax?.['valTax']);
-                                $(valTotalEle).attr('value', datasRelateTax?.['valAfter']);
-                                // mask money
-                                $.fn.initMaskMoney2();
+                        let valueSO = 0;
+                        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+                        if (tableProductWrapper) {
+                            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                            if (tableProductFt) {
+                                let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+                                let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+                                if (elePretax && eleDiscount) {
+                                    valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
+                                    valBefore = ratio * valueSO / 100;
+                                }
                             }
                         }
                     }
                 }
+                $(valBeforeEle).attr('value', valBefore);
+                $(valTotalEle).attr('value', valBefore + $(valTaxEle).valCurrency());
+                let taxData = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
+                if (taxData?.['rate']) {
+                    let datasRelateTax = QuotationCalculateCaseHandle.getDatasRelateTax(valBefore, taxData?.['rate']);
+                    $(valTaxEle).attr('value', datasRelateTax?.['valTax']);
+                    $(valTotalEle).attr('value', datasRelateTax?.['valAfter']);
+                }
+                // mask money
+                $.fn.initMaskMoney2();
+                QuotationLoadDataHandle.loadMinusBalance();
+                QuotationStoreDataHandle.storeDtbData(5);
             }
         }
 
@@ -2591,7 +2575,7 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxQuotationContact(data?.['contact_data']);
         }
         if (data?.['payment_term_data']) {
-            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']]);
+            QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);
         }
         if (data?.['quotation_data']) {
             if (data?.['quotation_data']?.['title']) {

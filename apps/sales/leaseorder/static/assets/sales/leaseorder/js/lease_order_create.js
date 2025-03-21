@@ -894,10 +894,10 @@ $(function () {
                 }
             }
             if ($(this).hasClass('table-row-value-before-tax')) {
-                LeaseOrderLoadDataHandle.loadChangePSAmount(this);
+                LeaseOrderLoadDataHandle.loadPaymentValues(this);
             }
             if ($(this).hasClass('table-row-value-tax')) {
-                LeaseOrderLoadDataHandle.loadChangePSAmount(this);
+                LeaseOrderLoadDataHandle.loadPaymentValues(this);
             }
         });
 

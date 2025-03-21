@@ -376,3 +376,15 @@ msgstr "Phòng này không có sẵn vào lúc này"
 #
 msgid "Save changes"
 msgstr "Lưu thay đổi"
+
+#
+msgid "You do not have permission to access this function!"
+msgstr "Bạn không có quyền truy cập chức năng này!"
+
+#
+msgid "The requested content was not found!"
+msgstr "Không tìm thấy nội dung được yêu cầu!"
+
+#
+msgid "You will be logged out!"
+msgstr "Bạn sẽ bị đăng xuất!"

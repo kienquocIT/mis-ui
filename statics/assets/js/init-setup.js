@@ -5554,9 +5554,20 @@ class WindowControl {
 
     static showForbidden(opts) {
         Swal.fire({
-            title: $.fn.gettext("Forbidden"),
-            icon: 'error',
-            allowOutsideClick: true,
+            html:
+            `<div class="d-flex align-items-center">
+                <div class="me-3"><img style="width: 60px; height: 60px" src="/static/assets/images/systems/forbidden.gif" alt="icon"></div>
+                <div>
+                    <h4 class="text-danger">${$.fn.gettext("Forbidden")}</h4>
+                    <p>${$.fn.gettext('You do not have permission to access this function!')}</p>
+                </div>
+            </div>`,
+            customClass: {
+                container: 'swal2-has-bg',
+                htmlContainer: 'bg-transparent text-start',
+                actions: 'w-100',
+            },
+            allowOutsideClick: false,
             showDenyButton: true,
             denyButtonText: $.fn.gettext('Home Page'),
             confirmButtonColor: '#3085d6',
@@ -5575,8 +5586,19 @@ class WindowControl {
 
     static showNotFound(opts) {
         Swal.fire({
-            title: $.fn.gettext("Not found"),
-            icon: 'question',
+            html:
+            `<div class="d-flex align-items-center">
+                <div class="me-3"><img style="width: 60px; height: 60px" src="/static/assets/images/systems/not_found.gif" alt="icon"></div>
+                <div>
+                    <h4 class="text-warning">${$.fn.gettext("Not found")}</h4>
+                    <p>${$.fn.gettext('The requested content was not found!')}</p>
+                </div>
+            </div>`,
+            customClass: {
+                container: 'swal2-has-bg',
+                htmlContainer: 'bg-transparent text-start',
+                actions: 'w-100'
+            },
             allowOutsideClick: true,
             showDenyButton: true,
             denyButtonText: $.fn.gettext('Home Page'),
@@ -5634,8 +5656,19 @@ class WindowControl {
     static showUnauthenticated(opts, isRedirect = true) {
         if (isRedirect === true) {
             Swal.fire({
-                title: $.fn.gettext('The session login was expired'),
-                icon: 'error',
+                html:
+                `<div class="d-flex align-items-center">
+                    <div class="me-3"><img style="width: 60px; height: 60px" src="/static/assets/images/systems/logout.gif" alt="icon"></div>
+                    <div>
+                        <h4 class="text-danger">${$.fn.gettext('The session login was expired')}</h4>
+                        <p>${$.fn.gettext('You will be logged out!')}</p>
+                    </div>
+                </div>`,
+                customClass: {
+                    container: 'swal2-has-bg',
+                    htmlContainer: 'bg-transparent text-start',
+                    actions: 'w-100',
+                },
                 allowOutsideClick: false,
                 confirmButtonColor: '#3085d6',
                 timer: 2000,
@@ -5652,8 +5685,19 @@ class WindowControl {
             });
         } else {
             Swal.fire({
-                title: $.fn.gettext('The session login was expired'),
-                icon: 'error',
+                html:
+                `<div class="d-flex align-items-center">
+                    <div class="me-3"><img style="width: 60px; height: 60px" src="/static/assets/images/systems/logout.gif" alt="icon"></div>
+                    <div>
+                        <h4 class="text-danger">${$.fn.gettext('The session login was expired')}</h4>
+                        <p>${$.fn.gettext('You will be logged out!')}</p>
+                    </div>
+                </div>`,
+                customClass: {
+                    container: 'swal2-has-bg',
+                    htmlContainer: 'bg-transparent text-start',
+                    actions: 'w-100',
+                },
                 allowOutsideClick: true,
                 confirmButtonColor: '#3085d6',
                 showConfirmButton: true,

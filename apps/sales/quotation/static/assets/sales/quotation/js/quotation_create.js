@@ -96,6 +96,14 @@ $(function () {
 
         QuotationLoadDataHandle.paymentSelectEle.on('change', function () {
             QuotationLoadDataHandle.loadChangePaymentTerm();
+            $('#btn-load-payment-stage')[0].setAttribute('hidden', 'true');
+            $('#btn-add-payment-stage')[0].setAttribute('hidden', 'true');
+            if (!QuotationLoadDataHandle.paymentSelectEle.val()) {
+                $('#btn-add-payment-stage')[0].removeAttribute('hidden');
+            }
+            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                $('#btn-load-payment-stage')[0].removeAttribute('hidden');
+            }
         });
 
 // PRODUCT

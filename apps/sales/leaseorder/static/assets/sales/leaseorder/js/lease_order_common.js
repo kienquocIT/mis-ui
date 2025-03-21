@@ -327,7 +327,7 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadBoxQuotationPaymentTerm() {
-        LeaseOrderLoadDataHandle.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle);
+        LeaseOrderLoadDataHandle.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [], {}, null, true);
         if ($(LeaseOrderLoadDataHandle.customerSelectEle).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.customerSelectEle, $(LeaseOrderLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
@@ -5025,7 +5025,8 @@ class LeaseOrderDataTableHandle {
                 let valTaxEle = row.querySelector('.table-row-value-tax');
                 let valTotalEle = row.querySelector('.table-row-value-total');
 
-                let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
+                let $termMD = LeaseOrderLoadDataHandle.paymentSelectEle;
+                let checkTax = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
                 if (installmentEle) {
                     let term = [];
                     if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
@@ -5044,6 +5045,9 @@ class LeaseOrderDataTableHandle {
                     LeaseOrderLoadDataHandle.loadInitS2($(installmentEle), term, {}, null, true);
                     if (data?.['term_id']) {
                         $(installmentEle).val(data?.['term_id']).trigger('change');
+                    }
+                    if (!$termMD.val()) {
+                        installmentEle.setAttribute('readonly', 'true');
                     }
                 }
                 if (dateEle) {
@@ -5086,7 +5090,7 @@ class LeaseOrderDataTableHandle {
                     $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : []));
                 }
                 if (valBeforeEle) {
-                    if (check?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
                         valBeforeEle.removeAttribute('readonly');
                     }
                 }
@@ -5100,22 +5104,22 @@ class LeaseOrderDataTableHandle {
                     }
                     LeaseOrderLoadDataHandle.loadInitS2($(taxEle), dataS2);
 
-                    if (check?.['check'] === "same") {
-                        LeaseOrderLoadDataHandle.loadInitS2($(taxEle), check?.['list_tax']);
+                    if (checkTax?.['check'] === "same") {
+                        LeaseOrderLoadDataHandle.loadInitS2($(taxEle), checkTax?.['list_tax']);
                         LeaseOrderLoadDataHandle.loadChangeInstallment(installmentEle);
                     }
-                    if (check?.['check'] === "mixed") {
+                    if (checkTax?.['check'] === "mixed") {
                         taxAreaEle.setAttribute('hidden', 'true');
                         taxCheckEle.removeAttribute('hidden');
                     }
                 }
                 if (valTaxEle) {
-                    if (check?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
                         valTaxEle.removeAttribute('readonly');
                     }
                 }
                 if (valTotalEle) {
-                    if (check?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
                         valTotalEle.removeAttribute('readonly');
                     }
                 }
@@ -5263,7 +5267,7 @@ class LeaseOrderDataTableHandle {
                 let totalEle = row.querySelector('.table-row-total');
                 let paidFullEle = row.querySelector('.paid-full');
 
-                let check = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
+                let checkTax = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
                 if (dateEle) {
                     $(dateEle).daterangepicker({
                         singleDatePicker: true,
@@ -5289,11 +5293,11 @@ class LeaseOrderDataTableHandle {
                     }
                     LeaseOrderLoadDataHandle.loadInitS2($(taxEle), dataS2);
 
-                    if (check?.['check'] === "same") {
+                    if (checkTax?.['check'] === "same") {
                         taxEle.setAttribute('readonly', 'true');
-                        LeaseOrderLoadDataHandle.loadInitS2($(taxEle), check?.['list_tax']);
+                        LeaseOrderLoadDataHandle.loadInitS2($(taxEle), checkTax?.['list_tax']);
                     }
-                    if (check?.['check'] === "mixed") {
+                    if (checkTax?.['check'] === "mixed") {
                         taxAreaEle.setAttribute('hidden', 'true');
                         taxCheckEle.removeAttribute('hidden');
                     }
@@ -5302,7 +5306,7 @@ class LeaseOrderDataTableHandle {
                     $(termDataEle).val(JSON.stringify(data?.['term_data'] ? data?.['term_data'] : []));
                 }
                 if (totalEle) {
-                    if (check?.['check'] === "mixed") {
+                    if (checkTax?.['check'] === "mixed") {
                         totalEle.removeAttribute('readonly');
                     }
                 }
@@ -5670,18 +5674,24 @@ class LeaseOrderDataTableHandle {
         if (textFilter$.length > 0) {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
-            if (!$('#btn-add-payment-stage').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-payment-stage" data-zone="sale_order_payment_stage">
+            if (!$('#btn-load-payment-stage').length && !$('#btn-add-payment-stage').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" hidden>
                                     <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-detail')}</span></span>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-payment-stage" data-zone="sale_order_payment_stage">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                 );
                 // Select the appended button from the DOM and attach the event listener
-                $('#btn-add-payment-stage').on('click', function () {
+                $('#btn-load-payment-stage').on('click', function () {
                     LeaseOrderStoreDataHandle.storeDtbData(4);
                     LeaseOrderLoadDataHandle.loadPaymentStage();
-
+                });
+                $('#btn-add-payment-stage').on('click', function () {
+                    LeaseOrderStoreDataHandle.storeDtbData(4);
+                    LeaseOrderLoadDataHandle.loadAddPaymentStage();
                 });
             }
         }

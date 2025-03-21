@@ -323,7 +323,7 @@ class QuotationLoadDataHandle {
     };
 
     static loadBoxQuotationPaymentTerm() {
-        QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle);
+        QuotationLoadDataHandle.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
         if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
             if (dataSelected) {
@@ -1631,11 +1631,20 @@ class QuotationLoadDataHandle {
         let row = ele.closest('tr');
         if (row && $(ele).val()) {
             let ratio = parseFloat($(ele).val());
+            let ratioEle = row.querySelector('.table-row-ratio');
             let valBeforeEle = row.querySelector('.table-row-value-before-tax');
             let taxEle = row.querySelector('.table-row-tax');
             let valTaxEle = row.querySelector('.table-row-value-tax');
             let valTotalEle = row.querySelector('.table-row-value-total');
-            if (valBeforeEle && taxEle && valTaxEle && valTotalEle) {
+            if (ratioEle && valBeforeEle && taxEle && valTaxEle && valTotalEle) {
+                if ($(ratioEle).val()) {
+                    let ratio = parseFloat($(ratioEle).val());
+                    if (ratio > 0) {
+
+                    }
+                }
+
+
                 let valueSO = 0;
                 let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
                 if (tableProductWrapper) {
@@ -4319,7 +4328,8 @@ class QuotationDataTableHandle {
                 let valTaxEle = row.querySelector('.table-row-value-tax');
                 let valTotalEle = row.querySelector('.table-row-value-total');
 
-                let check = QuotationLoadDataHandle.loadCheckSameMixTax();
+                let $termMD = QuotationLoadDataHandle.paymentSelectEle;
+                let checkTax = QuotationLoadDataHandle.loadCheckSameMixTax();
                 if (installmentEle) {
                     let term = [];
                     if (QuotationLoadDataHandle.paymentSelectEle.val()) {
@@ -4338,6 +4348,9 @@ class QuotationDataTableHandle {
                     QuotationLoadDataHandle.loadInitS2($(installmentEle), term, {}, null, true);
                     if (data?.['term_id']) {
                         $(installmentEle).val(data?.['term_id']).trigger('change');
+                    }
+                    if (!$termMD.val()) {
+                        installmentEle.setAttribute('readonly', 'true');
                     }
                 }
                 if (dateEle) {
@@ -4380,7 +4393,7 @@ class QuotationDataTableHandle {
                     $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : []));
                 }
                 if (valBeforeEle) {
-                    if (check?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
                         valBeforeEle.removeAttribute('readonly');
                     }
                 }
@@ -4394,22 +4407,22 @@ class QuotationDataTableHandle {
                     }
                     QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
 
-                    if (check?.['check'] === "same") {
-                        QuotationLoadDataHandle.loadInitS2($(taxEle), check?.['list_tax']);
+                    if (checkTax?.['check'] === "same") {
+                        QuotationLoadDataHandle.loadInitS2($(taxEle), checkTax?.['list_tax']);
                         QuotationLoadDataHandle.loadChangeInstallment(installmentEle);
                     }
-                    if (check?.['check'] === "mixed") {
+                    if (checkTax?.['check'] === "mixed") {
                         taxAreaEle.setAttribute('hidden', 'true');
                         taxCheckEle.removeAttribute('hidden');
                     }
                 }
                 if (valTaxEle) {
-                    if (check?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
                         valTaxEle.removeAttribute('readonly');
                     }
                 }
                 if (valTotalEle) {
-                    if (check?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
                         valTotalEle.removeAttribute('readonly');
                     }
                 }
@@ -4557,7 +4570,7 @@ class QuotationDataTableHandle {
                 let totalEle = row.querySelector('.table-row-total');
                 let paidFullEle = row.querySelector('.paid-full');
 
-                let check = QuotationLoadDataHandle.loadCheckSameMixTax();
+                let checkTax = QuotationLoadDataHandle.loadCheckSameMixTax();
                 if (dateEle) {
                     $(dateEle).daterangepicker({
                         singleDatePicker: true,
@@ -4583,11 +4596,11 @@ class QuotationDataTableHandle {
                     }
                     QuotationLoadDataHandle.loadInitS2($(taxEle), dataS2);
 
-                    if (check?.['check'] === "same") {
+                    if (checkTax?.['check'] === "same") {
                         taxEle.setAttribute('readonly', 'true');
-                        QuotationLoadDataHandle.loadInitS2($(taxEle), check?.['list_tax']);
+                        QuotationLoadDataHandle.loadInitS2($(taxEle), checkTax?.['list_tax']);
                     }
-                    if (check?.['check'] === "mixed") {
+                    if (checkTax?.['check'] === "mixed") {
                         taxAreaEle.setAttribute('hidden', 'true');
                         taxCheckEle.removeAttribute('hidden');
                     }
@@ -4596,7 +4609,7 @@ class QuotationDataTableHandle {
                     $(termDataEle).val(JSON.stringify(data?.['term_data'] ? data?.['term_data'] : []));
                 }
                 if (totalEle) {
-                    if (check?.['check'] === "mixed") {
+                    if (checkTax?.['check'] === "mixed") {
                         totalEle.removeAttribute('readonly');
                     }
                 }
@@ -5071,19 +5084,24 @@ class QuotationDataTableHandle {
         if (textFilter$.length > 0) {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
-            if (!$('#btn-add-payment-stage').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-payment-stage" data-zone="sale_order_payment_stage">
+            if (!$('#btn-load-payment-stage').length && !$('#btn-add-payment-stage').length) {
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" hidden>
                                     <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-detail')}</span></span>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-payment-stage" data-zone="sale_order_payment_stage">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                 );
                 // Select the appended button from the DOM and attach the event listener
+                $('#btn-load-payment-stage').on('click', function () {
+                    QuotationStoreDataHandle.storeDtbData(4);
+                    QuotationLoadDataHandle.loadPaymentStage();
+                });
                 $('#btn-add-payment-stage').on('click', function () {
                     QuotationStoreDataHandle.storeDtbData(4);
-                    // QuotationLoadDataHandle.loadAddPaymentStage();
-                    QuotationLoadDataHandle.loadPaymentStage();
-
+                    QuotationLoadDataHandle.loadAddPaymentStage();
                 });
             }
         }

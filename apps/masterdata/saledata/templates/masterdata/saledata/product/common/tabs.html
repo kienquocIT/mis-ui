@@ -45,7 +45,7 @@
 <div class="tab-content">
     <div class="tab-pane fade show active" id="tab_general">
         <div class="row">
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="general-product-type" class="form-label required">{% trans "Product Type" %}</label>
                     <select id="general-product-type" class="form-select select2" data-method="GET"
@@ -65,6 +65,13 @@
                     <select id="general-uom-group" class="form-select" data-method="GET"
                             data-url="{% url "UnitOfMeasureGroupListAPI" %}"
                             data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-2">
+                <div class="form-group">
+                    <label for="general-manufacturer" class="form-label">{% trans "Manufacturer" %}</label>
+                    <select id="general-manufacturer" class="form-select" data-method="GET"
+                            data-url="{% url "ManufacturerListAPI" %}"></select>
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-2">

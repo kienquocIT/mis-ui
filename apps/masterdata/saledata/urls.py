@@ -36,7 +36,7 @@ from apps.masterdata.saledata.views.product import (
     UnitOfMeasureGroupListAPI, UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ProductCategoryDetailAPI,
     UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
     ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI, ProductForSaleDetailAPI,
-    ProductQuickCreateAPI, ProductQuotationListLoadDBAPI, BaseUnitListAPI
+    ProductQuickCreateAPI, ProductQuotationListLoadDBAPI, BaseUnitListAPI, ManufacturerListAPI, ManufacturerDetailAPI
 )
 from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
@@ -163,6 +163,14 @@ urlpatterns = [
     path(
         'masterdata/product-category/api/<str:pk>', ProductCategoryDetailAPI.as_view(),
         name='ProductCategoryDetailAPI'
+    ),
+    path(
+        'masterdata/manufacturer/list/api', ManufacturerListAPI.as_view(),
+        name='ManufacturerListAPI'
+    ),
+    path(
+        'masterdata/manufacturer/api/<str:pk>', ManufacturerDetailAPI.as_view(),
+        name='ManufacturerDetailAPI'
     ),
     path('base-unit/api', BaseUnitListAPI.as_view(), name='BaseUnitListAPI'),
     path(

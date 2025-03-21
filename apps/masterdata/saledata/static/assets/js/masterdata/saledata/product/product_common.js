@@ -12,6 +12,7 @@ class ProductPageElements {
         this.$general_product_type = $('#general-product-type')
         this.$general_product_category = $('#general-product-category')
         this.$general_uom_group = $('#general-uom-group')
+        this.$general_manufacturer = $('#general-manufacturer')
         this.$general_traceability_method = $('#general-traceability-method')
         this.$general_standard_price = $('#general-standard-price')
         this.$length = $('#length')
@@ -200,6 +201,18 @@ class ProductLoadPage {
             ProductLoadPage.LoadSaleUom();
             ProductLoadPage.LoadInventoryUom();
             ProductLoadPage.LoadPurchaseUom();
+        })
+    }
+    static LoadGeneralManufacturer(data) {
+        pageElements.$general_manufacturer.initSelect2({
+            ajax: {
+                url: pageElements.$general_manufacturer.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'manufacturer_list',
+            keyId: 'id',
+            keyText: 'title',
         })
     }
     static LoadBaseUnit(base_unit_data) {
@@ -1289,6 +1302,7 @@ class ProductHandler {
                         ProductLoadPage.LoadGeneralProductType(general_information['general_product_types_mapped'][0]);
                         ProductLoadPage.LoadGeneralProductCategory(general_information['product_category']);
                         ProductLoadPage.LoadGeneralUoMGroup(general_information['uom_group']);
+                        ProductLoadPage.LoadGeneralManufacturer(general_information['general_manufacturer']);
                         pageElements.$general_traceability_method.val(general_information['traceability_method']).prop('disabled', true)
                         pageElements.$general_standard_price.attr('value', general_information['standard_price'])
                         if (Object.keys(general_information['product_size']).length !== 0) {

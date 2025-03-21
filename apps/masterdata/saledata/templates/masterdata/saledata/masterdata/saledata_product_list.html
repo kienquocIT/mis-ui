@@ -40,6 +40,11 @@
                         <span class="nav-link-text">{% trans 'Unit Of Measures' %}</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="#section_manufacturer" class="nav-link" data-bs-toggle="tab">
+                        <span class="nav-link-text">{% trans 'Manufacturer' %}</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <div class="col-12 col-md-10 col-lg-10">
@@ -144,6 +149,33 @@
                                 <th>{% trans "Name" %}</th>
                                 <th>{% trans "UoM Group" %}</th>
                                 <th>{% trans "set as referenced unit" %}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="section_manufacturer">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-new-manufacturer">
+                        <button class="btn btn-sm btn-outline-primary btn-modal">
+                            <span>
+                                <span>{% trans 'Add' %}</span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                            </span>
+                        </button>
+                    </a>
+                    <table id="datatable-manufacturer-list" class="table nowrap w-100"
+                           data-url="{% url "ManufacturerListAPI" %}"
+                           data-url-detail="{% url "ManufacturerDetailAPI" pk=0 %}"
+                           data-method="GET">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>{% trans "Code" %}</th>
+                                <th>{% trans "Name" %}</th>
+                                <th>{% trans "Description" %}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -365,6 +397,47 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                     <button type="submit" form="form-create-uom" class="btn btn-primary">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-new-manufacturer" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Product Category" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-create-manufacturer" data-method="POST" data-url="{% url "ManufacturerListAPI" %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label for="inp-code-manufacturer" class="form-label required">{% trans "Code" %}</label>
+                                    <input id="inp-code-manufacturer" required class="form-control" type="text" name="code" oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="form-group">
+                                    <label for="inp-title-manufacturer" class="form-label required">{% trans "Name" %}</label>
+                                    <input id="inp-title-manufacturer" required class="form-control" type="text" name="title">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="inp-description-manufacturer" class="form-label">{% trans "Description" %}</label>
+                                    <textarea id="inp-description-manufacturer" class="form-control" type="text" name="description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" form="form-create-manufacturer" class="btn btn-primary">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>
@@ -630,6 +703,50 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                     <button type="submit" form="form-update-uom" class="btn btn-primary">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-update-manufacturer" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Edit" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-manufacturer"
+                          data-method="PUT"
+                          data-url-raw="{% url "ManufacturerDetailAPI" pk=0 %}"
+                          data-url="{% url "ManufacturerDetailAPI" pk=0 %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label for="inp-edit-code-manufacturer" class="form-label required">{% trans "Code" %}</label>
+                                    <input readonly class="form-control form-control-line" type="text" name="code" id="inp-edit-code-manufacturer" oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div class="form-group">
+                                    <label for="inp-edit-name-manufacturer" class="form-label required">{% trans "Name" %}</label>
+                                    <input required class="form-control" type="text" name="title" id="inp-edit-name-manufacturer">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="inp-edit-description-manufacturer" class="form-label">{% trans "Description" %}</label>
+                                    <textarea class="form-control" type="text" name="description" id="inp-edit-description-manufacturer"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" form="form-update-manufacturer" class="btn btn-primary">{% trans 'Save' %}</button>
                 </div>
             </div>
         </div>

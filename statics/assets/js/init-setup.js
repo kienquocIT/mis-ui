@@ -5717,7 +5717,6 @@ class WindowControl {
                 <div class="me-3"><img style="width: 60px; height: 60px" src="/static/assets/images/systems/error.gif" alt="icon"></div>
                 <div>
                     <h4 class="text-danger">${$.fn.gettext("Internal Server Errors")}</h4>
-                    <p>${$.fn.gettext('You will be logged out!')}</p>
                 </div>
             </div>`,
             customClass: {

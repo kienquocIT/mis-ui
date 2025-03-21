@@ -460,7 +460,7 @@ class CashInflowAction {
         $total_payment.attr('value', total_payment)
         $total_payment_in_modal.attr('value', $total_payment.attr('value'))
         $btn_modal_payment_method.prop('disabled', total_payment === 0)
-        $btn_modal_payment_method.removeClass('btn-outline-success').addClass('btn-outline-danger')
+        $btn_modal_payment_method.removeClass('btn-success').addClass('btn-danger')
         $icon_done_payment_method.prop('hidden', true)
         $.fn.initMaskMoney2()
     }
@@ -650,7 +650,7 @@ class CashInflowHandle {
                     }
                     $btn_modal_payment_method.prop('disabled', false)
                     $btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
-                    $btn_modal_payment_method.removeClass('btn-outline-danger').addClass('btn-outline-success')
+                    $btn_modal_payment_method.removeClass('btn-danger').addClass('btn-success')
                     $icon_done_payment_method.prop('hidden', false)
                     $total_payment_in_modal.attr('value', data?.['total_value'])
                     $cash_value.attr('value', data?.['cash_value'])
@@ -713,13 +713,13 @@ $save_changes_payment_method.on('click', function () {
                 'company_bank_account_id': $company_bank_account.val(),
             }
             $btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
-            $btn_modal_payment_method.removeClass('btn-outline-danger').addClass('btn-outline-success')
+            $btn_modal_payment_method.removeClass('btn-danger').addClass('btn-success')
             $icon_done_payment_method.prop('hidden', false)
             $payment_method_modal.modal('hide')
         }
     }
     else {
-        $btn_modal_payment_method.removeClass('btn-outline-success').addClass('btn-outline-danger')
+        $btn_modal_payment_method.removeClass('btn-success').addClass('btn-danger')
         $icon_done_payment_method.prop('hidden', true)
         $.fn.notifyB({description: `Error value or missing information`}, 'failure');
     }

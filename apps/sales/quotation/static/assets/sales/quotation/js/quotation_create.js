@@ -96,6 +96,14 @@ $(function () {
 
         QuotationLoadDataHandle.paymentSelectEle.on('change', function () {
             QuotationLoadDataHandle.loadChangePaymentTerm();
+            $('#btn-load-payment-stage')[0].setAttribute('hidden', 'true');
+            $('#btn-add-payment-stage')[0].setAttribute('hidden', 'true');
+            if (!QuotationLoadDataHandle.paymentSelectEle.val()) {
+                $('#btn-add-payment-stage')[0].removeAttribute('hidden');
+            }
+            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                $('#btn-load-payment-stage')[0].removeAttribute('hidden');
+            }
         });
 
 // PRODUCT
@@ -767,6 +775,7 @@ $(function () {
                     QuotationLoadDataHandle.loadPaymentValues(this);
                     let valBeforeEle = row.querySelector('.table-row-value-before-tax');
                     validatePSValue(valBeforeEle);
+                    QuotationLoadDataHandle.loadMinusBalance();
                 }
                 if ($(this).hasClass('table-row-issue-invoice')) {
                     QuotationLoadDataHandle.loadChangePSIssueInvoice(this);
@@ -787,10 +796,12 @@ $(function () {
                     }
                 }
                 if ($(this).hasClass('table-row-value-before-tax')) {
-                    QuotationLoadDataHandle.loadChangePSAmount(this);
+                    QuotationLoadDataHandle.loadPaymentValues(this);
+                    QuotationLoadDataHandle.loadMinusBalance();
                 }
                 if ($(this).hasClass('table-row-value-tax')) {
-                    QuotationLoadDataHandle.loadChangePSAmount(this);
+                    QuotationLoadDataHandle.loadPaymentValues(this);
+                    QuotationLoadDataHandle.loadMinusBalance();
                 }
             }
         });

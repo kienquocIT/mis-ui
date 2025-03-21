@@ -1672,8 +1672,10 @@ class LeaseOrderLoadDataHandle {
         if (row && $(ele).val()) {
             let ratio = parseFloat($(ele).val());
             let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+            let taxEle = row.querySelector('.table-row-tax');
+            let valTaxEle = row.querySelector('.table-row-value-tax');
             let valTotalEle = row.querySelector('.table-row-value-total');
-            if (valBeforeEle && valTotalEle) {
+            if (valBeforeEle && taxEle && valTaxEle && valTotalEle) {
                 let valueSO = 0;
                 let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
                 if (tableProductWrapper) {
@@ -1685,8 +1687,11 @@ class LeaseOrderLoadDataHandle {
                             valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
                             if (ratio) {
                                 let value = ratio * valueSO / 100;
-                                $(valBeforeEle).attr('value', String(value));
-                                $(valTotalEle).attr('value', String(value));
+                                let taxData = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
+                                let datasRelateTax = LeaseOrderCalculateCaseHandle.getDatasRelateTax(value, taxData?.['rate']);
+                                $(valBeforeEle).attr('value', datasRelateTax?.['valBefore']);
+                                $(valTaxEle).attr('value', datasRelateTax?.['valTax']);
+                                $(valTotalEle).attr('value', datasRelateTax?.['valAfter']);
                                 // mask money
                                 $.fn.initMaskMoney2();
                             }
@@ -1719,7 +1724,7 @@ class LeaseOrderLoadDataHandle {
                     if (totalSOEle) {
                         let totalSO = parseFloat(totalSOEle.value);
                         if (total >= totalSO) {
-                            $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                            $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-paid-in-full')}, 'failure');
                             return false;
                         }
                     }
@@ -5088,13 +5093,17 @@ class LeaseOrderDataTableHandle {
                 if (reconcileDataEle) {
                     $(reconcileDataEle).val(JSON.stringify(data?.['reconcile_data'] ? data?.['reconcile_data'] : []));
                 }
-                if (taxEle && taxAreaEle && taxCheckEle) {
+                if (taxEle && taxAreaEle && taxCheckEle && installmentEle) {
                     let dataS2 = [];
                     if (data?.['tax_data']) {
                         dataS2 = [data?.['tax_data']];
                     }
                     LeaseOrderLoadDataHandle.loadInitS2($(taxEle), dataS2);
 
+                    if (check?.['check'] === "same") {
+                        LeaseOrderLoadDataHandle.loadInitS2($(taxEle), check?.['list_tax']);
+                        LeaseOrderLoadDataHandle.loadChangeInstallment(installmentEle);
+                    }
                     if (check?.['check'] === "mixed") {
                         taxAreaEle.setAttribute('hidden', 'true');
                         taxCheckEle.removeAttribute('hidden');
@@ -8330,7 +8339,7 @@ class LeaseOrderSubmitHandle {
                         totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
                     }
                     if (totalPayment !== _form.dataForm?.['total_product']) {
-                        $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                        $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-paid-in-full')}, 'failure');
                         return false;
                     }
                 }
@@ -8474,7 +8483,7 @@ function validatePSValue(ele) {
             if (totalBT > valueSO) {
                 $(ele).attr('value', String(0));
                 eleRatio.value = 0;
-                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-paid-in-full')}, 'failure');
                 return false;
             }
         }

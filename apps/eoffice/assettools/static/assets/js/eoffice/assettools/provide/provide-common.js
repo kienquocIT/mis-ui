@@ -22,9 +22,6 @@ class ProductsTable {
     }
 
     static init(dataList = []) {
-        let params_prod = {
-            asset_tools_filter: JSON.parse($('#prod_filter').text())
-        }
         if ($tbl.hasClass('dataTable')) $tbl.DataTable().clear().rows.add(dataList).draw()
         else
             $tbl.DataTableDefault({
@@ -41,11 +38,9 @@ class ProductsTable {
                         width: '20%',
                         render: (row, type, data, meta) => {
                             let dataLoad = []
-                            if (!row && data?.['product_data']) row = data['product_data']
                             if (row && Object.keys(row).length > 0) dataLoad.push({...row, selected: true})
                             let html = $(`<select>`).addClass('form-select row_product-item')
                                 .attr('name', `product_${meta.row}`).attr('data-zone', 'products')
-                                .attr('data-params', JSON.stringify(params_prod))
                             if (row && Object.keys(row).length > 0) html.attr('data-onload', JSON.stringify(dataLoad))
                             return html.prop('outerHTML')
                         }
@@ -121,17 +116,20 @@ class ProductsTable {
 
                     // load product item
                     $('[name*="product_"]', row).attr('data-url', $urlElm.attr('data-prod-url'))
-                        .attr('data-keyResp', "product_list")
+                        .attr('data-keyResp', "instrument_tool_list")
                         .attr('data-keyText', "title")
                         .attr('data-keyId', "id")
                         .initSelect2()
                         .on('select2:select', function (e) {
                             const product = e.params.data.data
-                            data.product = product.id
+
+                            data.product = product.product
                             // reset all reference product has selected
                             $('[name*="uom_"]', row).html('').attr('data-params', JSON.stringify({
                                 'group': product.general_uom_group.id
-                            })).append(`<option value="${product?.['inventory_uom']?.id}" selected>${product?.['inventory_uom']?.['title']}</option>`)
+                            }))
+                                .append(`<option value="${product?.['inventory_uom']?.id}" selected>${
+                                product?.['inventory_uom']?.['title']}</option>`)
                             data.uom = product?.['inventory_uom']?.id
                         })
 

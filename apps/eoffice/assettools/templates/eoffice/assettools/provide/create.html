@@ -141,13 +141,12 @@
         </a>
     </div>
     <input type="text" id="url-factory"
-           data-prod-url="{% url 'ProductListAPI' %}"
+           data-prod-url="{% url 'InstrumentToolListAPI' %}"
            data-tax-url="{% url 'TaxListAPI' %}"
            data-uom-url="{% url 'UnitOfMeasureListAPI' %}"
     >
     <input type="text" id="trans-factory" data-products="{% trans 'List of Asset, Tools request is empty' %}">
     {{ data.employee|json_script:'employee_current' }}
-    {{ data.product_type|json_script:'prod_filter'}}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

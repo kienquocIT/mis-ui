@@ -248,11 +248,13 @@ var jampack = function () {
         $wrapper.removeAttr('data-hover');
         return false;
     });
+    let isTimeout
     $('.hk-menu').on('mouseenter', function(e){
         if ($(this).closest('.hk-menu').length)
-            setTimeout(()=>this.classList.add('active'), 600)
+            isTimeout = setTimeout(()=>this.classList.add('active'), 600)
     })
     .on('mouseleave', function () {
+        clearTimeout(isTimeout)
         this.classList.remove('active')
     });
 

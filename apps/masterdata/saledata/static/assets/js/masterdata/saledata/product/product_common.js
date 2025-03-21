@@ -1061,6 +1061,7 @@ class ProductHandler {
         data['product_types_mapped_list'] = [pageElements.$general_product_type.val()];
         data['general_product_category'] = pageElements.$general_product_category.val();
         data['general_uom_group'] = pageElements.$general_uom_group.val();
+        data['general_manufacturer'] = pageElements.$general_manufacturer.val();
         data['general_traceability_method'] = $('#general-traceability-method option:selected').attr('value');
         data['standard_price'] = pageElements.$general_standard_price.attr('value')
 

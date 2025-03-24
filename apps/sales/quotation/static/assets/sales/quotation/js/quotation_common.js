@@ -1426,7 +1426,14 @@ class QuotationLoadDataHandle {
         if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
             QuotationDataTableHandle.$tableInvoice.DataTable().clear().draw();
             QuotationDataTableHandle.$tablePayment.DataTable().clear().draw();
-            // QuotationLoadDataHandle.loadPaymentStage();
+            $('#btn-load-payment-stage')[0].setAttribute('hidden', 'true');
+            $('#btn-add-payment-stage')[0].setAttribute('hidden', 'true');
+            if (!QuotationLoadDataHandle.paymentSelectEle.val()) {
+                $('#btn-add-payment-stage')[0].removeAttribute('hidden');
+            }
+            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                $('#btn-load-payment-stage')[0].removeAttribute('hidden');
+            }
         }
         return true;
     };
@@ -4531,7 +4538,7 @@ class QuotationDataTableHandle {
                     targets: 7,
                     width: '5%',
                     render: (data, type, row) => {
-                        return ``;
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="lease_invoice"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],

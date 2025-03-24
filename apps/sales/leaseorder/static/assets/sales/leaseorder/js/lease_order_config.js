@@ -2,6 +2,8 @@ $(function () {
 
     $(document).ready(function () {
         let $form = $('#frm_lease_order_config');
+        let $btnEdit = $('#btn_edit');
+        let $btnSave = $('#btn_save');
         let $assetTypeEle = $('#asset_type_id');
         let $assetGMEle = $('#asset_group_manage_id');
         let $assetGSEle = $('#asset_group_using_id');
@@ -12,38 +14,50 @@ $(function () {
         loadDetail();
 
         function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
-        let opts = {'allowClear': isClear};
-        $ele.empty();
-        if (data.length > 0) {
-            opts['data'] = data;
-        }
-        if (Object.keys(dataParams).length !== 0) {
-            opts['dataParams'] = dataParams;
-        }
-        if ($modal) {
-            opts['dropdownParent'] = $modal;
-        }
-        if (Object.keys(customRes).length !== 0) {
-            opts['templateResult'] = function (state) {
-                let res1 = ``;
-                let res2 = ``;
-                if (customRes?.['res1']) {
-                    res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`;
-                }
-                if (customRes?.['res2']) {
-                    res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`;
-                }
-                return $(`<span>${res1} ${res2}</span>`);
+            let opts = {'allowClear': isClear};
+            $ele.empty();
+            if (data.length > 0) {
+                opts['data'] = data;
             }
+            if (Object.keys(dataParams).length !== 0) {
+                opts['dataParams'] = dataParams;
+            }
+            if ($modal) {
+                opts['dropdownParent'] = $modal;
+            }
+            if (Object.keys(customRes).length !== 0) {
+                opts['templateResult'] = function (state) {
+                    let res1 = ``;
+                    let res2 = ``;
+                    if (customRes?.['res1']) {
+                        res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`;
+                    }
+                    if (customRes?.['res2']) {
+                        res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`;
+                    }
+                    return $(`<span>${res1} ${res2}</span>`);
+                }
+            }
+            $ele.initSelect2(opts);
+            return true;
         }
-        $ele.initSelect2(opts);
-        return true;
-    };
 
         // Submit form
         $form.submit(function (e) {
             e.preventDefault()
             let _form = new SetupFormSubmit($(this));
+            if ($assetTypeEle.val()) {
+                _form.dataForm['asset_type_data'] = SelectDDControl.get_data_from_idx($assetTypeEle, $assetTypeEle.val());
+            }
+            if ($assetGMEle.val()) {
+                _form.dataForm['asset_group_manage_data'] = SelectDDControl.get_data_from_idx($assetGMEle, $assetGMEle.val());
+            }
+            if ($toolTypeEle.val()) {
+                _form.dataForm['tool_type_data'] = SelectDDControl.get_data_from_idx($toolTypeEle, $toolTypeEle.val());
+            }
+            if ($toolGMEle.val()) {
+                _form.dataForm['tool_group_manage_data'] = SelectDDControl.get_data_from_idx($toolGMEle, $toolGMEle.val());
+            }
             let asset_gs_data = [];
             for (let gsID of $assetGSEle.val()) {
                 asset_gs_data.push(SelectDDControl.get_data_from_idx($assetGSEle, gsID));
@@ -71,7 +85,7 @@ $(function () {
                     if (!submitFields.includes(key)) delete _form.dataForm[key]
                 }
             }
-            WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
+            WindowControl.showLoading();
             $.fn.callAjax2(
                 {
                     'url': _form.dataUrl,
@@ -96,7 +110,7 @@ $(function () {
             )
         });
 
-        function loadDetail(data) {
+        function loadDetail() {
 
             loadInitS2($assetTypeEle);
             loadInitS2($assetGMEle);
@@ -120,11 +134,18 @@ $(function () {
                         loadInitS2($toolTypeEle, [data?.['tool_type_data']]);
                         loadInitS2($toolGMEle, [data?.['asset_group_manage_data']]);
                         loadInitS2($toolGSEle, data?.['tool_group_using_data']);
+
+                        WindowControl.hideLoading();
                     }
                 }
             )
 
         }
+
+        $btnEdit.on('click', function () {
+            $btnEdit[0].setAttribute('hidden', 'true');
+            $btnSave[0].removeAttribute('hidden');
+        });
 
 
     });

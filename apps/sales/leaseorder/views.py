@@ -228,13 +228,12 @@ class LeaseOrderConfigDetailAPI(APIView):
         auth_require=True,
         is_api=True,
     )
-    def put(self, request, *args, pk, **kwargs):
-        return update_lease_order(
-            request=request,
-            url=ApiURL.LEASE_ORDER_CONFIG,
-            pk=pk,
-            msg=SaleMsg.LEASE_ORDER_CONFIG_UPDATE
-        )
+    def put(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.LEASE_ORDER_CONFIG).put(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.LEASE_ORDER_CONFIG_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
 
 
 class LeaseOrderDetailDeliveryAPI(APIView):

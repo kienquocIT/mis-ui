@@ -84,32 +84,35 @@
                     <tr>
                         <th class="w-10"></th>
                         <th class="w-20">{% trans 'Code' %}</th>
-                        <th class="w-40">{% trans 'Name' %}</th>
-                        <th class="w-15 text-center">{% trans 'Already' %}</th>
-                        <th class="w-15 text-center">{% trans 'Select' %}</th>
+                        <th class="w-40">{% trans 'Actual delivery date' %}</th>
+                        <th class="w-15 text-center">{% trans 'Invoiced' %}</th>
+                        <th class="w-15 text-center">{% trans 'This time' %}</th>
                     </tr>
                     </thead>
                 </table>
             </div>
+        </div>
+        <div class="row mt-5">
             <div class="col-12">
-                <table class="table w-100 nowrap mt-5" id="table-product-detail">
+                <table class="table w-100 nowrap" id="table-delivery-product">
                     <thead class="bg-secondary-light-5">
                     <tr>
                         <th class="w-10"></th>
                         <th class="w-30">{% trans 'Product' %}</th>
                         <th class="w-15">{% trans 'UOM' %}</th>
                         <th class="w-15">{% trans 'Total' %}</th>
-                        <th class="w-15">{% trans 'Already' %}</th>
+                        <th class="w-15">{% trans 'Previous time' %}</th>
                         <th class="w-15">{% trans 'This time' %}</th>
                     </tr>
                     </thead>
                 </table>
             </div>
             <div class="col-12 text-right mt-5">
-                <button type="button" id="add-product-btn" class="btn btn-custom btn-primary btn-wth-icon">
+                <script id="delivery_product_data"></script>
+                <button type="button" id="select-delivery-product-btn" class="btn btn-sm btn-custom btn-success btn-wth-icon">
                     <span>
-                        <span>{% trans 'Add' %}</span>
-                        <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
+                        <span>{% trans 'Select' %}</span>
+                        <span class="icon"><span class="feather-icon"><i class="fa-solid fa-check"></i></span></span>
                     </span>
                 </button>
             </div>

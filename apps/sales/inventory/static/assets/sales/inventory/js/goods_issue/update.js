@@ -1,7 +1,7 @@
 $(document).ready(function () {
     GISHandle.LoadPage();
     GISHandle.LoadGoodsIssueDetail('update');
-    WFRTControl.setWFInitialData('goodsissue', 'PUT')
+    WFRTControl.setWFInitialData('goodsissue')
 
     $('#frmDetail').submit(function (event) {
         event.preventDefault();

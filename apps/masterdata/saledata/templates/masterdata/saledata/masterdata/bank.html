@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Master Data Bank' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageContent %}
+    <script id="trans-script"
+            data-trans-change-confirm-bank="{% trans 'Delete this Bank?' %}"
+            data-trans-change-confirm-bank-account="{% trans 'Delete this Bank account?' %}"
+            data-trans-change-noti="{% trans 'This action can not be undo!' %}"
+    ></script>
+
+    <div class="row">
+        <div class="col-12 col-md-2 col-lg-2">
+            <ul class="nav flex-column nav-light nav-pills" id="tab-select-table">
+                <li class="nav-item">
+                    <a href="#section_bank" class="nav-link active" data-bs-toggle="tab" data-collapse="section_bank">
+                        <span class="nav-link-text">{% trans 'Bank' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#section_bank_account" class="nav-link" data-bs-toggle="tab" data-collapse="section_bank_account">
+                        <span class="nav-link-text">{% trans 'Bank account' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-12 col-md-1 col-lg-1"></div>
+        <div class="col-12 col-md-9 col-lg-9">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="section_bank">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-bank">
+                        <button type="button" id="add_bank_btn" hidden class="btn btn-sm btn-outline-primary btn-modal">
+                            <span>
+                                <span>{% trans 'Add' %}</span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                            </span>
+                        </button>
+                    </a>
+                    <table id="datatable-bank" class="table nowrap w-100"
+                           data-url="{% url "BankMasterDataListAPI" %}"
+                           data-url-detail="{% url "BankMasterDataDetailAPI" '0' %}"
+                           data-method="GET">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th>{% trans "Bank name" %}</th>
+                                <th>{% trans "Abbreviation" %}</th>
+                                <th>{% trans "Head office" %}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="section_bank_account">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-bank-account">
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-modal">
+                            <span>
+                                <span>{% trans 'Add' %}</span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                            </span>
+                        </button>
+                    </a>
+                    <table id="datatable-bank-account" class="table nowrap w-100"
+                           data-url="{% url "BankAccountMasterDataListAPI" %}"
+                           data-url-detail="{% url "BankAccountMasterDataDetailAPI" '0' %}"
+                           data-method="GET">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>{% trans "Account number" %}</th>
+                                <th>{% trans "Account owner" %}</th>
+                                <th>{% trans "Bank name" %}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="modal-bank" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Bank" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; max-height: 70vh">
+                    <form id="form-create-bank" data-method="POST" data-url="{% url "BankMasterDataListAPI" %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="bank_abbreviation" class="form-label required">{% trans "Abbreviation" %}</label>
+                                    <input id="bank_abbreviation" list="VietQRBankList" required class="form-control" type="text">
+                                    <datalist id="VietQRBankList"></datalist>
+                                    <span class="small text-primary">{% trans 'The example list is taken from VietQR API, if not you can enter it yourself' %}</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="bank_name" class="form-label required">{% trans "Bank name" %}</label>
+                                    <input id="bank_name" required class="form-control" type="text">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="bank_foreign_name" class="form-label">{% trans "Foreign name" %}</label>
+                                    <input id="bank_foreign_name" class="form-control" type="text">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <h6 class="text-muted fw-bold">{% trans "Head office address" %}</h6>
+                                <div class="card card-body bg-light">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label class="form-label" for="bank_detail_address">{% trans "Detail address" %}</label>
+                                                <textarea class="form-control" placeholder="No. 123, Le Loi St." type="text" id="bank_detail_address"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="bank_country" class="form-label">{% trans "Country" %}</label>
+                                                <select class="form-select" id="bank_country" data-url="{% url "CountryListAPI" %}" data-method="GET"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="bank_city" class="form-label">{% trans "Province" %}</label>
+                                                <select class="form-select" id="bank_city" data-url="{% url "CityListAPI" %}" data-method="GET"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="bank_district" class="form-label">{% trans "District" %}</label>
+                                                <select class="form-select" id="bank_district"
+                                                        data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
+                                                ></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="bank_ward" class="form-label">{% trans "Ward" %}</label>
+                                                <select class="form-select" id="bank_ward"
+                                                        data-url="{% url "WardAllListAPI" %}" data-method="GET"
+                                                ></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="submit" form="form-create-bank" class="btn btn-primary">{% trans 'Save' %}</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-bank-account" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Bank account" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: auto; max-height: 70vh">
+                    <form id="form-create-bank-account" data-method="POST" data-url="{% url "BankAccountMasterDataListAPI" %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="bank_mapped" class="form-label required">{% trans "Bank" %}</label>
+                                    <select id="bank_mapped" required class="form-select" data-url="{% url 'BankMasterDataListAPI' %}" data-method="GET"></select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="bank_account_number" class="form-label required">{% trans "Account number" %}</label>
+                                    <input id="bank_account_number" required class="form-control" type="text">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="bank_account_owner" class="form-label required">{% trans "Account owner" %}</label>
+                                    <input id="bank_account_owner" required class="form-control" type="text">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="currency" class="form-label required">{% trans "Currency" %}</label>
+                                    <select id="currency" required class="form-select" data-url="{% url 'CurrencyListAPI' %}" data-method="GET"></select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="is_brand">
+                                    <label class="form-check-label" for="is_brand">{% trans "Brand" %}</label>
+                                </div>
+                            </div>
+                            <div class="col-12 for-brand" hidden>
+                                <div class="form-group">
+                                    <label for="brand_name" class="form-label">{% trans "Brand name" %}</label>
+                                    <input id="brand_name" class="form-control" type="text">
+                                </div>
+                            </div>
+                            <div class="col-12 for-brand" hidden>
+                                <h6 class="text-muted fw-bold">{% trans "Brand address" %}</h6>
+                                <div class="card card-body bg-light">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label class="form-label" for="bank_account_detail_address">{% trans "Detail address" %}</label>
+                                                <textarea class="form-control" placeholder="No. 123, Le Loi St." type="text" id="bank_account_detail_address"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="bank_account_country" class="form-label">{% trans "Country" %}</label>
+                                                <select class="form-select" id="bank_account_country" data-url="{% url "CountryListAPI" %}" data-method="GET"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="bank_account_city" class="form-label">{% trans "Province" %}</label>
+                                                <select class="form-select" id="bank_account_city" data-url="{% url "CityListAPI" %}" data-method="GET"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="bank_account_district" class="form-label">{% trans "District" %}</label>
+                                                <select class="form-select" id="bank_account_district"
+                                                        data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
+                                                ></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="bank_account_ward" class="form-label">{% trans "Ward" %}</label>
+                                                <select class="form-select" id="bank_account_ward"
+                                                        data-url="{% url "WardAllListAPI" %}" data-method="GET"
+                                                ></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" form="form-create-bank-account" class="btn btn-primary">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'assets/js/masterdata/saledata/masterdata/bank.js' %}"></script>
+{% endblock %}

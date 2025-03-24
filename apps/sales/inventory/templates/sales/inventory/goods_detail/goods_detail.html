@@ -112,8 +112,27 @@
             </table>
         </div>
     </div>
+
+
+    <table hidden data-table-id="table-serial-import-db" class="nowrap w-100 table mt-1">
+        <thead class="sticky bg-gold-light-5">
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Vendor serial No.' %}</th>
+                <th>{% trans 'Serial No.' %}</th>
+                <th>{% trans 'Expired date' %}</th>
+                <th>{% trans 'Mfr date' %}</th>
+                <th>{% trans 'Warranty start' %}</th>
+                <th>{% trans 'Warranty end' %}</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 {% endblock %}
 {% block modalData %}
+    {% include 'extends/import-datatable/modal-import-db.html' %}
+
     <div class="modal fade" id="modal-serial" tabindex="-1" role="dialog" aria-labelledby="modal-serial" aria-hidden="true">
         <div class="modal-dialog modal-lg min-w-1280p" role="document">
             <div class="modal-content">
@@ -163,23 +182,6 @@
             </div>
         </div>
     </div>
-
-    {% include 'extends/import-datatable/modal-import-db.html' %}
-    <table hidden data-table-id="table-serial-import-db" class="nowrap w-100 table mt-1">
-        <thead class="sticky bg-gold-light-5">
-            <tr>
-                <th>#</th>
-                <th>{% trans 'Status' %}</th>
-                <th>{% trans 'Vendor serial No.' %}</th>
-                <th>{% trans 'Serial No.' %}</th>
-                <th>{% trans 'Expired date' %}</th>
-                <th>{% trans 'Mfr date' %}</th>
-                <th>{% trans 'Warranty start' %}</th>
-                <th>{% trans 'Warranty end' %}</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
 {% endblock %}
 {% block dataHiddenGroup %}
 {% endblock %}

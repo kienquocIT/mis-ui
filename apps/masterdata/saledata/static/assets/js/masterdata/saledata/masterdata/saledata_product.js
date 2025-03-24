@@ -17,19 +17,19 @@ $(document).ready(function () {
         {
             className: 'wrap-text w-30',
             'render': (data, type, row) => {
-                return `<span class="text-muted">${row?.['title']}</span>`;
+                return `<h6 class="text-muted fw-bold">${row?.['title']}</h6><h6 class="small text-primary fw-bold">${row?.['foreign_title']}</h6>`;
             }
         },
         {
             className: 'wrap-text w-20',
             'render': (data, type, row) => {
-                return row?.['can_change_account'] ? `<select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped_data'])}' class="form-select select2 selected-accounts"></select>` : `<span class="text-muted">${row?.['account_mapped_data']?.['acc_code']}</span>`;
+                return `<select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="form-select select2 selected-accounts"></select>`;
             }
         },
         {
             className: 'wrap-text w-35',
             'render': (data, type, row) => {
-                return `<div class="selected-accounts-des"><span class="text-muted">${row?.['account_mapped_data']?.['acc_name']}</span> <span class="small text-primary">(${row?.['account_mapped_data']?.['foreign_acc_name']})</span></div>`;
+                return `<div class="selected-accounts-des"></div>`;
             }
         },
         {
@@ -41,7 +41,7 @@ $(document).ready(function () {
                 let save_btn = `<button type="button" data-id="${row?.['id']}" hidden class="btn btn-custom btn-primary btn-xs btn-save-change-account">
                     <span>
                         <span class="icon"><span class="feather-icon"><i class="fa-solid fa-file-pen"></i></span></span>
-                        <span>${$.fn.gettext('Update')}</span>
+                        <span>${$.fn.gettext('Save changes')}</span>
                     </span>
                 </button>`;
                 return row?.['can_change_account'] ? change_btn + save_btn : ''
@@ -103,9 +103,6 @@ $(document).ready(function () {
                     rowIdx: true,
                     reloadCurrency: true,
                     paging: false,
-                    scrollX: '100vw',
-                    scrollY: '18vw',
-                    scrollCollapse: true,
                     ajax: {
                         url: frm.dataUrl,
                         data: {'product_type_mapped_id': product_type_mapped_id},
@@ -143,12 +140,9 @@ $(document).ready(function () {
                     ],
                     initComplete: function () {
                         $product_type_account_determination_table.find('tbody tr .selected-accounts').each(function () {
-                            let account_mapped_data = $(this).attr('data-account-mapped')
-                            if (account_mapped_data) {
-                                account_mapped_data = JSON.parse(account_mapped_data)
-                            }
+                            let account_mapped = $(this).attr('data-account-mapped') ? JSON.parse($(this).attr('data-account-mapped')) : []
                             $(this).initSelect2({
-                                data: (account_mapped_data ? account_mapped_data : null),
+                                data: (account_mapped ? account_mapped : null),
                                 ajax: {
                                     url: $product_type_account_determination_table.attr('data-chart-of-account-url'),
                                     method: 'GET',
@@ -160,6 +154,12 @@ $(document).ready(function () {
                                     return $(`<span class="badge badge-light">${state.data?.['acc_code']}</span> <span>${state.data?.['acc_name']}</span> <span class="small">(${state.data?.['foreign_acc_name']})</span>`);
                                 },
                             })
+
+                            for (let i = 0; i < account_mapped.length; i++) {
+                                $(this).closest('tr').find('.selected-accounts-des').append(
+                                    `<h6 class="text-muted">${account_mapped[i]?.['acc_name']}</h6><h6 class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</h6>`
+                                )
+                            }
                         })
                     }
                 });
@@ -168,8 +168,13 @@ $(document).ready(function () {
     }
 
     $(document).on('change', '.selected-accounts', function () {
-        let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-        $(this).closest('tr').find('.selected-accounts-des').html(`<span class="text-muted">${selected?.['acc_name']}</span> <span class="small text-primary">(${selected?.['foreign_acc_name']})</span>`)
+        let account_mapped = [SelectDDControl.get_data_from_idx($(this), $(this).val())]
+        $(this).closest('tr').find('.selected-accounts-des').html('')
+        for (let i = 0; i < account_mapped.length; i++) {
+            $(this).closest('tr').find('.selected-accounts-des').append(
+                `<h6 class="text-muted">${account_mapped[i]?.['acc_name']}</h6><h6 class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</h6>`
+            )
+        }
         $(this).closest('tr').find('.btn-change-account').prop('hidden', true)
         $(this).closest('tr').find('.btn-save-change-account').prop('hidden', false)
         $(this).closest('tr').addClass('bg-primary-light-5')
@@ -177,7 +182,7 @@ $(document).ready(function () {
 
     $(document).on('click', '.btn-save-change-account', function () {
         let row_id = $(this).attr('data-id')
-        let row_replace_account_id = $(this).closest('tr').find('.selected-accounts').val()
+        let row_replace_account = $(this).closest('tr').find('.selected-accounts').val()
         Swal.fire({
             html:
             `<div class="d-flex align-items-center">
@@ -203,7 +208,7 @@ $(document).ready(function () {
             if (result.value) {
                 let ajax_update_account_prd_type = $.fn.callAjax2({
                     url: $product_type_account_determination_table.attr('data-url-detail').replace('/0', `/${row_id}`),
-                    data: {'replace_account': row_replace_account_id},
+                    data: {'replace_account': row_replace_account},
                     method: 'PUT'
                 }).then(
                     (resp) => {
@@ -378,6 +383,90 @@ $(document).ready(function () {
                            data-description="${row?.['description']}"
                            data-bs-toggle="modal"
                            data-bs-target="#modal-update-product-category"
+                           data-bs-placement="top" title=""
+                           >
+                           <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                        </a>`
+                        let delete_btn = `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete"
+                                data-id="${row?.['id']}">
+                            <span class="btn-icon-wrap">
+                                <span class="feather-icon text-danger">
+                                    <i class="bi bi-trash"></i>
+                                </span>
+                            </span>
+                        </a>`
+                        if (!row?.['is_default']) {
+                            return `${edit_btn}${delete_btn}`
+                        }
+                        return ``
+                    }
+                }
+            ],
+        });
+    }
+    function loadManufacturer() {
+        let tbl = $('#datatable-manufacturer-list');
+        let frm = new SetupFormSubmit(tbl);
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            ajax: {
+                url: frm.dataUrl,
+                type: frm.dataMethod,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('manufacturer_list')) {
+                        return resp.data['manufacturer_list'] ? resp.data['manufacturer_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: () => {
+                        return '';
+                    }
+                },
+                {
+                    data: 'code',
+                    className: 'wrap-text w-20',
+                    render: (data, type, row) => {
+                        if (row?.['is_default']) {
+                            return `<span class="badge badge-light w-70">${row?.['code']}</span>`
+                        } else {
+                            return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
+                        }
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text w-30',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `${data}`
+                        }
+                        return `<b>${data}</b>`
+                    }
+                },
+                {
+                    data: 'description',
+                    className: 'wrap-text w-35',
+                    render: (data) => {
+                        return `<span class="initial-wrap">${data}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-10',
+                    render: (data, type, row) => {
+                        let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-manufacturer"
+                           data-id="${row?.['id']}"
+                           data-code="${row?.['code']}"
+                           data-title="${row?.['title']}"
+                           data-description="${row?.['description']}"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modal-update-manufacturer"
                            data-bs-placement="top" title=""
                            >
                            <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
@@ -654,6 +743,7 @@ $(document).ready(function () {
 
     loadProductType()
     loadProductCategory()
+    loadManufacturer()
     loadSelectBoxUnitMeasureGroup($('#select-box-uom-group'))
     loadUnitOfMeasureGroup()
     loadUnitOfMeasure()
@@ -843,6 +933,78 @@ $(document).ready(function () {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-update-product-category').modal('hide')
                         loadProductCategory()
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
+
+    let frm_create_manufacturer = $('#form-create-manufacturer')
+    let frm_update_manufacturer = $('#form-update-manufacturer')
+
+    $(document).on("click", '.btn-update-manufacturer', function () {
+        let modal = $('#modal-update-manufacturer')
+        modal.find('#inp-edit-code-manufacturer').val($(this).attr('data-code'))
+        modal.find('#inp-edit-name-manufacturer').val($(this).attr('data-title'))
+        modal.find('#inp-edit-description-manufacturer').val($(this).attr('data-description'))
+        let raw_url = frm_update_manufacturer.attr('data-url-raw')
+        frm_update_manufacturer.attr('data-url', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
+    })
+
+    new SetupFormSubmit(frm_create_manufacturer).validate({
+        rules: {
+            code: {
+                required: true,
+            },
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-new-manufacturer').modal('hide')
+                        $('#modal-new-manufacturer form')[0].reset()
+                        loadManufacturer()
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
+
+    new SetupFormSubmit(frm_update_manufacturer).validate({
+        rules: {
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-update-manufacturer').modal('hide')
+                        loadManufacturer()
                     }
                 },
                 (errs) => {

@@ -25,6 +25,7 @@ $(document).ready(function () {
                         method: combinesData.method,
                         data: combinesData.data,
                         isLoading: true,
+                        loadingOpts: {'loadingTitleAction': 'CREATE'}
                     }).then((resp) => {
                         let data = $.fn.switcherResp(resp);
                         if (data) {

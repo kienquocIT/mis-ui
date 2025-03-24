@@ -1,6 +1,6 @@
 $(document).ready(function () {
     APHandle.LoadPage('update')
-    WFRTControl.setWFInitialData('advancepayment', 'PUT')
+    WFRTControl.setWFInitialData('advancepayment')
     APHandle.LoadDetailAP('update');
 
     // SUBMIT FORM UPDATE ADVANCE PAYMENT

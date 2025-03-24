@@ -38,7 +38,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text w-30',
+                        className: 'wrap-text w-25',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}"><span class="text-primary"><b>${row?.['title']}</b></span></a>`
@@ -46,7 +46,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'customer_data',
-                        className: 'wrap-text w-30',
+                        className: 'wrap-text w-20',
                         render: (data, type, row) => {
                             return `<span class="text-muted">${row?.['customer_data']?.['name']}</span>`
                         }
@@ -56,6 +56,12 @@ $(document).ready(function () {
                         className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             return `<span class="text-muted mask-money" data-init-money="${row?.['total_value'] ? row?.['total_value'] : '0'}"></span>`
+                        }
+                    },
+                    {
+                        className: 'wrap-text w-15',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY',});
                         }
                     },
                     {

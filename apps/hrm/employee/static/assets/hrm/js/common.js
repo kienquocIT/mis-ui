@@ -49,6 +49,7 @@ class EmployeeHRMInit {
     }
 
     static loadEmpList(empData){
+        const $userElm = $(`#select-box-user`)
         EmployeeHRMInit.empSelectEle.initSelect2({
             allowClear: true,
             keyId: 'employee--id',
@@ -69,10 +70,13 @@ class EmployeeHRMInit {
                 EmployeeHRMInit.userSelectEle.attr('data-onload', JSON.stringify({...empl.user, selected: true}))
                 const ElmUser = $(`#select-box-user option[value="${empl.user.id}"]`)
                 if (ElmUser.length <= 0)
-                    $('#select-box-user').append(`<option value="${empl.user.id}">${empl.user.last_name + ' ' + empl.user.first_name}</option>`).trigger('change')
+                    $userElm.append(`<option value="${empl.user.id}">${empl.user.last_name + ' ' + empl.user.first_name}</option>`).trigger('change')
                 else ElmUser.prop('selected', true).trigger('change')
             }
-            else $(`#select-box-user`).val('').trigger('change')
+            else $userElm.val('').trigger('change')
+            $userElm.prop('disabled', true)
+        }).on('select2:unselect', function(){
+            $userElm.val('').trigger('change').prop('disabled', false)
         })
     }
 

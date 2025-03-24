@@ -820,7 +820,7 @@ class WorkOrderDataTableHandle {
                 {
                     targets: 6,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-quantity valid-number" value="${row?.['quantity'] ? row?.['quantity'] : 0}" disabled>`;
+                        return `<input type="text" class="form-control table-row-quantity valid-num" value="${row?.['quantity'] ? row?.['quantity'] : 0}" disabled>`;
                     }
                 },
             ],

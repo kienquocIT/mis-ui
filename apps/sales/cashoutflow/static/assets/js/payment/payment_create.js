@@ -3,7 +3,7 @@ $(document).ready(function () {
 
     // call load page
     PaymentHandle.LoadPage('create')
-    WFRTControl.setWFInitialData('payment', 'POST')
+    WFRTControl.setWFInitialData('payment')
 
     let form_validator = $('#form-create-payment').validate({
         submitHandler: function (form) {

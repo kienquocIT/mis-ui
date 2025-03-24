@@ -62,7 +62,7 @@
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
                     {% trans 'Select Sale Person' as inherit_title %}
-                    {% include 'extends/the-documents/bastion.html' with opp_title=opp_title has_process=True has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                    {% include 'extends/the-documents/bastion.html' with opp_title=opp_title has_process=True has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True inherit_readonly=True %}
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
@@ -138,7 +138,7 @@
 
                     <div class="row">
                         <div class="row">
-                            <ul class="nav nav-light nav-tabs" id="quotation-tabs">
+                            <ul class="nav nav-line nav-tabs nav-light border-bottom" id="quotation-tabs">
                                 <li class="nav-item tab-detail" data-zone="quotation_products_data">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                                         <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
@@ -211,7 +211,7 @@
                                                     <div class="col-3">
                                                         <div class="input-group w-90">
                                                             <span class="input-affix-wrapper">
-                                                                <input type="text" class="form-control validated-number quotation-create-product-discount" value="0" data-zone="quotation_products_data">
+                                                                <input type="text" class="form-control valid-num quotation-create-product-discount" value="0" data-zone="quotation_products_data">
                                                                 <span class="input-suffix"><small><i class="fas fa-percentage"></i></small></span>
                                                             </span>
                                                         </div>
@@ -569,9 +569,10 @@
                             >
                                 <thead>
                                 <tr class="bg-light">
-                                    <th class="w-30">{% trans 'Quotation' %}</th>
-                                    <th class="w-30">{% trans 'Opportunity' %}</th>
-                                    <th class="w-30">{% trans 'Customer' %}</th>
+                                    <th class="w-30">{% trans 'Quotation name' %}</th>
+                                    <th class="w-20">{% trans 'Quotation code' %}</th>
+                                    <th class="w-25">{% trans 'Opportunity' %}</th>
+                                    <th class="w-25">{% trans 'Customer' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -775,8 +776,9 @@
                             >
                                 <thead>
                                 <tr class="bg-light">
-                                    <th class="w-35">{% trans 'Product' %}</th>
-                                    <th class="w-30">{% trans 'Description' %}</th>
+                                    <th class="w-25">{% trans 'Product name' %}</th>
+                                    <th class="w-15">{% trans 'Product code' %}</th>
+                                    <th class="w-25">{% trans 'Description' %}</th>
                                     <th class="w-10">{% trans 'UOM' %}</th>
                                     <th class="w-10">{% trans 'Status' %}</th>
                                     <th class="w-15">{% trans 'Note' %}</th>

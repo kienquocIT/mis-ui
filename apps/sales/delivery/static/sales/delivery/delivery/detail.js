@@ -3,14 +3,15 @@ $(async function () {
     const $url = $('#url-factory');
     let $form = $('#delivery_form');
     let $eleSO = $('#inputSaleOrder');
+    let $actDate = $('#inputActualDate');
 
     let $tableMain = $('#dtbPickingProductList');
     let $tableProductNew = $('#productNew');
-    let $tableProductLeased = $('#productLeased');
     let $tablePW = $('#productStockDetail');
     let $tableLot = $('#datable-delivery-wh-lot');
     let $tableSerial = $('#datable-delivery-wh-serial');
     let $scrollProduct = $('#scroll-new-leased-product');
+    let $scrollWH = $('#scroll-table-wh');
     let $scrollLot = $('#scroll-table-lot');
     let $scrollSerial = $('#scroll-table-serial');
     let $canvasPW = $('#warehouseStockCanvas');
@@ -58,13 +59,20 @@ $(async function () {
             // Kiểm tra giao hàng theo đơn hàng hay đơn cho thuê
             let targetItemData = prod_data?.['product_data'];
             if (prod_data?.['offset_data']?.['id']) {
-                $('#productLeasedDiv').removeAttr('hidden');
                 targetItemData = prod_data?.['offset_data'];
-                $tableProductLeased.DataTable().clear().draw();
-                $tableProductLeased.DataTable().rows.add(prod_data?.['product_quantity_leased_data'] ? prod_data?.['product_quantity_leased_data'] : []).draw();
             }
             $tableProductNew.DataTable().clear().draw();
-            $tableProductNew.DataTable().rows.add([prod_data]).draw();
+
+            if (prod_data?.['asset_type'] === null) {
+               $tableProductNew.DataTable().rows.add([prod_data]).draw();
+            }
+            if (prod_data?.['asset_type'] === 1) {
+               $tableProductNew.DataTable().rows.add([prod_data]).draw();
+            }
+            if (prod_data?.['asset_type'] === 3) {
+               $tableProductNew.DataTable().rows.add(prod_data?.['asset_data']).draw();
+               $scrollWH.attr('hidden', 'true');
+            }
             prodTable.loadEventRadio($scrollProduct);
 
             let checkedEle = $tableProductNew[0].querySelector('.table-row-checkbox:checked');
@@ -151,31 +159,44 @@ $(async function () {
                     }
                     $canvasPW.offcanvas('show');
                     $btnSave.off().on('click', function () {
-                        let delivery_data = [];
-                        let product_quantity_leased_data = [];
                         let temp_picked = 0;
+                        let delivery_data = [];
+                        let asset_data = [];
                         $tableProductNew.DataTable().rows().every(function () {
                             let row = this.node();
                             let rowIndex = $tableProductNew.DataTable().row(row).index();
                             let $row = $tableProductNew.DataTable().row(rowIndex);
                             let rowData = $row.data();
-                            delivery_data = rowData?.['delivery_data'];
+
                             temp_picked += rowData?.['picked_quantity'];
-                        });
-                        $tableProductLeased.DataTable().rows().every(function () {
-                            let row = this.node();
-                            let rowIndex = $tableProductLeased.DataTable().row(row).index();
-                            let $row = $tableProductLeased.DataTable().row(rowIndex);
-                            let rowData = $row.data();
-                            product_quantity_leased_data.push(rowData);
-                            temp_picked += rowData?.['picked_quantity'];
+                            delivery_data = rowData?.['delivery_data'] ? rowData?.['delivery_data'] : [];
+                            if (rowData?.['asset_data']?.['id']) {
+                                if ($actDate.val()) {
+                                    rowData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                                }
+                                asset_data.push(rowData);
+                            }
                         });
                         if (temp_picked > 0) {
                             // lấy hàng từ popup warehouse add vào danh sách product detail
                             let tableTargetData = _this.getProdList;
                             tableTargetData[idx]['picked_quantity'] = temp_picked;
                             tableTargetData[idx]['delivery_data'] = delivery_data;
-                            tableTargetData[idx]['product_quantity_leased_data'] = product_quantity_leased_data;
+                            tableTargetData[idx]['asset_data'] = asset_data;
+                            // Kiểm tra nếu giao đơn cho thuê cho SP thì dùng $actDate.val() override product_depreciation_start_date, product_lease_start_date
+                            if ($actDate.val() && tableTargetData[idx]?.['asset_type'] === 1) {
+                                tableTargetData[idx]['product_depreciation_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                                tableTargetData[idx]['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                                tableTargetData[idx]['depreciation_data'] = DepreciationControl.callDepreciation({
+                                    "method": tableTargetData[idx]?.['product_depreciation_method'],
+                                    "months": tableTargetData[idx]?.['product_depreciation_time'],
+                                    "start_date": $actDate.val(),
+                                    "end_date": moment(tableTargetData[idx]?.['product_depreciation_end_date']).format('DD/MM/YYYY'),
+                                    "price": tableTargetData[idx]?.['product_cost'],
+                                    "adjust": tableTargetData[idx]?.['product_depreciation_adjustment'],
+                                });
+                            }
+
                             _this.setProdList = tableTargetData;
                             $tableMain.DataTable().row(idx).data(tableTargetData[idx]).draw();
                         }
@@ -260,14 +281,14 @@ $(async function () {
                         targets: 2,
                         class: 'w-10 text-center',
                         render: (row, type, data) => {
-                            return `<p>${data.uom_data.title}</p>`;
+                            return `<p>${data?.['uom_data']?.['title'] ? data?.['uom_data']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 3,
                         class: 'w-10 text-center',
                         render: (row, type, data) => {
-                            return `<p>${data.delivery_quantity}</p>`;
+                            return `<p>${data?.['delivery_quantity']}</p>`;
                         }
                     },
                     {
@@ -275,7 +296,7 @@ $(async function () {
                         class: 'w-10 text-center',
                         visible: delivery_config?.['is_partial_ship'],
                         render: (row, type, data) => {
-                            return `<p>${data.delivered_quantity_before}</p>`;
+                            return `<p>${data?.['delivered_quantity_before']}</p>`;
                         }
                     },
                     {
@@ -283,7 +304,7 @@ $(async function () {
                         class: 'w-10 text-center',
                         visible: delivery_config?.['is_partial_ship'],
                         render: (row, type, data) => {
-                            return `<p>${data.remaining_quantity}</p>`;
+                            return `<p>${data?.['remaining_quantity']}</p>`;
                         }
                     },
                     {
@@ -810,7 +831,7 @@ $(async function () {
             let isRegis = dataRegisConfig?.['isRegis'];
             let dataSO = dataRegisConfig?.['dataSO'];
             let url = $tableSerial.attr('data-url');
-            let dataParam = {'product_warehouse_id': productWHID, 'is_delete': false, 'gre_sn_registered__isnull': true};
+            let dataParam = {'product_warehouse_id': productWHID, 'serial_status': 0, 'gre_sn_registered__isnull': true};
             let keyResp = 'warehouse_serial_list';
             if ($form.attr('data-method').toLowerCase() === 'get') {
                 dataParam = {'product_warehouse_id': productWHID};
@@ -823,7 +844,7 @@ $(async function () {
                         'gre_item_prd_wh__gre_item__so_item__sale_order_id': dataRow?.['sale_order']?.['id'],
                         'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
                         'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
-                        'sn_registered__is_delete': false,
+                        'sn_registered__serial_status': 0,
                     };
                     keyResp = 'good_registration_serial';
                 } else {
@@ -970,6 +991,7 @@ $(async function () {
                 searching: false,
                 autoWidth: true,
                 scrollX: true,
+                scrollY: "400px",
                 columns: [
                     {
                         targets: 0,
@@ -978,33 +1000,23 @@ $(async function () {
                             let targetData = row?.['product_data'];
                             if (row?.['offset_data']?.['id']) {
                                 targetData = row?.['offset_data'];
+                            }
+                            if (row?.['asset_data']?.['id']) {
+                                targetData = row?.['asset_data'];
                             }
                             let checked = '';
                             if (!$scrollProduct[0].querySelector('.table-row-checkbox:checked')) {
                                 checked = 'checked';
                             }
                             return `<div class="d-flex align-items-center">
-                                        <div class="form-check form-check-lg">
+                                        <div class="form-check form-check-lg d-flex align-items-center">
                                             <input
                                                 type="radio"
                                                 class="form-check-input table-row-checkbox"
                                                 id="new-product-${targetData?.['id'].replace(/-/g, "")}"
                                                 ${checked}
                                             >
-                                        </div>
-                                        <textarea class="form-control table-row-item-show" rows="2" readonly>${targetData?.['code']}</textarea>
-                                    </div>
-                                    <div class="row table-row-item-area hidden">
-                                        <div class="col-12 col-md-12 col-lg-12">
-                                            <select
-                                                class="form-select table-row-item"
-                                                data-url="${$url.attr('data-md-product')}"
-                                                data-method="GET"
-                                                data-keyResp="product_sale_list"
-                                                data-product-id="${targetData?.['id']}"
-                                                readonly
-                                            >
-                                            </select>
+                                            <label class="form-check-label" for="new-product-${targetData?.['id'].replace(/-/g, "")}">${targetData?.['title'] ? targetData?.['title'] : ''}</label>
                                         </div>
                                     </div>`;
                         }
@@ -1017,130 +1029,35 @@ $(async function () {
                             if (row?.['offset_data']?.['id']) {
                                 targetData = row?.['offset_data'];
                             }
-                            return `<textarea class="form-control table-row-name" rows="2" readonly>${targetData?.['title'] ? targetData?.['title'] : ''}</textarea>`;
-                        },
-                    },
-                    {
-                        targets: 1,
-                        width: '20%',
-                        render: (data, type, row) => {
-                            return `<span class="table-row-remain">${row?.['remaining_quantity_new'] ? row?.['remaining_quantity_new'] : 0}</span>`;
-                        },
-                    },
-                    {
-                        targets: 2,
-                        width: '20%',
-                        render: (data, type, row) => {
-                            let value = 0;
-                            let picked = row?.['picked_quantity'] ? row?.['picked_quantity'] : 0;
-                            let leased = row?.['product_quantity_leased'] ? row?.['product_quantity_leased'] : 0;
-                            if (row?.['offset_data']?.['id']) {
-                                value = picked - leased;
-                            } else {
-                                value = picked;
+                            if (row?.['asset_data']?.['id']) {
+                                targetData = row?.['asset_data'];
                             }
-                            return `<b class="table-row-picked">${value}</b>`;
+                            return `<span class="table-row-code">${targetData?.['code'] ? targetData?.['code'] : ''}</span>`;
                         },
-                    },
-                ],
-                rowCallback: function (row, data, index) {
-                    let itemEle = row.querySelector('.table-row-item');
-                    if (itemEle) {
-                        let dataS2 = [];
-                        if (data?.['product_data']) {
-                            dataS2 = [data?.['product_data']];
-                        }
-                        prodTable.loadInitS2($(itemEle), dataS2);
-                        $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
-                    }
-                },
-                drawCallback: function () {
-                    if ($eleSO.attr('data-lo')) {
-                        prodTable.dtbProductNewHDCustom();
-                    }
-                },
-            });
-        };
-
-        dataTableProductLeased(data) {
-            // init dataTable
-            $tableProductLeased.DataTableDefault({
-                styleDom: 'hide-foot',
-                data: data ? data : [],
-                ordering: false,
-                paging: false,
-                info: false,
-                searching: false,
-                autoWidth: true,
-                scrollX: true,
-                columns: [
-                    {
-                        targets: 0,
-                        width: '30%',
-                        render: (data, type, row) => {
-                            return `<div class="d-flex align-items-center">
-                                        <div class="form-check form-check-lg">
-                                            <input
-                                                type="radio"
-                                                class="form-check-input table-row-checkbox"
-                                                id="leased-product-${row?.['product_data']?.['id'].replace(/-/g, "")}"
-                                            >
-                                        </div>
-                                        <textarea class="form-control table-row-item-show" rows="2" readonly>${row?.['product_data']?.['lease_code']}</textarea>
-                                    </div>
-                                    <div class="row table-row-item-area hidden">
-                                        <div class="col-12 col-md-12 col-lg-12">
-                                            <select
-                                                class="form-select table-row-item"
-                                                data-url="${$url.attr('data-md-product')}"
-                                                data-method="GET"
-                                                data-keyResp="product_sale_list"
-                                                data-product-id="${row?.['product_data']?.['id']}"
-                                                readonly
-                                            >
-                                            </select>
-                                        </div>
-                                    </div>`;
-                        }
                     },
                     {
                         targets: 1,
-                        width: '30%',
+                        width: '20%',
                         render: (data, type, row) => {
-                            return `<textarea class="form-control table-row-name" rows="2" readonly>${row?.['product_data']?.['title'] ? row?.['product_data']?.['title'] : ''}</textarea>`;
+                            let value = row?.['remaining_quantity'] ? row?.['remaining_quantity'] : 0;
+                            if (row?.['asset_data']?.['id']) {
+                                value = 1;
+                            }
+                            return `<span class="table-row-remain">${value}</span>`;
                         },
                     },
                     {
                         targets: 2,
                         width: '20%',
                         render: (data, type, row) => {
-                            return `<span class="table-row-remain">${row?.['remaining_quantity_leased'] ? row?.['remaining_quantity_leased'] : 0}</span>`;
-                        },
-                    },
-                    {
-                        targets: 3,
-                        width: '20%',
-                        render: (data, type, row) => {
-                            return `<b class="table-row-picked">${row?.['picked_quantity'] ? row?.['picked_quantity'] : 0}</b>`;
+                            let readonly = 'readonly';
+                            if (row?.['asset_data']?.['id']) {
+                                readonly = '';
+                            }
+                            return `<input class="form-control table-row-picked text-black valid-num" value="${row?.['picked_quantity'] ? row?.['picked_quantity'] : 0}" ${readonly}>`;
                         },
                     },
                 ],
-                rowCallback: function (row, data, index) {
-                    let itemEle = row.querySelector('.table-row-item');
-                    if (itemEle) {
-                        let dataS2 = [];
-                        if (data?.['product_data']) {
-                            dataS2 = [data?.['product_data']];
-                        }
-                        prodTable.loadInitS2($(itemEle), dataS2);
-                        $(itemEle).attr('data-product-id', data?.['product_data']?.['id']);
-                    }
-                },
-                drawCallback: function () {
-                    if ($eleSO.attr('data-lo')) {
-                        prodTable.dtbProductLeasedHDCustom();
-                    }
-                },
             });
         };
 
@@ -1149,13 +1066,15 @@ $(async function () {
             let config = _this.getProdConfig;
             $tablePW.DataTableDefault({
                 data: data ? data : [],
-                ordering: false,
-                paginate: false,
+                paging: false,
                 info: false,
+                autoWidth: true,
+                scrollX: true,
+                scrollY: "200px",
                 columns: [
                     {
                         targets: 0,
-                        class: 'w-35',
+                        width: '30%',
                         render: (data, type, row) => {
                             if (row?.['is_regis_so'] === true) {
                                 let project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-other-order')}: ${row?.['sale_order']?.['code']}</span>`;
@@ -1208,7 +1127,7 @@ $(async function () {
                             if (row?.['product']?.['general_traceability_method'] === 0) {
                                 hidden = 'hidden';
                             }
-                            return `<div class="form-check form-check-lg">
+                            return `<div class="form-check form-check-lg d-flex align-items-center">
                                         <input
                                             type="radio"
                                             class="form-check-input table-row-checkbox cl-child"
@@ -1218,13 +1137,19 @@ $(async function () {
                                             ${hidden}
                                         >
                                         <label class="form-check-label" for="pw-${row?.['id'].replace(/-/g, "")}">${row?.['warehouse']?.['title']}</label>
-                                        <span class="badge badge-light badge-outline">${row?.['warehouse']?.['code']}</span>
                                     </div>`;
                         }
                     },
                     {
                         targets: 1,
-                        class: 'w-15',
+                        width: '20%',
+                        render: (data, type, row) => {
+                            return `<span class="table-row-code">${row?.['warehouse']?.['code'] ? row?.['warehouse']?.['code'] : ''}</span>`;
+                        }
+                    },
+                    {
+                        targets: 2,
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['is_regis_so'] === true || row?.['is_regis_common'] === true) {
                                 return ``;
@@ -1233,8 +1158,8 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 2,
-                        class: 'w-20',
+                        targets: 3,
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['is_regis_so'] === true || row?.['is_regis_common'] === true) {
                                 return ``;
@@ -1243,8 +1168,8 @@ $(async function () {
                         }
                     },
                     {
-                        targets: 3,
-                        class: 'w-25',
+                        targets: 4,
+                        width: '20%',
                         render: (data, type, row, meta) => {
                             if (row?.['is_regis_so'] === true || row?.['is_regis_common'] === true) {
                                 return ``;
@@ -1277,9 +1202,11 @@ $(async function () {
         dataTableTableLot(data) {
             $tableLot.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
-                ordering: false,
-                paginate: false,
+                paging: false,
                 info: false,
+                autoWidth: true,
+                scrollX: true,
+                scrollY: "200px",
                 columns: [
                     {
                         targets: 0,
@@ -1339,6 +1266,11 @@ $(async function () {
             }
             $tableSerial.not('.dataTable').DataTableDefault({
                 data: data ? data : [],
+                paging: false,
+                info: false,
+                autoWidth: true,
+                scrollX: true,
+                scrollY: "200px",
                 columns: [
                     {
                         targets: 0,
@@ -1438,42 +1370,6 @@ $(async function () {
         };
 
         // dtb header custom
-        dtbProductNewHDCustom() {
-            let wrapper$ = $tableProductNew.closest('.dataTables_wrapper');
-            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-            headerToolbar$.prepend(textFilter$);
-
-            if (textFilter$.length > 0) {
-                textFilter$.css('display', 'flex');
-                // Check if the button already exists before appending
-                if (!$('#label-new-product').length) {
-                    let $group = $(`<b id="label-new-product">${$trans.attr('data-new-products')}</b>`);
-                    textFilter$.append(
-                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
-                    );
-                }
-            }
-        };
-
-        dtbProductLeasedHDCustom() {
-            let wrapper$ = $tableProductLeased.closest('.dataTables_wrapper');
-            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-            headerToolbar$.prepend(textFilter$);
-
-            if (textFilter$.length > 0) {
-                textFilter$.css('display', 'flex');
-                // Check if the button already exists before appending
-                if (!$('#label-leased-product').length) {
-                    let $group = $(`<b id="label-leased-product">${$trans.attr('data-leased-products')}</b>`);
-                    textFilter$.append(
-                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
-                    );
-                }
-            }
-        };
-
         loadCheckExceedQuantity() {
             let check = true;
             $tableLot.DataTable().rows().every(function () {
@@ -1519,29 +1415,9 @@ $(async function () {
                 let remainELe = row.querySelector('.table-row-remain');
                 let deliverELe = row.querySelector('.table-row-picked');
                 if (remainELe && deliverELe) {
-                    if (remainELe.innerHTML && deliverELe.innerHTML) {
+                    if (remainELe.innerHTML && deliverELe.value) {
                         let remain = parseFloat(remainELe.innerHTML);
-                        let delivered = parseFloat(deliverELe.innerHTML);
-                        if (delivered > remain) {
-                            check = false;
-                            $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
-                            return false;
-                        }
-                    }
-                }
-            });
-            if (check === false) {
-                $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
-                return check;
-            }
-            $tableProductLeased.DataTable().rows().every(function () {
-                let row = this.node();
-                let remainELe = row.querySelector('.table-row-remain');
-                let deliverELe = row.querySelector('.table-row-picked');
-                if (remainELe && deliverELe) {
-                    if (remainELe.innerHTML && deliverELe.innerHTML) {
-                        let remain = parseFloat(remainELe.innerHTML);
-                        let delivered = parseFloat(deliverELe.innerHTML);
+                        let delivered = parseFloat(deliverELe.value);
                         if (delivered > remain) {
                             check = false;
                             $.fn.notifyB({description: $trans.attr('data-valid-delivery-amount')}, 'failure');
@@ -1563,39 +1439,38 @@ $(async function () {
                 url: $url.attr('data-customer-detail').format_url_with_uuid(customerID),
                 method: 'GET'
             }).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                data = data['account_detail']
-                // handle event modal show via btn click
-                $('#modal_choise_logistics').on('shown.bs.modal', function (e) {
-                    let dataLogistics
-                    // show address else show billing
-                    if ($(e.relatedTarget).attr('data-is-address')){
-                        dataLogistics = data?.shipping_address
-                        $(this).find('.modal-body').attr('data-logistic', 'address')
-                    }
-                    else{
-                        dataLogistics = data?.billing_address
-                        $(this).find('.modal-body').attr('data-logistic', 'bill')
-                    }
-                    let htmlTemp = ''
-                    for (let item of dataLogistics){
-                        htmlTemp += `<div class="col mb-3 text-right txt-cl-black wrap_logistic"><textarea disabled class="form-control mb-2 txt-cl-black" data-id="${
-                            item?.id ? item.id : item
-                        }">${item?.full_address ? item.full_address : item}</textarea><button type="button" class="btn btn-primary btn_logistics_choise">${
-                            $trans.attr('data-select_address')}</button></div>`
-                    }
-                    $(this).find('.modal-body').html(htmlTemp)
-                    $('.wrap_logistic button', $(this).find('.modal-body')).on('click', function () {
-                        let val = $(this).parents('.wrap_logistic').find('textarea').val()
-                        if ($(this).closest('.modal-body').attr('data-logistic') === 'address') {
-                            $('#textareaShippingAddress').val(val)
+                    let data = $.fn.switcherResp(resp);
+                    data = data['account_detail']
+                    // handle event modal show via btn click
+                    $('#modal_choise_logistics').on('shown.bs.modal', function (e) {
+                        let dataLogistics
+                        // show address else show billing
+                        if ($(e.relatedTarget).attr('data-is-address')) {
+                            dataLogistics = data?.shipping_address
+                            $(this).find('.modal-body').attr('data-logistic', 'address')
                         } else {
-                            $('#textareaBilling').val(val)
+                            dataLogistics = data?.billing_address
+                            $(this).find('.modal-body').attr('data-logistic', 'bill')
                         }
-                        $('#modal_choise_logistics').modal('hide')
+                        let htmlTemp = ''
+                        for (let item of dataLogistics) {
+                            htmlTemp += `<div class="col mb-3 text-right txt-cl-black wrap_logistic"><textarea disabled class="form-control mb-2 txt-cl-black" data-id="${
+                                item?.id ? item.id : item
+                            }">${item?.full_address ? item.full_address : item}</textarea><button type="button" class="btn btn-primary btn_logistics_choise">${
+                                $trans.attr('data-select_address')}</button></div>`
+                        }
+                        $(this).find('.modal-body').html(htmlTemp)
+                        $('.wrap_logistic button', $(this).find('.modal-body')).on('click', function () {
+                            let val = $(this).parents('.wrap_logistic').find('textarea').val()
+                            if ($(this).closest('.modal-body').attr('data-logistic') === 'address') {
+                                $('#textareaShippingAddress').val(val)
+                            } else {
+                                $('#textareaBilling').val(val)
+                            }
+                            $('#modal_choise_logistics').modal('hide')
+                        });
                     });
-                });
-            },
+                },
                 (err) => console.log(err)
             );
         }
@@ -1709,6 +1584,9 @@ $(async function () {
                 let checkedEle = row.querySelector('.table-row-checkbox:checked');
                 if (checkedEle) {
                     rowData['delivery_data'] = pwData;
+                    if (rowData?.['asset_data']?.['id']) {
+                        delete rowData['delivery_data'];
+                    }
                 }
                 let picked = 0;
                 if (rowData?.['delivery_data']) {
@@ -1718,35 +1596,17 @@ $(async function () {
                 }
                 rowData['picked_quantity'] = picked;
 
-                $tableProductNew.DataTable().row(rowIndex).data(rowData);
-                deliveryData.push(rowData);
-
-                if (checkedEle) {
-                    let checkEle = row.querySelector('.table-row-checkbox');
-                    if (checkEle) {
-                        checkEle.checked = true;
+                // TSCD lấy số nhập trực tiếp
+                if (rowData?.['asset_data']?.['id']) {
+                    let deliverEle = row.querySelector('.table-row-picked');
+                    if (deliverEle) {
+                        if (deliverEle.value) {
+                            rowData['picked_quantity'] = parseFloat(deliverEle.value);
+                        }
                     }
                 }
-            });
 
-            $tableProductLeased.DataTable().rows().every(function () {
-                let row = this.node();
-                let rowIndex = $tableProductLeased.DataTable().row(row).index();
-                let $row = $tableProductLeased.DataTable().row(rowIndex);
-                let rowData = $row.data();
-
-                // update delivery_data cho dòng đang được chọn
-                let checkedEle = row.querySelector('.table-row-checkbox:checked');
-                if (checkedEle) {
-                    rowData['delivery_data'] = pwData;
-                }
-                let picked = 0;
-                for (let deliData of rowData?.['delivery_data'] ? rowData?.['delivery_data'] : []) {
-                    picked += deliData?.['picked_quantity'];
-                }
-                rowData['picked_quantity'] = picked;
-
-                $tableProductLeased.DataTable().row(rowIndex).data(rowData);
+                $tableProductNew.DataTable().row(rowIndex).data(rowData);
                 deliveryData.push(rowData);
 
                 if (checkedEle) {
@@ -1962,7 +1822,10 @@ $(async function () {
                         'product_id': prod?.['product_data']?.['id'],
                         'done': prod?.['picked_quantity'],
                         'delivery_data': prod?.['delivery_data'],
-                        'product_quantity_leased_data': prod?.['product_quantity_leased_data'],
+                        'asset_data': prod?.['asset_data'],
+                        'product_depreciation_start_date': prod?.['product_depreciation_start_date'],
+                        'product_lease_start_date': prod?.['product_lease_start_date'],
+                        'depreciation_data': prod?.['depreciation_data'],
                         'order': prod?.['order'],
                     })
                 }
@@ -2017,7 +1880,6 @@ $(async function () {
     getPageDetail()
     // init Dtb
     prodTable.dataTableProductNew();
-    prodTable.dataTableProductLeased();
     prodTable.dataTablePW();
     prodTable.dataTableTableLot();
     prodTable.dataTableTableSerial();
@@ -2038,16 +1900,20 @@ $(async function () {
         return true;
     });
 
-    $tableProductLeased.on('click', '.table-row-checkbox', function () {
+    $tableProductNew.on('change', '.table-row-picked', function () {
         let row = this.closest('tr');
         if (row) {
-            let rowIndex = $tableProductLeased.DataTable().row(row).index();
-            let $row = $tableProductLeased.DataTable().row(rowIndex);
-            let rowData = $row.data();
-
-            prodTable.loadCallAjaxPW(rowData?.['product_data'], rowData);
+            DeliveryStoreDataHandle.storeData();
+            let check = prodTable.loadCheckExceedQuantity();
+            if (check === false) {
+                let rowIndex = $tableProductNew.DataTable().row(row).index();
+                let $row = $tableProductNew.DataTable().row(rowIndex);
+                let rowData = $row.data();
+                rowData['picked_quantity'] = 0;
+                $tableProductNew.DataTable().row(rowIndex).data(rowData);
+                DeliveryStoreDataHandle.storeData();
+            }
         }
-        return true;
     });
 
     $tablePW.on('change', '.table-row-picked', function () {

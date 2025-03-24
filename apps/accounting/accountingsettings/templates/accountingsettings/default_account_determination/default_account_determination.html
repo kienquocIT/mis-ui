@@ -3,20 +3,11 @@
 {% load static %}
 {% block title %}{% trans 'Default account determination' %}{% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-{#    <a href="{% url "AdvancePaymentCreate" %}">#}
-{#        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button">#}
-{#            <span>#}
-{#                <span>{% trans 'Add' %}</span>#}
-{#                <span class="icon">#}
-{#                    <i class="fa-solid fa-plus"></i>#}
-{#                </span>#}
-{#            </span>#}
-{#        </button>#}
-{#    </a>#}
 {% endblock %}
 {% block pageContent %}
     <script id="trans-script"
@@ -25,13 +16,32 @@
     ></script>
     <div class="row">
         <div class="col-12">
-            {% include 'accountingsettings/default_account_determination/common/btn-list.html' %}
-            {% include 'accountingsettings/default_account_determination/common/table.html' %}
+            <table class="table nowrap w-100"
+                   id="default-account-determination-table"
+                   data-method="GET"
+                   data-trans-change-confirm="{% trans 'Confirm this change?' %}"
+                   data-trans-change-noti="{% trans 'This action can not be undo!' %}"
+                   data-chart-of-account-url="{% url 'ChartOfAccountsListAPI' %}"
+                   data-url-detail="{% url 'DefaultAccountDeterminationDetailAPI' pk=0 %}"
+                   data-url="{% url 'DefaultAccountDeterminationListAPI' %}">
+                <thead class="bg-secondary-light-5">
+                <tr>
+                    <th></th>
+                    <th>{% trans 'Type' %}</th>
+                    <th>{% trans 'Trading account type' %}</th>
+                    <th>{% trans 'Account' %}</th>
+                    <th>{% trans 'Description' %}</th>
+                    <th>{% trans 'Change' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
     </div>
 {% endblock %}
 {% block modalData %}
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
     <script src="{% static 'assets/js/accountingsettings/default_account_determination/default_account_determination.js' %}"></script>
 {% endblock %}

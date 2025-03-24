@@ -149,14 +149,6 @@ function loadInternalParticipantsTable() {
                 }
             },
             {
-                className: 'wrap-text w-5',
-                render: (data, type, row) => {
-                    return `<div class="form-check">
-                                <input type="checkbox" class="form-check-input checkbox_internal_employees">
-                            </div>`
-                }
-            },
-            {
                 data: 'full_name',
                 className: 'wrap-text w-25',
                 render: (data, type, row) => {
@@ -184,7 +176,7 @@ function loadInternalParticipantsTable() {
                 }
             },
             {
-                className: 'wrap-text w-15 text-right',
+                className: 'wrap-text w-10 text-center',
                 render: (data, type, row) => {
                     return row?.['email'] ? `<div class="form-check">
                                 <input type="checkbox" class="form-check-input checkbox_internal_send_notify_email">
@@ -192,9 +184,17 @@ function loadInternalParticipantsTable() {
                 }
             },
             {
-                className: 'wrap-text w-10 text-right',
+                className: 'wrap-text w-10 text-center',
                 render: (data, type, row) => {
                     return '<span class="send-email-status small"></span>'
+                }
+            },
+            {
+                className: 'wrap-text w-10 text-center',
+                render: (data, type, row) => {
+                    return `<div class="form-check">
+                                <input type="checkbox" class="form-check-input checkbox_internal_employees">
+                            </div>`
                 }
             },
         ],
@@ -303,14 +303,6 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
                 }
             },
             {
-                className: 'wrap-text w-5',
-                render: (data, type, row) => {
-                    return `<div class="form-check ">
-                                <input type="checkbox" class="form-check-input checkbox_external_contacts">
-                            </div>`
-                }
-            },
-            {
                 data: 'full_name',
                 className: 'wrap-text w-25',
                 render: (data, type, row) => {
@@ -338,7 +330,7 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
                 }
             },
             {
-                className: 'wrap-text w-15 text-right',
+                className: 'wrap-text w-15 text-center',
                 render: (data, type, row) => {
                     return row?.['email'] ? `<div class="form-check">
                                 <input type="checkbox" class="form-check-input checkbox_external_send_notify_email">
@@ -346,9 +338,17 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
                 }
             },
             {
-                className: 'wrap-text w-10 text-right',
+                className: 'wrap-text w-10 text-center',
                 render: (data, type, row) => {
                     return '<span class="send-email-status small"></span>'
+                }
+            },
+            {
+                className: 'wrap-text w-5 text-center',
+                render: (data, type, row) => {
+                    return `<div class="form-check ">
+                                <input type="checkbox" class="form-check-input checkbox_external_contacts">
+                            </div>`
                 }
             },
         ],
@@ -697,7 +697,7 @@ class MeetingScheduleHandle {
             })
         })
 
-        if (frm.dataForm['participants'].length <= 0) {
+        if (frm.dataForm['participants'].length <= 0 || $('#check_room').attr('data-is_check') === 'false') {
             $.fn.notifyB({description: 'Participants have not selected yet.'}, 'failure');
             return false
         }
@@ -873,3 +873,147 @@ clipboard.on('success', function(e) {
 }).on('error', function(e) {
     $.fn.notifyB({description: 'Can not copy invitation.'}, 'failure');
 });
+
+function addMinutes(timeString, minutesToAdd) {
+    let [hours, minutes, seconds] = timeString.split(":").map(Number);
+
+    let date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes + minutesToAdd); // Cộng số phút
+    date.setSeconds(seconds);
+
+    // Định dạng lại thành HH:mm:ss
+    return date.toTimeString().slice(0, 8);
+}
+
+class checkRoomAvailable {
+    validData(turn_flag){
+        const startDate = $('#start-date').val()
+        const room = $('#room').val()
+        if (startDate && room){
+            const _this = this
+            $.fn.callAjax2({
+                url: $('#check_room').attr('data-url'),
+                method: 'GET',
+                data: {
+                    start_date: moment(startDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+                    room: room,
+
+                }
+            }).then(
+                (req) => {
+                    const res = $.fn.switcherResp(req);
+                    if (res) {
+                        if (turn_flag) _this.checkData(res['meeting_schedule_check'])
+                        else _this.renderCanvas(res['meeting_schedule_check'])
+                    }
+                },
+                (err) => {
+                    $.fn.notifyB({'description': err.data.errors}, 'failure')
+                })
+        }
+    }
+    renderCanvas(data){
+        let $elmSvg = document.getElementById('time_view_content')
+        let heightCanvas = 0;
+        let lstRect = document.createDocumentFragment();
+        const $elmInfo = document.querySelector('.rect_info')
+        if (data && data.length){
+            for (let item of data){
+                const startDate = item.meeting_start_time
+                const duration = item.meeting_duration
+                // lấy phần trăm thời gian
+                const timePercentage = (duration/60).toFixed(2)
+                const $timeWidth = $('.time_view_head ul li')
+                const _width = timePercentage * $timeWidth.outerWidth()
+                let positionOfItem = $('li#'+startDate.slice(0,2)).position().left;
+                positionOfItem += (startDate.slice(3,5)/60)*$timeWidth.outerWidth()
+                let elmRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                let elmTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                elmRect.setAttribute('x', positionOfItem)
+                elmRect.setAttribute('y', heightCanvas + 10)
+                elmRect.setAttribute('width', _width)
+                elmRect.setAttribute('rx', 10)
+                elmRect.setAttribute('ry', 10)
+                elmRect.setAttribute('fill', "lightblue")
+                elmRect.setAttribute('stroke', "#cdcdcd")
+                elmRect.setAttribute('stroke-width', 1)
+                elmRect.setAttribute('height', 16)
+                elmRect.classList.add('bar')
+                // add Event on mouse over
+                elmRect.addEventListener('click', function(e){
+                    let position = document.querySelector('.wrap_time_view').getBoundingClientRect()
+                    $elmInfo.innerHTML = `<b>${item.title}</b>`+
+                    `<p>${startDate} - ${addMinutes(startDate, duration)}</p>`
+                    $elmInfo.style.top = e.clientY - position.y - 5 + 'px'
+                    $elmInfo.style.left = e.clientX - position.x + 15 + 'px'
+                    $elmInfo.classList.add('show')
+                });
+
+                elmTxt.textContent = item.title
+                elmTxt.setAttribute('x', positionOfItem + _width + 10)
+                elmTxt.setAttribute('y', heightCanvas + 22)
+                elmTxt.setAttribute('fill', "#000000")
+                elmTxt.setAttribute('text-anchor', "start")
+                elmTxt.setAttribute('font-size', ".8rem")
+                elmTxt.setAttribute('fill', "#848484")
+
+                lstRect.appendChild(elmRect)
+                lstRect.appendChild(elmTxt)
+                heightCanvas += 36
+            }
+            $elmSvg.appendChild(lstRect)
+            $elmSvg.style.height = heightCanvas + 'px';
+            $elmSvg.addEventListener('click', function (e) {
+                    if (e.target.classList && !e.target.classList.contains('bar'))
+                        $elmInfo.classList.remove("show")
+                }
+            )
+        }
+    }
+
+    checkData(data){
+        let datePick = (([d, m , y]) => new Date(y, m - 1, d))($('#start-date').val().split('/'))
+        const elmTime = $('#start-time')
+        let start_compare = new Date(datePick)
+        start_compare.setHours(parseInt(elmTime.val().slice(0,2)), parseInt(elmTime.val().slice(3,5)), 0)
+        let end_compare = new Date(start_compare)
+        end_compare.setHours(end_compare.getHours() + parseInt($('#duration-hour').val()))
+        end_compare.setMinutes(end_compare.getMinutes() + parseInt($('#duration-min').val()))
+
+        for (let item of data){
+            let start_item = new Date(datePick)
+            start_item.setHours(
+                parseInt(item.meeting_start_time.slice(0, 2)),
+                parseInt(item.meeting_start_time.slice(3, 5))
+            )
+            let end_time = new Date(start_item)
+            end_time.setMinutes(end_time.getMinutes() + item.meeting_duration)
+
+            // case lớn hơn
+            if (
+                (start_compare.getTime() < start_item.getTime() && end_compare.getTime() >= start_item.getTime()) ||
+                (start_compare.getTime() >= start_item.getTime() && end_compare.getTime() <= end_time.getTime()) ||
+                (start_compare.getTime() < end_time.getTime() && end_compare.getTime() > end_time.getTime())
+
+            ) {
+                $('#check_room').attr('data-is_check', false)
+                $.fn.notifyB({'description': $.fn.gettext('This room is unavailable at this time')}, 'failure')
+                break;
+            }
+        }
+    }
+
+    listenEvent(){
+        $('#start-date, #start-time, #duration-hour, #duration-min, #room').on('change', ()=>{
+            if ($('#room').val() &&
+                $('#start-date').val() &&
+                $('#start-time').val() &&
+                (parseInt($('#duration-hour').val()) || parseInt($('#duration-min').val()))
+            ){
+                console.log('có vào')
+                this.validData(true)
+            }
+        });
+    }
+}

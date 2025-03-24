@@ -28,7 +28,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text w-50',
+                        className: 'wrap-text w-35',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}"><span class="text-primary"><b>${row?.['title']}</b></span></a> ${$x.fn.buttonLinkBlank(link)}`;
@@ -48,21 +48,21 @@ $(document).ready(function () {
                     },
                     {
                         data: 'room_info',
-                        className: 'wrap-text text-center',
+                        className: 'wrap-text w-20 text-center',
                         render: (data, type, row) => {
-                            return `${row?.['room_info']?.['title']}`
+                            return `${row?.['room_info']?.['title'] || '--'}`
                         }
                     },
                     {
                         data: 'date_occur',
-                        className: 'wrap-text w-25',
+                        className: 'wrap-text w-15',
                         render: (data, type, row) => {
                             return moment(row?.['date_occur'], 'YYYY-MM-DD hh:mm A').format('DD/MM/YYYY hh:mm A')
                         }
                     },
                     {
                         data: 'meeting_duration',
-                        className: 'wrap-text w-10 text-right',
+                        className: 'wrap-text w-15 text-right',
                         render: (data, type, row) => {
                             let hour = parseInt(row?.['meeting_duration']/60)
                             let min = parseInt(row?.['meeting_duration']%60)
@@ -79,20 +79,20 @@ $(document).ready(function () {
                             }
                         }
                     },
-                    {
-                        data: 'system_status',
-                        className: 'wrap-text text-center',
-                        render: (row, type, data) => {
-                            const status_data = [
-                                {txt: "Draft", cls: "soft-light"},
-                                {txt: "Created", cls: "soft-primary"},
-                                {txt: "Added", cls: "soft-info"},
-                                {txt: "Finish", cls: "soft-success"},
-                                {txt: "Cancel", cls: "soft-danger"},
-                            ]
-                            return `<span class="badge badge-${status_data[row]['cls']}">${status_data[row]['txt']}</span>`;
-                        }
-                    },
+                    // {
+                    //     data: 'system_status',
+                    //     className: 'wrap-text w-10 text-center',
+                    //     render: (row) => {
+                    //         const status_data = [
+                    //             {txt: "Draft", cls: "soft-light"},
+                    //             {txt: "Created", cls: "soft-primary"},
+                    //             {txt: "Added", cls: "soft-info"},
+                    //             {txt: "Finish", cls: "soft-success"},
+                    //             {txt: "Cancel", cls: "soft-danger"},
+                    //         ]
+                    //         return `<span class="badge badge-${status_data[row]['cls']}">${status_data[row]['txt']}</span>`;
+                    //     }
+                    // },
                 ],
             });
         }

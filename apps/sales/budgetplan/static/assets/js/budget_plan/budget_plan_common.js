@@ -221,7 +221,7 @@ function LoadTabs(group_budget_data, company_budget_data, space_month, is_lock, 
                     event.preventDefault();
                     let combinesData = combinesDataTab($(this));
                     if (combinesData) {
-                        WindowControl.showLoading();
+                        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
                         $.fn.callAjax2(combinesData)
                             .then(
                                 (resp) => {

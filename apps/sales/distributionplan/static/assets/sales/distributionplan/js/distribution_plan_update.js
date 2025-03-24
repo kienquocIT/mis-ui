@@ -1,6 +1,6 @@
 $(document).ready(function () {
     new DistributionPlanHandle().load('update');
-    WFRTControl.setWFInitialData('distributionplan', 'PUT')
+    WFRTControl.setWFInitialData('distributionplan')
     LoadDetailDP('update')
 
     $('#form-detail-dp').submit(function (event) {

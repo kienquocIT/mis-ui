@@ -201,7 +201,7 @@
 
             <div class="row">
                 <div class="row">
-                    <ul class="nav nav-light nav-tabs" id="quotation-tabs">
+                    <ul class="nav nav-line nav-tabs nav-light border-bottom" id="quotation-tabs">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                                 <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
@@ -349,7 +349,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6 border-right">
-                            <div data-simplebar class="h-350p nicescroll-bar">
+                            <div>
                                 <table
                                     id="datable-good-receipt-po-product"
                                     class="table nowrap w-100"
@@ -369,7 +369,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div data-simplebar class="h-350p nicescroll-bar" id="scroll-pr" hidden>
+                            <div id="scroll-pr" hidden>
                                 <table
                                     id="datable-good-receipt-purchase-request"
                                     class="table nowrap w-100"
@@ -391,7 +391,7 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <div data-simplebar class="h-350p nicescroll-bar" id="scroll-warehouse">
+                            <div id="scroll-warehouse">
                                 <table
                                     id="datable-good-receipt-warehouse"
                                     class="table nowrap w-100"
@@ -400,9 +400,10 @@
                                 >
                                     <thead>
                                     <tr class="bg-light">
-                                        <th class="w-30">{% trans 'Warehouse' %}</th>
-                                        <th class="w-15">{% trans 'Input data later' %}</th>
-                                        <th class="w-20">{% trans 'Quantity' %}</th>
+                                        <th class="w-25">{% trans 'Warehouse name' %}</th>
+                                        <th class="w-25">{% trans 'Warehouse code' %}</th>
+                                        <th class="w-20">{% trans 'Input data later' %}</th>
+                                        <th class="w-15">{% trans 'Quantity' %}</th>
                                         <th class="w-15">{% trans 'UOM' %}</th>
                                     </tr>
                                     </thead>
@@ -411,7 +412,7 @@
                                 </table>
                             </div>
                             <div>
-                                <div data-simplebar class="h-350p nicescroll-bar" id="scroll-lot" hidden>
+                                <div id="scroll-lot" hidden>
                                     <table
                                         id="datable-good-receipt-manage-lot"
                                         class="table nowrap min-w-800p w-100"
@@ -420,8 +421,8 @@
                                     >
                                         <thead>
                                         <tr class="bg-light">
-                                            <th class="required w-30">{% trans 'Lot number' %}</th>
-                                            <th class="required w-15">{% trans 'Quantity' %}</th>
+                                            <th class="w-30">{% trans 'Lot number' %}</th>
+                                            <th class="w-15">{% trans 'Quantity' %}</th>
                                             <th class="w-15">{% trans 'Exp date' %}</th>
                                             <th class="w-15">{% trans 'Mfg date' %}</th>
                                             <th class="w-10"></th>
@@ -430,11 +431,8 @@
                                         <tbody>
                                         </tbody>
                                     </table>
-                                    <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-lot">
-                                        <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
-                                    </button>
                                 </div>
-                                <div data-simplebar class="h-350p nicescroll-bar" id="scroll-serial" hidden>
+                                <div id="scroll-serial" hidden>
                                     <table
                                         id="datable-good-receipt-manage-serial"
                                         class="table nowrap min-w-800p w-100"
@@ -455,9 +453,6 @@
                                         <tbody>
                                         </tbody>
                                     </table>
-                                    <button type="button" class="btn btn-outline-primary btn-sm" id="btn-add-manage-serial">
-                                        <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'New' %}</span></span>
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -590,6 +585,7 @@
             data-production-report="{% trans 'Production report' %}"
             data-required-product="{% trans "Product is required" %}"
             data-edit="{% trans "Edit" %}"
+            data-add="{% trans "New" %}"
     >
     <input
             type="text"

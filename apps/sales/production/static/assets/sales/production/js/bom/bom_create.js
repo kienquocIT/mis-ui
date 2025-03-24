@@ -1,6 +1,6 @@
 $(document).ready(function () {
     BOMHandle.LoadPage();
-    WFRTControl.setWFInitialData('bom', 'POST')
+    WFRTControl.setWFInitialData('bom')
 
     $('#form-create-bom').submit(function (event) {
         event.preventDefault();

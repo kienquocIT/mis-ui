@@ -1,0 +1,39 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12">
+        <!-- Khung Chat -->
+        <div id="chatPopup" class="chat-popup" style="z-index: 4">
+            <div class="chat-header text-primary" id="toggleChat">
+                <span><i class="bi bi-stars text-white"></i></span>
+            </div>
+            <div class="chat-content">
+                <div class="row">
+                    <div class="col-12" id="chat-show-space" style="overflow-y: auto; max-height: 300px">
+                        <div class="text-left">
+                            <div class="you bg-white p-2" style="max-width: 80%; border-radius: 0.375rem">
+                                Xin chào👋! Tôi có thể hỗ trợ bạn về dữ liệu trong Báo cáo này. Ví dụ:
+                            </div>
+                            <div class="you bg-white p-2 mt-2" style="max-width: 80%; border-radius: 0.375rem">
+                                1. [Sản phẩm] tồn đầu | đã nhập | đã xuất | tồn cuối bao nhiêu ở [Kho]
+                            </div>
+                            <div class="you bg-white p-2 mt-2" style="max-width: 80%; border-radius: 0.375rem">
+                                2. [Sản phẩm] có giá cost đầu kì | nhập vào | xuất ra | cuối kì là bao nhiêu ở [Kho]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="form-group d-flex">
+                            <textarea class="form-control" id="input-chat" placeholder="{% trans 'Type here...' %}"></textarea>
+                            <label for="input-chat" class="form-label">
+                                <button id="send-message" class="btn fw-bold text-primary w-100 h-100"><i class="far fa-paper-plane text-white"></i></button>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

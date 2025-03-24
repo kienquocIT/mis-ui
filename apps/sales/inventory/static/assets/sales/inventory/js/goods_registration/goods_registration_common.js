@@ -596,9 +596,9 @@ $(document).on("click", '.so-available-change', function () {
 frm_borrow_from_stock.submit(function (event) {
     event.preventDefault();
     let combinesData = new GoodsRegistrationBorrowHandle().combinesDataStock($(this));
-    console.log(combinesData)
+    // console.log(combinesData)
     if (combinesData) {
-        WindowControl.showLoading();
+        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
         $.fn.callAjax2(combinesData)
             .then(
                 (resp) => {
@@ -627,9 +627,9 @@ frm_borrow_from_stock.submit(function (event) {
 frm_borrow_from_other.submit(function (event) {
     event.preventDefault();
     let combinesData = new GoodsRegistrationBorrowHandle().combinesDataProject($(this));
-    console.log(combinesData)
+    // console.log(combinesData)
     if (combinesData) {
-        WindowControl.showLoading();
+        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
         $.fn.callAjax2(combinesData)
             .then(
                 (resp) => {
@@ -660,7 +660,7 @@ frm_borrow_row.submit(function (event) {
     if (borrow_row.find('.so-available-save').attr('data-so') === 'undefined') {
         let combinesData = new GoodsRegistrationBorrowHandle().combinesDataStock($(this), borrow_row);
         if (combinesData) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             $.fn.callAjax2(combinesData)
                 .then(
                     (resp) => {
@@ -688,7 +688,7 @@ frm_borrow_row.submit(function (event) {
     else {
         let combinesData = new GoodsRegistrationBorrowHandle().combinesDataProject($(this), borrow_row);
         if (combinesData) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             $.fn.callAjax2(combinesData)
                 .then(
                     (resp) => {

@@ -231,7 +231,7 @@ msgstr "Bởi Phụ trách dự án"
 
 #
 msgid "By System status"
-msgstr "Bởi Trạng thái hệ thống"
+msgstr "Bởi TT hệ thống"
 
 #
 msgid "Close Project"

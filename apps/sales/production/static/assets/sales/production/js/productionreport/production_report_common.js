@@ -422,10 +422,10 @@ class ProdReportDataTableHandle {
                     width: '20%',
                     render: (data, type, row) => {
                         if (row?.['is_task'] === true) {
-                            return `<input type="text" class="form-control valid-number table-row-labor-actual" value="${row?.['quantity_actual']}">`;
+                            return `<input type="text" class="form-control valid-num table-row-labor-actual" value="${row?.['quantity_actual']}">`;
                         }
                         return `<div class="d-flex justify-content-between align-items-center">
-                                    <input type="text" class="form-control valid-number table-row-quantity-actual" value="${row?.['quantity_actual']}">
+                                    <input type="text" class="form-control valid-num table-row-quantity-actual" value="${row?.['quantity_actual']}">
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-info" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="fas fa-info-circle"></i></span></button>
                                     <div role="menu" class="dropdown-menu content-info"></div>
                                 </div>`;

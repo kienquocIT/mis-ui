@@ -21,12 +21,6 @@
                     <span class="nav-link-text">{% trans 'Inventory management' %}</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_company_bank_account">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-bank"></i></span></span>
-                    <span class="nav-link-text">{% trans 'Bank account' %}</span>
-                </a>
-            </li>
         </ul>
     </div>
     <div class="tab-content">
@@ -162,26 +156,6 @@
                             <label class="form-check-label" for="cost-per-prj">{% trans 'Cost per project (sale order in Opp)' %}</label>
                         </div>
                     </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="tab_company_bank_account">
-            <div class="row">
-                <div class="col-12 col-md-12 col-lg-12">
-                    <button id="btn-add-bank" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-company-bank-account">{% trans 'Add new' %}</button>
-                    <table id="table-company-bank-account" class="table nowrap w-100" data-url="{% url 'CompanyBankAccountListAPI' %}">
-                        <thead>
-                        <tr>
-                            <th style="min-width: 30px"></th>
-                            <th style="min-width: 150px">{% trans 'Bank code' %}</th>
-                            <th style="min-width: 150px">{% trans 'Bank name' %}</th>
-                            <th style="min-width: 150px">{% trans 'Bank account owner' %}</th>
-                            <th style="min-width: 150px">{% trans 'Bank number' %}</th>
-                            <th style="min-width: 100px">{% trans 'Status' %}</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
             </div>
         </div>
     </div>

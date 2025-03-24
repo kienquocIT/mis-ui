@@ -3,7 +3,7 @@ $(document).ready(function () {
 
     // call load page
     APHandle.LoadPage('create');
-    WFRTControl.setWFInitialData('advancepayment', 'POST')
+    WFRTControl.setWFInitialData('advancepayment')
 
     // SUBMIT FORM CREATE ADVANCE PAYMENT
     let form_validator = $('#form-create-advance').validate({

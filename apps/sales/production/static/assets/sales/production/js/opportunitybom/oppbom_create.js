@@ -1,6 +1,6 @@
 $(document).ready(function () {
     OpportunityBOMHandle.LoadPage('create');
-    WFRTControl.setWFInitialData('bom', 'POST')
+    WFRTControl.setWFInitialData('bom')
 
     $('#form-create-prj-bom').submit(function (event) {
         event.preventDefault();

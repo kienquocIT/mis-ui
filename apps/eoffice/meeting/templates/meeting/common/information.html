@@ -126,6 +126,45 @@
                     <span class="text-muted small">{% trans 'Click the button behind the box to select' %}</span>
                 </div>
             </div>
+            {% if is_create %}
+            <div class="col-md-12">
+                <button class="btn btn-outline-primary mb-3" type="button" id="check_room"
+                        data-url="{% url 'MeetingScheduleCheckAPI' %}">{% trans "Check this room's bookings" %}</button>
+                <div class="wrap_time_view">
+                    <div class="time_view_head">
+                        <ul>
+                            <li id="00">00</li>
+                            <li id="01">01</li>
+                            <li id="02">02</li>
+                            <li id="03">03</li>
+                            <li id="04">04</li>
+                            <li id="05">05</li>
+                            <li id="06">06</li>
+                            <li id="07">07</li>
+                            <li id="08">08</li>
+                            <li id="09">09</li>
+                            <li id="10">10</li>
+                            <li id="11">11</li>
+                            <li id="12">12</li>
+                            <li id="13">13</li>
+                            <li id="14">14</li>
+                            <li id="15">15</li>
+                            <li id="16">16</li>
+                            <li id="17">17</li>
+                            <li id="18">18</li>
+                            <li id="19">19</li>
+                            <li id="20">20</li>
+                            <li id="21">21</li>
+                            <li id="22">22</li>
+                            <li id="23">23</li>
+                        </ul>
+                    </div>
+                    <div class="rect_info"></div>
+                    <svg id="time_view_content">
+                    </svg>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

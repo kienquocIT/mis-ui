@@ -1,955 +1,1259 @@
-let url_script = $('#url_script')
-let titleEle = $('#title')
-let partNumberEle = $('#part-number')
-let suppliedByEle = $('#purchase-supplied-by')
-let check_tab_inventory = $('#check-tab-inventory');
-let check_tab_sale = $('#check-tab-sale');
-let check_tab_purchase = $('#check-tab-purchase');
-let generalUomGroupEle = $('#general-select-box-uom-group');
-let generalProductTypeEle = $('#general-select-box-product-type');
-let generalProductCateEle = $('#general-select-box-product-category');
-let saleDefaultUomEle = $('#sale-select-box-default-uom');
-let public_website_Ele = $('#is_publish_website')
-let price_list_for_online_sale_Ele = $('#price_list_for_sale_online')
-let purchaseDefaultUomEle = $('#purchase-select-box-default-uom');
-let inventoryDefaultUomEle = $('#inventory-select-box-uom-name');
-let saleProductTaxEle = $('#sale-select-box-tax-code');
-let purchaseProductTaxEle = $('#purchase-select-box-tax-code');
-let table_warehouse_list = $('#datatable-warehouse-list');
-let lengthEle = $('#length');
-let widthEle = $('#width');
-let heightEle = $('#height');
-let volumeEle = $('#volume');
-let weightEle = $('#weight');
-let productImageEle = $('#product-image');
-let available_notify_checkboxEle = $('#available_notify_checkbox')
-let currency_list = [];
-let currency_primary = null;
-let item_unit_dict = {}
-
-let ajax_currency_data = $.fn.callAjax2({
-    url: url_script.attr('data-url-currency'),
-    data: {},
-    method: 'GET'
-}).then(
-    (resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data && typeof data === 'object' && data.hasOwnProperty('currency_list')) {
-            return data?.['currency_list'];
-        }
-        return {};
-    },
-    (errs) => {
-        console.log(errs);
+// region PAGE ELEMENTS
+class ProductPageElements {
+    constructor() {
+        this.$url_script = $('#url_script')
+        // information
+        this.$product_image = $('#product-image')
+        this.$code = $('#code')
+        this.$title = $('#title')
+        this.$part_number = $('#part-number')
+        this.$description = $('#description')
+        // general tab
+        this.$general_product_type = $('#general-product-type')
+        this.$general_product_category = $('#general-product-category')
+        this.$general_uom_group = $('#general-uom-group')
+        this.$general_manufacturer = $('#general-manufacturer')
+        this.$general_traceability_method = $('#general-traceability-method')
+        this.$general_standard_price = $('#general-standard-price')
+        this.$length = $('#length')
+        this.$width = $('#width')
+        this.$height = $('#height')
+        this.$volume = $('#volume')
+        this.$weight = $('#weight')
+        // sale tab
+        this.$check_tab_sale = $('#check-tab-sale')
+        this.$sale_uom = $('#sale-uom')
+        this.$sale_tax = $('#sale-tax')
+        this.$is_publish_website = $('#is_publish_website')
+        this.$price_list_for_sale_online = $('#price_list_for_sale_online')
+        this.$available_notify_checkbox = $('#available_notify_checkbox')
+        this.$less_than_number = $('#less_than_number')
+        this.$table_price_list = $('#table_price_list')
+        // inventory tab
+        this.$check_tab_inventory = $('#check-tab-inventory')
+        this.$inventory_uom = $('#inventory-uom')
+        this.$inventory_level_min = $('#inventory-level-min')
+        this.$inventory_level_max = $('#inventory-level-max')
+        this.$valuation_method = $('#valuation-method')
+        this.$notify_inventory = $('#notify-inventory')
+        this.$datatable_warehouse_list = $('#datatable-warehouse-list')
+        this.$datatable_warehouse_overview = $('#datatable-warehouse-overview')
+        // purchase tab
+        this.$check_tab_purchase = $('#check-tab-purchase')
+        this.$purchase_uom = $('#purchase-uom')
+        this.$purchase_tax = $('#purchase-tax')
+        this.$purchase_supplied_by = $('#purchase-supplied-by')
+        // variant tab
+        this.$table_variant_attributes = $('#table-variant-attributes')
+        this.$btn_add_row_variant_attributes = $('#btn-add-row-variant-attributes')
+        this.$modal_variant_attributes = $('#modal-variant-attributes')
+        this.$attribute_display_select_by = $('#attribute-display-select-by')
+        this.$table_variant_items = $('#table-variant-items')
+        this.$add_attribute_display_item = $('#add-attribute-display-item')
+        this.$add_variant_des = $('#add-variant-des')
+        // account determination tab
+        this.$product_account_determination_table = $('#product-account-determination-table')
+        this.$account_deter_referenced_by = $('#account-deter-referenced-by')
     }
-)
-let ajax_base_unit_data = $.fn.callAjax2({
-    url: url_script.attr('data-url-unit'),
-    data: {},
-    method: 'GET'
-}).then(
-    (resp) => {
-        let data = $.fn.switcherResp(resp);
-        if (data && typeof data === 'object' && data.hasOwnProperty('base_unit_list')) {
-            return data?.['base_unit_list'];
-        }
-        return {};
-    },
-    (errs) => {
-        console.log(errs);
-    }
-)
-
-Promise.all([ajax_currency_data, ajax_base_unit_data]).then(
-    (results) => {
-        currency_list = results[0];
-        item_unit_dict = results[1];
-        for (let i = 0; i < currency_list.length; i++) {
-            if (currency_list[i]?.['is_primary']) {
-                currency_primary = currency_list[i].id
-            }
-        }
-    })
-
-// for variant
-let Detail_data = null;
-let table_Variant_Attributes = $('#table-variant-attributes');
-let btn_Add_Line_Variant_Attributes = $('#btn-add-row-variant-attributes');
-let modal_Variant_Attributes = $('#modal-variant-attributes');
-let attribute_display_select_by = $('#attribute-display-select-by');
-let table_Variant_Items = $('#table-variant-items');
-let add_attribute_display_item = $('#add-attribute-display-item');
-let add_variant_des = $('#add-variant-des');
-let current_row_variant_attribute = null;
-let current_row_variant_item = null;
-
-productImageEle.dropify({
-    messages: {
-        'default': '',
-    },
-    tpl: {
-        message: '<div class="dropify-message">' +
-            '<span class="file-icon"></span>' +
-            '<h5>{{ default }}</h5>' +
-            '</div>',
-    }
-});
-
-check_tab_inventory.change(function () {
-    $('#tab_inventory input, #tab_inventory select').val('')
-    $('#tab_inventory').find('.row').prop('hidden', !check_tab_inventory.is(':checked'))
-    if (check_tab_inventory.is(':checked')) {
-        $('#label-dimension').addClass('required');
-    } else {
-        $('#label-dimension').removeClass('required');
-    }
-});
-
-check_tab_sale.change(function () {
-    $('#tab_sale input, #tab_sale select').val('')
-    $('#tab_sale').find('.row').prop('hidden', !check_tab_sale.is(':checked'))
-});
-
-check_tab_purchase.change(function () {
-    $('#tab_purchase input, #tab_purchase select').val('')
-    $('#tab_purchase').find('.row').prop('hidden', !check_tab_purchase.is(':checked'))
-    $.fn.initMaskMoney2()
-});
-
-available_notify_checkboxEle.on('change', function () {
-    $('#less_than_number').val('').prop('disabled', !$(this).prop('checked'))
-})
-
-$(document).on("change", '#length', function () {
-    let length = lengthEle.val();
-    let width = widthEle.val();
-    let height = heightEle.val();
-    let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
-    if (!isNaN(volume)) {
-        volumeEle.val(volume.toFixed(5));
-    }
-    else {
-        volumeEle.val('');
-    }
-})
-
-$(document).on("change", '#width', function () {
-    let length = lengthEle.val();
-    let width = widthEle.val();
-    let height = heightEle.val();
-    let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
-    if (!isNaN(volume)) {
-        volumeEle.val(volume.toFixed(5));
-    }
-    else {
-        volumeEle.val('');
-    }
-})
-
-$(document).on("change", '#height', function () {
-    let length = lengthEle.val();
-    let width = widthEle.val();
-    let height = heightEle.val();
-    let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
-    if (!isNaN(volume)) {
-        volumeEle.val(volume.toFixed(5));
-    }
-    else {
-        volumeEle.val('');
-    }
-})
-
-$(document).on('change', '.select_price_list', function () {
-    if ($(this).is(':checked') === true) {
-        $(this).closest('tr').find('.input_price_list').attr('disabled', false);
-    } else {
-        $(this).closest('tr').find('.input_price_list').attr('disabled', true);
-        $(this).closest('tr').find('.input_price_list').attr('value', '');
-        $(this).closest('tr').find('.input_price_list').val('');
-    }
-})
-
-$(document).on('change', '.input_price_list', function () {
-    let this_data_id = $(this).attr('data-id');
-    let this_data_value = $(this).attr('value');
-    let sale_product_price_list = []
-    $('.ul-price-list').find('.input_price_list').each(function () {
-        if ($(this).attr('data-source') === this_data_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
-            let value = parseFloat(this_data_value) * parseFloat($(this).attr('data-factor'));
-            $(this).attr('value', value);
-            loadPriceForChild($(this).attr('data-id'), value);
-        }
-
-        let price_list_id = $(this).attr('data-id');
-        let price_list_value = $(this).attr('value');
-        if (price_list_id && price_list_value) {
-            sale_product_price_list.push(price_list_id);
-        }
-    })
-    $.fn.initMaskMoney2();
-
-    loadSalePriceListForSaleOnline(null, sale_product_price_list)
-})
-
-function loadGeneralProductType(product_type_list) {
-    generalProductTypeEle.initSelect2({
-        ajax: {
-            url: generalProductTypeEle.attr('data-url'),
-            method: 'GET',
-        },
-        data: (product_type_list ? product_type_list : null),
-        keyResp: 'product_type_list',
-        keyId: 'id',
-        keyText: 'title',
-    }).on('change', function () {
-        $('#notify-inventory').prop('hidden', true)
-        if (generalProductTypeEle.val().length === 0) {
-            check_tab_inventory.prop('checked', false).prop('disabled', false)
-            check_tab_sale.prop('checked', false).prop('disabled', false)
-            check_tab_purchase.prop('checked', false).prop('disabled', false)
-        }
-        else {
-            let has_finished_goods = false
-            let has_service = false
-            for (let i = 0; i < generalProductTypeEle.val().length; i++) {
-                let selected = SelectDDControl.get_data_from_idx(generalProductTypeEle, generalProductTypeEle.val()[i])
-                if (selected?.['is_finished_goods']) {
-                    has_finished_goods = true
-                } else if (selected?.['is_service']) {
-                    has_service = true
-                }
-            }
-            if (has_finished_goods && has_service) {
-                $.fn.notifyB({description: 'Can not select both Finished goods and Service at the same time'}, 'failure');
-                generalProductTypeEle.empty()
-            }
-            else if (has_service) {
-                $('#notify-inventory').prop('hidden', false)
-                check_tab_inventory.prop('checked', false).prop('disabled', true)
-            }
-        }
-    })
 }
+const pageElements = new ProductPageElements()
+// endregion
 
-function loadGeneralProductCategory(product_category_list) {
-    generalProductCateEle.initSelect2({
-        ajax: {
-            url: generalProductCateEle.attr('data-url'),
-            method: 'GET',
-        },
-        data: (product_category_list ? product_category_list : null),
-        keyResp: 'product_category_list',
-        keyId: 'id',
-        keyText: 'title',
-    })
-}
-
-function loadGeneralUoMGroup(unit_of_measure_group) {
-    generalUomGroupEle.initSelect2({
-        ajax: {
-            url: generalUomGroupEle.attr('data-url'),
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp) {
-            return resp.data[keyResp].filter(function (item) {
-                return Object.keys(item?.['referenced_unit']).length !== 0 && item?.['code'] !== 'Import';
-            });
-        },
-        data: (unit_of_measure_group ? unit_of_measure_group : null),
-        keyResp: 'unit_of_measure_group',
-        keyId: 'id',
-        keyText: 'title',
-    }).on('change', function () {
-        loadSaleDefaultUom();
-        loadInventoryDefaultUom();
-        loadPurchaseDefaultUom();
-    })
-}
-
-function loadSaleTaxCode(tax_list) {
-    saleProductTaxEle.initSelect2({
-        ajax: {
-            url: saleProductTaxEle.attr('data-url'),
-            method: 'GET',
-        },
-        data: (tax_list ? tax_list : null),
-        keyResp: 'tax_list',
-        keyId: 'id',
-        keyText: 'title',
-    })
-}
-
-public_website_Ele.on('change', function () {
-    if (!$(this).prop('checked')) {
-        price_list_for_online_sale_Ele.val('').trigger('change')
-        price_list_for_online_sale_Ele.prop('disabled', true)
-    } else {
-        price_list_for_online_sale_Ele.prop('disabled', false)
-    }
-})
-
-function loadSalePriceListForSaleOnline(data, filter = []) {
-    price_list_for_online_sale_Ele.initSelect2({
-        allowClear: true,
-        ajax: {
-            url: price_list_for_online_sale_Ele.attr('data-url'),
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp) {
-            let result = [];
-            for (let i = 0; i < resp.data[keyResp].length; i++) {
-                if (filter.includes(resp.data[keyResp][i].id)) {
-                    result.push(resp.data[keyResp][i])
-                }
-            }
-            return result;
-        },
-        data: (data ? data : null),
-        keyResp: 'price_list',
-        keyId: 'id',
-        keyText: 'title',
-    })
-}
-
-function findObjectById(data, targetId) {
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].id === targetId) {
-            return data[i]?.['price'];
-        }
-    }
-    return '';
-}
-
-function loadPriceList(price_list_from_detail, option) {
-    let disabled_all_input = ''
-    if (option === 'detail') {
-        disabled_all_input = 'disabled readonly'
-    }
-    let tbl = $('#table_price_list');
-    tbl.DataTableDefault({
-        styleDom: 'hide-foot',
-        paging: false,
-        scrollX: '100vw',
-        scrollY: '35vh',
-        scrollCollapse: true,
-        useDataServer: true,
-        reloadCurrency: true,
-        rowIdx: true,
-        ajax: {
-            url: tbl.attr('data-url'),
-            type: tbl.attr('data-method'),
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    let price_list_data = []
-                    let resp_price_list = resp.data['price_list'] ? resp.data['price_list'] : []
-                    let general_price_list_id = null;
-                    for (let i = 0; i < resp_price_list.length; i++) {
-                        let item = resp_price_list[i];
-                        let price_value = findObjectById(price_list_from_detail, item?.['id'])
-                        let checked = '';
-                        let disabled = '';
-                        let disabled_input = 'disabled';
-                        let is_default = false;
-                        let required = '';
-                        if (item.is_default) {
-                            general_price_list_id = item.id
-                            disabled_input = ''
-                            is_default = true;
-                            required = 'required';
-                        }
-                        if (item.is_default || (item?.['price_list_mapped'] === general_price_list_id && item?.['auto_update'] === true)) {
-                            checked = 'checked';
-                            disabled = 'disabled';
-                        }
-                        let hidden = '';
-                        if (item?.['price_list_mapped'] !== null) {
-                            hidden = 'hidden';
-                        }
-                        if (price_value) {
-                            checked = 'checked';
-                        }
-                        price_list_data.push({
-                            'hidden': hidden,
-                            'checked': checked,
-                            'disabled': disabled,
-                            'is_default': is_default,
-                            'disabled_input': disabled_input,
-                            'required': required,
-                            'id': item?.['id'],
-                            'title': item?.['title'],
-                            'price_value': price_value,
-                            'price_list_mapped': item?.['price_list_mapped'],
-                            'valid_time_start': moment(item?.['valid_time_start'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'),
-                            'valid_time_end': is_default ? '--' : moment(item?.['valid_time_end'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'),
-                            'auto_update': item?.['auto_update'],
-                            'factor': item?.['factor']
-                        })
-                    }
-                    return price_list_data;
-                }
-            }
-        },
-        columns: [
+// region PAGE VARIABLES
+class ProductPageVariables {
+    constructor() {
+        this.data_detail = null
+        this.current_row_variant_attribute = null
+        this.current_row_variant_item = null
+        // account determination tab
+        this.columns_cfg = [
             {
                 className: 'wrap-text w-5',
                 'render': () => {
                     return ``;
                 }
-            }, {
-                className: 'wrap-text w-5',
-                render: (data, type, row) => {
-                    return `<input ${disabled_all_input} ${row.hidden} class="select_price_list" type="checkbox" data-id="${row.id}" ${row.checked} ${row.disabled}>`
+            },
+            {
+                className: 'wrap-text',
+                'render': (data, type, row) => {
+                    return `<span class="text-muted">${row?.['account_determination_type_convert']}</span>`;
                 }
-            }, {
+            },
+            {
                 className: 'wrap-text w-30',
-                render: (data, type, row) => {
-                    return `<label class="${row.required} form-label text-primary fw-bold">${row.title}</label>`
+                'render': (data, type, row) => {
+                    return `<h6 class="text-muted fw-bold">${row?.['title']}</h6><h6 class="small text-primary fw-bold">${row?.['foreign_title']}</h6>`;
                 }
-            }, {
-                className: 'wrap-text w-15',
-                render: (data, type, row) => {
-                    return `<span>${row?.['valid_time_start']}</span>`
+            },
+            {
+                className: 'wrap-text w-20',
+                'render': (data, type, row) => {
+                    return `<select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="form-select select2 selected-accounts"></select>`;
                 }
-            }, {
-                className: 'wrap-text w-15',
-                render: (data, type, row) => {
-                    return `<span>${row?.['valid_time_end']}</span>`
+            },
+            {
+                className: 'wrap-text w-35',
+                'render': () => {
+                    return `<div class="selected-accounts-des"></div>`;
                 }
-            }, {
-                className: 'wrap-text w-30',
-                render: (data, type, row) => {
-                    return `<input ${disabled_all_input} value="${row.price_value}" data-is-default="${row.is_default}" ${row.disabled_input} data-source="${row?.['price_list_mapped']}" data-auto-update="${row.auto_update}" data-factor="${row.factor}" data-id="${row.id}" data-return-type="number" type="text" class="form-control text-primary mask-money input_price_list">`
+            },
+            {
+                className: 'wrap-text text-right w-10',
+                'render': (data, type, row) => {
+                    let change_btn = `<a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-xs btn-change-account">
+                       <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i class="fa-solid fa-pen-to-square"></i></span></span>
+                    </a>`;
+                    let save_btn = `<button type="button" data-id="${row?.['id']}" hidden class="btn btn-custom btn-primary btn-xs btn-save-change-account">
+                        <span>
+                            <span class="icon"><span class="feather-icon"><i class="fa-solid fa-file-pen"></i></span></span>
+                            <span>${$.fn.gettext('Save changes')}</span>
+                        </span>
+                    </button>`;
+                    return row?.['can_change_account'] ? change_btn + save_btn : ''
                 }
-            }
-        ],
-    }).on('draw.dt', function () {
-        tbl.find('tbody').find('tr').each(function () {
-            $(this).after('<tr class="table-row-gap"><td></td></tr>');
-        });
-    });
-}
-
-function loadSaleDefaultUom(data) {
-    saleDefaultUomEle.empty()
-    saleDefaultUomEle.initSelect2({
-        ajax: {
-            url: saleDefaultUomEle.attr('data-url'),
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp) {
-            let result = [];
-            for (let i = 0; i < resp.data[keyResp].length; i++) {
-                if (resp.data[keyResp][i].group.id === generalUomGroupEle.val()) {
-                    result.push(resp.data[keyResp][i])
-                }
-            }
-            return result;
-        },
-        data: (data ? data : null),
-        keyResp: 'unit_of_measure',
-        keyId: 'id',
-        keyText: 'title',
-    })
-}
-
-function loadInventoryDefaultUom(data) {
-    inventoryDefaultUomEle.empty()
-    inventoryDefaultUomEle.initSelect2({
-        ajax: {
-            url: inventoryDefaultUomEle.attr('data-url'),
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp) {
-            let result = [];
-            for (let i = 0; i < resp.data[keyResp].length; i++) {
-                if (resp.data[keyResp][i].group.id === generalUomGroupEle.val()) {
-                    result.push(resp.data[keyResp][i])
-                }
-            }
-            return result;
-        },
-        data: (data ? data : null),
-        keyResp: 'unit_of_measure',
-        keyId: 'id',
-        keyText: 'title',
-    })
-}
-
-function loadPurchaseDefaultUom(data) {
-    purchaseDefaultUomEle.empty()
-    purchaseDefaultUomEle.initSelect2({
-        ajax: {
-            url: purchaseDefaultUomEle.attr('data-url'),
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp) {
-            let result = [];
-            for (let i = 0; i < resp.data[keyResp].length; i++) {
-                if (resp.data[keyResp][i].group.id === generalUomGroupEle.val()) {
-                    result.push(resp.data[keyResp][i])
-                }
-            }
-            return result;
-        },
-        data: (data ? data : null),
-        keyResp: 'unit_of_measure',
-        keyId: 'id',
-        keyText: 'title',
-    })
-}
-
-function loadPurchaseTaxCode(tax_list) {
-    purchaseProductTaxEle.initSelect2({
-        ajax: {
-            url: purchaseProductTaxEle.attr('data-url'),
-            method: 'GET',
-        },
-        data: (tax_list ? tax_list : null),
-        keyResp: 'tax_list',
-        keyId: 'id',
-        keyText: 'title',
-    })
-}
-
-function loadBaseItemUnit() {
-    for (let i = 0; i < item_unit_dict.length; i++) {
-        if (item_unit_dict[i]?.['title'] === 'volume') {
-            $('#VolumeSpan').text(item_unit_dict[i]?.['measure'])
-            volumeEle.attr('data-id', item_unit_dict[i]?.['id'])
-        }
-        if (item_unit_dict[i]?.['title'] === 'weight') {
-            $('#WeightSpan').text(item_unit_dict[i]?.['measure'])
-            weightEle.attr('data-id', item_unit_dict[i]?.['id'])
-        }
+            },
+        ]
     }
 }
+const pageVariables = new ProductPageVariables();
+// endregion
 
-function loadPriceForChild(element_id, element_value) {
-    $('.ul-price-list').find('.input_price_list').each(function () {
-        if ($(this).attr('data-source') === element_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
-            let value = parseFloat(element_value) * parseFloat($(this).attr('data-factor'));
-            $(this).attr('value', value);
-            loadPriceForChild($(this).attr('data-id'), value);
+// region FUNCTION LOAD PAGE
+class ProductLoadPage {
+    static async LoadPageDataFirst() {
+        try {
+            // Gọi nhiều AJAX song song
+            let [baseUnits] = await Promise.all([
+                $.fn.callAjax2({ url: pageElements.$url_script.attr('data-url-unit'), method: 'GET' }),
+            ])
+
+            let base_unit_data = $.fn.switcherResp(baseUnits)?.['base_unit_list'] || []
+
+            // chạy các hàm cức năng sử dụng dữ liệu init
+            ProductLoadPage.LoadBaseUnit(base_unit_data)
+        } catch (error) {
+            console.error("Load page data error!!!", error);
+        } finally {
+            console.log("Load page data done!!!");
         }
-    })
-    $.fn.initMaskMoney2();
-}
-
-function loadWareHouseListDetail(product_warehouse_detail) {
-    table_warehouse_list.DataTableDefault({
-        dom: '',
-        paging: false,
-        data: product_warehouse_detail,
-        columns: [
-            {
-                data: 'code',
-                className: 'wrap-text text-center w-15',
-                render: (data, type, row) => {
-                    return `<span class="badge badge-soft-blue badge-outline table-row-code" data-id="${row.warehouse.id}">${row.warehouse.code}</span>`;
-                }
+    }
+    // general tab
+    static LoadGeneralProductType(data) {
+        pageElements.$general_product_type.initSelect2({
+            ajax: {
+                url: pageElements.$general_product_type.attr('data-url'),
+                method: 'GET',
             },
-            {
-                data: 'title',
-                className: 'wrap-text text-center w-35',
-                render: (data, type, row) => {
-                    return `<span class="text-secondary"><b>${row.warehouse.title}</b></span>`
+            data: (data ? data : null),
+            keyResp: 'product_type_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+            pageElements.$notify_inventory.prop('hidden', true)
+            if (pageElements.$general_product_type.val()) {
+                pageElements.$check_tab_inventory.prop('checked', false).prop('disabled', false)
+                pageElements.$check_tab_sale.prop('checked', false).prop('disabled', false)
+                pageElements.$check_tab_purchase.prop('checked', false).prop('disabled', false)
+            }
+            else {
+                let selected = SelectDDControl.get_data_from_idx(pageElements.$general_product_type, pageElements.$general_product_type.val())
+                let has_finished_goods = !!selected?.['is_finished_goods']
+                let has_service = !!selected?.['is_service']
+                if (has_finished_goods && has_service) {
+                    $.fn.notifyB({description: 'Can not select both Finished goods and Service at the same time'}, 'failure');
+                    pageElements.$general_product_type.empty()
                 }
-            },
-            {
-                data: '',
-                className: 'wrap-text text-center w-15',
-                render: (data, type, row) => {
-                    return `<span class="fw-bold">${row?.['stock_amount']}</span>`;
+                else if (has_service) {
+                    pageElements.$notify_inventory.prop('hidden', false)
+                    pageElements.$check_tab_inventory.prop('checked', false).prop('disabled', true)
                 }
+            }
+        })
+    }
+    static LoadGeneralProductCategory(data) {
+        pageElements.$general_product_category.initSelect2({
+            ajax: {
+                url: pageElements.$general_product_category.attr('data-url'),
+                method: 'GET',
             },
-            {
-                data: '',
-                className: 'wrap-text text-center w-35',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-primary" data-init-money="${row?.['cost']}"></span>`;
-                }
+            data: (data ? data : null),
+            keyResp: 'product_category_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+    static LoadGeneralUoMGroup(data) {
+        pageElements.$general_uom_group.initSelect2({
+            ajax: {
+                url: pageElements.$general_uom_group.attr('data-url'),
+                method: 'GET',
             },
-        ],
-        rowCallback(row) {
-            $(`button.btn-detail`, row).on('click', function () {
-                let $tableLot = $('#datable-lot');
-                let $tableSerial = $('#datable-serial');
-                let idProduct = $.fn.getPkDetail();
-                let idWH = row?.querySelector('.table-row-code')?.getAttribute('data-id');
-                let eleDetail = $('#data-detail-page');
-                if (eleDetail.val()) {
-                    let dataDetail = JSON.parse(eleDetail.val());
-                    if (dataDetail?.['general_information']?.['traceability_method'] === 1) {
-                        $('#table-lot-area')[0].removeAttribute('hidden');
-                        $.fn.callAjax2({
-                                'url': $tableLot.attr('data-url'),
-                                'method': $tableLot.attr('data-method'),
-                                'data': {
-                                    'product_warehouse__product_id': idProduct,
-                                    'product_warehouse__warehouse_id': idWH,
-                                },
-                                'isDropdown': true,
-                            }
-                        ).then(
-                            (resp) => {
-                                let dataLot = $.fn.switcherResp(resp);
-                                if (dataLot) {
-                                    if (dataLot.hasOwnProperty('warehouse_lot_list') && Array.isArray(dataLot.warehouse_lot_list)) {
-                                        $tableLot.DataTable().clear().draw();
-                                        $tableLot.DataTable().rows.add(dataLot.warehouse_lot_list).draw();
-                                    }
-                                }
-                            }
-                        )
-                    } else if (dataDetail?.['general_information']?.['traceability_method'] === 2) {
-                        $('#table-serial-area')[0].removeAttribute('hidden');
-                        $.fn.callAjax2({
-                                'url': $tableSerial.attr('data-url'),
-                                'method': $tableSerial.attr('data-method'),
-                                'data': {
-                                    'product_warehouse__product_id': idProduct,
-                                    'product_warehouse__warehouse_id': idWH,
-                                    'is_delete': false
-                                },
-                                'isDropdown': true,
-                            }
-                        ).then(
-                            (resp) => {
-                                let dataSerial = $.fn.switcherResp(resp);
-                                if (dataSerial) {
-                                    if (dataSerial.hasOwnProperty('warehouse_serial_list') && Array.isArray(dataSerial.warehouse_serial_list)) {
-                                        $tableSerial.DataTable().clear().draw();
-                                        $tableSerial.DataTable().rows.add(dataSerial.warehouse_serial_list).draw();
-                                    }
-                                }
-                            }
-                        )
+            callbackDataResp: function (resp, keyResp) {
+                return resp.data[keyResp].filter(function (item) {
+                    return Object.keys(item?.['referenced_unit']).length !== 0 && item?.['code'] !== 'Import';
+                });
+            },
+            data: (data ? data : null),
+            keyResp: 'unit_of_measure_group',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+            ProductLoadPage.LoadSaleUom();
+            ProductLoadPage.LoadInventoryUom();
+            ProductLoadPage.LoadPurchaseUom();
+        })
+    }
+    static LoadGeneralManufacturer(data) {
+        pageElements.$general_manufacturer.initSelect2({
+            ajax: {
+                url: pageElements.$general_manufacturer.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'manufacturer_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+    static LoadBaseUnit(base_unit_data) {
+        for (let i = 0; i < base_unit_data.length; i++) {
+            if (base_unit_data[i]?.['title'] === 'volume') {
+                $('#VolumeSpan').text(base_unit_data[i]?.['measure'])
+                pageElements.$volume.attr('data-id', base_unit_data[i]?.['id'])
+            }
+            if (base_unit_data[i]?.['title'] === 'weight') {
+                $('#WeightSpan').text(base_unit_data[i]?.['measure'])
+                pageElements.$weight.attr('data-id', base_unit_data[i]?.['id'])
+            }
+        }
+    }
+    // sale tab
+    static LoadSaleUom(data) {
+        pageElements.$sale_uom.empty()
+        pageElements.$sale_uom.initSelect2({
+            ajax: {
+                url: pageElements.$sale_uom.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                let result = [];
+                for (let i = 0; i < resp.data[keyResp].length; i++) {
+                    if (resp.data[keyResp][i].group.id === pageElements.$general_uom_group.val()) {
+                        result.push(resp.data[keyResp][i])
                     }
+                }
+                return result;
+            },
+            data: (data ? data : null),
+            keyResp: 'unit_of_measure',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+    static LoadSaleTax(data) {
+        pageElements.$sale_tax.initSelect2({
+            ajax: {
+                url: pageElements.$sale_tax.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'tax_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+    static LoadSalePriceListForSaleOnline(data, filter = []) {
+        pageElements.$price_list_for_sale_online.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: pageElements.$price_list_for_sale_online.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                let result = [];
+                for (let i = 0; i < resp.data[keyResp].length; i++) {
+                    if (filter.includes(resp.data[keyResp][i].id)) {
+                        result.push(resp.data[keyResp][i])
+                    }
+                }
+                return result;
+            },
+            data: (data ? data : null),
+            keyResp: 'price_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+    static LoadPriceListTable(price_list_from_detail, option) {
+        let disabled_all_input = option === 'detail' ? 'disabled readonly' : ''
+        pageElements.$table_price_list.DataTableDefault({
+            styleDom: 'hide-foot',
+            paging: false,
+            scrollX: '100vw',
+            scrollY: '35vh',
+            scrollCollapse: true,
+            useDataServer: true,
+            reloadCurrency: true,
+            rowIdx: true,
+            ajax: {
+                url: pageElements.$table_price_list.attr('data-url'),
+                type: pageElements.$table_price_list.attr('data-method'),
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        let price_list_data = []
+                        let resp_price_list = resp.data['price_list'] ? resp.data['price_list'] : []
+                        let general_price_list_id = null;
+                        for (let i = 0; i < resp_price_list.length; i++) {
+                            let item = resp_price_list[i];
+                            let price_value = price_list_from_detail.find(obj => obj.id === item?.['id'])?.price || '';
+                            let checked = '';
+                            let disabled = '';
+                            let disabled_input = 'disabled';
+                            let is_default = false;
+                            let required = '';
+                            if (item.is_default) {
+                                general_price_list_id = item.id
+                                disabled_input = ''
+                                is_default = true;
+                                required = 'required';
+                            }
+                            if (item.is_default || (item?.['price_list_mapped'] === general_price_list_id && item?.['auto_update'] === true)) {
+                                checked = 'checked';
+                                disabled = 'disabled';
+                            }
+                            let hidden = '';
+                            if (item?.['price_list_mapped'] !== null) {
+                                hidden = 'hidden';
+                            }
+                            if (price_value) {
+                                checked = 'checked';
+                            }
+                            price_list_data.push({
+                                'hidden': hidden,
+                                'checked': checked,
+                                'disabled': disabled,
+                                'is_default': is_default,
+                                'disabled_input': disabled_input,
+                                'required': required,
+                                'id': item?.['id'],
+                                'title': item?.['title'],
+                                'price_value': price_value,
+                                'price_list_mapped': item?.['price_list_mapped'],
+                                'valid_time_start': moment(item?.['valid_time_start'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'),
+                                'valid_time_end': is_default ? '--' : moment(item?.['valid_time_end'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'),
+                                'auto_update': item?.['auto_update'],
+                                'factor': item?.['factor']
+                            })
+                        }
+                        return price_list_data;
+                    }
+                }
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                }, {
+                    className: 'wrap-text w-5',
+                    render: (data, type, row) => {
+                        return `<div class="form-check"><input ${disabled_all_input} ${row.hidden} class="select_price_list form-check-input" type="checkbox" data-id="${row.id}" ${row.checked} ${row.disabled}><label class="form-check-label" for="select_price_list"></label></div>`
+                    }
+                }, {
+                    className: 'wrap-text w-30',
+                    render: (data, type, row) => {
+                        return `<label class="${row.required} form-label text-primary fw-bold">${row.title}</label>`
+                    }
+                }, {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['valid_time_start']}</span>`
+                    }
+                }, {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['valid_time_end']}</span>`
+                    }
+                }, {
+                    className: 'wrap-text w-30',
+                    render: (data, type, row) => {
+                        return `<input ${disabled_all_input} value="${row.price_value}" data-is-default="${row.is_default}" ${row.disabled_input} data-source="${row?.['price_list_mapped']}" data-auto-update="${row.auto_update}" data-factor="${row.factor}" data-id="${row.id}" data-return-type="number" type="text" class="form-control text-primary mask-money input_price_list">`
+                    }
+                }
+            ],
+        }).on('draw.dt', function () {
+            pageElements.$table_price_list.find('tbody').find('tr').each(function () {
+                $(this).after('<tr class="table-row-gap"><td></td></tr>');
+            });
+        });
+    }
+    static LoadPriceForChild(element_id, element_value) {
+        $('.ul-price-list').find('.input_price_list').each(function () {
+            if ($(this).attr('data-source') === element_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
+                let value = parseFloat(element_value) * parseFloat($(this).attr('data-factor'));
+                $(this).attr('value', value);
+                ProductLoadPage.LoadPriceForChild($(this).attr('data-id'), value);
+            }
+        })
+        $.fn.initMaskMoney2();
+    }
+    // inventory tab
+    static LoadInventoryUom(data) {
+        pageElements.$inventory_uom.empty()
+        pageElements.$inventory_uom.initSelect2({
+            ajax: {
+                url: pageElements.$inventory_uom.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                let result = [];
+                for (let i = 0; i < resp.data[keyResp].length; i++) {
+                    if (resp.data[keyResp][i].group.id === pageElements.$general_uom_group.val()) {
+                        result.push(resp.data[keyResp][i])
+                    }
+                }
+                return result;
+            },
+            data: (data ? data : null),
+            keyResp: 'unit_of_measure',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+    static LoadWareHouseListDetail(data_list=[]) {
+        pageElements.$datatable_warehouse_list.DataTableDefault({
+            dom: '',
+            paging: false,
+            data: data_list,
+            columns: [
+                {
+                    data: 'code',
+                    className: 'wrap-text text-center w-15',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-soft-blue badge-outline table-row-code" data-id="${row.warehouse.id}">${row.warehouse.code}</span>`;
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text text-center w-35',
+                    render: (data, type, row) => {
+                        return `<span class="text-secondary"><b>${row.warehouse.title}</b></span>`
+                    }
+                },
+                {
+                    data: '',
+                    className: 'wrap-text text-center w-15',
+                    render: (data, type, row) => {
+                        return `<span class="fw-bold">${row?.['stock_amount']}</span>`;
+                    }
+                },
+                {
+                    data: '',
+                    className: 'wrap-text text-center w-35',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money text-primary" data-init-money="${row?.['cost']}"></span>`;
+                    }
+                },
+            ],
+            rowCallback(row) {
+                $(`button.btn-detail`, row).on('click', function () {
+                    let $tableLot = $('#datable-lot');
+                    let $tableSerial = $('#datable-serial');
+                    let idProduct = $.fn.getPkDetail();
+                    let idWH = row?.querySelector('.table-row-code')?.getAttribute('data-id');
+                    let eleDetail = $('#data-detail-page');
+                    if (eleDetail.val()) {
+                        let dataDetail = JSON.parse(eleDetail.val());
+                        if (dataDetail?.['general_information']?.['traceability_method'] === 1) {
+                            $('#table-lot-area')[0].removeAttribute('hidden');
+                            $.fn.callAjax2({
+                                    'url': $tableLot.attr('data-url'),
+                                    'method': $tableLot.attr('data-method'),
+                                    'data': {
+                                        'product_warehouse__product_id': idProduct,
+                                        'product_warehouse__warehouse_id': idWH,
+                                    },
+                                    'isDropdown': true,
+                                }
+                            ).then(
+                                (resp) => {
+                                    let dataLot = $.fn.switcherResp(resp);
+                                    if (dataLot) {
+                                        if (dataLot.hasOwnProperty('warehouse_lot_list') && Array.isArray(dataLot.warehouse_lot_list)) {
+                                            $tableLot.DataTable().clear().draw();
+                                            $tableLot.DataTable().rows.add(dataLot.warehouse_lot_list).draw();
+                                        }
+                                    }
+                                }
+                            )
+                        } else if (dataDetail?.['general_information']?.['traceability_method'] === 2) {
+                            $('#table-serial-area')[0].removeAttribute('hidden');
+                            $.fn.callAjax2({
+                                    'url': $tableSerial.attr('data-url'),
+                                    'method': $tableSerial.attr('data-method'),
+                                    'data': {
+                                        'product_warehouse__product_id': idProduct,
+                                        'product_warehouse__warehouse_id': idWH,
+                                        'is_delete': false
+                                    },
+                                    'isDropdown': true,
+                                }
+                            ).then(
+                                (resp) => {
+                                    let dataSerial = $.fn.switcherResp(resp);
+                                    if (dataSerial) {
+                                        if (dataSerial.hasOwnProperty('warehouse_serial_list') && Array.isArray(dataSerial.warehouse_serial_list)) {
+                                            $tableSerial.DataTable().clear().draw();
+                                            $tableSerial.DataTable().rows.add(dataSerial.warehouse_serial_list).draw();
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    }
+                });
+            }
+        }).on('draw.dt', function () {
+            pageElements.$datatable_warehouse_list.find('tbody').find('tr').each(function () {
+                $(this).after('<tr class="table-row-gap"><td></td></tr>');
+            });
+        });
+    }
+    static LoadWareHouseOverViewDetail(data_list=[]) {
+        pageElements.$datatable_warehouse_overview.DataTable().clear().destroy();
+        pageElements.$datatable_warehouse_overview.DataTableDefault({
+            dom: '',
+            paging: false,
+            data: data_list,
+            columns: [
+                {
+                    data: 'sum_stock',
+                    className: 'wrap-text text-center w-20',
+                    render: (data, type, row) => {
+                        let sum_stock = row?.['sum_stock'] ? row?.['sum_stock'] : 0
+                        return `<span class="fw-bold ${sum_stock > 0 ? 'text-primary' : 'text-danger'}">${sum_stock}</span>`
+                    }
+                },
+                {
+                    data: 'sum_wait_for_delivery',
+                    className: 'wrap-text text-center w-20',
+                    render: (data, type, row) => {
+                        let sum_wait_for_delivery = row?.['sum_wait_for_delivery'] ? row?.['sum_wait_for_delivery'] : 0
+                        return `<span class="fw-bold ${sum_wait_for_delivery > 0 ? 'text-primary' : 'text-danger'}">${sum_wait_for_delivery}</span>`
+                    }
+                },
+                {
+                    data: 'sum_wait_for_receipt',
+                    className: 'wrap-text text-center w-20',
+                    render: (data, type, row) => {
+                        let sum_wait_for_receipt = row?.['sum_wait_for_receipt'] ? row?.['sum_wait_for_receipt'] : 0
+                        return `<span class="fw-bold ${sum_wait_for_receipt > 0 ? 'text-primary' : 'text-danger'}">${sum_wait_for_receipt}</span>`
+                    }
+                },
+                {
+                    data: 'production_amount',
+                    className: 'wrap-text text-center w-20',
+                    render: (data, type, row) => {
+                        let production_amount = row?.['sum_production'] ? row?.['sum_production'] : 0
+                        return `<span class="fw-bold ${production_amount > 0 ? 'text-primary' : 'text-danger'}">${production_amount}</span>`
+                    }
+                },
+                {
+                    data: 'sum_available_value',
+                    className: 'wrap-text text-center w-20',
+                    render: (data, type, row) => {
+                        let sum_available_value = row?.['sum_available_value'] ? row?.['sum_available_value'] : 0
+                        return `<span class="fw-bold ${sum_available_value > 0 ? 'text-primary' : 'text-danger'}">${sum_available_value}</span>`
+                    }
+                },
+            ],
+        }).on('draw.dt', function () {
+            pageElements.$datatable_warehouse_overview.find('tbody').find('tr').each(function () {
+                $(this).after('<tr class="table-row-gap"><td colspan="5"></td></tr>');
+            });
+        });
+    }
+    // purchase tab
+    static LoadPurchaseUom(data) {
+        pageElements.$purchase_uom.empty()
+        pageElements.$purchase_uom.initSelect2({
+            ajax: {
+                url: pageElements.$purchase_uom.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                let result = [];
+                for (let i = 0; i < resp.data[keyResp].length; i++) {
+                    if (resp.data[keyResp][i].group.id === pageElements.$general_uom_group.val()) {
+                        result.push(resp.data[keyResp][i])
+                    }
+                }
+                return result;
+            },
+            data: (data ? data : null),
+            keyResp: 'unit_of_measure',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+    static LoadPurchaseTax(data) {
+        pageElements.$purchase_tax.initSelect2({
+            ajax: {
+                url: pageElements.$purchase_tax.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'tax_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+    // variant tab
+    static ReloadModalConfig(option, color_data) {
+        if (color_data !== '') {
+            color_data = JSON.parse(color_data);
+        }
+
+        pageElements.$attribute_display_select_by.html('');
+        pageElements.$attribute_display_select_by.initSelect2();
+        pageElements.$attribute_display_select_by.append(`
+            <option></option>
+            <option value="0">Dropdown list</option>
+            <option value="1">Radio select</option>
+            <option value="2">Select</option>
+        `);
+
+        let variants_value_list = [];
+        pageVariables.current_row_variant_attribute.find('.variant-attributes-span').find('.attribute-value').each(function () {
+            variants_value_list.push($(this).text());
+        })
+
+        // dropdown_list_preview
+        let dropdown_list_preview = $('#dropdown-list-preview');
+        dropdown_list_preview.html('');
+        dropdown_list_preview.initSelect2();
+        dropdown_list_preview.append(`<option></option>`);
+        for (let i = 0; i < variants_value_list.length; i++) {
+            dropdown_list_preview.append(`<option>${variants_value_list[i]}</option>`);
+        }
+
+        // radio_selection_preview
+        let radio_selection_preview = $('#radio-selection-preview');
+        radio_selection_preview.html('');
+        for (let i = 0; i < variants_value_list.length; i++) {
+            radio_selection_preview.append(`
+                <div class="col-3">
+                    <div class="form-check">
+                        <input type="radio" value="${variants_value_list[i]}" name="radio-type-1" class="form-check-input radio-attribute-value" checked>
+                        <label class="form-check-label" for="${variants_value_list[i]}">${variants_value_list[i]}</label>
+                    </div>
+                </div>
+            `);
+        }
+
+        // fill_by_text_preview
+        let fill_by_text_preview = $('#fill-by-text-preview');
+        fill_by_text_preview.html('');
+        for (let i = 0; i < variants_value_list.length; i++) {
+            fill_by_text_preview.append(`
+                <div class="col-3">
+                    <div class="text-center mb-2 pt-2 pb-2 pr-2 pl-2 bg-gray-light-4 border rounded border-grey selection-fill-by">
+                        ${variants_value_list[i]}
+                    </div>
+                </div>
+            `);
+        }
+
+        // fill_by_color_preview
+        let fill_by_color_preview = $('#fill-by-color-preview');
+        fill_by_color_preview.html('');
+        for (let i = 0; i < variants_value_list.length; i++) {
+            let color = '#000000';
+            if (color_data.length > 0) {
+                color = color_data[i]?.['color'] ? color_data[i]?.['color'] : '#000000';
+            }
+            fill_by_color_preview.append(`
+                <div class="col-3">
+                    <div class="mb-2 pt-2 pb-2 pr-2 pl-2 border rounded border-grey selection-fill-by text-center">
+                        <input type="color" id="color-picker-${variants_value_list[i]}" class="form-control form-control-color color-picker-attribute-value" value="${color}" title="Choose your color">
+                        <label for="color-picker-${variants_value_list[i]}" class="form-label">${variants_value_list[i]}</label>
+                    </div> 
+                </div>
+            `);
+        }
+
+        // fill_by_photo_preview
+        let fill_by_photo_preview = $('#fill-by-photo-preview');
+        fill_by_photo_preview.html('');
+        for (let i = 0; i < variants_value_list.length; i++) {
+            fill_by_photo_preview.append(`
+                <div class="col-3">
+                    <div class="mb-2 pt-2 pb-2 pr-2 pl-2 border rounded border-grey selection-fill-by text-center">
+                        <input type="file" id="photo-picker-${variants_value_list[i]}" class="photo-picker-dropify">
+                        <label for="photo-picker-${variants_value_list[i]}" class="form-label">${variants_value_list[i]}</label>
+                    </div> 
+                </div>
+            `);
+        }
+        $('.photo-picker-dropify').dropify({
+            messages: {
+                'default': 'Upload an image',
+                'replace': 'Drag and drop or click to replace',
+                'remove':  'Remove',
+                'error':   'Oops, something wrong happened.'
+            },
+            tpl: {
+                message:' {{ default }}',
+            }
+        });
+        $('.selection-fill-by .dropify-wrapper').addClass('h-90p');
+
+        if (option === undefined) {
+            $('#dropdown-list-selection-preview').attr('hidden', true);
+            radio_selection_preview.attr('hidden', true);
+            $('#select-selection-preview').attr('hidden', true);
+            fill_by_text_preview.attr('hidden', true);
+            fill_by_color_preview.attr('hidden', true);
+            fill_by_photo_preview.attr('hidden', true);
+        }
+        if (option === '0') {
+            pageElements.$attribute_display_select_by.val(0);
+            $('#dropdown-list-selection-preview').attr('hidden', false);
+            radio_selection_preview.attr('hidden', true);
+            $('#select-selection-preview').attr('hidden', true);
+            fill_by_text_preview.attr('hidden', true);
+            fill_by_color_preview.attr('hidden', true);
+            fill_by_photo_preview.attr('hidden', true);
+        }
+        if (option === '1') {
+            pageElements.$attribute_display_select_by.val(1);
+            $('#dropdown-list-selection-preview').attr('hidden', true);
+            radio_selection_preview.attr('hidden', false);
+            $('#select-selection-preview').attr('hidden', true);
+            fill_by_text_preview.attr('hidden', true);
+            fill_by_color_preview.attr('hidden', true);
+            fill_by_photo_preview.attr('hidden', true);
+        }
+        if (option === '2') {
+            pageElements.$attribute_display_select_by.val(2);
+            $('#radio-fill-by-text').prop('checked', true);
+
+            $('#dropdown-list-selection-preview').attr('hidden', true);
+            radio_selection_preview.attr('hidden', true);
+            $('#select-selection-preview').attr('hidden', false);
+            fill_by_text_preview.attr('hidden', false);
+            fill_by_color_preview.attr('hidden', true);
+            fill_by_photo_preview.attr('hidden', true);
+        }
+        if (option === '3') {
+            pageElements.$attribute_display_select_by.val(2);
+            $('#radio-fill-by-color').prop('checked', true);
+
+            $('#dropdown-list-selection-preview').attr('hidden', true);
+            radio_selection_preview.attr('hidden', true);
+            $('#select-selection-preview').attr('hidden', false);
+            fill_by_text_preview.attr('hidden', true);
+            fill_by_color_preview.attr('hidden', false);
+            fill_by_photo_preview.attr('hidden', true);
+        }
+        if (option === '4') {
+            pageElements.$attribute_display_select_by.val(2);
+            $('#radio-fill-by-photo').prop('checked', true);
+
+            $('#dropdown-list-selection-preview').attr('hidden', true);
+            radio_selection_preview.attr('hidden', true);
+            $('#select-selection-preview').attr('hidden', false);
+            fill_by_text_preview.attr('hidden', true);
+            fill_by_color_preview.attr('hidden', true);
+            fill_by_photo_preview.attr('hidden', false);
+        }
+    }
+    static GenerateCombinations(arrays, current = [], index = 0, result = []) {
+        if (index === arrays.length) {
+            result.push(current.slice());
+        } else {
+            for (let i = 0; i < arrays[index].length; i++) {
+                current[index] = arrays[index][i];
+                ProductLoadPage.GenerateCombinations(arrays, current, index + 1, result);
+            }
+        }
+        return result;
+    }
+    static RenderVariantItemsTable() {
+        let all_row_value_list = [];
+        pageElements.$table_variant_attributes.find('tbody tr .variant-attributes-span').each(function (index) {
+            $(this).closest('tr').attr('id', 'row-' + (index+1));
+            $(this).closest('tr').find('.row-index').text(index+1);
+            let value_list = [];
+            $(this).find('.attribute-value').each(function () {
+                value_list.push($(this).text());
+            })
+            all_row_value_list.push(value_list);
+        })
+        let combinations = ProductLoadPage.GenerateCombinations(all_row_value_list);
+        pageElements.$table_variant_items.find('tbody').html('');
+        $('#table-variant-items-label').text(combinations.length);
+        if (combinations.length > 0) {
+            $('#table-variant-items-div').prop('hidden', false);
+            for (let i = 0; i < combinations.length; i++) {
+                let exist_variant = [];
+                if (pageVariables.data_detail !== null) {
+                    exist_variant = pageVariables.data_detail?.['product_variant_item_list'].filter(function (element) {
+                        return JSON.stringify(element?.['variant_value_list'].slice().sort()) === JSON.stringify(combinations[i].slice().sort());
+                    })
+                }
+                let variant_html = ``;
+                for (let j = 0; j < combinations[i].length; j++) {
+                    variant_html += `<span class="variant-item badge badge-soft-danger badge-outline mr-1 mb-1">${combinations[i][j]}</span>`;
+                }
+                if (exist_variant.length === 0) {
+                    pageElements.$table_variant_items.find('tbody').append(`
+                        <tr id="variant-item-row-${i + 1}">
+                            <td class="w-5"><span class="badge badge-primary badge-indicator"></span>${i + 1}</td>
+                            <td class="w-45">${variant_html}</td>
+                            <td class="w-5">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#modal-variant-item-des" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-item-des"><span class="icon"><i class="fas fa-ellipsis-v"></i></span></button>
+                                <span hidden class="variant-name-span"></span>
+                                <span hidden class="variant-des-span"></span>
+                            </td>
+                            <td class="w-20"><input class="form-control SKU-input"></td>
+                            <td class="w-20"><input data-return-type="number" type="text" class="form-control mask-money extra-price-input" value="0"></td>
+                            <td class="w-5" style="align-items: center;">
+                                <div class="form-check form-switch">
+                                    <input checked type="checkbox" class="form-check-input variant-active">
+                                </div>
+                            </td>
+                        </tr>
+                    `)
+                }
+                else {
+                    let exist_variant_data = exist_variant[0];
+                    let checked = '';
+                    if (exist_variant_data.is_active) {
+                        checked = 'checked';
+                    }
+                    pageElements.$table_variant_items.find('tbody').append(`
+                        <tr id="variant-item-row-${i + 1}" data-variant-value-id="${exist_variant_data.id}">
+                            <td class="w-5">${i + 1}</td>
+                            <td class="w-45">${variant_html}</td>
+                            <td class="w-5">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#modal-variant-item-des" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-item-des"><span class="icon"><i class="fas fa-ellipsis-v"></i></span></button>
+                                <span hidden class="variant-name-span">${exist_variant_data.variant_name}</span>
+                                <span hidden class="variant-des-span">${exist_variant_data.variant_des}</span>
+                            </td>
+                            <td class="w-20"><input class="form-control SKU-input" value="${exist_variant_data.variant_SKU}"></td>
+                            <td class="w-20"><input data-return-type="number" type="text" class="form-control mask-money extra-price-input" value="${exist_variant_data.variant_extra_price}"></td>
+                            <td class="w-5">
+                                <div class="form-check form-switch">
+                                    <input ${checked} type="checkbox" class="form-check-input variant-active">
+                                </div>
+                            </td>
+                        </tr>
+                    `)
+                }
+            }
+        }
+        else {
+            $('#table-variant-items-div').prop('hidden', true);
+        }
+        $.fn.initMaskMoney2();
+    }
+    static ReloadAttributeValueListSpan() {
+        let option = pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value');
+        let color_data = pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text()
+        ProductLoadPage.ReloadModalConfig(option, color_data);
+        let value = pageElements.$attribute_display_select_by.val();
+        if (value !== '') {
+            if (value === '0') {
+                pageVariables.current_row_variant_attribute.find('.config-selection').text('Dropdown list');
+                pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value', 0);
+                let attribute_value_list = []
+                $('#dropdown-list-preview option').each(function() {
+                    if ($(this).text() !== '') {
+                        attribute_value_list.push({
+                            'value': $(this).text(),
+                            'color': null
+                        })
+                    }
+                })
+                pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list))
+            }
+            if (value === '1') {
+                pageVariables.current_row_variant_attribute.find('.config-selection').text('Radio select');
+                pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value', 1);
+                let attribute_value_list = []
+                $('#radio-selection-preview .radio-attribute-value').each(function() {
+                    if ($(this).attr('value') !== '') {
+                        attribute_value_list.push({
+                            'value': $(this).attr('value'),
+                            'color': null
+                        })
+                    }
+                })
+                pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
+            }
+            if (value === '2') {
+                let detail_select = ''
+                if ($('#radio-fill-by-text').is(':checked')) {
+                    pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value', 2);
+                    detail_select = '(Fill by text)';
+                    let attribute_value_list = []
+                    $('#fill-by-text-preview .selection-fill-by').each(function() {
+                        if ($(this).text() !== '') {
+                            attribute_value_list.push({
+                                'value': $(this).text(),
+                                'color': null
+                            })
+                        }
+                    })
+                    pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
+                }
+                if ($('#radio-fill-by-color').is(':checked')) {
+                    pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value', 3);
+                    detail_select = '(Fill by color)';
+                    let attribute_value_list = []
+                    $('#fill-by-color-preview .selection-fill-by').each(function() {
+                        if ($(this).text() !== '') {
+                            attribute_value_list.push({
+                                'value': $(this).find('label').text(),
+                                'color': $(this).find('.color-picker-attribute-value').val()
+                            })
+                        }
+                    })
+                    pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
+                }
+                if ($('#radio-fill-by-photo').is(':checked')) {
+                    pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value', 4);
+                    detail_select = '(Fill by photo)';
+                    let attribute_value_list = []
+                    $('#fill-by-photo-preview .selection-fill-by').each(function() {
+                        if ($(this).text() !== '') {
+                            attribute_value_list.push({
+                                'value': $(this).find('label').text(),
+                                'color': null
+                            })
+                        }
+                    })
+                    pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
+                }
+                pageVariables.current_row_variant_attribute.find('.config-selection').text(`Select ${detail_select}`);
+            }
+        }
+    }
+    // account determination tab
+    static LoadAccountDeterminationTable() {
+        if (!$.fn.DataTable.isDataTable('#product-account-determination-table')) {
+            let frm = new SetupFormSubmit(pageElements.$product_account_determination_table);
+            pageElements.$product_account_determination_table.DataTableDefault({
+                useDataServer: true,
+                rowIdx: true,
+                reloadCurrency: true,
+                paging: false,
+                ajax: {
+                    url: frm.dataUrl,
+                    data: {'product_mapped_id': $.fn.getPkDetail()},
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            let data_list = resp.data['product_account_determination_list'] ? resp.data['product_account_determination_list'] : []
+                            data_list.sort((a, b) => {
+                                const typeA = a?.['account_determination_type_convert'];
+                                const typeB = b?.['account_determination_type_convert'];
+                                if (typeA < typeB) return -1;
+                                if (typeA > typeB) return 1;
+
+                                const accCodeA = parseInt(a?.['account_mapped']?.['acc_code'], 10);
+                                const accCodeB = parseInt(b?.['account_mapped']?.['acc_code'], 10);
+                                return accCodeA - accCodeB;
+                            });
+                            return data_list ? data_list : [];
+                        }
+                        return [];
+                    },
+                },
+                columns: pageVariables.columns_cfg,
+                rowGroup: {
+                    dataSrc: 'account_determination_type_convert'
+                },
+                columnDefs: [
+                    {
+                        "visible": false,
+                        "targets": [1]
+                    }
+                ],
+                initComplete: function () {
+                    pageElements.$product_account_determination_table.find('tbody tr .selected-accounts').each(function () {
+                        let account_mapped = $(this).attr('data-account-mapped') ? JSON.parse($(this).attr('data-account-mapped')) : []
+                        $(this).initSelect2({
+                            data: (account_mapped ? account_mapped : null),
+                            ajax: {
+                                url: pageElements.$product_account_determination_table.attr('data-chart-of-account-url'),
+                                method: 'GET',
+                            },
+                            keyResp: 'chart_of_accounts_list',
+                            keyId: 'id',
+                            keyText: 'acc_code',
+                            templateResult: function (state) {
+                                return $(`<span class="badge badge-light">${state.data?.['acc_code']}</span> <span>${state.data?.['acc_name']}</span> <span class="small">(${state.data?.['foreign_acc_name']})</span>`);
+                            },
+                        })
+
+                        for (let i = 0; i < account_mapped.length; i++) {
+                            $(this).closest('tr').find('.selected-accounts-des').append(
+                                `<h6 class="text-muted">${account_mapped[i]?.['acc_name']}</h6><h6 class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</h6>`
+                            )
+                        }
+                    })
                 }
             });
         }
-    }).on('draw.dt', function () {
-        table_warehouse_list.find('tbody').find('tr').each(function () {
-            $(this).after('<tr class="table-row-gap"><td></td></tr>');
-        });
-    });
+    }
 }
+// endregion
 
-function loadWareHouseOverViewDetail(data_overview=[]) {
-    let dtb = $('#datatable-warehouse-overview');
-    dtb.DataTable().clear().destroy();
-    dtb.DataTableDefault({
-        dom: '',
-        paging: false,
-        data: data_overview,
-        columns: [
-            {
-                data: 'sum_stock',
-                className: 'wrap-text text-center w-20',
-                render: (data, type, row) => {
-                    let sum_stock = row?.['sum_stock'] ? row?.['sum_stock'] : 0
-                    return `<span class="fw-bold ${sum_stock > 0 ? 'text-primary' : 'text-danger'}">${sum_stock}</span>`
-                }
-            },
-            {
-                data: 'sum_wait_for_delivery',
-                className: 'wrap-text text-center w-20',
-                render: (data, type, row) => {
-                    let sum_wait_for_delivery = row?.['sum_wait_for_delivery'] ? row?.['sum_wait_for_delivery'] : 0
-                    return `<span class="fw-bold ${sum_wait_for_delivery > 0 ? 'text-primary' : 'text-danger'}">${sum_wait_for_delivery}</span>`
-                }
-            },
-            {
-                data: 'sum_wait_for_receipt',
-                className: 'wrap-text text-center w-20',
-                render: (data, type, row) => {
-                    let sum_wait_for_receipt = row?.['sum_wait_for_receipt'] ? row?.['sum_wait_for_receipt'] : 0
-                    return `<span class="fw-bold ${sum_wait_for_receipt > 0 ? 'text-primary' : 'text-danger'}">${sum_wait_for_receipt}</span>`
-                }
-            },
-            {
-                data: 'production_amount',
-                className: 'wrap-text text-center w-20',
-                render: (data, type, row) => {
-                    let production_amount = row?.['sum_production'] ? row?.['sum_production'] : 0
-                    return `<span class="fw-bold ${production_amount > 0 ? 'text-primary' : 'text-danger'}">${production_amount}</span>`
-                }
-            },
-            {
-                data: 'sum_available_value',
-                className: 'wrap-text text-center w-20',
-                render: (data, type, row) => {
-                    let sum_available_value = row?.['sum_available_value'] ? row?.['sum_available_value'] : 0
-                    return `<span class="fw-bold ${sum_available_value > 0 ? 'text-primary' : 'text-danger'}">${sum_available_value}</span>`
-                }
-            },
-        ],
-    }).on('draw.dt', function () {
-        dtb.find('tbody').find('tr').each(function () {
-            $(this).after('<tr class="table-row-gap"><td colspan="5"></td></tr>');
-        });
-    });
-}
-
-function Disable(option) {
+// region PRODUCT HANDLER
+class ProductHandler {
+    static Disable(option) {
     if (option === 'detail') {
         $('form select').prop('disabled', true);
         $('form input').prop('disabled', true).prop('readonly', true);
-        btn_Add_Line_Variant_Attributes.prop('disabled', true);
+        pageElements.$btn_add_row_variant_attributes.prop('disabled', true);
     }
 }
+    static GetDataForm() {
+        let data = {
+            'code': pageElements.$code.val(),
+            'title': pageElements.$title.val(),
+            'description': pageElements.$description.val()
+        };
+        data['product_choice'] = []
 
-function getDataForm() {
-    let data = {
-        'code': $('#code').val(),
-        'title': titleEle.val(),
-        'description': $('#description').val()
-    };
-    data['product_choice'] = []
+        data['part_number'] = pageElements.$part_number.val();
 
-    data['part_number'] = partNumberEle.val();
+        data['length'] = parseFloat(pageElements.$length.val());
+        data['width'] = parseFloat(pageElements.$width.val());
+        data['height'] = parseFloat(pageElements.$height.val());
+        data['volume'] = parseFloat(pageElements.$volume.val());
+        data['weight'] = parseFloat(pageElements.$weight.val());
 
-    data['length'] = parseFloat(lengthEle.val());
-    data['width'] = parseFloat(widthEle.val());
-    data['height'] = parseFloat(heightEle.val());
-    data['volume'] = parseFloat(volumeEle.val());
-    data['weight'] = parseFloat(weightEle.val());
+        if (isNaN(data['length']) && pageElements.$length.val() !== '') {
+            $.fn.notifyB({description: 'Length values in General tab is not valid'}, 'failure');
+            return false
+        }
+        if (isNaN(data['width']) && pageElements.$width.val() !== '') {
+            $.fn.notifyB({description: 'Width values in General tab is not valid'}, 'failure');
+            return false
+        }
+        if (isNaN(data['height']) && pageElements.$height.val() !== '') {
+            $.fn.notifyB({description: 'Height values in General tab is not valid'}, 'failure');
+            return false
+        }
+        if (isNaN(data['weight']) && pageElements.$weight.val() !== '') {
+            $.fn.notifyB({description: 'Weight values in General tab is not valid'}, 'failure');
+            return false
+        }
 
-    if (isNaN(data['length']) && lengthEle.val() !== '') {
-        $.fn.notifyB({description: 'Length values in General tab is not valid'}, 'failure');
-        return false
-    }
-    if (isNaN(data['width']) && widthEle.val() !== '') {
-        $.fn.notifyB({description: 'Width values in General tab is not valid'}, 'failure');
-        return false
-    }
-    if (isNaN(data['height']) && heightEle.val() !== '') {
-        $.fn.notifyB({description: 'Height values in General tab is not valid'}, 'failure');
-        return false
-    }
-    if (isNaN(data['weight']) && weightEle.val() !== '') {
-        $.fn.notifyB({description: 'Weight values in General tab is not valid'}, 'failure');
-        return false
-    }
+        data['volume_id'] = pageElements.$volume.attr('data-id');
+        data['weight_id'] = pageElements.$weight.attr('data-id');
+        data['product_types_mapped_list'] = [pageElements.$general_product_type.val()];
+        data['general_product_category'] = pageElements.$general_product_category.val();
+        data['general_uom_group'] = pageElements.$general_uom_group.val();
+        data['general_manufacturer'] = pageElements.$general_manufacturer.val();
+        data['general_traceability_method'] = $('#general-traceability-method option:selected').attr('value');
+        data['standard_price'] = pageElements.$general_standard_price.attr('value')
 
-    data['volume_id'] = volumeEle.attr('data-id');
-    data['weight_id'] = weightEle.attr('data-id');
-    data['product_types_mapped_list'] = generalProductTypeEle.val();
-    data['general_product_category'] = generalProductCateEle.val();
-    data['general_uom_group'] = generalUomGroupEle.val();
-    data['general_traceability_method'] = $('#general-select-box-traceability-method option:selected').attr('value');
+        let variant_attribute_create_valid = true;
+        let variant_item_create_valid = true;
+        data['product_variant_attribute_list'] = [];
+        data['product_variant_item_list'] = [];
 
-    let variant_attribute_create_valid = true;
-    let variant_item_create_valid = true;
-    data['product_variant_attribute_list'] = [];
-    data['product_variant_item_list'] = [];
+        if (pageElements.$table_variant_attributes.find('tbody tr').length > 0) {
+            pageElements.$table_variant_attributes.find('tbody tr').each(function (index) {
+                let row = $(this);
+                let attribute_title = row.find('.variant-attribute').val();
+                let attribute_value_list = row.find('.attribute_value_list_span').text();
+                let attribute_config = row.find('.config-selection').attr('data-value');
 
-    if (table_Variant_Attributes.find('tbody tr').length > 0) {
-        table_Variant_Attributes.find('tbody tr').each(function (index) {
-            let row = $(this);
-            let attribute_title = row.find('.variant-attribute').val();
-            let attribute_value_list = row.find('.attribute_value_list_span').text();
-            let attribute_config = row.find('.config-selection').attr('data-value');
-
-            if (attribute_title !== '' && attribute_value_list.length > 0 && attribute_config !== '') {
-                data['product_variant_attribute_list'].push({
-                    'attribute_title': attribute_title,
-                    'attribute_value_list': JSON.parse(attribute_value_list),
-                    'attribute_config': attribute_config
-                })
-            } else {
-                $.fn.notifyB({description: 'Variant Attributes Table is missing data (Row ' + (index + 1) + ')'}, 'failure');
-                variant_attribute_create_valid = false;
-            }
-        })
-
-        table_Variant_Items.find('tbody tr').each(function (index) {
-            let row = $(this);
-            let variant_value_list = [];
-            row.find('.variant-item').each(function () {
-                variant_value_list.push($(this).text())
-            });
-            let variant_name = row.find('.variant-name-span').text();
-            let variant_des = row.find('.variant-des-span').text();
-            if (variant_name === '' || variant_des === '') {
-                let variant_name_content = [];
-                let variant_des_content = [];
-                row.find('.variant-item').each(function () {
-                    variant_name_content.push($(this).text());
-                    variant_des_content.push($(this).text());
-                })
-                variant_name = titleEle.val() + ' (' + variant_name_content.join(', ') + ')';
-                variant_des = variant_des_content.join(', ');
-            }
-            let variant_SKU = row.find('.SKU-input').val();
-            let variant_extra_price = row.find('.extra-price-input').attr('value');
-            let is_active = row.find('.variant-active').is(':checked');
-
-            if (variant_value_list.length > 0 && variant_des !== '' && variant_name !== '' && data['title'] !== '') {
-                if (row.attr('data-variant-value-id') !== undefined) {
-                    data['product_variant_item_list'].push({
-                        'variant_value_id': row.attr('data-variant-value-id'),
-                        'variant_value_list': variant_value_list,
-                        'variant_name': variant_name,
-                        'variant_des': variant_des,
-                        'variant_SKU': variant_SKU,
-                        'variant_extra_price': variant_extra_price,
-                        'is_active': is_active
+                if (attribute_title !== '' && attribute_value_list.length > 0 && attribute_config !== '') {
+                    data['product_variant_attribute_list'].push({
+                        'attribute_title': attribute_title,
+                        'attribute_value_list': JSON.parse(attribute_value_list),
+                        'attribute_config': attribute_config
                     })
                 } else {
-                    data['product_variant_item_list'].push({
-                        'variant_value_list': variant_value_list,
-                        'variant_name': variant_name,
-                        'variant_des': variant_des,
-                        'variant_SKU': variant_SKU,
-                        'variant_extra_price': variant_extra_price,
-                        'is_active': is_active
-                    })
+                    $.fn.notifyB({description: 'Variant Attributes Table is missing data (Row ' + (index + 1) + ')'}, 'failure');
+                    variant_attribute_create_valid = false;
                 }
-            } else {
-                $.fn.notifyB({description: 'Variant Items Table is missing data (Row ' + (index + 1) + ')'}, 'failure');
-                variant_item_create_valid = false;
-            }
-        })
+            })
 
-        if (!variant_attribute_create_valid && !variant_item_create_valid) {
-            return false;
-        }
-
-        if (table_Variant_Attributes.find('tbody tr').length !== data['product_variant_attribute_list'].length || table_Variant_Items.find('tbody tr').length !== data['product_variant_item_list'].length) {
-            $.fn.notifyB({description: 'Variant Tables is invalid'}, 'failure');
-            return false;
-        }
-    }
-
-    if (check_tab_sale.is(':checked') === true) {
-        data['product_choice'].push(0)
-        let sale_product_price_list = [];
-        $('.input_price_list').each(function () {
-            let price_list_id = $(this).attr('data-id');
-            let price_list_value = $(this).attr('value');
-            let is_auto_update = $(this).attr('data-auto-update');
-            if (price_list_id && price_list_value) {
-                sale_product_price_list.push({
-                    'price_list_id': price_list_id,
-                    'price_list_value': price_list_value,
-                    'is_auto_update': is_auto_update
+            pageElements.$table_variant_items.find('tbody tr').each(function (index) {
+                let row = $(this);
+                let variant_value_list = [];
+                row.find('.variant-item').each(function () {
+                    variant_value_list.push($(this).text())
                 });
+                let variant_name = row.find('.variant-name-span').text();
+                let variant_des = row.find('.variant-des-span').text();
+                if (variant_name === '' || variant_des === '') {
+                    let variant_name_content = [];
+                    let variant_des_content = [];
+                    row.find('.variant-item').each(function () {
+                        variant_name_content.push($(this).text());
+                        variant_des_content.push($(this).text());
+                    })
+                    variant_name = pageElements.$title.val() + ' (' + variant_name_content.join(', ') + ')';
+                    variant_des = variant_des_content.join(', ');
+                }
+                let variant_SKU = row.find('.SKU-input').val();
+                let variant_extra_price = row.find('.extra-price-input').attr('value');
+                let is_active = row.find('.variant-active').is(':checked');
+
+                if (variant_value_list.length > 0 && variant_des !== '' && variant_name !== '' && data['title'] !== '') {
+                    if (row.attr('data-variant-value-id') !== undefined) {
+                        data['product_variant_item_list'].push({
+                            'variant_value_id': row.attr('data-variant-value-id'),
+                            'variant_value_list': variant_value_list,
+                            'variant_name': variant_name,
+                            'variant_des': variant_des,
+                            'variant_SKU': variant_SKU,
+                            'variant_extra_price': variant_extra_price,
+                            'is_active': is_active
+                        })
+                    } else {
+                        data['product_variant_item_list'].push({
+                            'variant_value_list': variant_value_list,
+                            'variant_name': variant_name,
+                            'variant_des': variant_des,
+                            'variant_SKU': variant_SKU,
+                            'variant_extra_price': variant_extra_price,
+                            'is_active': is_active
+                        })
+                    }
+                } else {
+                    $.fn.notifyB({description: 'Variant Items Table is missing data (Row ' + (index + 1) + ')'}, 'failure');
+                    variant_item_create_valid = false;
+                }
+            })
+
+            if (!variant_attribute_create_valid && !variant_item_create_valid) {
+                return false;
             }
-        })
-        data['sale_default_uom'] = $('#sale-select-box-default-uom option:selected').attr('value');
-        data['sale_tax'] = $('#sale-select-box-tax-code option:selected').attr('value');
-        data['sale_price_list'] = sale_product_price_list;
-        data['sale_currency_using'] = currency_primary;
 
-        data['is_public_website'] = public_website_Ele.prop('checked');
-        if (public_website_Ele.prop('checked')) {
-            data['online_price_list'] = price_list_for_online_sale_Ele.val();
+            if (pageElements.$table_variant_attributes.find('tbody tr').length !== data['product_variant_attribute_list'].length || pageElements.$table_variant_items.find('tbody tr').length !== data['product_variant_item_list'].length) {
+                $.fn.notifyB({description: 'Variant Tables is invalid'}, 'failure');
+                return false;
+            }
         }
-        data['available_notify'] = available_notify_checkboxEle.prop('checked');
-        data['available_notify_quantity'] = parseFloat($('#less_than_number').val());
-    } else {
-        data['sale_default_uom'] = null;
-        data['sale_tax'] = null;
-        data['sale_price_list'] = [];
-        data['sale_currency_using'] = null;
-    }
 
-    if (check_tab_inventory.is(':checked') === true) {
-        data['product_choice'].push(1)
-        data['inventory_uom'] = $('#inventory-select-box-uom-name option:selected').attr('value');
-        data['inventory_level_min'] = parseFloat($('#inventory-level-min').val());
-        data['inventory_level_max'] = parseFloat($('#inventory-level-max').val());
-        data['valuation_method'] = $('#valuation-method').val()
-        data['standard_price'] = $('#standard_price').attr('value')
-    } else {
-        data['inventory_uom'] = null;
-        data['inventory_level_min'] = null;
-        data['inventory_level_max'] = null;
-        data['standard_price'] = 0
-    }
+        if (pageElements.$check_tab_sale.is(':checked') === true) {
+            data['product_choice'].push(0)
+            let sale_product_price_list = [];
+            $('.input_price_list').each(function () {
+                let price_list_id = $(this).attr('data-id');
+                let price_list_value = $(this).attr('value');
+                let is_auto_update = $(this).attr('data-auto-update');
+                if (price_list_id && price_list_value) {
+                    sale_product_price_list.push({
+                        'price_list_id': price_list_id,
+                        'price_list_value': price_list_value,
+                        'is_auto_update': is_auto_update
+                    });
+                }
+            })
+            data['sale_default_uom'] = $('#sale-uom').val();
+            data['sale_tax'] = $('#sale-tax').val();
+            data['sale_price_list'] = sale_product_price_list;
 
-    if (check_tab_purchase.is(':checked') === true) {
-        data['product_choice'].push(2)
-        data['purchase_default_uom'] = $('#purchase-select-box-default-uom option:selected').attr('value');
-        data['purchase_tax'] = $('#purchase-select-box-tax-code option:selected').attr('value');
-        data['supplied_by'] = suppliedByEle.val();
-    } else {
-        data['purchase_default_uom'] = null
-        data['purchase_tax'] = null
-    }
+            data['is_public_website'] = pageElements.$is_publish_website.prop('checked');
+            if (pageElements.$is_publish_website.prop('checked')) {
+                data['online_price_list'] = pageElements.$price_list_for_sale_online.val();
+            }
+            data['available_notify'] = pageElements.$available_notify_checkbox.prop('checked');
+            data['available_notify_quantity'] = parseFloat(pageElements.$less_than_number.val());
+        } else {
+            data['sale_default_uom'] = null;
+            data['sale_tax'] = null;
+            data['sale_price_list'] = [];
+        }
 
-    data['account_deter_referenced_by'] = $account_deter_referenced_by.val()
+        if (pageElements.$check_tab_inventory.is(':checked') === true) {
+            data['product_choice'].push(1)
+            data['inventory_uom'] = $('#inventory-uom').val();
+            data['inventory_level_min'] = parseFloat(pageElements.$inventory_level_min.val());
+            data['inventory_level_max'] = parseFloat(pageElements.$inventory_level_max.val());
+            data['valuation_method'] = pageElements.$valuation_method.val()
+        } else {
+            data['inventory_uom'] = null;
+            data['inventory_level_min'] = null;
+            data['inventory_level_max'] = null;
+        }
 
-    if (!data['product_types_mapped_list'].length > 0 || !data['general_product_category'] || !data['general_uom_group']) {
-        $.fn.notifyB({description: 'Some fields in General tab is missing'}, 'failure');
-        return false
-    }
+        if (pageElements.$check_tab_purchase.is(':checked') === true) {
+            data['product_choice'].push(2)
+            data['purchase_default_uom'] = $('#purchase-uom').val();
+            data['purchase_tax'] = $('#purchase-tax').val();
+            data['supplied_by'] = pageElements.$purchase_supplied_by.val();
+        } else {
+            data['purchase_default_uom'] = null
+            data['purchase_tax'] = null
+        }
 
-    if (data['product_choice'].includes(0)) {
-        if (data['is_public_website'] && Object.keys(data).includes('price_list_for_sale_online')) {
-            $.fn.notifyB({description: 'Missing Price list for Sale online'}, 'failure');
+        data['account_deter_referenced_by'] = pageElements.$account_deter_referenced_by.val()
+
+        if (!data['product_types_mapped_list'].length > 0 || !data['general_product_category'] || !data['general_uom_group']) {
+            $.fn.notifyB({description: 'Some fields in General tab is missing'}, 'failure');
             return false
         }
-        if (!data['sale_default_uom'] || !data['sale_currency_using'] || !data['sale_tax']) {
-            $.fn.notifyB({description: 'Some fields in Sale tab is missing'}, 'failure');
+
+        if (data['product_choice'].includes(0)) {
+            if (data['is_public_website'] && Object.keys(data).includes('price_list_for_sale_online')) {
+                $.fn.notifyB({description: 'Missing Price list for Sale online'}, 'failure');
+                return false
+            }
+            if (!data['sale_default_uom'] || !data['sale_tax']) {
+                $.fn.notifyB({description: 'Some fields in Sale tab is missing'}, 'failure');
+                return false
+            }
+        }
+
+        if (data['product_choice'].includes(1)) {
+            // if (pageElements.$length.val() === '' || pageElements.$width.val() === '' || pageElements.$height.val() === '' || pageElements.$volume.val() === '' || pageElements.$weight.val() === '') {
+            //     $.fn.notifyB({description: 'Tab inventory is selected, product size must not null'}, 'failure');
+            //     return false
+            // }
+
+            if (!data['inventory_uom']) {
+                $.fn.notifyB({description: 'Some fields in Inventory tab is missing'}, 'failure');
+                return false
+            }
+        }
+
+        if (data['product_choice'].includes(2)) {
+            if (!data['purchase_default_uom'] || !data['purchase_tax']) {
+                $.fn.notifyB({description: 'Some fields in Purchase tab is missing'}, 'failure');
+                return false
+            }
+        }
+
+        if (data['inventory_level_min'] > data['inventory_level_max']) {
+            $.fn.notifyB({description: 'Inventory level min can not greater than Inventory level max'}, 'failure');
             return false
         }
+
+        return data
     }
-
-    if (data['product_choice'].includes(1)) {
-        // if (lengthEle.val() === '' || widthEle.val() === '' || heightEle.val() === '' || volumeEle.val() === '' || weightEle.val() === '') {
-        //     $.fn.notifyB({description: 'Tab inventory is selected, product size must not null'}, 'failure');
-        //     return false
-        // }
-
-        if (!data['inventory_uom']) {
-            $.fn.notifyB({description: 'Some fields in Inventory tab is missing'}, 'failure');
-            return false
-        }
-    }
-
-    if (data['product_choice'].includes(2)) {
-        if (!data['purchase_default_uom'] || !data['purchase_tax']) {
-            $.fn.notifyB({description: 'Some fields in Purchase tab is missing'}, 'failure');
-            return false
-        }
-    }
-
-    if (data['inventory_level_min'] > data['inventory_level_max']) {
-        $.fn.notifyB({description: 'Inventory level min can not greater than Inventory level max'}, 'failure');
-        return false
-    }
-
-    return data
-}
-
-class ProductHandle {
-    load() {
-        loadGeneralProductType()
-        loadGeneralProductCategory()
-        loadGeneralUoMGroup()
-        loadSaleTaxCode()
-        loadPurchaseTaxCode()
-        loadSaleDefaultUom()
-        loadSalePriceListForSaleOnline(null, [])
-        loadInventoryDefaultUom()
-        loadPurchaseDefaultUom()
-        loadBaseItemUnit()
-    }
-
-    combinesData(frmEle, for_update = false) {
-        let dataForm = getDataForm();
+    static CombinesData(frmEle, for_update = false) {
+        let dataForm = ProductHandler.GetDataForm();
         if (dataForm) {
             let frm = new SetupFormSubmit($(frmEle));
-
             let url_return = frm.dataUrl;
             if (for_update === true) {
                 let pk = $.fn.getPkDetail()
                 url_return = frm.dataUrl.format_url_with_uuid(pk);
             }
-
             return {
                 url: url_return,
                 method: frm.dataMethod,
@@ -959,1103 +1263,739 @@ class ProductHandle {
         }
         return false;
     }
-}
+    static LoadDetailProduct(option) {
+        let pk = $.fn.getPkDetail()
+        $.fn.callAjax($('#form-update-product').data('url').format_url_with_uuid(pk), 'GET').then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    let product_detail = data['product'];
+                    pageVariables.data_detail = product_detail;
+                    $.fn.compareStatusShowPageAction(data);
+                    $x.fn.renderCodeBreadcrumb(product_detail);
+                    // console.log(product_detail)
 
-function LoadDetailProduct(option) {
-    let pk = $.fn.getPkDetail()
-    $.fn.callAjax($('#form-update-product').data('url').format_url_with_uuid(pk), 'GET').then(
-        (resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data) {
-                let product_detail = data['product'];
-                Detail_data = product_detail;
-                $.fn.compareStatusShowPageAction(data);
-                $x.fn.renderCodeBreadcrumb(product_detail);
-                // console.log(product_detail)
+                    pageElements.$code.val(product_detail['code']).prop('disabled', true).prop('readonly', true).addClass('form-control-line')
+                    pageElements.$title.val(product_detail['title'])
+                    pageElements.$description.val(product_detail['description'])
+                    pageElements.$part_number.val(product_detail['part_number'])
 
-                $('#code').val(product_detail['code'])
-                titleEle.val(product_detail['title'])
-                $('#description').val(product_detail['description'])
-                partNumberEle.val(product_detail['part_number'])
-
-                if (product_detail['product_choice'].includes(0)) {
-                    $('#check-tab-sale').attr('checked', true);
-                    $('#link-tab-sale').removeClass('disabled');
-                    $('#tab_sale').find('.row').prop('hidden', false)
-                }
-
-                if (product_detail['product_choice'].includes(1)) {
-                    $('#check-tab-inventory').attr('checked', true);
-                    $('#link-tab-inventory').removeClass('disabled');
-                    $('#tab_inventory').find('.row').prop('hidden', false)
-                }
-
-                if (product_detail['product_choice'].includes(2)) {
-                    $('#check-tab-purchase').attr('checked', true);
-                    $('#link-tab-purchase').removeClass('disabled');
-                    $('#tab_purchase').find('.row').prop('hidden', false)
-                }
-
-                if (Object.keys(product_detail['general_information']).length !== 0) {
-                    let general_information = product_detail['general_information'];
-                    loadGeneralProductType(general_information['general_product_types_mapped']);
-                    loadGeneralProductCategory(general_information['product_category']);
-                    loadGeneralUoMGroup(general_information['uom_group']);
-                    $('#general-select-box-traceability-method').val(general_information['traceability_method']).prop('disabled', true)
-                    if (Object.keys(general_information['product_size']).length !== 0) {
-                        lengthEle.val(general_information['product_size']['length']);
-                        widthEle.val(general_information['product_size']['width']);
-                        heightEle.val(general_information['product_size']['height']);
-                        volumeEle.val(general_information['product_size']['volume']['value']);
-                        weightEle.val(general_information['product_size']['weight']['value']);
-                    }
-                    loadBaseItemUnit();
-                }
-
-                if (Object.keys(product_detail['sale_information']).length !== 0) {
-                    let sale_information = product_detail['sale_information'];
-                    loadSaleDefaultUom(sale_information['default_uom']);
-                    loadSaleTaxCode(sale_information['tax']);
-
-                    let price_list_filter = []
-                    for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
-                        let item = sale_information['sale_product_price_list'][i];
-                        price_list_filter.push(item.id)
+                    if (product_detail['product_choice'].includes(0)) {
+                        $('#check-tab-sale').attr('checked', true);
+                        $('#link-tab-sale').removeClass('disabled');
+                        $('#tab_sale').find('.row').prop('hidden', false)
                     }
 
-                    loadPriceList(sale_information['sale_product_price_list'], option);
-
-                    loadSalePriceListForSaleOnline(sale_information['price_list_for_online_sale'], price_list_filter)
-
-                    public_website_Ele.prop('checked', product_detail['is_public_website'])
-                    if (product_detail['is_public_website']) {
-                        price_list_for_online_sale_Ele.prop('disabled', false)
-                    }
-                    else {
-                        price_list_for_online_sale_Ele.prop('disabled', true)
+                    if (product_detail['product_choice'].includes(1)) {
+                        $('#check-tab-inventory').attr('checked', true);
+                        $('#link-tab-inventory').removeClass('disabled');
+                        $('#tab_inventory').find('.row').prop('hidden', false)
                     }
 
-                    available_notify_checkboxEle.prop('checked', sale_information?.['available_notify']);
-                    if (sale_information?.['available_notify']) {
-                        $('#less_than_number').prop('disabled', false).val(sale_information?.['available_notify_quantity']);
+                    if (product_detail['product_choice'].includes(2)) {
+                        $('#check-tab-purchase').attr('checked', true);
+                        $('#link-tab-purchase').removeClass('disabled');
+                        $('#tab_purchase').find('.row').prop('hidden', false)
                     }
-                    else {
-                        $('#less_than_number').prop('disabled', true).val('')
+
+                    if (Object.keys(product_detail['general_information']).length !== 0) {
+                        let general_information = product_detail['general_information'];
+                        ProductLoadPage.LoadGeneralProductType(general_information['general_product_types_mapped'][0]);
+                        ProductLoadPage.LoadGeneralProductCategory(general_information['product_category']);
+                        ProductLoadPage.LoadGeneralUoMGroup(general_information['uom_group']);
+                        ProductLoadPage.LoadGeneralManufacturer(general_information['general_manufacturer']);
+                        pageElements.$general_traceability_method.val(general_information['traceability_method']).prop('disabled', true)
+                        pageElements.$general_standard_price.attr('value', general_information['standard_price'])
+                        if (Object.keys(general_information['product_size']).length !== 0) {
+                            pageElements.$length.val(general_information['product_size']['length']);
+                            pageElements.$width.val(general_information['product_size']['width']);
+                            pageElements.$height.val(general_information['product_size']['height']);
+                            pageElements.$volume.val(general_information['product_size']['volume']['value']);
+                            pageElements.$weight.val(general_information['product_size']['weight']['value']);
+                        }
                     }
+
+                    if (Object.keys(product_detail['sale_information']).length !== 0) {
+                        let sale_information = product_detail['sale_information'];
+                        ProductLoadPage.LoadSaleUom(sale_information['default_uom']);
+                        ProductLoadPage.LoadSaleTax(sale_information['tax']);
+
+                        let price_list_filter = []
+                        for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
+                            let item = sale_information['sale_product_price_list'][i];
+                            price_list_filter.push(item.id)
+                        }
+
+                        ProductLoadPage.LoadPriceListTable(sale_information['sale_product_price_list'], option);
+
+                        ProductLoadPage.LoadSalePriceListForSaleOnline(sale_information['price_list_for_online_sale'], price_list_filter)
+
+                        pageElements.$is_publish_website.prop('checked', product_detail['is_public_website'])
+                        if (product_detail['is_public_website']) {
+                            pageElements.$price_list_for_sale_online.prop('disabled', false)
+                        }
+                        else {
+                            pageElements.$price_list_for_sale_online.prop('disabled', true)
+                        }
+
+                        pageElements.$available_notify_checkbox.prop('checked', sale_information?.['available_notify']);
+                        if (sale_information?.['available_notify']) {
+                            pageElements.$less_than_number.prop('disabled', false).val(sale_information?.['available_notify_quantity']);
+                        }
+                        else {
+                            pageElements.$less_than_number.prop('disabled', true).val('')
+                        }
+                        $.fn.initMaskMoney2();
+                    }
+
+                    if (Object.keys(product_detail['inventory_information']).length !== 0) {
+                        let inventory_information = product_detail['inventory_information'];
+                        ProductLoadPage.LoadInventoryUom(inventory_information['uom']);
+                        pageElements.$inventory_level_min.val(inventory_information['inventory_level_min']);
+                        pageElements.$inventory_level_max.val(inventory_information['inventory_level_max']);
+                        pageElements.$valuation_method.val(inventory_information['valuation_method'])
+
+                        ProductLoadPage.LoadWareHouseListDetail(product_detail['product_warehouse_detail']);
+                        let data_overview = [];
+                        let sum_stock = product_detail?.['stock_amount'] ? product_detail?.['stock_amount'] : 0;
+                        let sum_wait_for_delivery = product_detail?.['wait_delivery_amount'] ? product_detail?.['wait_delivery_amount'] : 0;
+                        let sum_wait_for_receipt = product_detail?.['wait_receipt_amount'] ? product_detail?.['wait_receipt_amount'] : 0;
+                        let sum_production = product_detail?.['production_amount'] ? product_detail?.['production_amount'] : 0;
+                        let sum_available_value = product_detail?.['available_amount'] ? product_detail?.['available_amount'] : 0;
+                        data_overview.push({
+                            'sum_stock': sum_stock,
+                            'sum_wait_for_delivery': sum_wait_for_delivery,
+                            'sum_wait_for_receipt': sum_wait_for_receipt,
+                            'sum_production': sum_production,
+                            'sum_available_value': sum_available_value
+                        })
+                        ProductLoadPage.LoadWareHouseOverViewDetail(data_overview);
+                    }
+
+                    if (Object.keys(product_detail['purchase_information']).length !== 0) {
+                        let purchase_information = product_detail['purchase_information'];
+                        ProductLoadPage.LoadPurchaseUom(purchase_information['default_uom']);
+                        ProductLoadPage.LoadPurchaseTax(purchase_information['tax']);
+                        pageElements.$purchase_supplied_by.val(product_detail?.['purchase_information']?.['supplied_by'])
+                    }
+
+                    $('#data-detail-page').val(JSON.stringify(product_detail));
+
+                    let readonly = '';
+                    let disabled = '';
+                    if (option === 'detail') {
+                        readonly = 'readonly';
+                        disabled = 'disabled';
+                    }
+
+                    for (let i = 0; i < product_detail['product_variant_attribute_list'].length; i++) {
+                         let item = product_detail['product_variant_attribute_list'][i];
+                         let attribute_config_list = [
+                             'Dropdown List', 'Radio Select',
+                             'Select (Fill by text)', 'Select (Fill by color)', 'Select (Fill bu photo)'
+                         ]
+                         let variant_attributes_select_html = '';
+                         for (let j = 0; j < item['attribute_value_list'].length; j++) {
+                             variant_attributes_select_html += `<span class="badge badge-primary mr-1 mb-1">
+                                 <span>
+                                     <span class="attribute-value">${item['attribute_value_list'][j]['value']}</span>
+                                 </span>
+                             </span>`;
+                         }
+                         pageElements.$table_variant_attributes.find('tbody').append(`<tr id="row-${i + 1}" data-variant-attribute-id="${item.id}">
+                             <td class="w-5 row-index">${i + 1}</td>
+                             <td class="w-15"><input readonly class="form-control variant-attribute" value="${item.attribute_title}"></td>
+                             <td class="w-50">
+                                 <span class="variant-attributes-span">${variant_attributes_select_html}</span>
+                                 <button type="button" ${disabled} data-bs-toggle="modal" data-bs-target="#modal-variant-attributes" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-values"><span class="icon"><i class="fas fa-plus-circle"></i></span></button>
+                             </td>
+                             <td class="w-5"></td>
+                             <td class="w-20">
+                                 <label class="config-selection" data-value="${item.attribute_config}">${attribute_config_list[item.attribute_config]}</label>
+                                 <button type="button" ${disabled} data-bs-toggle="modal" data-bs-target="#modal-attribute-display" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-configs"><span class="icon"><i class="fas fa-stream"></i></span></button>
+                                 <script class="attribute_value_list_span" hidden></script>
+                             </td>
+                             <td class="w-5">
+                                 <button type="button" disabled class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs delete-attribute-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
+                             </td>
+                         </tr>`)
+
+                         $(`#row-${i + 1} .variant-attributes-select`).initSelect2();
+                         $(`#row-${i + 1} .variant-attributes-select option:selected`).prop('disabled', true);
+                         $(`#row-${i + 1} .attribute_value_list_span`).text(JSON.stringify(item.attribute_value_list))
+                     }
+
+                    $('#table-variant-items-label').text(product_detail['product_variant_item_list'].length);
+
+                    let data_list = []
+                    for (let i = 0; i < product_detail['product_variant_item_list'].length; i++) {
+                        let item = product_detail['product_variant_item_list'][i];
+                        let variant_html = ``;
+                        for (let j = 0; j < item?.['variant_value_list'].length; j++) {
+                            variant_html += `<span class="variant-item badge badge-soft-danger badge-outline mr-1 mb-1">${item?.['variant_value_list'][j]}</span>`;
+                        }
+                        data_list.push({
+                                'index': i + 1,
+                                'id': item?.['id'],
+                                'html': variant_html,
+                                'variant_name': item?.['variant_name'],
+                                'variant_des': item?.['variant_des'],
+                                'variant_SKU': item?.['variant_SKU'],
+                                'variant_extra_price': item?.['variant_extra_price'],
+                                'is_activate': item?.['is_active'] ? 'checked' : ''
+                        })
+                     // pageElements.$table_variant_items.find('tbody').append(`
+                     //     <tr id="variant-item-row-${i + 1}" data-variant-value-id="${item.id}">
+                     //         <td class="w-5">${i + 1}</td>
+                     //         <td class="w-45">${variant_html}</td>
+                     //         <td class="w-5">
+                     //             <button type="button" data-bs-toggle="modal" data-bs-target="#modal-variant-item-des" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-item-des"><span class="icon"><i class="fas fa-ellipsis-v"></i></span></button>
+                     //             <span hidden class="variant-name-span">${item.variant_name}</span>
+                     //             <span hidden class="variant-des-span">${item.variant_des}</span>
+                     //         </td>
+                     //         <td class="w-20"><input class="form-control SKU-input" value="${item.variant_SKU}"></td>
+                     //         <td class="w-20"><input data-return-type="number" type="text" class="form-control mask-money extra-price-input" value="${item.variant_extra_price}"></td>
+                     //         <td class="w-5">
+                     //             <div class="form-check form-switch">
+                     //                 <input ${is_active} type="checkbox" class="form-check-input variant-active">
+                     //             </div>
+                     //         </td>
+                     //     </tr>
+                     // `)
+                    }
+                    pageElements.$table_variant_items.DataTableDefault({
+                        dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
+                        reloadCurrency: true,
+                        paging: false,
+                        data: data_list ? data_list : [],
+                        columns: [
+                         {
+                            data: '',
+                            className: 'wrap-text text-center w-5',
+                            render: (data, type, row) => {
+                                return row.index;
+                            }
+                        },
+                         {
+                            data: '',
+                            className: 'wrap-text w-40',
+                            render: (data, type, row) => {
+                                return row.html;
+                            }
+                        },
+                         {
+                            data: '',
+                            className: 'wrap-text',
+                            render: (data, type, row) => {
+                                return `<button type="button" data-bs-toggle="modal" data-bs-target="#modal-variant-item-des" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-item-des"><span class="icon"><i class="fas fa-ellipsis-v"></i></span></button>
+                                 <span hidden class="variant-name-span">${row.variant_name}</span>
+                                 <span hidden class="variant-des-span">${row.variant_des}</span>`
+                            }
+                        },
+                         {
+                            data: '',
+                            className: 'wrap-text w-20',
+                            render: (data, type, row) => {
+                                return `<input class="form-control SKU-input" ${readonly} value="${row.variant_SKU}">`;
+                            }
+                        },
+                         {
+                            data: '',
+                            className: 'wrap-text w-25',
+                            render: (data, type, row) => {
+                                return `<input data-return-type="number" type="text" ${readonly} class="form-control mask-money extra-price-input" value="${row.variant_extra_price}">`;
+                            }
+                        },
+                         {
+                            data: '',
+                            className: 'wrap-text text-center w-10',
+                            render: (data, type, row) => {
+                                return `<div class="form-check form-switch">
+                                     <input ${row.is_activate} type="checkbox" ${disabled} class="form-check-input variant-active">
+                                 </div>`;
+                            }
+                        }
+                        ],
+                        createdRow: (row, data, dataIndex) => {
+                            $(row).attr('id', `variant-item-row-${dataIndex+1}`);
+                            $(row).attr('data-variant-value-id', data.id);
+                        }
+                    });
+
+                    if (product_detail['product_variant_item_list'].length > 0) {
+                     $('#table-variant-items-div').prop('hidden', false);
+                    }
+
+                    pageElements.$account_deter_referenced_by.val(product_detail['account_deter_referenced_by']).prop('disabled', true)
+                    pageElements.$product_account_determination_table.prop('hidden', product_detail['account_deter_referenced_by'] !== 2)
+                    ProductLoadPage.LoadAccountDeterminationTable()
+
                     $.fn.initMaskMoney2();
+
+                    ProductHandler.Disable(option);
                 }
-
-                if (Object.keys(product_detail['inventory_information']).length !== 0) {
-                    let inventory_information = product_detail['inventory_information'];
-                    loadInventoryDefaultUom(inventory_information['uom']);
-                    $('#inventory-level-min').val(inventory_information['inventory_level_min']);
-                    $('#inventory-level-max').val(inventory_information['inventory_level_max']);
-                    $('#valuation-method').val(inventory_information['valuation_method'])
-                    $('#standard_price').attr('value', inventory_information['standard_price'])
-
-                    loadWareHouseListDetail(product_detail['product_warehouse_detail']);
-                    let data_overview = [];
-                    let sum_stock = product_detail?.['stock_amount'] ? product_detail?.['stock_amount'] : 0;
-                    let sum_wait_for_delivery = product_detail?.['wait_delivery_amount'] ? product_detail?.['wait_delivery_amount'] : 0;
-                    let sum_wait_for_receipt = product_detail?.['wait_receipt_amount'] ? product_detail?.['wait_receipt_amount'] : 0;
-                    let sum_production = product_detail?.['production_amount'] ? product_detail?.['production_amount'] : 0;
-                    let sum_available_value = product_detail?.['available_amount'] ? product_detail?.['available_amount'] : 0;
-                    data_overview.push({
-                        'sum_stock': sum_stock,
-                        'sum_wait_for_delivery': sum_wait_for_delivery,
-                        'sum_wait_for_receipt': sum_wait_for_receipt,
-                        'sum_production': sum_production,
-                        'sum_available_value': sum_available_value
-                    })
-                    loadWareHouseOverViewDetail(data_overview);
-                }
-
-                if (Object.keys(product_detail['purchase_information']).length !== 0) {
-                    let purchase_information = product_detail['purchase_information'];
-                    loadPurchaseDefaultUom(purchase_information['default_uom']);
-                    loadPurchaseTaxCode(purchase_information['tax']);
-                    suppliedByEle.val(product_detail?.['purchase_information']?.['supplied_by'])
-                }
-
-                $('#data-detail-page').val(JSON.stringify(product_detail));
-
-                let readonly = '';
-                let disabled = '';
-                if (option === 'detail') {
-                    readonly = 'readonly';
-                    disabled = 'disabled';
-                }
-
-                for (let i = 0; i < product_detail['product_variant_attribute_list'].length; i++) {
-                     let item = product_detail['product_variant_attribute_list'][i];
-                     let attribute_config_list = [
-                         'Dropdown List', 'Radio Select',
-                         'Select (Fill by text)', 'Select (Fill by color)', 'Select (Fill bu photo)'
-                     ]
-                     let variant_attributes_select_html = '';
-                     for (let j = 0; j < item['attribute_value_list'].length; j++) {
-                         variant_attributes_select_html += `<span class="badge badge-primary mr-1 mb-1">
-                             <span>
-                                 <span class="attribute-value">${item['attribute_value_list'][j]['value']}</span>
-                             </span>
-                         </span>`;
-                     }
-                     table_Variant_Attributes.find('tbody').append(`<tr id="row-${i + 1}" data-variant-attribute-id="${item.id}">
-                         <td class="w-5 row-index">${i + 1}</td>
-                         <td class="w-15"><input readonly class="form-control variant-attribute" value="${item.attribute_title}"></td>
-                         <td class="w-50">
-                             <span class="variant-attributes-span">${variant_attributes_select_html}</span>
-                             <button type="button" ${disabled} data-bs-toggle="modal" data-bs-target="#modal-variant-attributes" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-values"><span class="icon"><i class="fas fa-plus-circle"></i></span></button>
-                         </td>
-                         <td class="w-5"></td>
-                         <td class="w-20">
-                             <label class="config-selection" data-value="${item.attribute_config}">${attribute_config_list[item.attribute_config]}</label>
-                             <button type="button" ${disabled} data-bs-toggle="modal" data-bs-target="#modal-attribute-display" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-configs"><span class="icon"><i class="fas fa-stream"></i></span></button>
-                             <script class="attribute_value_list_span" hidden></script>
-                         </td>
-                         <td class="w-5">
-                             <button type="button" disabled class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs delete-attribute-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
-                         </td>
-                     </tr>`)
-
-                     $(`#row-${i + 1} .variant-attributes-select`).initSelect2();
-                     $(`#row-${i + 1} .variant-attributes-select option:selected`).prop('disabled', true);
-                     $(`#row-${i + 1} .attribute_value_list_span`).text(JSON.stringify(item.attribute_value_list))
-                 }
-
-                $('#table-variant-items-label').text(product_detail['product_variant_item_list'].length);
-
-                let data_table_Variant_Items = []
-                for (let i = 0; i < product_detail['product_variant_item_list'].length; i++) {
-                 let item = product_detail['product_variant_item_list'][i];
-                 let variant_html = ``;
-                 for (let j = 0; j < item?.['variant_value_list'].length; j++) {
-                     variant_html += `<span class="variant-item badge badge-soft-danger badge-outline mr-1 mb-1">${item?.['variant_value_list'][j]}</span>`;
-                 }
-                 data_table_Variant_Items.push(
-                     {
-                         'index': i + 1,
-                         'id': item?.['id'],
-                         'html': variant_html,
-                         'variant_name': item?.['variant_name'],
-                         'variant_des': item?.['variant_des'],
-                         'variant_SKU': item?.['variant_SKU'],
-                         'variant_extra_price': item?.['variant_extra_price'],
-                         'is_activate': item?.['is_active'] ? 'checked' : ''
-                     }
-                 )
-                 // table_Variant_Items.find('tbody').append(`
-                 //     <tr id="variant-item-row-${i + 1}" data-variant-value-id="${item.id}">
-                 //         <td class="w-5">${i + 1}</td>
-                 //         <td class="w-45">${variant_html}</td>
-                 //         <td class="w-5">
-                 //             <button type="button" data-bs-toggle="modal" data-bs-target="#modal-variant-item-des" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-item-des"><span class="icon"><i class="fas fa-ellipsis-v"></i></span></button>
-                 //             <span hidden class="variant-name-span">${item.variant_name}</span>
-                 //             <span hidden class="variant-des-span">${item.variant_des}</span>
-                 //         </td>
-                 //         <td class="w-20"><input class="form-control SKU-input" value="${item.variant_SKU}"></td>
-                 //         <td class="w-20"><input data-return-type="number" type="text" class="form-control mask-money extra-price-input" value="${item.variant_extra_price}"></td>
-                 //         <td class="w-5">
-                 //             <div class="form-check form-switch">
-                 //                 <input ${is_active} type="checkbox" class="form-check-input variant-active">
-                 //             </div>
-                 //         </td>
-                 //     </tr>
-                 // `)
-                }
-                table_Variant_Items.DataTableDefault({
-                    dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
-                    reloadCurrency: true,
-                    paging: false,
-                    data: data_table_Variant_Items ? data_table_Variant_Items : [],
-                    columns: [
-                     {
-                        data: '',
-                        className: 'wrap-text text-center w-5',
-                        render: (data, type, row) => {
-                            return row.index;
-                        }
-                    },
-                     {
-                        data: '',
-                        className: 'wrap-text w-40',
-                        render: (data, type, row) => {
-                            return row.html;
-                        }
-                    },
-                     {
-                        data: '',
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
-                            return `<button type="button" data-bs-toggle="modal" data-bs-target="#modal-variant-item-des" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-item-des"><span class="icon"><i class="fas fa-ellipsis-v"></i></span></button>
-                             <span hidden class="variant-name-span">${row.variant_name}</span>
-                             <span hidden class="variant-des-span">${row.variant_des}</span>`
-                        }
-                    },
-                     {
-                        data: '',
-                        className: 'wrap-text w-20',
-                        render: (data, type, row) => {
-                            return `<input class="form-control SKU-input" ${readonly} value="${row.variant_SKU}">`;
-                        }
-                    },
-                     {
-                        data: '',
-                        className: 'wrap-text w-25',
-                        render: (data, type, row) => {
-                            return `<input data-return-type="number" type="text" ${readonly} class="form-control mask-money extra-price-input" value="${row.variant_extra_price}">`;
-                        }
-                    },
-                     {
-                        data: '',
-                        className: 'wrap-text text-center w-10',
-                        render: (data, type, row) => {
-                            return `<div class="form-check form-switch">
-                                 <input ${row.is_activate} type="checkbox" ${disabled} class="form-check-input variant-active">
-                             </div>`;
-                        }
-                    }
-                    ],
-                    createdRow: (row, data, dataIndex) => {
-                        $(row).attr('id', `variant-item-row-${dataIndex+1}`);
-                        $(row).attr('data-variant-value-id', data.id);
-                    }
-                });
-
-                if (product_detail['product_variant_item_list'].length > 0) {
-                 $('#table-variant-items-div').prop('hidden', false);
-                }
-
-                $account_deter_referenced_by.val(product_detail['account_deter_referenced_by']).prop('disabled', true)
-                $product_account_determination_table.prop('hidden', product_detail['account_deter_referenced_by'] !== 2)
-
-                $.fn.initMaskMoney2();
-
-                Disable(option);
-            }
-        })
-}
-
-$('#to-fix-left').on('click', function () {
-    let now = volumeEle.val().split('.')[1].length
-    if (now - 1 > 0) {
-        volumeEle.val(parseFloat(volumeEle.val()).toFixed(now - 1))
-    }
-})
-
-$('#to-fix-right').on('click', function () {
-    let now = volumeEle.val().split('.')[1].length
-    if (now < 5) {
-        let length = lengthEle.val();
-        let width = widthEle.val();
-        let height = heightEle.val();
-        let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
-        volumeEle.val(volume.toFixed(now + 1))
-    }
-})
-
-// variants
-
-btn_Add_Line_Variant_Attributes.on('click', function () {
-    if (parseFloat($('#datatable-warehouse-overview tbody tr:first-child td:first-child span').text()) > 0) {
-        $.fn.notifyB({description: 'Can not add variants when product is in stock'}, 'failure');
-    }
-    else {
-        let tb_length = table_Variant_Attributes.find('tbody').find('tr').length;
-        table_Variant_Attributes.find('tbody').append(`
-            <tr id="row-${tb_length + 1}">
-                <td class="w-5 row-index">${tb_length + 1}</td>
-                <td class="w-15"><input class="form-control variant-attribute"></td>
-                <td class="w-50">
-                    <span class="variant-attributes-span"></span>
-                    <button type="button" disabled data-bs-toggle="modal" data-bs-target="#modal-variant-attributes" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-values"><span class="icon"><i class="fas fa-plus-circle"></i></span></button>
-                </td>
-                <td class="w-5"></td>
-                <td class="w-20">
-                    <label class="config-selection"></label>
-                    <button type="button" disabled data-bs-toggle="modal" data-bs-target="#modal-attribute-display" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-configs"><span class="icon"><i class="fas fa-stream"></i></span></button>
-                    <script class="attribute_value_list_span" hidden></script>
-                </td>
-                <td class="w-5">
-                    <button type="button" class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs delete-attribute-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
-                </td>
-            </tr>
-        `)
-        $(`#row-${tb_length + 1} .variant-attributes-select`).initSelect2();
-    }
-})
-
-function ReloadModalConfig(option, color_data) {
-    if (color_data !== '') {
-        color_data = JSON.parse(color_data);
-    }
-
-    attribute_display_select_by.html('');
-    attribute_display_select_by.initSelect2();
-    attribute_display_select_by.append(`
-        <option></option>
-        <option value="0">Dropdown list</option>
-        <option value="1">Radio select</option>
-        <option value="2">Select</option>
-    `);
-
-    let variants_value_list = [];
-    current_row_variant_attribute.find('.variant-attributes-span').find('.attribute-value').each(function () {
-        variants_value_list.push($(this).text());
-    })
-
-    // dropdown_list_preview
-    let dropdown_list_preview = $('#dropdown-list-preview');
-    dropdown_list_preview.html('');
-    dropdown_list_preview.initSelect2();
-    dropdown_list_preview.append(`<option></option>`);
-    for (let i = 0; i < variants_value_list.length; i++) {
-        dropdown_list_preview.append(`<option>${variants_value_list[i]}</option>`);
-    }
-
-    // radio_selection_preview
-    let radio_selection_preview = $('#radio-selection-preview');
-    radio_selection_preview.html('');
-    for (let i = 0; i < variants_value_list.length; i++) {
-        radio_selection_preview.append(`
-            <div class="col-3">
-                <div class="form-check">
-                    <input type="radio" value="${variants_value_list[i]}" name="radio-type-1" class="form-check-input radio-attribute-value" checked>
-                    <label class="form-check-label" for="${variants_value_list[i]}">${variants_value_list[i]}</label>
-                </div>
-            </div>
-        `);
-    }
-
-    // fill_by_text_preview
-    let fill_by_text_preview = $('#fill-by-text-preview');
-    fill_by_text_preview.html('');
-    for (let i = 0; i < variants_value_list.length; i++) {
-        fill_by_text_preview.append(`
-            <div class="col-3">
-                <div class="text-center mb-2 pt-2 pb-2 pr-2 pl-2 bg-gray-light-4 border rounded border-grey selection-fill-by">
-                    ${variants_value_list[i]}
-                </div>
-            </div>
-        `);
-    }
-
-    // fill_by_color_preview
-    let fill_by_color_preview = $('#fill-by-color-preview');
-    fill_by_color_preview.html('');
-    for (let i = 0; i < variants_value_list.length; i++) {
-        let color = '#000000';
-        if (color_data.length > 0) {
-            color = color_data[i]?.['color'] ? color_data[i]?.['color'] : '#000000';
-        }
-        fill_by_color_preview.append(`
-            <div class="col-3">
-                <div class="mb-2 pt-2 pb-2 pr-2 pl-2 border rounded border-grey selection-fill-by">
-                <center>
-                    <input type="color" id="color-picker-${variants_value_list[i]}" class="form-control form-control-color color-picker-attribute-value" value="${color}" title="Choose your color">
-                    <label for="color-picker-${variants_value_list[i]}" class="form-label">${variants_value_list[i]}</label>
-                </center>
-                </div> 
-            </div>
-        `);
-    }
-
-    // fill_by_photo_preview
-    let fill_by_photo_preview = $('#fill-by-photo-preview');
-    fill_by_photo_preview.html('');
-    for (let i = 0; i < variants_value_list.length; i++) {
-        fill_by_photo_preview.append(`
-            <div class="col-3">
-                <div class="mb-2 pt-2 pb-2 pr-2 pl-2 border rounded border-grey selection-fill-by">
-                <center>
-                    <input type="file" id="photo-picker-${variants_value_list[i]}" class="photo-picker-dropify">
-                    <label for="photo-picker-${variants_value_list[i]}" class="form-label">${variants_value_list[i]}</label>
-                </center>
-                </div> 
-            </div>
-        `);
-    }
-    $('.photo-picker-dropify').dropify({
-        messages: {
-            'default': 'Upload an image',
-            'replace': 'Drag and drop or click to replace',
-            'remove':  'Remove',
-            'error':   'Oops, something wrong happened.'
-        },
-        tpl: {
-            message:' {{ default }}',
-        }
-    });
-    $('.selection-fill-by .dropify-wrapper').addClass('h-90p');
-
-    if (option === undefined) {
-        $('#dropdown-list-selection-preview').attr('hidden', true);
-        radio_selection_preview.attr('hidden', true);
-        $('#select-selection-preview').attr('hidden', true);
-        fill_by_text_preview.attr('hidden', true);
-        fill_by_color_preview.attr('hidden', true);
-        fill_by_photo_preview.attr('hidden', true);
-    }
-    if (option === '0') {
-        attribute_display_select_by.val(0);
-        $('#dropdown-list-selection-preview').attr('hidden', false);
-        radio_selection_preview.attr('hidden', true);
-        $('#select-selection-preview').attr('hidden', true);
-        fill_by_text_preview.attr('hidden', true);
-        fill_by_color_preview.attr('hidden', true);
-        fill_by_photo_preview.attr('hidden', true);
-    }
-    if (option === '1') {
-        attribute_display_select_by.val(1);
-        $('#dropdown-list-selection-preview').attr('hidden', true);
-        radio_selection_preview.attr('hidden', false);
-        $('#select-selection-preview').attr('hidden', true);
-        fill_by_text_preview.attr('hidden', true);
-        fill_by_color_preview.attr('hidden', true);
-        fill_by_photo_preview.attr('hidden', true);
-    }
-    if (option === '2') {
-        attribute_display_select_by.val(2);
-        $('#radio-fill-by-text').prop('checked', true);
-
-        $('#dropdown-list-selection-preview').attr('hidden', true);
-        radio_selection_preview.attr('hidden', true);
-        $('#select-selection-preview').attr('hidden', false);
-        fill_by_text_preview.attr('hidden', false);
-        fill_by_color_preview.attr('hidden', true);
-        fill_by_photo_preview.attr('hidden', true);
-    }
-    if (option === '3') {
-        attribute_display_select_by.val(2);
-        $('#radio-fill-by-color').prop('checked', true);
-
-        $('#dropdown-list-selection-preview').attr('hidden', true);
-        radio_selection_preview.attr('hidden', true);
-        $('#select-selection-preview').attr('hidden', false);
-        fill_by_text_preview.attr('hidden', true);
-        fill_by_color_preview.attr('hidden', false);
-        fill_by_photo_preview.attr('hidden', true);
-    }
-    if (option === '4') {
-        attribute_display_select_by.val(2);
-        $('#radio-fill-by-photo').prop('checked', true);
-
-        $('#dropdown-list-selection-preview').attr('hidden', true);
-        radio_selection_preview.attr('hidden', true);
-        $('#select-selection-preview').attr('hidden', false);
-        fill_by_text_preview.attr('hidden', true);
-        fill_by_color_preview.attr('hidden', true);
-        fill_by_photo_preview.attr('hidden', false);
-    }
-}
-
-$(document).on("click", '.add-variant-values', function () {
-    modal_Variant_Attributes.find('#value-name-modal-input').val('');
-    current_row_variant_attribute = $(this).closest('tr');
-    modal_Variant_Attributes.find('#attribute-name-modal-input').val($(this).closest('tr').find('.variant-attribute').val())
-})
-
-$(document).on("click", '.add-variant-configs', function () {
-    current_row_variant_attribute = $(this).closest('tr');
-    let option = current_row_variant_attribute.find('.config-selection').attr('data-value');
-    let color_data = current_row_variant_attribute.find('.attribute_value_list_span').text()
-    ReloadModalConfig(option, color_data);
-})
-
-$(document).on("click", '.add-variant-item-des', function () {
-    current_row_variant_item = $(this).closest('tr');
-    let variant_name = current_row_variant_item.find('.variant-name-span').text();
-    let variant_des = current_row_variant_item.find('.variant-des-span').text();
-    if (variant_name !== '' && variant_des !== '') {
-        $('#variant-name').val(variant_name);
-        $('#variant-des').val(variant_des);
-    }
-    else {
-        if (titleEle.val() !== '') {
-            let variant_name_content = [];
-            let variant_des_content = [];
-            current_row_variant_item.find('.variant-item').each(function () {
-                variant_name_content.push($(this).text());
-                variant_des_content.push($(this).text());
             })
-            $('#variant-name').val(titleEle.val() + ' (' + variant_name_content.join(', ') + ')');
-            $('#variant-des').val(variant_des_content.join(', '));
-        }
-        else {
-            $('#variant-name').val('');
-            $('#variant-des').val('');
-            $.fn.notifyB({description: 'Please enter a name for product!'}, 'warning');
-        }
     }
-})
-
-$(document).on("input", '.variant-attribute', function () {
-    if ($(this).val() !== '') {
-        $(this).closest('tr').find('.add-variant-values').attr('disabled', false);
-        $(this).closest('tr').find('.add-variant-configs').attr('disabled', false);
-    }
-    else {
-        $(this).closest('tr').find('.add-variant-values').attr('disabled', true);
-        $(this).closest('tr').find('.add-variant-configs').attr('disabled', true);
-    }
-})
-
-function generateCombinations(arrays, current = [], index = 0, result = []) {
-    if (index === arrays.length) {
-        result.push(current.slice());
-    } else {
-        for (let i = 0; i < arrays[index].length; i++) {
-            current[index] = arrays[index][i];
-            generateCombinations(arrays, current, index + 1, result);
-        }
-    }
-    return result;
 }
+// endregion
 
-function LoadVariantItemsTable() {
-    let all_row_value_list = [];
-    table_Variant_Attributes.find('tbody tr .variant-attributes-span').each(function (index) {
-        $(this).closest('tr').attr('id', 'row-' + (index+1));
-        $(this).closest('tr').find('.row-index').text(index+1);
-        let value_list = [];
-        $(this).find('.attribute-value').each(function () {
-            value_list.push($(this).text());
+// region PRODUCT EVENT HANDLER
+class ProductEventHandler {
+    static InitPageEven() {
+        pageElements.$product_image.dropify({
+            messages: {
+                'default': '',
+            },
+            tpl: {
+                message: '<div class="dropify-message">' +
+                    '<span class="file-icon"></span>' +
+                    '<h5>{{ default }}</h5>' +
+                    '</div>',
+            }
         })
-        all_row_value_list.push(value_list);
-    })
-    let combinations = generateCombinations(all_row_value_list);
-    table_Variant_Items.find('tbody').html('');
-    $('#table-variant-items-label').text(combinations.length);
-    if (combinations.length > 0) {
-        $('#table-variant-items-div').prop('hidden', false);
-        for (let i = 0; i < combinations.length; i++) {
-            let exist_variant = [];
-            if (Detail_data !== null) {
-                exist_variant = Detail_data?.['product_variant_item_list'].filter(function (element) {
-                    return JSON.stringify(element?.['variant_value_list'].slice().sort()) === JSON.stringify(combinations[i].slice().sort());
-                })
+        // general
+        $('#to-fix-left').on('click', function () {
+            let now = pageElements.$volume.val().split('.')[1].length
+            if (now - 1 > 0) {
+                pageElements.$volume.val(parseFloat(pageElements.$volume.val()).toFixed(now - 1))
             }
-            let variant_html = ``;
-            for (let j = 0; j < combinations[i].length; j++) {
-                variant_html += `<span class="variant-item badge badge-soft-danger badge-outline mr-1 mb-1">${combinations[i][j]}</span>`;
+        })
+        $('#to-fix-right').on('click', function () {
+            let now = pageElements.$volume.val().split('.')[1].length
+            if (now < 5) {
+                let length = pageElements.$length.val();
+                let width = pageElements.$width.val();
+                let height = pageElements.$height.val();
+                let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
+                pageElements.$volume.val(volume.toFixed(now + 1))
             }
-            if (exist_variant.length === 0) {
-                table_Variant_Items.find('tbody').append(`
-                    <tr id="variant-item-row-${i + 1}">
-                        <td class="w-5"><span class="badge badge-primary badge-indicator"></span>${i + 1}</td>
-                        <td class="w-45">${variant_html}</td>
-                        <td class="w-5">
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#modal-variant-item-des" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-item-des"><span class="icon"><i class="fas fa-ellipsis-v"></i></span></button>
-                            <span hidden class="variant-name-span"></span>
-                            <span hidden class="variant-des-span"></span>
-                        </td>
-                        <td class="w-20"><input class="form-control SKU-input"></td>
-                        <td class="w-20"><input data-return-type="number" type="text" class="form-control mask-money extra-price-input" value="0"></td>
-                        <td class="w-5" style="align-items: center;">
-                            <div class="form-check form-switch">
-                                <input checked type="checkbox" class="form-check-input variant-active">
-                            </div>
-                        </td>
-                    </tr>
-                `)
+        })
+        pageElements.$length.on("change", function () {
+            let length = pageElements.$length.val();
+            let width = pageElements.$width.val();
+            let height = pageElements.$height.val();
+            let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
+            if (!isNaN(volume)) {
+                pageElements.$volume.val(volume.toFixed(5));
             }
             else {
-                let exist_variant_data = exist_variant[0];
-                let checked = '';
-                if (exist_variant_data.is_active) {
-                    checked = 'checked';
+                pageElements.$volume.val('');
+            }
+        })
+        pageElements.$width.on("change", function () {
+            let length = pageElements.$length.val();
+            let width = pageElements.$width.val();
+            let height = pageElements.$height.val();
+            let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
+            if (!isNaN(volume)) {
+                pageElements.$volume.val(volume.toFixed(5));
+            }
+            else {
+                pageElements.$volume.val('');
+            }
+        })
+        pageElements.$height.on("change", function () {
+            let length = pageElements.$length.val();
+            let width = pageElements.$width.val();
+            let height = pageElements.$height.val();
+            let volume = parseFloat(length) * parseFloat(width) * parseFloat(height);
+            if (!isNaN(volume)) {
+                pageElements.$volume.val(volume.toFixed(5));
+            }
+            else {
+                pageElements.$volume.val('');
+            }
+        })
+        // inventory tab
+        pageElements.$check_tab_inventory.change(function () {
+            $('#tab_inventory input, #tab_inventory select').val('')
+            $('#tab_inventory').find('.row').prop('hidden', !pageElements.$check_tab_inventory.is(':checked'))
+            if (pageElements.$check_tab_inventory.is(':checked')) {
+                $('#label-dimension').addClass('required');
+            } else {
+                $('#label-dimension').removeClass('required');
+            }
+        })
+        // sale tab
+        pageElements.$check_tab_sale.change(function () {
+            $('#tab_sale input, #tab_sale select').val('')
+            $('#tab_sale').find('.row').prop('hidden', !pageElements.$check_tab_sale.is(':checked'))
+        })
+        pageElements.$available_notify_checkbox.on('change', function () {
+            pageElements.$less_than_number.val('').prop('disabled', !$(this).prop('checked'))
+        })
+        pageElements.$is_publish_website.on('change', function () {
+            if (!$(this).prop('checked')) {
+                pageElements.$price_list_for_sale_online.val('').trigger('change')
+                pageElements.$price_list_for_sale_online.prop('disabled', true)
+            } else {
+                pageElements.$price_list_for_sale_online.prop('disabled', false)
+            }
+        })
+        $(document).on('change', '.select_price_list', function () {
+            if ($(this).is(':checked') === true) {
+                $(this).closest('tr').find('.input_price_list').attr('disabled', false);
+            } else {
+                $(this).closest('tr').find('.input_price_list').attr('disabled', true);
+                $(this).closest('tr').find('.input_price_list').attr('value', '');
+                $(this).closest('tr').find('.input_price_list').val('');
+            }
+        })
+        $(document).on('change', '.input_price_list', function () {
+            let this_data_id = $(this).attr('data-id');
+            let this_data_value = $(this).attr('value');
+            let sale_product_price_list = []
+            $('.ul-price-list').find('.input_price_list').each(function () {
+                if ($(this).attr('data-source') === this_data_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
+                    let value = parseFloat(this_data_value) * parseFloat($(this).attr('data-factor'));
+                    $(this).attr('value', value);
+                    ProductLoadPage.LoadPriceForChild($(this).attr('data-id'), value);
                 }
-                table_Variant_Items.find('tbody').append(`
-                    <tr id="variant-item-row-${i + 1}" data-variant-value-id="${exist_variant_data.id}">
-                        <td class="w-5">${i + 1}</td>
-                        <td class="w-45">${variant_html}</td>
-                        <td class="w-5">
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#modal-variant-item-des" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-item-des"><span class="icon"><i class="fas fa-ellipsis-v"></i></span></button>
-                            <span hidden class="variant-name-span">${exist_variant_data.variant_name}</span>
-                            <span hidden class="variant-des-span">${exist_variant_data.variant_des}</span>
+
+                let price_list_id = $(this).attr('data-id');
+                let price_list_value = $(this).attr('value');
+                if (price_list_id && price_list_value) {
+                    sale_product_price_list.push(price_list_id);
+                }
+            })
+            $.fn.initMaskMoney2();
+
+            ProductLoadPage.LoadSalePriceListForSaleOnline(null, sale_product_price_list)
+        })
+        // purchase tab
+        pageElements.$check_tab_purchase.change(function () {
+            $('#tab_purchase input, #tab_purchase select').val('')
+            $('#tab_purchase').find('.row').prop('hidden', !pageElements.$check_tab_purchase.is(':checked'))
+            $.fn.initMaskMoney2()
+        })
+        // variant tab
+        $('#add-variant-value-item').on('click', function () {
+            let value = $('#value-name-modal-input').val();
+            if (value !== '') {
+                pageVariables.current_row_variant_attribute.find('.variant-attributes-span').append(`
+                    <span class="badge badge-primary badge-outline mr-1 mb-1">
+                        <span>
+                            <span class="icon delete-value"><i class="fas fa-times"></i></span>
+                            <span class="attribute-value">${value}</span>
+                        </span>
+                    </span>
+                `);
+                ProductLoadPage.RenderVariantItemsTable();
+                ProductLoadPage.ReloadAttributeValueListSpan();
+            }
+            else {
+                $.fn.notifyB({description: 'Value is missing'}, 'warning');
+            }
+        })
+        $('.fill-by-selection').on('change', function () {
+            if ($('#radio-fill-by-text').is(':checked')) {
+                $('#fill-by-text-preview').attr('hidden', false);
+                $('#fill-by-color-preview').attr('hidden', true);
+                $('#fill-by-photo-preview').attr('hidden', true);
+            }
+            if ($('#radio-fill-by-color').is(':checked')) {
+                $('#fill-by-text-preview').attr('hidden', true);
+                $('#fill-by-color-preview').attr('hidden', false);
+                $('#fill-by-photo-preview').attr('hidden', true);
+            }
+            if ($('#radio-fill-by-photo').is(':checked')) {
+                $('#fill-by-text-preview').attr('hidden', true);
+                $('#fill-by-color-preview').attr('hidden', true);
+                $('#fill-by-photo-preview').attr('hidden', false);
+            }
+        })
+        pageElements.$btn_add_row_variant_attributes.on('click', function () {
+            if (parseFloat($('#datatable-warehouse-overview tbody tr:first-child td:first-child span').text()) > 0) {
+                $.fn.notifyB({description: 'Can not add variants when product is in stock'}, 'failure');
+            }
+            else {
+                let tb_length = pageElements.$table_variant_attributes.find('tbody').find('tr').length;
+                pageElements.$table_variant_attributes.find('tbody').append(`
+                    <tr id="row-${tb_length + 1}">
+                        <td class="w-5 row-index">${tb_length + 1}</td>
+                        <td class="w-15"><input class="form-control variant-attribute"></td>
+                        <td class="w-50">
+                            <span class="variant-attributes-span"></span>
+                            <button type="button" disabled data-bs-toggle="modal" data-bs-target="#modal-variant-attributes" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-values"><span class="icon"><i class="fas fa-plus-circle"></i></span></button>
                         </td>
-                        <td class="w-20"><input class="form-control SKU-input" value="${exist_variant_data.variant_SKU}"></td>
-                        <td class="w-20"><input data-return-type="number" type="text" class="form-control mask-money extra-price-input" value="${exist_variant_data.variant_extra_price}"></td>
+                        <td class="w-5"></td>
+                        <td class="w-20">
+                            <label class="config-selection"></label>
+                            <button type="button" disabled data-bs-toggle="modal" data-bs-target="#modal-attribute-display" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-configs"><span class="icon"><i class="fas fa-stream"></i></span></button>
+                            <script class="attribute_value_list_span" hidden></script>
+                        </td>
                         <td class="w-5">
-                            <div class="form-check form-switch">
-                                <input ${checked} type="checkbox" class="form-check-input variant-active">
-                            </div>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-danger flush-soft-hover btn-xs delete-attribute-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>
                         </td>
                     </tr>
                 `)
+                $(`#row-${tb_length + 1} .variant-attributes-select`).initSelect2();
             }
-        }
-    }
-    else {
-        $('#table-variant-items-div').prop('hidden', true);
-    }
-    $.fn.initMaskMoney2();
-}
-
-$(document).on("change", '.variant-attributes-select', function () {
-    LoadVariantItemsTable();
-})
-
-function ReloadAttributeValueListSpan() {
-    let option = current_row_variant_attribute.find('.config-selection').attr('data-value');
-    let color_data = current_row_variant_attribute.find('.attribute_value_list_span').text()
-    ReloadModalConfig(option, color_data);
-    let value = attribute_display_select_by.val();
-    if (value !== '') {
-        if (value === '0') {
-            current_row_variant_attribute.find('.config-selection').text('Dropdown list');
-            current_row_variant_attribute.find('.config-selection').attr('data-value', 0);
-            let attribute_value_list = []
-            $('#dropdown-list-preview option').each(function() {
-                if ($(this).text() !== '') {
-                    attribute_value_list.push({
-                        'value': $(this).text(),
-                        'color': null
+        })
+        pageElements.$add_attribute_display_item.on('click', function () {
+            let value = pageElements.$attribute_display_select_by.val();
+            if (value !== '') {
+                if (value === '0') {
+                    pageVariables.current_row_variant_attribute.find('.config-selection').text('Dropdown list');
+                    pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value', 0);
+                    let attribute_value_list = []
+                    $('#dropdown-list-preview option').each(function() {
+                        if ($(this).text() !== '') {
+                            attribute_value_list.push({
+                                'value': $(this).text(),
+                                'color': null
+                            })
+                        }
                     })
+                    pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list))
                 }
-            })
-            current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list))
-        }
-        if (value === '1') {
-            current_row_variant_attribute.find('.config-selection').text('Radio select');
-            current_row_variant_attribute.find('.config-selection').attr('data-value', 1);
-            let attribute_value_list = []
-            $('#radio-selection-preview .radio-attribute-value').each(function() {
-                if ($(this).attr('value') !== '') {
-                    attribute_value_list.push({
-                        'value': $(this).attr('value'),
-                        'color': null
+                if (value === '1') {
+                    pageVariables.current_row_variant_attribute.find('.config-selection').text('Radio select');
+                    pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value', 1);
+                    let attribute_value_list = []
+                    $('#radio-selection-preview .radio-attribute-value').each(function() {
+                        if ($(this).attr('value') !== '') {
+                            attribute_value_list.push({
+                                'value': $(this).attr('value'),
+                                'color': null
+                            })
+                        }
                     })
+                    pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
                 }
-            })
-            current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
-        }
-        if (value === '2') {
-            let detail_select = ''
-            if ($('#radio-fill-by-text').is(':checked')) {
-                current_row_variant_attribute.find('.config-selection').attr('data-value', 2);
-                detail_select = '(Fill by text)';
-                let attribute_value_list = []
-                $('#fill-by-text-preview .selection-fill-by').each(function() {
-                    if ($(this).text() !== '') {
-                        attribute_value_list.push({
-                            'value': $(this).text(),
-                            'color': null
+                if (value === '2') {
+                    let detail_select = ''
+                    if ($('#radio-fill-by-text').is(':checked')) {
+                        pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value', 2);
+                        detail_select = '(Fill by text)';
+                        let attribute_value_list = []
+                        $('#fill-by-text-preview .selection-fill-by').each(function() {
+                            if ($(this).text() !== '') {
+                                attribute_value_list.push({
+                                    'value': $(this).text(),
+                                    'color': null
+                                })
+                            }
                         })
+                        pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
                     }
-                })
-                current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
-            }
-            if ($('#radio-fill-by-color').is(':checked')) {
-                current_row_variant_attribute.find('.config-selection').attr('data-value', 3);
-                detail_select = '(Fill by color)';
-                let attribute_value_list = []
-                $('#fill-by-color-preview .selection-fill-by').each(function() {
-                    if ($(this).text() !== '') {
-                        attribute_value_list.push({
-                            'value': $(this).find('label').text(),
-                            'color': $(this).find('.color-picker-attribute-value').val()
+                    if ($('#radio-fill-by-color').is(':checked')) {
+                        pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value', 3);
+                        detail_select = '(Fill by color)';
+                        let attribute_value_list = []
+                        $('#fill-by-color-preview .selection-fill-by').each(function() {
+                            if ($(this).text() !== '') {
+                                attribute_value_list.push({
+                                    'value': $(this).find('label').text(),
+                                    'color': $(this).find('.color-picker-attribute-value').val()
+                                })
+                            }
                         })
+                        pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
                     }
-                })
-                current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
-            }
-            if ($('#radio-fill-by-photo').is(':checked')) {
-                current_row_variant_attribute.find('.config-selection').attr('data-value', 4);
-                detail_select = '(Fill by photo)';
-                let attribute_value_list = []
-                $('#fill-by-photo-preview .selection-fill-by').each(function() {
-                    if ($(this).text() !== '') {
-                        attribute_value_list.push({
-                            'value': $(this).find('label').text(),
-                            'color': null
+                    if ($('#radio-fill-by-photo').is(':checked')) {
+                        pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value', 4);
+                        detail_select = '(Fill by photo)';
+                        let attribute_value_list = []
+                        $('#fill-by-photo-preview .selection-fill-by').each(function() {
+                            if ($(this).text() !== '') {
+                                attribute_value_list.push({
+                                    'value': $(this).find('label').text(),
+                                    'color': null
+                                })
+                            }
                         })
+                        pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
                     }
-                })
-                current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
+                    pageVariables.current_row_variant_attribute.find('.config-selection').text(`Select ${detail_select}`);
+                }
             }
-            current_row_variant_attribute.find('.config-selection').text(`Select ${detail_select}`);
-        }
-    }
-}
-
-$('#add-variant-value-item').on('click', function () {
-    let value = $('#value-name-modal-input').val();
-    if (value !== '') {
-        current_row_variant_attribute.find('.variant-attributes-span').append(`
-            <span class="badge badge-primary badge-outline mr-1 mb-1">
-                <span>
-                    <span class="icon delete-value"><i class="fas fa-times"></i></span>
-                    <span class="attribute-value">${value}</span>
-                </span>
-            </span>
-        `);
-        LoadVariantItemsTable();
-        ReloadAttributeValueListSpan();
-    }
-    else {
-        $.fn.notifyB({description: 'Value is missing'}, 'warning');
-    }
-})
-
-add_attribute_display_item.on('click', function () {
-    let value = attribute_display_select_by.val();
-    if (value !== '') {
-        if (value === '0') {
-            current_row_variant_attribute.find('.config-selection').text('Dropdown list');
-            current_row_variant_attribute.find('.config-selection').attr('data-value', 0);
-            let attribute_value_list = []
-            $('#dropdown-list-preview option').each(function() {
-                if ($(this).text() !== '') {
-                    attribute_value_list.push({
-                        'value': $(this).text(),
-                        'color': null
+            else {
+                $.fn.notifyB({description: 'Value is missing'}, 'warning');
+            }
+        })
+        pageElements.$add_variant_des.on('click', function () {
+            let variant_name = $('#variant-name').val();
+            let variant_des = $('#variant-des').val();
+            if (variant_name !== '' && variant_des !== '') {
+                pageVariables.current_row_variant_item.find('.variant-name-span').text(variant_name);
+                pageVariables.current_row_variant_item.find('.variant-des-span').text(variant_des);
+            }
+        })
+        pageElements.$attribute_display_select_by.on('change', function () {
+            let value = pageElements.$attribute_display_select_by.val();
+            if (value !== '') {
+                if (value === '0') {
+                    $('#view-mode-for-select').prop('hidden', true)
+                    $('#dropdown-list-selection-preview').prop('hidden', false)
+                    $('#radio-selection-preview').prop('hidden', true)
+                    $('#fill-by-text-preview').prop('hidden', true)
+                    $('#fill-by-color-preview').prop('hidden', true)
+                    $('#fill-by-photo-preview').prop('hidden', true)
+                }
+                if (value === '1') {
+                    $('#view-mode-for-select').prop('hidden', true)
+                    $('#dropdown-list-selection-preview').prop('hidden', true)
+                    $('#radio-selection-preview').prop('hidden', false)
+                    $('#fill-by-text-preview').prop('hidden', true)
+                    $('#fill-by-color-preview').prop('hidden', true)
+                    $('#fill-by-photo-preview').prop('hidden', true)
+                }
+                if (value === '2') {
+                    $('#view-mode-for-select').prop('hidden', false)
+                    $('#dropdown-list-selection-preview').prop('hidden', true)
+                    $('#radio-selection-preview').prop('hidden', true)
+                    $('#radio-fill-by-text').prop('checked', true)
+                    $('#fill-by-text-preview').prop('hidden', false)
+                    $('#fill-by-color-preview').prop('hidden', true)
+                    $('#fill-by-photo-preview').prop('hidden', true)
+                }
+            }
+            else {
+                $.fn.notifyB({description: 'Invalid selection'}, 'warning');
+            }
+        })
+        $(document).on("click", '.add-variant-values', function () {
+            pageElements.$modal_variant_attributes.find('#value-name-modal-input').val('');
+            pageVariables.current_row_variant_attribute = $(this).closest('tr');
+            pageElements.$modal_variant_attributes.find('#attribute-name-modal-input').val($(this).closest('tr').find('.variant-attribute').val())
+        })
+        $(document).on("click", '.add-variant-configs', function () {
+            pageVariables.current_row_variant_attribute = $(this).closest('tr');
+            let option = pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value');
+            let color_data = pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text()
+            ProductLoadPage.ReloadModalConfig(option, color_data);
+        })
+        $(document).on("click", '.add-variant-item-des', function () {
+            pageVariables.current_row_variant_item = $(this).closest('tr');
+            let variant_name = pageVariables.current_row_variant_item.find('.variant-name-span').text();
+            let variant_des = pageVariables.current_row_variant_item.find('.variant-des-span').text();
+            if (variant_name !== '' && variant_des !== '') {
+                $('#variant-name').val(variant_name);
+                $('#variant-des').val(variant_des);
+            }
+            else {
+                if (pageElements.$title.val() !== '') {
+                    let variant_name_content = [];
+                    let variant_des_content = [];
+                    pageVariables.current_row_variant_item.find('.variant-item').each(function () {
+                        variant_name_content.push($(this).text());
+                        variant_des_content.push($(this).text());
                     })
+                    $('#variant-name').val(pageElements.$title.val() + ' (' + variant_name_content.join(', ') + ')');
+                    $('#variant-des').val(variant_des_content.join(', '));
                 }
-            })
-            current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list))
-        }
-        if (value === '1') {
-            current_row_variant_attribute.find('.config-selection').text('Radio select');
-            current_row_variant_attribute.find('.config-selection').attr('data-value', 1);
-            let attribute_value_list = []
-            $('#radio-selection-preview .radio-attribute-value').each(function() {
-                if ($(this).attr('value') !== '') {
-                    attribute_value_list.push({
-                        'value': $(this).attr('value'),
-                        'color': null
-                    })
+                else {
+                    $('#variant-name').val('');
+                    $('#variant-des').val('');
+                    $.fn.notifyB({description: 'Please enter a name for product!'}, 'warning');
                 }
-            })
-            current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
-        }
-        if (value === '2') {
-            let detail_select = ''
-            if ($('#radio-fill-by-text').is(':checked')) {
-                current_row_variant_attribute.find('.config-selection').attr('data-value', 2);
-                detail_select = '(Fill by text)';
-                let attribute_value_list = []
-                $('#fill-by-text-preview .selection-fill-by').each(function() {
-                    if ($(this).text() !== '') {
-                        attribute_value_list.push({
-                            'value': $(this).text(),
-                            'color': null
-                        })
-                    }
-                })
-                current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
             }
-            if ($('#radio-fill-by-color').is(':checked')) {
-                current_row_variant_attribute.find('.config-selection').attr('data-value', 3);
-                detail_select = '(Fill by color)';
-                let attribute_value_list = []
-                $('#fill-by-color-preview .selection-fill-by').each(function() {
-                    if ($(this).text() !== '') {
-                        attribute_value_list.push({
-                            'value': $(this).find('label').text(),
-                            'color': $(this).find('.color-picker-attribute-value').val()
-                        })
-                    }
-                })
-                current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
+        })
+        $(document).on("input", '.variant-attribute', function () {
+            if ($(this).val() !== '') {
+                $(this).closest('tr').find('.add-variant-values').attr('disabled', false);
+                $(this).closest('tr').find('.add-variant-configs').attr('disabled', false);
             }
-            if ($('#radio-fill-by-photo').is(':checked')) {
-                current_row_variant_attribute.find('.config-selection').attr('data-value', 4);
-                detail_select = '(Fill by photo)';
-                let attribute_value_list = []
-                $('#fill-by-photo-preview .selection-fill-by').each(function() {
-                    if ($(this).text() !== '') {
-                        attribute_value_list.push({
-                            'value': $(this).find('label').text(),
-                            'color': null
-                        })
-                    }
-                })
-                current_row_variant_attribute.find('.attribute_value_list_span').text(JSON.stringify(attribute_value_list));
+            else {
+                $(this).closest('tr').find('.add-variant-values').attr('disabled', true);
+                $(this).closest('tr').find('.add-variant-configs').attr('disabled', true);
             }
-            current_row_variant_attribute.find('.config-selection').text(`Select ${detail_select}`);
-        }
-    }
-    else {
-        $.fn.notifyB({description: 'Value is missing'}, 'warning');
-    }
-})
-
-add_variant_des.on('click', function () {
-    let variant_name = $('#variant-name').val();
-    let variant_des = $('#variant-des').val();
-    if (variant_name !== '' && variant_des !== '') {
-        current_row_variant_item.find('.variant-name-span').text(variant_name);
-        current_row_variant_item.find('.variant-des-span').text(variant_des);
-    }
-})
-
-$(document).on("click", '.selection-fill-by', function () {
-    let elements = document.getElementsByClassName('selection-fill-by');
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].classList.remove('bg-primary-light-5');
-      elements[i].classList.add('bg-gray-light-4');
-    }
-    $(this).addClass('bg-primary-light-5');
-})
-
-attribute_display_select_by.on('change', function () {
-    let value = attribute_display_select_by.val();
-    if (value !== '') {
-        if (value === '0') {
-            $('#view-mode-for-select').prop('hidden', true)
-            $('#dropdown-list-selection-preview').prop('hidden', false)
-            $('#radio-selection-preview').prop('hidden', true)
-            $('#fill-by-text-preview').prop('hidden', true)
-            $('#fill-by-color-preview').prop('hidden', true)
-            $('#fill-by-photo-preview').prop('hidden', true)
-        }
-        if (value === '1') {
-            $('#view-mode-for-select').prop('hidden', true)
-            $('#dropdown-list-selection-preview').prop('hidden', true)
-            $('#radio-selection-preview').prop('hidden', false)
-            $('#fill-by-text-preview').prop('hidden', true)
-            $('#fill-by-color-preview').prop('hidden', true)
-            $('#fill-by-photo-preview').prop('hidden', true)
-        }
-        if (value === '2') {
-            $('#view-mode-for-select').prop('hidden', false)
-            $('#dropdown-list-selection-preview').prop('hidden', true)
-            $('#radio-selection-preview').prop('hidden', true)
-            $('#radio-fill-by-text').prop('checked', true)
-            $('#fill-by-text-preview').prop('hidden', false)
-            $('#fill-by-color-preview').prop('hidden', true)
-            $('#fill-by-photo-preview').prop('hidden', true)
-        }
-    }
-    else {
-        $.fn.notifyB({description: 'Invalid selection'}, 'warning');
-    }
-})
-
-$('.fill-by-selection').on('change', function () {
-    if ($('#radio-fill-by-text').is(':checked')) {
-        $('#fill-by-text-preview').attr('hidden', false);
-        $('#fill-by-color-preview').attr('hidden', true);
-        $('#fill-by-photo-preview').attr('hidden', true);
-    }
-    if ($('#radio-fill-by-color').is(':checked')) {
-        $('#fill-by-text-preview').attr('hidden', true);
-        $('#fill-by-color-preview').attr('hidden', false);
-        $('#fill-by-photo-preview').attr('hidden', true);
-    }
-    if ($('#radio-fill-by-photo').is(':checked')) {
-        $('#fill-by-text-preview').attr('hidden', true);
-        $('#fill-by-color-preview').attr('hidden', true);
-        $('#fill-by-photo-preview').attr('hidden', false);
-    }
-})
-
-$(document).on("click", '.delete-attribute-row', function () {
-    $(this).closest('tr').remove();
-    LoadVariantItemsTable();
-})
-
-$(document).on("click", '.delete-value', function () {
-    current_row_variant_attribute = $(this).closest('tr');
-    $(this).closest('.badge').remove();
-    LoadVariantItemsTable();
-    ReloadAttributeValueListSpan();
-})
-
-// for account determination
-
-const $product_account_determination_table = $('#product-account-determination-table')
-const $account_deter_referenced_by = $('#account-deter-referenced-by')
-
-const columns_cfg = [
-    {
-        className: 'wrap-text w-5',
-        'render': () => {
-            return ``;
-        }
-    },
-    {
-        className: 'wrap-text',
-        'render': (data, type, row) => {
-            return `<span class="text-muted">${row?.['account_determination_type_convert']}</span>`;
-        }
-    },
-    {
-        className: 'wrap-text w-30',
-        'render': (data, type, row) => {
-            return `<span class="text-muted">${row?.['title']}</span>`;
-        }
-    },
-    {
-        className: 'wrap-text w-20',
-        'render': (data, type, row) => {
-            return row?.['can_change_account'] ? `<select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped_data'])}' class="form-select select2 selected-accounts"></select>` : `<span class="text-muted">${row?.['account_mapped_data']?.['acc_code']}</span>`;
-        }
-    },
-    {
-        className: 'wrap-text w-35',
-        'render': (data, type, row) => {
-            return `<div class="selected-accounts-des"><span class="text-muted">${row?.['account_mapped_data']?.['acc_name']}</span> <span class="small text-primary">(${row?.['account_mapped_data']?.['foreign_acc_name']})</span></div>`;
-        }
-    },
-    {
-        className: 'wrap-text text-right w-10',
-        'render': (data, type, row) => {
-            let change_btn = `<a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-xs btn-change-account">
-               <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i class="fa-solid fa-pen-to-square"></i></span></span>
-            </a>`;
-            let save_btn = `<button type="button" data-id="${row?.['id']}" hidden class="btn btn-custom btn-primary btn-xs btn-save-change-account">
-                <span>
-                    <span class="icon"><span class="feather-icon"><i class="fa-solid fa-file-pen"></i></span></span>
-                    <span>${$.fn.gettext('Update')}</span>
-                </span>
-            </button>`;
-            return row?.['can_change_account'] ? change_btn + save_btn : ''
-        }
-    },
-]
-
-function loadAccountDeterminationTable() {
-    if (!$.fn.DataTable.isDataTable('#product-account-determination-table')) {
-        let frm = new SetupFormSubmit($product_account_determination_table);
-        $product_account_determination_table.DataTableDefault({
-            useDataServer: true,
-            rowIdx: true,
-            reloadCurrency: true,
-            paging: false,
-            scrollX: '100vw',
-            scrollY: '15vw',
-            scrollCollapse: true,
-            ajax: {
-                url: frm.dataUrl,
-                data: {'product_mapped_id': $.fn.getPkDetail()},
-                type: frm.dataMethod,
-                dataSrc: function (resp) {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        let data_list = resp.data['product_account_determination_list'] ? resp.data['product_account_determination_list'] : []
-                        data_list.sort((a, b) => {
-                            const typeA = a?.['account_determination_type_convert'];
-                            const typeB = b?.['account_determination_type_convert'];
-                            if (typeA < typeB) return -1;
-                            if (typeA > typeB) return 1;
-
-                            const accCodeA = parseInt(a?.['account_mapped']?.['acc_code'], 10);
-                            const accCodeB = parseInt(b?.['account_mapped']?.['acc_code'], 10);
-                            return accCodeA - accCodeB;
-                        });
-                        return data_list ? data_list : [];
-                    }
-                    return [];
+        })
+        $(document).on("change", '.variant-attributes-select', function () {
+            ProductLoadPage.RenderVariantItemsTable();
+        })
+        $(document).on("click", '.delete-attribute-row', function () {
+            $(this).closest('tr').remove();
+            ProductLoadPage.RenderVariantItemsTable();
+        })
+        $(document).on("click", '.delete-value', function () {
+            pageVariables.current_row_variant_attribute = $(this).closest('tr');
+            $(this).closest('.badge').remove();
+            ProductLoadPage.RenderVariantItemsTable();
+            ProductLoadPage.ReloadAttributeValueListSpan();
+        })
+        $(document).on("click", '.selection-fill-by', function () {
+            let elements = document.getElementsByClassName('selection-fill-by');
+            for (let i = 0; i < elements.length; i++) {
+              elements[i].classList.remove('bg-primary-light-5');
+              elements[i].classList.add('bg-gray-light-4');
+            }
+            $(this).addClass('bg-primary-light-5');
+        })
+        // for account determination
+        pageElements.$account_deter_referenced_by.on('change', function () {
+            $('#account-deter-create-noti').prop('hidden', $(this).val() !== '2')
+        })
+        $(document).on('change', '.selected-accounts', function () {
+            let account_mapped = [SelectDDControl.get_data_from_idx($(this), $(this).val())]
+            $(this).closest('tr').find('.selected-accounts-des').html('')
+            for (let i = 0; i < account_mapped.length; i++) {
+                $(this).closest('tr').find('.selected-accounts-des').append(
+                    `<h6 class="text-muted">${account_mapped[i]?.['acc_name']}</h6><h6 class="small text-primary">${account_mapped[i]?.['foreign_acc_name']}</h6>`
+                )
+            }
+            $(this).closest('tr').find('.btn-change-account').prop('hidden', true)
+            $(this).closest('tr').find('.btn-save-change-account').prop('hidden', false)
+            $(this).closest('tr').addClass('bg-primary-light-5')
+        })
+        $(document).on('click', '.btn-save-change-account', function () {
+            let row_id = $(this).attr('data-id')
+            let row_replace_account = $(this).closest('tr').find('.selected-accounts').val()
+            Swal.fire({
+                html:
+                `<div class="d-flex align-items-center">
+                    <div class="avatar avatar-icon avatar-soft-blue me-3"><span class="initial-wrap"><i class="fa-solid fa-repeat"></i></span></div>
+                    <div>
+                        <h4 class="text-blue">${pageElements.$product_account_determination_table.attr('data-trans-change-confirm')}</h4>
+                        <p>${pageElements.$product_account_determination_table.attr('data-trans-change-noti')}</p>
+                    </div>
+                </div>`,
+                customClass: {
+                    confirmButton: 'btn btn-outline-secondary text-blue',
+                    cancelButton: 'btn btn-outline-secondary text-gray',
+                    container: 'swal2-has-bg',
+                    htmlContainer: 'bg-transparent text-start',
+                    actions:'w-100'
                 },
-            },
-            columns: columns_cfg,
-            rowGroup: {
-                dataSrc: 'account_determination_type_convert'
-            },
-            columnDefs: [
-                {
-                    "visible": false,
-                    "targets": [1]
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: $.fn.gettext('Confirm'),
+                cancelButtonText: $.fn.gettext('Cancel'),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    let ajax_update_account_prd = $.fn.callAjax2({
+                        url: pageElements.$product_account_determination_table.attr('data-url-detail').replace('/0', `/${row_id}`),
+                        data: {'replace_account': row_replace_account},
+                        method: 'PUT'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && typeof data === 'object' && data.hasOwnProperty('detail')) {
+                                $.fn.notifyB({description: 'Update account determination successfully!'}, 'success');
+                                return data?.['detail'];
+                            }
+                        },
+                        (errs) => {
+                            $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        }
+                    )
+
+                    Promise.all([ajax_update_account_prd]).then(
+                        (results) => {
+                            if (results.length === 1) {
+                                pageElements.$product_account_determination_table.DataTable().clear().destroy()
+                                ProductLoadPage.LoadAccountDeterminationTable()
+                            }
+                        }
+                    )
                 }
-            ],
-            initComplete: function () {
-                $product_account_determination_table.find('tbody tr .selected-accounts').each(function () {
-                    let account_mapped_data = $(this).attr('data-account-mapped')
-                    if (account_mapped_data) {
-                        account_mapped_data = JSON.parse(account_mapped_data)
-                    }
-                    $(this).initSelect2({
-                        data: (account_mapped_data ? account_mapped_data : null),
-                        ajax: {
-                            url: $product_account_determination_table.attr('data-chart-of-account-url'),
-                            method: 'GET',
-                        },
-                        keyResp: 'chart_of_accounts_list',
-                        keyId: 'id',
-                        keyText: 'acc_code',
-                        templateResult: function (state) {
-                            return $(`<span class="badge badge-light">${state.data?.['acc_code']}</span> <span>${state.data?.['acc_name']}</span> <span class="small">(${state.data?.['foreign_acc_name']})</span>`);
-                        },
-                    })
-                })
-            }
-        });
+            })
+        })
+        $(document).on('click', '.btn-change-account', function () {
+            $(this).closest('tr').find('.selected-accounts').prop('disabled', false)
+        })
     }
 }
-
-$(document).on('change', '.selected-accounts', function () {
-    let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-    $(this).closest('tr').find('.selected-accounts-des').html(`<span class="text-muted">${selected?.['acc_name']}</span> <span class="small text-primary">(${selected?.['foreign_acc_name']})</span>`)
-    $(this).closest('tr').find('.btn-change-account').prop('hidden', true)
-    $(this).closest('tr').find('.btn-save-change-account').prop('hidden', false)
-    $(this).closest('tr').addClass('bg-primary-light-5')
-})
-
-$(document).on('click', '.btn-save-change-account', function () {
-    let row_id = $(this).attr('data-id')
-    let row_replace_account_id = $(this).closest('tr').find('.selected-accounts').val()
-    Swal.fire({
-        html:
-        `<div class="d-flex align-items-center">
-            <div class="avatar avatar-icon avatar-soft-blue me-3"><span class="initial-wrap"><i class="fa-solid fa-repeat"></i></span></div>
-            <div>
-                <h4 class="text-blue">${$product_account_determination_table.attr('data-trans-change-confirm')}</h4>
-                <p>${$product_account_determination_table.attr('data-trans-change-noti')}</p>
-            </div>
-        </div>`,
-        customClass: {
-            confirmButton: 'btn btn-outline-secondary text-blue',
-            cancelButton: 'btn btn-outline-secondary text-gray',
-            container: 'swal2-has-bg',
-            htmlContainer: 'bg-transparent text-start',
-            actions:'w-100'
-        },
-        showCancelButton: true,
-        buttonsStyling: false,
-        confirmButtonText: $.fn.gettext('Confirm'),
-        cancelButtonText: $.fn.gettext('Cancel'),
-        reverseButtons: true
-    }).then((result) => {
-        if (result.value) {
-            let ajax_update_account_prd = $.fn.callAjax2({
-                url: $product_account_determination_table.attr('data-url-detail').replace('/0', `/${row_id}`),
-                data: {'replace_account': row_replace_account_id},
-                method: 'PUT'
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('detail')) {
-                        $.fn.notifyB({description: 'Update account determination successfully!'}, 'success');
-                        return data?.['detail'];
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
-
-            Promise.all([ajax_update_account_prd]).then(
-                (results) => {
-                    $product_account_determination_table.DataTable().clear().destroy()
-                    loadAccountDeterminationTable()
-                }
-            )
-        }
-    })
-})
-
-$(document).on('click', '.btn-change-account', function () {
-    $(this).closest('tr').find('.selected-accounts').prop('disabled', false)
-})
-
-$('#accounting-determination-tab').on('click', function () {
-    if (Detail_data?.['account_deter_referenced_by'] === 2) {
-        loadAccountDeterminationTable()
-    }
-})
-
-$account_deter_referenced_by.on('change', function () {
-    $('#account-deter-create-noti').prop('hidden', $(this).val() !== '2')
-})
+// endregion

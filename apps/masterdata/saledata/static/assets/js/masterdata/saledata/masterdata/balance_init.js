@@ -190,7 +190,7 @@ $(document).ready(function () {
                     );
                     // console.log(data)
                     if (data) {
-                        WindowControl.showLoading();
+                        WindowControl.showLoading({'loadingTitleAction': 'DELETE'});
                         $.fn.callAjax2(data)
                             .then(
                                 (resp) => {

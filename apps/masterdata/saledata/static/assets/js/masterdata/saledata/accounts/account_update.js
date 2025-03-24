@@ -16,7 +16,7 @@ $(document).ready(function () {
         let combinesData = new AccountHandle().combinesData($(this), true);
         console.log(combinesData)
         if (combinesData) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             $.fn.callAjax2(combinesData)
                 .then(
                     (resp) => {

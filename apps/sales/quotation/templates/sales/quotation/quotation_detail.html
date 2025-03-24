@@ -146,7 +146,7 @@
 
                     <div class="row">
                         <div class="row">
-                            <ul class="nav nav-light nav-tabs" id="quotation-tabs">
+                            <ul class="nav nav-line nav-tabs nav-light border-bottom" id="quotation-tabs">
                                 <li class="nav-item tab-detail" data-zone="quotation_products_data">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                                         <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
@@ -219,7 +219,7 @@
                                                     <div class="col-2">
                                                         <div class="input-group w-90">
                                                             <span class="input-affix-wrapper">
-                                                                <input type="text" class="form-control validated-number quotation-create-product-discount" value="0" data-zone="quotation_products_data" disabled>
+                                                                <input type="text" class="form-control valid-num quotation-create-product-discount" value="0" data-zone="quotation_products_data" disabled>
                                                                 <span class="input-suffix"><small><i class="fas fa-percentage"></i></small></span>
                                                             </span>
                                                         </div>
@@ -554,8 +554,9 @@
                             >
                                 <thead>
                                 <tr class="bg-light">
-                                    <th class="w-35">{% trans 'Product' %}</th>
-                                    <th class="w-30">{% trans 'Description' %}</th>
+                                    <th class="w-25">{% trans 'Product name' %}</th>
+                                    <th class="w-15">{% trans 'Product code' %}</th>
+                                    <th class="w-25">{% trans 'Description' %}</th>
                                     <th class="w-10">{% trans 'UOM' %}</th>
                                     <th class="w-10">{% trans 'Status' %}</th>
                                     <th class="w-15">{% trans 'Note' %}</th>

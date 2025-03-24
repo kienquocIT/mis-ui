@@ -8,7 +8,7 @@ $(document).ready(async function () {
         submitHandler: function (form) {
             let combinesData = new LeadHandle().combinesData(form);
             if (combinesData) {
-                WindowControl.showLoading();
+                WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
                 $.fn.callAjax2(combinesData)
                     .then(
                         (resp) => {

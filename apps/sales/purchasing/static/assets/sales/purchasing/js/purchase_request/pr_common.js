@@ -191,7 +191,9 @@ function LoadLineDetailTable(ele, product_datas=[], disabled='') {
             {
                 className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    return `<span>${row?.['description']}</span>`
+                    return `<button type="button" class="btn btn-xs btn-light" data-bs-toggle="tooltip" data-bs-placement="top" title="${row?.['description'] ? row?.['description'] : ''}">
+                                <i class="fa-solid fa-circle-info"></i> ${script_trans.attr('data-trans-description')}
+                            </button>`
                 }
             },
             {
@@ -280,7 +282,7 @@ function LoadLineDetailTableAddRow(ele, product_datas=[], disabled='') {
             {
                 className: 'wrap-text w-10',
                 render: (data, type, row) => {
-                    return `<span class="product-des-detail">${row?.['description'] ? row?.['description'] : ''}</span>`
+                    return `<textarea class="small product-des-detail">${row?.['description'] ? row?.['description'] : ''}</textarea>`
                 }
             },
             {

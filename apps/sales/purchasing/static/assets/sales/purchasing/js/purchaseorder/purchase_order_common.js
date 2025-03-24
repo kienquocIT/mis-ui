@@ -1437,15 +1437,15 @@ class PODataTableHandle {
                     render: (data, type, row) => {
                         if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
                             if (row.hasOwnProperty('quantity_order')) {
-                                return `<input type="text" class="form-control table-row-quantity-order" value="${row?.['quantity_order']}">`;
+                                return `<input type="text" class="form-control valid-num table-row-quantity-order" value="${row?.['quantity_order']}">`;
                             } else {
-                                return `<input type="text" class="form-control table-row-quantity-order" value="0">`;
+                                return `<input type="text" class="form-control valid-num table-row-quantity-order" value="0">`;
                             }
                         } else {
                             if (row.hasOwnProperty('quantity_order')) {
-                                return `<input type="text" class="form-control table-row-quantity-order" value="${row?.['quantity_order']}" disabled>`;
+                                return `<input type="text" class="form-control valid-num table-row-quantity-order" value="${row?.['quantity_order']}" disabled>`;
                             } else {
-                                return `<input type="text" class="form-control table-row-quantity-order" value="0" disabled>`;
+                                return `<input type="text" class="form-control valid-num table-row-quantity-order" value="0" disabled>`;
                             }
                         }
                     }
@@ -1685,7 +1685,7 @@ class PODataTableHandle {
                     width: '6%',
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity-order-actual validated-number" value="${row?.['product_quantity_order_actual']}" required>
+                                    <input type="text" class="form-control valid-num table-row-quantity-order-actual valid-num" value="${row?.['product_quantity_order_actual']}" required>
                                 </div>`;
                     }
                 },
@@ -1841,7 +1841,7 @@ class PODataTableHandle {
                     width: '9.11458333333%',
                     render: (data, type, row) => {
                         return `<div class="row">
-                                    <input type="text" class="form-control table-row-quantity-order-actual valid-number" value="${row?.['product_quantity_order_actual']}" required>
+                                    <input type="text" class="form-control valid-num table-row-quantity-order-actual valid-num" value="${row?.['product_quantity_order_actual']}" required>
                                 </div>`;
                     }
                 },
@@ -1937,7 +1937,7 @@ class PODataTableHandle {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-ratio valid-number" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
+                                        <input type="text" class="form-control table-row-ratio valid-num" value="${row?.['payment_ratio'] ? row?.['payment_ratio'] : '0'}">
                                         <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                     </div>
                                 </div>`;
@@ -2214,15 +2214,6 @@ class POCalculateHandle {
 
 // Validate
 class POValidateHandle {
-    static validateNumber(ele) {
-        let value = ele.value;
-        // Replace non-digit characters with an empty string
-        value = value.replace(/[^0-9.]/g, '');
-        // Remove unnecessary zeros from the integer part
-        value = value.replace("-", "").replace(/^0+(?=\d)/, '');
-        // Update value of input
-        ele.value = value;
-    };
 
     static validateQuantityOrderRequest(ele, remain) {
         if (parseFloat(ele.value) > remain) {

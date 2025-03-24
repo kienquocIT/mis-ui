@@ -33,4 +33,17 @@ $(document).ready(function () {
                 )
         }
     })
+
+    // click call check free room
+    const roomCheck = new checkRoomAvailable()
+    roomCheck.listenEvent()
+    $('#check_room').on('click', function(){
+        if ($('#start-date').val() && $('#room').val()){
+            $('.wrap_time_view').addClass('show')
+            roomCheck.validData()
+        }
+        else{
+            $.fn.notifyB({"description": $.fn.gettext("please select Start date and Room to continue")}, 'failure')
+        }
+    });
 });

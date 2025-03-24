@@ -63,7 +63,7 @@
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
                     {% trans 'Select Sale Person' as inherit_title %}
-                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-process-prj-inherit' opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-process-prj-inherit' opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True inherit_readonly=True %}
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
@@ -142,7 +142,7 @@
 
                     <div class="row">
                         <div class="row">
-                            <ul class="nav nav-light nav-tabs" id="quotation-tabs">
+                            <ul class="nav nav-line nav-tabs nav-light border-bottom" id="quotation-tabs">
                                 <li class="nav-item tab-detail" data-zone="sale_order_products_data">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                                         <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
@@ -221,7 +221,7 @@
                                                     <div class="col-2">
                                                         <div class="input-group w-90">
                                                             <span class="input-affix-wrapper">
-                                                                <input type="text" class="form-control validated-number quotation-create-product-discount" value="0" data-zone="sale_order_products_data_readonly" disabled>
+                                                                <input type="text" class="form-control valid-num quotation-create-product-discount" value="0" data-zone="sale_order_products_data_readonly" disabled>
                                                                 <span class="input-suffix"><small><i class="fas fa-percentage"></i></small></span>
                                                             </span>
                                                         </div>
@@ -469,12 +469,11 @@
                                     >
                                         <thead>
                                         <tr class="bg-light">
-                                            <th></th>
                                             <th>{% trans 'Invoice issue' %}</th>
                                             <th>{% trans 'Description' %}</th>
                                             <th>{% trans 'Invoice date' %}</th>
-                                            <th>{% trans 'Percentage of contract value' %}</th>
-                                            <th>{% trans 'Tax code' %}</th>
+                                            <th>{% trans 'Percentage' %}</th>
+                                            <th>{% trans 'Tax' %}</th>
                                             <th>{% trans 'Total value' %}</th>
                                             <th>{% trans 'Balance due' %}</th>
                                             <th></th>
@@ -488,7 +487,7 @@
                                     <b>{% trans 'Payment plan' %}</b>
                                     <table
                                             id="datable-quotation-payment-stage"
-                                            class="table nowrap min-w-1920p w-100 mb-5"
+                                            class="table nowrap min-w-2000p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr class="bg-light">
@@ -496,13 +495,14 @@
                                             <th>{% trans 'Installment' %}</th>
                                             <th>{% trans 'Description' %}</th>
                                             <th>{% trans 'Date' %}</th>
-                                            <th>{% trans 'Term date type' %}</th>
-                                            <th>% {% trans 'Payment' %}</th>
-                                            <th>{% trans 'Value before tax' %}</th>
-                                            <th>{% trans 'Issue invoice' %}</th>
-                                            <th>{% trans 'Value invoice after tax' %}</th>
-                                            <th>{% trans 'Total payment' %}</th>
                                             <th>{% trans 'Due date' %}</th>
+                                            <th>{% trans 'Percentage' %}</th>
+                                            <th>{% trans 'Invoice' %}</th>
+                                            <th>{% trans 'Payment before tax' %}</th>
+                                            <th>{% trans 'Reconcile' %}</th>
+                                            <th>{% trans 'Tax' %}</th>
+                                            <th>{% trans 'Tax value' %}</th>
+                                            <th>{% trans 'Total payment' %}</th>
                                             <th></th>
                                         </tr>
                                         </thead>
@@ -645,7 +645,7 @@
                     role="dialog" aria-labelledby="quotationModalCenter"
                     aria-hidden="true"
             >
-                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title"><b>{% trans 'Select Quotation' %}</b></h5>
@@ -658,9 +658,10 @@
                             >
                                 <thead>
                                 <tr class="bg-light">
-                                    <th class="w-30">{% trans 'Quotation' %}</th>
-                                    <th class="w-30">{% trans 'Opportunity' %}</th>
-                                    <th class="w-30">{% trans 'Customer' %}</th>
+                                    <th class="w-30">{% trans 'Quotation name' %}</th>
+                                    <th class="w-20">{% trans 'Quotation code' %}</th>
+                                    <th class="w-25">{% trans 'Opportunity' %}</th>
+                                    <th class="w-25">{% trans 'Customer' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -864,8 +865,9 @@
                             >
                                 <thead>
                                 <tr class="bg-light">
-                                    <th class="w-35">{% trans 'Product' %}</th>
-                                    <th class="w-30">{% trans 'Description' %}</th>
+                                    <th class="w-25">{% trans 'Product name' %}</th>
+                                    <th class="w-15">{% trans 'Product code' %}</th>
+                                    <th class="w-25">{% trans 'Description' %}</th>
                                     <th class="w-10">{% trans 'UOM' %}</th>
                                     <th class="w-10">{% trans 'Status' %}</th>
                                     <th class="w-15">{% trans 'Note' %}</th>
@@ -922,6 +924,126 @@
                     </div>
                 </div>
             </div>
+
+            <div
+                    class="modal fade" id="selectTermModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectTermModal"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select payment term' %}</b></h5>
+                            <button
+                                    type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                    data-bs-dismiss="modal"
+                            ><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table
+                                    id="table-select-term"
+                                    class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th class="w-25">{% trans 'Installment' %}</th>
+                                    <th class="w-25">{% trans 'Description' %}</th>
+                                    <th class="w-25">{% trans 'Percentage' %}</th>
+                                    <th class="w-25">{% trans 'Specific amount' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-term" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                    class="modal fade" id="selectInvoiceModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectInvoiceModal"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select invoice' %}</b></h5>
+                            <button
+                                    type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                    data-bs-dismiss="modal"
+                            ><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table
+                                    id="table-select-invoice"
+                                    class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th class="w-15">{% trans 'Invoice issue' %}</th>
+                                    <th class="w-25">{% trans 'Description' %}</th>
+                                    <th class="w-20">{% trans 'Percentage' %}</th>
+                                    <th class="w-15">{% trans 'Tax' %}</th>
+                                    <th class="w-25">{% trans 'Total value' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-invoice" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                    class="modal fade" id="selectReconcileModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectReconcileModal"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select invoice' %}</b></h5>
+                            <button
+                                    type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                    data-bs-dismiss="modal"
+                            ><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table
+                                    id="table-select-reconcile"
+                                    class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th class="w-15">{% trans 'Invoice issue' %}</th>
+                                    <th class="w-25">{% trans 'Description' %}</th>
+                                    <th class="w-20">{% trans 'Percentage' %}</th>
+                                    <th class="w-15">{% trans 'Tax' %}</th>
+                                    <th class="w-25">{% trans 'Total value' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-reconcile" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </form>
 {% endblock %}
@@ -944,8 +1066,8 @@
         data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
         data-copy-successfully="{% trans "Copy successfully" %}"
         data-validate-due-date="{% trans "Invalid due date" %}"
-        data-validate-total-ratio-payment="{% trans "Total payment ratio must be 100%" %}"
-        data-validate-total-payment="{% trans "Total payment must equal to total after tax" %}"
+        data-paid-in-full="{% trans "Paid in full" %}"
+        data-validate-total-payment="{% trans "Payment amount does not match" %}"
         data-validate-ss-role="{% trans "Opportunity is disabled because employee in short sales roles" %}"
         data-promotion="{% trans "Promotion" %}"
         data-shipping="{% trans "Shipping fee" %}"
@@ -976,6 +1098,8 @@
         data-add-expense="{% trans "Add Expense" %}"
         data-add-labor="{% trans "Add Labor" %}"
         data-new="{% trans "New" %}"
+        data-detail="{% trans "Detail" %}"
+        data-mixed="{% trans "Mixed" %}"
     >
     <input
         type="text"

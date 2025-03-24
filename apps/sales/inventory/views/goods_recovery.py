@@ -30,8 +30,8 @@ class GoodsRecoveryList(View):
     @mask_view(
         auth_require=True,
         template='sales/inventory/goodsrecovery/goods_recovery_list.html',
-        menu_active='menu_goods_receipt_list',
-        breadcrumb='GOODS_RECEIPT_LIST_PAGE',
+        menu_active='menu_goods_recovery_list',
+        breadcrumb='GOODS_RECOVERY_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
@@ -41,8 +41,8 @@ class GoodsRecoveryCreate(View):
     @mask_view(
         auth_require=True,
         template='sales/inventory/goodsrecovery/goods_recovery_create.html',
-        menu_active='menu_goods_receipt_list',
-        breadcrumb='GOODS_RECEIPT_CREATE_PAGE',
+        menu_active='menu_goods_recovery_list',
+        breadcrumb='GOODS_RECOVERY_CREATE_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -76,8 +76,8 @@ class GoodsRecoveryDetail(View):
     @mask_view(
         auth_require=True,
         template='sales/inventory/goodsrecovery/goods_recovery_detail.html',
-        menu_active='menu_sale_order_list',
-        breadcrumb='LEASE_ORDER_DETAIL_PAGE',
+        menu_active='menu_goods_recovery_list',
+        breadcrumb='GOODS_RECOVERY_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -87,8 +87,8 @@ class GoodsRecoveryUpdate(View):
     @mask_view(
         auth_require=True,
         template='sales/inventory/goodsrecovery/goods_recovery_update.html',
-        breadcrumb='LEASE_ORDER_UPDATE_PAGE',
-        menu_active='menu_sale_order_list',
+        menu_active='menu_goods_recovery_list',
+        breadcrumb='GOODS_RECOVERY_UPDATE_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
         return {}, status.HTTP_200_OK

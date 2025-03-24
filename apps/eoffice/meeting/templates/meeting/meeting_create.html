@@ -7,6 +7,8 @@
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+
+    <link href="{% static 'assets/css/meeting/common.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -43,7 +45,7 @@
 
     <form id="form-create-meeting" data-method="POST" data-url="{% url "MeetingScheduleListAPI" %}" data-url-redirect="{% url "MeetingScheduleList" %}">
     {% csrf_token %}
-        {% include 'meeting/common/information.html' %}
+        {% include 'meeting/common/information.html' with is_create=True%}
         {% include 'meeting/common/tabs.html' %}
     </form>
 {% endblock %}

@@ -446,7 +446,7 @@ $(document).ready(function () {
         event.preventDefault();
         let combinesDataCre = combinesDataPeriodsCreate($(this));
         if (combinesDataCre) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
             $.fn.callAjax2(combinesDataCre).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
@@ -475,7 +475,7 @@ $(document).ready(function () {
         event.preventDefault();
         let combinesDataUpd = combinesDataPeriodsUpdate($(this));
         if (combinesDataUpd) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             $.fn.callAjax2(combinesDataUpd).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);

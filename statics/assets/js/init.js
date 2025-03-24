@@ -248,6 +248,15 @@ var jampack = function () {
         $wrapper.removeAttr('data-hover');
         return false;
     });
+    let isTimeout
+    $('.hk-menu').on('mouseenter', function(e){
+        if ($(this).closest('.hk-menu').length)
+            isTimeout = setTimeout(()=>this.classList.add('active'), 400)
+    })
+    .on('mouseleave', function () {
+        clearTimeout(isTimeout)
+        this.classList.remove('active')
+    });
 
     /*Horizontal Menu*/
     $(document).on('click', '[data-layout="horizontal"] .navbar-toggle', function (e) {

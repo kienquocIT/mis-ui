@@ -4402,6 +4402,10 @@ msgid "Request For"
 msgstr "Yêu cầu cho"
 
 #
+msgid "Create purchase request for"
+msgstr "Tạo YCMH cho"
+
+#
 msgid "Request"
 msgstr "Yêu cầu"
 
@@ -6401,8 +6405,8 @@ msgid "Asset, Tools delivery"
 msgstr "Yêu cầu bàn giao"
 
 #
-msgid "Edit items"
-msgstr "Chọn sản phẩm"
+msgid "Select product from delivery"
+msgstr "Chọn sản phẩm từ phiếu giao hàng"
 
 #
 msgid "Warehouse is required"
@@ -8486,7 +8490,7 @@ msgstr "Tất cả (Hoàn thành)"
 
 #
 msgid "System status"
-msgstr "Trạng thái hệ thống"
+msgstr "TT hệ thống"
 
 #
 msgid "Goods stock plan"
@@ -10056,8 +10060,8 @@ msgid "Cash outflow list"
 msgstr "Danh sách phiếu chi"
 
 #
-msgid "Customer pays by invoice"
-msgstr "Khách hàng thanh toán theo hóa đơn"
+msgid "Customers pay according to AR invoice"
+msgstr "Khách hàng thanh toán theo Hóa đơn bán hàng"
 
 #
 msgid "Payment discount"
@@ -10080,8 +10084,8 @@ msgid "Balance value"
 msgstr "Giá trị cân đối"
 
 #
-msgid "Customer prepay for purchase"
-msgstr "Khách hàng ứng trước tiền mua hàng"
+msgid "Customers pay in advance (not according to contract)"
+msgstr "Khách hàng tạm ứng trước (không theo hợp đồng)"
 
 #
 msgid "Payment method"
@@ -10108,8 +10112,8 @@ msgid "Bank account owner"
 msgstr "Chủ tài khoản"
 
 #
-msgid "Customer advance payment according to contract"
-msgstr "Khách hàng tạm ứng theo hợp đồng"
+msgid "Customers pay in advance (according to contract)"
+msgstr "Khách hàng tạm ứng trước (theo hợp đồng)"
 
 #
 msgid "Add Company Bank Account"
@@ -10172,15 +10176,15 @@ msgid "Reconciliation create"
 msgstr "Tạo phiếu cấn trừ"
 
 #
-msgid "Reconciliation amount"
+msgid "Recon amount"
 msgstr "Giá trị cấn trừ"
 
 #
-msgid "Reconciliation total"
+msgid "Recon total"
 msgstr "Tổng cấn trừ"
 
 #
-msgid "Reconciliation total must be 0"
+msgid "Recon total must be 0"
 msgstr "Tổng cấn trừ phải bằng 0"
 
 #
@@ -10210,10 +10214,6 @@ msgstr "Mở rộng để xem chi tiết"
 #
 msgid "Already"
 msgstr "Đã xong"
-
-#
-msgid "Select Delivery"
-msgstr "Chọn phiếu giao hàng"
 
 #
 msgid "UOM Group"
@@ -11194,3 +11194,179 @@ msgstr "Sản phẩm này"
 #
 msgid "Confirm this change?"
 msgstr "Xác nhận thay đổi?"
+
+#
+msgid "Product code"
+msgstr "Mã sản phẩm"
+
+#
+msgid "Asset code"
+msgstr "Mã tài sản"
+
+#
+msgid "Select asset"
+msgstr "Chọn tài sản"
+
+#
+msgid "Warehouse name"
+msgstr "Tên kho"
+
+#
+msgid "Warehouse code"
+msgstr "Mã kho"
+
+#
+msgid "Add service"
+msgstr "Thêm dịch vụ"
+
+#
+msgid "Select service"
+msgstr "Chọn dịch vụ"
+
+#
+msgid "International name"
+msgstr "Tên quốc tế"
+
+#
+msgid "Short name"
+msgstr "Tên viết tắt"
+
+#
+msgid "Enter tax code to autofill"
+msgstr "Nhập MST để tự động điền"
+
+#
+msgid "Click on the warehouse code for more details on stock"
+msgstr "Nhấp vào mã kho để biết thêm chi tiết về tình trạng tồn kho"
+
+#
+msgid "Hover the mouse pointer over rows to see the header information of that row when scroll horizontally"
+msgstr "Rê con trỏ chuột lên các hàng để xem thông tin tiêu đề của hàng đó khi cuộn ngang"
+
+#
+msgid "Click here for more details on product serials or batches/lots"
+msgstr "Nhấp vào đây để biết thêm chi tiết về số serial hoặc lô sản phẩm"
+
+#
+msgid "Click here and scan the QR code to look up product information"
+msgstr "Nhấp vào đây và quét mã QR code để tra cứu thông tin sản phẩm"
+
+#
+msgid "Financial config"
+msgstr "Cấu hình tài chính"
+
+#
+msgid "Bank"
+msgstr "Ngân hàng"
+
+#
+msgid "Head office"
+msgstr "Trụ sở chính"
+
+#
+msgid "Head office address"
+msgstr "Địa chỉ trụ sở chính"
+
+#
+msgid "The example list is taken from VietQR API, if not you can enter it yourself"
+msgstr "Danh sách mẫu được lấy từ VietQR API, nếu không có bạn có thể tự nhập"
+
+#
+msgid "Delete this Bank?"
+msgstr "Xóa Ngân hàng này?"
+
+#
+msgid "Delete this Bank account?"
+msgstr "Xóa Tài khoản ngân hàng này?"
+
+#
+msgid "Account owner"
+msgstr "Chủ tài khoản"
+
+#
+msgid "Brand"
+msgstr "Chi nhánh"
+
+#
+msgid "Brand name"
+msgstr "Tên chi nhánh"
+
+#
+msgid "Brand address"
+msgstr "Địa chỉ chi nhánh"
+
+#
+msgid "Periods config"
+msgstr "Cấu hình Kỳ kế toán"
+
+#
+msgid "Master Data Categories"
+msgstr "Dữ liệu Phân loại dùng chung"
+
+#
+msgid "Categories"
+msgstr "Phân loại"
+
+#
+msgid "Master Data Bank"
+msgstr "Dữ liệu Ngân hàng dùng chung"
+
+#
+msgid "Recon account"
+msgstr "TK cấn trừ"
+
+#
+msgid "Reconcile"
+msgstr "Cấn trừ"
+
+#
+msgid "Payment before tax"
+msgstr "Thanh toán trước thuế"
+
+#
+msgid "Percentage"
+msgstr "Phần trăm"
+
+#
+msgid "Invoice issue"
+msgstr "Số hóa đơn"
+
+#
+msgid "Balance due"
+msgstr "Dư nợ phải trả"
+
+#
+msgid "Invoice plan"
+msgstr "Kế hoạch hóa đơn"
+
+#
+msgid "Payment plan"
+msgstr "Kế hoạch thanh toán"
+
+#
+msgid "Specific amount"
+msgstr "Số tiền cụ thể"
+
+#
+msgid "Mixed"
+msgstr "Hỗn hợp"
+
+#
+msgid "Paid in full"
+msgstr "Đã thanh toán đủ"
+
+#
+msgid "Manufacturer"
+msgstr "Hãng sản xuất"
+
+#
+msgid "Payment amount does not match"
+msgstr "Số tiền thanh toán không khớp"
+
+#
+msgid "Select invoice"
+msgstr "Chọn hóa đơn"
+
+#
+msgid "Select payment term"
+msgstr "Chọn kỳ thanh toán"

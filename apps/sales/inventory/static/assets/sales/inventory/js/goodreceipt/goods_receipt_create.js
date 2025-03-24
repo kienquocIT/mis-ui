@@ -54,7 +54,7 @@ $(function () {
         GRLoadDataHandle.POSelectEle.on('change', function () {
             GRLoadDataHandle.loadChangePO($(this));
             GRLoadDataHandle.loadClearModal();
-            GRLoadDataHandle.loadCallAjaxProduct();
+            GRLoadDataHandle.loadCallAjaxPOProduct();
             $('#btn-edit-product-good-receipt').click();
         });
 
@@ -132,10 +132,6 @@ $(function () {
             GRLoadDataHandle.loadCheckIsAdditional(this);
         });
 
-        GRLoadDataHandle.btnAddLot.on('click', function () {
-            GRLoadDataHandle.loadAddRowLot();
-        });
-
         GRDataTableHandle.tableLot.on('click', '.dropdown-item-lot', function () {
             let row = this.closest('tr');
             if (row) {
@@ -166,10 +162,6 @@ $(function () {
             GRStoreDataHandle.storeDataProduct();
         });
 
-        GRLoadDataHandle.btnAddSerial.on('click', function () {
-            GRLoadDataHandle.loadAddRowSerial();
-        });
-
         GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {
             GRLoadDataHandle.loadCheckApplySerial(this);
         });
@@ -195,14 +187,6 @@ $(function () {
 
         GRDataTableHandle.tableSerial.on('click', '.del-row', function () {
             deleteRowGR(this.closest('tr'), GRDataTableHandle.tableSerial);
-        });
-
-        $('#productCanvas').on('change', '.validated-number', function () {
-            GRValidateHandle.validateNumber(this);
-        });
-
-        $('#productIAModalCenter').on('change', '.validated-number', function () {
-            GRValidateHandle.validateNumber(this);
         });
 
         // IA BEGIN

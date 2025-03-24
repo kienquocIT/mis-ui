@@ -1264,36 +1264,3 @@ table.dataTable tr.dtrg-group th {
     text-align: left !important
 }
 /*end*/
-
-/*for custom nav*/
-.nav-primary-custom {
-    display: flex;
-    border-bottom: 1px solid #c8c8c8;
-}
-
-.nav-primary-custom .nav-item {
-    text-align: center !important;
-}
-
-.nav-primary-custom .nav-link {
-    color: #6c757d;
-    background-color: white;
-    font-weight: bold;
-    display: flex;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.nav-primary-custom .nav-link.active {
-    color: #007D88;
-    border-bottom: 3px solid #007D88;
-}
-
-.nav-primary-custom .nav-link {
-    transition: transform 0.1s ease-in-out;
-}
-
-.nav-primary-custom .nav-link:hover {
-    transform: translateY(-3px);
-}
-/*end*/

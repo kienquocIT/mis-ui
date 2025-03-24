@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="row">
-    <div class="col-12 col-md-7 col-lg-7">
+    <div class="col-12 col-md-8 col-lg-8">
         <div class="row">
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
@@ -9,26 +9,20 @@
                     <input required class="form-control" id="title">
                 </div>
             </div>
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group">
-                    <label class="form-label" for="customer-code">{% trans "Customer code" %}</label>
-                    <input disabled readonly class="form-control text-primary fw-bold" id="customer-code">
-                </div>
-            </div>
-            <div class="col-12 col-md-8 col-lg-8">
+            <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
                     <label class="form-label required" for="customer-name">{% trans "Customer" %}</label>
                     <div class="input-group">
                         <span class="input-affix-wrapper">
                             <input disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="customer-name">
                         </span>
-                        <button type="button" class="btn btn-outline-secondary rounded" id="customer-select-btn" data-bs-toggle="modal" data-bs-target="#customer-select-modal">
-                            <i class="bi bi-check2-circle" data-bs-toggle="tooltip" title="{% trans 'Select customer' %}"></i>
+                        <button type="button" class="btn btn-sm btn-soft-primary border" id="customer-select-btn" data-bs-toggle="modal" data-bs-target="#customer-select-modal">
+                            <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Select customer' %}</span></span>
                         </button>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-4 col-lg-4">
+            <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
                     <div class="row">
                         <div class="col-6">
@@ -43,13 +37,13 @@
                         <span class="input-affix-wrapper">
                             <input disabled readonly class="form-control" id="tax_code">
                         </span>
-                        <button data-bs-toggle="modal" data-bs-target="#modal-view-tax-code-info" type="button" class="btn btn-outline-secondary rounded" id="view-tax-code-info">
-                            <i class="bi bi-search" data-bs-toggle="tooltip" title="{% trans 'View tax code information' %}"></i>
+                        <button data-bs-toggle="modal" data-bs-target="#modal-view-tax-code-info" type="button" class="btn btn-sm btn-soft-secondary border" id="view-tax-code-info">
+                            <span>{% trans 'View tax code information' %}</span>
                         </button>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-8 col-lg-8">
+            <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
                     <label class="form-label" for="buyer-name">{% trans "Buyer name" %}</label>
                     <input class="form-control" id="buyer-name">
@@ -80,18 +74,18 @@
             </div>
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
-                    <label class="form-label" for="sale-order">{% trans "Sale order" %}</label>
+                    <label class="form-label" for="sale-order">{% trans "Sale order" %} <span class="small text-muted">({% trans 'Get by selected customer' %})</span></label>
                     <div class="input-group">
                         <select disabled class="select2 form-select" id="sale-order" data-method="GET" data-url="{% url 'SaleOrderListForARInvoiceAPI' %}"></select>
-                        <button id="view-payment-term" class="btn btn-outline-secondary rounded" type="button" data-bs-toggle="modal" data-bs-target="#view-payment-term-modal">
-                            <i class="bi bi-info-circle" data-bs-toggle="tooltip" title="{% trans 'View payment term information' %}"></i>
+                        <button id="view-payment-term" class="btn btn-sm btn-soft-secondary border" type="button" data-bs-toggle="modal" data-bs-target="#view-payment-term-modal">
+                            <span>{% trans 'View payment term' %}</span>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-12 col-md-5 col-lg-5">
+    <div class="col-12 col-md-4 col-lg-4">
         <div class="row">
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
@@ -99,24 +93,35 @@
                     <input disabled readonly class="form-control form-control-line fw-bold text-blue" id="invoice-status" value="Khởi tạo">
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-6">
+            <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
-                    <label class="form-label" for="posting-date">{% trans "Posting date" %}</label>
+                    <label class="form-label required" for="posting-date">{% trans "Posting date" %}</label>
                     <div class="input-group mb-3">
                         <span class="input-affix-wrapper">
                             <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
-                            <input class="form-control" id="posting-date">
+                            <input required class="form-control" id="posting-date">
                         </span>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-6">
+            <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
-                    <label class="form-label" for="document-date">{% trans "Document date" %}</label>
+                    <label class="form-label required" for="document-date">{% trans "Document date" %}</label>
                     <div class="input-group mb-3">
                         <span class="input-affix-wrapper">
                             <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
-                            <input class="form-control" id="document-date">
+                            <input required class="form-control" id="document-date">
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label required" for="invoice-date">{% trans "Invoice date" %}</label>
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <input required class="form-control" id="invoice-date">
                         </span>
                     </div>
                 </div>
@@ -141,21 +146,10 @@
                     <input disabled readonly class="form-control form-control-line text-primary" id="invoice-sign">
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
                     <label class="form-label" for="invoice-number">{% trans "Invoice number" %}</label>
                     <input class="form-control" id="invoice-number">
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label class="form-label required" for="invoice-date">{% trans "Invoice date" %}</label>
-                    <div class="input-group mb-3">
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
-                            <input required class="form-control" id="invoice-date">
-                        </span>
-                    </div>
                 </div>
             </div>
         </div>

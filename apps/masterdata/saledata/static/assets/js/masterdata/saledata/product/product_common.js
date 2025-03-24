@@ -1,4 +1,6 @@
-// region PAGE ELEMENTS
+/**
+ * Khai báo các element trong page
+ */
 class ProductPageElements {
     constructor() {
         this.$url_script = $('#url_script')
@@ -57,9 +59,10 @@ class ProductPageElements {
     }
 }
 const pageElements = new ProductPageElements()
-// endregion
 
-// region PAGE VARIABLES
+/**
+ * Khai báo các biến sử dụng trong page
+ */
 class ProductPageVariables {
     constructor() {
         this.data_detail = null
@@ -116,10 +119,11 @@ class ProductPageVariables {
     }
 }
 const pageVariables = new ProductPageVariables();
-// endregion
 
-// region FUNCTION LOAD PAGE
-class ProductLoadPage {
+/**
+ * Các hàm load page và hàm hỗ trợ
+ */
+class ProductPageFunction {
     static async LoadPageDataFirst() {
         try {
             // Gọi nhiều AJAX song song
@@ -130,7 +134,7 @@ class ProductLoadPage {
             let base_unit_data = $.fn.switcherResp(baseUnits)?.['base_unit_list'] || []
 
             // chạy các hàm cức năng sử dụng dữ liệu init
-            ProductLoadPage.LoadBaseUnit(base_unit_data)
+            ProductPageFunction.LoadBaseUnit(base_unit_data)
         } catch (error) {
             console.error("Load page data error!!!", error);
         } finally {
@@ -198,9 +202,9 @@ class ProductLoadPage {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            ProductLoadPage.LoadSaleUom();
-            ProductLoadPage.LoadInventoryUom();
-            ProductLoadPage.LoadPurchaseUom();
+            ProductPageFunction.LoadSaleUom();
+            ProductPageFunction.LoadInventoryUom();
+            ProductPageFunction.LoadPurchaseUom();
         })
     }
     static LoadGeneralManufacturer(data) {
@@ -394,7 +398,7 @@ class ProductLoadPage {
             if ($(this).attr('data-source') === element_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
                 let value = parseFloat(element_value) * parseFloat($(this).attr('data-factor'));
                 $(this).attr('value', value);
-                ProductLoadPage.LoadPriceForChild($(this).attr('data-id'), value);
+                ProductPageFunction.LoadPriceForChild($(this).attr('data-id'), value);
             }
         })
         $.fn.initMaskMoney2();
@@ -776,7 +780,7 @@ class ProductLoadPage {
         } else {
             for (let i = 0; i < arrays[index].length; i++) {
                 current[index] = arrays[index][i];
-                ProductLoadPage.GenerateCombinations(arrays, current, index + 1, result);
+                ProductPageFunction.GenerateCombinations(arrays, current, index + 1, result);
             }
         }
         return result;
@@ -792,7 +796,7 @@ class ProductLoadPage {
             })
             all_row_value_list.push(value_list);
         })
-        let combinations = ProductLoadPage.GenerateCombinations(all_row_value_list);
+        let combinations = ProductPageFunction.GenerateCombinations(all_row_value_list);
         pageElements.$table_variant_items.find('tbody').html('');
         $('#table-variant-items-label').text(combinations.length);
         if (combinations.length > 0) {
@@ -863,7 +867,7 @@ class ProductLoadPage {
     static ReloadAttributeValueListSpan() {
         let option = pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value');
         let color_data = pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text()
-        ProductLoadPage.ReloadModalConfig(option, color_data);
+        ProductPageFunction.ReloadModalConfig(option, color_data);
         let value = pageElements.$attribute_display_select_by.val();
         if (value !== '') {
             if (value === '0') {
@@ -1012,9 +1016,10 @@ class ProductLoadPage {
         }
     }
 }
-// endregion
 
-// region PRODUCT HANDLER
+/**
+ * Khai báo các hàm chính
+ */
 class ProductHandler {
     static Disable(option) {
     if (option === 'detail') {
@@ -1300,10 +1305,10 @@ class ProductHandler {
 
                     if (Object.keys(product_detail['general_information']).length !== 0) {
                         let general_information = product_detail['general_information'];
-                        ProductLoadPage.LoadGeneralProductType(general_information['general_product_types_mapped'][0]);
-                        ProductLoadPage.LoadGeneralProductCategory(general_information['product_category']);
-                        ProductLoadPage.LoadGeneralUoMGroup(general_information['uom_group']);
-                        ProductLoadPage.LoadGeneralManufacturer(general_information['general_manufacturer']);
+                        ProductPageFunction.LoadGeneralProductType(general_information['general_product_types_mapped'][0]);
+                        ProductPageFunction.LoadGeneralProductCategory(general_information['product_category']);
+                        ProductPageFunction.LoadGeneralUoMGroup(general_information['uom_group']);
+                        ProductPageFunction.LoadGeneralManufacturer(general_information['general_manufacturer']);
                         pageElements.$general_traceability_method.val(general_information['traceability_method']).prop('disabled', true)
                         pageElements.$general_standard_price.attr('value', general_information['standard_price'])
                         if (Object.keys(general_information['product_size']).length !== 0) {
@@ -1317,8 +1322,8 @@ class ProductHandler {
 
                     if (Object.keys(product_detail['sale_information']).length !== 0) {
                         let sale_information = product_detail['sale_information'];
-                        ProductLoadPage.LoadSaleUom(sale_information['default_uom']);
-                        ProductLoadPage.LoadSaleTax(sale_information['tax']);
+                        ProductPageFunction.LoadSaleUom(sale_information['default_uom']);
+                        ProductPageFunction.LoadSaleTax(sale_information['tax']);
 
                         let price_list_filter = []
                         for (let i = 0; i < sale_information['sale_product_price_list'].length; i++) {
@@ -1326,9 +1331,9 @@ class ProductHandler {
                             price_list_filter.push(item.id)
                         }
 
-                        ProductLoadPage.LoadPriceListTable(sale_information['sale_product_price_list'], option);
+                        ProductPageFunction.LoadPriceListTable(sale_information['sale_product_price_list'], option);
 
-                        ProductLoadPage.LoadSalePriceListForSaleOnline(sale_information['price_list_for_online_sale'], price_list_filter)
+                        ProductPageFunction.LoadSalePriceListForSaleOnline(sale_information['price_list_for_online_sale'], price_list_filter)
 
                         pageElements.$is_publish_website.prop('checked', product_detail['is_public_website'])
                         if (product_detail['is_public_website']) {
@@ -1350,12 +1355,12 @@ class ProductHandler {
 
                     if (Object.keys(product_detail['inventory_information']).length !== 0) {
                         let inventory_information = product_detail['inventory_information'];
-                        ProductLoadPage.LoadInventoryUom(inventory_information['uom']);
+                        ProductPageFunction.LoadInventoryUom(inventory_information['uom']);
                         pageElements.$inventory_level_min.val(inventory_information['inventory_level_min']);
                         pageElements.$inventory_level_max.val(inventory_information['inventory_level_max']);
                         pageElements.$valuation_method.val(inventory_information['valuation_method'])
 
-                        ProductLoadPage.LoadWareHouseListDetail(product_detail['product_warehouse_detail']);
+                        ProductPageFunction.LoadWareHouseListDetail(product_detail['product_warehouse_detail']);
                         let data_overview = [];
                         let sum_stock = product_detail?.['stock_amount'] ? product_detail?.['stock_amount'] : 0;
                         let sum_wait_for_delivery = product_detail?.['wait_delivery_amount'] ? product_detail?.['wait_delivery_amount'] : 0;
@@ -1369,13 +1374,13 @@ class ProductHandler {
                             'sum_production': sum_production,
                             'sum_available_value': sum_available_value
                         })
-                        ProductLoadPage.LoadWareHouseOverViewDetail(data_overview);
+                        ProductPageFunction.LoadWareHouseOverViewDetail(data_overview);
                     }
 
                     if (Object.keys(product_detail['purchase_information']).length !== 0) {
                         let purchase_information = product_detail['purchase_information'];
-                        ProductLoadPage.LoadPurchaseUom(purchase_information['default_uom']);
-                        ProductLoadPage.LoadPurchaseTax(purchase_information['tax']);
+                        ProductPageFunction.LoadPurchaseUom(purchase_information['default_uom']);
+                        ProductPageFunction.LoadPurchaseTax(purchase_information['tax']);
                         pageElements.$purchase_supplied_by.val(product_detail?.['purchase_information']?.['supplied_by'])
                     }
 
@@ -1528,7 +1533,7 @@ class ProductHandler {
 
                     pageElements.$account_deter_referenced_by.val(product_detail['account_deter_referenced_by']).prop('disabled', true)
                     pageElements.$product_account_determination_table.prop('hidden', product_detail['account_deter_referenced_by'] !== 2)
-                    ProductLoadPage.LoadAccountDeterminationTable()
+                    ProductPageFunction.LoadAccountDeterminationTable()
 
                     $.fn.initMaskMoney2();
 
@@ -1537,9 +1542,10 @@ class ProductHandler {
             })
     }
 }
-// endregion
 
-// region PRODUCT EVENT HANDLER
+/**
+ * Khai báo các Event
+ */
 class ProductEventHandler {
     static InitPageEven() {
         pageElements.$product_image.dropify({
@@ -1649,7 +1655,7 @@ class ProductEventHandler {
                 if ($(this).attr('data-source') === this_data_id && $(this).attr('data-auto-update') === 'true' && $(this).attr('data-is-default') === 'false') {
                     let value = parseFloat(this_data_value) * parseFloat($(this).attr('data-factor'));
                     $(this).attr('value', value);
-                    ProductLoadPage.LoadPriceForChild($(this).attr('data-id'), value);
+                    ProductPageFunction.LoadPriceForChild($(this).attr('data-id'), value);
                 }
 
                 let price_list_id = $(this).attr('data-id');
@@ -1660,7 +1666,7 @@ class ProductEventHandler {
             })
             $.fn.initMaskMoney2();
 
-            ProductLoadPage.LoadSalePriceListForSaleOnline(null, sale_product_price_list)
+            ProductPageFunction.LoadSalePriceListForSaleOnline(null, sale_product_price_list)
         })
         // purchase tab
         pageElements.$check_tab_purchase.change(function () {
@@ -1680,8 +1686,8 @@ class ProductEventHandler {
                         </span>
                     </span>
                 `);
-                ProductLoadPage.RenderVariantItemsTable();
-                ProductLoadPage.ReloadAttributeValueListSpan();
+                ProductPageFunction.RenderVariantItemsTable();
+                ProductPageFunction.ReloadAttributeValueListSpan();
             }
             else {
                 $.fn.notifyB({description: 'Value is missing'}, 'warning');
@@ -1864,7 +1870,7 @@ class ProductEventHandler {
             pageVariables.current_row_variant_attribute = $(this).closest('tr');
             let option = pageVariables.current_row_variant_attribute.find('.config-selection').attr('data-value');
             let color_data = pageVariables.current_row_variant_attribute.find('.attribute_value_list_span').text()
-            ProductLoadPage.ReloadModalConfig(option, color_data);
+            ProductPageFunction.ReloadModalConfig(option, color_data);
         })
         $(document).on("click", '.add-variant-item-des', function () {
             pageVariables.current_row_variant_item = $(this).closest('tr');
@@ -1903,17 +1909,17 @@ class ProductEventHandler {
             }
         })
         $(document).on("change", '.variant-attributes-select', function () {
-            ProductLoadPage.RenderVariantItemsTable();
+            ProductPageFunction.RenderVariantItemsTable();
         })
         $(document).on("click", '.delete-attribute-row', function () {
             $(this).closest('tr').remove();
-            ProductLoadPage.RenderVariantItemsTable();
+            ProductPageFunction.RenderVariantItemsTable();
         })
         $(document).on("click", '.delete-value', function () {
             pageVariables.current_row_variant_attribute = $(this).closest('tr');
             $(this).closest('.badge').remove();
-            ProductLoadPage.RenderVariantItemsTable();
-            ProductLoadPage.ReloadAttributeValueListSpan();
+            ProductPageFunction.RenderVariantItemsTable();
+            ProductPageFunction.ReloadAttributeValueListSpan();
         })
         $(document).on("click", '.selection-fill-by', function () {
             let elements = document.getElementsByClassName('selection-fill-by');
@@ -1986,7 +1992,7 @@ class ProductEventHandler {
                         (results) => {
                             if (results.length === 1) {
                                 pageElements.$product_account_determination_table.DataTable().clear().destroy()
-                                ProductLoadPage.LoadAccountDeterminationTable()
+                                ProductPageFunction.LoadAccountDeterminationTable()
                             }
                         }
                     )
@@ -1998,4 +2004,3 @@ class ProductEventHandler {
         })
     }
 }
-// endregion

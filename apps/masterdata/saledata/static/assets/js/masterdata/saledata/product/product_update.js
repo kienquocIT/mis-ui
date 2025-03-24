@@ -1,5 +1,5 @@
 $(document).ready(async function () {
-    await ProductLoadPage.LoadPageDataFirst()
+    await ProductPageFunction.LoadPageDataFirst()
     ProductEventHandler.InitPageEven()
     ProductHandler.LoadDetailProduct('update');
 

@@ -388,3 +388,7 @@ msgstr "Không tìm thấy nội dung được yêu cầu!"
 #
 msgid "You will be logged out!"
 msgstr "Bạn sẽ bị đăng xuất!"
+
+#
+msgid "An error occurred while interacting with the data!"
+msgstr "Có lỗi xảy ra khi tương tác với dữ liệu!"

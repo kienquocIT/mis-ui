@@ -11370,3 +11370,15 @@ msgstr "Chọn hóa đơn"
 #
 msgid "Select payment term"
 msgstr "Chọn kỳ thanh toán"
+
+#
+msgid "Line method"
+msgstr "Phương pháp đường thẳng"
+
+#
+msgid "Adjustment method"
+msgstr "Phương pháp hệ số"
+
+#
+msgid "Product will convert into"
+msgstr "Sản phẩm chuyển đổi thành"

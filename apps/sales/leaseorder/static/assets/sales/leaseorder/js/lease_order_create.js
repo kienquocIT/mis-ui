@@ -481,11 +481,14 @@ $(function () {
             LeaseOrderLoadDataHandle.loadShowDepreciation(this);
         });
 
-        LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .lease-start-date, .lease-end-date', function () {
+        LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .lease-start-date, .lease-end-date, .product-convert-into', function () {
             if (this.classList.contains('depreciation-method')) {
                 let $adjustEle = $('#depreciation_adjustment');
                 if ($adjustEle.length > 0) {
                     $adjustEle.attr('readonly', 'true');
+                    if ($(this).val() === '0') {
+                        $adjustEle.val(1);
+                    }
                     if ($(this).val() === '1') {
                         $adjustEle.removeAttr('readonly');
                     }
@@ -511,6 +514,18 @@ $(function () {
                             let endDate = DepreciationControl.getEndDateDepreciation($(this).val(), parseInt($(leaseTimeEle).val()));
                             $leaseEndDateEle.val(endDate).trigger('change');
                         }
+                    }
+                }
+            }
+            if (this.classList.contains('product-convert-into')) {
+                let $methodEle = $('#depreciation_method');
+                if ($methodEle.length > 0) {
+                    $methodEle[0].setAttribute('readonly', 'true');
+                    if ($(this).val() === "1") {
+                        $methodEle.val(0).trigger('change');
+                    }
+                    if ($(this).val() === "2") {
+                        $methodEle[0].removeAttribute('readonly');
                     }
                 }
             }

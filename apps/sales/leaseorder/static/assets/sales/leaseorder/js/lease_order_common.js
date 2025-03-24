@@ -29,8 +29,13 @@ class LeaseOrderLoadDataHandle {
     static dataAssetType = [
         {'id': '', 'title': 'Select...',},
         {'id': 1, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-1')},
-        // {'id': 2, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-2')},
+        {'id': 2, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-2')},
         {'id': 3, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-3')},
+    ];
+    static dataConvertInto = [
+        {'id': '', 'title': 'Select...',},
+        {'id': 1, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-2')},
+        {'id': 2, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-3')},
     ];
     static dataDepreciationMethod = [
         {'id': 0, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-depreciation-method-1')},
@@ -2420,6 +2425,21 @@ class LeaseOrderLoadDataHandle {
                     $leaseEndDateEle.val(moment($(leaseEndDateEle).val()).format('DD/MM/YYYY'));
                 }
             }
+            let convertEle = row.querySelector('.table-row-product-convert-into');
+            let $convertAreaEle = $('#product_convert_into_area');
+            let $convertEle = $('#product_convert_into');
+            if (convertEle && $convertAreaEle.length > 0 && $convertEle.length > 0) {
+                $convertAreaEle[0].setAttribute('hidden', 'true');
+                LeaseOrderLoadDataHandle.loadInitS2($convertEle, LeaseOrderLoadDataHandle.dataConvertInto);
+                if (assetType === "1") {
+                    $convertAreaEle[0].removeAttribute('hidden');
+                    $convertEle.val("2");
+                    if ($(convertEle).val()) {
+                        $convertEle.val($(convertEle).val())
+                    }
+                    $convertEle.trigger('change');
+                }
+            }
 
             let dataFn = [];
             let depreciationDataEle = row.querySelector('.table-row-depreciation-data');
@@ -2527,18 +2547,20 @@ class LeaseOrderLoadDataHandle {
                 let $endEle = $('#depreciation_end_date');
                 let $leaseStartEle = $('#lease_start_date');
                 let $leaseEndEle = $('#lease_end_date');
+                let $convertEle = $('#product_convert_into');
                 let fnCost = 0;
                 let dataDepreciation = [];
                 let dataDepreciationLease = [];
-                if ($methodEle.length > 0 && $adjust.length > 0 && $startEle.length > 0 && $endEle.length > 0  && $leaseStartEle.length > 0 && $leaseEndEle.length > 0) {
+                if ($methodEle.length > 0 && $adjust.length > 0 && $startEle.length > 0 && $endEle.length > 0  && $leaseStartEle.length > 0 && $leaseEndEle.length > 0 && $convertEle.length > 0) {
                     let depreciationMethodEle = targetRow.querySelector('.table-row-depreciation-method');
                     let depreciationAdjustEle = targetRow.querySelector('.table-row-depreciation-adjustment');
                     let depreciationStartDateEle = targetRow.querySelector('.table-row-depreciation-start-date');
                     let depreciationEndDateEle = targetRow.querySelector('.table-row-depreciation-end-date');
                     let leaseStartDateEle = targetRow.querySelector('.table-row-lease-start-date');
                     let leaseEndDateEle = targetRow.querySelector('.table-row-lease-end-date');
+                    let convertEle = targetRow.querySelector('.table-row-product-convert-into');
 
-                    if (depreciationMethodEle && depreciationAdjustEle && depreciationStartDateEle && depreciationEndDateEle && leaseStartDateEle && leaseEndDateEle) {
+                    if (depreciationMethodEle && depreciationAdjustEle && depreciationStartDateEle && depreciationEndDateEle && leaseStartDateEle && leaseEndDateEle && convertEle) {
                         if ($methodEle.val()) {
                             $(depreciationMethodEle).val(parseInt($methodEle.val()));
                         }
@@ -2560,6 +2582,9 @@ class LeaseOrderLoadDataHandle {
                         if ($leaseEndEle.val()) {
                             $(leaseEndDateEle).val(moment($leaseEndEle.val(),
                                 'DD/MM/YYYY').format('YYYY-MM-DD'));
+                        }
+                        if ($convertEle.val()) {
+                            $(convertEle).val(parseInt($convertEle.val()));
                         }
 
                         dataDepreciation = DepreciationControl.callDepreciation({
@@ -3938,6 +3963,8 @@ class LeaseOrderDataTableHandle {
                                     <input type="text" class="form-control table-row-lease-end-date" value="${row?.['product_lease_end_date'] ? row?.['product_lease_end_date'] : ''}" hidden>
                                     <input type="text" class="form-control table-row-depreciation-data hidden">
                                     <input type="text" class="form-control table-row-depreciation-lease-data hidden">
+                                    
+                                    <input type="text" class="form-control table-row-product-convert-into" value="${row?.['product_convert_into'] ? row?.['product_convert_into'] : ""}" hidden>
                                 </div>`;
                     }
                 },
@@ -7869,6 +7896,13 @@ class LeaseOrderSubmitHandle {
                 if (depreciationLeaseDataEle) {
                     if ($(depreciationLeaseDataEle).val()) {
                         rowData['depreciation_lease_data'] = JSON.parse($(depreciationLeaseDataEle).val());
+                    }
+                }
+                let convertEle = row.querySelector('.table-row-product-convert-into');
+                if (convertEle) {
+                    rowData['product_convert_into'] = null;
+                    if ($(convertEle).val()) {
+                        rowData['product_convert_into'] = parseInt($(convertEle).val());
                     }
                 }
 

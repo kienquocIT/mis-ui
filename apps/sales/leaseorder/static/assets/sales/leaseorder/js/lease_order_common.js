@@ -2954,6 +2954,43 @@ class LeaseOrderLoadDataHandle {
         if (data?.['lease_to']) {
             LeaseOrderLoadDataHandle.$leaseTo.val(moment(data?.['lease_to']).format('DD/MM/YYYY'));
         }
+        //
+        const processData = data?.['process'] || {};
+        const processStageAppData = data?.['process_stage_app'] || {};
+        const oppData = data?.['opportunity'] || {};
+        const inheritData = data?.['employee_inherit'] || {};
+        new $x.cls.bastionField({
+            has_opp: true,
+            has_inherit: true,
+            has_process: true,
+            data_process: processData && Object.keys(processData).length > 0 ? [
+                {
+                    ...processData,
+                    'selected': true,
+                }
+            ] : [],
+            data_process_stage_app: processStageAppData && Object.keys(processStageAppData).length > 0 ? [
+                {
+                    ...processStageAppData,
+                    'selected': true,
+                }
+            ] : [],
+            processStageAppFlagData: {
+                'disable': true,
+            },
+            data_opp: oppData && Object.keys(oppData).length > 0 ? [
+                {
+                    ...oppData,
+                    'selected': true,
+                }
+            ] : [],
+            data_inherit: inheritData && Object.keys(inheritData).length > 0 ? [
+                {
+                    ...inheritData,
+                    'selected': true,
+                }
+            ] : [],
+        }).init();
         if (data?.['sale_person']) {
             LeaseOrderLoadDataHandle.loadInitS2(LeaseOrderLoadDataHandle.salePersonSelectEle, [data?.['sale_person']]);
         }
@@ -4813,12 +4850,38 @@ class LeaseOrderDataTableHandle {
                             return `<span class="mask-money table-row-lease-accumulative-allocated" data-init-money="${parseFloat(row?.['lease_accumulative_allocated'] ? row?.['lease_accumulative_allocated'] : '0')}"></span>`;
                         }
                         return ``;
-
-
-                        // return `<span class="mask-money table-row-accumulative" data-init-money="${parseFloat(row?.['accumulative_value'] ? row?.['accumulative_value'] : '0')}"></span>`;
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let leaseTimeEle = row.querySelector('.table-row-lease-time');
+                let leaseAllocatedEle = row.querySelector('.table-row-lease-allocated');
+                let leaseAccumulative = row.querySelector('.table-row-lease-accumulative-allocated');
+                if (leaseTimeEle) {
+                    if (data?.['lease_time']) {
+                        let td = leaseTimeEle.closest('td');
+                        if (td) {
+                            $(td).addClass("bg-green-light-4");
+                        }
+                    }
+                }
+                if (leaseAllocatedEle) {
+                    if (data?.['lease_allocated']) {
+                        let td = leaseAllocatedEle.closest('td');
+                        if (td) {
+                            $(td).addClass("bg-blue-light-5");
+                        }
+                    }
+                }
+                if (leaseAccumulative) {
+                    if (data?.['lease_accumulative_allocated']) {
+                        let td = leaseAccumulative.closest('td');
+                        if (td) {
+                            $(td).addClass("bg-blue-light-5");
+                        }
+                    }
+                }
+            },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
                 LeaseOrderLoadDataHandle.loadCssToDtb("table-depreciation-detail");

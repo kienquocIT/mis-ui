@@ -936,6 +936,7 @@ $(async function () {
                     if (check === false) {
                         ele.checked = false;
                         DeliveryStoreDataHandle.storeData();
+                        return false;
                     }
                 } else {
                     $.fn.notifyB({description: $trans.attr('data-exceed-available-quantity')}, 'failure');
@@ -1360,9 +1361,7 @@ $(async function () {
                     },
                 ],
                 drawCallback: function () {
-                    prodTable.loadEventCheckboxAll($tableSerial);
-                    let checkAll = $tableSerial[0].querySelector('.table-row-checkbox-all');
-                    if (checkAll) {
+                    for (let checkAll of $scrollSerial[0].querySelectorAll('.table-row-checkbox-all')) {
                         checkAll.checked = false;
                     }
                 },
@@ -1951,6 +1950,27 @@ $(async function () {
         }
         prodTable.loadDeliverBySerial(this);
         return true;
+    });
+
+    $scrollSerial.on('click', '.table-row-checkbox-all', function () {
+        let checked = this.checked;
+        if (checked === true) {
+            for (let checkbox of $tableSerial[0].querySelectorAll('.table-row-checkbox')) {
+                if (checkbox) {
+                    checkbox.checked = checked;
+                    let state = prodTable.loadDeliverBySerial(checkbox);
+                    if (state === false) {
+                        break;
+                    }
+                }
+            }
+        }
+        if (checked === false) {
+            for (let checkedBox of $tableSerial[0].querySelectorAll('.table-row-checkbox:checked')) {
+                checkedBox.checked = checked;
+                prodTable.loadDeliverBySerial(checkedBox);
+            }
+        }
     });
     // handle before form submit
     formSubmit()

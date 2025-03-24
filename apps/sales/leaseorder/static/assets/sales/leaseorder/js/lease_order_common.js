@@ -29,7 +29,7 @@ class LeaseOrderLoadDataHandle {
     static dataAssetType = [
         {'id': '', 'title': 'Select...',},
         {'id': 1, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-1')},
-        {'id': 2, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-2')},
+        // {'id': 2, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-2')},
         {'id': 3, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-3')},
     ];
     static dataDepreciationMethod = [
@@ -1466,8 +1466,18 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadChangePaymentTerm() {
-        LeaseOrderDataTableHandle.$tableInvoice.DataTable().clear().draw();
-        LeaseOrderDataTableHandle.$tablePayment.DataTable().clear().draw();
+        if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
+            LeaseOrderDataTableHandle.$tableInvoice.DataTable().clear().draw();
+            LeaseOrderDataTableHandle.$tablePayment.DataTable().clear().draw();
+            $('#btn-load-payment-stage')[0].setAttribute('hidden', 'true');
+            $('#btn-add-payment-stage')[0].setAttribute('hidden', 'true');
+            if (!LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                $('#btn-add-payment-stage')[0].removeAttribute('hidden');
+            }
+            if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
+                $('#btn-load-payment-stage')[0].removeAttribute('hidden');
+            }
+        }
         return true;
     };
 
@@ -5086,7 +5096,7 @@ class LeaseOrderDataTableHandle {
                     }
                     LeaseOrderLoadDataHandle.loadInitS2($(taxEle), dataS2);
 
-                    if (checkTax?.['check'] === "same" && QuotationDataTableHandle.$tableInvoice.DataTable().rows().count() === 0) {
+                    if (checkTax?.['check'] === "same" && LeaseOrderDataTableHandle.$tableInvoice.DataTable().rows().count() === 0) {
                         LeaseOrderLoadDataHandle.loadInitS2($(taxEle), checkTax?.['list_tax']);
                     }
                     if (checkTax?.['check'] === "mixed") {
@@ -5256,7 +5266,7 @@ class LeaseOrderDataTableHandle {
                 let totalEle = row.querySelector('.table-row-total');
                 let paidFullEle = row.querySelector('.paid-full');
 
-                let $termMD = QuotationLoadDataHandle.paymentSelectEle;
+                let $termMD = LeaseOrderLoadDataHandle.paymentSelectEle;
                 let checkTax = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
                 if (dateEle) {
                     $(dateEle).daterangepicker({

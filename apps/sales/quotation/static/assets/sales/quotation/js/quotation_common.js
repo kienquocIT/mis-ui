@@ -1422,8 +1422,7 @@ class QuotationLoadDataHandle {
     };
 
     static loadChangePaymentTerm() {
-        let formSubmit = $('#frm_quotation_create');
-        if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order') && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
             QuotationDataTableHandle.$tableInvoice.DataTable().clear().draw();
             QuotationDataTableHandle.$tablePayment.DataTable().clear().draw();
             $('#btn-load-payment-stage')[0].setAttribute('hidden', 'true');

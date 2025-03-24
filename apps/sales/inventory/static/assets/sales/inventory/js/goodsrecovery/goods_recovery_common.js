@@ -1068,12 +1068,38 @@ class RecoveryDataTableHandle {
                             return `<span class="mask-money table-row-lease-accumulative-allocated" data-init-money="${parseFloat(row?.['lease_accumulative_allocated'] ? row?.['lease_accumulative_allocated'] : '0')}"></span>`;
                         }
                         return ``;
-
-
-                        // return `<span class="mask-money table-row-accumulative" data-init-money="${parseFloat(row?.['accumulative_value'] ? row?.['accumulative_value'] : '0')}"></span>`;
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let leaseTimeEle = row.querySelector('.table-row-lease-time');
+                let leaseAllocatedEle = row.querySelector('.table-row-lease-allocated');
+                let leaseAccumulative = row.querySelector('.table-row-lease-accumulative-allocated');
+                if (leaseTimeEle) {
+                    if (data?.['lease_time']) {
+                        let td = leaseTimeEle.closest('td');
+                        if (td) {
+                            $(td).addClass("bg-green-light-4");
+                        }
+                    }
+                }
+                if (leaseAllocatedEle) {
+                    if (data?.['lease_allocated']) {
+                        let td = leaseAllocatedEle.closest('td');
+                        if (td) {
+                            $(td).addClass("bg-blue-light-5");
+                        }
+                    }
+                }
+                if (leaseAccumulative) {
+                    if (data?.['lease_accumulative_allocated']) {
+                        let td = leaseAccumulative.closest('td');
+                        if (td) {
+                            $(td).addClass("bg-blue-light-5");
+                        }
+                    }
+                }
+            },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
                 RecoveryLoadDataHandle.loadCssToDtb("table-depreciation-detail");

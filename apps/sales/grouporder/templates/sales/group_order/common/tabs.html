@@ -1,0 +1,183 @@
+{% load i18n %}
+
+<!-- tabs -->
+<!-- tabs navigation -->
+<div class="row">
+    <ul class="nav nav-light nav-tabs" id="group-order-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tab_detail">
+                <span class="nav-link-text">{% trans 'Detail' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_cost">
+                <span class="nav-link-text">{% trans 'Cost' %}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab_expense">
+                <span class="nav-link-text">{% trans 'Expense' %}</span>
+            </a>
+        </li>
+{#        <li class="nav-item">#}
+{#            <a class="nav-link" data-bs-toggle="tab" href="#tab_payment">#}
+{#                <span class="nav-link-text">{% trans 'Payment' %}</span>#}
+{#            </a>#}
+{#        </li>#}
+    </ul>
+</div>
+
+<!-- tabs content -->
+<div class="tab-content pb-30" id="group-order-tab-content">
+    <div class="tab-pane fade show active" id="tab_detail">
+        <table
+                id="datatable-detail"
+                class="table nowrap w-100 mb-20 min-w-1440p"
+        >
+            <thead>
+                <tr class="bg-light">
+                    <th></th>
+                    <th>{% trans 'Customer Code' %}</th>
+                    <th>{% trans 'Name' %}</th>
+                    <th>{% trans 'Registered Code' %}</th>
+                    <th>{% trans 'Registered Date' %}</th>
+                    <th>{% trans 'Quantity' %}</th>
+                    <th>{% trans 'Unit Price' %}</th>
+                    <th>{% trans 'Tax' %}</th>
+                    <th>{% trans 'Sub Total' %}</th>
+                    <th>{% trans 'Payment Status' %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-6">
+                <button type="button" class="btn btn-outline-primary mt-5" id="btn-add-customer" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-add-customer">
+                    <span>
+                        <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                        <span>{% trans 'Add' %}</span>
+                    </span>
+                </button>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-4">
+                                {% trans 'Total Guests' %}
+                            </div>
+                            <div class="col-8">
+                                <span id="total-guest"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-4">
+                                {% trans 'Total Amount' %}
+                            </div>
+                            <div class="col-8">
+                                <span class="mask-money" id="total-amount" data-init-money="0"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-4">
+                                {% trans 'Total Amount Including VAT' %}
+                            </div>
+                            <div class="col-8">
+                                <span class="mask-money" id="total-amount-vat" data-init-money="0"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="tab-pane fade" id="tab_cost">
+        <table
+                id="datatable-cost"
+                class="table nowrap w-100 mb-20"
+                style="min-width: 768px"
+        >
+            <thead>
+                <tr class="bg-light">
+                    <th></th>
+                    <th class="w-10">{% trans 'Code' %}</th>
+                    <th class="w-25">{% trans 'Name' %}</th>
+                    <th class="w-25">{% trans 'Quantity' %}</th>
+                    <th class="w-15">{% trans 'Unit Cost' %}</th>
+                    <th class="w-15">{% trans 'Sub Total' %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-outline-primary mt-5" id="btn-open-product-modal" data-bs-toggle="modal" data-bs-target="#modal-product">
+            <span>
+                <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                <span>{% trans 'Add' %}</span>
+            </span>
+        </button>
+    </div>
+    <div class="tab-pane fade" id="tab_expense">
+        <table
+                id="datatable-expense"
+                class="table nowrap w-100 mb-20 min-w-1440p"
+        >
+            <thead>
+                <tr class="bg-light">
+                    <th></th>
+                    <th>{% trans 'Expense Name' %}</th>
+                    <th>{% trans 'Expense Item' %}</th>
+                    <th>{% trans 'UoM' %}</th>
+                    <th>{% trans 'Quantity' %}</th>
+                    <th>{% trans 'Expense Cost' %}</th>
+                    <th>{% trans 'Tax' %}</th>
+                    <th>{% trans 'Subtotal' %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-outline-primary mt-5" id="btn-add-expense">
+            <span>
+                <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                <span>{% trans 'Add' %}</span>
+            </span>
+        </button>
+    </div>
+{#    <div class="tab-pane fade" id="tab_payment">#}
+{#        <table#}
+{#                id="datatable-asset-source"#}
+{#                class="table nowrap w-100 mb-20"#}
+{#                style="min-width: 768px"#}
+{#        >#}
+{#            <thead>#}
+{#                <tr class="bg-light">#}
+{#                    <th></th>#}
+{#                    <th>{% trans 'Description' %}</th>#}
+{#                    <th>{% trans 'Document No.' %}</th>#}
+{#                    <th>{% trans 'Transaction type' %}</th>#}
+{#                    <th>{% trans 'Code' %}</th>#}
+{#                    <th>{% trans 'Value' %}</th>#}
+{#                    <th></th>#}
+{#                </tr>#}
+{#            </thead>#}
+{#            <tbody>#}
+{#            </tbody>#}
+{#        </table>#}
+{#        <button type="button" class="btn btn-outline-primary mt-5">#}
+{#            <span>#}
+{#                <span class="icon"><i class="fa-solid fa-plus"></i></span>#}
+{#                <span>{% trans 'Add' %}</span>#}
+{#            </span>#}
+{#        </button>#}
+{#    </div>#}
+</div>

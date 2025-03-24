@@ -1,0 +1,83 @@
+{% load i18n %}
+
+<div class="modal fade" id="modal-product" tabindex="-1" role="dialog" aria-labelledby="modal-product">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Product" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-x: scroll">
+                <div class="nicescroll-bar">
+                    <table class="table nowrap w-100"
+                       id="modal-datatable-product"
+                       data-url="{% url 'GroupOrderProductList' %}"
+                    >
+                        <thead>
+                            <tr class="bg-light">
+                                <th></th>
+                                <th>{% trans 'Code' %}</th>
+                                <th>{% trans 'Title' %}</th>
+                                <th>{% trans 'Standard Cost' %}</th>
+                                <th>{% trans 'BOM' %}</th>
+                                <th>{% trans 'BOM Cost' %}</th>
+                                <th>{% trans 'Select' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                </button>
+                <button type="button" id="btn-add-product" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Add' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-select-price" tabindex="-1" role="dialog" aria-labelledby="modal-price" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Price List" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-x: scroll">
+                <div class="nicescroll-bar row">
+                    <div class="col-12">
+                        <span class="fw-bold mr-5">{% trans "Sum Of Prices" %}</span>
+                        <span id="modal-price-sum-price" class="mask-money" data-init-money="0"></span>
+                    </div>
+                    <div class="col-6">
+                        <div id="modal-product-list">
+
+                        </div>
+                    </div>
+                    <div class="col-6 border-start border-grey">
+                        <div id="modal-price-list">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                </button>
+                <button type="button" id="btn-finish" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Finish' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

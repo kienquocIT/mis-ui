@@ -887,3 +887,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     BANK_DETAIL = StringUrl('saledata/bank/detail')
     BANK_ACCOUNT_LIST = StringUrl('saledata/bank-account/list')
     BANK_ACCOUNT_DETAIL = StringUrl('saledata/bank-account/detail')
+
+    # sales/group order
+    GROUP_ORDER_PRODUCT_LIST = StringUrl('group-order/product/list')

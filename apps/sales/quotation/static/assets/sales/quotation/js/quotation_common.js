@@ -1422,11 +1422,17 @@ class QuotationLoadDataHandle {
     };
 
     static loadChangePaymentTerm() {
-        let formSubmit = $('#frm_quotation_create');
-        if (formSubmit[0].classList.contains('sale-order') && formSubmit.attr('data-method').toLowerCase() !== 'get') {
+        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order') && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
             QuotationDataTableHandle.$tableInvoice.DataTable().clear().draw();
             QuotationDataTableHandle.$tablePayment.DataTable().clear().draw();
-            // QuotationLoadDataHandle.loadPaymentStage();
+            $('#btn-load-payment-stage')[0].setAttribute('hidden', 'true');
+            $('#btn-add-payment-stage')[0].setAttribute('hidden', 'true');
+            if (!QuotationLoadDataHandle.paymentSelectEle.val()) {
+                $('#btn-add-payment-stage')[0].removeAttribute('hidden');
+            }
+            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
+                $('#btn-load-payment-stage')[0].removeAttribute('hidden');
+            }
         }
         return true;
     };
@@ -4279,13 +4285,13 @@ class QuotationDataTableHandle {
                                 >`;
                     }
                 },
-                // {
-                //     targets: 10,
-                //     width: '1%',
-                //     render: () => {
-                //         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
-                //     }
-                // },
+                {
+                    targets: 10,
+                    width: '1%',
+                    render: () => {
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="sale_order_payment_stage" hidden><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                    }
+                },
             ],
             rowCallback: function (row, data, index) {
                 let installmentEle = row.querySelector('.table-row-installment');
@@ -4299,6 +4305,7 @@ class QuotationDataTableHandle {
                 let taxCheckEle = row.querySelector('.table-row-tax-check');
                 let valTaxEle = row.querySelector('.table-row-value-tax');
                 let valTotalEle = row.querySelector('.table-row-value-total');
+                let delEle = row.querySelector('.del-row');
 
                 let $termMD = QuotationLoadDataHandle.paymentSelectEle;
                 let checkTax = QuotationLoadDataHandle.loadCheckSameMixTax();
@@ -4399,6 +4406,11 @@ class QuotationDataTableHandle {
                 }
                 if ($(installmentEle).val()) {
                     QuotationLoadDataHandle.loadChangeInstallment(installmentEle);
+                }
+                if (delEle) {
+                    if (!$termMD.val()) {
+                        delEle.removeAttribute('hidden');
+                    }
                 }
             },
             drawCallback: function () {
@@ -4531,7 +4543,7 @@ class QuotationDataTableHandle {
                     targets: 7,
                     width: '5%',
                     render: (data, type, row) => {
-                        return ``;
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="sale_order_invoice"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],
@@ -7833,7 +7845,7 @@ class QuotationSubmitHandle {
                             totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
                         }
                         if (totalPayment !== _form.dataForm?.['total_product']) {
-                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-paid-in-full')}, 'failure');
+                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
                             return false;
                         }
                     }

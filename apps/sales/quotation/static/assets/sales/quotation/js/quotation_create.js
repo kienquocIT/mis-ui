@@ -96,14 +96,6 @@ $(function () {
 
         QuotationLoadDataHandle.paymentSelectEle.on('change', function () {
             QuotationLoadDataHandle.loadChangePaymentTerm();
-            $('#btn-load-payment-stage')[0].setAttribute('hidden', 'true');
-            $('#btn-add-payment-stage')[0].setAttribute('hidden', 'true');
-            if (!QuotationLoadDataHandle.paymentSelectEle.val()) {
-                $('#btn-add-payment-stage')[0].removeAttribute('hidden');
-            }
-            if (QuotationLoadDataHandle.paymentSelectEle.val()) {
-                $('#btn-load-payment-stage')[0].removeAttribute('hidden');
-            }
         });
 
 // PRODUCT
@@ -740,6 +732,12 @@ $(function () {
             }
         });
 
+        QuotationDataTableHandle.$tableInvoice.on('click', '.del-row', function (e) {
+            deleteRow(this.closest('tr'), QuotationDataTableHandle.$tableInvoice);
+            reOrderSTT(QuotationDataTableHandle.$tableInvoice);
+            QuotationDataTableHandle.$tablePayment.DataTable().clear().draw();
+        });
+
         QuotationLoadDataHandle.$btnSaveTerm.on('click', function () {
            QuotationLoadDataHandle.loadSaveSTerm();
         });
@@ -824,6 +822,7 @@ $(function () {
 
         QuotationDataTableHandle.$tablePayment.on('click', '.del-row', function () {
             deleteRow(this.closest('tr'), QuotationDataTableHandle.$tablePayment);
+            reOrderSTT(QuotationDataTableHandle.$tablePayment);
         });
 
 // IMPORT TABLE

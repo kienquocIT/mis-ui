@@ -431,7 +431,7 @@
                                             <th>{% trans 'Tax' %}</th>
                                             <th>{% trans 'Tax value' %}</th>
                                             <th>{% trans 'Total payment' %}</th>
-{#                                            <th></th>#}
+                                            <th></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -640,7 +640,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title"><b>{% trans 'Select term' %}</b></h5>
+                            <h5 class="modal-title"><b>{% trans 'Select payment term' %}</b></h5>
                             <button
                                     type="button"
                                     class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
@@ -679,7 +679,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title"><b>{% trans 'Select invoice plan' %}</b></h5>
+                            <h5 class="modal-title"><b>{% trans 'Select invoice' %}</b></h5>
                             <button
                                     type="button"
                                     class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
@@ -719,7 +719,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title"><b>{% trans 'Select invoice plan' %}</b></h5>
+                            <h5 class="modal-title"><b>{% trans 'Select invoice' %}</b></h5>
                             <button
                                     type="button"
                                     class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
@@ -780,8 +780,8 @@
         data-required-expense-uom="{% trans "Expense unit of measure is required" %}"
         data-copy-successfully="{% trans "Copy successfully" %}"
         data-validate-due-date="{% trans "Invalid due date" %}"
-        data-validate-total-ratio-payment="{% trans "Total payment ratio must be 100%" %}"
         data-paid-in-full="{% trans "Paid in full" %}"
+        data-validate-total-payment="{% trans "Payment amount does not match" %}"
         data-promotion="{% trans "Promotion" %}"
         data-shipping="{% trans "Shipping fee" %}"
         data-supplied-purchase="{% trans "Purchasing" %}"

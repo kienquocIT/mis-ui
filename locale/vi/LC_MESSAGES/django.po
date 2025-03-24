@@ -11362,3 +11362,11 @@ msgstr "Hãng sản xuất"
 #
 msgid "Payment amount does not match"
 msgstr "Số tiền thanh toán không khớp"
+
+#
+msgid "Select invoice"
+msgstr "Chọn hóa đơn"
+
+#
+msgid "Select payment term"
+msgstr "Chọn kỳ thanh toán"

@@ -733,8 +733,6 @@ $(function () {
         });
 
         QuotationDataTableHandle.$tableInvoice.on('click', '.del-row', function (e) {
-            e.stopPropagation();
-            e.stopImmediatePropagation();
             deleteRow(this.closest('tr'), QuotationDataTableHandle.$tableInvoice);
             reOrderSTT(QuotationDataTableHandle.$tableInvoice);
             QuotationDataTableHandle.$tablePayment.DataTable().clear().draw();
@@ -824,6 +822,7 @@ $(function () {
 
         QuotationDataTableHandle.$tablePayment.on('click', '.del-row', function () {
             deleteRow(this.closest('tr'), QuotationDataTableHandle.$tablePayment);
+            reOrderSTT(QuotationDataTableHandle.$tablePayment);
         });
 
 // IMPORT TABLE

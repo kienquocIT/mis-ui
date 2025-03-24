@@ -3,10 +3,36 @@
 <div class="col-12 col-md-3 col-lg-3">
     <div class="row" style="overflow: auto; max-height: 85vh">
         <div class="col-12">
+            <div class="row radio-btn">
+                <div class="col-12 col-md-12 col-lg-6 text-center">
+                    <div class="border rounded p-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                    id="inp-organization" checked>
+                            <label class="form-check-label" for="inp-organization">
+                                {% trans "Organization" %}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-12 col-lg-6 text-center">
+                    <div class="border rounded p-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                    id="inp-individual">
+                            <label class="form-check-label" for="inp-individual">
+                                {% trans "Individual" %}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 mt-3">
             <div class="form-group">
                 <div class="row">
                     <div class="col-6">
-                        <label class="form-label" for="inp-tax-code">{% trans "Tax code" %}</label>
+                        <label class="form-label" for="inp-tax-code" id="tax-code-label">{% trans "Tax code" %}</label>
                     </div>
                     <div class="col-6 text-right">
                         <span hidden id="invalid-tax" class="text-warning small">{% trans 'Tax code is not valid' %}</span>
@@ -17,24 +43,30 @@
                     <span class="input-affix-wrapper">
                         <input type="text" class="form-control" id="inp-tax-code">
                     </span>
-                    <button data-bs-toggle="modal" data-bs-target="#modal-view-tax-code-info" type="button" class="btn btn-outline-secondary rounded" id="view-tax-code-info">
-                        <i class="bi bi-search" data-bs-toggle="tooltip" title="{% trans 'View tax code information' %}"></i>
+                    <button data-bs-toggle="modal" data-bs-target="#modal-view-tax-code-info" type="button" class="btn btn-xs btn-soft-secondary border" id="view-tax-code-info">
+                        <span>{% trans 'View tax code information' %}</span>
                     </button>
                 </div>
-                <span class="text-muted small">{% trans 'Enter tax code to autofill' %}</span>
+                <span class="text-muted small">{% trans 'Required for Organization account' %}</span>
             </div>
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label for="inp-account-name" class="form-label required">{% trans "Account name" %}</label>
-                <textarea id="inp-account-name" class="form-control" required></textarea>
-            </div>
-        </div>
-        <div class="col-12">
-            <div class="form-group">
-                <label for="inp-account-code" class="form-label required">{% trans "Account Code" %}</label>
+                <label for="inp-account-code" class="form-label required" id="account-code-label"
+                       data-trans-individual="{% trans 'Individual code' %}"
+                       data-trans-organization="{% trans 'Organization code' %}"
+                >{% trans "Organization code" %}</label>
                 <input id="inp-account-code" class="form-control" required
                        oninput="this.value=this.value.toUpperCase()">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="inp-account-name" class="form-label required" id="account-name-label"
+                       data-trans-individual="{% trans 'Individual name' %}"
+                       data-trans-organization="{% trans 'Organization name' %}"
+                >{% trans "Organization name" %}</label>
+                <textarea id="inp-account-name" class="form-control" required></textarea>
             </div>
         </div>
         <div class="col-12">
@@ -46,7 +78,7 @@
         <div class="col-12">
             <div class="form-group">
                 <label for="inp-phone" class="form-label">{% trans "Phone Number" %}</label>
-                <input type="text" class="form-control" id="inp-phone" data-mask="+84 999999999">
+                <input type="text" class="form-control" id="inp-phone">
             </div>
         </div>
         <div class="col-12">
@@ -57,7 +89,7 @@
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label for="select-box-industry" class="form-label required">{% trans "Industry" %}</label>
+                <label for="select-box-industry" class="form-label">{% trans "Industry" %}</label>
                 <select id="select-box-industry" class="form-select select2"
                         data-method="GET"
                         data-url="{% url "IndustryListAPI" %}"
@@ -130,34 +162,13 @@
             </div>
         </div>
         <div class="col-12">
-            <div class="row radio-btn">
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                id="inp-individual">
-                        <label class="form-check-label" for="inp-individual">
-                            {% trans "Individual" %}
-                        </label>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-6">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                id="inp-organization" checked>
-                        <label class="form-check-label" for="inp-organization">
-                            {% trans "Organization" %}
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12">
             <div class="form-group">
                 <label for="select-box-parent-account" class="form-label">{% trans "Parent Account" %}</label>
                 <select id="select-box-parent-account" class="form-select select2"
                         data-method="GET"
                         data-url="{% url "AccountListAPI" %}" disabled>
                 </select>
+                <span class="small text-muted">{% trans 'Available for Organization account' %}</span>
             </div>
         </div>
     </div>

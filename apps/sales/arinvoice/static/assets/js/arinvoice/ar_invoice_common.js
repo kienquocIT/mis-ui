@@ -141,7 +141,6 @@ class ARInvoiceLoadTab {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $('#select-delivery-offcanvas').offcanvas('show')
-                        // console.log(resp.data['delivery_list'])
                         return resp.data?.['delivery_list'] ? resp.data?.['delivery_list'] : [];
                     }
                     return [];
@@ -806,20 +805,22 @@ class ARInvoiceAction {
         $.fn.initMaskMoney2()
     }
     static async CheckTaxCode() {
-        try {
-            let response = await fetch(`https://api.vietqr.io/v2/business/${tax_codeEle.val()}`);
-            if (!response.ok) {
-                return [false, { desc: 'Network response was not ok' }];
+        if (tax_codeEle.val()) {
+            try {
+                let response = await fetch(`https://api.vietqr.io/v2/business/${tax_codeEle.val()}`);
+                if (!response.ok) {
+                    return [false, {desc: 'Network response was not ok'}];
+                }
+                let responseData = await response.json();
+                if (responseData.code === '00') {
+                    return [true, responseData];
+                } else {
+                    return [false, responseData];
+                }
+            } catch (error) {
+                $.fn.notifyB({description: 'Can not get this Tax number information'}, 'failure');
+                return [false, {}];
             }
-            let responseData = await response.json();
-            if (responseData.code === '00') {
-                return [true, responseData];
-            } else {
-                return [false, responseData];
-            }
-        } catch (error) {
-            $.fn.notifyB({ description: 'Can not get this Tax number information' }, 'failure');
-            return [false, {}];
         }
     }
 }
@@ -843,7 +844,7 @@ class ARInvoiceHandle {
         frm.dataForm['billing_address_id'] = billingAddressEle.val()
         frm.dataForm['invoice_method'] = invoiceMethodEle.val()
         frm.dataForm['bank_account_id'] = bankNumberEle.val() ? bankNumberEle.val() : null
-        frm.dataForm['sale_order_mapped'] = saleOrderEle.val()
+        frm.dataForm['sale_order_mapped'] = saleOrderEle.val() ? saleOrderEle.val() : null
 
         frm.dataForm['posting_date'] = moment(postingDateEle.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
         frm.dataForm['document_date'] = moment(documentDateEle.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
@@ -900,7 +901,6 @@ class ARInvoiceHandle {
         //     $.fn.notifyB({description: "Product rows in sales invoice can not have VAT."}, 'failure')
         //     return false
         // }
-
         return frm
     }
     static LoadDetailARInvoice(option) {
@@ -981,7 +981,6 @@ class ARInvoiceHandle {
                     NormalTable.attr('data-delivery-selected', data?.['delivery_mapped'].map(item => item.id).join(','))
 
                     if (Object.keys(data?.['sale_order_mapped_data']).length !== 0 && data?.['delivery_mapped'].length === 0) {
-                        console.log(data?.['item_mapped'])
                         NormalTable.closest('.table_space').prop('hidden', true)
                         DescriptionTable.closest('.table_space').prop('hidden', false)
                         ARInvoiceLoadTab.LoadTableDescriptionForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)

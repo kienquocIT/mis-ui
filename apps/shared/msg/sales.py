@@ -84,6 +84,7 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     BIDDING_UPDATE = _('Bidding update successfully')
     LEASE_ORDER_CREATE = _('Lease order create successfully')
     LEASE_ORDER_UPDATE = _('Lease order update successfully')
+    LEASE_ORDER_CONFIG_UPDATE = _('Lease order update successfully')
     CONSULTING_CREATE = _('Consulting create successfully')
     CONSULTING_UPDATE = _('Consulting update successfully')
     CIF_CREATE = _('Cash inflow create successfully')

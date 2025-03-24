@@ -8,7 +8,6 @@ $(function () {
         let tableProduct = LeaseOrderDataTableHandle.$tableProduct;
         let tableCost = LeaseOrderDataTableHandle.$tableCost;
         let tableExpense = LeaseOrderDataTableHandle.$tableExpense;
-        let tablePS = LeaseOrderDataTableHandle.$tablePayment;
         let tablePromotion = $('#datable-quotation-create-promotion');
         let tableShipping = $('#datable-quotation-create-shipping');
         let tableCopyQuotation = $('#datable-copy-quotation');

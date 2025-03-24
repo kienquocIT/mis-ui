@@ -800,6 +800,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     HRM_CONTRACT_RUNTIME_DETAIL = StringUrl('hrm/employee-info/contract-signing/detail/{pk}')
 
     # Lease order
+    LEASE_ORDER_CONFIG = StringUrl('leaseorder/config')
     LEASE_ORDER_LIST = StringUrl('leaseorder/list')
     LEASE_ORDER_DETAIL = StringUrl('leaseorder')
     LEASE_ORDER_RECURRENCE_LIST = StringUrl('leaseorder/lease-order-recurrence/list')

@@ -14,7 +14,6 @@ $(document).ready(function () {
     frm_update.submit(function (event) {
         event.preventDefault();
         let combinesData = new AccountHandle().combinesData($(this), true);
-        console.log(combinesData)
         if (combinesData) {
             WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             $.fn.callAjax2(combinesData)

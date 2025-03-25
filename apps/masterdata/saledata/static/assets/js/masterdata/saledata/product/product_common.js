@@ -209,6 +209,7 @@ class ProductPageFunction {
     }
     static LoadGeneralManufacturer(data) {
         pageElements.$general_manufacturer.initSelect2({
+            allowClear: true,
             ajax: {
                 url: pageElements.$general_manufacturer.attr('data-url'),
                 method: 'GET',

@@ -11232,10 +11232,6 @@ msgid "Short name"
 msgstr "Tên viết tắt"
 
 #
-msgid "Enter tax code to autofill"
-msgstr "Nhập MST để tự động điền"
-
-#
 msgid "Click on the warehouse code for more details on stock"
 msgstr "Nhấp vào mã kho để biết thêm chi tiết về tình trạng tồn kho"
 
@@ -11402,3 +11398,35 @@ msgstr "Đã lập hóa đơn"
 #
 msgid "Previous time"
 msgstr "Lần trước"
+
+#
+msgid "Required for Organization account"
+msgstr "Bắt buộc cho tài khoản Tổ chức"
+
+#
+msgid "Available for Organization account"
+msgstr "Khả dụng cho tài khoản Tổ chức"
+
+#
+msgid "Individual name"
+msgstr "Tên cá nhân"
+
+#
+msgid "Individual code"
+msgstr "Mã cá nhân"
+
+#
+msgid "Organization name"
+msgstr "Tên tổ chức"
+
+#
+msgid "Organization code"
+msgstr "Mã tổ chức"
+
+#
+msgid "You can only select ONE contact for Individual account."
+msgstr "Bạn chỉ có thể chọn MỘT liên hệ cho tài khoản Cá nhân."
+
+#
+msgid "is account owner"
+msgstr "là chủ tài khoản"

@@ -404,7 +404,7 @@ class CompanyHandle {
         loadCompanyDistrict();
         loadCompanyWard();
         LoadCurrency();
-        LoadCountry($('#country-select-box-id'));
+        LoadCountry($('#slb-bank-account-country'));
     }
 
     combinesData(frmEle, for_update=false) {

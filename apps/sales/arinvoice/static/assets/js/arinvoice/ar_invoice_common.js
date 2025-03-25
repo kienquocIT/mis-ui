@@ -110,7 +110,6 @@ class ARInvoiceLoadPage {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            ARInvoiceLoadTab.LoadTableNormal()
             if (saleOrderEle.val()) {
                 btn_for_delivery_ar.removeClass('disabled')
                 btn_add_optionally.addClass('disabled')
@@ -509,7 +508,7 @@ class ARInvoiceLoadTab {
                         return `<div class="input-group">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix product-des" data-bs-toggle="tooltip" title="${row?.['product_data']?.['des']}"><i class="bi bi-info-circle"></i></span>
-                                <select data-product='${JSON.stringify(row?.['product_data'])}' class="form-select select-2 product-select"></select>
+                                <select ${input_disabled} data-product='${JSON.stringify(row?.['product_data'])}' class="form-select select-2 product-select"></select>
                             </span>
                         </div>`
                     }
@@ -517,7 +516,7 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<select data-product-uom='${JSON.stringify(row?.['product_uom_data'])}'
+                        return `<select ${input_disabled} data-product-uom='${JSON.stringify(row?.['product_uom_data'])}'
                                         class="form-select select-2 uom-select"></select>`
                     }
                 },
@@ -710,7 +709,7 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return `<select class="recalculate-field form-select select2 product_taxes" 
+                        return `<select ${input_disabled} class="recalculate-field form-select select2 product_taxes" 
                                         data-tax='${JSON.stringify(row?.['product_tax_data'])}'
                                         ></select>`
                     }
@@ -980,10 +979,17 @@ class ARInvoiceHandle {
 
                     NormalTable.attr('data-delivery-selected', data?.['delivery_mapped'].map(item => item.id).join(','))
 
-                    if (Object.keys(data?.['sale_order_mapped_data']).length !== 0 && data?.['delivery_mapped'].length === 0) {
-                        NormalTable.closest('.table_space').prop('hidden', true)
-                        DescriptionTable.closest('.table_space').prop('hidden', false)
-                        ARInvoiceLoadTab.LoadTableDescriptionForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                    if (Object.keys(data?.['sale_order_mapped_data']).length !== 0) {
+                        if (data?.['delivery_mapped'].length === 0) {
+                            NormalTable.closest('.table_space').prop('hidden', true)
+                            DescriptionTable.closest('.table_space').prop('hidden', false)
+                            ARInvoiceLoadTab.LoadTableDescriptionForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                        }
+                        else {
+                            NormalTable.closest('.table_space').prop('hidden', false)
+                            DescriptionTable.closest('.table_space').prop('hidden', true)
+                            ARInvoiceLoadTab.LoadTableNormalForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                        }
                     }
                     else {
                         NormalTable.closest('.table_space').prop('hidden', false)
@@ -1012,10 +1018,6 @@ class ARInvoiceHandle {
                     })
 
                     $.fn.initMaskMoney2();
-
-                    let [tax_code_status, responseData] = await ARInvoiceAction.CheckTaxCode()
-                    $('#invalid-tax').prop('hidden', tax_code_status)
-                    $('#valid-tax').prop('hidden', !tax_code_status)
 
                     UsualLoadPageFunction.DisablePage(
                         option==='detail',

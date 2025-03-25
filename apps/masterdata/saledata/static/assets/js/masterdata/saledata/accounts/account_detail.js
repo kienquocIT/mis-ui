@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    LoadDetail('detail');
+    AccountHandler.LoadDetail('detail');
 })

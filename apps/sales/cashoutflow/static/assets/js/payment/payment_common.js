@@ -1665,7 +1665,7 @@ class PaymentLoadTab {
                     </div>
                 </div>`
             }
-            $('#list-bank-account-information').append(`<div class="row">${bank_cards}</div>`)
+            $('#bank-account-table').append(`<div class="row">${bank_cards}</div>`)
         }
         else {
             $('#notify-none-bank-account').prop('hidden', false)

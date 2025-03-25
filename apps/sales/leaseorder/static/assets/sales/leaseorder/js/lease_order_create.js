@@ -28,9 +28,6 @@ $(function () {
         LeaseOrderLoadDataHandle.loadInitDate();
         LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderLoadDataHandle.$depreciationModal);
         // init dataTable
-        LeaseOrderDataTableHandle.dataTableSelectProduct();
-        LeaseOrderDataTableHandle.dataTableSelectOffset();
-        LeaseOrderDataTableHandle.dataTableSelectAsset();
         LeaseOrderDataTableHandle.dataTableProduct();
         LeaseOrderDataTableHandle.dataTableCost();
         LeaseOrderDataTableHandle.dataTableDepreciationDetail();
@@ -41,6 +38,10 @@ $(function () {
         LeaseOrderDataTableHandle.dataTableSelectTerm();
         LeaseOrderDataTableHandle.dataTableSelectInvoice();
         LeaseOrderDataTableHandle.dataTableSelectReconcile();
+        LeaseOrderDataTableHandle.dataTableSelectProduct();
+        LeaseOrderDataTableHandle.dataTableSelectOffset();
+        LeaseOrderDataTableHandle.dataTableSelectTool();
+        LeaseOrderDataTableHandle.dataTableSelectAsset();
         // init config
         LeaseOrderLoadDataHandle.loadInitQuotationConfig(LeaseOrderLoadDataHandle.$form.attr('data-method'));
         // date picker
@@ -117,6 +118,10 @@ $(function () {
 
         LeaseOrderLoadDataHandle.$btnSaveSelectOffset.on('click', function () {
             LeaseOrderLoadDataHandle.loadOffset(this);
+        });
+
+        LeaseOrderLoadDataHandle.$btnSaveSelectTool.on('click', function () {
+            LeaseOrderLoadDataHandle.loadTool(this);
         });
 
         LeaseOrderLoadDataHandle.$btnSaveSelectAsset.on('click', function () {
@@ -250,6 +255,21 @@ $(function () {
             }
         });
 
+        LeaseOrderDataTableHandle.$tableSTool.on('change', '.table-row-quantity', function () {
+            let row = this.closest('tr');
+            if (row) {
+                let checkELe = row.querySelector('.table-row-checkbox');
+                if (checkELe) {
+                    if ($(this).val() > 0) {
+                        checkELe.checked = true;
+                    }
+                    if ($(this).val() <= 0) {
+                        checkELe.checked = false;
+                    }
+                }
+            }
+        });
+
         tableProduct.on('change', '.table-row-item, .table-row-asset-type, .table-row-uom, .table-row-quantity, .table-row-uom-time, .table-row-quantity-time, .table-row-price, .table-row-tax', function () {
             if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
@@ -301,6 +321,10 @@ $(function () {
                         if ($(typeEle).val() === '1') {
                             LeaseOrderLoadDataHandle.$btnSaveSelectOffset.attr('data-product-id', dataRow?.['product_data']?.['id']);
                             LeaseOrderLoadDataHandle.loadModalSOffset(this);
+                        }
+                        if ($(typeEle).val() === '2') {
+                            LeaseOrderLoadDataHandle.$btnSaveSelectTool.attr('data-product-id', dataRow?.['product_data']?.['id']);
+                            LeaseOrderLoadDataHandle.loadModalSTool(this);
                         }
                         if ($(typeEle).val() === '3') {
                             LeaseOrderLoadDataHandle.$btnSaveSelectAsset.attr('data-product-id', dataRow?.['product_data']?.['id']);

@@ -5,7 +5,8 @@ from apps.sales.asset.views import FixedAssetList, FixedAssetCreate, FixedAssetD
     InstrumentToolUpdate, InstrumentToolListAPI, InstrumentToolDetailAPI, FixedAssetWriteOffList, \
     FixedAssetWriteOffCreate, FixedAssetWriteOffListAPI, FixedAssetWriteOffDetail, FixedAssetWriteOffDetailAPI, \
     FixedAssetWriteOffUpdate, InstrumentToolWriteOffList, InstrumentToolWriteOffCreate, InstrumentToolWriteOffDetail, \
-    InstrumentToolWriteOffUpdate, InstrumentToolWriteOffListAPI, InstrumentToolWriteOffDetailAPI, AssetForLeaseListAPI
+    InstrumentToolWriteOffUpdate, InstrumentToolWriteOffListAPI, InstrumentToolWriteOffDetailAPI, AssetForLeaseListAPI, \
+    ToolForLeaseListAPI
 
 fixed_asset_urlpatterns = [
     path('fixed-asset/list', FixedAssetList.as_view(), name='FixedAssetList'),
@@ -28,6 +29,7 @@ instrument_tool_urlpatterns = [
     #api
     path('instrument-tool/api/list', InstrumentToolListAPI.as_view(), name='InstrumentToolListAPI'),
     path('instrument-tool/api/detail/<str:pk>', InstrumentToolDetailAPI.as_view(), name='InstrumentToolDetailAPI'),
+    path('instrument-tool-for-lease/api/list', ToolForLeaseListAPI.as_view(), name='ToolForLeaseListAPI'),
 ]
 
 fa_write_off_urlpatterns = [

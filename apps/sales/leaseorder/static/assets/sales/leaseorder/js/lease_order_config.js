@@ -145,6 +145,12 @@ $(function () {
         $btnEdit.on('click', function () {
             $btnEdit[0].setAttribute('hidden', 'true');
             $btnSave[0].removeAttribute('hidden');
+            $assetTypeEle[0].removeAttribute('disabled');
+            $assetGMEle[0].removeAttribute('disabled');
+            $assetGSEle[0].removeAttribute('disabled');
+            $toolTypeEle[0].removeAttribute('disabled');
+            $toolGMEle[0].removeAttribute('disabled');
+            $toolGSEle[0].removeAttribute('disabled');
         });
 
 

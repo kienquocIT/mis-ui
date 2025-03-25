@@ -199,7 +199,7 @@ class MenusCoreConfigurations:
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
             MenuCommon(
-                name='Lease Order', code='menu_lease_order_config', view_name='LeaseOrderConfigDetail',
+                name='Lease order', code='menu_lease_order_config', view_name='LeaseOrderConfigDetail',
                 icon='<i class="fas fa-handshake"></i>',
             ),
             # MenuCommon(

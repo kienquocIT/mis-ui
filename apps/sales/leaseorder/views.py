@@ -206,8 +206,8 @@ class LeaseOrderConfigDetail(View):
     @mask_view(
         auth_require=True,
         template='sales/leaseorder/lease_order_config.html',
-        menu_active='menu_quotation_config',
-        breadcrumb='SALE_ORDER_CONFIG',
+        menu_active='menu_lease_order_config',
+        breadcrumb='LEASE_ORDER_CONFIG',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

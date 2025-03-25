@@ -11382,3 +11382,19 @@ msgstr "Phương pháp hệ số"
 #
 msgid "Product will convert into"
 msgstr "Sản phẩm chuyển đổi thành"
+
+#
+msgid "When leased product converted into fixed asset"
+msgstr "Khi sản phẩm được cho thuê chuyển đổi thành tài sản cố định"
+
+#
+msgid "When leased product converted into fixed asset"
+msgstr "Khi sản phẩm được cho thuê chuyển đổi thành dụng cụ"
+
+#
+msgid "Group manage"
+msgstr "Nhóm quản lý"
+
+#
+msgid "Group using"
+msgstr "Nhóm sử dụng"

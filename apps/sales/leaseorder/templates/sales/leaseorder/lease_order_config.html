@@ -32,11 +32,11 @@
     >
         {% csrf_token %}
         <div class="row">
-            <b>Fixed asset</b>
+            <b>{% trans 'When leased product converted into fixed asset' %}</b>
             <div class="row">
                 <div class="col-12 col-md-4 col-lg-4">
                     <div class="form-group">
-                        <label class="form-label required" for="asset_type_id">{% trans 'Classification' %}</label>
+                        <label class="form-label" for="asset_type_id">{% trans 'Classification' %}</label>
                         <select
                                 class="form-select"
                                 id="asset_type_id"
@@ -44,7 +44,6 @@
                                 data-method="GET"
                                 name="asset_type_id"
                                 data-keyResp="classification_list"
-                                required
                         ></select>
                     </div>
                 </div>
@@ -52,7 +51,7 @@
             <div class="row">
                 <div class="col-12 col-md-4 col-lg-4">
                     <div class="form-group">
-                        <label class="form-label required" for="asset_group_manage_id">{% trans 'Group manage' %}</label>
+                        <label class="form-label" for="asset_group_manage_id">{% trans 'Group manage' %}</label>
                         <select
                                 class="form-select"
                                 id="asset_group_manage_id"
@@ -60,7 +59,6 @@
                                 data-method="GET"
                                 name="asset_group_manage_id"
                                 data-keyResp="group_list"
-                                required
                         ></select>
                     </div>
                 </div>
@@ -74,7 +72,6 @@
                                 data-method="GET"
                                 name="asset_group_using_id"
                                 data-keyResp="group_list"
-                                required
                                 multiple
                         ></select>
                     </div>
@@ -83,11 +80,11 @@
         </div>
         <br>
         <div class="row">
-            <b>Tool</b>
+            <b>{% trans 'When leased product converted into tool' %}</b>
             <div class="row">
                 <div class="col-12 col-md-4 col-lg-4">
                     <div class="form-group">
-                        <label class="form-label required" for="tool_type_id">{% trans 'Classification' %}</label>
+                        <label class="form-label" for="tool_type_id">{% trans 'Classification' %}</label>
                         <select
                                 class="form-select"
                                 id="tool_type_id"
@@ -95,7 +92,6 @@
                                 data-method="GET"
                                 name="tool_type_id"
                                 data-keyResp="tool_classification_list"
-                                required
                         ></select>
                     </div>
                 </div>
@@ -103,7 +99,7 @@
             <div class="row">
                 <div class="col-12 col-md-4 col-lg-4">
                     <div class="form-group">
-                        <label class="form-label required" for="tool_group_manage_id">{% trans 'Group manage' %}</label>
+                        <label class="form-label" for="tool_group_manage_id">{% trans 'Group manage' %}</label>
                         <select
                                 class="form-select"
                                 id="tool_group_manage_id"
@@ -111,7 +107,6 @@
                                 data-method="GET"
                                 name="tool_group_manage_id"
                                 data-keyResp="group_list"
-                                required
                         ></select>
                     </div>
                 </div>
@@ -125,7 +120,6 @@
                                 data-method="GET"
                                 name="tool_group_using_id"
                                 data-keyResp="group_list"
-                                required
                                 multiple
                         ></select>
                     </div>
@@ -140,28 +134,6 @@
     <input
             type="text"
             id="app-trans-factory"
-            data-btn-close="{% trans 'Close' %}"
-            data-btn-save="{% trans 'Save' %}"
-            data-edit-formula="{% trans 'Edit formula' %}"
-            data-editor="{% trans 'Editor' %}"
-            data-indicator="{% trans 'Indicator' %}"
-            data-property="{% trans 'Property' %}"
-            data-function="{% trans 'Function indicator' %}"
-            data-operator="{% trans 'Operator indicator' %}"
-            data-final-acceptance="{% trans 'Final acceptance setting' %}"
-            data-source="{% trans 'Data source' %}"
-            data-editable="{% trans 'Editable' %}"
-            data-none="{% trans 'None' %}"
-            data-plan="{% trans 'Plan value' %}"
-            data-delivery="{% trans 'Delivery' %}"
-            data-payment="{% trans 'Payment' %}"
-            data-invoice="{% trans 'Invoice' %}"
-            data-project="{% trans 'Project' %}"
-            data-zone-required="{% trans 'Employee and zones are required' %}"
-            data-add="{% trans 'Add new' %}"
-            data-restore="{% trans 'Restore default' %}"
-            data-syntax="{% trans 'Syntax' %}"
-            data-example="{% trans 'Example' %}"
     >
 {% endblock %}
 

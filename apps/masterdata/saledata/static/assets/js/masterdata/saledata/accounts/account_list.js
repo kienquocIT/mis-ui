@@ -115,16 +115,16 @@ $(document).ready(function () {
             },
             {
                 className: 'wrap-text w-10',
-                data: 'revenue_information',
+                data: '',
                 render: (data, type, row) => {
-                    return `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0}"></span>`;
+                    return `<span class="text-muted">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span>`;
                 },
             },
             {
                 className: 'wrap-text w-10',
-                data: '',
+                data: 'revenue_information',
                 render: (data, type, row) => {
-                    return `<span class="text-muted">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span>`;
+                    return `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0}"></span>`;
                 },
             },
             {
@@ -140,18 +140,7 @@ $(document).ready(function () {
                 render: (data, type, row) => {
                     return `<span>${row?.['phone'] ? 'Phone: ' + row?.['phone'] : ''}</span><br><a class="text-blue" target="_blank" href="${row?.['website'] ? row['website'] : '#'}">${row?.['website'] ? 'Website: ' + row['website'] : ''}</a>`;
                 },
-            },
-            {
-                className: 'wrap-text w-10',
-                data: 'manager',
-                render: (data, type, row) => {
-                    let element = ''
-                    for (let i = 0; i < row?.['manager'].length; i++) {
-                        element += `<span class="w-100 badge badge-soft-success badge-outline mb-1">${row?.['manager'][i]?.['full_name']}</span>`;
-                    }
-                    return element;
-                },
-            },
+            }
         ],
         drawCallback: function () {
             // mask money

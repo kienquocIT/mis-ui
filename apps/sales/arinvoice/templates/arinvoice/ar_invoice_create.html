@@ -29,11 +29,6 @@
             data-url-delivery-list="{% url 'DeliveryListForARInvoiceAPI' %}"
     >
     </script>
-    <script id="script-trans"
-            data-trans-delivery-for="{% trans 'Delivery' %}"
-            data-trans-delivery-time="{% trans 'time' %}"
-    >
-    </script>
     <form id="form-create-ar-invoice"
           data-url="{% url 'ARInvoiceListAPI' %}"
           data-method="POST"
@@ -54,6 +49,7 @@
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'assets/js/extends/the-documents/auto-init.js' %}"></script>
     <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static "assets/js/arinvoice/ar_invoice_common.js" %}"></script>
     <script src="{% static "assets/js/arinvoice/ar_invoice_create.js" %}"></script>
 {% endblock %}

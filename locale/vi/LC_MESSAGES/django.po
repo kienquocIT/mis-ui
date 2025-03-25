@@ -10188,12 +10188,12 @@ msgid "Recon total must be 0"
 msgstr "Tổng cấn trừ phải bằng 0"
 
 #
-msgid "View payment term information"
-msgstr "Xem thông tin điều khoản thanh toán"
+msgid "View payment term"
+msgstr "Xem điều khoản thanh toán"
 
 #
 msgid "View tax code information"
-msgstr "Xem thông tin mã số thuế"
+msgstr "Xem thông tin MST"
 
 #
 msgid "Select customer"
@@ -11232,10 +11232,6 @@ msgid "Short name"
 msgstr "Tên viết tắt"
 
 #
-msgid "Enter tax code to autofill"
-msgstr "Nhập MST để tự động điền"
-
-#
 msgid "Click on the warehouse code for more details on stock"
 msgstr "Nhấp vào mã kho để biết thêm chi tiết về tình trạng tồn kho"
 
@@ -11372,6 +11368,70 @@ msgid "Select payment term"
 msgstr "Chọn kỳ thanh toán"
 
 #
+msgid "Add row optionally"
+msgstr "Thêm dòng tùy chọn"
+
+#
+msgid "If not referring to order"
+msgstr "Nếu không tham chiếu tới đơn hàng nào"
+
+#
+msgid "If referring to order"
+msgstr "Nếu tham chiếu tới đơn hàng"
+
+#
+msgid "Get by selected customer"
+msgstr "Lấy theo khách hàng được chọn"
+
+#
+msgid "Delete selected row"
+msgstr "Xóa dòng được chọn"
+
+#
+msgid "Actual delivery date"
+msgstr "Ngày giao hàng thực tế"
+
+#
+msgid "Invoiced"
+msgstr "Đã lập hóa đơn"
+
+#
+msgid "Previous time"
+msgstr "Lần trước"
+
+#
+msgid "Required for Organization account"
+msgstr "Bắt buộc cho tài khoản Tổ chức"
+
+#
+msgid "Available for Organization account"
+msgstr "Khả dụng cho tài khoản Tổ chức"
+
+#
+msgid "Individual name"
+msgstr "Tên cá nhân"
+
+#
+msgid "Individual code"
+msgstr "Mã cá nhân"
+
+#
+msgid "Organization name"
+msgstr "Tên tổ chức"
+
+#
+msgid "Organization code"
+msgstr "Mã tổ chức"
+
+#
+msgid "You can only select ONE contact for Individual account."
+msgstr "Bạn chỉ có thể chọn MỘT liên hệ cho tài khoản Cá nhân."
+
+#
+msgid "is account owner"
+msgstr "là chủ tài khoản"
+
+#
 msgid "Line method"
 msgstr "Phương pháp đường thẳng"
 
@@ -11388,7 +11448,7 @@ msgid "When leased product converted into fixed asset"
 msgstr "Khi sản phẩm được cho thuê chuyển đổi thành tài sản cố định"
 
 #
-msgid "When leased product converted into fixed asset"
+msgid "When leased product converted into tool"
 msgstr "Khi sản phẩm được cho thuê chuyển đổi thành dụng cụ"
 
 #

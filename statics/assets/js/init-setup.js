@@ -2276,7 +2276,7 @@ class WFRTControl {
     }
 
     static callAjaxWFCreate(_form) {
-        WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
+        WindowControl.showLoading({'loadingTitleAction': _form.dataMethod.toLowerCase() === 'post' ? 'CREATE' : 'UPDATE'});
         $.fn.callAjax2(
             {
                 'url': _form.dataUrl,
@@ -5716,6 +5716,7 @@ class WindowControl {
                 <div class="me-3"><img style="width: 60px; height: 60px" src="/static/assets/images/systems/error.gif" alt="icon"></div>
                 <div>
                     <h4 class="text-danger">${$.fn.gettext("Internal Server Errors")}</h4>
+                    <p>${$.fn.gettext('An error occurred while interacting with the data!')}</p>
                 </div>
             </div>`,
             customClass: {

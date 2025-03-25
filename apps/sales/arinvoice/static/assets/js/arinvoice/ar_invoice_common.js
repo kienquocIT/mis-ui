@@ -1,17 +1,15 @@
 const scriptUrlEle = $('#script-url')
-const scriptTransEle = $('#script-trans')
 const tableSelectCustomerEle = $('#table-select-customer')
 const selectCustomerBtn = $('#select-customer-btn')
 const customerNameEle = $('#customer-name')
-const customerCodeEle = $('#customer-code')
 const customerSelectModal = $('#customer-select-modal')
 const saleOrderEle = $('#sale-order')
 const viewPaymentTermEle = $('#view-payment-term')
 const tableSelectDeliveryEle = $('#table-select-delivery')
-const tableDetailProductEle = $('#table-product-detail')
-const dataLineDetailTableScript = $('#data-line-detail-table')
-const tabLineDetailTable = $('#tab_line_detail_datatable')
-const tabLineDetailTableSimple = $('#tab_line_detail_datatable_simple')
+const tableDeliveryProductEle = $('#table-delivery-product')
+const delivery_product_data = $('#delivery_product_data')
+const NormalTable = $('#normal_datatable')
+const DescriptionTable = $('#description_datatable')
 const paymentTermInfoTable = $('#payment-term-info-table')
 const postingDateEle = $('#posting-date')
 const documentDateEle = $('#document-date')
@@ -26,50 +24,12 @@ const invoice_action = $('#invoice-action')
 const invoice_sign = $('#invoice-sign')
 let invoice_signs_Ele = $('#invoice_signs')
 const invoice_signs = invoice_signs_Ele.text() ? JSON.parse(invoice_signs_Ele.text()) : {};
-const add_row_items_btn = $('#add_row_items_btn')
-const add_row_dropdown = $('#add_row_dropdown')
-const add_item_des = $('#add_item_des')
+const btn_for_delivery_ar = $('.btn-for-delivery-ar')
+const btn_select_from_delivery = $('#btn-select-from-delivery')
+const btn_add_optionally = $('#btn-add-optionally')
+const btn_add_des = $('#btn-add-des')
 
 class ARInvoiceLoadPage {
-    static LoadPostingDate() {
-        postingDateEle.daterangepicker({
-            singleDatePicker: true,
-            timepicker: false,
-            showDropdowns: false,
-            minYear: 2023,
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            autoApply: true,
-        });
-    }
-    static LoadDocumentDate() {
-        documentDateEle.daterangepicker({
-            singleDatePicker: true,
-            timepicker: false,
-            showDropdowns: false,
-            minYear: 2023,
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            autoApply: true,
-        });
-    }
-    static LoadInvoiceDate() {
-        invoiceDateEle.daterangepicker({
-            singleDatePicker: true,
-            timepicker: false,
-            showDropdowns: false,
-            minYear: 2023,
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            autoApply: true,
-        });
-    }
     static LoadCustomer() {
         tableSelectCustomerEle.DataTable().clear().destroy()
         tableSelectCustomerEle.DataTableDefault({
@@ -150,14 +110,14 @@ class ARInvoiceLoadPage {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            ARInvoiceLoadTab.LoadTableLineDetail()
+            ARInvoiceLoadTab.LoadTableNormal()
             if (saleOrderEle.val()) {
-                add_row_dropdown.prop('hidden', false)
-                add_row_items_btn.prop('hidden', true)
+                btn_for_delivery_ar.removeClass('disabled')
+                btn_add_optionally.addClass('disabled')
             }
             else {
-                add_row_dropdown.prop('hidden', true)
-                add_row_items_btn.prop('hidden', false)
+                btn_for_delivery_ar.addClass('disabled')
+                btn_add_optionally.removeClass('disabled')
             }
         })
     }
@@ -181,8 +141,7 @@ class ARInvoiceLoadTab {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         $('#select-delivery-offcanvas').offcanvas('show')
-                        // console.log(resp.data['delivery_list'])
-                        return resp.data['delivery_list'];
+                        return resp.data?.['delivery_list'] ? resp.data?.['delivery_list'] : [];
                     }
                     return [];
                 },
@@ -197,25 +156,14 @@ class ARInvoiceLoadTab {
                     data: 'code',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<span class="text-primary">${row.code}</span>`
+                        return `<span class="badge badge-primary">${row?.['code']}</span>`
                     }
                 },
                 {
                     data: 'name',
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        if (row.times === 1) {
-                            return `${scriptTransEle.attr('data-trans-delivery-for')} (1st)`
-                        }
-                        else if (row.times === 2) {
-                            return `${scriptTransEle.attr('data-trans-delivery-for')} (2nd)`
-                        }
-                        else if (row.times === 3) {
-                            return `${scriptTransEle.attr('data-trans-delivery-for')} (3rd)`
-                        }
-                        else {
-                            return `${scriptTransEle.attr('data-trans-delivery-for')} (${row?.['times']}th)`
-                        }
+                        return `${moment(row?.['actual_delivery_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}`
                     }
                 },
                 {
@@ -223,7 +171,7 @@ class ARInvoiceLoadTab {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['already']) {
-                            return `<i class="fas fa-check-circle"></i>`
+                            return `<i class="fas fa-check-circle text-success"></i>`
                         }
                         return ``
                     }
@@ -233,17 +181,17 @@ class ARInvoiceLoadTab {
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         if (row?.['already']) {
-                            let details = JSON.stringify(row.details)
+                            let details = JSON.stringify(row?.['details'])
                             return `<div class="form-check" hidden>
-                                        <input checked data-already="1" data-id="${row.id}" type="checkbox" name="selected-delivery" class="form-check-input selected-delivery">
+                                        <input checked data-already="1" data-id="${row?.['id']}" type="checkbox" name="selected-delivery" class="form-check-input selected-delivery">
                                         <label class="form-check-label"></label>
                                         <script class="details">${details}</script>
                                     </div>`
                         }
                         else {
-                            let details = JSON.stringify(row.details)
+                            let details = JSON.stringify(row?.['details'])
                             return `<div class="form-check">
-                                        <input data-already="0" data-id="${row.id}" type="checkbox" name="selected-delivery" class="form-check-input selected-delivery">
+                                        <input data-already="0" data-id="${row?.['id']}" type="checkbox" name="selected-delivery" class="form-check-input selected-delivery">
                                         <label class="form-check-label"></label>
                                         <script class="details">${details}</script>
                                     </div>`
@@ -254,8 +202,8 @@ class ARInvoiceLoadTab {
         });
     }
     static LoadDeliveryProduct(datasource=[]) {
-        tableDetailProductEle.DataTable().clear().destroy()
-        tableDetailProductEle.DataTableDefault({
+        tableDeliveryProductEle.DataTable().clear().destroy()
+        tableDeliveryProductEle.DataTableDefault({
             dom: "t",
             rowIdx: true,
             reloadCurrency: true,
@@ -308,7 +256,7 @@ class ARInvoiceLoadTab {
             ],
         });
     }
-    static LoadTableLineDetail(datasource=[]) {
+    static LoadTableNormal(datasource=[]) {
         // kiểm tra dữ liệu hóa đơn điện tử
         // if (datasource.length > 0) {
         //     let vat_number = []
@@ -361,8 +309,8 @@ class ARInvoiceLoadTab {
         //     }
         // }
 
-        tabLineDetailTable.DataTable().clear().destroy()
-        tabLineDetailTable.DataTableDefault({
+        NormalTable.DataTable().clear().destroy()
+        NormalTable.DataTableDefault({
             dom: "t",
             rowIdx: true,
             reloadCurrency: true,
@@ -386,18 +334,17 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text text-primary',
                     render: (data, type, row) => {
-                        return `<select ${row?.['product_data']?.['id'] ? 'disabled' : ''}
+                        let product_description = row?.['data_from_so']?.['product_description'] ? row?.['data_from_so']?.['product_description'] : ''
+                        return `<div class="input-group">
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix product-des" data-bs-toggle="tooltip" title="${product_description}"><i class="bi bi-info-circle"></i></span>
+                                <select ${row?.['product_data']?.['id'] ? 'disabled' : ''}
                                         data-id="${row?.['product_data']?.['id'] ? row?.['product_data']?.['id'] : ''}"
                                         data-code="${row?.['product_data']?.['code'] ? row?.['product_data']?.['code'] : ''}"
                                         data-title="${row?.['product_data']?.['title'] ? row?.['product_data']?.['title'] : ''}"
-                                        class="form-select select-2 product-select"></select>`
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        let product_description = row?.['data_from_so']?.['product_description'] ? row?.['data_from_so']?.['product_description'] : ''
-                        return `<textarea rows="2" disabled readonly class="des small form-control">${product_description}</textarea>`
+                                        class="form-select select-2 product-select"></select>
+                            </span>
+                        </div>`
                     }
                 },
                 {
@@ -439,7 +386,7 @@ class ARInvoiceLoadTab {
                     render: (data, type, row) => {
                         let product_discount_value = row?.['data_from_so']?.['product_discount_value'] ? row?.['data_from_so']?.['product_discount_value'] : 0
                         return `<div class="input-affix-wrapper">
-                                    <input type="number" class="recalculate-field form-control product_discount_rate text-right" value="${product_discount_value}">
+                                    <input type="number" class="recalculate-field form-control product_discount_rate text-right text-danger" value="${product_discount_value}">
                                     <div class="input-suffix"><i class="fas fa-percentage"></i></div>
                                 </div>`
                     }
@@ -470,7 +417,7 @@ class ARInvoiceLoadTab {
                         let subtotal = row?.['data_from_so']?.['product_unit_price'] && row?.['picked_quantity'] ? parseFloat(row?.['data_from_so']?.['product_unit_price']) * parseFloat(row?.['picked_quantity']) : 0
                         let discount = row?.['data_from_so']?.['product_discount_value'] ? subtotal * parseFloat(row?.['data_from_so']?.['product_discount_value']) / 100 : 0
                         let tax_value = row?.['data_from_so']?.['product_tax_value'] ? (subtotal - discount) * parseFloat(row?.['data_from_so']?.['product_tax_value']) / 100 : 0
-                        return `<span class="mask-money text-primary product_taxes_value" data-init-money="${tax_value}"></span>`
+                        return `<span class="mask-money product_taxes_value" data-init-money="${tax_value}"></span>`
                     }
                 },
                 {
@@ -480,93 +427,62 @@ class ARInvoiceLoadTab {
                         let discount = row?.['data_from_so']?.['product_discount_value'] ? subtotal * parseFloat(row?.['data_from_so']?.['product_discount_value']) / 100 : 0
                         let tax_value = row?.['data_from_so']?.['product_tax_value'] ? (subtotal - discount) * parseFloat(row?.['data_from_so']?.['product_tax_value']) / 100 : 0
                         let final = subtotal - discount + tax_value
-                        return `<span class="product_subtotal_price_final mask-money text-primary" data-init-money="${final}"></span>`
+                        return `<span class="product_subtotal_price_final mask-money" data-init-money="${final}"></span>`
                     }
                 },
             ],
             initComplete: function() {
                 if (datasource.length > 0) {
-                    tabLineDetailTable.find('tbody tr').each(function () {
+                    NormalTable.find('tbody tr').each(function () {
                         let prd_select = $(this).find('.product-select')
-                        ARInvoiceAction.LoadRowPrd(prd_select, prd_select.attr('data-id') !== '' ? {
+                        let prd_data = prd_select.attr('data-id') !== '' ? {
                             'id': prd_select.attr('data-id'),
                             'code': prd_select.attr('data-code'),
                             'title': prd_select.attr('data-title')
-                        } : null)
+                        } : {}
+                        UsualLoadPageFunction.LoadProduct({
+                            element: prd_select,
+                            data: prd_data,
+                            data_url: scriptUrlEle.attr('data-url-product-list')
+                        })
 
                         let uom_select = $(this).find('.uom-select')
-                        ARInvoiceAction.LoadRowUOM(uom_select, uom_select.attr('data-id') !== '' ? {
+                        let uom_data = uom_select.attr('data-id') !== '' ? {
                             'id': uom_select.attr('data-id'),
                             'code': uom_select.attr('data-code'),
                             'title': uom_select.attr('data-title')
-                        } : null)
+                        } : {}
+                        UsualLoadPageFunction.LoadUOM({
+                            element: uom_select,
+                            data: uom_data,
+                            data_params: {'group_id': prd_data?.['general_uom_group']?.['id']},
+                            data_url: scriptUrlEle.attr('data-url-uom-list')
+                        })
 
                         let tax_select = $(this).find('.product_taxes')
-                        ARInvoiceAction.LoadRowTax(tax_select, tax_select.attr('data-tax-id') !== '' ? {
+                        let tax_data = tax_select.attr('data-id') !== '' ? {
                             'id': tax_select.attr('data-tax-id'),
                             'title': tax_select.attr('data-tax-title'),
                             'rate': tax_select.attr('data-tax-rate')
-                        } : null)
+                        } : {}
+                        UsualLoadPageFunction.LoadTax({
+                            element: tax_select,
+                            data: tax_data,
+                            data_url: scriptUrlEle.attr('data-url-tax-list')
+                        })
                     })
                     ARInvoiceAction.CalculatePrice()
                 }
             }
         });
     }
-    static LoadTableLineDetailSimple(datasource=[]) {
-        tabLineDetailTableSimple.DataTable().clear().destroy()
-        tabLineDetailTableSimple.DataTableDefault({
-            dom: "t",
-            rowIdx: true,
-            reloadCurrency: true,
-            paging: false,
-            scrollX: '100vw',
-            scrollY: '30vh',
-            scrollCollapse: true,
-            data: datasource,
-            columns: [
-                {
-                    className: 'wrap-text w-5',
-                    'render': () => {
-                        return ``;
-                    }
-                },
-                {
-                    className: 'wrap-text text-center w-5',
-                    render: () => {
-                        return `<button type='button' class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
-                    }
-                },
-                {
-                    className: 'wrap-text w-60',
-                    render: (data, type, row) => {
-                        let ar_product_des = row?.['ar_product_des'] ? row?.['ar_product_des'] : ''
-                        return `<textarea rows="1" class="ar_product_des form-control">${ar_product_des}</textarea>`
-                    }
-                },
-                {
-                    className: 'wrap-text text-right w-30',
-                    render: (data, type, row) => {
-                        let product_subtotal_final = row?.['product_subtotal_final'] ? row?.['product_subtotal_final'] : 0
-                        return `<input class="product_subtotal_price_final mask-money form-control text-right" 
-                                       value="${product_subtotal_final}">`
-                    }
-                },
-            ],
-            initComplete: function() {
-                if (datasource.length > 0) {
-                    ARInvoiceAction.CalculatePriceSimple()
-                }
-            }
-        });
-    }
-    static LoadTableLineDetailForDetailPage(datasource=[], option='detail') {
-        tabLineDetailTable.DataTable().clear().destroy()
+    static LoadTableNormalForDetailPage(datasource=[], option='detail') {
+        NormalTable.DataTable().clear().destroy()
         let input_disabled = ''
         if (option === 'detail') {
             input_disabled = 'disabled readonly'
         }
-        tabLineDetailTable.DataTableDefault({
+        NormalTable.DataTableDefault({
             dom: "t",
             rowIdx: true,
             reloadCurrency: true,
@@ -590,14 +506,12 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text text-primary',
                     render: (data, type, row) => {
-                        return `<select data-product='${JSON.stringify(row?.['product_data'])}'
-                                        class="form-select select-2 product-select"></select>`
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
-                        return `<textarea rows="2" disabled readonly class="des small form-control">${row?.['product_data']?.['des']}</textarea>`
+                        return `<div class="input-group">
+                            <span class="input-affix-wrapper">
+                                <span class="input-prefix product-des" data-bs-toggle="tooltip" title="${row?.['product_data']?.['des']}"><i class="bi bi-info-circle"></i></span>
+                                <select data-product='${JSON.stringify(row?.['product_data'])}' class="form-select select-2 product-select"></select>
+                            </span>
+                        </div>`
                     }
                 },
                 {
@@ -622,14 +536,14 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
-                        return `<span class="product_subtotal_price mask-money text-primary" data-init-money="${row?.['product_subtotal']}"></span>`
+                        return `<span class="product_subtotal_price mask-money" data-init-money="${row?.['product_subtotal']}"></span>`
                     }
                 },
                 {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         return `<div class="input-affix-wrapper">
-                                    <input ${input_disabled} type="number" class="form-control product_discount_rate recalculate-field text-right" value="${row?.['product_discount_rate']}">
+                                    <input ${input_disabled} type="number" class="form-control product_discount_rate recalculate-field text-danger text-right" value="${row?.['product_discount_rate']}">
                                     <div class="input-suffix"><i class="fas fa-percentage"></i></div>
                                 </div>`
                     }
@@ -651,38 +565,113 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
-                        return `<span class="mask-money text-primary product_taxes_value" data-init-money="${row?.['product_tax_value']}"></span>`
+                        return `<span class="mask-money product_taxes_value" data-init-money="${row?.['product_tax_value']}"></span>`
                     }
                 },
                 {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
-                        return `<span class="product_subtotal_price_final mask-money text-primary" data-init-money="${row?.['product_subtotal_final']}"></span>`
+                        return `<span class="product_subtotal_price_final mask-money" data-init-money="${row?.['product_subtotal_final']}"></span>`
                     }
                 },
             ],
             initComplete: function() {
                 if (datasource.length > 0) {
-                    tabLineDetailTable.find('tbody tr').each(function () {
+                    NormalTable.find('tbody tr').each(function () {
                         let prd_select = $(this).find('.product-select')
+                        let prd_data = prd_select.attr('data-product') ? JSON.parse(prd_select.attr('data-product')) : {}
+                        UsualLoadPageFunction.LoadProduct({
+                            element: prd_select,
+                            data: prd_data,
+                            data_url: scriptUrlEle.attr('data-url-product-list')
+                        })
+
                         let uom_select = $(this).find('.uom-select')
+                        let uom_data = uom_select.attr('data-product-uom') ? JSON.parse(uom_select.attr('data-product-uom')) : {}
+                        UsualLoadPageFunction.LoadUOM({
+                            element: uom_select,
+                            data: uom_data,
+                            data_params: {'group_id': prd_data?.['general_uom_group']?.['id']},
+                            data_url: scriptUrlEle.attr('data-url-uom-list')
+                        })
+
                         let tax_select = $(this).find('.product_taxes')
-                        ARInvoiceAction.LoadRowPrd(prd_select, prd_select.attr('data-product') ? JSON.parse(prd_select.attr('data-product')) : {})
-                        ARInvoiceAction.LoadRowUOM(uom_select, uom_select.attr('data-product-uom') ? JSON.parse(uom_select.attr('data-product-uom')) : {})
-                        ARInvoiceAction.LoadRowTax(tax_select, tax_select.attr('data-tax') ? JSON.parse(tax_select.attr('data-tax')) : {})
+                        let tax_data = tax_select.attr('data-tax') ? JSON.parse(tax_select.attr('data-tax')) : {}
+                        UsualLoadPageFunction.LoadTax({
+                            element: tax_select,
+                            data: tax_data,
+                            data_url: scriptUrlEle.attr('data-url-tax-list')
+                        })
                     })
                     ARInvoiceAction.CalculatePrice()
                 }
             }
         });
     }
-    static LoadTableLineDetailSimpleForDetailPage(datasource=[], option='detail') {
-        tabLineDetailTableSimple.DataTable().clear().destroy()
+    static LoadTableDescription(datasource=[]) {
+        DescriptionTable.DataTable().clear().destroy()
+        DescriptionTable.DataTableDefault({
+            dom: "t",
+            rowIdx: true,
+            reloadCurrency: true,
+            paging: false,
+            scrollX: '100vw',
+            scrollY: '30vh',
+            scrollCollapse: true,
+            data: datasource,
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'wrap-text text-center w-5',
+                    render: () => {
+                        return `<button type='button' class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
+                    }
+                },
+                {
+                    className: 'wrap-text w-40',
+                    render: (data, type, row) => {
+                        let ar_product_des = row?.['ar_product_des'] ? row?.['ar_product_des'] : ''
+                        return `<textarea rows="1" class="ar_product_des form-control">${ar_product_des}</textarea>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-20',
+                    render: (data, type, row) => {
+                        return `<input class="recalculate-field product_subtotal_price_final mask-money form-control text-right" value="0">`
+                    }
+                },
+                {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<select class="recalculate-field form-select select2 product_taxes"></select>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-20',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money product_taxes_value" data-init-money="0"></span>`
+                    }
+                },
+            ],
+            initComplete: function() {
+                if (datasource.length > 0) {
+                    ARInvoiceAction.CalculatePrice('des')
+                }
+            }
+        });
+    }
+    static LoadTableDescriptionForDetailPage(datasource=[], option='detail') {
+        DescriptionTable.DataTable().clear().destroy()
         let input_disabled = ''
         if (option === 'detail') {
             input_disabled = 'disabled readonly'
         }
-        tabLineDetailTableSimple.DataTableDefault({
+        DescriptionTable.DataTableDefault({
             dom: "t",
             rowIdx: true,
             reloadCurrency: true,
@@ -705,24 +694,44 @@ class ARInvoiceLoadTab {
                     }
                 },
                 {
-                    className: 'wrap-text w-60',
+                    className: 'wrap-text w-40',
                     render: (data, type, row) => {
                         let ar_product_des = row?.['ar_product_des'] ? row?.['ar_product_des'] : ''
                         return `<textarea ${input_disabled} rows="1" class="ar_product_des form-control">${ar_product_des}</textarea>`
                     }
                 },
                 {
-                    className: 'wrap-text text-right w-30',
+                    className: 'wrap-text text-right w-20',
                     render: (data, type, row) => {
                         let product_subtotal_final = row?.['product_subtotal_final'] ? row?.['product_subtotal_final'] : 0
-                        return `<input ${input_disabled} class="product_subtotal_price_final mask-money form-control text-right" 
-                                       value="${product_subtotal_final}">`
+                        return `<input ${input_disabled} class="recalculate-field product_subtotal_price_final mask-money form-control text-right" value="${product_subtotal_final}">`
+                    }
+                },
+                {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<select class="recalculate-field form-select select2 product_taxes" 
+                                        data-tax='${JSON.stringify(row?.['product_tax_data'])}'
+                                        ></select>`
+                    }
+                },
+                {
+                    className: 'wrap-text text-right w-20',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money product_taxes_value" data-init-money="${row?.['product_tax_value']}"></span>`
                     }
                 },
             ],
             initComplete: function() {
                 if (datasource.length > 0) {
-                    ARInvoiceAction.CalculatePriceSimple()
+                    let tax_select = $(this).find('.product_taxes')
+                    let tax_data = tax_select.attr('data-tax') ? JSON.parse(tax_select.attr('data-tax')) : {}
+                    UsualLoadPageFunction.LoadTax({
+                        element: tax_select,
+                        data: tax_data,
+                        data_url: scriptUrlEle.attr('data-url-tax-list')
+                    })
+                    ARInvoiceAction.CalculatePrice('des')
                 }
             }
         });
@@ -730,43 +739,64 @@ class ARInvoiceLoadTab {
 }
 
 class ARInvoiceAction {
-    static CalculatePriceRow(row) {
-        let quantity = parseFloat(row.find('.picked_quantity').val())
-        let unit_price = parseFloat(row.find('.product_unit_price').attr('value'))
-        let discount_rate = parseFloat(row.find('.product_discount_rate').val())
-        let tax_selected = SelectDDControl.get_data_from_idx(row.find('.product_taxes'), row.find('.product_taxes').val())
-        let tax_rate = parseFloat(tax_selected?.['rate'])
+    static CalculatePriceRow(row, table_name='normal') {
+        if (table_name === 'normal') {
+            let quantity = parseFloat(row.find('.picked_quantity').val())
+            let unit_price = parseFloat(row.find('.product_unit_price').attr('value'))
+            let discount_rate = parseFloat(row.find('.product_discount_rate').val())
+            let tax_selected = SelectDDControl.get_data_from_idx(row.find('.product_taxes'), row.find('.product_taxes').val())
+            let tax_rate = parseFloat(tax_selected?.['rate'])
 
-        discount_rate = discount_rate ? discount_rate : 0
-        tax_rate = tax_rate ? tax_rate : 0
+            discount_rate = discount_rate ? discount_rate : 0
+            tax_rate = tax_rate ? tax_rate : 0
 
-        let row_subtotal = quantity * unit_price;
-        let row_discount = row_subtotal * discount_rate / 100
-        let row_tax = (row_subtotal - row_discount) * tax_rate / 100
-        let row_amount = row_subtotal - row_discount + row_tax
+            let row_subtotal = quantity * unit_price;
+            let row_discount = row_subtotal * discount_rate / 100
+            let row_tax = (row_subtotal - row_discount) * tax_rate / 100
+            let row_amount = row_subtotal - row_discount + row_tax
 
-        row.find('.product_subtotal_price').attr('data-init-money', row_subtotal)
-        row.find('.product_discount_value').attr('data-init-money', row_discount)
-        row.find('.product_taxes_value').attr('data-init-money', row_tax)
-        row.find('.product_subtotal_price_final').attr('data-init-money', row_amount)
-
+            row.find('.product_subtotal_price').attr('data-init-money', row_subtotal)
+            row.find('.product_discount_value').attr('data-init-money', row_discount)
+            row.find('.product_taxes_value').attr('data-init-money', row_tax)
+            row.find('.product_subtotal_price_final').attr('data-init-money', row_amount)
+        }
+        if (table_name === 'des') {
+            let row_subtotal = row.find('.product_subtotal_price_final').attr('value');
+            let tax_selected = SelectDDControl.get_data_from_idx(row.find('.product_taxes'), row.find('.product_taxes').val())
+            let tax_rate = parseFloat(tax_selected?.['rate'])
+            tax_rate = tax_rate ? tax_rate : 0
+            let row_tax = row_subtotal * tax_rate / 100
+            row.find('.product_taxes_value').attr('data-init-money', row_tax)
+        }
         $.fn.initMaskMoney2()
     }
-    static CalculatePrice() {
+    static CalculatePrice(table_name='normal') {
         let sum_taxes = 0
         let sum_subtotal_price = 0
         let sum_discount = 0
-        tabLineDetailTable.find('tbody tr').each(function () {
-            if ($(this).find('.product_subtotal_price').attr('data-init-money')) {
-                sum_subtotal_price += parseFloat($(this).find('.product_subtotal_price').attr('data-init-money'))
-            }
-            if ($(this).find('.product_discount_value').attr('data-init-money')) {
-                sum_discount += parseFloat($(this).find('.product_discount_value').attr('data-init-money'))
-            }
-            if ($(this).find('.product_taxes_value').attr('data-init-money')) {
-                sum_taxes += parseFloat($(this).find('.product_taxes_value').attr('data-init-money'))
-            }
-        })
+        if (table_name === 'normal') {
+            NormalTable.find('tbody tr').each(function () {
+                if ($(this).find('.product_subtotal_price').attr('data-init-money')) {
+                    sum_subtotal_price += parseFloat($(this).find('.product_subtotal_price').attr('data-init-money'))
+                }
+                if ($(this).find('.product_discount_value').attr('data-init-money')) {
+                    sum_discount += parseFloat($(this).find('.product_discount_value').attr('data-init-money'))
+                }
+                if ($(this).find('.product_taxes_value').attr('data-init-money')) {
+                    sum_taxes += parseFloat($(this).find('.product_taxes_value').attr('data-init-money'))
+                }
+            })
+        }
+        if (table_name === 'des') {
+            DescriptionTable.find('tbody tr').each(function () {
+                if ($(this).find('.product_subtotal_price_final').attr('value')) {
+                    sum_subtotal_price += parseFloat($(this).find('.product_subtotal_price_final').attr('value'))
+                }
+                if ($(this).find('.product_taxes_value').attr('data-init-money')) {
+                    sum_taxes += parseFloat($(this).find('.product_taxes_value').attr('data-init-money'))
+                }
+            })
+        }
         $('#pretax-value').attr('value', sum_subtotal_price)
         $('#taxes-value').attr('value', sum_taxes)
         $('#discount-all').attr('value', sum_discount)
@@ -774,121 +804,34 @@ class ARInvoiceAction {
 
         $.fn.initMaskMoney2()
     }
-    static CalculatePriceSimple() {
-        let product_subtotal_final = 0
-
-        tabLineDetailTableSimple.find('tbody tr').each(function () {
-            if ($(this).find('.product_subtotal_price_final').attr('value')) {
-                product_subtotal_final += parseFloat($(this).find('.product_subtotal_price_final').attr('value'))
-            }
-        })
-        $('#pretax-value').attr('value', product_subtotal_final)
-        $('#taxes-value').attr('value', 0)
-        $('#discount-all').attr('value', 0)
-        $('#total-value').attr('value', product_subtotal_final)
-
-        $.fn.initMaskMoney2()
-    }
-    static AddRow(table, data) {
-        table.DataTable().row.add(data).draw();
-    }
-    static DeleteRow(table, currentRow) {
-        currentRow = parseInt(currentRow) - 1
-        let rowIndex = table.DataTable().row(currentRow).index();
-        let row = table.DataTable().row(rowIndex);
-        row.remove().draw();
-    }
-    static LoadRowPrd(ele, data) {
-        ele.initSelect2({
-            ajax: {
-                url: scriptUrlEle.attr('data-url-product-list'),
-                method: 'GET',
-            },
-            data: data ? data : null,
-            keyResp: 'product_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            if (ele.val()) {
-                let selected = SelectDDControl.get_data_from_idx(ele, ele.val())
-                ele.closest('tr').find('.des').text(selected?.['description'] ? selected?.['description'] : '')
-                ARInvoiceAction.LoadRowUOM(ele.closest('tr').find('.uom-select'), selected?.['sale_default_uom'], selected?.['general_uom_group']?.['id'])
-                ARInvoiceAction.LoadRowTax(ele.closest('tr').find('.product_taxes'))
-            }
-        })
-    }
-    static LoadRowUOM(ele, data, group_id) {
-        ele.empty()
-        ele.initSelect2({
-            ajax: {
-                url: scriptUrlEle.attr('data-url-uom-list') + `?group=${group_id}`,
-                method: 'GET',
-            },
-            data: (data ? data : null),
-            keyResp: 'unit_of_measure',
-            keyId: 'id',
-            keyText: 'title',
-        })
-    }
-    static LoadRowTax(ele, data) {
-        ele.empty()
-        ele.initSelect2({
-            allowClear: true,
-            ajax: {
-                url: scriptUrlEle.attr('data-url-tax-list'),
-                method: 'GET',
-            },
-            data: (data ? data : null),
-            keyResp: 'tax_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            if ($(this).val()) {
-                let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-                $(this).attr('data-tax-rate', selected?.['rate'])
-            }
-            else {
-                $(this).attr('data-tax-rate', 0)
-            }
-        })
-    }
     static async CheckTaxCode() {
-        try {
-            let response = await fetch(`https://api.vietqr.io/v2/business/${tax_codeEle.val()}`);
-            if (!response.ok) {
-                return [false, { desc: 'Network response was not ok' }];
+        if (tax_codeEle.val()) {
+            try {
+                let response = await fetch(`https://api.vietqr.io/v2/business/${tax_codeEle.val()}`);
+                if (!response.ok) {
+                    return [false, {desc: 'Network response was not ok'}];
+                }
+                let responseData = await response.json();
+                if (responseData.code === '00') {
+                    return [true, responseData];
+                } else {
+                    return [false, responseData];
+                }
+            } catch (error) {
+                $.fn.notifyB({description: 'Can not get this Tax number information'}, 'failure');
+                return [false, {}];
             }
-            let responseData = await response.json();
-            if (responseData.code === '00') {
-                return [true, responseData];
-            } else {
-                return [false, responseData];
-            }
-        } catch (error) {
-            $.fn.notifyB({ description: 'Can not get this Tax number information' }, 'failure');
-            return [false, {}];
-        }
-    }
-    static Disabled(option) {
-        if (option === 'detail') {
-            $('form .form-control').prop('readonly', true).prop('disabled', true)
-            $('form .form-select').prop('readonly', true).prop('disabled', true)
-            $('tr .form-control').prop('readonly', true).prop('disabled', true)
-            $('tr .form-select').prop('readonly', true).prop('disabled', true)
-            customerSelectBtn.prop('disabled', true)
-            add_row_dropdown.remove()
-            add_row_items_btn.remove()
         }
     }
 }
 
 class ARInvoiceHandle {
     static Load() {
-        ARInvoiceLoadPage.LoadPostingDate()
-        ARInvoiceLoadPage.LoadDocumentDate()
-        ARInvoiceLoadPage.LoadInvoiceDate()
-        ARInvoiceLoadTab.LoadTableLineDetail()
-        ARInvoiceLoadTab.LoadTableLineDetailSimple()
+        UsualLoadPageFunction.LoadDate({element: postingDateEle})
+        UsualLoadPageFunction.LoadDate({element: documentDateEle})
+        UsualLoadPageFunction.LoadDate({element: invoiceDateEle})
+        ARInvoiceLoadTab.LoadTableNormal()
+        ARInvoiceLoadTab.LoadTableDescription()
         invoice_exp.trigger('change')
     }
     static CombinesData(frmEle) {
@@ -901,7 +844,7 @@ class ARInvoiceHandle {
         frm.dataForm['billing_address_id'] = billingAddressEle.val()
         frm.dataForm['invoice_method'] = invoiceMethodEle.val()
         frm.dataForm['bank_account_id'] = bankNumberEle.val() ? bankNumberEle.val() : null
-        frm.dataForm['sale_order_mapped'] = saleOrderEle.val()
+        frm.dataForm['sale_order_mapped'] = saleOrderEle.val() ? saleOrderEle.val() : null
 
         frm.dataForm['posting_date'] = moment(postingDateEle.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
         frm.dataForm['document_date'] = moment(documentDateEle.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
@@ -910,12 +853,12 @@ class ARInvoiceHandle {
         frm.dataForm['invoice_number'] = $('#invoice-number').val()
         frm.dataForm['invoice_example'] = invoice_exp.val()
 
-        frm.dataForm['delivery_mapped_list'] = tabLineDetailTable.attr('data-delivery-selected') !== '' ? tabLineDetailTable.attr('data-delivery-selected').split(',') : []
+        frm.dataForm['delivery_mapped_list'] = NormalTable.attr('data-delivery-selected') !== '' ? NormalTable.attr('data-delivery-selected').split(',') : []
 
         // let vat_number = []
         let data_item_list = []
-        if (!tabLineDetailTable.closest('.table_space').prop('hidden')) {
-            tabLineDetailTable.find('tbody tr').each(function () {
+        if (!NormalTable.closest('.table_space').prop('hidden')) {
+            NormalTable.find('tbody tr').each(function () {
                 // if ($(this).find('.product_taxes').val()) {
                 //     vat_number.push($(this).find('.product_taxes').val())
                 // }
@@ -934,12 +877,14 @@ class ARInvoiceHandle {
                 })
             })
         }
-        else if (!tabLineDetailTableSimple.closest('.table_space').prop('hidden')) {
-            tabLineDetailTableSimple.find('tbody tr').each(function () {
+        else if (!DescriptionTable.closest('.table_space').prop('hidden')) {
+            DescriptionTable.find('tbody tr').each(function () {
                 data_item_list.push({
                     'item_index': $(this).find('td:first-child').text(),
                     'ar_product_des': $(this).find('.ar_product_des').val(),
-                    'product_subtotal_final': $(this).find('.product_subtotal_price_final').attr('value')
+                    'product_subtotal_final': $(this).find('.product_subtotal_price_final').attr('value'),
+                    'product_tax_id': $(this).find('.product_taxes').val(),
+                    'product_tax_value': $(this).find('.product_taxes_value').attr('data-init-money'),
                 })
             })
         }
@@ -956,7 +901,6 @@ class ARInvoiceHandle {
         //     $.fn.notifyB({description: "Product rows in sales invoice can not have VAT."}, 'failure')
         //     return false
         // }
-
         return frm
     }
     static LoadDetailARInvoice(option) {
@@ -992,7 +936,6 @@ class ARInvoiceHandle {
                     }
 
                     $('#title').val(data?.['title'])
-                    customerCodeEle.val(data?.['customer_mapped_data']?.['code'])
                     customerNameEle.attr('data-id', data?.['customer_mapped_data']?.['id'])
                     customerNameEle.val(data?.['customer_mapped_data']?.['name'])
                     $('#buyer-name').val(data?.['buyer_name'])
@@ -1035,23 +978,32 @@ class ARInvoiceHandle {
                     )
                     invoice_exp.val(data?.['invoice_example'])
 
-                    tabLineDetailTable.attr('data-delivery-selected', data?.['delivery_mapped'].map(item => item.id).join(','))
+                    NormalTable.attr('data-delivery-selected', data?.['delivery_mapped'].map(item => item.id).join(','))
 
                     if (Object.keys(data?.['sale_order_mapped_data']).length !== 0 && data?.['delivery_mapped'].length === 0) {
-                        tabLineDetailTable.closest('.table_space').prop('hidden', true)
-                        tabLineDetailTableSimple.closest('.table_space').prop('hidden', false)
-                        ARInvoiceLoadTab.LoadTableLineDetailSimpleForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                        NormalTable.closest('.table_space').prop('hidden', true)
+                        DescriptionTable.closest('.table_space').prop('hidden', false)
+                        ARInvoiceLoadTab.LoadTableDescriptionForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
                     }
                     else {
-                        tabLineDetailTable.closest('.table_space').prop('hidden', false)
-                        tabLineDetailTableSimple.closest('.table_space').prop('hidden', true)
-                        ARInvoiceLoadTab.LoadTableLineDetailForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                        NormalTable.closest('.table_space').prop('hidden', false)
+                        DescriptionTable.closest('.table_space').prop('hidden', true)
+                        ARInvoiceLoadTab.LoadTableNormalForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
                     }
 
-                    add_row_dropdown.prop('hidden', !Object.keys(data?.['sale_order_mapped_data']).length > 0)
-                    add_row_items_btn.prop('hidden', Object.keys(data?.['sale_order_mapped_data']).length > 0)
+                    if (Object.keys(data?.['sale_order_mapped_data']).length > 0) {
+                        btn_for_delivery_ar.removeClass('disabled')
+                    }
+                    else {
+                        btn_for_delivery_ar.addClass('disabled')
+                    }
+                    if (Object.keys(data?.['sale_order_mapped_data']).length > 0) {
+                        btn_add_optionally.addClass('disabled')
+                    }
+                    else {
+                        btn_add_optionally.removeClass('disabled')
+                    }
 
-                    ARInvoiceAction.Disabled(option)
 
                     new $x.cls.file($('#attachment')).init({
                         enable_edit: option !== 'detail',
@@ -1064,6 +1016,11 @@ class ARInvoiceHandle {
                     let [tax_code_status, responseData] = await ARInvoiceAction.CheckTaxCode()
                     $('#invalid-tax').prop('hidden', tax_code_status)
                     $('#valid-tax').prop('hidden', !tax_code_status)
+
+                    UsualLoadPageFunction.DisablePage(
+                        option==='detail',
+                        ['#view-tax-code-info', '#view-payment-term']
+                    )
                 }
             })
     }
@@ -1087,7 +1044,6 @@ selectCustomerBtn.on('click', function () {
     $('input[name="customer-selected-radio"]').each(async function () {
         if ($(this).prop('checked')) {
             selected_obj = $(this).attr('data-customer') ? JSON.parse($(this).attr('data-customer')) : {}
-            customerCodeEle.val(selected_obj?.['code']).prop('readonly', true).prop('disabled', true)
             customerNameEle.val(selected_obj?.['name']).attr('data-id', selected_obj?.['id']).prop('readonly', true).prop('disabled', true)
             tax_codeEle.val(selected_obj?.['tax_code']).prop('readonly', true).prop('disabled', true)
             for (let i = 0; i < (selected_obj?.['billing_address'] || []).length; i++) {
@@ -1150,6 +1106,7 @@ viewPaymentTermEle.on('click', function () {
     let selected_so = SelectDDControl.get_data_from_idx(saleOrderEle, saleOrderEle.val())
     paymentTermInfoTable.DataTable().clear().destroy()
     paymentTermInfoTable.DataTableDefault({
+        dom: '',
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
@@ -1213,9 +1170,9 @@ invoice_exp.on('change', function () {
     //     }
     // }
     // else {
-    //     if (tabLineDetailTable.find('.product_taxes').length > 0) {
+    //     if (NormalTable.find('.product_taxes').length > 0) {
     //         let vat_number = []
-    //         tabLineDetailTable.find('.product_taxes').each(function () {
+    //         NormalTable.find('.product_taxes').each(function () {
     //             if ($(this).val()) {
     //                 let tax_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
     //                 if (vat_number.includes(parseFloat(tax_selected?.['rate'])) === false) {
@@ -1267,10 +1224,10 @@ invoice_exp.on('change', function () {
     // }
 })
 
-$('#add-product-btn').on('click', function () {
-    tabLineDetailTable.closest('.table_space').prop('hidden', false)
-    tabLineDetailTableSimple.closest('.table_space').prop('hidden', true)
-    ARInvoiceLoadTab.LoadTableLineDetail(JSON.parse(dataLineDetailTableScript.text()))
+$('#select-delivery-product-btn').on('click', function () {
+    NormalTable.closest('.table_space').prop('hidden', false)
+    DescriptionTable.closest('.table_space').prop('hidden', true)
+    ARInvoiceLoadTab.LoadTableNormal(delivery_product_data.text() ? JSON.parse(delivery_product_data.text()) : [])
     $('#select-delivery-offcanvas').offcanvas('hide')
     let data_product = []
     $('.selected-delivery').each(function () {
@@ -1278,17 +1235,7 @@ $('#add-product-btn').on('click', function () {
             data_product.push($(this).attr('data-id'))
         }
     })
-    tabLineDetailTable.attr('data-delivery-selected', data_product.join(','))
-})
-
-$('#btn-add-row-line-detail').on('click', function () {
-    if (saleOrderEle.val()) {
-        ARInvoiceLoadTab.LoadDeliveryProduct([])
-        ARInvoiceLoadTab.LoadDelivery()
-    }
-    else {
-        $.fn.notifyB({description: "You have not selected Sale order yet"}, 'warning')
-    }
+    NormalTable.attr('data-delivery-selected', data_product.join(','))
 })
 
 $('#create_invoice_btn').on('click', function () {
@@ -1323,32 +1270,64 @@ $('#view_invoice_btn').on('click', function () {
     $(this).closest('a').attr('href', $(this).closest('a').attr('data-href').replace(0, pk) + `?pattern=${invoice_sign.val()}`)
 })
 
-$('#edit_items_btn').on('click', function () {
+btn_select_from_delivery.on('click', function () {
     if (saleOrderEle.val()) {
         ARInvoiceLoadTab.LoadDelivery()
+        ARInvoiceLoadTab.LoadDeliveryProduct()
     }
     else {
-        ARInvoiceLoadTab.LoadTableLineDetail()
         $.fn.notifyB({description: "You have not selected Sale order yet."}, 'warning')
     }
 })
 
-add_row_items_btn.on('click', function () {
-    tabLineDetailTable.closest('.table_space').prop('hidden', false)
-    tabLineDetailTableSimple.closest('.table_space').prop('hidden', true)
-    ARInvoiceAction.AddRow(tabLineDetailTable, {})
-    let row_added = tabLineDetailTable.find('tbody tr:last-child')
-    ARInvoiceAction.LoadRowPrd(row_added.find('.product-select'))
-    $.fn.initMaskMoney2()
-    ARInvoiceAction.CalculatePrice()
+btn_add_optionally.on('click', function () {
+    if (!saleOrderEle.val()) {
+        DescriptionTable.closest('.table_space').prop('hidden', true)
+        NormalTable.closest('.table_space').prop('hidden', false)
+        UsualLoadPageFunction.AddTableRow(NormalTable, {})
+        let row_added = NormalTable.find('tbody tr:last-child')
+        UsualLoadPageFunction.LoadProduct({
+            element: row_added.find('.product-select'),
+            data_url: scriptUrlEle.attr('data-url-product-list')
+        })
+    }
+    else {
+        $.fn.notifyB({description: "You have selected Sale order already."}, 'warning')
+    }
 })
 
-add_item_des.on('click', function () {
-    tabLineDetailTable.closest('.table_space').prop('hidden', true)
-    tabLineDetailTableSimple.closest('.table_space').prop('hidden', false)
-    ARInvoiceAction.AddRow(tabLineDetailTableSimple, {})
-    $.fn.initMaskMoney2()
-    ARInvoiceAction.CalculatePriceSimple()
+btn_add_des.on('click', function () {
+    if (saleOrderEle.val()) {
+        NormalTable.closest('.table_space').prop('hidden', true)
+        DescriptionTable.closest('.table_space').prop('hidden', false)
+        UsualLoadPageFunction.AddTableRow(DescriptionTable, {})
+        let row_added = DescriptionTable.find('tbody tr:last-child')
+        UsualLoadPageFunction.LoadTax({
+            element: row_added.find('.product_taxes'),
+            data_url: scriptUrlEle.attr('data-url-tax-list')
+        })
+    }
+    else {
+        $.fn.notifyB({description: "You have not selected Sale order yet."}, 'warning')
+    }
+})
+
+$(document).on("change", '.product-select', function () {
+    if ($(this).val()) {
+        let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+        $(this).closest('tr').find('.product-des').attr('title', selected?.['description'] ? selected?.['description'] : '')
+        UsualLoadPageFunction.LoadUOM({
+            element: $(this).closest('tr').find('.uom-select'),
+            data: selected?.['sale_default_uom'] || {},
+            data_params: {'group_id': selected?.['general_uom_group']?.['id']},
+            data_url: scriptUrlEle.attr('data-url-uom-list')
+        })
+        UsualLoadPageFunction.LoadTax({
+            element: $(this).closest('tr').find('.product_taxes'),
+            data_params: {'group_id': selected?.['general_uom_group']?.['id']},
+            data_url: scriptUrlEle.attr('data-url-tax-list')
+        })
+    }
 })
 
 $(document).on("change", '.selected-delivery', function () {
@@ -1357,11 +1336,11 @@ $(document).on("change", '.selected-delivery', function () {
     let data_product_already = []
     $('.selected-delivery').each(function () {
         if ($(this).prop('checked') && $(this).attr('data-already') === '0') {
-            data_product = data_product.concat(JSON.parse($(this).closest('div').find('.details').text()))
+            data_product = data_product.concat($(this).closest('div').find('.details').text() ? JSON.parse($(this).closest('div').find('.details').text()) : [])
         }
 
         if ($(this).prop('checked') && $(this).attr('data-already') === '1') {
-            data_product_already = data_product_already.concat(JSON.parse($(this).closest('div').find('.details').text()))
+            data_product_already = data_product_already.concat($(this).closest('div').find('.details').text() ? JSON.parse($(this).closest('div').find('.details').text()) : [])
         }
     })
 
@@ -1388,21 +1367,14 @@ $(document).on("change", '.selected-delivery', function () {
     });
     data_product = Object.values(merged_data_product);
 
-    // load lên table line detail
     ARInvoiceLoadTab.LoadDeliveryProduct(data_product)
-    dataLineDetailTableScript.text(JSON.stringify(data_product))
-})
-
-$(document).on("change", '.product_subtotal_price_final', function () {
-    ARInvoiceAction.CalculatePriceSimple()
+    delivery_product_data.text(JSON.stringify(data_product))
 })
 
 $(document).on("change", '.product_unit_price', function () {
     let subtotal = parseFloat($(this).attr('value')) * parseFloat($(this).closest('tr').find('.picked_quantity').text())
     $(this).closest('tr').find('.product_subtotal_price').attr('data-init-money', subtotal)
     $.fn.initMaskMoney2()
-
-    ARInvoiceAction.CalculatePrice()
 })
 
 $(document).on("change", '.product_discount_value', function () {
@@ -1410,19 +1382,19 @@ $(document).on("change", '.product_discount_value', function () {
 })
 
 $(document).on("click", '.delete-item-row', function () {
-    ARInvoiceAction.DeleteRow(
-        $(this).closest('tr').find('.picked_quantity').length === 0 ? tabLineDetailTableSimple : tabLineDetailTable,
+    UsualLoadPageFunction.DeleteTableRow(
+        $(this).closest('tr').find('.picked_quantity').length === 0 ? DescriptionTable : NormalTable,
         parseInt($(this).closest('tr').find('td:first-child').text())
     )
-    $(this).closest('tr').find('.picked_quantity').length === 0 ? ARInvoiceAction.CalculatePriceSimple() : ARInvoiceAction.CalculatePrice()
+    ARInvoiceAction.CalculatePrice($(this).closest('tr').find('.picked_quantity').length === 1 ? 'normal' : 'des')
 })
 
 $(document).on("change", '.recalculate-field', function () {
-    ARInvoiceAction.CalculatePriceRow($(this).closest('tr'))
-    ARInvoiceAction.CalculatePrice()
+    ARInvoiceAction.CalculatePriceRow($(this).closest('tr'), $(this).closest('tr').find('.picked_quantity').length === 1 ? 'normal' : 'des')
+    ARInvoiceAction.CalculatePrice($(this).closest('tr').find('.picked_quantity').length === 1 ? 'normal' : 'des')
     // kiểm tra dữ liệu cho hóa đơn điện tử
     // let vat_number = []
-    // tabLineDetailTable.find('.product_taxes').each(function () {
+    // NormalTable.find('.product_taxes').each(function () {
     //     if ($(this).val()) {
     //         let tax_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
     //         if (vat_number.includes(parseFloat(tax_selected?.['rate'])) === false) {
@@ -1472,10 +1444,6 @@ $(document).on("change", '.recalculate-field', function () {
     //         $.fn.notifyB({description: "Invalid invoice form."}, 'failure')
     //     }
     // }
-})
-
-$(document).on("change", '.product_subtotal_price_final', function () {
-    ARInvoiceAction.CalculatePriceSimple()
 })
 
 $(document).on("change", '.product_discount_rate', function () {

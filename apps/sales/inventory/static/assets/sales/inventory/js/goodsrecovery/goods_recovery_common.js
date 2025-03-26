@@ -392,38 +392,60 @@ class RecoveryLoadDataHandle {
             }
 
             let dataFn = [];
-            let dataDepreciation = [];
-            if (assetEle) {
-                let dataAsset = SelectDDControl.get_data_from_idx($(assetEle), $(assetEle).val());
-                if (dataAsset?.['depreciation_data']) {
-                    dataDepreciation = dataAsset?.['depreciation_data'];
-                }
-            }
-            if (toolEle) {
-                let dataTool = SelectDDControl.get_data_from_idx($(toolEle), $(toolEle).val());
-                if (dataTool?.['depreciation_data']) {
-                    dataDepreciation = dataTool?.['depreciation_data'];
-                }
-            }
-            if (dataDepreciation.length > 0) {
-                dataFn = dataDepreciation;
-                if ($leaseStartDateEle.length > 0 && $leaseEndDateEle.length > 0) {
-                    if ($leaseStartDateEle.val() && $leaseEndDateEle.val()) {
-                        let dataOfRange = DepreciationControl.extractDataOfRange({
-                            'data_depreciation': dataDepreciation,
-                            'start_date': $leaseStartDateEle.val(),
-                            'end_date': $leaseEndDateEle.val(),
-                        });
-                        dataFn = DepreciationControl.mapDataOfRange({
-                            'data_depreciation': dataDepreciation,
-                            'data_of_range': dataOfRange,
-                        });
+            let depreciationDataEle = row.querySelector('.table-row-depreciation-data');
+            let depreciationLeaseDataEle = row.querySelector('.table-row-depreciation-lease-data');
+            if (depreciationDataEle && depreciationLeaseDataEle) {
+                if ($(depreciationDataEle).val()) {
+                    let dataDepreciation = JSON.parse($(depreciationDataEle).val());
+                    if (dataDepreciation.length > 0) {
+                        dataFn = dataDepreciation;
+                        if ($(depreciationLeaseDataEle).val()) {
+                            let dataLeaseDepreciation = JSON.parse($(depreciationLeaseDataEle).val());
+                            dataFn = DepreciationControl.mapDataOfRange({
+                                'data_depreciation': dataDepreciation,
+                                'data_of_range': dataLeaseDepreciation,
+                            });
+                        }
+                        RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
+                        RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
+                        return true;
                     }
                 }
-                RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
-                RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
-                return true;
             }
+
+            // let dataFn = [];
+            // let dataDepreciation = [];
+            // if (assetEle) {
+            //     let dataAsset = SelectDDControl.get_data_from_idx($(assetEle), $(assetEle).val());
+            //     if (dataAsset?.['depreciation_data']) {
+            //         dataDepreciation = dataAsset?.['depreciation_data'];
+            //     }
+            // }
+            // if (toolEle) {
+            //     let dataTool = SelectDDControl.get_data_from_idx($(toolEle), $(toolEle).val());
+            //     if (dataTool?.['depreciation_data']) {
+            //         dataDepreciation = dataTool?.['depreciation_data'];
+            //     }
+            // }
+            // if (dataDepreciation.length > 0) {
+            //     dataFn = dataDepreciation;
+            //     if ($leaseStartDateEle.length > 0 && $leaseEndDateEle.length > 0) {
+            //         if ($leaseStartDateEle.val() && $leaseEndDateEle.val()) {
+            //             let dataOfRange = DepreciationControl.extractDataOfRange({
+            //                 'data_depreciation': dataDepreciation,
+            //                 'start_date': $leaseStartDateEle.val(),
+            //                 'end_date': $leaseEndDateEle.val(),
+            //             });
+            //             dataFn = DepreciationControl.mapDataOfRange({
+            //                 'data_depreciation': dataDepreciation,
+            //                 'data_of_range': dataOfRange,
+            //             });
+            //         }
+            //     }
+            //     RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
+            //     RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
+            //     return true;
+            // }
         }
 
         return true;

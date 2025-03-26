@@ -1023,12 +1023,13 @@ class ProductPageFunction {
  */
 class ProductHandler {
     static Disable(option) {
-    if (option === 'detail') {
-        $('form select').prop('disabled', true);
-        $('form input').prop('disabled', true).prop('readonly', true);
-        pageElements.$btn_add_row_variant_attributes.prop('disabled', true);
+        if (option === 'detail') {
+            $('form select').prop('disabled', true);
+            $('form input').prop('disabled', true).prop('readonly', true);
+            $('form textarea').prop('disabled', true).prop('readonly', true);
+            pageElements.$btn_add_row_variant_attributes.prop('disabled', true);
+        }
     }
-}
     static GetDataForm() {
         let data = {
             'code': pageElements.$code.val(),
@@ -1065,9 +1066,9 @@ class ProductHandler {
         data['volume_id'] = pageElements.$volume.attr('data-id');
         data['weight_id'] = pageElements.$weight.attr('data-id');
         data['product_types_mapped_list'] = [pageElements.$general_product_type.val()];
-        data['general_product_category'] = pageElements.$general_product_category.val();
-        data['general_uom_group'] = pageElements.$general_uom_group.val();
-        data['general_manufacturer'] = pageElements.$general_manufacturer.val();
+        data['general_product_category'] = pageElements.$general_product_category.val() || null;
+        data['general_uom_group'] = pageElements.$general_uom_group.val() || null;
+        data['general_manufacturer'] = pageElements.$general_manufacturer.val() || null;
         data['general_traceability_method'] = $('#general-traceability-method option:selected').attr('value');
         data['standard_price'] = pageElements.$general_standard_price.attr('value')
 
@@ -1169,8 +1170,8 @@ class ProductHandler {
                     });
                 }
             })
-            data['sale_default_uom'] = $('#sale-uom').val();
-            data['sale_tax'] = $('#sale-tax').val();
+            data['sale_default_uom'] = $('#sale-uom').val() || null;
+            data['sale_tax'] = $('#sale-tax').val() || null;
             data['sale_price_list'] = sale_product_price_list;
 
             data['is_public_website'] = pageElements.$is_publish_website.prop('checked');
@@ -1187,7 +1188,7 @@ class ProductHandler {
 
         if (pageElements.$check_tab_inventory.is(':checked') === true) {
             data['product_choice'].push(1)
-            data['inventory_uom'] = $('#inventory-uom').val();
+            data['inventory_uom'] = $('#inventory-uom').val() || null;
             data['inventory_level_min'] = parseFloat(pageElements.$inventory_level_min.val());
             data['inventory_level_max'] = parseFloat(pageElements.$inventory_level_max.val());
             data['valuation_method'] = pageElements.$valuation_method.val()
@@ -1199,8 +1200,8 @@ class ProductHandler {
 
         if (pageElements.$check_tab_purchase.is(':checked') === true) {
             data['product_choice'].push(2)
-            data['purchase_default_uom'] = $('#purchase-uom').val();
-            data['purchase_tax'] = $('#purchase-tax').val();
+            data['purchase_default_uom'] = $('#purchase-uom').val() || null;
+            data['purchase_tax'] = $('#purchase-tax').val() || null;
             data['supplied_by'] = pageElements.$purchase_supplied_by.val();
         } else {
             data['purchase_default_uom'] = null
@@ -1533,7 +1534,7 @@ class ProductHandler {
                     }
 
                     pageElements.$account_deter_referenced_by.val(product_detail['account_deter_referenced_by']).prop('disabled', true)
-                    pageElements.$product_account_determination_table.prop('hidden', product_detail['account_deter_referenced_by'] !== 2)
+                    pageElements.$product_account_determination_table.closest('.row').prop('hidden', product_detail['account_deter_referenced_by'] !== 2)
                     ProductPageFunction.LoadAccountDeterminationTable()
 
                     $.fn.initMaskMoney2();

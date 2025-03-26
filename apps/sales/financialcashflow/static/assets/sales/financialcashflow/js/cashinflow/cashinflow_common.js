@@ -131,9 +131,15 @@ class CIFPageVariables {
                 }
             },
             {
-                className: 'wrap-text w-20',
+                className: 'wrap-text w-15',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${row?.['remark']}</span>`;
+                }
+            },
+            {
+                className: 'wrap-text w-10',
+                render: (data, type, row) => {
+                    return `<span class="text-muted">${moment(row?.['due_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`;
                 }
             },
             {
@@ -149,7 +155,7 @@ class CIFPageVariables {
                 }
             },
             {
-                className: 'wrap-text text-right w-20',
+                className: 'wrap-text text-right w-15',
                 render: () => {
                     return `<input class="form-control text-right mask-money cash_in_value_advance" value="0"">`;
                 }

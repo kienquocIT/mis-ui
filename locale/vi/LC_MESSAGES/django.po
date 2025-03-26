@@ -11566,3 +11566,7 @@ msgstr "Giá chi phí"
 #
 msgid "Sum Of Prices"
 msgstr "Tổng giá"
+
+#
+msgid "Order by Due date"
+msgstr "Sắp xếp theo Ngày đến hạn"

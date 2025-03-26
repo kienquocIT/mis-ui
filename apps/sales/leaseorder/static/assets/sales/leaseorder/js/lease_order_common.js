@@ -2491,6 +2491,17 @@ class LeaseOrderLoadDataHandle {
                     }
                 }
             }
+            if (assetType === "2") {
+                let toolEle = row.querySelector('.table-row-tool');
+                if (toolEle) {
+                    if ($(toolEle).val()) {
+                        let dataTool = SelectDDControl.get_data_from_idx($(toolEle), $(toolEle).val());
+                        if (dataTool) {
+                            LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id', dataTool?.['id']);
+                        }
+                    }
+                }
+            }
             if (assetType === "3") {
                 let assetEle = row.querySelector('.table-row-asset');
                 if (assetEle) {

@@ -1189,7 +1189,6 @@ class GroupOrderCommon {
 
     handleOpenCustomerDetail(){
         $(document).on('click', '.detail-edit-row',(e)=>{
-            console.log(decodeURIComponent($(e.currentTarget).attr('data-detail')))
             const dataCustomerDetail = JSON.parse(decodeURIComponent($(e.currentTarget).attr('data-detail')))
 
             const serviceName = dataCustomerDetail?.['service_name']
@@ -1279,7 +1278,6 @@ class GroupOrderCommon {
             let dataSelectedPriceList = JSON.parse(dataScript.attr('data-selected-price'))
 
             delete dataSelectedPriceList[customerId]
-            console.log(dataSelectedPriceList)
             dataScript.attr('data-selected-price', JSON.stringify(dataSelectedPriceList))
 
             this.$detailDataTable.DataTable().row($row).remove().draw()
@@ -1623,6 +1621,8 @@ class GroupOrderCommon {
             let tmpData = rowData['register_date'].split('-').reverse().join('-')
             rowData['register_date'] = tmpData
             rowData['price_list_select'] = []
+            rowData['email'] = rowData['email'] === 'no data' ? null : rowData['email']
+            rowData['phone'] = rowData['phone'] === 'no data' ? null : rowData['phone']
             for(const item of customerPriceListSelect){
                 rowData['price_list_select'].push({
                     product_price_list: item?.['id'],
@@ -1643,8 +1643,6 @@ class GroupOrderCommon {
             rowData['sub_total'] = subTotal
             rowData['order'] = rowIdx
             costList.push(rowData)
-
-            console.log(rowData)
         })
         dataForm['cost_list'] = costList
 
@@ -1682,20 +1680,14 @@ class GroupOrderCommon {
         dataForm['total_cost'] = dataTotalCost
         dataForm['data_selected_price_list'] = dataSelectedPriceList
         dataForm['data_product_list'] = dataSelectedProductList
-        dataForm['email'] = dataForm['email'] === 'no data' ? null : dataForm['email']
-        dataForm['phone'] = dataForm['phone'] === 'no data' ? null : dataForm['phone']
-        console.log(dataForm)
     }
 
     setUpFormSubmit($formSubmit){
-        console.log('setup')
         SetupFormSubmit.call_validate($formSubmit, {
             onsubmit: true,
             submitHandler: (form, event) => {
                 let _form = new SetupFormSubmit($formSubmit);
                 this.setupFormData(_form['dataForm'])
-                console.log(_form)
-                console.log('cccc')
                  // WFRTControl.callWFSubmitForm(_form)
                 const url = _form.dataUrl
                 $.fn.callAjax2({
@@ -1824,7 +1816,6 @@ class GroupOrderCommon {
                     this.$expenseDataTable.DataTable().rows().every((rowIdx)=>{
                         const rowData = this.$expenseDataTable.DataTable().row(rowIdx).data()
                         const $row = $(this.$expenseDataTable.DataTable().row(rowIdx).node())
-                        console.log(rowData)
                         const expenseItem = rowData?.['expense']
                         const uom = rowData?.['expense_uom']
                         const cost = rowData?.['cost']

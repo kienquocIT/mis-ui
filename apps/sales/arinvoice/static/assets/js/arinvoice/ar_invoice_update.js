@@ -1,5 +1,6 @@
 $(document).ready(function () {
     ARInvoiceHandle.Load();
+    WFRTControl.setWFInitialData('arinvoice')
 
     ARInvoiceHandle.LoadDetailARInvoice('update');
 

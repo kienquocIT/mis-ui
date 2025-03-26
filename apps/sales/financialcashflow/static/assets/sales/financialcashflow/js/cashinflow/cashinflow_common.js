@@ -9,15 +9,15 @@ class CIFPageElements {
         this.$posting_date = $('#posting_date')
         this.$document_date = $('#document_date')
         this.$description = $('#description')
-        this.$customer_advance_table = $('#table-select-so')
-        this.$ar_invoice_table = $('#table-select-ar-invoice')
+        this.$customer_advance_table = $('#customer-advance-table')
+        this.$ar_invoice_table = $('#ar-invoice-table')
         this.$total_payment = $('#total_payment')
         this.$detail_payment_value_modal = $('#detail-payment-value-modal')
-        this.$payment_detail_table = $('#table-detail-payment-value-modal')
+        this.$detail_payment_table = $('#detail-payment-table')
         this.$btn_modal_payment_method = $('#btn-modal-payment-method')
         this.$icon_done_payment_method = $('#icon-done-payment-method')
         this.$payment_method_modal = $('#payment-method-modal')
-        this.$total_payment_in_modal = $('#total_payment_modal')
+        this.$total_payment_modal = $('#total_payment_modal')
         this.$save_changes_payment_method = $('#save-changes-payment-method')
         this.$cash_value = $('#cash_value')
         this.$bank_value = $('#bank_value')
@@ -32,73 +32,73 @@ const pageElements = new CIFPageElements()
 class CIFPageVariables {
     constructor() {
         this.selected_payment_stage_table_cfg = [
-    {
-        className: 'wrap-text w-5',
-        render: () => {
-            return ``
-        }
-    },
-    {
-        className: 'wrap-text w-5',
-        render: (data, type, row) => {
-            return row?.['is_ar_invoice'] ? `<div class="form-check">
-                <input type="checkbox"
-                       class="form-check-input selected_payment_stage"
-                       data-so-pm-stage-id="${row?.['id']}"
-                >
-                <label class="form-check-label"></label>
-            </div>` : ''
-        }
-    },
-    {
-        className: 'wrap-text w-5',
-        render: (data, type, row) => {
-            return `<span class="text-muted">${row?.['term_data']?.['title'] ? row?.['term_data']?.['title'] : ''}</span>`
-        }
-    },
-    {
-        className: 'wrap-text w-15',
-        render: (data, type, row) => {
-            return `<span class="text-muted">${row?.['remark']}</span>`;
-        }
-    },
-    {
-        className: 'wrap-text w-10',
-        render: (data, type, row) => {
-            return row?.['is_ar_invoice'] ? `<span class="text-muted no-invoice">${row?.['invoice'] ? row?.['invoice'] : ''}</span>` : '--';
-        }
-    },
-    {
-        className: 'wrap-text text-right w-15',
-        render: (data, type, row) => {
-            return row?.['is_ar_invoice'] ? `<span class="mask-money detail-invoice-value" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>` : '--';
-        }
-    },
-    {
-        className: 'wrap-text text-right w-15',
-        render: (data, type, row) => {
-            return `<span class="mask-money" data-init-money="${row?.['recon_total'] ? row?.['recon_total'] : 0}"></span>`;
-        }
-    },
-    {
-        className: 'wrap-text text-right w-15',
-        render: (data, type, row) => {
-            return row?.['is_ar_invoice'] ? `<span class="mask-money detail_balance_value" data-init-money="${row?.['recon_balance']}"></span>` : '--';
-        }
-    },
-    {
-        className: 'wrap-text text-right w-15',
-        render: (data, type, row) => {
-            return row?.['is_ar_invoice'] ? `<input disabled readonly class="form-control text-right mask-money detail_payment_value" value="0">` : '--';
-        }
-    },
-    {
-        className: 'wrap-text text-right w-10',
-        render: (data, type, row) => {
-            return `<span class="text-muted">${moment(row?.['due_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`;
-        }
-    },
-]
+            {
+                className: 'wrap-text w-5',
+                render: () => {
+                    return ``
+                }
+            },
+            {
+                className: 'wrap-text w-5',
+                render: (data, type, row) => {
+                    return row?.['is_ar_invoice'] ? `<div class="form-check">
+                        <input type="checkbox"
+                               class="form-check-input selected_payment_stage"
+                               data-so-pm-stage-id="${row?.['id']}"
+                        >
+                        <label class="form-check-label"></label>
+                    </div>` : ''
+                }
+            },
+            {
+                className: 'wrap-text w-5',
+                render: (data, type, row) => {
+                    return `<span class="text-muted">${row?.['term_data']?.['title'] ? row?.['term_data']?.['title'] : ''}</span>`
+                }
+            },
+            {
+                className: 'wrap-text w-15',
+                render: (data, type, row) => {
+                    return `<span class="text-muted">${row?.['remark']}</span>`;
+                }
+            },
+            {
+                className: 'wrap-text w-10',
+                render: (data, type, row) => {
+                    return row?.['is_ar_invoice'] ? `<span class="text-muted no-invoice">${row?.['invoice'] ? row?.['invoice'] : ''}</span>` : '--';
+                }
+            },
+            {
+                className: 'wrap-text text-right w-15',
+                render: (data, type, row) => {
+                    return row?.['is_ar_invoice'] ? `<span class="mask-money detail-invoice-value" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>` : '--';
+                }
+            },
+            {
+                className: 'wrap-text text-right w-15',
+                render: (data, type, row) => {
+                    return `<span class="mask-money" data-init-money="${row?.['recon_total'] ? row?.['recon_total'] : 0}"></span>`;
+                }
+            },
+            {
+                className: 'wrap-text text-right w-15',
+                render: (data, type, row) => {
+                    return row?.['is_ar_invoice'] ? `<span class="mask-money detail_balance_value" data-init-money="${row?.['recon_balance']}"></span>` : '--';
+                }
+            },
+            {
+                className: 'wrap-text text-right w-15',
+                render: (data, type, row) => {
+                    return row?.['is_ar_invoice'] ? `<input disabled readonly class="form-control text-right mask-money detail_payment_value" value="0">` : '--';
+                }
+            },
+            {
+                className: 'wrap-text text-right w-10',
+                render: (data, type, row) => {
+                    return `<span class="text-muted">${moment(row?.['due_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`;
+                }
+            },
+        ]
         this.customer_advance_table_cfg = [
             {
                 className: 'wrap-text w-5',
@@ -131,9 +131,15 @@ class CIFPageVariables {
                 }
             },
             {
-                className: 'wrap-text w-20',
+                className: 'wrap-text w-15',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${row?.['remark']}</span>`;
+                }
+            },
+            {
+                className: 'wrap-text w-10',
+                render: (data, type, row) => {
+                    return `<span class="text-muted">${moment(row?.['due_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`;
                 }
             },
             {
@@ -149,7 +155,7 @@ class CIFPageVariables {
                 }
             },
             {
-                className: 'wrap-text text-right w-20',
+                className: 'wrap-text text-right w-15',
                 render: () => {
                     return `<input class="form-control text-right mask-money cash_in_value_advance" value="0"">`;
                 }
@@ -420,9 +426,9 @@ class CIFPageFunction {
         }
     }
     static LoadPaymentStageTable(data_list=[], valid_detail_payment=[]) {
-        pageElements.$payment_detail_table.DataTable().clear().destroy()
+        pageElements.$detail_payment_table.DataTable().clear().destroy()
         if (pageElements.$customer.val()) {
-            pageElements.$payment_detail_table.DataTableDefault({
+            pageElements.$detail_payment_table.DataTableDefault({
                 dom: 't',
                 reloadCurrency: true,
                 rowIdx: true,
@@ -434,7 +440,7 @@ class CIFPageFunction {
                 columns: pageVariables.selected_payment_stage_table_cfg,
                 initComplete: function () {
                     for (let i=0; i < valid_detail_payment.length; i++) {
-                        let selected = pageElements.$payment_detail_table.find(`tbody tr .selected_payment_stage[data-so-pm-stage-id=${valid_detail_payment[i]?.['so_pm_stage_id']}]`)
+                        let selected = pageElements.$detail_payment_table.find(`tbody tr .selected_payment_stage[data-so-pm-stage-id=${valid_detail_payment[i]?.['so_pm_stage_id']}]`)
                         selected.prop('checked', true)
                         selected.closest('tr').find('.detail_payment_value').attr('value', valid_detail_payment[i]?.['payment_value'])
                         selected.closest('tr').find('.detail_payment_value').prop('disabled', false).prop('readonly', false)
@@ -448,7 +454,7 @@ class CIFPageFunction {
             });
         }
         else {
-            pageElements.$payment_detail_table.DataTableDefault({
+            pageElements.$detail_payment_table.DataTableDefault({
                 dom: 't',
                 reloadCurrency: true,
                 rowIdx: true,
@@ -476,7 +482,7 @@ class CIFPageFunction {
             })
         }
         pageElements.$total_payment.attr('value', total_payment)
-        pageElements.$total_payment_in_modal.attr('value', pageElements.$total_payment.attr('value'))
+        pageElements.$total_payment_modal.attr('value', pageElements.$total_payment.attr('value'))
         pageElements.$btn_modal_payment_method.prop('disabled', total_payment === 0)
         pageElements.$btn_modal_payment_method.removeClass('btn-success').addClass('btn-danger')
         pageElements.$icon_done_payment_method.prop('hidden', true)
@@ -485,7 +491,7 @@ class CIFPageFunction {
     static CalculateARInvoiceRow() {
         let total_detail_payment = 0
         let detail_payment = []
-        pageElements.$payment_detail_table.find('tbody tr').each(function () {
+        pageElements.$detail_payment_table.find('tbody tr').each(function () {
             if ($(this).find('.selected_payment_stage').prop('checked')) {
                 total_detail_payment += $(this).find('.detail_payment_value').attr('value') ? parseFloat($(this).find('.detail_payment_value').attr('value')) : 0
                 detail_payment.push({
@@ -502,7 +508,7 @@ class CIFPageFunction {
     }
     static CalculateModalDetailPaymentSum() {
         let modal_detail_payment_sum = 0
-        pageElements.$payment_detail_table.find('tbody tr').each(function () {
+        pageElements.$detail_payment_table.find('tbody tr').each(function () {
             if ($(this).find('.selected_payment_stage').prop('checked')) {
                 modal_detail_payment_sum += parseFloat($(this).find('.detail_payment_value').attr('value'))
             }
@@ -664,7 +670,7 @@ class CIFHandler {
                     pageElements.$btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
                     pageElements.$btn_modal_payment_method.removeClass('btn-danger').addClass('btn-success')
                     pageElements.$icon_done_payment_method.prop('hidden', false)
-                    pageElements.$total_payment_in_modal.attr('value', data?.['total_value'])
+                    pageElements.$total_payment_modal.attr('value', data?.['total_value'])
                     pageElements.$cash_value.attr('value', data?.['cash_value'])
                     pageElements.$bank_value.attr('value', data?.['bank_value'])
                     CIFPageFunction.LoadCompanyBankAccount(pageElements.$company_bank_account, data?.['company_bank_account_data'])
@@ -713,8 +719,8 @@ class CIFEventHandler {
         })
         pageElements.$save_changes_payment_method.on('click', function () {
             if (
-                parseFloat(pageElements.$cash_value.attr('value')) + parseFloat(pageElements.$bank_value.attr('value')) === parseFloat(pageElements.$total_payment_in_modal.attr('value'))
-                && parseFloat(pageElements.$total_payment_in_modal.attr('value')) !== 0
+                parseFloat(pageElements.$cash_value.attr('value')) + parseFloat(pageElements.$bank_value.attr('value')) === parseFloat(pageElements.$total_payment_modal.attr('value'))
+                && parseFloat(pageElements.$total_payment_modal.attr('value')) !== 0
             ) {
                 if (parseFloat(pageElements.$bank_value.attr('value')) > 0 && !pageElements.$company_bank_account.val()) {
                     $.fn.notifyB({description: `Company bank account is required if Bank value > 0`}, 'failure');

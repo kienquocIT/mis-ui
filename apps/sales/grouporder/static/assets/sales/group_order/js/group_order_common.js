@@ -117,7 +117,10 @@ class GroupOrderCommon {
         this.handleUpdateCustomer()
         this.handleDeleteCustomer()
         this.handleDeleteCostProduct()
+        this.handleChangeDetailCustomerQuantity()
         this.handleChangeCostQuantityType()
+        this.handleChangePackQuantity()
+        this.handleChangeUnitCost()
         this.handleAddExpense()
         this.handleChangeExpense()
         this.handleDeleteExpense()
@@ -282,7 +285,16 @@ class GroupOrderCommon {
                     targets: 5,
                     width: '5%',
                     render: (data, type, row) => {
-                        return `<div>1</div>`
+                        console.log(row)
+                        const isIndividual = row?.['is_individual'] === 'true' || row?.['is_individual'] === true
+                        const quantity = row?.['quantity']
+                        if(isIndividual){
+                            return `<div class="detail-quantity">${quantity}</div>`
+                        } else {
+                            return `<div class="form-group mt-3">
+                                        <input class="form-control detail-quantity" value="${quantity}">
+                                    </div>`
+                        }
                     }
                 },
                 {
@@ -490,7 +502,7 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 2,
-                    width: '25%',
+                    width: '20%',
                     render: (data, type, row) => {
                         const title = row?.['title']
                         return `<div>${title}</div>`
@@ -516,10 +528,12 @@ class GroupOrderCommon {
                                                 data-quantity="${quantity}"
                                                 ${!isUsingGuestQuantity ? 'checked' : ''}
                                             >
-                                            <label class="form-check-label">
-                                                <span>Pack: </span>
-                                                <span>${quantity}</span>
-                                            </label>
+                                            <div class="d-flex align-items-center">
+                                                <div class="mr-1">Pack: </div>
+                                                <div class="form-group mt-3">
+                                                    <input class="form-control pack-quantity w-70" value="${quantity}">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-6 border-start border-grey">
@@ -533,10 +547,12 @@ class GroupOrderCommon {
                                                 data-quantity="${guestQuantity}"
                                                 ${isUsingGuestQuantity ? 'checked' : ''}
                                             >
-                                            <label class="form-check-label">
-                                                <span>Guest: </span>
-                                                <span>${guestQuantity}</span>
-                                            </label>
+                                            <div class="d-flex align-items-center">
+                                                <div class="mr-1">Guest: </div>
+                                                <div class="form-group mt-3">
+                                                    <input disabled readonly class="form-control guest-quantity w-70" value="${guestQuantity}">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>`
@@ -547,7 +563,9 @@ class GroupOrderCommon {
                     width: '15%',
                     render: (data, type, row) => {
                         const unitCost = row?.['unit_cost'] ? row?.['unit_cost'] : 0
-                        return `<span class="mask-money cost-unit-cost" data-init-money=${unitCost}></span>`
+                        return `<div class="form-group mt-3">
+                                    <input class="form-control mask-money cost-unit-cost" value="${unitCost}">
+                                </div>`
                     }
                 },
                 {
@@ -568,6 +586,17 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 6,
+                    width: '6%',
+                    render: (data, type, row) => {
+                        const note = row?.['note'] || ''
+                        return `<div class="form-group">
+                                    <label class="form-label" hidden></label>
+                                    <textarea class="form-control cost-note" value="${note}"></textarea>
+                                </div>`
+                    }
+                },
+                {
+                    targets: 7,
                     width: '4%',
                     render: (data, type, row) => {
                         const productId = row?.['id']
@@ -745,7 +774,7 @@ class GroupOrderCommon {
     }
 
     handleAddNewCustomer(){
-        $(document).on('click', '#btn-offcanvas-add-customer', ()=>{
+        $(document).on('click', '#btn-offcanvas-add-customer', (e)=>{
             const serviceName = this.$canvasServiceNameInput.val()
             const serviceCode = this.$canvasServiceCodeInput.val()
             const registerDate = this.$canvasRegisterDate.val()
@@ -756,6 +785,7 @@ class GroupOrderCommon {
             const email = this.$canvasEmailInput.val()
             const paymentStatus = this.$canvasPaymentSelect.val()
             const note = this.$canvasNoteInput.val()
+            const isIndividual = $(e.currentTarget).attr('data-is-individual')
 
             const dataScript = $('#data-script')
             let totalGeneralPrice = dataScript.attr('data-total-general-price') || 0
@@ -788,7 +818,9 @@ class GroupOrderCommon {
                 payment_status: paymentStatus,
                 unit_price: totalGeneralPrice,
                 sub_total: totalGeneralPrice,
+                quantity: 1,
                 note: note,
+                is_individual: isIndividual
             }
 
             this.$detailDataTable.DataTable().row.add(data).draw()
@@ -840,6 +872,8 @@ class GroupOrderCommon {
                         this.initInput(this.$canvasCustomerCodeInput, data?.['account_detail']?.['code'])
                         this.initInput(this.$canvasPhoneInput, data?.['account_detail']?.['phone'] ? data?.['account_detail']?.['phone'] : 'no data')
                         this.initInput(this.$canvasEmailInput, data?.['account_detail']?.['email'] ? data?.['account_detail']?.['email'] : 'no data')
+                        const isIndividual = data?.['account_detail']?.['account_type_selection'] === 0
+                        $('#btn-offcanvas-add-customer').attr('data-is-individual', isIndividual)
                     }
                 },
                 (errs) => {
@@ -1331,12 +1365,58 @@ class GroupOrderCommon {
         })
     }
 
+    handleChangeDetailCustomerQuantity(){
+        $(document).on('change', '.detail-quantity', (e) => {
+            const $input = $(e.currentTarget)
+            const $row = $input.closest('tr')
+            let rowData = this.$detailDataTable.DataTable().row($row).data()
+            const $unitPrice = $row.find('.detail-unit-price')
+            const $subTotal = $row.find('.detail-sub-total')
+            const value = Number($unitPrice.attr('data-init-money') || 0)
+            const quantity = Number($input.val() || 1)
+            $subTotal.attr('data-init-money', value * quantity)
+            rowData['quantity'] = quantity
+            rowData['sub_total'] = value * quantity
+            this.$detailDataTable.DataTable().row($row).data(rowData).draw()
+
+            $.fn.initMaskMoney2()
+            this.loadTotalData()
+        })
+    }
+
     handleChangeCostQuantityType(){
         $(document).on('change', '.cost-quantity-radio', (e)=>{
             const $row = $(e.currentTarget).closest('tr')
             let rowData = this.$costDataTable.DataTable().row($row).data()
             const quantityType = $(e.currentTarget).attr('data-quantity-type')
             rowData['is_using_guest_quantity'] = quantityType === 'guest'
+            this.$costDataTable.DataTable().row($row).data(rowData).draw()
+
+            this.reCalculateDataTotalCost()
+            this.loadTotalData()
+        })
+    }
+
+    handleChangePackQuantity(){
+        $(document).on('change', '.pack-quantity', (e)=>{
+            const $row = $(e.currentTarget).closest('tr')
+            let rowData = this.$costDataTable.DataTable().row($row).data()
+            console.log(rowData)
+            rowData['quantity'] = Number($(e.currentTarget).val() || 1)
+
+            this.$costDataTable.DataTable().row($row).data(rowData).draw()
+
+            this.reCalculateDataTotalCost()
+            this.loadTotalData()
+        })
+    }
+
+    handleChangeUnitCost(){
+        $(document).on('change', '.cost-unit-cost', (e)=>{
+            const $row = $(e.currentTarget).closest('tr')
+            let rowData = this.$costDataTable.DataTable().row($row).data()
+            rowData['unit_cost'] = Number($(e.currentTarget).attr('value') || 0)
+
             this.$costDataTable.DataTable().row($row).data(rowData).draw()
 
             this.reCalculateDataTotalCost()
@@ -1422,7 +1502,12 @@ class GroupOrderCommon {
         $detailUnitPriceSelects.attr('data-init-money', value)
         $detailUnitPriceSelects.each((i, e)=>{
             const $subTotal = $(e).closest('tr').find('.detail-sub-total')
-            $subTotal.attr('data-init-money', value)
+            const $quantityElement = $(e).closest('tr').find('.detail-quantity')
+
+            const quantity = $quantityElement.is('input') ? $quantityElement.val() : $quantityElement.text()
+
+            const subTotal = Number(value) * Number(quantity || 1)
+            $subTotal.attr('data-init-money', subTotal)
         })
         $.fn.initMaskMoney2()
     }
@@ -1464,7 +1549,7 @@ class GroupOrderCommon {
         this.$detailDataTable.DataTable().rows().every(function(){
             let row = $(this.node())
             totalGuest++
-            totalAmount += Number(row.find('.detail-unit-price').attr('data-init-money') || 0)
+            totalAmount += Number(row.find('.detail-sub-total').attr('data-init-money') || 0)
         })
         const taxId = this.$taxSelect.val()
         if(taxId){
@@ -1616,7 +1701,7 @@ class GroupOrderCommon {
             rowData['unit_price'] = unitPrice
             rowData['sub_total'] = subTotal
             // rowData['tax'] = tax
-            rowData['quantity'] = 1
+            rowData['quantity'] = Number($row.find('.detail-quantity').val() || 0)
             rowData['order'] = rowIdx
             let tmpData = rowData['register_date'].split('-').reverse().join('-')
             rowData['register_date'] = tmpData
@@ -1639,9 +1724,11 @@ class GroupOrderCommon {
             let rowData = this.data()
             const $row = $(this.node())
             const subTotal = Number($row.find('.cost-sub-total').attr('data-init-money') || 0)
+            const note = $row.find('.cost-note').val()
             rowData['product'] = rowData?.['id']
             rowData['sub_total'] = subTotal
             rowData['order'] = rowIdx
+            rowData['note'] = note
             costList.push(rowData)
         })
         dataForm['cost_list'] = costList
@@ -1727,12 +1814,12 @@ class GroupOrderCommon {
         $fields.attr('readonly', true)
 
         this.$detailDataTable.on('draw.dt', function() {
-            let disableFields = $(this).find('button, select')
+            let disableFields = $(this).find('button, select, input')
             disableFields = disableFields.not('.btn-select-price').not('.detail-edit-row')
             disableFields.attr('disabled', true).attr('readonly', true)
         })
         this.$costDataTable.on('draw.dt', function() {
-            let disableFields = $(this).find('button, input')
+            let disableFields = $(this).find('button, input, textarea')
             disableFields.attr('disabled', true).attr('readonly', true)
         })
         this.$expenseDataTable.on('draw.dt', function() {
@@ -1743,7 +1830,6 @@ class GroupOrderCommon {
         $fields = this.$selectPriceModal.find('#btn-finish')
         $fields.attr('disabled', true)
         $fields.attr('readonly', true)
-
     }
 
     fetchDetailData($formSubmit ,disabledFields=false){

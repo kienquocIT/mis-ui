@@ -95,7 +95,7 @@
             <div class="col-12 col-lg-6">
                 <div class="card">
                     <div class="card-header">
-                        <h6 class="heading-wth-icon text-primary" id="label-dimension">
+                        <h6 class="heading-wth-icon text-primary">
                             <span class="head-icon"><i data-feather="package"></i></span>
                             {% trans "Product Dimension and Weight Control" %}
                         </h6>
@@ -238,9 +238,9 @@
             <input class="form-check-input" type="checkbox" id="check-tab-inventory">
             <label class="form-check-label" for="check-tab-inventory">{% trans "Enable tab" %}</label>
         </div>
-        <div hidden class="alert alert-warning" role="alert" id="notify-inventory">
-            {% trans 'Inventory management is not allowed for Service product' %}
-        </div>
+        <span hidden class="small text-danger" id="notify-inventory">
+            {% trans 'Inventory tab is not allowed for Service product.' %}
+        </span>
         <div hidden class="row mt-5">
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">

@@ -153,24 +153,21 @@ class ProductPageFunction {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            pageElements.$notify_inventory.prop('hidden', true)
-            if (pageElements.$general_product_type.val()) {
-                pageElements.$check_tab_inventory.prop('checked', false).prop('disabled', false)
-                pageElements.$check_tab_sale.prop('checked', false).prop('disabled', false)
-                pageElements.$check_tab_purchase.prop('checked', false).prop('disabled', false)
-            }
-            else {
-                let selected = SelectDDControl.get_data_from_idx(pageElements.$general_product_type, pageElements.$general_product_type.val())
-                let has_finished_goods = !!selected?.['is_finished_goods']
-                let has_service = !!selected?.['is_service']
-                if (has_finished_goods && has_service) {
-                    $.fn.notifyB({description: 'Can not select both Finished goods and Service at the same time'}, 'failure');
+            let selected = SelectDDControl.get_data_from_idx(pageElements.$general_product_type, pageElements.$general_product_type.val())
+            let is_service = selected?.['is_service']
+            if (is_service) {
+                if (pageElements.$check_tab_inventory.prop('checked')) {
+                    $.fn.notifyB({description: $.fn.gettext('Inventory tab is not allowed for Service product. Turn off Inventory tab first.')}, 'failure');
                     pageElements.$general_product_type.empty()
                 }
-                else if (has_service) {
+                else {
+                    pageElements.$check_tab_inventory.prop('checked', false).prop('disabled', true).trigger('change')
                     pageElements.$notify_inventory.prop('hidden', false)
-                    pageElements.$check_tab_inventory.prop('checked', false).prop('disabled', true)
                 }
+            }
+            else {
+                pageElements.$check_tab_inventory.prop('disabled', false).trigger('change')
+                pageElements.$notify_inventory.prop('hidden', true)
             }
         })
     }
@@ -1308,6 +1305,7 @@ class ProductHandler {
                     if (Object.keys(product_detail['general_information']).length !== 0) {
                         let general_information = product_detail['general_information'];
                         ProductPageFunction.LoadGeneralProductType(general_information['general_product_types_mapped'][0]);
+                        pageElements.$general_product_type.trigger('change');
                         ProductPageFunction.LoadGeneralProductCategory(general_information['product_category']);
                         ProductPageFunction.LoadGeneralUoMGroup(general_information['uom_group']);
                         ProductPageFunction.LoadGeneralManufacturer(general_information['general_manufacturer']);
@@ -1616,18 +1614,13 @@ class ProductEventHandler {
         })
         // inventory tab
         pageElements.$check_tab_inventory.change(function () {
-            $('#tab_inventory input, #tab_inventory select').val('')
             $('#tab_inventory').find('.row').prop('hidden', !pageElements.$check_tab_inventory.is(':checked'))
-            if (pageElements.$check_tab_inventory.is(':checked')) {
-                $('#label-dimension').addClass('required');
-            } else {
-                $('#label-dimension').removeClass('required');
-            }
+            $.fn.initMaskMoney2()
         })
         // sale tab
         pageElements.$check_tab_sale.change(function () {
-            $('#tab_sale input, #tab_sale select').val('')
             $('#tab_sale').find('.row').prop('hidden', !pageElements.$check_tab_sale.is(':checked'))
+            $.fn.initMaskMoney2()
         })
         pageElements.$available_notify_checkbox.on('change', function () {
             pageElements.$less_than_number.val('').prop('disabled', !$(this).prop('checked'))
@@ -1672,7 +1665,6 @@ class ProductEventHandler {
         })
         // purchase tab
         pageElements.$check_tab_purchase.change(function () {
-            $('#tab_purchase input, #tab_purchase select').val('')
             $('#tab_purchase').find('.row').prop('hidden', !pageElements.$check_tab_purchase.is(':checked'))
             $.fn.initMaskMoney2()
         })

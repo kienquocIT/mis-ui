@@ -8861,8 +8861,12 @@ msgid "Pretax value"
 msgstr "Giá trị trước thuế"
 
 #
-msgid "Inventory management is not allowed for Service product"
-msgstr "Quản lý tồn kho không có sẵn cho Sản phẩm Dịch vụ"
+msgid "Inventory tab is not allowed for Service product. Turn off Inventory tab first."
+msgstr "Tab Tồn kho không có sẵn cho Sản phẩm Dịch vụ. Hãy tắt Tab Tồn kho trước."
+
+#
+msgid "Inventory tab is not allowed for Service product."
+msgstr "Tab Tồn kho không có sẵn cho Sản phẩm Dịch vụ."
 
 #
 msgid "Opportunity BOM"

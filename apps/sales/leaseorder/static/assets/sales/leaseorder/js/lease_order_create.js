@@ -8,7 +8,6 @@ $(function () {
         let tableProduct = LeaseOrderDataTableHandle.$tableProduct;
         let tableCost = LeaseOrderDataTableHandle.$tableCost;
         let tableExpense = LeaseOrderDataTableHandle.$tableExpense;
-        let tablePS = LeaseOrderDataTableHandle.$tablePayment;
         let tablePromotion = $('#datable-quotation-create-promotion');
         let tableShipping = $('#datable-quotation-create-shipping');
         let tableCopyQuotation = $('#datable-copy-quotation');
@@ -29,9 +28,6 @@ $(function () {
         LeaseOrderLoadDataHandle.loadInitDate();
         LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderLoadDataHandle.$depreciationModal);
         // init dataTable
-        LeaseOrderDataTableHandle.dataTableSelectProduct();
-        LeaseOrderDataTableHandle.dataTableSelectOffset();
-        LeaseOrderDataTableHandle.dataTableSelectAsset();
         LeaseOrderDataTableHandle.dataTableProduct();
         LeaseOrderDataTableHandle.dataTableCost();
         LeaseOrderDataTableHandle.dataTableDepreciationDetail();
@@ -42,6 +38,10 @@ $(function () {
         LeaseOrderDataTableHandle.dataTableSelectTerm();
         LeaseOrderDataTableHandle.dataTableSelectInvoice();
         LeaseOrderDataTableHandle.dataTableSelectReconcile();
+        LeaseOrderDataTableHandle.dataTableSelectProduct();
+        LeaseOrderDataTableHandle.dataTableSelectOffset();
+        LeaseOrderDataTableHandle.dataTableSelectTool();
+        LeaseOrderDataTableHandle.dataTableSelectAsset();
         // init config
         LeaseOrderLoadDataHandle.loadInitQuotationConfig(LeaseOrderLoadDataHandle.$form.attr('data-method'));
         // date picker
@@ -118,6 +118,10 @@ $(function () {
 
         LeaseOrderLoadDataHandle.$btnSaveSelectOffset.on('click', function () {
             LeaseOrderLoadDataHandle.loadOffset(this);
+        });
+
+        LeaseOrderLoadDataHandle.$btnSaveSelectTool.on('click', function () {
+            LeaseOrderLoadDataHandle.loadTool(this);
         });
 
         LeaseOrderLoadDataHandle.$btnSaveSelectAsset.on('click', function () {
@@ -251,6 +255,21 @@ $(function () {
             }
         });
 
+        LeaseOrderDataTableHandle.$tableSTool.on('change', '.table-row-quantity', function () {
+            let row = this.closest('tr');
+            if (row) {
+                let checkELe = row.querySelector('.table-row-checkbox');
+                if (checkELe) {
+                    if ($(this).val() > 0) {
+                        checkELe.checked = true;
+                    }
+                    if ($(this).val() <= 0) {
+                        checkELe.checked = false;
+                    }
+                }
+            }
+        });
+
         tableProduct.on('change', '.table-row-item, .table-row-asset-type, .table-row-uom, .table-row-quantity, .table-row-uom-time, .table-row-quantity-time, .table-row-price, .table-row-tax', function () {
             if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
@@ -279,6 +298,7 @@ $(function () {
                             }
                         }
                     }
+                    LeaseOrderLoadDataHandle.loadChangePaymentTerm();
                 }
                 // Delete all promotion rows
                 deletePromotionRows(tableProduct, true, false);
@@ -302,6 +322,10 @@ $(function () {
                         if ($(typeEle).val() === '1') {
                             LeaseOrderLoadDataHandle.$btnSaveSelectOffset.attr('data-product-id', dataRow?.['product_data']?.['id']);
                             LeaseOrderLoadDataHandle.loadModalSOffset(this);
+                        }
+                        if ($(typeEle).val() === '2') {
+                            LeaseOrderLoadDataHandle.$btnSaveSelectTool.attr('data-product-id', dataRow?.['product_data']?.['id']);
+                            LeaseOrderLoadDataHandle.loadModalSTool(this);
                         }
                         if ($(typeEle).val() === '3') {
                             LeaseOrderLoadDataHandle.$btnSaveSelectAsset.attr('data-product-id', dataRow?.['product_data']?.['id']);
@@ -481,11 +505,14 @@ $(function () {
             LeaseOrderLoadDataHandle.loadShowDepreciation(this);
         });
 
-        LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .lease-start-date, .lease-end-date', function () {
+        LeaseOrderLoadDataHandle.$depreciationModal.on('change', '.depreciation-method, .depreciation-start-date, .depreciation-end-date, .depreciation-adjustment, .lease-start-date, .lease-end-date, .product-convert-into', function () {
             if (this.classList.contains('depreciation-method')) {
                 let $adjustEle = $('#depreciation_adjustment');
                 if ($adjustEle.length > 0) {
                     $adjustEle.attr('readonly', 'true');
+                    if ($(this).val() === '0') {
+                        $adjustEle.val(1);
+                    }
                     if ($(this).val() === '1') {
                         $adjustEle.removeAttr('readonly');
                     }
@@ -511,6 +538,18 @@ $(function () {
                             let endDate = DepreciationControl.getEndDateDepreciation($(this).val(), parseInt($(leaseTimeEle).val()));
                             $leaseEndDateEle.val(endDate).trigger('change');
                         }
+                    }
+                }
+            }
+            if (this.classList.contains('product-convert-into')) {
+                let $methodEle = $('#depreciation_method');
+                if ($methodEle.length > 0) {
+                    $methodEle[0].setAttribute('readonly', 'true');
+                    if ($(this).val() === "1") {
+                        $methodEle.val(0).trigger('change');
+                    }
+                    if ($(this).val() === "2") {
+                        $methodEle[0].removeAttribute('readonly');
                     }
                 }
             }

@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" id="btn_edit">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </span>
+        </span>
+    </button>
+    <button class="btn btn-outline-primary" type="submit" form="frm_lease_order_config" id="btn_save" hidden>
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form
+            data-url="{% url 'LeaseOrderConfigDetailAPI' %}"
+            data-url-redirect="{% url 'LeaseOrderConfigDetail' %}"
+            data-method="PUT"
+            id="frm_lease_order_config"
+            method="post"
+    >
+        {% csrf_token %}
+        <div class="row">
+            <b>{% trans 'When leased product converted into fixed asset' %}</b>
+            <div class="row">
+                <div class="col-12 col-md-4 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label" for="asset_type_id">{% trans 'Classification' %}</label>
+                        <select
+                                class="form-select"
+                                id="asset_type_id"
+                                data-url="{% url "FixedAssetClassificationMasterDataListAPI" %}"
+                                data-method="GET"
+                                name="asset_type_id"
+                                data-keyResp="classification_list"
+                                disabled
+                        ></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label" for="asset_group_manage_id">{% trans 'Group manage' %}</label>
+                        <select
+                                class="form-select"
+                                id="asset_group_manage_id"
+                                data-url="{% url "GroupListAPI" %}"
+                                data-method="GET"
+                                name="asset_group_manage_id"
+                                data-keyResp="group_list"
+                                disabled
+                        ></select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label" for="asset_group_using_id">{% trans 'Group using' %}</label>
+                        <select
+                                class="form-select"
+                                id="asset_group_using_id"
+                                data-url="{% url "GroupListAPI" %}"
+                                data-method="GET"
+                                name="asset_group_using_id"
+                                data-keyResp="group_list"
+                                multiple
+                                disabled
+                        ></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <b>{% trans 'When leased product converted into tool' %}</b>
+            <div class="row">
+                <div class="col-12 col-md-4 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label" for="tool_type_id">{% trans 'Classification' %}</label>
+                        <select
+                                class="form-select"
+                                id="tool_type_id"
+                                data-url="{% url "ToolClassificationMasterDataListAPI" %}"
+                                data-method="GET"
+                                name="tool_type_id"
+                                data-keyResp="tool_classification_list"
+                                disabled
+                        ></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label" for="tool_group_manage_id">{% trans 'Group manage' %}</label>
+                        <select
+                                class="form-select"
+                                id="tool_group_manage_id"
+                                data-url="{% url "GroupListAPI" %}"
+                                data-method="GET"
+                                name="tool_group_manage_id"
+                                data-keyResp="group_list"
+                                disabled
+                        ></select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-label" for="tool_group_using_id">{% trans 'Group using' %}</label>
+                        <select
+                                class="form-select"
+                                id="tool_group_using_id"
+                                data-url="{% url "GroupListAPI" %}"
+                                data-method="GET"
+                                name="tool_group_using_id"
+                                data-keyResp="group_list"
+                                multiple
+                                disabled
+                        ></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+            type="text"
+            id="app-trans-factory"
+    >
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+
+    <script src="{% static 'assets/sales/leaseorder/js/lease_order_config.js' %}"></script>
+{% endblock %}

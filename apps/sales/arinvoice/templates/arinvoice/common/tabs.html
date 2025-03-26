@@ -2,7 +2,7 @@
 
 <div class="row mt-3 mb-10">
     <div class="col-12">
-        <ul class="nav nav-icon nav-primary-custom" id="tab-select-table">
+        <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                     <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-list"></i></span></span>
@@ -18,10 +18,11 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_line_detail">
-                <div class="row">
-                    <div class="table_space col-12">
-                        <script id="data-line-detail-table"></script>
-                        <table id="tab_line_detail_datatable" data-delivery-selected="" class="table nowrap w-100"
+                <div class="table_space row">
+                    <div class="col-12">
+                        <table id="normal_datatable"
+                               data-delivery-selected=""
+                               class="table nowrap w-100"
                                data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
                                data-url-tax-list="{% url 'TaxListAPI' %}">
                             <thead>
@@ -29,7 +30,6 @@
                                 <th class="text-center" style="min-width: 30px"></th>
                                 <th class="text-center" style="min-width: 30px"></th>
                                 <th style="min-width: 250px">{% trans 'Product' %}</th>
-                                <th style="min-width: 250px">{% trans 'Description' %}</th>
                                 <th style="min-width: 150px">{% trans 'UoM' %}</th>
                                 <th style="min-width: 150px">{% trans 'Quantity' %}</th>
                                 <th class="text-right" style="min-width: 200px">{% trans 'Unit price' %}</th>
@@ -44,41 +44,54 @@
                             <tbody></tbody>
                         </table>
                     </div>
-                    <div hidden class="table_space col-12">
-                        <table id="tab_line_detail_datatable_simple" class="table nowrap w-100">
+                </div>
+                <div hidden class="table_space row">
+                    <div class="col-12">
+                        <table id="description_datatable" class="table nowrap w-100">
                             <thead>
                             <tr>
                                 <th class="text-center" style="min-width: 30px"></th>
                                 <th class="text-center" style="min-width: 30px"></th>
                                 <th style="min-width: 250px">{% trans 'Description' %}</th>
                                 <th class="text-right" style="min-width: 200px">{% trans 'Total amount' %}</th>
+                                <th class="text-right" style="min-width: 200px">{% trans 'Tax' %}</th>
+                                <th class="text-right" style="min-width: 200px">{% trans 'Tax value' %}</th>
                             </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12 col-lg-7 mt-3">
-                        <button type="button" id="add_row_items_btn" class="btn btn-primary btn-sm">
-                            {% trans 'Add new row' %}
-                        </button>
-                        <div hidden class="btn-group dropdown" id="add_row_dropdown">
-                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {% trans 'Edit' %}
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div class="btn-group dropend">
+                            <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% trans 'Add new row' %}
                             </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" id="edit_items_btn">
-                                    <i class="dropdown-icon far fa-edit"></i>
+                            <div class="dropdown-menu dropdown-bordered">
+                                <h6 class="dropdown-header">{% trans 'If not referring to order' %}</h6>
+                                <a class="dropdown-item" href="#" id="btn-add-optionally">
+                                    <i class="dropdown-icon fa-solid fa-plus"></i>
+                                    <span>{% trans 'Add row optionally' %}</span>
+                                </a>
+                                <h6 class="dropdown-header">{% trans 'If referring to order' %}</h6>
+                                <a class="dropdown-item btn-for-delivery-ar disabled" href="#" id="btn-select-from-delivery">
+                                    <i class="dropdown-icon fa-solid fa-square-check"></i>
                                     <span>{% trans 'Select product from delivery' %}</span>
                                 </a>
-                                <a class="dropdown-item" id="add_item_des">
-                                    <i class="dropdown-icon fas fa-quote-right"></i>
+                                <a class="dropdown-item btn-for-delivery-ar disabled" href="#" id="btn-add-des">
+                                    <i class="dropdown-icon fa-solid fa-quote-left"></i>
                                     <span>{% trans 'Add new description' %}</span>
                                 </a>
                             </div>
                         </div>
+                        <button hidden type="button" class="btn btn-sm btn-danger" id="delete-rows-description">
+                            {% trans 'Delete selected row' %}
+                        </button>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-7"></div>
                     <div class="col-12 col-lg-5 mt-3 text-right">
                         <div class="row">
                             <label for="pretax-value" class="col-4 col-form-label text-primary">{% trans 'Pretax Amount' %}</label>

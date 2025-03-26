@@ -10,6 +10,7 @@ $(document).ready(function(){
             let data = $.fn.switcherResp(resp);
             WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
             $x.fn.renderCodeBreadcrumb(data);
+            $.fn.compareStatusShowPageAction(data);
             $('#titleInput').val(data.title)
             $('#dateCreatedInput').val($x.fn.reformatData(data.date_created, 'YYYY-MM-DD', 'DD/MM/YYYY'))
             $('#remarkInput').val(data.remark)

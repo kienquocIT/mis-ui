@@ -198,6 +198,10 @@ class MenusCoreConfigurations:
                 name='Sale Order', code='menu_quotation_config', view_name='QuotationConfigDetail',
                 icon='<i class="fas fa-file-invoice-dollar"></i>',
             ),
+            MenuCommon(
+                name='Lease order', code='menu_lease_order_config', view_name='LeaseOrderConfigDetail',
+                icon='<i class="fas fa-handshake"></i>',
+            ),
             # MenuCommon(
             #     name='Sale Order', code='menu_sale_order_config', view_name='SaleOrderConfigDetail',
             #     icon='<i class="fas fa-file-invoice"></i>',
@@ -341,11 +345,11 @@ class MenusCRM:
     )
     CONTACT = MenuCommon(
         name='Contact', code='id_menu_contact', view_name='ContactList',
-        icon='<i class="bi bi-journal-bookmark-fill"></i>',
+        icon='<i class="fa-solid fa-id-card"></i>',
     )
     ACCOUNT = MenuCommon(
         name='Account', code='id_menu_account', view_name='AccountList',
-        icon='<i class="fas fa-book-open-reader"></i>',
+        icon='<i class="fa-solid fa-id-card-clip"></i>',
     )
     OPPORTUNITY = MenuCommon(
         name='Opportunity', code='menu_opportunity_list', view_name='OpportunityList',

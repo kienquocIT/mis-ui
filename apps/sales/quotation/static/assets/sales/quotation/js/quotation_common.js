@@ -4326,7 +4326,7 @@ class QuotationDataTableHandle {
                     term.unshift({'id': '', 'title': 'Select...',});
                     QuotationLoadDataHandle.loadInitS2($(installmentEle), term, {}, null, true);
                     if (data?.['term_id']) {
-                        $(installmentEle).val(data?.['term_id']);
+                        $(installmentEle).val(data?.['term_id']).trigger('change');
                     }
                     if (!$termMD.val()) {
                         installmentEle.setAttribute('readonly', 'true');
@@ -5072,10 +5072,16 @@ class QuotationDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-load-payment-stage').length && !$('#btn-add-payment-stage').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" hidden>
+                let hiddenLoad = "hidden";
+                let hiddenAdd = "hidden";
+                let $termMD = QuotationLoadDataHandle.paymentSelectEle;
+                if ($termMD.val()) {
+                    hiddenLoad = "";
+                }
+                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
                                     <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-detail')}</span></span>
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-payment-stage" data-zone="sale_order_payment_stage">
+                                <button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-payment-stage" data-zone="sale_order_payment_stage" ${hiddenAdd}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(

@@ -35,39 +35,39 @@
     </div>
     <div class="row mt-5">
         <div class="col-12">
-            <ul class="nav nav-icon nav-tabs nav-justified nav-segmented-tabs nav-light">
-                <li style="min-width: max-content" class="nav-item">
+            <ul class="nav nav-tabs nav-icon nav-light">
+                <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_contact">
                         <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-journal-bookmark-fill"></i></span></span>
                         <span class="nav-link-text">{% trans "Contacts" %}</span>
                     </a>
                 </li>
-                <li style="min-width: max-content" class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_block_shipping">
                         <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-truck"></i></span></span>
                         <span class="nav-link-text">{% trans "Shipping Address" %}</span>
                     </a>
                 </li>
-                <li style="min-width: max-content" class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_block_billing">
                         <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-file-text"></i></span></span>
                         <span class="nav-link-text">{% trans "Billing/Invoice Address" %}</span>
                     </a>
                 </li>
-                <li style="min-width: max-content" class="nav-item" {% if not pk %}hidden{% endif %}>
+                <li class="nav-item" {% if not pk %}hidden{% endif %}>
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_payment_terms">
                         <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-handshake"></i></span></span>
                         <span class="nav-link-text">{% trans 'Payment Terms' %}</span>
                     </a>
                 </li>
-                <li style="min-width: max-content" class="nav-item" {% if not pk %}hidden{% endif %}>
+                <li class="nav-item" {% if not pk %}hidden{% endif %}>
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_activity">
                         <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ul"></i></span></span>
                         <span class="nav-link-text">{% trans 'Activity' %}</span>
                     </a>
                 </li>
             </ul>
-            <div class="tab-content mb-10">
+            <div class="tab-content">
                 <div class="tab-pane fade show active" id="tab_block_contact">
                     <div class="row" style="overflow: auto; max-height: 68vh">
                         <div class="col-12">
@@ -75,11 +75,11 @@
                                 <thead>
                                     <tr>
                                         <th class="w-5"></th>
-                                        <th class="w-20">{% trans "Account Owner" %}</th>
-                                        <th class="w-25">{% trans "Name" %}</th>
+                                        <th class="w-25">{% trans "Contact" %}</th>
                                         <th class="w-15">{% trans "Job title" %}</th>
                                         <th class="w-15">{% trans "Phone number" %}</th>
                                         <th class="w-15">{% trans "Email" %}</th>
+                                        <th class="w-20">{% trans "is account owner" %}</th>
                                         <th class="w-5"></th>
                                     </tr>
                                 </thead>
@@ -88,7 +88,7 @@
                             <button class="btn btn-sm btn-primary mt-2"
                                     id="add-contact-btn"
                                     data-bs-toggle="offcanvas"
-                                    data-bs-target="#offcanvasRight"
+                                    data-bs-target="#offcanvasSelectContact"
                                     aria-controls="offcanvasExample"
                                     type="button">
                                 <span>

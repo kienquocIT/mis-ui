@@ -1,4 +1,4 @@
 $(document).ready(async function () {
-    await ProductLoadPage.LoadPageDataFirst()
+    await ProductPageFunction.LoadPageDataFirst()
     ProductHandler.LoadDetailProduct('detail');
 })

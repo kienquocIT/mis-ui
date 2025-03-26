@@ -222,7 +222,8 @@ class RecoveryLoadDataHandle {
     };
 
     static loadLineDetail() {
-        let dataShow = [];
+        let dataTool = [];
+        let dataAsset = [];
         RecoveryDataTableHandle.$tableDelivery.DataTable().rows().every(function () {
             let row = this.node();
             let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();
@@ -233,23 +234,23 @@ class RecoveryLoadDataHandle {
                 for (let toolData of productData?.['tool_data']) {
                     if (toolData?.['quantity_recovery']) {
                         if (toolData?.['quantity_recovery'] > 0) {
-                            dataShow.push(toolData);
+                            dataTool.push(toolData);
                         }
                     }
                 }
                 for (let assetData of productData?.['asset_data']) {
                     if (assetData?.['quantity_recovery']) {
                         if (assetData?.['quantity_recovery'] > 0) {
-                            dataShow.push(assetData);
+                            dataAsset.push(assetData);
                         }
                     }
                 }
             }
         });
 
-        let dataFn = [];
+        let dataToolFn = [];
         let dataJSON = {};
-        let clonedData = JSON.parse(JSON.stringify(dataShow));
+        let clonedData = JSON.parse(JSON.stringify(dataTool));
         for (let cloned of clonedData) {
             if (dataJSON.hasOwnProperty(cloned?.['id'])) {
                 dataJSON[cloned?.['id']]['quantity_recovery'] += cloned?.['quantity_recovery'];
@@ -258,11 +259,11 @@ class RecoveryLoadDataHandle {
             }
         }
         for (let key in dataJSON) {
-            dataFn.push(dataJSON[key]);
+            dataToolFn.push(dataJSON[key]);
         }
 
         RecoveryDataTableHandle.$tableProduct.DataTable().clear().draw();
-        RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(dataFn).draw();
+        RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(dataAsset.concat(dataToolFn)).draw();
 
         RecoveryDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let row = this.node();

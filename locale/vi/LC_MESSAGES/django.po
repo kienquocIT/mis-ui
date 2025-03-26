@@ -7550,7 +7550,7 @@ msgstr "Danh sách tài sản, công cụ"
 
 #
 msgid "Asset, tools delivery"
-msgstr "Yêu cầu bàn giao"
+msgstr "Phiếu bàn giao"
 
 #
 msgid "Asset, tools return list"

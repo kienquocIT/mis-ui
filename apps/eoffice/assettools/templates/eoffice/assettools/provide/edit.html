@@ -87,7 +87,6 @@
                                     <th>{% trans 'UoM' %}</th>
                                     <th>{% trans 'Quantity' %}</th>
                                     <th>{% trans 'Unit price' %}</th>
-                                    <th>{% trans 'Tax' %}</th>
                                     <th>{% trans 'Subtotal price' %}</th>
                                     <th></th>
                                 </tr>
@@ -96,12 +95,7 @@
                                 <tfoot>
                                 <tr>
                                     <th colspan="5" class="border-0"></th>
-                                    <th class="border-0"><p style="text-align:right">{% trans 'Pretax Amount' %}:</p></th>
-                                    <th colspan="2" class="border-0"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
-                                </tr>
-                                <tr>
-                                    <th colspan="5" class="border-0"></th>
-                                    <th class="border-0"><p style="text-align:right">{% trans 'Taxes' %}:</p></th>
+                                    <th class="border-0"><p style="text-align:right">{% trans 'Subtotal' %}:</p></th>
                                     <th colspan="2" class="border-0"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
                                 </tr>
                                 <tr>
@@ -111,15 +105,17 @@
                                 </tr>
                                 </tfoot>
                             </table>
-                        <div>
-                            <button class="btn btn-outline-primary" type="button" id="add_new_line">
-                                <span>
-                                    <span>{% trans 'Add new' %}</span>
-                                    <span class="icon">
-                                        <i class="fa-regular fa-plus"></i>
-                                    </span>
-                                </span>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" data-dropdown-animation>
+                                <span>{% trans 'Add new' %}</span>
                             </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item add_new_line" href="#" data-type="crt_prod">
+                                    {% trans 'Product available' %}</a>
+                                <a class="dropdown-item add_new_line" href="#" data-type="new_prod">
+                                    {% trans 'Buy new product' %}</a>
+                            </div>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="attachment">

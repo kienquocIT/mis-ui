@@ -464,6 +464,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     CONSULTING_CREATE_PAGE = BreadcrumbChildren(_('Consulting create'), 'ConsultingCreate')
 
     # Lease order
+    LEASE_ORDER_CONFIG_PAGE = BreadcrumbChildren(_('Lease Order'), 'LeaseOrderConfigDetail')
     LEASE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Lease order'), 'LeaseOrderList')
 
     # Partnercenter
@@ -1212,6 +1213,9 @@ class BreadcrumbView:
     CONSULTING_UPDATE_PAGE = CONSULTING_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # Lease order
+    LEASE_ORDER_CONFIG = [
+        BreadcrumbItem.LEASE_ORDER_CONFIG_PAGE
+    ]
     LEASE_ORDER_LIST_PAGE = [
         BreadcrumbItem.LEASE_ORDER_LIST_PAGE
     ]

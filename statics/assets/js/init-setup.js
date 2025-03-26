@@ -2316,9 +2316,8 @@ class WFRTControl {
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     let btnIDLastSubmit = DocumentControl.getBtnIDLastSubmit();
                     if (btnIDLastSubmit === 'idxSaveInZoneWFThenNext') {
-                        let btnWF = document.querySelector('.btn-action-wf');
-                        if (btnWF) {
-                            btnWF.setAttribute('data-url-redirect', _form.dataUrlRedirect);
+                        for (let btnWFEle of document.querySelectorAll('.btn-action-wf')) {
+                            btnWFEle.setAttribute('data-url-redirect', _form.dataUrlRedirect);
                         }
                         let btnSubmit = $('#idxSaveInZoneWFThenNext');
                         let dataWFAction = btnSubmit.attr('data-wf-action');

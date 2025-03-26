@@ -265,6 +265,7 @@ $(function () {
                             }
                         }
                     }
+                    QuotationLoadDataHandle.loadChangePaymentTerm();
                 }
                 // Delete all promotion rows
                 deletePromotionRows(tableProduct, true, false);

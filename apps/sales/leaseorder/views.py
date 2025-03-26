@@ -199,6 +199,43 @@ class LeaseOrderDetailAPI(APIView):
         )
 
 
+# Config
+class LeaseOrderConfigDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/leaseorder/lease_order_config.html',
+        menu_active='menu_lease_order_config',
+        breadcrumb='LEASE_ORDER_CONFIG',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class LeaseOrderConfigDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.LEASE_ORDER_CONFIG).get()
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.LEASE_ORDER_CONFIG).put(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.LEASE_ORDER_CONFIG_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
 class LeaseOrderDetailDeliveryAPI(APIView):
     @mask_view(
         auth_require=True,

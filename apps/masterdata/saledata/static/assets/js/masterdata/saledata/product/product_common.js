@@ -1279,7 +1279,7 @@ class ProductHandler {
                     $x.fn.renderCodeBreadcrumb(product_detail);
                     // console.log(product_detail)
 
-                    pageElements.$code.val(product_detail['code']).prop('disabled', true).prop('readonly', true).addClass('form-control-line')
+                    pageElements.$code.val(product_detail['code']).prop('disabled', true).prop('readonly', true).addClass('form-control-line fw-bold text-primary')
                     pageElements.$title.val(product_detail['title'])
                     pageElements.$description.val(product_detail['description'])
                     pageElements.$part_number.val(product_detail['part_number'])

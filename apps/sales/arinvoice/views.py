@@ -58,7 +58,8 @@ class ARInvoiceCreate(View):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
         return {
-            'invoice_signs': resp.result[0] if len(resp.result) > 0 else ''
+            'invoice_signs': resp.result[0] if len(resp.result) > 0 else '',
+            'form_id': 'form-create-ar-invoice',
         }, status.HTTP_200_OK
 
 
@@ -90,7 +91,8 @@ class ARInvoiceUpdate(View):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
         return {
-            'invoice_signs': resp.result[0] if len(resp.result) > 0 else ''
+            'invoice_signs': resp.result[0] if len(resp.result) > 0 else '',
+            'form_id': 'form-detail-ar-invoice',
         }, status.HTTP_200_OK
 
 

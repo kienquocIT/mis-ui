@@ -26,7 +26,7 @@
     </div>
     <div class="col-12">
         <div id="area_table_customer_advance">
-            <table id="table-select-so" class="table nowrap w-100" data-method="GET" data-url="{% url 'CustomerAdvanceListForCashInflowAPI' %}">
+            <table id="customer-advance-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'CustomerAdvanceListForCashInflowAPI' %}">
                 <thead>
                 <tr>
                     <th style="min-width: 30px"></th>
@@ -43,7 +43,7 @@
             </table>
         </div>
         <div hidden id="area_table_ar_invoice">
-            <table id="table-select-ar-invoice" class="table nowrap w-100" data-method="GET" data-url="{% url 'ARInvoiceListForCashInflowAPI' %}">
+            <table id="ar-invoice-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'ARInvoiceListForCashInflowAPI' %}">
                 <thead>
                 <tr>
                     <th style="min-width: 30px"></th>

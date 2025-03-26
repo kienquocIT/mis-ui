@@ -5,18 +5,20 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-group-order">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
-        </span>
-    </button>
+    <a href="{% url 'GroupOrderUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon"><i class="fa-regular fa-pen-to-square"></i></span>
+            </span>
+        </button>
+    </a>
 {% endblock %}
 
 {% block pageContent %}
     <form
-            data-url="{% url 'GroupOrderListAPI' %}"
-            data-url-redirect="{% url 'GroupOrderList' %}"
+            data-url="{% url 'GroupOrderDetailAPI' pk=pk %}"
+            data-url-redirect="{% url 'ConsultingList' %}"
             data-method="POST"
             id="form-group-order"
     >
@@ -37,5 +39,5 @@
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'assets/sales/group_order/js/group_order_common.js'%}"></script>
-    <script src="{% static 'assets/sales/group_order/js/group_order_create.js'%}"></script>
+    <script src="{% static 'assets/sales/group_order/js/group_order_detail.js'%}"></script>
 {% endblock %}

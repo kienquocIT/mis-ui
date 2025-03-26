@@ -3,14 +3,24 @@
 <div class="row pb-10">
     <div class="col-12">
         {% trans 'Select Sale Person' as inherit_title %}
-        {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-inherit' has_opp=True opp_disabled=True has_process=False has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+        {% include 'extends/the-documents/bastion.html' with priority_app='opp-inherit' has_opp=True opp_disabled=True has_process=False has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
     </div>
 
     <div class="row">
         <div class="col-6">
-            <div class="form-group">
-                <label for="description" class="form-label required">{% trans "Description" %}</label>
-                <input id="description" required class="form-control" type="text"/>
+            <div class="row">
+                <div class="col-8">
+                    <div class="form-group">
+                        <label for="description" class="form-label required">{% trans "Description" %}</label>
+                        <input name="title" id="description" required class="form-control" type="text"/>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="order-number" class="form-label required">{% trans "Order Number" %}</label>
+                        <input name="order_number" id="order-number" required class="form-control" type="text"/>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-3">
@@ -29,7 +39,7 @@
             <div class="form-group">
                 <label class="form-label required" for="created-date">{% trans 'Created Date' %}</label>
                 <div class="input-affix-wrapper">
-                    <input required type="text" name=''
+                    <input required type="text" name='service_created_date'
                                class="form-control" autocomplete="off" id="created-date">
                     <div class="input-suffix">
                         <i class="fas fa-calendar-alt"></i>
@@ -192,7 +202,8 @@
 
 {% block dataHiddenGroup %}
     <script id="url-script"
-            data-detail-contact-url = '{% url 'ContactDetailAPI' pk=0 %}'
+{#            data-detail-contact-url = '{% url 'ContactDetailAPI' pk=0 %}'#}
+            data-detail-account-url = '{% url 'AccountDetailAPI' pk=0 %}'
             data-tax-list-url = '{% url 'TaxListAPI' %}'
             data-expense-item-list-url="{% url 'ExpenseItemListAPI' %}"
             data-uom-list-url = '{% url 'UnitOfMeasureListAPI' %}'

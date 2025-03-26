@@ -363,6 +363,10 @@ class MenusCRM:
         name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
         icon='<i class="fas fa-file-invoice"></i>',
     )
+    GROUP_ORDER = MenuCommon(
+        name='Group order', code='menu_group_order_list', view_name='GroupOrderList',
+        icon='<i class="fas fa-file-invoice"></i>',
+    )
     LEASE_ORDER = MenuCommon(
         name='Lease order', code='menu_lease_order_list', view_name='LeaseOrderList',
         icon='<i class="fas fa-handshake"></i>',
@@ -941,6 +945,7 @@ class SpaceItem:
                 MenusCRM.CONSULTING,
                 MenusCRM.BIDDING,
                 MenusCRM.SALE_ORDER,
+                MenusCRM.GROUP_ORDER,
                 MenusCRM.AR_INVOICE,
                 MenusCRM.LEASE_ORDER,
                 MenusCRM.RECURRENCE,

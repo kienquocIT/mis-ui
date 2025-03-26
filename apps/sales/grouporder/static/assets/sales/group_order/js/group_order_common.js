@@ -16,15 +16,20 @@ class GroupOrderCommon {
         this.$formSubmit = $('#form-group-order')
 
         // common fields
+        this.$orderNumberInput = $('#order-number')
         this.$maxGuestInput = $('#max-guest')
         this.$registeredGuest = $('#registered-guest')
         this.$costPerGuestInput = $('#cost-per-guest')
         this.$costPerRegisteredGuestInput = $('#cost-per-registered-guest')
         this.$plannedRevenueInput = $('#planned-revenue')
         this.$actualRevenueInput = $('#actual-revenue')
+        this.$descriptionInput = $('#description')
+        this.$orderStatusSelect = $('#status')
+        this.$orderPaymentTermSelect = $('#payment-term')
 
         // total
         this.$totalGuest = $('#total-guest')
+        this.$taxSelect = $('#tax')
         this.$totalAmount = $('#total-amount')
         this.$totalAmountVAT = $('#total-amount-vat')
 
@@ -57,17 +62,18 @@ class GroupOrderCommon {
         this.$selectPriceModal = $('#modal-select-price')
     }
 
-    init(){
-        new $x.cls.bastionField().init()
-
+    init(isDetail=false){
         this.initTaxData()
-        this.initDateInput(this.$serviceDurationInput, null, true)
-        this.initDateInput(this.$createdDateInput, null, false)
         this.initDateInput(this.$canvasRegisterDate, null, false)
-        this.initDetailDataTable()
         this.initProductModalDataTable()
-        this.initCostDataTable()
-        this.initExpenseDataTable()
+        if(!isDetail){
+            new $x.cls.bastionField().init()
+            this.initDateInput(this.$serviceDurationInput, null, true)
+            this.initDateInput(this.$createdDateInput, null, false)
+            this.initDetailDataTable()
+            this.initCostDataTable()
+            this.initExpenseDataTable()
+        }
         $.fn.initMaskMoney2()
     }
 
@@ -94,12 +100,14 @@ class GroupOrderCommon {
         return true;
     }
 
-    handleEvents(){
+    handleEvents(isDetail=false){
+        this.handleOpenAddCustomerModal()
+        this.handleChangeOrderNumberAndDescription()
         this.handleAddNewCustomer()
         this.handleSelectCustomer()
         this.handleAddProduct()
-        this.handleOpenPriceModal()
-        this.handleEditProductPriceInPriceModal()
+        this.handleOpenPriceModal(isDetail)
+        this.handleEditProductPriceInPriceModal(isDetail)
         this.handleSelectPriceInPriceModal()
         this.handleFinishSelectPrice()
         this.handleSelectTax()
@@ -123,13 +131,36 @@ class GroupOrderCommon {
     // dateDate format must be YYYY-MM-DD
     initDateInput($dateInput, dateData, isRange = false) {
         // Reformat dateData if provided
+        let startDate, endDate;
         if (dateData) {
-            dateData = $x.fn.reformatData(
-                dateData,
-                $x.cls.datetime.defaultFormatDatetime,
-                'DD-MM-YYYY',
-                moment().format('DD-MM-YYYY')
-            );
+            if (typeof dateData === 'object' && dateData.start && dateData.end && isRange) {
+                // Handle object with start and end dates for range
+                startDate = $x.fn.reformatData(
+                    dateData.start,
+                    $x.cls.datetime.defaultFormatDatetime,
+                    'DD-MM-YYYY',
+                    moment().format('DD-MM-YYYY')
+                );
+                endDate = $x.fn.reformatData(
+                    dateData.end,
+                    $x.cls.datetime.defaultFormatDatetime,
+                    'DD-MM-YYYY',
+                    moment().format('DD-MM-YYYY')
+                );
+            } else {
+                // Handle single date (string) or fallback
+                startDate = $x.fn.reformatData(
+                    dateData,
+                    $x.cls.datetime.defaultFormatDatetime,
+                    'DD-MM-YYYY',
+                    moment().format('DD-MM-YYYY')
+                );
+                endDate = isRange ? moment(startDate, 'DD-MM-YYYY').add(1, 'days') : null;
+            }
+        } else {
+            // No dateData provided, use defaults
+            startDate = moment().format('DD-MM-YYYY');
+            endDate = isRange ? moment().add(1, 'days').format('DD-MM-YYYY') : null;
         }
 
         $dateInput.daterangepicker({
@@ -143,9 +174,9 @@ class GroupOrderCommon {
             locale: {
                 format: 'DD/MM/YYYY',
             },
-            startDate: dateData ? moment(dateData, 'DD-MM-YYYY') : moment(),
+            startDate: moment(startDate, 'DD-MM-YYYY'),
             ...(isRange && { // Only include endDate if isRange is true
-                endDate: dateData ? moment(dateData, 'DD-MM-YYYY').add(1, 'days') : moment().add(1, 'days')
+                endDate: moment(endDate, 'DD-MM-YYYY')
             })
         }).on('apply.daterangepicker', function (ev, picker) {
             if (isRange) {
@@ -159,9 +190,14 @@ class GroupOrderCommon {
             }
         }).on('show.daterangepicker', function (ev, picker) {
             if (dateData) {
-                picker.setStartDate(moment(dateData, 'DD-MM-YYYY'));
-                if (isRange) {
-                    picker.setEndDate(moment(dateData, 'DD-MM-YYYY').add(1, 'days'));
+                if (typeof dateData === 'object' && dateData.start && dateData.end && isRange) {
+                    picker.setStartDate(moment(startDate, 'DD-MM-YYYY'));
+                    picker.setEndDate(moment(endDate, 'DD-MM-YYYY'));
+                } else {
+                    picker.setStartDate(moment(startDate, 'DD-MM-YYYY'));
+                    if (isRange) {
+                        picker.setEndDate(moment(endDate, 'DD-MM-YYYY'));
+                    }
                 }
             }
         });
@@ -169,11 +205,17 @@ class GroupOrderCommon {
         // Set initial value based on isRange
         if (dateData) {
             if (isRange) {
-                const startDate = moment(dateData, 'DD-MM-YYYY').format('DD-MM-YYYY');
-                const endDate = moment(dateData, 'DD-MM-YYYY').add(1, 'days').format('DD-MM-YYYY');
-                $dateInput.val(`${startDate} - ${endDate}`).trigger('change');
+                if (typeof dateData === 'object' && dateData.start && dateData.end) {
+                    const formattedStart = moment(startDate, 'DD-MM-YYYY').format('DD-MM-YYYY');
+                    const formattedEnd = moment(endDate, 'DD-MM-YYYY').format('DD-MM-YYYY');
+                    $dateInput.val(`${formattedStart} - ${formattedEnd}`).trigger('change');
+                } else {
+                    const formattedStart = moment(startDate, 'DD-MM-YYYY').format('DD-MM-YYYY');
+                    const formattedEnd = moment(startDate, 'DD-MM-YYYY').add(1, 'days').format('DD-MM-YYYY');
+                    $dateInput.val(`${formattedStart} - ${formattedEnd}`).trigger('change');
+                }
             } else {
-                $dateInput.val(moment(dateData, 'DD-MM-YYYY').format('DD-MM-YYYY')).trigger('change');
+                $dateInput.val(moment(startDate, 'DD-MM-YYYY').format('DD-MM-YYYY')).trigger('change');
             }
         } else {
             if (isRange) {
@@ -186,7 +228,11 @@ class GroupOrderCommon {
         }
     }
 
-    initDetailDataTable(data=[]){
+    initMaskMoneyInput($selector, data=null){
+        $selector.attr('value', data).focus({preventScroll: true}).blur()
+    }
+
+    initDetailDataTable(data=[], isDetail=false){
         this.$detailDataTable.DataTableDefault({
             data: data,
             rowIdx: true,
@@ -263,15 +309,6 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 7,
-                    width: '7%',
-                    render: (data, type, row) => {
-                        const taxListUrl = this.$urlScript.attr('data-tax-list-url')
-                        return `<select class="form-select select2 tax-select" >
-                                </select>`
-                    }
-                },
-                {
-                    targets: 8,
                     width: '15%',
                     render: (data, type, row) => {
                         const subTotal = row?.['sub_total']
@@ -279,7 +316,7 @@ class GroupOrderCommon {
                     }
                 },
                 {
-                    targets: 9,
+                    targets: 8,
                     width: '5%',
                     render: (data, type, row) => {
                         const paymentStatusMap = {
@@ -291,7 +328,7 @@ class GroupOrderCommon {
                     }
                 },
                 {
-                    targets: 10,
+                    targets: 9,
                     width: '5%',
                     render: (data, type, row) => {
                         const dataDetail = encodeURIComponent(JSON.stringify(row))
@@ -306,7 +343,9 @@ class GroupOrderCommon {
                                         data-detail="${dataDetail}"
                                         data-customer-id="${customerId}"
                                     >
-                                        <span class="icon"><i class="fas fa-pencil"></i></span>
+                                        <span class="icon">
+                                            <i class="${isDetail ? "far fa-eye" : "fas fa-pencil"}"></i>
+                                        </span>
                                     </button>
                                     <button 
                                         type="button" 
@@ -323,32 +362,19 @@ class GroupOrderCommon {
                     }
                 },
             ],
-            rowCallback: function(row, data) {
-
-                if (data.isNew) {
-                    const $select = $(row).find('.tax-select')
-                    const dataScript = $('#data-script')
-                    let dataTax = JSON.parse(dataScript.attr('data-tax')) || []
-                    this.initSelect($select, dataTax)
-                    const newOption = new Option('Select', '', true, true)
-                    $select.append(newOption).trigger('change');
-
-                    data.isNew = false;
-                }
-
-                // const $select = $(row).find('.tax-select')
-                // const dataScript = $('#data-script')
-                // let dataTax = JSON.parse(dataScript.attr('data-tax')) || []
-                // this.initSelect($select, dataTax)
-                // const newOption = new Option('Select', '', true, true);
-                // $select.append(newOption).trigger('change');
-                // if (data?.['asset_code']) {
-                //     const assetCode = data['asset_code'];
-                //     const assetId = data['id']
-                //     $select.append(new Option(assetCode, assetId, true, true));
-                //     $select.trigger('change.select2');
-                // }
-            }.bind(this),
+            // rowCallback: function(row, data) {
+            //
+            //     if (data.isNew) {
+            //         const $select = $(row).find('.tax-select')
+            //         const dataScript = $('#data-script')
+            //         let dataTax = JSON.parse(dataScript.attr('data-tax')) || []
+            //         this.initSelect($select, dataTax)
+            //         const newOption = new Option('Select', '', true, true)
+            //         $select.append(newOption).trigger('change');
+            //
+            //         data.isNew = false;
+            //     }
+            // }.bind(this),
         })
     }
 
@@ -688,6 +714,36 @@ class GroupOrderCommon {
         })
     }
 
+    handleOpenAddCustomerModal(){
+        $(document).on('click', '#btn-add-customer', (e)=>{
+            const serviceName = this.$descriptionInput.val()
+            const serviceCode = this.$orderNumberInput.val()
+
+            this.$canvasServiceNameInput.val(serviceName)
+            this.$canvasServiceCodeInput.val(serviceCode)
+        })
+    }
+
+    handleChangeOrderNumberAndDescription(){
+        $(document).on('change', '#description, #order-number', (e)=>{
+            const serviceName = this.$descriptionInput.val()
+            const serviceCode = this.$orderNumberInput.val()
+            const table = this.$detailDataTable.DataTable()
+            table.rows().every(function () {
+                let rowData = this.data()
+                const $row = $(this.node())
+                const unitPrice = $row.find('.detail-unit-price').attr('data-init-money')
+                const subTotal = $row.find('.detail-sub-total').attr('data-init-money')
+                rowData['unit_price'] = unitPrice
+                rowData['sub_total'] = subTotal
+                rowData['service_name'] = serviceName
+                rowData['register_code'] = serviceCode
+                this.data(rowData)
+            })
+            table.draw()
+        })
+    }
+
     handleAddNewCustomer(){
         $(document).on('click', '#btn-offcanvas-add-customer', ()=>{
             const serviceName = this.$canvasServiceNameInput.val()
@@ -731,9 +787,8 @@ class GroupOrderCommon {
                 email: email,
                 payment_status: paymentStatus,
                 unit_price: totalGeneralPrice,
-                sub_total: 0,
+                sub_total: totalGeneralPrice,
                 note: note,
-                isNew: true,
             }
 
             this.$detailDataTable.DataTable().row.add(data).draw()
@@ -767,8 +822,10 @@ class GroupOrderCommon {
 
     handleSelectCustomer(){
         $(document).on('change', '#canvas-customer', (e)=>{
-            const contactID = $(e.currentTarget).val()
-            let url = this.$urlScript.attr('data-detail-contact-url').format_url_with_uuid(contactID)
+            // const contactID = $(e.currentTarget).val()
+            // let url = this.$urlScript.attr('data-detail-account-url').format_url_with_uuid(contactID)
+            const accountID = $(e.currentTarget).val()
+            let url = this.$urlScript.attr('data-detail-account-url').format_url_with_uuid(accountID)
             $.fn.callAjax2({
                 url: url,
                 method:'GET',
@@ -777,9 +834,12 @@ class GroupOrderCommon {
                 (resp) => {
                     const data = $.fn.switcherResp(resp);
                     if (data) {
-                        this.initInput(this.$canvasCustomerCodeInput, data?.['contact_detail']?.['code'])
-                        this.initInput(this.$canvasPhoneInput, data?.['contact_detail']?.['phone'] ? data?.['contact_detail']?.['phone'] : 'no data')
-                        this.initInput(this.$canvasEmailInput, data?.['contact_detail']?.['email'] ? data?.['contact_detail']?.['email'] : 'no data')
+                        // this.initInput(this.$canvasCustomerCodeInput, data?.['contact_detail']?.['code'])
+                        // this.initInput(this.$canvasPhoneInput, data?.['contact_detail']?.['phone'] ? data?.['contact_detail']?.['phone'] : 'no data')
+                        // this.initInput(this.$canvasEmailInput, data?.['contact_detail']?.['email'] ? data?.['contact_detail']?.['email'] : 'no data')
+                        this.initInput(this.$canvasCustomerCodeInput, data?.['account_detail']?.['code'])
+                        this.initInput(this.$canvasPhoneInput, data?.['account_detail']?.['phone'] ? data?.['account_detail']?.['phone'] : 'no data')
+                        this.initInput(this.$canvasEmailInput, data?.['account_detail']?.['email'] ? data?.['account_detail']?.['email'] : 'no data')
                     }
                 },
                 (errs) => {
@@ -854,12 +914,18 @@ class GroupOrderCommon {
 
             // add general price to each detail row
             this.$detailDataTable.DataTable().rows().every( (rowIdx)=> {
+                let rowData = this.$detailDataTable.DataTable().row(rowIdx).data()
                 let $row = $(this.$detailDataTable.DataTable().row(rowIdx).node())
                 const $unitPrice = $row.find('.detail-unit-price')
+                const $subTotal = $row.find('.detail-sub-total')
+                const quantity = rowData['quantity'] ? rowData['quantity'] : 1
                 const currUnitPrice = Number($unitPrice.attr('data-init-money') || 0)
                 const newUnitPrice = currUnitPrice + generalPrice
+
                 $unitPrice.attr('data-init-money', newUnitPrice)
-                this.reLoadTaxSelectAndSubTotalPrice($unitPrice)
+                $subTotal.attr('data-init-money', newUnitPrice*quantity)
+
+                // this.reLoadTaxSelectAndSubTotalPrice($unitPrice)
             })
 
             this.loadTotalData()
@@ -868,9 +934,8 @@ class GroupOrderCommon {
         })
     }
 
-    handleOpenPriceModal(){
+    handleOpenPriceModal(isDetail=false){
         $(document).on('click', '.btn-select-price', (e)=>{
-            // const url =
             const dataScript = $('#data-script')
             let dataProductList = JSON.parse(dataScript.attr('data-selected-product'))
 
@@ -886,21 +951,6 @@ class GroupOrderCommon {
 
             let dataSelectedPriceList = JSON.parse(dataScript.attr('data-selected-price'))
             let dataSelectedPriceByCustomer = dataSelectedPriceList[customerId] || []
-            // add general price to script
-            // for (const product of dataProductList){
-            //     const isSelectedProductPriceExisting = dataSelectedPriceByCustomer.find((item) => item.productId === product?.['id'])
-            //     if (!isSelectedProductPriceExisting){
-            //         const defaultPrice = product['product_price_list_data'].find((item)=>item['is_default']===true)
-            //         dataSelectedPriceByCustomer.push({
-            //             id: defaultPrice?.['id'],
-            //             value: defaultPrice?.['price'],
-            //             productId: product?.['id']
-            //         })
-            //     }
-            // }
-            // dataSelectedPriceList[customerId] = dataSelectedPriceByCustomer
-            //
-            // dataScript.attr('data-selected-price', JSON.stringify(dataSelectedPriceList))
 
             for (const item of dataProductList) {
                 const title = item?.['title']
@@ -908,7 +958,7 @@ class GroupOrderCommon {
                 const isChecked = !!dataSelectedPriceByCustomer.find((priceItem)=>priceItem?.['productId'] === id)
                 $selectPriceModalProductListArea.append(`
                     <div class="form-check d-flex align-items-center">
-                        <input type="checkbox" class="form-check-input price-modal-checkbox" name="price-modal-select-product" data-product-id="${id}" ${isChecked ? 'checked' : ''}>
+                        <input type="checkbox" class="form-check-input price-modal-checkbox" name="price-modal-select-product" data-product-id="${id}" ${isChecked ? 'checked' : ''} ${isDetail ? 'disabled' : ''}>
                         <label class="form-check-label">${title}</label>
                         <button 
                             type="button"
@@ -918,8 +968,11 @@ class GroupOrderCommon {
                             data-bs-placement="top"
                             data-product-id="${id}"
                             ${isChecked ? '' : 'disabled'}
-                        >
-                            <span class="icon"><i class="fas fa-pencil"></i></span>
+                        >   
+                            <span class="icon">
+                               
+                                <i class="${isDetail ? 'far fa-eye' : 'fas fa-pencil'}"></i>
+                            </span>
                         </button>
                     </div>
                 `)
@@ -935,7 +988,7 @@ class GroupOrderCommon {
         })
     }
 
-    handleEditProductPriceInPriceModal(){
+    handleEditProductPriceInPriceModal(isDetail=false){
         $(document).on('click', '.price-modal-edit-product', (e)=>{
             const customerId = this.$selectPriceModal.attr('data-customer-id')
 
@@ -973,6 +1026,7 @@ class GroupOrderCommon {
                             data-price-value="${price}"
                             data-product-id="${productId}"
                             ${isExisting ? "checked" : ""}
+                            ${isDetail ? 'disabled' : ''}
                         >
                         <label class="form-check-label w-100">
                             <div class="row w-100">
@@ -1105,7 +1159,7 @@ class GroupOrderCommon {
     }
 
     handleSelectTax(){
-        $(document).on('change', '.tax-select', (e)=>{
+        $(document).on('change', '#tax', (e)=>{
             const dataScript = $('#data-script')
             let dataTax = JSON.parse(dataScript.attr('data-tax')) || []
 
@@ -1115,13 +1169,11 @@ class GroupOrderCommon {
             const tax = dataTax.find((item)=>item.id === taxId)
             const taxRate = Number(tax?.['rate'] || 0)
 
-            const $unitPrice = $row.find('.detail-unit-price')
-            const unitPriceValue = Number($unitPrice.attr('data-init-money') || 0)
+            const totalAmount = Number(this.$totalAmount.attr('data-init-money') || 0)
 
-            const subTotal = unitPriceValue + (unitPriceValue * taxRate/100)
+            const totalAmountVAT = totalAmount + (totalAmount * taxRate/100)
 
-            const $subTotal = $row.find('.detail-sub-total'); // Scoped to the row
-            $subTotal.attr('data-init-money', subTotal);
+            this.$totalAmountVAT.attr('data-init-money', totalAmountVAT);
 
             this.loadTotalData()
 
@@ -1146,8 +1198,8 @@ class GroupOrderCommon {
             const customerName = dataCustomerDetail?.['customer_name']
             const customerCode = dataCustomerDetail?.['customer_code']
             let registerDate = dataCustomerDetail?.['register_date'].split('-').reverse().join('-')
-            const phone = dataCustomerDetail?.['phone']
-            const email = dataCustomerDetail?.['email']
+            const phone = dataCustomerDetail?.['phone'] ? dataCustomerDetail?.['phone'] : 'no data'
+            const email = dataCustomerDetail?.['email'] ? dataCustomerDetail?.['email'] : 'no data'
             const note = dataCustomerDetail?.['note']
             const paymentStatus = dataCustomerDetail?.['payment_status']
 
@@ -1208,12 +1260,12 @@ class GroupOrderCommon {
 
             this.$detailDataTable.DataTable().row($row).data(data).draw()
 
-            const $select = $row.find('.tax-select')
-            const dataScript = $('#data-script')
-            let dataTax = JSON.parse(dataScript.attr('data-tax')) || []
-            this.initSelect($select, dataTax)
-            const newOption = new Option(taxName, taxId, true, true)
-            $select.append(newOption).trigger('change.select2')
+            // const $select = $row.find('.tax-select')
+            // const dataScript = $('#data-script')
+            // let dataTax = JSON.parse(dataScript.attr('data-tax')) || []
+            // this.initSelect($select, dataTax)
+            // const newOption = new Option(taxName, taxId, true, true)
+            // $select.append(newOption).trigger('change.select2')
 
             this.hideOffCanvas('#offcanvas-update-customer')
         })
@@ -1371,16 +1423,17 @@ class GroupOrderCommon {
     loadDataPriceToTableDetail($detailUnitPriceSelects, value){
         $detailUnitPriceSelects.attr('data-init-money', value)
         $detailUnitPriceSelects.each((i, e)=>{
-            this.reLoadTaxSelectAndSubTotalPrice($(e))
+            const $subTotal = $(e).closest('tr').find('.detail-sub-total')
+            $subTotal.attr('data-init-money', value)
         })
         $.fn.initMaskMoney2()
     }
 
     reLoadTaxSelectAndSubTotalPrice($unitPriceElement){
         const $row = $($unitPriceElement).closest('tr')
-        const $selectTax = $row.find('.tax-select')
-        const newOption = new Option('Select', '', false, true);
-        $selectTax.append(newOption).trigger('change');
+        // const $selectTax = $row.find('.tax-select')
+        // const newOption = new Option('Select', '', false, true);
+        // $selectTax.append(newOption).trigger('change');
 
         const $subTotal = $row.find('.detail-sub-total')
         $subTotal.attr('data-init-money', 0)
@@ -1414,8 +1467,16 @@ class GroupOrderCommon {
             let row = $(this.node())
             totalGuest++
             totalAmount += Number(row.find('.detail-unit-price').attr('data-init-money') || 0)
-            totalAmountVAT += Number(row.find('.detail-sub-total').attr('data-init-money') || 0)
         })
+        const taxId = this.$taxSelect.val()
+        if(taxId){
+            const dataScript = $('#data-script')
+            let dataTax = JSON.parse(dataScript.attr('data-tax')) || []
+            const tax = dataTax.find((item)=>item.id === taxId)
+            const taxRate = Number(tax?.['rate'] || 0)
+
+            totalAmountVAT = totalAmount + totalAmount*taxRate/100
+        }
 
         this.$totalGuest.text(totalGuest)
         this.$totalAmount.attr('data-init-money', totalAmount)
@@ -1448,6 +1509,7 @@ class GroupOrderCommon {
                     if (data && resp.data.hasOwnProperty('tax_list')) {
                         dataTax = data['tax_list']
                         dataScript.attr('data-tax', JSON.stringify(dataTax))
+                        return dataTax
                     }
                 },
                 (errs) => {
@@ -1459,6 +1521,15 @@ class GroupOrderCommon {
                         $.fn.notifyB('Error', 'failure')
                     }
                 })
+            .then(
+                (taxData) => {
+                    this.initSelect(this.$taxSelect, taxData)
+                    const newOption = new Option('Select...', null, true, true)
+                    this.$taxSelect.append(newOption).trigger('change.select2')
+                }
+            )
+
+
     }
 
     loadDataGuestAndCostCommonFields(){
@@ -1524,16 +1595,18 @@ class GroupOrderCommon {
         dataScript.attr('data-selected-price', JSON.stringify(dataSelectedPriceList))
     }
 
-
     setupFormData(dataForm){
         let customerDetailList = []
         let costList = []
+        let expenseList = []
         const dataScript = $('#data-script')
         let dataSelectedPriceList = JSON.parse(dataScript.attr('data-selected-price'))
         let dataSelectedProductList = JSON.parse(dataScript.attr('data-selected-product'))
+        let dataTotalCost = dataScript.attr('data-total-cost') || 0
+        let dataTotalGeneralPrice = dataScript.attr('data-total-general-price') || 0
 
         // get customer data
-        this.$detailDataTable.DataTable().rows().every(function(){
+        this.$detailDataTable.DataTable().rows().every(function(rowIdx){
             let rowData = this.data()
             const $row = $(this.node())
             const customerId = rowData?.['customer_id']
@@ -1541,10 +1614,14 @@ class GroupOrderCommon {
 
             const unitPrice = Number($row.find('.detail-unit-price').attr('data-init-money') || 0)
             const subTotal = Number($row.find('.detail-sub-total').attr('data-init-money') || 0)
-            const tax = $row.find('.tax-select').val()
+            // const tax = $row.find('.tax-select').val()
             rowData['unit_price'] = unitPrice
             rowData['sub_total'] = subTotal
-            rowData['tax'] = tax
+            // rowData['tax'] = tax
+            rowData['quantity'] = 1
+            rowData['order'] = rowIdx
+            let tmpData = rowData['register_date'].split('-').reverse().join('-')
+            rowData['register_date'] = tmpData
             rowData['price_list_select'] = []
             for(const item of customerPriceListSelect){
                 rowData['price_list_select'].push({
@@ -1558,28 +1635,239 @@ class GroupOrderCommon {
         dataForm['customer_detail_list'] = customerDetailList
 
         // get cost data
-        this.$costDataTable.DataTable().rows().every(function(){
+        this.$costDataTable.DataTable().rows().every(function(rowIdx){
             let rowData = this.data()
             const $row = $(this.node())
-            const productId = rowData?.['id']
-
+            const subTotal = Number($row.find('.cost-sub-total').attr('data-init-money') || 0)
+            rowData['product'] = rowData?.['id']
+            rowData['sub_total'] = subTotal
+            rowData['order'] = rowIdx
             costList.push(rowData)
 
             console.log(rowData)
         })
         dataForm['cost_list'] = costList
+
+        // get expense data
+        this.$expenseDataTable.DataTable().rows().every(function(rowIdx){
+            let rowData = {}
+            const $row = $(this.node())
+            rowData['expense_name'] = $row.find('.expense-name').val()
+            rowData['expense'] = $row.find('.expense-item-select').val()
+            rowData['expense_uom'] = $row.find('.uom-select').val()
+            rowData['quantity'] = $row.find('.expense-quantity').val()
+            rowData['cost'] = $row.find('.expense-cost').attr('value')
+            rowData['expense_tax'] = $row.find('.expense-tax-select').val()
+            rowData['sub_total'] = $row.find('.expense-sub-total').attr('data-init-money') || 0
+            rowData['order'] = rowIdx
+            expenseList.push(rowData)
+        })
+        dataForm['expense_list'] = expenseList
+
+        let serviceDuration = dataForm['service_duration']
+        let startDate = serviceDuration.split(" - ")[0]
+        let endDate = serviceDuration.split(" - ")[1]
+        dataForm['service_start_date'] = startDate.split('-').reverse().join('-')
+        dataForm['service_end_date'] = endDate.split('-').reverse().join('-')
+        dataForm['planned_revenue'] = this.$plannedRevenueInput.attr('value') || 0
+        dataForm['actual_revenue'] = this.$actualRevenueInput.attr('value') || 0
+        dataForm['cost_per_guest'] = this.$costPerGuestInput.attr('value') || 0
+        dataForm['cost_per_registered_guest'] = this.$costPerRegisteredGuestInput.attr('value') || 0
+        dataForm['service_created_date'] = dataForm['service_created_date'].split('-').reverse().join('-')
+
+        dataForm['total_amount'] = this.$totalAmount.attr('data-init-money') || 0
+        dataForm['total_amount_including_VAT'] = this.$totalAmountVAT.attr('data-init-money') || 0
+
+        dataForm['total_general_price'] = dataTotalGeneralPrice
+        dataForm['total_cost'] = dataTotalCost
+        dataForm['data_selected_price_list'] = dataSelectedPriceList
+        dataForm['data_product_list'] = dataSelectedProductList
+        dataForm['email'] = dataForm['email'] === 'no data' ? null : dataForm['email']
+        dataForm['phone'] = dataForm['phone'] === 'no data' ? null : dataForm['phone']
         console.log(dataForm)
     }
 
     setUpFormSubmit($formSubmit){
+        console.log('setup')
         SetupFormSubmit.call_validate($formSubmit, {
             onsubmit: true,
             submitHandler: (form, event) => {
                 let _form = new SetupFormSubmit($formSubmit);
                 this.setupFormData(_form['dataForm'])
                 console.log(_form)
-                //WFRTControl.callWFSubmitForm(_form)
+                console.log('cccc')
+                 // WFRTControl.callWFSubmitForm(_form)
+                const url = _form.dataUrl
+                $.fn.callAjax2({
+                    url: url,
+                    method: _form.dataMethod,
+                    data: _form.dataForm,
+                    isLoading: true,
+                }).then(
+                    (resp) => {
+                        const data = $.fn.switcherResp(resp);
+                        if (data) {
+                             $.fn.notifyB({
+                                'description': 'Success',
+                            }, 'success');
+                            setTimeout(() => {
+                                window.location.replace(_form.dataUrlRedirect);
+                            }, 3000);
+                        }
+                    },
+                    (errs) => {
+                        if(errs.data.errors){
+                            for (const [key, value] of Object.entries(errs.data.errors)) {
+                                $.fn.notifyB({title: key, description: value}, 'failure')
+                            }
+                        } else {
+                            $.fn.notifyB('Error', 'failure')
+                        }
+                    })
             }
         })
+    }
+
+    disableFields(){
+        let $fields = this.$formSubmit.find('input, select, button, textarea')
+        $fields = $fields.not('.close-btn')
+        $fields.attr('disabled', true)
+        $fields.attr('readonly', true)
+
+        this.$detailDataTable.on('draw.dt', function() {
+            let disableFields = $(this).find('button, select')
+            disableFields = disableFields.not('.btn-select-price').not('.detail-edit-row')
+            disableFields.attr('disabled', true).attr('readonly', true)
+        })
+        this.$costDataTable.on('draw.dt', function() {
+            let disableFields = $(this).find('button, input')
+            disableFields.attr('disabled', true).attr('readonly', true)
+        })
+        this.$expenseDataTable.on('draw.dt', function() {
+            let disableFields = $(this).find('button, input, select')
+            disableFields.attr('disabled', true).attr('readonly', true)
+        })
+
+        $fields = this.$selectPriceModal.find('#btn-finish')
+        $fields.attr('disabled', true)
+        $fields.attr('readonly', true)
+
+    }
+
+    fetchDetailData($formSubmit ,disabledFields=false){
+        return $.fn.callAjax2({
+            url: $formSubmit.attr('data-url'),
+            method:'GET',
+            isLoading: true
+        }).then(
+            (resp) => {
+                const data = $.fn.switcherResp(resp)
+                if (data) {
+                    $x.fn.renderCodeBreadcrumb(data)
+                    $.fn.compareStatusShowPageAction(data)
+                    const dataScript = $('#data-script')
+                    const dataTax = JSON.parse(dataScript.attr('data-tax'))
+                    const isDetail = disabledFields
+                    new $x.cls.bastionField().init({
+                        data_inherit: [
+                            {
+                                "id": data?.['employee_inherit']?.['id'],
+                                "full_name": data?.['employee_inherit']?.['full_name'],
+                                "selected": true,
+                            }
+                        ]
+                    })
+                    const inheritOption = new Option(data?.['employee_inherit']?.['full_name'], data?.['employee_inherit']?.['id'], true, true)
+                    $('#employee_inherit_id').append(inheritOption).trigger('change.select2')
+
+                    // common fields
+                    this.initInput(this.$descriptionInput, data?.['title'])
+                    this.initInput(this.$orderNumberInput, data?.['order_number'])
+                    this.initDateInput(
+                        this.$serviceDurationInput,
+                        {
+                            start: data?.['service_start_date'],
+                            end: data?.['service_end_date']
+                        },
+                        true
+                    )
+                    this.initDateInput(this.$createdDateInput, data?.['service_created_date'], false)
+                    this.initInput(this.$maxGuestInput, data?.['max_guest'])
+                    this.initInput(this.$registeredGuest, data?.['registered_guest'])
+                    this.$orderStatusSelect.val(data?.['order_status'])
+                    this.initSelect(this.$orderPaymentTermSelect, [data?.['payment_term']])
+                    // this.initMaskMoneyInput(this.$costPerGuestInput, data?.['cost_per_guest'])
+                    // this.initMaskMoneyInput(this.$costPerRegisteredGuestInput, data?.['cost_per_registered_guest'])
+                    // this.initMaskMoneyInput(this.$plannedRevenueInput, data?.['planned_revenue'])
+                    // this.initMaskMoneyInput(this.$actualRevenueInput, data?.['actual_revenue'])
+
+                    for(let item of data?.['customer_detail_list']){
+                        item['isNew'] = false
+                        let tmp = item['register_date'].split('-').reverse().join('-')
+                        item['register_date'] = tmp
+                    }
+                    this.initDetailDataTable(data?.['customer_detail_list'], isDetail)
+                    // this.$detailDataTable.DataTable().rows().every((rowIdx)=>{
+                    //     const rowData = this.$detailDataTable.DataTable().row(rowIdx).data()
+                    //     const $row = $(this.$detailDataTable.DataTable().row(rowIdx).node())
+                    //     const $select = $row.find('.tax-select')
+                    //     const dataTax = JSON.parse(dataScript.attr('data-tax'))
+                    //     const tax = rowData['tax']
+                    //     this.initSelect($select, dataTax)
+                    //     const newOption = new Option(tax['title'], tax['id'], true, true)
+                    //     $select.append(newOption).trigger('change.select2')
+                    // })
+
+
+                    this.initCostDataTable(data?.['cost_list'])
+                    this.initExpenseDataTable(data?.['expense_list'])
+                    this.$expenseDataTable.DataTable().rows().every((rowIdx)=>{
+                        const rowData = this.$expenseDataTable.DataTable().row(rowIdx).data()
+                        const $row = $(this.$expenseDataTable.DataTable().row(rowIdx).node())
+                        console.log(rowData)
+                        const expenseItem = rowData?.['expense']
+                        const uom = rowData?.['expense_uom']
+                        const cost = rowData?.['cost']
+                        const quantity = rowData?.['quantity']
+                        const subTotal = rowData?.['sub_total']
+                        this.initSelect($row.find('.expense-item-select'), [expenseItem])
+                        this.initSelect($row.find('.uom-select'), [uom])
+                        this.initMaskMoneyInput($row.find('.expense-cost'), cost)
+                        this.initInput($row.find('.expense-quantity'), quantity)
+                        const $taxSelect = $row.find('.expense-tax-select')
+                        const tax = rowData['expense_tax']
+                        this.initSelect($taxSelect, dataTax)
+                        const newOption = new Option(tax['title'], tax['id'], true, true)
+                        $taxSelect.append(newOption).trigger('change.select2')
+                        $row.find('.expense-sub-total').attr('data-init-money', subTotal)
+                    })
+
+
+                    dataScript.attr('data-total-cost', data?.['total_cost'])
+                    dataScript.attr('data-total-general-price', data?.['total_general_price'])
+                    dataScript.attr('data-selected-product', JSON.stringify(data?.['data_product_list']))
+                    dataScript.attr('data-selected-price', JSON.stringify(data?.['data_selected_price_list']))
+                    const tax = data['tax']
+                    this.initSelect(this.$taxSelect, dataTax)
+                    const newOption = new Option(tax['title'], tax['id'], true, true)
+                    this.$taxSelect.append(newOption).trigger('change.select2')
+
+                    this.loadTotalData()
+                }
+            },
+            (errs) => {
+                if(errs.data.errors){
+                    for (const [key, value] of Object.entries(errs.data.errors)) {
+                        $.fn.notifyB({title: key, description: value}, 'failure')
+                    }
+                } else {
+                    $.fn.notifyB('Error', 'failure')
+                }
+            })
+            .finally(() => {
+                if (disabledFields) {
+                    this.disableFields();
+                }
+            })
     }
 }

@@ -484,6 +484,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Contract
     GOODS_RECOVERY_LIST_PAGE = BreadcrumbChildren(_('Goods recovery'), 'GoodsRecoveryList')
 
+    # Group Order
+    GROUP_ORDER_PAGE = BreadcrumbChildren(_('Group order'), 'GroupOrderList')
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1301,3 +1303,12 @@ class BreadcrumbView:
     GOODS_RECOVERY_CREATE_PAGE = GOODS_RECOVERY_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     GOODS_RECOVERY_DETAIL_PAGE = GOODS_RECOVERY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     GOODS_RECOVERY_UPDATE_PAGE = GOODS_RECOVERY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    GROUP_ORDER_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.GROUP_ORDER_PAGE
+    ]
+    GROUP_ORDER_LIST_PAGE = GROUP_ORDER_LIST + [BreadcrumbItem.BASTION_LIST]
+    GROUP_ORDER_CREATE_PAGE = GROUP_ORDER_LIST + [BreadcrumbItem.BASTION_CREATE]
+    GROUP_ORDER_DETAIL_PAGE = GROUP_ORDER_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    GROUP_ORDER_UPDATE_PAGE = GROUP_ORDER_LIST + [BreadcrumbItem.BASTION_UPDATE]

@@ -2652,6 +2652,19 @@ class LeaseOrderLoadDataHandle {
                         return true;
                     }
                 }
+                // Case row is tool then use depreciation_data of tool to render $tableDepreciationDetail
+                let toolEle = row.querySelector('.table-row-tool');
+                if (toolEle && assetType === "2") {
+                    let dataTool = SelectDDControl.get_data_from_idx($(toolEle), $(toolEle).val());
+                    if (dataTool?.['depreciation_data']) {
+                        if (dataTool?.['depreciation_data'].length > 0) {
+                            dataFn = dataTool?.['depreciation_data'];
+                            LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
+                            LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
+                            return true;
+                        }
+                    }
+                }
                 // Case row is asset then use depreciation_data of asset to render $tableDepreciationDetail
                 let assetEle = row.querySelector('.table-row-asset');
                 if (assetEle && assetType === "3") {

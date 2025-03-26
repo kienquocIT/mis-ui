@@ -34,6 +34,7 @@
                     <th style="min-width: 80px">{% trans 'Code' %}</th>
                     <th style="min-width: 100px">{% trans 'Installment' %}</th>
                     <th style="min-width: 100px">{% trans 'Description' %}</th>
+                    <th style="min-width: 80px">{% trans 'Due date' %}</th>
                     <th style="min-width: 150px">{% trans 'Total' %}</th>
                     <th style="min-width: 150px">{% trans 'Balance value' %}</th>
                     <th style="min-width: 200px">{% trans 'Payment value' %}</th>
@@ -41,6 +42,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
+            <span class="small text-muted">{% trans 'Order by Due date' %}</span>
         </div>
         <div hidden id="area_table_ar_invoice">
             <table id="ar-invoice-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'ARInvoiceListForCashInflowAPI' %}">

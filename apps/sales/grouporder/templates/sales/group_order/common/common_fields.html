@@ -53,13 +53,13 @@
         <div class="col-3">
             <div class="form-group">
                 <label class="form-label required" for="max-guest">{% trans 'Max Number Of Guests' %}</label>
-                <input required name="max_guest" class="form-control" autocomplete="off" id="max-guest" type="number">
+                <input min="0" required name="max_guest" class="form-control" autocomplete="off" id="max-guest" type="number">
             </div>
         </div>
         <div class="col-3">
             <div class="form-group">
                 <label class="form-label required" for="registered-guest">{% trans 'Number Of Registered Guests' %}</label>
-                <input readonly required name="registered_guest" class="form-control" autocomplete="off" id="registered-guest" type="number">
+                <input min="0" readonly required name="registered_guest" class="form-control" autocomplete="off" id="registered-guest" type="number">
             </div>
         </div>
         <div class="col-3">
@@ -103,6 +103,21 @@
             <div class="form-group">
                 <label class="form-label required" for="actual-revenue">{% trans 'Actual Revenue' %}</label>
                 <input readonly required class="form-control mask-money" id="actual-revenue" name="actual_revenue">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3">
+            <div class="form-group">
+                <label class="form-label required" for="markup-percentage">{% trans 'Mark-up Percentage' %} (%)</label>
+                <input min="0" value="0" type="number" class="form-control" id="markup-percentage" name="markup_percentage">
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label class="form-label required" for="total-cost">{% trans 'Total Cost' %} (%)</label>
+                <input disabled readonly class="form-control mask-money" id="total-cost">
             </div>
         </div>
     </div>

@@ -26,6 +26,8 @@ class GroupOrderCommon {
         this.$descriptionInput = $('#description')
         this.$orderStatusSelect = $('#status')
         this.$orderPaymentTermSelect = $('#payment-term')
+        this.$markupPercentageInput = $('#markup-percentage')
+        this.$totalCostInput = $('#total-cost')
 
         // total
         this.$totalGuest = $('#total-guest')
@@ -65,9 +67,9 @@ class GroupOrderCommon {
     init(isDetail=false){
         this.initTaxData()
         this.initDateInput(this.$canvasRegisterDate, null, false)
-        this.initProductModalDataTable()
         if(!isDetail){
             new $x.cls.bastionField().init()
+            this.initProductModalDataTable()
             this.initDateInput(this.$serviceDurationInput, null, true)
             this.initDateInput(this.$createdDateInput, null, false)
             this.initDetailDataTable()
@@ -116,6 +118,7 @@ class GroupOrderCommon {
         this.handleOpenCustomerDetail()
         this.handleUpdateCustomer()
         this.handleDeleteCustomer()
+        this.handleChangeDiscount()
         this.handleDeleteCostProduct()
         this.handleChangeDetailCustomerQuantity()
         this.handleChangeCostQuantityType()
@@ -125,6 +128,7 @@ class GroupOrderCommon {
         this.handleChangeExpense()
         this.handleDeleteExpense()
         this.handleReselectDataInherit()
+        this.handleChangeMarkupPercentage()
     }
 
     initInput($selector, data=null){
@@ -251,7 +255,7 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 1,
-                    width: '10%',
+                    width: '5%',
                     render: (data, type, row) => {
                         const customerCode = row?.['customer_code']
                         return `<div class="detail-customer-code">${customerCode}</div>`
@@ -259,7 +263,7 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 2,
-                    width: '20%',
+                    width: '18%',
                     render: (data, type, row) => {
                         const customerName = row?.['customer_name']
                         return `<div class="detail-customer-name">${customerName}</div>`
@@ -267,7 +271,7 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 3,
-                    width: '10%',
+                    width: '7%',
                     render: (data, type, row) => {
                         const registerCode = row?.['register_code']
                         return `<div class="detail-register-code">${registerCode}</div>`
@@ -283,23 +287,22 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 5,
-                    width: '5%',
+                    width: '7%',
                     render: (data, type, row) => {
-                        console.log(row)
                         const isIndividual = row?.['is_individual'] === 'true' || row?.['is_individual'] === true
                         const quantity = row?.['quantity']
                         if(isIndividual){
                             return `<div class="detail-quantity">${quantity}</div>`
                         } else {
                             return `<div class="form-group mt-3">
-                                        <input class="form-control detail-quantity" value="${quantity}">
+                                        <input min="0" type="number" class="form-control detail-quantity" value="${quantity}">
                                     </div>`
                         }
                     }
                 },
                 {
                     targets: 6,
-                    width: '18%',
+                    width: '15%',
                     render: (data, type, row) => {
                         const unitPrice = row?.['unit_price']
                         const customerId = row?.['customer_id']
@@ -321,7 +324,7 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 7,
-                    width: '15%',
+                    width: '12%',
                     render: (data, type, row) => {
                         const subTotal = row?.['sub_total']
                         return `<span class="mask-money detail-sub-total" data-init-money="${subTotal}"></span>`
@@ -329,6 +332,16 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 8,
+                    width: '7%',
+                    render: (data, type, row) => {
+                        const discount = row?.['discount'] || 0
+                        return `<div class="form-group mt-3">
+                                    <input min="0" type="number" class="form-control detail-discount" value="${discount}">
+                                </div>`
+                    }
+                },
+                {
+                    targets: 9,
                     width: '5%',
                     render: (data, type, row) => {
                         const paymentStatusMap = {
@@ -340,7 +353,7 @@ class GroupOrderCommon {
                     }
                 },
                 {
-                    targets: 9,
+                    targets: 10,
                     width: '5%',
                     render: (data, type, row) => {
                         const dataDetail = encodeURIComponent(JSON.stringify(row))
@@ -464,7 +477,7 @@ class GroupOrderCommon {
                         const productId = row?.['id']
                         const productData = encodeURIComponent(JSON.stringify(row))
                         return `<input 
-                                    type="radio" 
+                                    type="checkbox" 
                                     class="form-check-input" 
                                     name="select-product" 
                                     data-general-price-id="${generalPriceId}" 
@@ -474,7 +487,27 @@ class GroupOrderCommon {
                                 />`
                     }
                 },
-            ]
+            ],
+            drawCallback: function (row, data) {
+                const dataScript = $('#data-script');
+                const savedProducts = JSON.parse(dataScript.attr('data-selected-product') || '[]');
+
+                const savedProductIds = new Set(savedProducts.map(product => product.id));
+                console.log(savedProducts)
+                console.log(savedProductIds)
+                // Loop through all rows in the table
+                const api = this.api(); // Get DataTable API instance
+                api.rows().every(function () {
+                    const row = this.node(); // DOM node of the row
+                    const rowData = this.data(); // Row data object
+                    const productId = rowData?.['id'];
+                    const $checkbox = $(row).find('input[type="checkbox"]');
+
+                    const isInSavedProducts = savedProductIds.has(productId);
+                    $checkbox.prop('checked', isInSavedProducts);
+                    $checkbox.prop('disabled', isInSavedProducts);
+                });
+            },
         })
     }
 
@@ -531,7 +564,7 @@ class GroupOrderCommon {
                                             <div class="d-flex align-items-center">
                                                 <div class="mr-1">Pack: </div>
                                                 <div class="form-group mt-3">
-                                                    <input class="form-control pack-quantity w-70" value="${quantity}">
+                                                    <input type="number" min="0" class="form-control pack-quantity w-70" value="${quantity}">
                                                 </div>
                                             </div>
                                         </div>
@@ -550,7 +583,7 @@ class GroupOrderCommon {
                                             <div class="d-flex align-items-center">
                                                 <div class="mr-1">Guest: </div>
                                                 <div class="form-group mt-3">
-                                                    <input disabled readonly class="form-control guest-quantity w-70" value="${guestQuantity}">
+                                                    <input type="number" disabled readonly class="form-control guest-quantity w-70" value="${guestQuantity}">
                                                 </div>
                                             </div>
                                         </div>
@@ -588,10 +621,10 @@ class GroupOrderCommon {
                     targets: 6,
                     width: '6%',
                     render: (data, type, row) => {
-                        const note = row?.['note'] || ''
+                        const note = row?.['note'] ? row?.['note'] : ''
                         return `<div class="form-group">
                                     <label class="form-label" hidden></label>
-                                    <textarea class="form-control cost-note" value="${note}"></textarea>
+                                    <textarea class="form-control cost-note" value="${note}">${note}</textarea>
                                 </div>`
                     }
                 },
@@ -671,7 +704,7 @@ class GroupOrderCommon {
                     render: (data, type, row) => {
                         const quantity = row?.['expense_quantity'] || ''
                         return `<div class="form-group">
-                                    <input type="number" required class="form-control expense-quantity" value="${quantity}">
+                                    <input min="0" type="number" required class="form-control expense-quantity" value="${quantity}">
                                 </div>`
                     }
                 },
@@ -820,10 +853,12 @@ class GroupOrderCommon {
                 sub_total: totalGeneralPrice,
                 quantity: 1,
                 note: note,
-                is_individual: isIndividual
+                is_individual: isIndividual,
+                discount: 0
             }
 
             this.$detailDataTable.DataTable().row.add(data).draw()
+
             let dataProductList = JSON.parse(dataScript.attr('data-selected-product'))
             let dataSelectedPriceList = JSON.parse(dataScript.attr('data-selected-price'))
             let dataSelectedPriceByCustomer = dataSelectedPriceList[customerID] || []
@@ -845,6 +880,8 @@ class GroupOrderCommon {
             this.reCalculateDataTotalCost()
 
             this.hideOffCanvas('#offcanvas-add-customer')
+
+            this.loadDataCustomerPrice()
 
             this.loadTotalData()
 
@@ -896,75 +933,79 @@ class GroupOrderCommon {
             let totalGeneralPrice = Number(dataScript.attr('data-total-general-price') || 0)
 
             // get data from selected row
-            const selectedProductRadio = this.$productModalDatatable.find('input[type="radio"]:checked')
-            const selectedProductRow = selectedProductRadio.closest('tr')
-            const id = selectedProductRadio.attr('data-product-id')
-            const code = selectedProductRow.find('.product-code').text()
-            const title = selectedProductRow.find('.product-title').text()
-            let standardPrice = Number(selectedProductRow.find('.product-standard-price').attr('value') || 0)
-            let bomPrice = Number(selectedProductRow.find('.bom-price').attr('value') || 0)
-            let generalPrice = Number(selectedProductRadio.attr('data-general-price') || 0)
-            let unit_cost = Number(bomPrice !== 0 ? bomPrice : standardPrice)
-            const quantity = 1
-            const subTotal = quantity * unit_cost
-            const productData = JSON.parse(decodeURIComponent(selectedProductRadio.attr('data-product')))
+            const costTable =  this.$costDataTable.DataTable()
+            const selectedProductCheckboxes = this.$productModalDatatable.find('input[type="checkbox"]:checked')
             const guestQuantity = this.$detailDataTable.DataTable().rows().count()
-
-            // check if product is already in the table
-            let exists = false;
-            this.$costDataTable.DataTable().rows().every(function () {
+            const existingIds = new Set()
+            const selectedIds = new Set()
+            let newRows = []
+            costTable.rows().every(function () {
                 let rowData = this.data();
-                if (rowData.id === id) {
-                    exists = true
-                    return false
-                }
+                existingIds.add(rowData.id);
             })
 
-            if (exists) {
-                alert("This item has already been added.");
-                return;
-            }
+            selectedProductCheckboxes.each((i, ele) => {
+                const $checkbox = $(ele)
+                const id = $checkbox.attr('data-product-id')
+                selectedIds.add(id)
 
-            const data = {
-                id: id,
-                code: code,
-                title: title,
-                quantity: quantity,
-                guest_quantity: guestQuantity,
-                unit_cost: unit_cost,
-                general_price: generalPrice,
-                is_using_guest_quantity: false,
-            }
+                if (existingIds.has(id)) {
+                    return
+                }
 
-            this.$costDataTable.DataTable().row.add(data).draw()
+                const selectedProductRow = $checkbox.closest('tr')
+                const code = selectedProductRow.find('.product-code').text()
+                const title = selectedProductRow.find('.product-title').text()
+                let standardPrice = Number(selectedProductRow.find('.product-standard-price').attr('value') || 0);
+                let bomPrice = Number(selectedProductRow.find('.bom-price').attr('value') || 0);
+                let generalPrice = Number($checkbox.attr('data-general-price') || 0);
+                let unit_cost = Number(bomPrice !== 0 ? bomPrice : standardPrice);
+                const quantity = 1
+                const productData = JSON.parse(decodeURIComponent($checkbox.attr('data-product')))
 
-            totalCost += subTotal
+                newRows.push({
+                    id: id,
+                    code: code,
+                    title: title,
+                    quantity: quantity,
+                    guest_quantity: guestQuantity,
+                    unit_cost: unit_cost,
+                    general_price: generalPrice,
+                    is_using_guest_quantity: false,
+                    productData: productData
+                });
+            });
+
+
+            newRows.forEach(row => {
+                this.$costDataTable.DataTable().row.add({
+                    id: row.id,
+                    code: row.code,
+                    title: row.title,
+                    quantity: row.quantity,
+                    guest_quantity: row.guest_quantity,
+                    unit_cost: row.unit_cost,
+                    general_price: row.general_price,
+                    is_using_guest_quantity: row.is_using_guest_quantity
+                });
+
+                totalCost += row.unit_cost * row.quantity
+                totalGeneralPrice += row.general_price
+
+                this.addProductGeneralPriceToEachCustomer(row.productData)
+                this.saveSelectedProductToScript(row.productData)
+            });
+
+            costTable.draw()
+
+            // Update script attributes
             dataScript.attr('data-total-cost', totalCost)
-
-            totalGeneralPrice += generalPrice
             dataScript.attr('data-total-general-price', totalGeneralPrice)
 
-            this.addProductGeneralPriceToEachCustomer(productData)
-
-            // add general price to each detail row
-            this.$detailDataTable.DataTable().rows().every( (rowIdx)=> {
-                let rowData = this.$detailDataTable.DataTable().row(rowIdx).data()
-                let $row = $(this.$detailDataTable.DataTable().row(rowIdx).node())
-                const $unitPrice = $row.find('.detail-unit-price')
-                const $subTotal = $row.find('.detail-sub-total')
-                const quantity = rowData['quantity'] ? rowData['quantity'] : 1
-                const currUnitPrice = Number($unitPrice.attr('data-init-money') || 0)
-                const newUnitPrice = currUnitPrice + generalPrice
-
-                $unitPrice.attr('data-init-money', newUnitPrice)
-                $subTotal.attr('data-init-money', newUnitPrice*quantity)
-
-                // this.reLoadTaxSelectAndSubTotalPrice($unitPrice)
-            })
-
+            // Update UI
             this.loadTotalData()
 
-            this.saveSelectedProductToScript(productData)
+            this.$productModalDatatable.DataTable().draw()
         })
     }
 
@@ -1004,8 +1045,8 @@ class GroupOrderCommon {
                             ${isChecked ? '' : 'disabled'}
                         >   
                             <span class="icon">
-                               
-                                <i class="${isDetail ? 'far fa-eye' : 'fas fa-pencil'}"></i>
+                                <i class="${isDetail ? 'far fa-eye' : 'far fa-eye'}"></i>
+                            <!--<i class="${isDetail ? 'far fa-eye' : 'fas fa-pencil'}"></i>-->
                             </span>
                         </button>
                     </div>
@@ -1061,6 +1102,8 @@ class GroupOrderCommon {
                             data-product-id="${productId}"
                             ${isExisting ? "checked" : ""}
                             ${isDetail ? 'disabled' : ''}
+                            hidden
+                            disabled
                         >
                         <label class="form-check-label w-100">
                             <div class="row w-100">
@@ -1117,7 +1160,6 @@ class GroupOrderCommon {
         $(document).on('click', '#btn-finish', (e)=>{
             const dataScript = $('#data-script')
 
-
             const customerId = this.$selectPriceModal.attr('data-customer-id')
             let dataSelectedPriceList = JSON.parse(dataScript.attr('data-selected-price'))
             let dataSelectedPriceByCustomer = dataSelectedPriceList[customerId] || []
@@ -1137,8 +1179,8 @@ class GroupOrderCommon {
 
             const sumPrice = this.getSumPriceInPriceModal()
 
-            const $unitPrice = $(`.detail-unit-price[data-customer-id="${customerId}"]`)
-            this.loadDataPriceToTableDetail($unitPrice, sumPrice)
+            // const $unitPrice = $(`.detail-unit-price[data-customer-id="${customerId}"]`)
+            // this.loadDataPriceToTableDetail($unitPrice, sumPrice)
 
             this.loadTotalData()
         })
@@ -1217,6 +1259,7 @@ class GroupOrderCommon {
 
     handleChangeMaxGuest(){
         $(document).on('change', '#max-guest', (e)=>{
+            this.loadDataCustomerPrice()
             this.loadDataGuestAndCostCommonFields()
         })
     }
@@ -1321,11 +1364,24 @@ class GroupOrderCommon {
         })
     }
 
+    handleChangeDiscount(){
+        $(document).on('change', '.detail-discount', (e)=>{
+            const $row = $(e.currentTarget).closest('tr')
+            let rowData = this.$detailDataTable.DataTable().row($row).data()
+            rowData['discount'] = Number($(e.currentTarget).val() || 0)
+
+            this.$detailDataTable.DataTable().row($row).data(rowData).draw()
+
+            this.loadDataCustomerPrice()
+            this.loadTotalData()
+        })
+    }
+
     handleDeleteCostProduct(){
         $(document).on('click', '.cost-del-row',(e)=>{
             const productId = $(e.currentTarget).attr('data-product-id')
-            // remove product in price list
             const dataScript = $('#data-script')
+            // remove product in price list
             let dataSelectedPriceList = JSON.parse(dataScript.attr('data-selected-price'))
             for (let customerId in dataSelectedPriceList){
                 // change unit price of each customer in detail table
@@ -1361,7 +1417,9 @@ class GroupOrderCommon {
             dataScript.attr('data-total-cost', newTotalCost)
             dataScript.attr('data-total-general-price', newTotalGeneralPrice)
 
+            this.loadDataCustomerPrice()
             this.loadTotalData()
+            this.$productModalDatatable.DataTable().draw();
         })
     }
 
@@ -1380,6 +1438,7 @@ class GroupOrderCommon {
             this.$detailDataTable.DataTable().row($row).data(rowData).draw()
 
             $.fn.initMaskMoney2()
+            this.loadDataCustomerPrice()
             this.loadTotalData()
         })
     }
@@ -1393,6 +1452,7 @@ class GroupOrderCommon {
             this.$costDataTable.DataTable().row($row).data(rowData).draw()
 
             this.reCalculateDataTotalCost()
+            this.loadDataCustomerPrice()
             this.loadTotalData()
         })
     }
@@ -1401,12 +1461,12 @@ class GroupOrderCommon {
         $(document).on('change', '.pack-quantity', (e)=>{
             const $row = $(e.currentTarget).closest('tr')
             let rowData = this.$costDataTable.DataTable().row($row).data()
-            console.log(rowData)
             rowData['quantity'] = Number($(e.currentTarget).val() || 1)
 
             this.$costDataTable.DataTable().row($row).data(rowData).draw()
 
             this.reCalculateDataTotalCost()
+            this.loadDataCustomerPrice()
             this.loadTotalData()
         })
     }
@@ -1420,6 +1480,7 @@ class GroupOrderCommon {
             this.$costDataTable.DataTable().row($row).data(rowData).draw()
 
             this.reCalculateDataTotalCost()
+            this.loadDataCustomerPrice()
             this.loadTotalData()
         })
     }
@@ -1472,6 +1533,13 @@ class GroupOrderCommon {
         })
     }
 
+    handleChangeMarkupPercentage(){
+        $(document).on('change', '#markup-percentage', (e)=>{
+            this.loadDataCustomerPrice()
+            this.loadTotalData()
+        })
+    }
+
     getSumPriceInPriceModal(){
         const customerId = this.$selectPriceModal.attr('data-customer-id')
         const dataScript = $('#data-script')
@@ -1512,16 +1580,6 @@ class GroupOrderCommon {
         $.fn.initMaskMoney2()
     }
 
-    reLoadTaxSelectAndSubTotalPrice($unitPriceElement){
-        const $row = $($unitPriceElement).closest('tr')
-        // const $selectTax = $row.find('.tax-select')
-        // const newOption = new Option('Select', '', false, true);
-        // $selectTax.append(newOption).trigger('change');
-
-        const $subTotal = $row.find('.detail-sub-total')
-        $subTotal.attr('data-init-money', 0)
-    }
-
     reLoadGuestQuantity(){
         const guestQuantity = this.$detailDataTable.DataTable().rows().count()
         this.$costDataTable.DataTable().rows().every(function(){
@@ -1540,9 +1598,11 @@ class GroupOrderCommon {
             newTotalCost += subTotal
         })
         dataScript.attr('data-total-cost', newTotalCost)
+        this.$totalCostInput.attr('value',newTotalCost)
+        $.fn.initMaskMoney2()
     }
 
-    loadTotalData(){
+    calculateDetailTotalData(){
         let totalGuest = 0
         let totalAmount = 0
         let totalAmountVAT = 0
@@ -1560,13 +1620,21 @@ class GroupOrderCommon {
 
             totalAmountVAT = totalAmount + totalAmount*taxRate/100
         }
+        return {
+            totalGuest,
+            totalAmount,
+            totalAmountVAT
+        }
+    }
 
-        this.$totalGuest.text(totalGuest)
-        this.$totalAmount.attr('data-init-money', totalAmount)
-        this.$totalAmountVAT.attr('data-init-money', totalAmountVAT)
+    loadTotalData(){
+        let totalValues = this.calculateDetailTotalData()
+
+        this.$totalGuest.text(totalValues.totalGuest)
+        this.$totalAmount.attr('data-init-money', totalValues.totalAmount)
+        this.$totalAmountVAT.attr('data-init-money', totalValues.totalAmountVAT)
 
         this.loadDataGuestAndCostCommonFields()
-
         $.fn.initMaskMoney2()
     }
 
@@ -1631,17 +1699,39 @@ class GroupOrderCommon {
 
         let dataSelectedProductList = JSON.parse(dataScript.attr('data-selected-product') || [])
         let planRevenue = 0
-        for (const product of dataSelectedProductList){
-            const defaultPrice = product['product_price_list_data'].find((item)=>item['is_default']===true)
-            planRevenue += defaultPrice?.['price']
-        }
-        planRevenue = planRevenue * maxGuest
+        // for (const product of dataSelectedProductList){
+        //     const defaultPrice = product['product_price_list_data'].find((item)=>item['is_default']===true)
+        //     planRevenue += defaultPrice?.['price']
+        // }
+        const markupPercentage = Number(this.$markupPercentageInput.val() || 1)/100
+        const customerPrice = costPerGuest*(1+markupPercentage) | 0
+
+        planRevenue = customerPrice * maxGuest
         this.$plannedRevenueInput.attr('value', planRevenue)
 
-        let totalAmountPrice = Number(this.$totalAmount.attr('data-init-money') || 0)
+        let totalAmountPrice = this.calculateDetailTotalData().totalAmount
         this.$actualRevenueInput.attr('value', totalAmountPrice)
 
         $.fn.initMaskMoney2()
+    }
+
+    loadDataCustomerPrice(){
+        const dataScript = $('#data-script');
+        let dataTotalCost = Number(dataScript.attr('data-total-cost') || 0)
+        const maxGuest = Number(this.$maxGuestInput.val() || 0)
+        const costPerGuest = dataTotalCost / maxGuest
+        const markupPercentage = Number(this.$markupPercentageInput.val() || 1)/100
+        const customerUnitPrice = costPerGuest*(1+markupPercentage) | 0
+        const table = this.$detailDataTable.DataTable()
+        table.rows().every(function(){
+            let rowData = this.data()
+            const quantity = rowData['quantity']
+            const discount = rowData['discount'] / 100
+            rowData['unit_price'] = customerUnitPrice
+            rowData['sub_total'] = customerUnitPrice * quantity * (1-discount)
+            this.data(rowData)
+        })
+        table.draw()
     }
 
     clearDataCustomerCanvas(){
@@ -1661,7 +1751,6 @@ class GroupOrderCommon {
         let dataSelectedPriceList = JSON.parse(dataScript.attr('data-selected-price'))
 
         this.$detailDataTable.DataTable().rows().every(function(){
-            const row = $(this.node())
             const rowData = this.data()
             const customerId = rowData?.['customer_id']
 
@@ -1874,10 +1963,15 @@ class GroupOrderCommon {
                     this.initInput(this.$registeredGuest, data?.['registered_guest'])
                     this.$orderStatusSelect.val(data?.['order_status'])
                     this.initSelect(this.$orderPaymentTermSelect, [data?.['payment_term']])
-                    // this.initMaskMoneyInput(this.$costPerGuestInput, data?.['cost_per_guest'])
-                    // this.initMaskMoneyInput(this.$costPerRegisteredGuestInput, data?.['cost_per_registered_guest'])
-                    // this.initMaskMoneyInput(this.$plannedRevenueInput, data?.['planned_revenue'])
-                    // this.initMaskMoneyInput(this.$actualRevenueInput, data?.['actual_revenue'])
+                    this.initInput(this.$markupPercentageInput, data?.['markup_percentage'])
+                    this.initMaskMoneyInput(this.$costPerGuestInput, data?.['cost_per_guest'])
+                    this.initMaskMoneyInput(this.$costPerRegisteredGuestInput, data?.['cost_per_registered_guest'])
+                    this.initMaskMoneyInput(this.$plannedRevenueInput, data?.['planned_revenue'])
+                    this.initMaskMoneyInput(this.$actualRevenueInput, data?.['actual_revenue'])
+                    this.initMaskMoneyInput(this.$totalCostInput, data?.['total_cost'])
+                    this.$totalGuest.text(data?.['registered_guest'])
+                    this.$totalAmount.attr('data-init-money', data?.['total_amount'])
+                    this.$totalAmountVAT.attr('data-init-money', data?.['total_amount_including_VAT'])
 
                     for(let item of data?.['customer_detail_list']){
                         item['isNew'] = false
@@ -1929,7 +2023,8 @@ class GroupOrderCommon {
                     const newOption = new Option(tax['title'], tax['id'], true, true)
                     this.$taxSelect.append(newOption).trigger('change.select2')
 
-                    this.loadTotalData()
+                    this.initProductModalDataTable()
+                    // this.loadTotalData()
                 }
             },
             (errs) => {

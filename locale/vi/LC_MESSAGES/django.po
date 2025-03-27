@@ -11570,3 +11570,7 @@ msgstr "Tổng giá"
 #
 msgid "Order by Due date"
 msgstr "Sắp xếp theo Ngày đến hạn"
+
+msgctxt "group_order"
+msgid "Unpaid"
+msgstr "Chưa thanh toán"

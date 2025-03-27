@@ -11594,3 +11594,23 @@ msgstr "Mã hóa đơn"
 #
 msgid "PO code"
 msgstr "Mã Đơn mua hàng"
+
+#
+msgid "Payment type"
+msgstr "Loại thanh toán"
+
+#
+msgid "Payment to supplier"
+msgstr "Thanh toán cho nhà cung cấp"
+
+#
+msgid "Payment to customer"
+msgstr "Thanh toán cho khách hàng"
+
+#
+msgid "Advance payment to employee"
+msgstr "Tạm ứng cho nhân viên"
+
+#
+msgid "Payment on account"
+msgstr "Thanh toán vào tài khoản"

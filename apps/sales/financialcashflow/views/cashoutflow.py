@@ -18,7 +18,7 @@ class CashOutflowList(View):
 class CashOutflowCreate(View):
     @mask_view(
         auth_require=True,
-        template='sales/financialcashflow/cashoutflow/cashoutflow_list.html',
+        template='sales/financialcashflow/cashoutflow/cashoutflow_create.html',
         menu_active='',
         breadcrumb='CASH_OUTFLOW_CREATE_PAGE',
     )
@@ -31,7 +31,7 @@ class CashOutflowCreate(View):
 class CashOutflowDetail(View):
     @mask_view(
         auth_require=True,
-        template='sales/financialcashflow/cashoutflow/cashoutflow_list.html',
+        template='sales/financialcashflow/cashoutflow/cashoutflow_detail.html',
         menu_active='',
         breadcrumb='CASH_OUTFLOW_DETAIL_PAGE',
     )
@@ -42,7 +42,7 @@ class CashOutflowDetail(View):
 class CashOutflowUpdate(View):
     @mask_view(
         auth_require=True,
-        template='sales/financialcashflow/cashoutflow/cashoutflow_list.html',
+        template='sales/financialcashflow/cashoutflow/cashoutflow_update.html',
         menu_active='',
         breadcrumb='CASH_OUTFLOW_UPDATE_PAGE',
     )

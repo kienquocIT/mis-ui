@@ -11598,3 +11598,7 @@ msgstr "Mã Đơn mua hàng"
 msgctxt "group_order"
 msgid "Unpaid"
 msgstr "Chưa thanh toán"
+
+#
+msgid "Total Cost"
+msgstr "Tổng chi phí"

@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-4">
                     <div class="form-group">
-                        <label for="order-number" class="form-label required">{% trans "Order Number" %}</label>
+                        <label for="order-number" class="form-label required">{% trans "Service Code" %}</label>
                         <input name="order_number" id="order-number" required class="form-control" type="text"/>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
         <div class="col-3">
             <div class="form-group">
                 <label for="payment-term" class="form-label required">{% trans "Payment Term" %}</label>
-                <select name="payment_term" class="form-select select2" id="payment-term" data-url="{% url "PaymentsTermsListAPI" %}" data-keyResp="payment_terms_list">
+                <select required name="payment_term" class="form-select select2" id="payment-term" data-url="{% url "PaymentsTermsListAPI" %}" data-keyResp="payment_terms_list">
                 </select>
             </div>
         </div>
@@ -111,7 +111,7 @@
         <div class="col-3">
             <div class="form-group">
                 <label class="form-label required" for="markup-percentage">{% trans 'Mark-up Percentage' %} (%)</label>
-                <input min="0" value="0" type="number" class="form-control" id="markup-percentage" name="markup_percentage">
+                <input min="0" type="number" class="form-control" id="markup-percentage" name="markup_percentage">
             </div>
         </div>
         <div class="col-3">

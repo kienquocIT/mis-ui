@@ -2873,7 +2873,7 @@ msgstr "Ngày giao"
 
 #
 msgid "Invoice date"
-msgstr "Ngày xuất hóa đơn"
+msgstr "Ngày tạo hóa đơn"
 
 #
 msgid "Acceptance date"

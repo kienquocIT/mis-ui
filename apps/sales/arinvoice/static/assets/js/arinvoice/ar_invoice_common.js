@@ -2,6 +2,7 @@ const scriptUrlEle = $('#script-url')
 const tableSelectCustomerEle = $('#table-select-customer')
 const selectCustomerBtn = $('#select-customer-btn')
 const customerNameEle = $('#customer-name')
+const customerCodeEle = $('#customer-code')
 const customerSelectModal = $('#customer-select-modal')
 const saleOrderEle = $('#sale-order')
 const viewPaymentTermEle = $('#view-payment-term')
@@ -890,7 +891,6 @@ class ARInvoiceHandle {
         ARInvoiceLoadTab.LoadTableNormal()
         ARInvoiceLoadTab.LoadTableDescription()
         ARInvoiceLoadTab.LoadPaymentTermView()
-        invoice_exp.trigger('change')
     }
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle))
@@ -996,6 +996,8 @@ class ARInvoiceHandle {
                     $('#title').val(data?.['title'])
                     customerNameEle.attr('data-id', data?.['customer_mapped_data']?.['id'])
                     customerNameEle.val(data?.['customer_mapped_data']?.['name'])
+                    customerCodeEle.val(data?.['customer_mapped_data']?.['code'])
+
                     $('#buyer-name').val(data?.['buyer_name'])
                     tax_codeEle.val(data?.['customer_mapped_data']?.['tax_code'])
                     for (let i = 0; i < (data?.['customer_mapped_data']?.['billing_address_list'] || []).length; i++) {
@@ -1029,11 +1031,11 @@ class ARInvoiceHandle {
                     invoiceDateEle.val(moment(data?.['invoice_date'].split(' ')[0]).format('DD/MM/YYYY'))
                     invoice_sign.val(data?.['invoice_sign'])
                     $('#invoice-number').val(data?.['invoice_number'])
-                    $('#invoice-status').val(
-                        ['Khởi tạo', 'Đã phát hành', 'Đã kê khai', 'Đã thay thế', 'Đã điều chỉnh'][data?.['invoice_status']]
-                    ).removeClass('text-blue').addClass(
-                        ['text-blue', 'text-primary', 'text-info', 'text-danger', 'text-warning'][data?.['invoice_status']]
-                    )
+                    // $('#invoice-status').val(
+                    //     ['Khởi tạo', 'Đã phát hành', 'Đã kê khai', 'Đã thay thế', 'Đã điều chỉnh'][data?.['invoice_status']]
+                    // ).removeClass('text-blue').addClass(
+                    //     ['text-blue', 'text-primary', 'text-info', 'text-danger', 'text-warning'][data?.['invoice_status']]
+                    // )
                     invoice_exp.val(data?.['invoice_example'])
 
                     NormalTable.attr('data-delivery-selected', data?.['delivery_mapped'].map(item => item.id).join(','))
@@ -1106,7 +1108,8 @@ selectCustomerBtn.on('click', function () {
         if ($(this).prop('checked')) {
             selected_obj = $(this).attr('data-customer') ? JSON.parse($(this).attr('data-customer')) : {}
             customerNameEle.val(selected_obj?.['name']).attr('data-id', selected_obj?.['id']).prop('readonly', true).prop('disabled', true)
-            tax_codeEle.val(selected_obj?.['tax_code']).prop('readonly', true).prop('disabled', true)
+            customerCodeEle.val(selected_obj?.['code'])
+            tax_codeEle.val(selected_obj?.['tax_code'])
             for (let i = 0; i < (selected_obj?.['billing_address'] || []).length; i++) {
                 billingAddressEle.append(`
                     <option ${selected_obj?.['billing_address'][i]?.['is_default'] ? 'selected' : ''} value="${selected_obj?.['billing_address'][i]?.['id']}">${selected_obj?.['billing_address'][i]?.['full_address']}</option>
@@ -1230,6 +1233,8 @@ invoice_exp.on('change', function () {
     //         invoice_sign.val('')
     //     }
     // }
+
+    $('#ar-invoice-label').text($(this).find('option:selected').attr('data-text'))
 })
 
 $('#select-delivery-product-btn').on('click', function () {

@@ -70560,6 +70560,12 @@ hr.hr-2 {
 hr.hr-3 {
   height: 3px !important;
 }
+hr.hr-5 {
+  height: 5px !important;
+}
+hr.hr-10 {
+  height: 10px !important;
+}
 
 /*opacity*/
 .opacity-10 {

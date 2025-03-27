@@ -1,26 +1,11 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'AP Invoice Update' %}{% endblock %}
+{% block title %}{% trans 'AP Invoice' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
-    <style>
-        .dropdown-menu { !important;
-            width: max-content;
-            border: solid 1px #d8d8d8;
-        }
-        .table td, .table th {
-            padding: 0.5rem;
-        }
-        #tab_line_detail_datatable input[disabled] {
-            cursor: text;
-        }
-        #tab_line_detail_datatable tbody .dropdown-toggle::after {
-            content: none;
-        }
-    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -96,7 +81,7 @@
                     <div class="row">
                         <div class="col-12 col-lg-12 col-md-12">
                             <div class="form-group">
-                                <label class="form-label required" for="invoice-exp">{% trans "Mẫu hoá đơn" %}</label>
+                                <label class="form-label required" for="invoice-exp">{% trans "Mẫu số" %}</label>
                                 <select class="form-select" id="invoice-exp">
                                     <option></option>
                                     <option value="0">01GTKT0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hoá đơn giá trị gia tăng (hoá đơn điện tử)</option>
@@ -113,7 +98,7 @@
                     <div class="row">
                         <div class="col-12 col-lg-6 col-md-6">
                             <div class="form-group">
-                                <label class="form-label required" for="invoice-sign">{% trans "Kí hiệu hoá đơn" %}</label>
+                                <label class="form-label required" for="invoice-sign">{% trans "Kí hiệu" %}</label>
                                 <input class="form-control" id="invoice-sign">
                             </div>
                         </div>

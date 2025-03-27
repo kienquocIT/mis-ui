@@ -392,3 +392,7 @@ msgstr "Bạn sẽ bị đăng xuất!"
 #
 msgid "An error occurred while interacting with the data!"
 msgstr "Có lỗi xảy ra khi tương tác với dữ liệu!"
+
+#
+msgid "Inventory tab is not allowed for Service product. Turn off Inventory tab first."
+msgstr "Tab Tồn kho không có sẵn cho Sản phẩm Dịch vụ. Hãy tắt Tab Tồn kho trước."

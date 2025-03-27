@@ -8861,8 +8861,12 @@ msgid "Pretax value"
 msgstr "Giá trị trước thuế"
 
 #
-msgid "Inventory management is not allowed for Service product"
-msgstr "Quản lý tồn kho không có sẵn cho Sản phẩm Dịch vụ"
+msgid "Inventory tab is not allowed for Service product. Turn off Inventory tab first."
+msgstr "Tab Tồn kho không có sẵn cho Sản phẩm Dịch vụ. Hãy tắt Tab Tồn kho trước."
+
+#
+msgid "Inventory tab is not allowed for Service product."
+msgstr "Tab Tồn kho không có sẵn cho Sản phẩm Dịch vụ."
 
 #
 msgid "Opportunity BOM"
@@ -10084,8 +10088,8 @@ msgid "Balance value"
 msgstr "Giá trị cân đối"
 
 #
-msgid "Customers pay in advance (not according to contract)"
-msgstr "Khách hàng tạm ứng trước (không theo hợp đồng)"
+msgid "Customers pay in advance (not according to Sale order)"
+msgstr "Khách hàng tạm ứng trước (không theo Đơn hàng)"
 
 #
 msgid "Payment method"
@@ -10112,8 +10116,8 @@ msgid "Bank account owner"
 msgstr "Chủ tài khoản"
 
 #
-msgid "Customers pay in advance (according to contract)"
-msgstr "Khách hàng tạm ứng trước (theo hợp đồng)"
+msgid "Customers pay in advance (according to Sale order)"
+msgstr "Khách hàng tạm ứng trước (theo Đơn hàng)"
 
 #
 msgid "Add Company Bank Account"
@@ -11570,6 +11574,26 @@ msgstr "Tổng giá"
 #
 msgid "Order by Due date"
 msgstr "Sắp xếp theo Ngày đến hạn"
+
+#
+msgid "Advance payment to supplier (not according to Purchase order)"
+msgstr "Tạm ứng trước cho nhà cung cấp (không theo Đơn mua hàng)"
+
+#
+msgid "Advance payment to supplier (according to Purchase order)"
+msgstr "Tạm ứng trước cho nhà cung cấp (theo Đơn mua hàng)"
+
+#
+msgid "Payment to supplier according to AP invoice"
+msgstr "Thanh toán cho nhà cung cấp theo Hóa đơn mua hàng"
+
+#
+msgid "Invoice code"
+msgstr "Mã hóa đơn"
+
+#
+msgid "PO code"
+msgstr "Mã Đơn mua hàng"
 
 msgctxt "group_order"
 msgid "Unpaid"

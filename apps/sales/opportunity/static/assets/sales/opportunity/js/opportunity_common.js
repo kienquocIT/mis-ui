@@ -644,7 +644,7 @@ class OpportunityLoadDetail {
         });
 
         $('#btnSavePermitMember').on('click', function () {
-            WindowControl.showLoading()
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'})
             let bodyData = {
                 'permit_view_this_opp': eleViewOppMember.prop('checked'),
                 'permit_add_member': eleAddOppMember.prop('checked'),

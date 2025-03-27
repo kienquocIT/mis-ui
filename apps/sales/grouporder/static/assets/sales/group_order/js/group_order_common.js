@@ -1317,6 +1317,9 @@ class GroupOrderCommon {
             const taxId = $row.find('.tax-select').val()
             const taxName = $row.find('.tax-select').find(':selected').text()
             const subTotal = Number($row.find('.detail-sub-total').attr('data-init-money') || 0)
+            let rowData = this.$detailDataTable.DataTable().row($row).data()
+            const quantity = rowData['quantity']
+            const discount = rowData['discount']
 
             const data ={
                 service_name: serviceName,
@@ -1327,6 +1330,8 @@ class GroupOrderCommon {
                 register_date: registerDate,
                 phone: phone,
                 email: email,
+                quantity: quantity,
+                discount: discount,
                 payment_status: paymentStatus,
                 unit_price: unitPrice,
                 sub_total: subTotal,

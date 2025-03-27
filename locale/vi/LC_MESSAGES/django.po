@@ -11595,6 +11595,10 @@ msgstr "Mã hóa đơn"
 msgid "PO code"
 msgstr "Mã Đơn mua hàng"
 
+msgctxt "group_order"
+msgid "Unpaid"
+msgstr "Chưa thanh toán"
+
 #
 msgid "Payment type"
 msgstr "Loại thanh toán"

@@ -148,7 +148,7 @@ class UsualLoadPageFunction {
             data: (data ? data : null),
             keyResp: 'account_group_list',
             keyId: 'id',
-            keyText: 'name',
+            keyText: 'title',
         })
     }
 

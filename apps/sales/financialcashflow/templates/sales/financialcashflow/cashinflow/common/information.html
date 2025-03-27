@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="row">
-    <div class="col-12 col-md-6 col-lg-6">
+    <div class="col-12 col-md-9 col-lg-9">
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
@@ -17,26 +17,122 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-md-6 col-lg-6">
+    <div class="col-12 col-md-3 col-lg-3">
         <div class="row">
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label required" for="posting_date">{% trans "Posting date" %}</label>
-                    <input required name="posting_date" class="form-control" id="posting_date">
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <input required name="posting_date" class="form-control" id="posting_date">
+                        </span>
+                    </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label required" for="document_date">{% trans "Document date" %}</label>
-                    <input required name="document_date" class="form-control" id="document_date">
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <input required name="document_date" class="form-control" id="document_date">
+                        </span>
+                    </div>
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-12">
-                <div class="form-group">
-                    <label class="form-label" for="description">{% trans "Note" %}</label>
-                    <textarea name="description" class="form-control" id="description"></textarea>
-                </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12 col-md-5 col-lg-5">
+        <div class="form-group">
+            <label for="purchase_advance_value" class="form-label fw-bold h5">
+                {% trans "Customers pay in advance (not according to Sale order)" %}
+            </label>
+            <input name="purchase_advance_value" class="form-control mask-money" value="0" id="purchase_advance_value">
+        </div>
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="dropdown">
+            <span data-bs-toggle="dropdown">
+                <label data-value="0" id="cif_type_label" class="form-label fw-bold h5">
+                    {% trans 'Customers pay in advance (according to Sale order)' %}
+                </label><i class="fa-regular fa-square-caret-down text-primary ml-2"></i>
+            </span>
+            <div id="cif_type" role="menu" class="dropdown-menu dropdown-menu-dark">
+                <a class="dropdown-item" href="#" data-value="0"><i class="dropdown-icon fa-solid fa-hand-point-right"></i><span>{% trans 'Customers pay in advance (according to Sale order)' %}</span></a>
+                <a class="dropdown-item" href="#" data-value="1"><i class="dropdown-icon fa-solid fa-hand-point-right"></i><span>{% trans 'Customers pay according to AR invoice' %}</span></a>
             </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div id="area_table_customer_advance">
+            <table id="customer-advance-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'CustomerAdvanceListForCashInflowAPI' %}">
+                <thead>
+                <tr>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 80px">{% trans 'Sale order code' %}</th>
+                    <th style="min-width: 100px">{% trans 'Installment' %}</th>
+                    <th style="min-width: 100px">{% trans 'Description' %}</th>
+                    <th style="min-width: 80px">{% trans 'Due date' %}</th>
+                    <th style="min-width: 150px">{% trans 'Total' %}</th>
+                    <th style="min-width: 150px">{% trans 'Balance value' %}</th>
+                    <th style="min-width: 200px">{% trans 'Payment value' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <span class="small text-muted">{% trans 'Order by Due date' %}</span>
+        </div>
+        <div hidden id="area_table_ar_invoice">
+            <table id="ar-invoice-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'ARInvoiceListForCashInflowAPI' %}">
+                <thead>
+                <tr>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 80px">{% trans 'Invoice code' %}</th>
+                    <th style="min-width: 100px">{% trans 'Document type' %}</th>
+                    <th style="min-width: 100px">{% trans 'Document date' %}</th>
+                    <th style="min-width: 150px">{% trans 'Total' %}</th>
+                    <th style="min-width: 150px">{% trans 'Balance value' %}</th>
+                    <th style="min-width: 200px">{% trans 'Payment value' %}</th>
+                    <th style="min-width: 150px">{% trans 'Payment discount' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-12 col-md-5 col-lg-5">
+        <div class="form-group">
+            <label for="total_payment" class="form-label text-muted fw-bold">{% trans "Total payment" %}</label>
+            <input disabled readonly name="total_payment" class="form-control form-control-line mask-money" value="0" id="total_payment">
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <button id="btn-modal-payment-method" data-payment-method='' disabled type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#payment-method-modal">
+            <span>
+                <span class="icon"><span class="feather-icon"><i class="fas fa-bars"></i></span></span>
+                <span>{% trans 'Payment method' %} <i hidden id="icon-done-payment-method" class="bi bi-check2-all"></i></span>
+            </span>
+        </button>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="form-group">
+            <label class="form-label" for="description">{% trans "Note" %}</label>
+            <textarea name="description" class="form-control" id="description"></textarea>
         </div>
     </div>
 </div>

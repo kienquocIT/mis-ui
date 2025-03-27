@@ -7,7 +7,7 @@
                 <div class="col-12 col-md-12 col-lg-6 text-center">
                     <div class="border rounded p-2">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault"
+                            <input class="form-check-input" type="radio" name="account-type-radio"
                                     id="inp-organization" checked>
                             <label class="form-check-label" for="inp-organization">
                                 {% trans "Organization" %}
@@ -18,7 +18,7 @@
                 <div class="col-12 col-md-12 col-lg-6 text-center">
                     <div class="border rounded p-2">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault"
+                            <input class="form-check-input" type="radio" name="account-type-radio"
                                     id="inp-individual">
                             <label class="form-check-label" for="inp-individual">
                                 {% trans "Individual" %}
@@ -52,27 +52,27 @@
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label for="inp-account-code" class="form-label required" id="account-code-label"
+                <label for="inp-code" class="form-label required" id="code-label"
                        data-trans-individual="{% trans 'Individual code' %}"
                        data-trans-organization="{% trans 'Organization code' %}"
                 >{% trans "Organization code" %}</label>
-                <input id="inp-account-code" class="form-control" required
+                <input id="inp-code" class="form-control" required
                        oninput="this.value=this.value.toUpperCase()">
             </div>
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label for="inp-account-name" class="form-label required" id="account-name-label"
+                <label for="inp-name" class="form-label required" id="name-label"
                        data-trans-individual="{% trans 'Individual name' %}"
                        data-trans-organization="{% trans 'Organization name' %}"
                 >{% trans "Organization name" %}</label>
-                <textarea id="inp-account-name" class="form-control" required></textarea>
+                <textarea id="inp-name" class="form-control" required></textarea>
             </div>
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label for="inp-account-website" class="form-label">{% trans "Website" %}</label>
-                <input class="form-control" id="inp-account-website">
+                <label for="inp-website" class="form-label">{% trans "Website" %}</label>
+                <input class="form-control" id="inp-website">
             </div>
         </div>
         <div class="col-12">
@@ -89,8 +89,8 @@
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label for="select-box-industry" class="form-label">{% trans "Industry" %}</label>
-                <select id="select-box-industry" class="form-select select2"
+                <label for="slb-industry" class="form-label">{% trans "Industry" %}</label>
+                <select id="slb-industry" class="form-select select2"
                         data-method="GET"
                         data-url="{% url "IndustryListAPI" %}"
                         data-keyResp="industry_list"
@@ -100,8 +100,8 @@
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label for="select-box-annual-revenue" class="form-label">{% trans "Annual Revenue" %}</label>
-                <select id="select-box-annual-revenue" class="form-select">
+                <label for="slb-annual-revenue" class="form-label">{% trans "Annual Revenue" %}</label>
+                <select id="slb-annual-revenue" class="form-select">
                     <option value=""></option>
                     {% for item in data.customer_revenue %}
                         <option value="{{ item.value }}">{{ item.name }}</option>
@@ -111,8 +111,8 @@
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label for="select-box-total-emp" class="form-label" id="total_employees_label">{% trans "Total Employees" %}</label>
-                <select id="select-box-total-emp" class="form-select">
+                <label for="slb-total-employee" class="form-label" id="total_employees_label">{% trans "Total Employees" %}</label>
+                <select id="slb-total-employee" class="form-select">
                     <option value=""></option>
                     {% for item in data.company_size %}
                         <option value="{{ item.value }}">{{ item.name }}</option>
@@ -122,8 +122,8 @@
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label for="select-box-account-group" class="form-label required">{% trans "Account Group" %}</label>
-                <select id="select-box-account-group" class="form-select select2"
+                <label for="slb-account-group" class="form-label required">{% trans "Account Group" %}</label>
+                <select id="slb-account-group" class="form-select select2"
                         data-method="GET" required
                         data-url="{% url "AccountGroupListAPI" %}">
                 </select>
@@ -131,8 +131,8 @@
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label for="select-box-acc-manager" class="form-label required">{% trans "Account Manager" %}</label>
-                <select id="select-box-acc-manager"
+                <label for="slb-account-manager" class="form-label required">{% trans "Account Manager" %}</label>
+                <select id="slb-account-manager"
                         class="form-select select2 select2-multiple select2-required"
                         multiple required
                         data-method="GET"
@@ -152,8 +152,8 @@
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label for="select-box-acc-type" class="form-label required">{% trans "Account Type" %}</label>
-                <select id="select-box-acc-type"
+                <label for="slb-account-type" class="form-label required">{% trans "Account Type" %}</label>
+                <select id="slb-account-type"
                         class="form-select select2 select2-multiple select2-required"
                         multiple required
                         data-method="GET"
@@ -163,8 +163,8 @@
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label for="select-box-parent-account" class="form-label">{% trans "Parent Account" %}</label>
-                <select id="select-box-parent-account" class="form-select select2"
+                <label for="slb-parent-account" class="form-label">{% trans "Parent Account" %}</label>
+                <select id="slb-parent-account" class="form-select select2"
                         data-method="GET"
                         data-url="{% url "AccountListAPI" %}" disabled>
                 </select>

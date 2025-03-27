@@ -15,8 +15,6 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <script id="script_trans"
-    ></script>
     <form id="form-create-cashinflow"
           data-method="POST"
           data-url="{% url 'CashInflowListAPI' %}"
@@ -24,7 +22,6 @@
     >
         {% csrf_token %}
         {% include 'sales/financialcashflow/cashinflow/common/information.html' %}
-        {% include 'sales/financialcashflow/cashinflow/common/main_area.html' %}
     </form>
 {% endblock %}
 {% block modalData %}

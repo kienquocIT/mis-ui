@@ -71,7 +71,7 @@
                 <div class="tab-pane fade show active" id="tab_block_contact">
                     <div class="row" style="overflow: auto; max-height: 68vh">
                         <div class="col-12">
-                            <table id="datatable_contact_list" class="table nowrap w-100" data-method="GET">
+                            <table id="contact-list-table" class="table nowrap w-100" data-method="GET">
                                 <thead>
                                     <tr>
                                         <th class="w-5"></th>
@@ -86,9 +86,9 @@
                                 <tbody></tbody>
                             </table>
                             <button class="btn btn-sm btn-primary mt-2"
-                                    id="add-contact-btn"
+                                    id="select-contact-btn"
                                     data-bs-toggle="offcanvas"
-                                    data-bs-target="#offcanvasSelectContact"
+                                    data-bs-target="#offcanvas_SelectContact"
                                     aria-controls="offcanvasExample"
                                     type="button">
                                 <span>
@@ -104,7 +104,7 @@
                 <div class="tab-pane fade" id="tab_block_shipping">
                     <div class="row" style="overflow: auto; max-height: 68vh">
                         <div class="col-12">
-                            <table class="table nowrap w-100" id="list-shipping-address">
+                            <table class="table nowrap w-100" id="shipping-address-table">
                                 <thead>
                                 <tr>
                                     <th class="w-5"></th>
@@ -133,7 +133,7 @@
                 <div class="tab-pane fade" id="tab_block_billing">
                     <div class="row" style="overflow: auto; max-height: 68vh">
                         <div class="col-12">
-                            <table class="table nowrap w-100" id="list-billing-address">
+                            <table class="table nowrap w-100" id="billing-address-table">
                                 <thead>
                                 <tr>
                                     <th class="w-5"></th>
@@ -163,46 +163,46 @@
                     <div class="row" style="overflow: auto; max-height: 68vh">
                         <div class="col-12">
                             <div class="row">
-                                <div class="col-12 col-md-6 col-lg-4 mb-5" id="role-for-customer" hidden>
+                                <div class="col-12 col-md-6 col-lg-4 mb-5" id="role-for-customer-space" hidden>
                                     <div class="row">
                                         <div class="col-12">
                                             <h5>{% trans 'Role of Customer' %}</h5>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label for="payment-terms-id-customer" class="form-label" for="payment-terms-id">{% trans "Payment Terms" %}</label>
-                                                <select id="payment-terms-id-customer" class="form-select" data-method="GET" data-url="{% url "PaymentsTermsListAPI" %}"></select>
+                                                <label for="for-customer-payment-terms" class="form-label" for="payment-terms-id">{% trans "Payment Terms" %}</label>
+                                                <select id="for-customer-payment-terms" class="form-select" data-method="GET" data-url="{% url "PaymentsTermsListAPI" %}"></select>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label class="form-label" for="price-list">{% trans "Price List" %}</label>
-                                                <select id="price-list" class="form-select" data-method="GET" data-url="{% url "PriceListAPI" %}"></select>
+                                                <label class="form-label" for="for-customer-price-list">{% trans "Price List" %}</label>
+                                                <select id="for-customer-price-list" class="form-select" data-method="GET" data-url="{% url "PriceListAPI" %}"></select>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label class="form-label" for="credit-limit-id-customer">{% trans "Credit Limit" %}</label>
-                                                <input type="text" class="mask-money form-control" id="credit-limit-id-customer">
+                                                <label class="form-label" for="for-customer-credit-limit">{% trans "Credit Limit" %}</label>
+                                                <input type="text" class="mask-money form-control" id="for-customer-credit-limit">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 col-lg-4 mb-5" id="role-for-supplier" hidden>
+                                <div class="col-12 col-md-6 col-lg-4 mb-5" id="role-for-supplier-space" hidden>
                                     <div class="row">
                                         <div class="col-12">
                                             <h5>{% trans 'Role of Supplier' %}</h5>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label class="form-label" for="payment-terms-id-supplier">{% trans "Payment Terms" %}</label>
-                                                <select id="payment-terms-id-supplier" class="form-select" data-method="GET" data-url="{% url "PaymentsTermsListAPI" %}"></select>
+                                                <label class="form-label" for="for-supplier-payment-term">{% trans "Payment Terms" %}</label>
+                                                <select id="for-supplier-payment-term" class="form-select" data-method="GET" data-url="{% url "PaymentsTermsListAPI" %}"></select>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label class="form-label" for="credit-limit-id-supplier">{% trans "Credit Limit" %}</label>
-                                                <input type="text" class="mask-money form-control" id="credit-limit-id-supplier">
+                                                <label class="form-label" for="for-supplier-credit-limit">{% trans "Credit Limit" %}</label>
+                                                <input type="text" class="mask-money form-control" id="for-supplier-credit-limit">
                                             </div>
                                         </div>
                                     </div>
@@ -211,7 +211,7 @@
                             <div class="row mb-5">
                                 <div class="col-12">
                                     <h5>{% trans "Bank Account Information" %}</h5>
-                                    <table class="table w-100 nowrap" id="list-bank-account-information">
+                                    <table class="table w-100 nowrap" id="bank-account-table">
                                         <thead>
                                         <tr>
                                             <th></th>
@@ -241,7 +241,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <h5>{% trans "Credit Card Account Information" %}</h5>
-                                    <table class="table w-100 nowrap" id="list-credit-card-information">
+                                    <table class="table w-100 nowrap" id="credit-card-table">
                                         <thead>
                                         <tr>
                                             <th></th>

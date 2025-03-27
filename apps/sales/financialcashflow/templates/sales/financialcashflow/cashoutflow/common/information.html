@@ -1,0 +1,132 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12 col-md-9 col-lg-9">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label required" for="title">{% trans "Name" %}</label>
+                    <input required maxlength="100" name="title" class="form-control" id="title">
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label class="form-label required" for="payment_type">{% trans "Payment type" %}</label>
+                    <select required id="payment_type" class="form-select">
+                        <option value=""></option>
+                        <option value="0">{% trans 'Payment to supplier' %}</option>
+                        <option value="1">{% trans 'Payment to customer' %}</option>
+                        <option value="2">{% trans 'Advance payment to employee' %}</option>
+                        <option value="3">{% trans 'Payment on account' %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-9 col-lg-9">
+                <div class="form-group">
+                    <label class="form-label required" for="supplier">{% trans "Supplier" %}</label>
+                    <select required id="supplier" class="select2 form-select" data-method="GET" data-url="{% url 'SupplierListAPI' %}"></select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label required" for="posting_date">{% trans "Posting date" %}</label>
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <input required name="posting_date" class="form-control" id="posting_date">
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label required" for="document_date">{% trans "Document date" %}</label>
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <input required name="document_date" class="form-control" id="document_date">
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12 col-md-5 col-lg-5">
+        <div class="form-group">
+            <label for="advance_to_supplier" class="form-label fw-bold h5">
+                {% trans "Advance payment to supplier (not according to Purchase order)" %}
+            </label>
+            <input name="advance_to_supplier" class="form-control mask-money" value="0" id="advance_to_supplier">
+        </div>
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-12 col-md-6 col-lg-6">
+        <div class="dropdown">
+            <span data-bs-toggle="dropdown">
+                <label data-value="0" id="cof_type_label" class="form-label fw-bold h5">
+                    {% trans 'Advance payment to supplier (according to Purchase order)' %}
+                </label><i class="fa-regular fa-square-caret-down text-primary ml-2"></i>
+            </span>
+            <div id="cof_type" role="menu" class="dropdown-menu dropdown-menu-dark">
+                <a class="dropdown-item" href="#" data-value="0"><i class="dropdown-icon fa-solid fa-hand-point-right"></i><span>{% trans 'Advance payment to supplier (according to Purchase order)' %}</span></a>
+                <a class="dropdown-item" href="#" data-value="1"><i class="dropdown-icon fa-solid fa-hand-point-right"></i><span>{% trans 'Payment to supplier according to AP invoice' %}</span></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div id="area_table_advance_to_supplier">
+            <table id="advance-to-supplier-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'CustomerAdvanceListForCashInflowAPI' %}">
+                <thead>
+                <tr >
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 80px">{% trans 'PO code' %}</th>
+                    <th style="min-width: 100px">{% trans 'Installment' %}</th>
+                    <th style="min-width: 100px">{% trans 'Description' %}</th>
+                    <th style="min-width: 80px">{% trans 'Due date' %}</th>
+                    <th style="min-width: 150px">{% trans 'Total' %}</th>
+                    <th style="min-width: 150px">{% trans 'Balance value' %}</th>
+                    <th style="min-width: 200px">{% trans 'Payment value' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <span class="small text-muted">{% trans 'Order by Due date' %}</span>
+        </div>
+        <div hidden id="area_table_ap_invoice">
+            <table id="ap-invoice-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'ARInvoiceListForCashInflowAPI' %}">
+                <thead>
+                <tr>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 80px">{% trans 'Invoice code' %}</th>
+                    <th style="min-width: 100px">{% trans 'Document type' %}</th>
+                    <th style="min-width: 100px">{% trans 'Document date' %}</th>
+                    <th style="min-width: 150px">{% trans 'Total' %}</th>
+                    <th style="min-width: 150px">{% trans 'Balance value' %}</th>
+                    <th style="min-width: 200px">{% trans 'Payment value' %}</th>
+                    <th style="min-width: 150px">{% trans 'Payment discount' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="form-group">
+            <label class="form-label" for="description">{% trans "Note" %}</label>
+            <textarea name="description" class="form-control" id="description"></textarea>
+        </div>
+    </div>
+</div>

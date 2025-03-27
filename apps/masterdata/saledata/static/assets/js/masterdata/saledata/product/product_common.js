@@ -153,24 +153,21 @@ class ProductPageFunction {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            pageElements.$notify_inventory.prop('hidden', true)
-            if (pageElements.$general_product_type.val()) {
-                pageElements.$check_tab_inventory.prop('checked', false).prop('disabled', false)
-                pageElements.$check_tab_sale.prop('checked', false).prop('disabled', false)
-                pageElements.$check_tab_purchase.prop('checked', false).prop('disabled', false)
-            }
-            else {
-                let selected = SelectDDControl.get_data_from_idx(pageElements.$general_product_type, pageElements.$general_product_type.val())
-                let has_finished_goods = !!selected?.['is_finished_goods']
-                let has_service = !!selected?.['is_service']
-                if (has_finished_goods && has_service) {
-                    $.fn.notifyB({description: 'Can not select both Finished goods and Service at the same time'}, 'failure');
+            let selected = SelectDDControl.get_data_from_idx(pageElements.$general_product_type, pageElements.$general_product_type.val())
+            let is_service = selected?.['is_service']
+            if (is_service) {
+                if (pageElements.$check_tab_inventory.prop('checked')) {
+                    $.fn.notifyB({description: $.fn.gettext('Inventory tab is not allowed for Service product. Turn off Inventory tab first.')}, 'failure');
                     pageElements.$general_product_type.empty()
                 }
-                else if (has_service) {
+                else {
+                    pageElements.$check_tab_inventory.prop('checked', false).prop('disabled', true).trigger('change')
                     pageElements.$notify_inventory.prop('hidden', false)
-                    pageElements.$check_tab_inventory.prop('checked', false).prop('disabled', true)
                 }
+            }
+            else {
+                pageElements.$check_tab_inventory.prop('disabled', false).trigger('change')
+                pageElements.$notify_inventory.prop('hidden', true)
             }
         })
     }
@@ -1023,12 +1020,13 @@ class ProductPageFunction {
  */
 class ProductHandler {
     static Disable(option) {
-    if (option === 'detail') {
-        $('form select').prop('disabled', true);
-        $('form input').prop('disabled', true).prop('readonly', true);
-        pageElements.$btn_add_row_variant_attributes.prop('disabled', true);
+        if (option === 'detail') {
+            $('form select').prop('disabled', true);
+            $('form input').prop('disabled', true).prop('readonly', true);
+            $('form textarea').prop('disabled', true).prop('readonly', true);
+            pageElements.$btn_add_row_variant_attributes.prop('disabled', true);
+        }
     }
-}
     static GetDataForm() {
         let data = {
             'code': pageElements.$code.val(),
@@ -1065,9 +1063,9 @@ class ProductHandler {
         data['volume_id'] = pageElements.$volume.attr('data-id');
         data['weight_id'] = pageElements.$weight.attr('data-id');
         data['product_types_mapped_list'] = [pageElements.$general_product_type.val()];
-        data['general_product_category'] = pageElements.$general_product_category.val();
-        data['general_uom_group'] = pageElements.$general_uom_group.val();
-        data['general_manufacturer'] = pageElements.$general_manufacturer.val();
+        data['general_product_category'] = pageElements.$general_product_category.val() || null;
+        data['general_uom_group'] = pageElements.$general_uom_group.val() || null;
+        data['general_manufacturer'] = pageElements.$general_manufacturer.val() || null;
         data['general_traceability_method'] = $('#general-traceability-method option:selected').attr('value');
         data['standard_price'] = pageElements.$general_standard_price.attr('value')
 
@@ -1169,8 +1167,8 @@ class ProductHandler {
                     });
                 }
             })
-            data['sale_default_uom'] = $('#sale-uom').val();
-            data['sale_tax'] = $('#sale-tax').val();
+            data['sale_default_uom'] = $('#sale-uom').val() || null;
+            data['sale_tax'] = $('#sale-tax').val() || null;
             data['sale_price_list'] = sale_product_price_list;
 
             data['is_public_website'] = pageElements.$is_publish_website.prop('checked');
@@ -1187,7 +1185,7 @@ class ProductHandler {
 
         if (pageElements.$check_tab_inventory.is(':checked') === true) {
             data['product_choice'].push(1)
-            data['inventory_uom'] = $('#inventory-uom').val();
+            data['inventory_uom'] = $('#inventory-uom').val() || null;
             data['inventory_level_min'] = parseFloat(pageElements.$inventory_level_min.val());
             data['inventory_level_max'] = parseFloat(pageElements.$inventory_level_max.val());
             data['valuation_method'] = pageElements.$valuation_method.val()
@@ -1199,8 +1197,8 @@ class ProductHandler {
 
         if (pageElements.$check_tab_purchase.is(':checked') === true) {
             data['product_choice'].push(2)
-            data['purchase_default_uom'] = $('#purchase-uom').val();
-            data['purchase_tax'] = $('#purchase-tax').val();
+            data['purchase_default_uom'] = $('#purchase-uom').val() || null;
+            data['purchase_tax'] = $('#purchase-tax').val() || null;
             data['supplied_by'] = pageElements.$purchase_supplied_by.val();
         } else {
             data['purchase_default_uom'] = null
@@ -1281,7 +1279,7 @@ class ProductHandler {
                     $x.fn.renderCodeBreadcrumb(product_detail);
                     // console.log(product_detail)
 
-                    pageElements.$code.val(product_detail['code']).prop('disabled', true).prop('readonly', true).addClass('form-control-line')
+                    pageElements.$code.val(product_detail['code']).prop('disabled', true).prop('readonly', true).addClass('form-control-line fw-bold text-primary')
                     pageElements.$title.val(product_detail['title'])
                     pageElements.$description.val(product_detail['description'])
                     pageElements.$part_number.val(product_detail['part_number'])
@@ -1307,6 +1305,7 @@ class ProductHandler {
                     if (Object.keys(product_detail['general_information']).length !== 0) {
                         let general_information = product_detail['general_information'];
                         ProductPageFunction.LoadGeneralProductType(general_information['general_product_types_mapped'][0]);
+                        pageElements.$general_product_type.trigger('change');
                         ProductPageFunction.LoadGeneralProductCategory(general_information['product_category']);
                         ProductPageFunction.LoadGeneralUoMGroup(general_information['uom_group']);
                         ProductPageFunction.LoadGeneralManufacturer(general_information['general_manufacturer']);
@@ -1533,7 +1532,7 @@ class ProductHandler {
                     }
 
                     pageElements.$account_deter_referenced_by.val(product_detail['account_deter_referenced_by']).prop('disabled', true)
-                    pageElements.$product_account_determination_table.prop('hidden', product_detail['account_deter_referenced_by'] !== 2)
+                    pageElements.$product_account_determination_table.closest('.row').prop('hidden', product_detail['account_deter_referenced_by'] !== 2)
                     ProductPageFunction.LoadAccountDeterminationTable()
 
                     $.fn.initMaskMoney2();
@@ -1615,18 +1614,13 @@ class ProductEventHandler {
         })
         // inventory tab
         pageElements.$check_tab_inventory.change(function () {
-            $('#tab_inventory input, #tab_inventory select').val('')
             $('#tab_inventory').find('.row').prop('hidden', !pageElements.$check_tab_inventory.is(':checked'))
-            if (pageElements.$check_tab_inventory.is(':checked')) {
-                $('#label-dimension').addClass('required');
-            } else {
-                $('#label-dimension').removeClass('required');
-            }
+            $.fn.initMaskMoney2()
         })
         // sale tab
         pageElements.$check_tab_sale.change(function () {
-            $('#tab_sale input, #tab_sale select').val('')
             $('#tab_sale').find('.row').prop('hidden', !pageElements.$check_tab_sale.is(':checked'))
+            $.fn.initMaskMoney2()
         })
         pageElements.$available_notify_checkbox.on('change', function () {
             pageElements.$less_than_number.val('').prop('disabled', !$(this).prop('checked'))
@@ -1671,7 +1665,6 @@ class ProductEventHandler {
         })
         // purchase tab
         pageElements.$check_tab_purchase.change(function () {
-            $('#tab_purchase input, #tab_purchase select').val('')
             $('#tab_purchase').find('.row').prop('hidden', !pageElements.$check_tab_purchase.is(':checked'))
             $.fn.initMaskMoney2()
         })

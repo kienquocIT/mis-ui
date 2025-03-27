@@ -14,10 +14,14 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <div class="row">
-        <div class="col-12">
-        </div>
-    </div>
+    <form id="form-create-cashoutflow"
+          data-method="POST"
+          data-url="{% url 'CashOutflowListAPI' %}"
+          data-url-redirect="{% url 'CashOutflowList' %}"
+    >
+        {% csrf_token %}
+        {% include 'sales/financialcashflow/cashoutflow/common/information.html' %}
+    </form>
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/financialcashflow/js/cashoutflow/cashoutflow_common.js' %}"></script>

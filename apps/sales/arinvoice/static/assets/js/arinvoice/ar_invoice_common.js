@@ -110,7 +110,6 @@ class ARInvoiceLoadPage {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            ARInvoiceLoadTab.LoadTableNormal()
             if (saleOrderEle.val()) {
                 btn_for_delivery_ar.removeClass('disabled')
                 btn_add_optionally.addClass('disabled')
@@ -309,6 +308,7 @@ class ARInvoiceLoadTab {
         //     }
         // }
 
+        let from_delivery = saleOrderEle.val() ? 'disabled readonly' : ''
         NormalTable.DataTable().clear().destroy()
         NormalTable.DataTableDefault({
             dom: "t",
@@ -328,7 +328,7 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text text-center',
                     render: () => {
-                        return `<button type='button' ${datasource.length > 0 ? 'disabled' : ''} class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
+                        return `<button type='button' ${from_delivery} class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
                     }
                 },
                 {
@@ -338,7 +338,7 @@ class ARInvoiceLoadTab {
                         return `<div class="input-group">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix product-des" data-bs-toggle="tooltip" title="${product_description}"><i class="bi bi-info-circle"></i></span>
-                                <select ${row?.['product_data']?.['id'] ? 'disabled' : ''}
+                                <select ${from_delivery} ${row?.['product_data']?.['id'] ? 'disabled' : ''}
                                         data-id="${row?.['product_data']?.['id'] ? row?.['product_data']?.['id'] : ''}"
                                         data-code="${row?.['product_data']?.['code'] ? row?.['product_data']?.['code'] : ''}"
                                         data-title="${row?.['product_data']?.['title'] ? row?.['product_data']?.['title'] : ''}"
@@ -350,7 +350,7 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<select ${row?.['product_data']?.['id'] ? 'disabled' : ''}
+                        return `<select ${from_delivery} ${row?.['product_data']?.['id'] ? 'disabled' : ''}
                                         data-id="${row?.['uom_data']?.['id'] ? row?.['uom_data']?.['id'] : ''}"
                                         data-code="${row?.['uom_data']?.['code'] ? row?.['uom_data']?.['code'] : ''}"
                                         data-title="${row?.['uom_data']?.['title'] ? row?.['uom_data']?.['title'] : ''}"
@@ -361,17 +361,14 @@ class ARInvoiceLoadTab {
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         let picked_quantity = row?.['picked_quantity'] ? row?.['picked_quantity'] : 0
-                        return `<input type="number" ${row?.['product_data']?.['id'] ? 'disabled readonly' : ''}
-                                       value="${picked_quantity}" class="form-control picked_quantity recalculate-field">`
+                        return `<input type="number" ${from_delivery} value="${picked_quantity}" class="form-control picked_quantity recalculate-field">`
                     }
                 },
                 {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
                         let product_unit_price = row?.['data_from_so']?.['product_unit_price'] ? row?.['data_from_so']?.['product_unit_price'] : 0
-                        return `<input ${row?.['product_data']?.['id'] ? 'disabled readonly' : ''}
-                                       class="recalculate-field product_unit_price mask-money form-control text-right" 
-                                       value="${product_unit_price}">`
+                        return `<input ${from_delivery} class="recalculate-field product_unit_price mask-money form-control text-right" value="${product_unit_price}">`
                     }
                 },
                 {
@@ -405,7 +402,7 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<select data-tax-id="${row?.['data_from_so']?.['tax'] ? row?.['data_from_so']?.['tax'] : ''}"
+                        return `<select ${from_delivery} data-tax-id="${row?.['data_from_so']?.['tax'] ? row?.['data_from_so']?.['tax'] : ''}"
                                         data-tax-rate="${row?.['data_from_so']?.['product_tax_value'] ? row?.['data_from_so']?.['product_tax_value'] : 0}"
                                         data-tax-title="${row?.['data_from_so']?.['product_tax_title'] ? row?.['data_from_so']?.['product_tax_title'] : ''}"
                                         class="recalculate-field form-select select2 product_taxes"></select>`
@@ -482,9 +479,11 @@ class ARInvoiceLoadTab {
         if (option === 'detail') {
             input_disabled = 'disabled readonly'
         }
+        let from_delivery = saleOrderEle.val() ? 'disabled readonly' : ''
         NormalTable.DataTableDefault({
             dom: "t",
             rowIdx: true,
+            useDataServer: false,
             reloadCurrency: true,
             paging: false,
             scrollX: '100vw',
@@ -500,7 +499,7 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text text-center',
                     render: () => {
-                        return `<button disabled class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
+                        return `<button ${from_delivery} ${input_disabled} class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row"><span class="icon"><i class="fas fa-trash"></i></span></button>`;
                     }
                 },
                 {
@@ -509,7 +508,7 @@ class ARInvoiceLoadTab {
                         return `<div class="input-group">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix product-des" data-bs-toggle="tooltip" title="${row?.['product_data']?.['des']}"><i class="bi bi-info-circle"></i></span>
-                                <select data-product='${JSON.stringify(row?.['product_data'])}' class="form-select select-2 product-select"></select>
+                                <select ${from_delivery} ${input_disabled} data-product='${JSON.stringify(row?.['product_data'])}' class="form-select select-2 product-select"></select>
                             </span>
                         </div>`
                     }
@@ -517,20 +516,20 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<select data-product-uom='${JSON.stringify(row?.['product_uom_data'])}'
+                        return `<select ${from_delivery} ${input_disabled} data-product-uom='${JSON.stringify(row?.['product_uom_data'])}'
                                         class="form-select select-2 uom-select"></select>`
                     }
                 },
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<input type="number" disabled readonly value="${row?.['product_quantity']}" class="form-control picked_quantity recalculate-field">`
+                        return `<input ${from_delivery} ${input_disabled} type="number" value="${row?.['product_quantity']}" class="form-control picked_quantity recalculate-field">`
                     }
                 },
                 {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
-                        return `<input ${input_disabled} class="product_unit_price mask-money form-control text-right" value="${row?.['product_unit_price']}">`
+                        return `<input ${from_delivery} ${input_disabled} class="product_unit_price mask-money form-control text-right" value="${row?.['product_unit_price']}">`
                     }
                 },
                 {
@@ -557,7 +556,7 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text',
                     render: (data, type, row) => {
-                        return `<select ${input_disabled}
+                        return `<select ${from_delivery} ${input_disabled}
                                         data-tax='${JSON.stringify(row?.['product_tax_data'])}'
                                         class="form-select select2 product_taxes recalculate-field"></select>`
                     }
@@ -674,6 +673,7 @@ class ARInvoiceLoadTab {
         DescriptionTable.DataTableDefault({
             dom: "t",
             rowIdx: true,
+            useDataServer: false,
             reloadCurrency: true,
             paging: false,
             scrollX: '100vw',
@@ -710,7 +710,7 @@ class ARInvoiceLoadTab {
                 {
                     className: 'wrap-text w-15',
                     render: (data, type, row) => {
-                        return `<select class="recalculate-field form-select select2 product_taxes" 
+                        return `<select ${input_disabled} class="recalculate-field form-select select2 product_taxes" 
                                         data-tax='${JSON.stringify(row?.['product_tax_data'])}'
                                         ></select>`
                     }
@@ -734,6 +734,63 @@ class ARInvoiceLoadTab {
                     ARInvoiceAction.CalculatePrice('des')
                 }
             }
+        });
+    }
+    static LoadPaymentTermView(datasource=[]) {
+        paymentTermInfoTable.DataTable().clear().destroy()
+        paymentTermInfoTable.DataTableDefault({
+            dom: 't',
+            rowIdx: true,
+            reloadCurrency: true,
+            useDataServer: false,
+            paging: false,
+            scrollX: '100vw',
+            scrollY: '50vh',
+            scrollCollapse: true,
+            data: datasource,
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    render: (data, type, row) => {
+                        return ``
+                    }
+                }, {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `${row?.['term_data']?.['title']}`
+                    }
+                }, {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `${row?.['remark']}`
+                    }
+                }, {
+                    className: 'wrap-text w-10',
+                    render: (data, type, row) => {
+                        return `${moment(row?.['date'].split(' '), 'YYYY-MM-DDD').format('DD/MM/YYYY')}`
+                    }
+                }, {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `${row?.['ratio']}%`
+                    }
+                }, {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${row?.['value_before_tax']}"></span>`
+                    }
+                }, {
+                    className: 'wrap-text w-15',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${row?.['value_total']}"></span>`
+                    }
+                }, {
+                    className: 'wrap-text w-10',
+                    render: (data, type, row) => {
+                        return `${moment(row?.['due_date'].split(' '), 'YYYY-MM-DDD').format('DD/MM/YYYY')}`
+                    }
+                }
+            ]
         });
     }
 }
@@ -832,13 +889,14 @@ class ARInvoiceHandle {
         UsualLoadPageFunction.LoadDate({element: invoiceDateEle})
         ARInvoiceLoadTab.LoadTableNormal()
         ARInvoiceLoadTab.LoadTableDescription()
+        ARInvoiceLoadTab.LoadPaymentTermView()
         invoice_exp.trigger('change')
     }
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle))
 
         frm.dataForm['title'] = $('#title').val()
-        frm.dataForm['customer_mapped'] = customerNameEle.attr('data-id')
+        frm.dataForm['customer_mapped'] = customerNameEle.attr('data-id') || null
         frm.dataForm['buyer_name'] = $('#buyer-name').val()
         frm.dataForm['tax_number'] = tax_codeEle.val()
         frm.dataForm['billing_address_id'] = billingAddressEle.val()
@@ -864,14 +922,14 @@ class ARInvoiceHandle {
                 // }
                 data_item_list.push({
                     'item_index': $(this).find('td:first-child').text(),
-                    'product_id': $(this).find('.product-select').val(),
-                    'product_uom_id': $(this).find('.uom-select').val(),
+                    'product_id': $(this).find('.product-select').val() || null,
+                    'product_uom_id': $(this).find('.uom-select').val() || null,
                     'product_quantity': $(this).find('.picked_quantity').val(),
                     'product_unit_price': $(this).find('.product_unit_price').attr('value'),
                     'product_subtotal': $(this).find('.product_subtotal_price').attr('data-init-money'),
                     'product_discount_rate': $(this).find('.product_discount_rate').val(),
                     'product_discount_value': $(this).find('.product_discount_value').attr('data-init-money'),
-                    'product_tax_id': $(this).find('.product_taxes').val(),
+                    'product_tax_id': $(this).find('.product_taxes').val() || null,
                     'product_tax_value': $(this).find('.product_taxes_value').attr('data-init-money'),
                     'product_subtotal_final': $(this).find('.product_subtotal_price_final').attr('data-init-money')
                 })
@@ -883,7 +941,7 @@ class ARInvoiceHandle {
                     'item_index': $(this).find('td:first-child').text(),
                     'ar_product_des': $(this).find('.ar_product_des').val(),
                     'product_subtotal_final': $(this).find('.product_subtotal_price_final').attr('value'),
-                    'product_tax_id': $(this).find('.product_taxes').val(),
+                    'product_tax_id': $(this).find('.product_taxes').val() || null,
                     'product_tax_value': $(this).find('.product_taxes_value').attr('data-init-money'),
                 })
             })
@@ -980,10 +1038,17 @@ class ARInvoiceHandle {
 
                     NormalTable.attr('data-delivery-selected', data?.['delivery_mapped'].map(item => item.id).join(','))
 
-                    if (Object.keys(data?.['sale_order_mapped_data']).length !== 0 && data?.['delivery_mapped'].length === 0) {
-                        NormalTable.closest('.table_space').prop('hidden', true)
-                        DescriptionTable.closest('.table_space').prop('hidden', false)
-                        ARInvoiceLoadTab.LoadTableDescriptionForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                    if (Object.keys(data?.['sale_order_mapped_data']).length !== 0) {
+                        if (data?.['delivery_mapped'].length === 0) {
+                            NormalTable.closest('.table_space').prop('hidden', true)
+                            DescriptionTable.closest('.table_space').prop('hidden', false)
+                            ARInvoiceLoadTab.LoadTableDescriptionForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                        }
+                        else {
+                            NormalTable.closest('.table_space').prop('hidden', false)
+                            DescriptionTable.closest('.table_space').prop('hidden', true)
+                            ARInvoiceLoadTab.LoadTableNormalForDetailPage(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                        }
                     }
                     else {
                         NormalTable.closest('.table_space').prop('hidden', false)
@@ -1004,7 +1069,6 @@ class ARInvoiceHandle {
                         btn_add_optionally.removeClass('disabled')
                     }
 
-
                     new $x.cls.file($('#attachment')).init({
                         enable_edit: option !== 'detail',
                         data: data.attachment,
@@ -1013,14 +1077,11 @@ class ARInvoiceHandle {
 
                     $.fn.initMaskMoney2();
 
-                    let [tax_code_status, responseData] = await ARInvoiceAction.CheckTaxCode()
-                    $('#invalid-tax').prop('hidden', tax_code_status)
-                    $('#valid-tax').prop('hidden', !tax_code_status)
-
                     UsualLoadPageFunction.DisablePage(
                         option==='detail',
                         ['#view-tax-code-info', '#view-payment-term']
                     )
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }
@@ -1104,60 +1165,7 @@ $('#view-tax-code-info').on('click', async function () {
 
 viewPaymentTermEle.on('click', function () {
     let selected_so = SelectDDControl.get_data_from_idx(saleOrderEle, saleOrderEle.val())
-    paymentTermInfoTable.DataTable().clear().destroy()
-    paymentTermInfoTable.DataTableDefault({
-        dom: '',
-        rowIdx: true,
-        reloadCurrency: true,
-        paging: false,
-        scrollX: '100vw',
-        scrollY: '50vh',
-        scrollCollapse: true,
-        data: selected_so?.['sale_order_payment_stage'] ? selected_so?.['sale_order_payment_stage'] : [],
-        columns: [
-            {
-                className: 'wrap-text w-5',
-                render: (data, type, row) => {
-                    return ``
-                }
-            }, {
-                className: 'wrap-text w-15',
-                render: (data, type, row) => {
-                    return `${row?.['term_data']?.['title']}`
-                }
-            }, {
-                className: 'wrap-text w-15',
-                render: (data, type, row) => {
-                    return `${row?.['remark']}`
-                }
-            }, {
-                className: 'wrap-text w-10',
-                render: (data, type, row) => {
-                    return `${moment(row?.['date'].split(' '), 'YYYY-MM-DDD').format('DD/MM/YYYY')}`
-                }
-            }, {
-                className: 'wrap-text w-15',
-                render: (data, type, row) => {
-                    return `${row?.['payment_ratio']}%`
-                }
-            }, {
-                className: 'wrap-text w-15',
-                render: (data, type, row) => {
-                    return `<span class="mask-money" data-init-money="${row?.['value_before_tax']}"></span>`
-                }
-            }, {
-                className: 'wrap-text w-15',
-                render: (data, type, row) => {
-                    return `<span class="mask-money" data-init-money="${row?.['value_total']}"></span>`
-                }
-            }, {
-                className: 'wrap-text w-10',
-                render: (data, type, row) => {
-                    return `${moment(row?.['due_date'].split(' '), 'YYYY-MM-DDD').format('DD/MM/YYYY')}`
-                }
-            }
-        ]
-    });
+    ARInvoiceLoadTab.LoadPaymentTermView(selected_so?.['sale_order_payment_stage'] ? selected_so?.['sale_order_payment_stage'] : [])
 })
 
 invoice_exp.on('change', function () {

@@ -644,7 +644,7 @@ class OpportunityLoadDetail {
         });
 
         $('#btnSavePermitMember').on('click', function () {
-            WindowControl.showLoading()
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'})
             let bodyData = {
                 'permit_view_this_opp': eleViewOppMember.prop('checked'),
                 'permit_add_member': eleAddOppMember.prop('checked'),
@@ -1924,10 +1924,7 @@ class InitDataTables {
                         targets: 7,
                         className: 'wrap-text w-10',
                         render: (data, type, row) => {
-                            let stage_current;
-                            stage_current = row?.['stage'].find(function (obj) {
-                                return obj?.['is_current'] === true;
-                            });
+                            let stage_current = row?.['stage'] || {}
                             return `<span class="${stage_current?.['win_rate'] === 100 ? 'text-gold' : 'text-secondary'}">${stage_current?.['indicator']} (${stage_current?.['win_rate']}%)</span>${stage_current?.['win_rate'] === 100 ? '&nbsp;<i class="bi bi-trophy-fill text-gold"></i>' : ''}`
                         }
                     },

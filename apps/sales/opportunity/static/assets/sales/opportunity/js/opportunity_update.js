@@ -697,7 +697,7 @@ $(document).ready(function () {
     // submit form edit
     new SetupFormSubmit(frmDetail).validate({
         submitHandler: function (form) {
-            WindowControl.showLoading();
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             let frm = new SetupFormSubmit($(form));
             frm.dataForm = OpportunityLoadDetail.getDataForm(frm.dataForm);
             $.fn.callAjax2({

@@ -1,0 +1,165 @@
+{% load i18n %}
+
+<div class="offcanvas offcanvas-end" style="min-width: 50%" tabindex="-1" id="offcanvas-add-customer" aria-labelledby="offcanvasTopLabel" data-bs-backdrop="false">
+	<div class="offcanvas-header">
+		<h5 id="offcanvasRightLabel">{% trans 'New Customer' %}</h5>
+		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body">
+        <div class="row" style="overflow: auto; max-height: 85vh">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label required" for="canvas-service-name">{% trans 'Service Name' %}</label>
+                    <input id="canvas-service-name" class="form-control" type="text"/>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required" for="canvas-service-code">{% trans 'Service Code' %}</label>
+                    <input id="canvas-service-code" class="form-control" type="text"/>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required" for="canvas-register-date">{% trans 'Register Date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" name=''
+                                   class="form-control" autocomplete="off" id="canvas-register-date">
+                        <div class="input-suffix">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required" for="canvas-customer">{% trans 'Customer' %}</label>
+{#                    <select name="" class="form-select select2" id="canvas-customer" data-method="GET" data-url="{% url 'ContactListAPI' %}"#}
+{#                            data-keyResp="contact_list" data-keytext="fullname">#}
+{#                    </select>#}
+                    <select name="" class="form-select select2" id="canvas-customer" data-method="GET" data-url="{% url 'AccountListAPI' %}"
+                            data-keyResp="account_list" data-keytext="name">
+                    </select>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required" for="canvas-customer-code">{% trans 'Customer Code' %}</label>
+                    <input id="canvas-customer-code" class="form-control" type="text"/>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label" for="canvas-phone">{% trans 'Phone Number' %}</label>
+                    <input id="canvas-phone" class="form-control" type="text"/>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label" for="canvas-email">{% trans 'Email' %}</label>
+                    <input id="canvas-email" class="form-control" type="text"/>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required" for="canvas-payment-status">{% trans 'Payment Status' %}</label>
+                    <select name="" class="form-select select2" id="canvas-payment-status">
+                        <option value=1>{% trans "Paid" %}</option>
+                        <option value=0>{% trans "Unpaid" %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label" for="canvas-note">{% trans 'Note' %}</label>
+                    <textarea id="canvas-note" class="form-control" type="text"></textarea>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary mt-3"  id="btn-offcanvas-add-customer">{% trans 'Save' %}</button>
+        <button type="button" class="btn btn-secondary mt-3 close-btn" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+	</div>
+</div>
+
+<div class="offcanvas offcanvas-end" style="min-width: 50%" tabindex="-1" id="offcanvas-update-customer" aria-labelledby="offcanvasTopLabel" data-bs-backdrop="false">
+	<div class="offcanvas-header">
+		<h5 id="offcanvasRightLabel">{% trans 'Update Customer' %}</h5>
+		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body">
+        <div class="row" style="overflow: auto; max-height: 85vh">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label required" for="canvas-service-name-update">{% trans 'Service Name' %}</label>
+                    <input id="canvas-service-name-update" class="form-control" type="text"/>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required" for="canvas-service-code-update">{% trans 'Service Code' %}</label>
+                    <input id="canvas-service-code-update" class="form-control" type="text"/>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required" for="canvas-register-date-update">{% trans 'Register Date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" name=''
+                                   class="form-control" autocomplete="off" id="canvas-register-date-update">
+                        <div class="input-suffix">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required" for="canvas-customer-update">{% trans 'Customer' %}</label>
+{#                    <select name="" class="form-select select2" id="canvas-customer-update" data-method="GET" data-url="{% url 'ContactListAPI' %}"#}
+{#                            data-keyResp="contact_list" data-keytext="fullname">#}
+{#                    </select>#}
+                    <select readonly disabled name="" class="form-select select2" id="canvas-customer-update" data-method="GET" data-url="{% url 'AccountListAPI' %}"
+                            data-keyResp="account_list" data-keytext="name">
+                    </select>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required" for="canvas-customer-code-update">{% trans 'Customer Code' %}</label>
+                    <input id="canvas-customer-code-update" class="form-control" type="text"/>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label" for="canvas-phone-update">{% trans 'Phone Number' %}</label>
+                    <input id="canvas-phone-update" class="form-control" type="text"/>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label" for="canvas-email-update">{% trans 'Email' %}</label>
+                    <input id="canvas-email-update" class="form-control" type="text"/>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label required" for="canvas-payment-status-update">{% trans 'Payment Status' %}</label>
+                    <select name="" class="form-select select2" id="canvas-payment-status-update">
+                        <option value=1>{% trans "Paid" %}</option>
+                        <option value=0>{% trans "Unpaid" %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label" for="canvas-note-update">{% trans 'Note' %}</label>
+                    <textarea id="canvas-note-update" class="form-control" type="text"></textarea>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary mt-3"  id="btn-offcanvas-update-customer">{% trans 'Save' %}</button>
+        <button type="button" class="btn btn-secondary mt-3 close-btn" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+	</div>
+</div>

@@ -1,0 +1,130 @@
+{% load i18n %}
+
+<div class="row pb-10">
+    <div class="col-12">
+        {% trans 'Select Sale Person' as inherit_title %}
+        {% include 'extends/the-documents/bastion.html' with priority_app='opp-inherit' has_opp=True opp_disabled=True has_process=False has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-8">
+                    <div class="form-group">
+                        <label for="description" class="form-label required">{% trans "Description" %}</label>
+                        <input name="title" id="description" required class="form-control" type="text"/>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="order-number" class="form-label required">{% trans "Order Number" %}</label>
+                        <input name="order_number" id="order-number" required class="form-control" type="text"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label class="form-label required" for="service-duration">{% trans 'Service Duration' %}</label>
+                <div class="input-affix-wrapper">
+                    <input required type="text" name='service_duration'
+                               class="form-control" autocomplete="off" id="service-duration">
+                    <div class="input-suffix">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label class="form-label required" for="created-date">{% trans 'Created Date' %}</label>
+                <div class="input-affix-wrapper">
+                    <input required type="text" name='service_created_date'
+                               class="form-control" autocomplete="off" id="created-date">
+                    <div class="input-suffix">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3">
+            <div class="form-group">
+                <label class="form-label required" for="max-guest">{% trans 'Max Number Of Guests' %}</label>
+                <input required name="max_guest" class="form-control" autocomplete="off" id="max-guest" type="number">
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label class="form-label required" for="registered-guest">{% trans 'Number Of Registered Guests' %}</label>
+                <input readonly required name="registered_guest" class="form-control" autocomplete="off" id="registered-guest" type="number">
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label for="status" class="form-label required">{% trans "Status" %}</label>
+                <select name="order_status" class="form-select select2" id="status">
+                    <option value=1>{% trans "Open" %}</option>
+                    <option value=0>{% trans "Close" %}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label for="payment-term" class="form-label required">{% trans "Payment Term" %}</label>
+                <select name="payment_term" class="form-select select2" id="payment-term" data-url="{% url "PaymentsTermsListAPI" %}" data-keyResp="payment_terms_list">
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3">
+            <div class="form-group">
+                <label class="form-label required" for="cost-per-guest">{% trans 'Cost Per Guest' %}</label>
+                <input readonly required class="form-control mask-money" id="cost-per-guest" name="cost_per_guest">
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label class="form-label required" for="cost-per-registered-guest">{% trans 'Cost Per Registered Guest' %}</label>
+                <input readonly required class="form-control mask-money" id="cost-per-registered-guest" name="cost_per_registered_guest">
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label class="form-label required" for="planned-revenue">{% trans 'Planned Revenue' %}</label>
+                <input readonly required class="form-control mask-money" id="planned-revenue" name="planned_revenue">
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label class="form-label required" for="actual-revenue">{% trans 'Actual Revenue' %}</label>
+                <input readonly required class="form-control mask-money" id="actual-revenue" name="actual_revenue">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% block dataHiddenGroup %}
+    <script id="url-script"
+{#            data-detail-contact-url = '{% url 'ContactDetailAPI' pk=0 %}'#}
+            data-detail-account-url = '{% url 'AccountDetailAPI' pk=0 %}'
+            data-tax-list-url = '{% url 'TaxListAPI' %}'
+            data-expense-item-list-url="{% url 'ExpenseItemListAPI' %}"
+            data-uom-list-url = '{% url 'UnitOfMeasureListAPI' %}'
+    ></script>
+    <script id="data-script"
+            data-total-cost=""
+            data-total-general-price=""
+            data-selected-product=[]
+            data-selected-price={}
+            data-tax=[]
+    >
+
+    </script>
+    {{ data.stt_sys|json_script:'stt_sys' }}
+{% endblock %}

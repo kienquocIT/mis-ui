@@ -1320,6 +1320,7 @@ class GroupOrderCommon {
             let rowData = this.$detailDataTable.DataTable().row($row).data()
             const quantity = rowData['quantity']
             const discount = rowData['discount']
+            const isIndividual = rowData['is_individual']
 
             const data ={
                 service_name: serviceName,
@@ -1337,6 +1338,7 @@ class GroupOrderCommon {
                 sub_total: subTotal,
                 note: note,
                 isNew: false,
+                is_individual: isIndividual
             }
 
             this.$detailDataTable.DataTable().row($row).data(data).draw()

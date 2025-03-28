@@ -250,6 +250,7 @@ class GroupOrderCommon {
             rowIdx: true,
             reloadCurrency: true,
             scrollX: true,
+            autoWidth: false,
             columns: [
                 {
                     targets: 0,
@@ -268,7 +269,7 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 2,
-                    width: '18%',
+                    width: '20%',
                     render: (data, type, row) => {
                         const customerName = row?.['customer_name']
                         return `<div class="detail-customer-name">${customerName}</div>`
@@ -292,7 +293,7 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 5,
-                    width: '7%',
+                    width: '10%',
                     render: (data, type, row) => {
                         const isIndividual = row?.['is_individual'] === 'true' || row?.['is_individual'] === true
                         const quantity = row?.['quantity']
@@ -337,7 +338,7 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 8,
-                    width: '7%',
+                    width: '10%',
                     render: (data, type, row) => {
                         const discount = row?.['discount'] || 0
                         return `<div class="form-group mt-3">
@@ -670,6 +671,107 @@ class GroupOrderCommon {
             rowIdx: true,
             reloadCurrency: true,
             scrollX: true,
+            // columns: [
+            //     {
+            //         targets: 0,
+            //         width: '1%',
+            //         render: (data, type, row) => {
+            //             return ``
+            //         }
+            //     },
+            //     {
+            //         targets: 1,
+            //         width: '15%',
+            //         render: (data, type, row) => {
+            //             const expenseName = row?.['expense_name'] || ''
+            //             return `<div class="form-group">
+            //                         <label class="form-label required" hidden></label>
+            //                         <input required class="form-control expense-name" value="${expenseName}">
+            //                     </div>`
+            //         }
+            //     },
+            //     {
+            //         targets: 2,
+            //         width: '19%',
+            //         render: (data, type, row) => {
+            //             const expenseListUrl = this.$urlScript.attr('data-expense-item-list-url')
+            //             return `<div class="form-group">
+            //                         <select class="form-select select2 expense-item-select" data-url="${expenseListUrl}" data-keyResp="expense_item_list">
+            //                         </select>
+            //                     </div>
+            //                     `
+            //         }
+            //     },
+            //     {
+            //         targets: 3,
+            //         width: '10%',
+            //         render: (data, type, row) => {
+            //             const uomListUrl = this.$urlScript.attr('data-uom-list-url')
+            //             return `<div class="form-group">
+            //                         <select class="form-select select2 uom-select" data-url="${uomListUrl}" data-keyResp="unit_of_measure">
+            //                         </select>
+            //                     </div>`
+            //         }
+            //     },
+            //     {
+            //         targets: 4,
+            //         width: '10%',
+            //         render: (data, type, row) => {
+            //             const quantity = row?.['expense_quantity'] || ''
+            //             return `<div class="form-group">
+            //                         <input min="0" type="number" required class="form-control expense-quantity" value="${quantity}">
+            //                     </div>`
+            //         }
+            //     },
+            //     {
+            //         targets: 5,
+            //         width: '10%',
+            //         render: (data, type, row) => {
+            //             const cost = row?.['expense_cost'] || ''
+            //             return `<div class="form-group">
+            //                         <input required class="form-control mask-money expense-cost" value="${cost}">
+            //                     </div>`
+            //         }
+            //     },
+            //     {
+            //         targets: 6,
+            //         width: '10%',
+            //         render: (data, type, row) => {
+            //             return `<div class="form-group">
+            //                         <select class="form-select select2 expense-tax-select" >
+            //                         </select>
+            //                     </div>`
+            //         }
+            //     },
+            //     {
+            //         targets: 7,
+            //         width: '10%',
+            //         render: (data, type, row) => {
+            //             const subTotal = row?.['expense_sub_total'] || 0
+            //             return `<div class="form-group">
+            //                         <span class="mask-money expense-sub-total" data-init-money="${subTotal}"></span>
+            //                     </div>`
+            //         }
+            //     },
+            //     {
+            //         targets: 8,
+            //         width: '5%',
+            //         render: (data, type, row) => {
+            //             const expenseId = row?.['id'] || ''
+            //             return `<div class="d-flex justify-content-center">
+            //                         <button
+            //                             type="button"
+            //                             class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover expense-del-row"
+            //                             data-bs-toggle="tooltip"
+            //                             data-bs-placement="bottom"
+            //                             data-expense-id="${expenseId}"
+            //                         >
+            //                             <span class="icon"><i class="far fa-trash-alt"></i></span>
+            //                         </button>
+            //                     </div>`
+            //         }
+            //     },
+            // ],
             columns: [
                 {
                     targets: 0,
@@ -683,43 +785,44 @@ class GroupOrderCommon {
                     width: '15%',
                     render: (data, type, row) => {
                         const expenseName = row?.['expense_name'] || ''
-                        return `<div class="form-group">
-                                    <label class="form-label required" hidden></label>
+                        return `<div style="width: 150px">
+<label class="form-label required" hidden></label>
                                     <input required class="form-control expense-name" value="${expenseName}">
-                                </div>`
+</div>
+                                    
+                                `
                     }
                 },
                 {
                     targets: 2,
-                    width: '10%',
+                    width: '19%',
                     render: (data, type, row) => {
                         const expenseListUrl = this.$urlScript.attr('data-expense-item-list-url')
-                        return `<div class="form-group">
-                                    <select class="form-select select2 expense-item-select" data-url="${expenseListUrl}" data-keyResp="expense_item_list">
-                                    </select>
-                                </div>
+                        return `<div style="width: 260px">
+                                    <select class="select2 expense-item-select" data-url="${expenseListUrl}" data-keyResp="expense_item_list">
+                                    </select></div>
                                 `
                     }
                 },
                 {
                     targets: 3,
-                    width: '5%',
+                    width: '10%',
                     render: (data, type, row) => {
                         const uomListUrl = this.$urlScript.attr('data-uom-list-url')
-                        return `<div class="form-group">
-                                    <select class="form-select select2 uom-select" data-url="${uomListUrl}" data-keyResp="unit_of_measure">
-                                    </select>
-                                </div>`
+                        return `<div style="width: 150px">
+                                    <select class=" select2 uom-select" data-url="${uomListUrl}" data-keyResp="unit_of_measure">
+                                    </select></div>
+                                `
                     }
                 },
                 {
                     targets: 4,
-                    width: '5%',
+                    width: '10%',
                     render: (data, type, row) => {
                         const quantity = row?.['expense_quantity'] || ''
-                        return `<div class="form-group">
-                                    <input min="0" type="number" required class="form-control expense-quantity" value="${quantity}">
-                                </div>`
+                        return `<div style="width: 150px">
+                                    <input min="0" type="number" required class="form-control expense-quantity" value="${quantity}"></div>
+                                `
                     }
                 },
                 {
@@ -727,19 +830,21 @@ class GroupOrderCommon {
                     width: '10%',
                     render: (data, type, row) => {
                         const cost = row?.['expense_cost'] || ''
-                        return `<div class="form-group">
-                                    <input required class="form-control mask-money expense-cost" value="${cost}">
-                                </div>`
+                        return `<div style="width: 150px">
+
+
+                                    <input required class="form-control mask-money expense-cost" value="${cost}"></div>
+                                `
                     }
                 },
                 {
                     targets: 6,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<div class="form-group">
-                                    <select class="form-select select2 expense-tax-select" >
-                                    </select>
-                                </div>`
+                        return `<div style="width: 150px">
+                                    <select class=" select2 expense-tax-select" >
+                                    </select></div>
+                                `
                     }
                 },
                 {
@@ -747,17 +852,18 @@ class GroupOrderCommon {
                     width: '10%',
                     render: (data, type, row) => {
                         const subTotal = row?.['expense_sub_total'] || 0
-                        return `<div class="form-group">
-                                    <span class="mask-money expense-sub-total" data-init-money="${subTotal}"></span>
-                                </div>`
+                        return `<div style="width: 150px">
+                                    <span class="mask-money expense-sub-total" data-init-money="${subTotal}"></span></div>
+                                `
                     }
                 },
                 {
                     targets: 8,
-                    width: '10%',
+                    width: '5%',
                     render: (data, type, row) => {
+                        console.log(row)
                         const expenseId = row?.['id'] || ''
-                        return `<div class="d-flex justify-content-center">
+                        return `<div class="d-flex justify-content-center" style="width: 75px">
                                     <button 
                                         type="button" 
                                         class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover expense-del-row"
@@ -784,9 +890,9 @@ class GroupOrderCommon {
 
                     this.initSelect($expenseSelect)
                     this.initSelect($uomSelect)
-                    data.isNew = false;
+                    data.isNew = false
                 }
-            }.bind(this),
+            }.bind(this)
         })
     }
 
@@ -1518,6 +1624,11 @@ class GroupOrderCommon {
     handleAddExpense(){
         $(document).on('click', '#btn-add-expense',(e)=>{
             this.$expenseDataTable.DataTable().row.add({
+                expense_name: '',
+                cost: 0,
+                sub_total: 0,
+                quantity: 0,
+                id: '',
                 isNew: true
             }).draw(false)
         })
@@ -1526,6 +1637,7 @@ class GroupOrderCommon {
     handleChangeExpense() {
         $(document).on('change', '.expense-quantity, .expense-cost, .expense-tax-select', (e) => {
             const $row = $(e.currentTarget).closest('tr');
+            let rowData = this.$expenseDataTable.DataTable().row($row).data()
 
             const $expenseQuantity = $row.find('.expense-quantity');
             const $expenseCost = $row.find('.expense-cost');
@@ -1538,21 +1650,29 @@ class GroupOrderCommon {
 
             const dataScript = $('#data-script');
             const dataTax = JSON.parse(dataScript.attr('data-tax')) || [];
-            const tax = dataTax.find((item) => item.id === taxId);
+            const tax = dataTax.find((item) => item.id === taxId)
+            const taxTitle = dataTax.find((item) => item.id === taxId).title
             const taxRate = Number(tax?.['rate'] || 0);
 
             const valueBeforeTax = quantity * cost;
             const valueAfterTax = valueBeforeTax + (valueBeforeTax * taxRate / 100);
 
-            $subTotal.attr('data-init-money', valueAfterTax);
-            $.fn.initMaskMoney2($subTotal);
-        });
+            $subTotal.attr('data-init-money', valueAfterTax)
+
+            this.loadDataCustomerPrice()
+            this.loadTotalData()
+            $.fn.initMaskMoney2($subTotal)
+        })
+
+
     }
 
     handleDeleteExpense(){
         $(document).on('click', '.expense-del-row',(e)=>{
             const $row = $(e.currentTarget).closest('tr')
             this.$expenseDataTable.DataTable().row($row).remove().draw(false)
+            this.loadDataCustomerPrice()
+            this.loadTotalData()
         })
     }
 
@@ -1729,7 +1849,15 @@ class GroupOrderCommon {
         this.$costPerRegisteredGuestInput.attr('value', costPerRegisterGuest)
 
         const maxGuest = Number(this.$maxGuestInput.val() || 0)
-        const costPerGuest = dataTotalCost / maxGuest
+
+        let totalExpense = 0
+        this.$expenseDataTable.DataTable().rows().every(function(){
+            const $row = $(this.node())
+            const expense  = Number($row.find('.expense-sub-total').attr('data-init-money') || 0)
+            totalExpense += expense
+        })
+
+        const costPerGuest = (dataTotalCost + totalExpense) / maxGuest
         this.$costPerGuestInput.attr('value', costPerGuest)
 
         let dataSelectedProductList = JSON.parse(dataScript.attr('data-selected-product') || [])
@@ -1754,7 +1882,15 @@ class GroupOrderCommon {
         const dataScript = $('#data-script');
         let dataTotalCost = Number(dataScript.attr('data-total-cost') || 0)
         const maxGuest = Number(this.$maxGuestInput.val() || 0)
-        const costPerGuest = dataTotalCost / maxGuest
+
+        let totalExpense = 0
+        this.$expenseDataTable.DataTable().rows().every(function(){
+            const $row = $(this.node())
+            const expense  = Number($row.find('.expense-sub-total').attr('data-init-money') || 0)
+            totalExpense += expense
+        })
+
+        const costPerGuest = (dataTotalCost + totalExpense) / maxGuest
         const markupPercentage = Number(this.$markupPercentageInput.val() || 1)/100
         const customerUnitPrice = costPerGuest*(1+markupPercentage) | 0
         const table = this.$detailDataTable.DataTable()
@@ -1920,7 +2056,7 @@ class GroupOrderCommon {
                             }, 'success');
                             setTimeout(() => {
                                 window.location.replace(_form.dataUrlRedirect);
-                            }, 3000);
+                            }, 1000);
                         }
                     },
                     (errs) => {
@@ -2052,7 +2188,6 @@ class GroupOrderCommon {
                         $taxSelect.append(newOption).trigger('change.select2')
                         $row.find('.expense-sub-total').attr('data-init-money', subTotal)
                     })
-
 
                     dataScript.attr('data-total-cost', data?.['total_cost'])
                     dataScript.attr('data-total-general-price', data?.['total_general_price'])

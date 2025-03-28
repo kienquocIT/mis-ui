@@ -66,13 +66,13 @@ $(document).ready(function () {
                         return `<div>${row?.['order_status']}</div>`
                     }
                 },
-                {
-                    targets: 6,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        return `<div></div>`
-                    }
-                },
+                // {
+                //     targets: 6,
+                //     width: '10%',
+                //     render: (data, type, row) => {
+                //         return `<div></div>`
+                //     }
+                // },
             ]
         });
     }

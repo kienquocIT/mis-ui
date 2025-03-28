@@ -11485,11 +11485,11 @@ msgstr "Điều khoản thanh toán"
 
 #
 msgid "Cost Per Guest"
-msgstr "Chi phí mỗi khách"
+msgstr "Giá vốn mỗi khách"
 
 #
 msgid "Cost Per Registered Guest"
-msgstr "Chi phí mỗi khách đăng kí"
+msgstr "Giá vốn mỗi khách đăng kí"
 
 #
 msgid "Planned Revenue"
@@ -11599,7 +11599,13 @@ msgctxt "group_order"
 msgid "Unpaid"
 msgstr "Chưa thanh toán"
 
+#
+msgid "Total Cost"
+msgstr "Tổng giá vốn"
 
+#
+msgid "Unit Cost"
+msgstr "Giá vốn đơn vị"
 
 #
 msgid "New task"

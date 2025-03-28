@@ -2603,27 +2603,41 @@ class WFRTControl {
     }
 
     static setupHTMLNonWF(is_cancel = false) {
-        let htmlBody = `<div class="row">
-                            <div class="d-flex">
-                                <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
-                                <span class="fs-7">${$.fn.transEle.attr('data-finish-wf-non-apply')}</span><i class="fas fa-check text-green ml-2 mt-1"></i>
+        let htmlBody = `<div class="d-flex align-items-center">
+                            <div class="media align-items-center">
+                                <div class="media-head me-2">
+                                    <i class="far fa-smile"></i>
+                                </div>
+                                <div class="media-body">
+                                    <b class="d-block fs-7">BflowBot</b>
+                                </div>
                             </div>
-                        </div>`;
-        let htmlCancel = `<div class="row mb-3">
-                            <div class="d-flex">
-                                <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
-                                <span class="fs-7">${$.fn.transEle.attr('data-canceled-by-creator')}</span><i class="fas fa-times text-red ml-2 mt-1"></i>
+                        </div>
+                        <ul>
+                            <li><span class="fs-7">- ${$.fn.transEle.attr('data-finish-wf-non-apply')}</span></li>
+                        </ul>`;
+        let htmlCancel = `<div class="d-flex align-items-center">
+                                <div class="media align-items-center">
+                                    <div class="media-head me-2">
+                                        <i class="far fa-smile"></i>
+                                    </div>
+                                    <div class="media-body">
+                                        <b class="d-block fs-7">BflowBot</b>
+                                    </div>
+                                </div>
                             </div>
-                        </div>`;
+                            <ul>
+                                <li><span class="fs-7">- ${$.fn.transEle.attr('data-canceled-by-creator')}</span></li>
+                            </ul>`;
         if (is_cancel === true) {
-            htmlBody = htmlBody + htmlCancel;
+            htmlBody = htmlCancel + htmlBody;
         }
         return `<div class="row">
                     <div class="col-12">
                         <div class="card">
                             <div class="hk-ribbon-type-1 start-touch">` + `<span>${$.fn.transEle.attr('data-node-completed')}</span></div>
                             <br>
-                            <div class="card-body mt-5">
+                            <div class="card-body mt-4">
                                 ${htmlBody}
                             </div>
                         </div>

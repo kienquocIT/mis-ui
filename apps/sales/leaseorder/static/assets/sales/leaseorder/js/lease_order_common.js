@@ -4485,9 +4485,13 @@ class LeaseOrderDataTableHandle {
 
     static dataTableCopyQuotation(data) {
         // init dataTable
-        let $tables = $('#datable-copy-quotation');
-        $tables.DataTableDefault({
+        LeaseOrderDataTableHandle.$tableQuotationCopy.DataTableDefault({
             data: data ? data : [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
             columns: [
                 {
                     targets: 0,
@@ -4527,7 +4531,7 @@ class LeaseOrderDataTableHandle {
                 }
             ],
             drawCallback: function () {
-                LeaseOrderLoadDataHandle.loadEventRadio($tables);
+                LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderDataTableHandle.$tableQuotationCopy);
             },
         });
     };

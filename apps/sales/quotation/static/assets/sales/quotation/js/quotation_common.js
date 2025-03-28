@@ -3744,8 +3744,7 @@ class QuotationDataTableHandle {
 
     static dataTableCopyQuotation(data) {
         // init dataTable
-        let $tables = $('#datable-copy-quotation');
-        $tables.DataTableDefault({
+        QuotationDataTableHandle.$tableQuotationCopy.DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,
@@ -3791,7 +3790,7 @@ class QuotationDataTableHandle {
                 }
             ],
             drawCallback: function () {
-                QuotationLoadDataHandle.loadEventRadio($tables);
+                QuotationLoadDataHandle.loadEventRadio(QuotationDataTableHandle.$tableQuotationCopy);
             },
         });
     };

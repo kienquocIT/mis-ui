@@ -411,9 +411,24 @@ class LogController {
 
     parseLogOfDoc(stagesData) {
         let ulStages = [];
+        let actions = {
+            'New task': $.fn.transEle.attr('data-new-task'),
+            'Create document': $.fn.transEle.attr('data-create-document'),
+            'Receive document': $.fn.transEle.attr('data-receive-document'),
+            'Approved': $.fn.transEle.attr('data-approved'),
+            'Rejected': $.fn.transEle.attr('data-rejected'),
+            'Edit data by zones': $.fn.transEle.attr('data-edit-zone'),
+            'Return to creator': $.fn.transEle.attr('data-return-creator'),
+            'Document was returned': $.fn.transEle.attr('data-document-returned'),
+            'Rerun workflow': $.fn.transEle.attr('data-rerun-workflow'),
+            'Workflow ended': $.fn.transEle.attr('data-workflow-end'),
+            'Workflow ended (Approved)': $.fn.transEle.attr('data-end-approved'),
+            'Workflow ended (Rejected)': $.fn.transEle.attr('data-end-rejected'),
+        }
         if (stagesData.length > 0) {
             stagesData.map((item) => {
-                let baseHTML = `<div class="row"><div class="col-12"><div class="card"><div class="hk-ribbon-type-1 start-touch">` + `<span>{stationName}</span></div><h5 class="card-title"></h5>{logData}{assigneeData}</div></div></div>`;
+                // let baseHTML = `<div class="row"><div class="col-12"><div class="card"><div class="hk-ribbon-type-1 start-touch">` + `<span>{stationName}</span></div><h5 class="card-title"></h5>{logData}{assigneeData}</div></div></div>`;
+                let baseHTML = `<div class="row"><div class="col-12"><div class="card"><div class="hk-ribbon-type-1 start-touch">` + `<span>{stationName}</span></div>{logData}</div></div></div>`;
                 let stationName = item['code'] ? `<i class="fas fa-cog"></i><span class="ml-1">${item['title']}</span>` : item['title'];
 
                 let assigneeHTML = [];
@@ -427,29 +442,33 @@ class LogController {
                 let logHTML = [];
                 item['logs'].map((itemLog) => {
                     let childLogHTML = `<div class="mt-2">`;
+                    let img = `<i class="far fa-smile"></i>`;
+                    let name = "BflowBot";
                     if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                        childLogHTML += `<div class="d-flex justify-content-between">
+                        img = `<i class="fas fa-user-circle"></i>`;
+                        name = itemLog['actor_data']?.['full_name'];
+                    }
+                    childLogHTML += `<div class="d-flex align-items-center">
                                             <div class="media align-items-center">
                                                 <div class="media-head me-2">
-                                                    <i class="fas fa-user-circle"></i>
+                                                    ${img}
                                                 </div>
                                                 <div class="media-body">
-                                                    <b class="d-block fs-7">${itemLog['actor_data']?.['full_name']}</b>
+                                                    <b class="d-block fs-7">${name}</b>
                                                 </div>
                                             </div>
-                                            <small>${UtilControl.parseDateTime(itemLog?.['date_created'])}</small>
-                                        </div>`
-                    }
+                                            <small class="text-light">  -  ${UtilControl.parseDateTime(itemLog?.['date_created'])}</small>
+                                        </div>`;
                     childLogHTML += ` <ul>
-                                        <li><small>- ${itemLog['msg']}</small></li>
+                                        <li><span class="fs-7">- ${actions[itemLog?.['msg']]}</span></li>
                                     </ul></div>`;
                     logHTML.push(childLogHTML);
                 })
-                let logGroupHTML = `<div class="card-body mt-4"><div class="card-text">${logHTML.join("")}</div></div>`
+                let logGroupHTML = `<div class="card-body mt-5"><div class="card-text">${logHTML.join("")}</div></div>`
 
                 ulStages.push(baseHTML.format_by_key({
                     stationName: stationName,
-                    assigneeData: assignGroupHTML,
+                    // assigneeData: assignGroupHTML,
                     logData: logGroupHTML,
                 }))
             })

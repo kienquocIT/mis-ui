@@ -11598,3 +11598,49 @@ msgstr "Mã Đơn mua hàng"
 msgctxt "group_order"
 msgid "Unpaid"
 msgstr "Chưa thanh toán"
+
+
+
+#
+msgid "New task"
+msgstr "Công việc mới"
+
+#
+msgid "Create document"
+msgstr "Tạo phiếu"
+
+#
+msgid "Receive document"
+msgstr "Tiếp nhận phiếu"
+
+#
+msgid "Rejected"
+msgstr "Từ chối"
+
+#
+msgid "Edit data by zones"
+msgstr "Chỉnh sửa dữ liệu theo vùng"
+
+#
+msgid "Return to creator"
+msgstr "Trả về người tạo"
+
+#
+msgid "Document was returned"
+msgstr "Phiếu bị trả về"
+
+#
+msgid "Rerun workflow"
+msgstr "Chạy lại quy trình"
+
+#
+msgid "Workflow ended"
+msgstr "Quy trình kết thúc"
+
+#
+msgid "Workflow ended (Approved)"
+msgstr "Quy trình kết thúc (Đã duyệt)"
+
+#
+msgid "Workflow ended (Rejected)"
+msgstr "Quy trình kết thúc (Từ chối)"

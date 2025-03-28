@@ -1853,7 +1853,9 @@ class GroupOrderCommon {
         let totalExpense = 0
         this.$expenseDataTable.DataTable().rows().every(function(){
             const $row = $(this.node())
-            const expense  = Number($row.find('.expense-sub-total').attr('data-init-money') || 0)
+            const expenseCost  = Number($row.find('.expense-cost').attr('value') || 0)
+            const quantity = Number($row.find('.expense-quantity').val() || 0)
+            const expense = expenseCost * quantity
             totalExpense += expense
         })
 

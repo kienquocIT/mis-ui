@@ -1,12 +1,12 @@
 $(document).ready(function () {
-    ARInvoiceHandle.Load();
-    WFRTControl.setWFInitialData('arinvoice')
+    ARInvoiceEventHandler.InitPageEven()
+    ARInvoiceHandler.LoadDetailARInvoice('update')
 
-    ARInvoiceHandle.LoadDetailARInvoice('update');
+    WFRTControl.setWFInitialData('arinvoice')
 
     let form_validator = $('#form-detail-ar-invoice').validate({
         submitHandler: function (form) {
-            let form_data = ARInvoiceHandle.CombinesData(form, 'update');
+            let form_data = ARInvoiceHandler.CombinesData(form, 'update');
             if (form_data) {
                 WFRTControl.callWFSubmitForm(form_data);
             }

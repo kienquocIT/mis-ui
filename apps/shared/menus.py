@@ -882,10 +882,10 @@ class MenusFinancials:
                 name='Cash inflow', code='menu_cash_inflow', view_name='CashInflowList',
                 icon='<i class="fas fa-reply"></i>',
             ),
-            MenuCommon(
-                name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
-                icon='<i class="fas fa-share"></i>',
-            ),
+            # MenuCommon(
+            #     name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
+            #     icon='<i class="fas fa-share"></i>',
+            # ),
         ],
     )
     JOURNAL_ENTRY = MenuCommon(

@@ -6,7 +6,7 @@
     </div>
 </div>
 <div class="row mt-3">
-    <div class="col-12 col-md-8 col-lg-8">
+    <div class="col-12 col-md-9 col-lg-9">
         <div class="row">
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
@@ -62,7 +62,7 @@
                     </div>
         </div>
     </div>
-    <div class="col-12 col-md-4 col-lg-4">
+    <div class="col-12 col-md-3 col-lg-3">
         <div class="row">
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
@@ -105,16 +105,15 @@
         </div>
     </div>
 </div>
-<hr class="hr-5">
-<div class="row mt-3">
-    <div class="col-12 col-md-8 col-lg-8">
+<div class="row mt-5">
+    <div class="col-12 col-md-9 col-lg-9">
+        <div class="form-group">
+            <label class="form-label required" for="title">{% trans "Title" %}</label>
+            <input required class="form-control" id="title">
+        </div>
+    </div>
+    <div class="col-12 col-md-9 col-lg-9">
         <div class="row">
-            <div class="col-12 col-md-12 col-lg-12">
-                <div class="form-group">
-                    <label class="form-label required" for="title">{% trans "Title" %}</label>
-                    <input required class="form-control" id="title">
-                </div>
-            </div>
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
                     <label class="form-label" for="sale-order">{% trans "Sale order" %} <span class="small text-muted">({% trans 'Get by selected customer' %})</span></label>
@@ -128,7 +127,7 @@
             </div>
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
-                    <label class="form-label required" for="invoice-method">{% trans "Method" %}</label>
+                    <label class="form-label required" for="invoice-method">{% trans "Payment method" %}</label>
                     <select class="form-select" id="invoice-method">
                         <option value="1">{% trans 'Cash' %}</option>
                         <option value="2">{% trans 'Bank transfer' %}</option>
@@ -145,36 +144,42 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-md-4 col-lg-4">
-            <div class="row">
-    {#            <div class="col-12 col-md-12 col-lg-12">#}
-    {#                <div class="form-group">#}
-    {#                    <label class="form-label" for="invoice-status">{% trans "Invoice status" %}</label>#}
-    {#                    <input disabled readonly class="form-control form-control-line fw-bold text-blue" id="invoice-status" value="Khởi tạo">#}
-    {#                </div>#}
-    {#            </div>#}
-                <div class="col-12 col-md-12 col-lg-12">
-                    <div class="form-group">
-                        <label class="form-label required" for="posting-date">{% trans "Posting date" %}</label>
-                        <div class="input-group mb-3">
-                            <span class="input-affix-wrapper">
-                                <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
-                                <input required class="form-control" id="posting-date">
-                            </span>
-                        </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="row">
+{#            <div class="col-12 col-md-12 col-lg-12">#}
+{#                <div class="form-group">#}
+{#                    <label class="form-label" for="invoice-status">{% trans "Invoice status" %}</label>#}
+{#                    <input disabled readonly class="form-control form-control-line fw-bold text-blue" id="invoice-status" value="Khởi tạo">#}
+{#                </div>#}
+{#            </div>#}
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label required" for="posting-date">{% trans "Posting date" %}</label>
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <input required class="form-control" id="posting-date">
+                        </span>
                     </div>
                 </div>
-                <div class="col-12 col-md-12 col-lg-12">
-                    <div class="form-group">
-                        <label class="form-label required" for="document-date">{% trans "Document date" %}</label>
-                        <div class="input-group mb-3">
-                            <span class="input-affix-wrapper">
-                                <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
-                                <input required class="form-control" id="document-date">
-                            </span>
-                        </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label class="form-label required" for="document-date">{% trans "Document date" %}</label>
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <input required class="form-control" id="document-date">
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="col-12 col-md-12 col-lg-12">
+        <div class="form-group">
+            <label class="form-label" for="note">{% trans "Note" %}</label>
+            <textarea class="form-control" id="note"></textarea>
+        </div>
+    </div>
 </div>

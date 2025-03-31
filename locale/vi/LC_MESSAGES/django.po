@@ -11618,3 +11618,7 @@ msgstr "Tạm ứng cho nhân viên"
 #
 msgid "Payment on account"
 msgstr "Thanh toán vào tài khoản"
+
+#
+msgid "VAT"
+msgstr "Thuế GTGT"

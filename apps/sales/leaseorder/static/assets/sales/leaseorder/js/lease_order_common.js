@@ -3392,6 +3392,7 @@ class LeaseOrderLoadDataHandle {
             LeaseOrderLoadDataHandle.loadTableDisabled(tableCost);
             LeaseOrderLoadDataHandle.loadTableDisabled(tableExpense);
             LeaseOrderLoadDataHandle.loadTableDisabled(LeaseOrderDataTableHandle.$tablePayment);
+            LeaseOrderLoadDataHandle.loadTableDisabled(LeaseOrderDataTableHandle.$tableInvoice);
             // mask money
             $.fn.initMaskMoney2();
         }
@@ -3521,6 +3522,18 @@ class LeaseOrderLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-supplied-by')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-total')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-tax')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-total')) {
             ele.setAttribute('readonly', 'true');
         }
         LeaseOrderLoadDataHandle.$btnSavePrice[0].setAttribute('disabled', 'true');
@@ -5496,7 +5509,7 @@ class LeaseOrderDataTableHandle {
                     $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : []));
                 }
                 if (valBeforeEle) {
-                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed" && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                         valBeforeEle.removeAttribute('readonly');
                     }
                 }
@@ -5519,12 +5532,12 @@ class LeaseOrderDataTableHandle {
                     }
                 }
                 if (valTaxEle) {
-                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed" && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                         valTaxEle.removeAttribute('readonly');
                     }
                 }
                 if (valTotalEle) {
-                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed" && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                         valTotalEle.removeAttribute('readonly');
                     }
                 }
@@ -5720,7 +5733,7 @@ class LeaseOrderDataTableHandle {
                     $(termDataEle).val(JSON.stringify(data?.['term_data'] ? data?.['term_data'] : []));
                 }
                 if (totalEle) {
-                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed" && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                         totalEle.removeAttribute('readonly');
                     }
                 }

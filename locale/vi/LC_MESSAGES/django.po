@@ -11650,3 +11650,7 @@ msgstr "Quy trình kết thúc (Đã duyệt)"
 #
 msgid "Workflow ended (Rejected)"
 msgstr "Quy trình kết thúc (Từ chối)"
+
+#
+msgid "Document code"
+msgstr "Mã tài liệu"

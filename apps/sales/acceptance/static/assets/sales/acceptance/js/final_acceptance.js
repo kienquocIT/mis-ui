@@ -225,7 +225,7 @@ $(function () {
                             if (dataFA?.['system_status'] === 3) {
                                 disabled = "disabled"
                             }
-                            return `<input class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}" ${disabled}>`;
+                            return `<textarea class="form-control table-row-remark" rows="2" ${disabled}>${row?.['remark'] ? row?.['remark'] : ''}</textarea>`;
                         }
                     },
                 ],

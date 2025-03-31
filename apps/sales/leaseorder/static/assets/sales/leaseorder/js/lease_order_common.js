@@ -386,34 +386,6 @@ class LeaseOrderLoadDataHandle {
         $('#quotation-create-date-created').val(formattedDate);
     };
 
-    static loadBoxQuotationPrice() {
-        let ele = $('#select-box-quotation-create-price-list');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-                'url': url,
-                'method': method,
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('price_list') && Array.isArray(data.price_list)) {
-                        ele.append(`<option value=""></option>`);
-                        data.price_list.map(function (item) {
-                            let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                            ele.append(`<option value="${item.id}">
-                                        <span class="opp-title">${item.title}</span>
-                                        <input type="hidden" class="data-info" value="${dataStr}">
-                                    </option>`)
-                        })
-                    }
-                }
-            }
-        )
-    };
-
     static loadModalSProduct() {
         let fnData = [];
         WindowControl.showLoading();
@@ -1001,19 +973,18 @@ class LeaseOrderLoadDataHandle {
         return true;
     };
 
-    static loadPriceProduct(eleProduct) {
+    static loadPriceProduct(productELe) {
         let dataZone = "lease_products_data";
-        if ($(eleProduct).val()) {
-            let productData = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
-            let is_change_price = false;
-            let row = eleProduct.closest('tr');
+        if ($(productELe).val()) {
+            let productData = SelectDDControl.get_data_from_idx($(productELe), $(productELe).val());
+            let row = productELe.closest('tr');
             if (productData && row) {
                 let data = productData;
-                let priceGr = row.querySelector('.input-group-price');
-                let price = row.querySelector('.table-row-price');
+                let priceGrEle = row.querySelector('.input-group-price');
+                let priceEle = row.querySelector('.table-row-price');
                 let modalBody = LeaseOrderLoadDataHandle.$priceModal[0].querySelector('.modal-body');
                 // load PRICE
-                if (priceGr && price && modalBody) {
+                if (priceGrEle && priceEle && modalBody) {
                     let account_price_id = null;
                     let dataAcc = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.customerSelectEle, LeaseOrderLoadDataHandle.customerSelectEle.val());
                     if (dataAcc) {
@@ -1021,19 +992,18 @@ class LeaseOrderLoadDataHandle {
                             account_price_id = dataAcc?.['price_list_mapped']?.['id']
                         }
                     }
-                    let current_price_checked = price.getAttribute('value');
                     let lastPrice = 0;
                     $(modalBody).empty();
                     let htmlPriceList = `<div class="mb-4 product-target" data-product-id="${productData?.['id']}"><i class="fas fa-cube mr-2"></i><b>${productData?.['title']}</b></div>`;
                     if (Array.isArray(data?.['price_list']) && data?.['price_list'].length > 0) {
                         let typeChecked = 0;
-                        if (priceGr.getAttribute('data-price-id')) {
+                        if (priceGrEle.getAttribute('data-price-id')) {
                             typeChecked = 1;
                         }
                         for (let priceData of data?.['price_list']) {
                             if (priceData?.['price_status'] === 1) {
                                 let checked = '';
-                                if (typeChecked === 0) {  // load default
+                                if (typeChecked === 0) {  // Load default
                                     if (account_price_id) {
                                         if (priceData?.['id'] === account_price_id) { // check CUSTOMER_PRICE then set customer_price
                                             lastPrice = parseFloat(priceData?.['value']);
@@ -1046,7 +1016,7 @@ class LeaseOrderLoadDataHandle {
                                         }
                                     }
                                 }
-                                if (typeChecked === 1) {  // load check before
+                                if (typeChecked === 1) {  // Set checked to price checked before
                                     if (row.querySelector(`.input-group-price[data-price-id="${priceData?.['id']}"]`)) {
                                         checked = 'checked';
                                     }
@@ -1066,15 +1036,6 @@ class LeaseOrderLoadDataHandle {
                         }
                     }
                     $(modalBody).append(`${htmlPriceList}`);
-                    // If change price then remove promotion & shipping
-                    if (current_price_checked !== price.getAttribute('value')) {
-                        is_change_price = true;
-                    }
-                    if (is_change_price === true) {
-                        let tableProduct = document.getElementById('datable-quotation-create-product');
-                        deletePromotionRows($(tableProduct), true, false);
-                        deletePromotionRows($(tableProduct), false, true);
-                    }
                     LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderLoadDataHandle.$priceModal);
                     $.fn.initMaskMoney2();
                     return lastPrice;
@@ -1293,21 +1254,14 @@ class LeaseOrderLoadDataHandle {
         }
         LeaseOrderDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let row = this.node();
-            let eleProduct = row.querySelector('.table-row-item');
-            let eleShipping = row.querySelector('.table-row-shipping');
-            let elePromotion = row.querySelector('.table-row-promotion');
-
+            let productEle = row.querySelector('.table-row-item');
+            let shippingEle = row.querySelector('.table-row-shipping');
+            let promotionEle = row.querySelector('.table-row-promotion');
             LeaseOrderCheckConfigHandle.checkConfig(1, row);
-
-            let rowIndex = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(row).index();
-            let $row = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(rowIndex);
-            if (eleProduct) {
-                LeaseOrderLoadDataHandle.loadPriceProduct(eleProduct);
+            if (productEle) {
+                LeaseOrderLoadDataHandle.loadPriceProduct(productEle);
             }
-            if (eleShipping) {
-                LeaseOrderLoadDataHandle.loadRowDisabled(row);
-            }
-            if (elePromotion) {
+            if (shippingEle || promotionEle) {
                 LeaseOrderLoadDataHandle.loadRowDisabled(row);
             }
         });
@@ -1505,8 +1459,7 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadReInitPrice(data) {
-        let $table = $('#datable-quotation-create-product');
-        $table.DataTable().rows().every(function () {
+        LeaseOrderDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let row = this.node();
             let eleOrder = row.querySelector('.table-row-order');
             if (eleOrder) {
@@ -2491,6 +2444,17 @@ class LeaseOrderLoadDataHandle {
                     }
                 }
             }
+            if (assetType === "2") {
+                let toolEle = row.querySelector('.table-row-tool');
+                if (toolEle) {
+                    if ($(toolEle).val()) {
+                        let dataTool = SelectDDControl.get_data_from_idx($(toolEle), $(toolEle).val());
+                        if (dataTool) {
+                            LeaseOrderLoadDataHandle.$btnSaveDepreciation.attr('data-product-id', dataTool?.['id']);
+                        }
+                    }
+                }
+            }
             if (assetType === "3") {
                 let assetEle = row.querySelector('.table-row-asset');
                 if (assetEle) {
@@ -2639,6 +2603,19 @@ class LeaseOrderLoadDataHandle {
                         LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
                         LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
                         return true;
+                    }
+                }
+                // Case row is tool then use depreciation_data of tool to render $tableDepreciationDetail
+                let toolEle = row.querySelector('.table-row-tool');
+                if (toolEle && assetType === "2") {
+                    let dataTool = SelectDDControl.get_data_from_idx($(toolEle), $(toolEle).val());
+                    if (dataTool?.['depreciation_data']) {
+                        if (dataTool?.['depreciation_data'].length > 0) {
+                            dataFn = dataTool?.['depreciation_data'];
+                            LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
+                            LeaseOrderDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
+                            return true;
+                        }
                     }
                 }
                 // Case row is asset then use depreciation_data of asset to render $tableDepreciationDetail
@@ -3591,6 +3568,10 @@ class LeaseOrderDataTableHandle {
     static $tableExpense = $('#datable-quotation-create-expense');
     static $tablePayment = $('#datable-quotation-payment-stage');
     static $tableInvoice = $('#datable-quotation-invoice');
+    static $tablePromotion = $('#datable-quotation-create-promotion');
+    static $tableShipping = $('#datable-quotation-create-shipping');
+    static $tableQuotationCopy = $('#datable-copy-quotation');
+    static $tableQuotationCopyProduct = $('#datable-copy-quotation-product');
     static $tableSProduct = $('#table-select-product');
     static $tableSOffset = $('#table-select-offset');
     static $tableSTool = $('#table-select-tool');
@@ -4504,9 +4485,13 @@ class LeaseOrderDataTableHandle {
 
     static dataTableCopyQuotation(data) {
         // init dataTable
-        let $tables = $('#datable-copy-quotation');
-        $tables.DataTableDefault({
+        LeaseOrderDataTableHandle.$tableQuotationCopy.DataTableDefault({
             data: data ? data : [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
             columns: [
                 {
                     targets: 0,
@@ -4546,7 +4531,7 @@ class LeaseOrderDataTableHandle {
                 }
             ],
             drawCallback: function () {
-                LeaseOrderLoadDataHandle.loadEventRadio($tables);
+                LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderDataTableHandle.$tableQuotationCopy);
             },
         });
     };
@@ -7847,12 +7832,12 @@ class LeaseOrderSubmitHandle {
         LeaseOrderDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let rowData = {};
             let row = this.node();
-            let eleProduct = row.querySelector('.table-row-item');
-            let elePromotion = row.querySelector('.table-row-promotion');
-            let eleShipping = row.querySelector('.table-row-shipping');
-            if (eleProduct) { // PRODUCT
-                if ($(eleProduct).val()) {
-                    let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
+            let productEle = row.querySelector('.table-row-item');
+            let promotionEle = row.querySelector('.table-row-promotion');
+            let shippingEle = row.querySelector('.table-row-shipping');
+            if (productEle) { // PRODUCT
+                if ($(productEle).val()) {
+                    let dataProduct = SelectDDControl.get_data_from_idx($(productEle), $(productEle).val());
                     if (dataProduct) {
                         rowData['product_id'] = dataProduct?.['id'];
                         rowData['product_title'] = dataProduct?.['title'];
@@ -7970,11 +7955,11 @@ class LeaseOrderSubmitHandle {
                     rowData['group_order'] = parseInt(dataGroupRaw);
                 }
                 result.push(rowData);
-            } else if (elePromotion) { // PROMOTION
+            } else if (promotionEle) { // PROMOTION
                 rowData['is_group'] = false;
                 rowData['is_promotion'] = true;
-                if ($(elePromotion).val()) {
-                    let dataPromotion = SelectDDControl.get_data_from_idx($(elePromotion), $(elePromotion).val());
+                if ($(promotionEle).val()) {
+                    let dataPromotion = SelectDDControl.get_data_from_idx($(promotionEle), $(promotionEle).val());
                     if (dataPromotion) {
                         rowData['promotion_id'] = dataPromotion?.['id'];
                         rowData['promotion_data'] = dataPromotion;
@@ -8027,11 +8012,11 @@ class LeaseOrderSubmitHandle {
                     rowData['order'] = parseInt(eleOrder.innerHTML);
                 }
                 result.push(rowData);
-            } else if (eleShipping) { // SHIPPING
+            } else if (shippingEle) { // SHIPPING
                 rowData['is_group'] = false;
                 rowData['is_shipping'] = true;
-                if ($(eleShipping).val()) {
-                    let dataShipping = SelectDDControl.get_data_from_idx($(eleShipping), $(eleShipping).val());
+                if ($(shippingEle).val()) {
+                    let dataShipping = SelectDDControl.get_data_from_idx($(shippingEle), $(shippingEle).val());
                     if (dataShipping) {
                         rowData['shipping_id'] = dataShipping?.['id'];
                         rowData['shipping_data'] = dataShipping;

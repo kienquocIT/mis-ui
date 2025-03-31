@@ -29,7 +29,7 @@ $(document).ready(function () {
                     return html
                 },
             }, {
-                width: '15%',
+                width: '20%',
                 render: (data, type, row) => {
                     let target = row?.['sale_order_data'];
                     let url = tbl.attr('data-url-sale-order-detail');
@@ -100,21 +100,19 @@ $(document).ready(function () {
             },
             {
                 data: 'state',
-                class: 'text-center',
-                width: '10%',
+                width: '12%',
                 render: (data, type, row, meta) => {
-                    const stateMap = {
-                        0: 'warning',
-                        1: 'info',
-                        2: 'success',
+                    let hidden = "hidden";
+                    if (row?.['state'] === 2) {
+                        hidden = "";
                     }
-                    return `<span class="badge badge-${stateMap[data]} badge-outline">${letStateChoices[data]}</span>`;
+                    return `<span>${letStateChoices[data]}</span><i class="far fa-check-circle text-success ml-2" ${hidden}></i>`;
                 }
             },
             {
                 class: 'text-center',
                 orderable: false,
-                width: '5%',
+                width: '1%',
                 render: (data, type, row, meta) => {
                     let link = $('#url-factory').attr('data-page-edit').format_url_with_uuid(row?.['id']);
                     let disabled = '';

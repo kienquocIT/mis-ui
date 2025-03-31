@@ -11485,11 +11485,11 @@ msgstr "Điều khoản thanh toán"
 
 #
 msgid "Cost Per Guest"
-msgstr "Chi phí mỗi khách"
+msgstr "Giá vốn mỗi khách"
 
 #
 msgid "Cost Per Registered Guest"
-msgstr "Chi phí mỗi khách đăng kí"
+msgstr "Giá vốn mỗi khách đăng kí"
 
 #
 msgid "Planned Revenue"
@@ -11598,6 +11598,58 @@ msgstr "Mã Đơn mua hàng"
 msgctxt "group_order"
 msgid "Unpaid"
 msgstr "Chưa thanh toán"
+
+#
+msgid "Total Cost"
+msgstr "Tổng giá vốn"
+
+#
+msgid "Unit Cost"
+msgstr "Giá vốn đơn vị"
+
+#
+msgid "New task"
+msgstr "Công việc mới"
+
+#
+msgid "Create document"
+msgstr "Tạo phiếu"
+
+#
+msgid "Receive document"
+msgstr "Tiếp nhận phiếu"
+
+#
+msgid "Rejected"
+msgstr "Từ chối"
+
+#
+msgid "Edit data by zones"
+msgstr "Chỉnh sửa dữ liệu theo vùng"
+
+#
+msgid "Return to creator"
+msgstr "Trả về người tạo"
+
+#
+msgid "Document was returned"
+msgstr "Phiếu bị trả về"
+
+#
+msgid "Rerun workflow"
+msgstr "Chạy lại quy trình"
+
+#
+msgid "Workflow ended"
+msgstr "Quy trình kết thúc"
+
+#
+msgid "Workflow ended (Approved)"
+msgstr "Quy trình kết thúc (Đã duyệt)"
+
+#
+msgid "Workflow ended (Rejected)"
+msgstr "Quy trình kết thúc (Từ chối)"
 
 #
 msgid "Payment type"

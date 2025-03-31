@@ -411,40 +411,64 @@ class LogController {
 
     parseLogOfDoc(stagesData) {
         let ulStages = [];
+        let actions = {
+            'New task': $.fn.transEle.attr('data-new-task'),
+            'Create document': $.fn.transEle.attr('data-create-document'),
+            'Receive document': $.fn.transEle.attr('data-receive-document'),
+            'Approved': $.fn.transEle.attr('data-approved'),
+            'Rejected': $.fn.transEle.attr('data-rejected'),
+            'Edit data by zones': $.fn.transEle.attr('data-edit-zone'),
+            'Return to creator': $.fn.transEle.attr('data-return-creator'),
+            'Document was returned': $.fn.transEle.attr('data-document-returned'),
+            'Rerun workflow': $.fn.transEle.attr('data-rerun-workflow'),
+            'Workflow ended': $.fn.transEle.attr('data-workflow-end'),
+            'Workflow ended (Approved)': $.fn.transEle.attr('data-end-approved'),
+            'Workflow ended (Rejected)': $.fn.transEle.attr('data-end-rejected'),
+        }
         if (stagesData.length > 0) {
             stagesData.map((item) => {
-                let baseHTML = `<div class="row"><div class="col-12"><div class="card"><div class="hk-ribbon-type-1 start-touch">` + `<span>{stationName}</span></div><h5 class="card-title"></h5>{logData}{assigneeData}</div></div></div>`;
+                // let baseHTML = `<div class="row"><div class="col-12"><div class="card"><div class="hk-ribbon-type-1 start-touch">` + `<span>{stationName}</span></div><h5 class="card-title"></h5>{logData}{assigneeData}</div></div></div>`;
+                let baseHTML = `<div class="row"><div class="col-12"><div class="card"><div class="hk-ribbon-type-1 start-touch">` + `<span>{stationName}</span></div>{logData}</div></div></div>`;
                 let stationName = item['code'] ? `<i class="fas fa-cog"></i><span class="ml-1">${item['title']}</span>` : item['title'];
 
                 let assigneeHTML = [];
                 item['assignee_and_zone'].map((item2) => {
                     if (item2['is_done'] === false) {
-                        assigneeHTML.push(`<span class="badge badge-warning badge-outline wrap-text mr-1">${item2['full_name']}</span>`)
+                        assigneeHTML.push(`<span class="badge badge-secondary badge-outline wrap-text mr-1">${item2['full_name']}</span>`)
                     }
                 })
                 let assignGroupHTML = assigneeHTML.length > 0 ? `<div class="card-footer card-text">${assigneeHTML.join("")}</div>` : ``;
 
                 let logHTML = [];
                 item['logs'].map((itemLog) => {
-                    let childLogHTML = `<div class="mt-3"><span class="badge badge-soft-secondary mr-1">${UtilControl.parseDateTime(itemLog?.['date_created'])}</span>`;
-                    if (itemLog['is_system'] === true) {
-                        childLogHTML += `<span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span>`;
-                        if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                            childLogHTML += `<span class="badge badge-light badge-outline mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
-                        }
-                    } else {
-                        if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                            childLogHTML += `<span class="badge badge-light badge-outline mr-1">${itemLog['actor_data']?.['full_name']}</span>`;
-                        }
+                    let childLogHTML = `<div class="mt-2">`;
+                    let img = `<i class="far fa-smile"></i>`;
+                    let name = "BflowBot";
+                    if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
+                        img = `<i class="fas fa-user-circle"></i>`;
+                        name = itemLog['actor_data']?.['full_name'];
                     }
-                    childLogHTML += ` <span class="fs-7">${itemLog['msg']}</span></div>`;
+                    childLogHTML += `<div class="d-flex align-items-center">
+                                            <div class="media align-items-center">
+                                                <div class="media-head me-2">
+                                                    ${img}
+                                                </div>
+                                                <div class="media-body">
+                                                    <b class="d-block fs-7">${name}</b>
+                                                </div>
+                                            </div>
+                                            <small class="text-light">  -  ${UtilControl.parseDateTime(itemLog?.['date_created'])}</small>
+                                        </div>`;
+                    childLogHTML += ` <ul>
+                                        <li><span class="fs-7">- ${actions[itemLog?.['msg']]}</span></li>
+                                    </ul></div>`;
                     logHTML.push(childLogHTML);
                 })
-                let logGroupHTML = `<div class="card-body mt-4"><div class="card-text">${logHTML.join("")}</div></div>`
+                let logGroupHTML = `<div class="card-body mt-5"><div class="card-text">${logHTML.join("")}</div></div>`
 
                 ulStages.push(baseHTML.format_by_key({
                     stationName: stationName,
-                    assigneeData: assignGroupHTML,
+                    // assigneeData: assignGroupHTML,
                     logData: logGroupHTML,
                 }))
             })
@@ -471,11 +495,6 @@ class LogController {
     getDataLogAndActivities(pkID, runtimeID, forceLoad = null) {
         // reset style
         this.setStyleBoxLog();
-
-        // reset title display
-        let txtTitle = $("#txtDocTitleHistory");
-        txtTitle.text("");
-
         // log runtime
         if (this.logUrl && (!this.groupLogEle.attr('data-log-runtime-loaded') || forceLoad === true)) {
             WindowControl.showLoadingWaitResponse(this.blockDataRuntime);
@@ -500,9 +519,7 @@ class LogController {
                             if (data && $.fn.hasOwnProperties(data, ['diagram_data'])) {
                                 let diagram_data = data?.['diagram_data'];
                                 if (diagram_data) {
-                                    let docTitle = diagram_data?.['doc_title'] || '';
                                     let stages = diagram_data?.['stages'] || [];
-                                    txtTitle.text(docTitle ? docTitle : '').closest('.ntt-drawer-title-text').removeClass('hidden');
                                     this.blockDataRuntime.html(
                                         this.parseLogOfDoc(stages)
                                     ).removeClass('hidden');
@@ -2539,12 +2556,12 @@ class WFRTControl {
         }
         htmlCustom += `<div class="d-flex mb-5">${commonImg}<span>${commonTxt}</span></div>`;
         for (let associate of AssociationData) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom group-checkbox-next-association">
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between group-checkbox-next-association">
                                 <div class="form-check form-check-lg d-flex align-items-center">
                                     <input type="radio" name="next-association" class="form-check-input checkbox-next-association" id="associate-${associate?.['id'].replace(/-/g, "")}" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">
                                     <label class="form-check-label mr-2" for="associate-${associate?.['id'].replace(/-/g, "")}">${associate?.['node_out']?.['title']}</label>
                                 </div>
-                            </div>`;
+                            </div><hr class="bg-black">`;
         }
         return htmlCustom;
     }
@@ -2552,13 +2569,13 @@ class WFRTControl {
     static setupHTMLSelectCollab(collabOutForm) {
         let htmlCustom = ``;
         for (let collab of collabOutForm) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between mb-5 border-bottom group-checkbox-next-node-collab">
+            htmlCustom += `<div class="d-flex align-items-center justify-content-between group-checkbox-next-node-collab">
                                 <div class="form-check form-check-lg d-flex align-items-center">
                                     <input type="radio" name="next-node-collab" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
                                     <label class="form-check-label mr-2" for="collab-${collab?.['id'].replace(/-/g, "")}">${collab?.['full_name']}</label>
                                 </div>
-                                <span class="badge badge-light badge-outline">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
-                            </div>`;
+                                <span class="badge badge-secondary badge-outline">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
+                            </div><hr class="bg-black">`;
         }
         return htmlCustom;
     }
@@ -2575,38 +2592,52 @@ class WFRTControl {
             if (status === 0) {
                 checked = "checked";
             }
-            htmlCustom += `<div class="d-flex mb-5 border-bottom group-checkbox-save-status">
+            htmlCustom += `<div class="d-flex group-checkbox-save-status">
                                 <div class="form-check form-check-lg d-flex align-items-center">
                                     <input type="radio" name="save-status" class="form-check-input checkbox-save-status" id="save-type-${status}" data-status="${status}" ${checked}>
                                     <label class="form-check-label" for="save-type-${status}">${statusMapText[status]}</label>
                                 </div>
-                            </div>`;
+                            </div><hr class="bg-black">`;
         }
         return htmlCustom;
     }
 
     static setupHTMLNonWF(is_cancel = false) {
-        let htmlBody = `<div class="row">
-                            <div class="d-flex">
-                                <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
-                                <span class="fs-7">${$.fn.transEle.attr('data-finish-wf-non-apply')}</span><i class="fas fa-check text-green ml-2 mt-1"></i>
+        let htmlBody = `<div class="d-flex align-items-center">
+                            <div class="media align-items-center">
+                                <div class="media-head me-2">
+                                    <i class="far fa-smile"></i>
+                                </div>
+                                <div class="media-body">
+                                    <b class="d-block fs-7">BflowBot</b>
+                                </div>
                             </div>
-                        </div>`;
-        let htmlCancel = `<div class="row mb-3">
-                            <div class="d-flex">
-                                <div class="mr-2"><span class="badge badge-soft-light mr-1"><i class="fas fa-robot"></i></span></div>
-                                <span class="fs-7">${$.fn.transEle.attr('data-canceled-by-creator')}</span><i class="fas fa-times text-red ml-2 mt-1"></i>
+                        </div>
+                        <ul>
+                            <li><span class="fs-7">- ${$.fn.transEle.attr('data-finish-wf-non-apply')}</span></li>
+                        </ul>`;
+        let htmlCancel = `<div class="d-flex align-items-center">
+                                <div class="media align-items-center">
+                                    <div class="media-head me-2">
+                                        <i class="far fa-smile"></i>
+                                    </div>
+                                    <div class="media-body">
+                                        <b class="d-block fs-7">BflowBot</b>
+                                    </div>
+                                </div>
                             </div>
-                        </div>`;
+                            <ul>
+                                <li><span class="fs-7">- ${$.fn.transEle.attr('data-canceled-by-creator')}</span></li>
+                            </ul>`;
         if (is_cancel === true) {
-            htmlBody = htmlBody + htmlCancel;
+            htmlBody = htmlCancel + htmlBody;
         }
         return `<div class="row">
                     <div class="col-12">
                         <div class="card">
                             <div class="hk-ribbon-type-1 start-touch">` + `<span>${$.fn.transEle.attr('data-node-completed')}</span></div>
                             <br>
-                            <div class="card-body mt-5">
+                            <div class="card-body mt-4">
                                 ${htmlBody}
                             </div>
                         </div>

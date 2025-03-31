@@ -1,5 +1,10 @@
 class GroupOrderCommon {
     constructor() {
+        // global variables
+        this.checkedProductIds = new Set()
+        this.allProducts = new Map()
+
+        // jquery selector:
         this.$serviceDurationInput = $('#service-duration')
         this.$createdDateInput = $('#created-date')
 
@@ -129,6 +134,7 @@ class GroupOrderCommon {
         this.handleDeleteExpense()
         this.handleReselectDataInherit()
         this.handleChangeMarkupPercentage()
+        this.handleChangeCostNote()
     }
 
     initInput($selector, data=null){
@@ -175,7 +181,6 @@ class GroupOrderCommon {
             timePicker: false,
             showDropdowns: isRange, // Show dropdowns only for range selection
             minYear: 2023,
-            maxYear: parseInt(moment().format('YYYY'), 10),
             autoApply: true,
             autoUpdateInput: false,
             locale: {
@@ -245,6 +250,7 @@ class GroupOrderCommon {
             rowIdx: true,
             reloadCurrency: true,
             scrollX: true,
+            autoWidth: false,
             columns: [
                 {
                     targets: 0,
@@ -263,7 +269,7 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 2,
-                    width: '18%',
+                    width: '20%',
                     render: (data, type, row) => {
                         const customerName = row?.['customer_name']
                         return `<div class="detail-customer-name">${customerName}</div>`
@@ -287,7 +293,7 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 5,
-                    width: '7%',
+                    width: '10%',
                     render: (data, type, row) => {
                         const isIndividual = row?.['is_individual'] === 'true' || row?.['is_individual'] === true
                         const quantity = row?.['quantity']
@@ -332,7 +338,7 @@ class GroupOrderCommon {
                 },
                 {
                     targets: 8,
-                    width: '7%',
+                    width: '10%',
                     render: (data, type, row) => {
                         const discount = row?.['discount'] || 0
                         return `<div class="form-group mt-3">
@@ -404,6 +410,15 @@ class GroupOrderCommon {
     }
 
     initProductModalDataTable(data=[]){
+        this.$productModalDatatable.on('change', 'input[type="checkbox"]', (e) => {
+            const productId = $(e.currentTarget).attr('data-product-id');
+            if ($(e.currentTarget).is(':checked')) {
+                this.checkedProductIds.add(productId);
+            } else {
+                this.checkedProductIds.delete(productId);
+            }
+        })
+
         this.$productModalDatatable.DataTableDefault({
             data: data,
             rowIdx: true,
@@ -476,6 +491,7 @@ class GroupOrderCommon {
                         const generalPriceId = row?.['general_price']?.['id']
                         const productId = row?.['id']
                         const productData = encodeURIComponent(JSON.stringify(row))
+                        this.allProducts.set(productId, row)
                         return `<input 
                                     type="checkbox" 
                                     class="form-check-input" 
@@ -488,25 +504,24 @@ class GroupOrderCommon {
                     }
                 },
             ],
-            drawCallback: function (row, data) {
-                const dataScript = $('#data-script');
-                const savedProducts = JSON.parse(dataScript.attr('data-selected-product') || '[]');
+            drawCallback: () => {
+                const dataScript = $('#data-script')
+                const savedProducts = JSON.parse(dataScript.attr('data-selected-product') || '[]')
+                const savedProductIds = new Set(savedProducts.map(product => product.id))
 
-                const savedProductIds = new Set(savedProducts.map(product => product.id));
-                console.log(savedProducts)
-                console.log(savedProductIds)
                 // Loop through all rows in the table
-                const api = this.api(); // Get DataTable API instance
-                api.rows().every(function () {
-                    const row = this.node(); // DOM node of the row
-                    const rowData = this.data(); // Row data object
+                this.$productModalDatatable.DataTable().rows().every( (rowIdx) => {
+                    const rowData = this.$productModalDatatable.DataTable().row(rowIdx).data()
+                    const $row = $(this.$productModalDatatable.DataTable().row(rowIdx).node())
                     const productId = rowData?.['id'];
-                    const $checkbox = $(row).find('input[type="checkbox"]');
+                    const $checkbox = $row.find('input[type="checkbox"]');
 
-                    const isInSavedProducts = savedProductIds.has(productId);
-                    $checkbox.prop('checked', isInSavedProducts);
-                    $checkbox.prop('disabled', isInSavedProducts);
-                });
+                    const isInSavedProducts = savedProductIds.has(productId)
+                    const isChecked = isInSavedProducts || this.checkedProductIds.has(productId)
+
+                    $checkbox.prop('checked', isChecked)
+                    $checkbox.prop('disabled', isInSavedProducts)
+                })
             },
         })
     }
@@ -656,6 +671,107 @@ class GroupOrderCommon {
             rowIdx: true,
             reloadCurrency: true,
             scrollX: true,
+            // columns: [
+            //     {
+            //         targets: 0,
+            //         width: '1%',
+            //         render: (data, type, row) => {
+            //             return ``
+            //         }
+            //     },
+            //     {
+            //         targets: 1,
+            //         width: '15%',
+            //         render: (data, type, row) => {
+            //             const expenseName = row?.['expense_name'] || ''
+            //             return `<div class="form-group">
+            //                         <label class="form-label required" hidden></label>
+            //                         <input required class="form-control expense-name" value="${expenseName}">
+            //                     </div>`
+            //         }
+            //     },
+            //     {
+            //         targets: 2,
+            //         width: '19%',
+            //         render: (data, type, row) => {
+            //             const expenseListUrl = this.$urlScript.attr('data-expense-item-list-url')
+            //             return `<div class="form-group">
+            //                         <select class="form-select select2 expense-item-select" data-url="${expenseListUrl}" data-keyResp="expense_item_list">
+            //                         </select>
+            //                     </div>
+            //                     `
+            //         }
+            //     },
+            //     {
+            //         targets: 3,
+            //         width: '10%',
+            //         render: (data, type, row) => {
+            //             const uomListUrl = this.$urlScript.attr('data-uom-list-url')
+            //             return `<div class="form-group">
+            //                         <select class="form-select select2 uom-select" data-url="${uomListUrl}" data-keyResp="unit_of_measure">
+            //                         </select>
+            //                     </div>`
+            //         }
+            //     },
+            //     {
+            //         targets: 4,
+            //         width: '10%',
+            //         render: (data, type, row) => {
+            //             const quantity = row?.['expense_quantity'] || ''
+            //             return `<div class="form-group">
+            //                         <input min="0" type="number" required class="form-control expense-quantity" value="${quantity}">
+            //                     </div>`
+            //         }
+            //     },
+            //     {
+            //         targets: 5,
+            //         width: '10%',
+            //         render: (data, type, row) => {
+            //             const cost = row?.['expense_cost'] || ''
+            //             return `<div class="form-group">
+            //                         <input required class="form-control mask-money expense-cost" value="${cost}">
+            //                     </div>`
+            //         }
+            //     },
+            //     {
+            //         targets: 6,
+            //         width: '10%',
+            //         render: (data, type, row) => {
+            //             return `<div class="form-group">
+            //                         <select class="form-select select2 expense-tax-select" >
+            //                         </select>
+            //                     </div>`
+            //         }
+            //     },
+            //     {
+            //         targets: 7,
+            //         width: '10%',
+            //         render: (data, type, row) => {
+            //             const subTotal = row?.['expense_sub_total'] || 0
+            //             return `<div class="form-group">
+            //                         <span class="mask-money expense-sub-total" data-init-money="${subTotal}"></span>
+            //                     </div>`
+            //         }
+            //     },
+            //     {
+            //         targets: 8,
+            //         width: '5%',
+            //         render: (data, type, row) => {
+            //             const expenseId = row?.['id'] || ''
+            //             return `<div class="d-flex justify-content-center">
+            //                         <button
+            //                             type="button"
+            //                             class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover expense-del-row"
+            //                             data-bs-toggle="tooltip"
+            //                             data-bs-placement="bottom"
+            //                             data-expense-id="${expenseId}"
+            //                         >
+            //                             <span class="icon"><i class="far fa-trash-alt"></i></span>
+            //                         </button>
+            //                     </div>`
+            //         }
+            //     },
+            // ],
             columns: [
                 {
                     targets: 0,
@@ -669,43 +785,44 @@ class GroupOrderCommon {
                     width: '15%',
                     render: (data, type, row) => {
                         const expenseName = row?.['expense_name'] || ''
-                        return `<div class="form-group">
-                                    <label class="form-label required" hidden></label>
+                        return `<div style="width: 150px">
+<label class="form-label required" hidden></label>
                                     <input required class="form-control expense-name" value="${expenseName}">
-                                </div>`
+</div>
+                                    
+                                `
                     }
                 },
                 {
                     targets: 2,
-                    width: '10%',
+                    width: '19%',
                     render: (data, type, row) => {
                         const expenseListUrl = this.$urlScript.attr('data-expense-item-list-url')
-                        return `<div class="form-group">
-                                    <select class="form-select select2 expense-item-select" data-url="${expenseListUrl}" data-keyResp="expense_item_list">
-                                    </select>
-                                </div>
+                        return `<div style="width: 260px">
+                                    <select class="select2 expense-item-select" data-url="${expenseListUrl}" data-keyResp="expense_item_list">
+                                    </select></div>
                                 `
                     }
                 },
                 {
                     targets: 3,
-                    width: '5%',
+                    width: '10%',
                     render: (data, type, row) => {
                         const uomListUrl = this.$urlScript.attr('data-uom-list-url')
-                        return `<div class="form-group">
-                                    <select class="form-select select2 uom-select" data-url="${uomListUrl}" data-keyResp="unit_of_measure">
-                                    </select>
-                                </div>`
+                        return `<div style="width: 150px">
+                                    <select class=" select2 uom-select" data-url="${uomListUrl}" data-keyResp="unit_of_measure">
+                                    </select></div>
+                                `
                     }
                 },
                 {
                     targets: 4,
-                    width: '5%',
+                    width: '10%',
                     render: (data, type, row) => {
                         const quantity = row?.['expense_quantity'] || ''
-                        return `<div class="form-group">
-                                    <input min="0" type="number" required class="form-control expense-quantity" value="${quantity}">
-                                </div>`
+                        return `<div style="width: 150px">
+                                    <input min="0" type="number" required class="form-control expense-quantity" value="${quantity}"></div>
+                                `
                     }
                 },
                 {
@@ -713,19 +830,21 @@ class GroupOrderCommon {
                     width: '10%',
                     render: (data, type, row) => {
                         const cost = row?.['expense_cost'] || ''
-                        return `<div class="form-group">
-                                    <input required class="form-control mask-money expense-cost" value="${cost}">
-                                </div>`
+                        return `<div style="width: 150px">
+
+
+                                    <input required class="form-control mask-money expense-cost" value="${cost}"></div>
+                                `
                     }
                 },
                 {
                     targets: 6,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<div class="form-group">
-                                    <select class="form-select select2 expense-tax-select" >
-                                    </select>
-                                </div>`
+                        return `<div style="width: 150px">
+                                    <select class=" select2 expense-tax-select" >
+                                    </select></div>
+                                `
                     }
                 },
                 {
@@ -733,17 +852,18 @@ class GroupOrderCommon {
                     width: '10%',
                     render: (data, type, row) => {
                         const subTotal = row?.['expense_sub_total'] || 0
-                        return `<div class="form-group">
-                                    <span class="mask-money expense-sub-total" data-init-money="${subTotal}"></span>
-                                </div>`
+                        return `<div style="width: 150px">
+                                    <span class="mask-money expense-sub-total" data-init-money="${subTotal}"></span></div>
+                                `
                     }
                 },
                 {
                     targets: 8,
-                    width: '10%',
+                    width: '5%',
                     render: (data, type, row) => {
+                        console.log(row)
                         const expenseId = row?.['id'] || ''
-                        return `<div class="d-flex justify-content-center">
+                        return `<div class="d-flex justify-content-center" style="width: 75px">
                                     <button 
                                         type="button" 
                                         class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover expense-del-row"
@@ -770,9 +890,9 @@ class GroupOrderCommon {
 
                     this.initSelect($expenseSelect)
                     this.initSelect($uomSelect)
-                    data.isNew = false;
+                    data.isNew = false
                 }
-            }.bind(this),
+            }.bind(this)
         })
     }
 
@@ -802,7 +922,7 @@ class GroupOrderCommon {
                 rowData['register_code'] = serviceCode
                 this.data(rowData)
             })
-            table.draw()
+            table.draw(false)
         })
     }
 
@@ -857,7 +977,7 @@ class GroupOrderCommon {
                 discount: 0
             }
 
-            this.$detailDataTable.DataTable().row.add(data).draw()
+            this.$detailDataTable.DataTable().row.add(data).draw(false)
 
             let dataProductList = JSON.parse(dataScript.attr('data-selected-product'))
             let dataSelectedPriceList = JSON.parse(dataScript.attr('data-selected-price'))
@@ -931,51 +1051,46 @@ class GroupOrderCommon {
             const dataScript = $('#data-script')
             let totalCost = Number(dataScript.attr('data-total-cost') || 0)
             let totalGeneralPrice = Number(dataScript.attr('data-total-general-price') || 0)
+            let totalGuest = Number(this.$totalGuest.text() || 0)
 
             // get data from selected row
             const costTable =  this.$costDataTable.DataTable()
-            const selectedProductCheckboxes = this.$productModalDatatable.find('input[type="checkbox"]:checked')
-            const guestQuantity = this.$detailDataTable.DataTable().rows().count()
             const existingIds = new Set()
-            const selectedIds = new Set()
             let newRows = []
+
+            // Get existing IDs in cost table
             costTable.rows().every(function () {
                 let rowData = this.data();
                 existingIds.add(rowData.id);
             })
 
-            selectedProductCheckboxes.each((i, ele) => {
-                const $checkbox = $(ele)
-                const id = $checkbox.attr('data-product-id')
-                selectedIds.add(id)
-
+            this.checkedProductIds.forEach((id) => {
                 if (existingIds.has(id)) {
-                    return
+                    return; // Skip if already in cost table
                 }
+                const productData = this.allProducts.get(id);
 
-                const selectedProductRow = $checkbox.closest('tr')
-                const code = selectedProductRow.find('.product-code').text()
-                const title = selectedProductRow.find('.product-title').text()
-                let standardPrice = Number(selectedProductRow.find('.product-standard-price').attr('value') || 0);
-                let bomPrice = Number(selectedProductRow.find('.bom-price').attr('value') || 0);
-                let generalPrice = Number($checkbox.attr('data-general-price') || 0);
-                let unit_cost = Number(bomPrice !== 0 ? bomPrice : standardPrice);
-                const quantity = 1
-                const productData = JSON.parse(decodeURIComponent($checkbox.attr('data-product')))
+                const code = productData.code;
+                const title = productData.title;
+                const standardPrice = Number(productData.standard_price || 0);
+                const bomPrice = Number(productData.bom_product?.sum_price || 0);
+                const generalPrice = Number(productData.general_price?.price || 0);
+                const unit_cost = bomPrice !== 0 ? bomPrice : standardPrice;
+                const quantity = 1;
 
                 newRows.push({
                     id: id,
                     code: code,
                     title: title,
                     quantity: quantity,
-                    guest_quantity: guestQuantity,
+                    guest_quantity: totalGuest,
                     unit_cost: unit_cost,
                     general_price: generalPrice,
                     is_using_guest_quantity: false,
+                    note: '',
                     productData: productData
                 });
-            });
-
+            })
 
             newRows.forEach(row => {
                 this.$costDataTable.DataTable().row.add({
@@ -986,7 +1101,8 @@ class GroupOrderCommon {
                     guest_quantity: row.guest_quantity,
                     unit_cost: row.unit_cost,
                     general_price: row.general_price,
-                    is_using_guest_quantity: row.is_using_guest_quantity
+                    is_using_guest_quantity: row.is_using_guest_quantity,
+                    note: row.note
                 });
 
                 totalCost += row.unit_cost * row.quantity
@@ -994,9 +1110,12 @@ class GroupOrderCommon {
 
                 this.addProductGeneralPriceToEachCustomer(row.productData)
                 this.saveSelectedProductToScript(row.productData)
+
+                // delete from checked list
+                this.checkedProductIds.delete(row.id)
             });
 
-            costTable.draw()
+            costTable.draw(false)
 
             // Update script attributes
             dataScript.attr('data-total-cost', totalCost)
@@ -1005,7 +1124,7 @@ class GroupOrderCommon {
             // Update UI
             this.loadTotalData()
 
-            this.$productModalDatatable.DataTable().draw()
+            this.$productModalDatatable.DataTable().draw(false)
         })
     }
 
@@ -1103,7 +1222,6 @@ class GroupOrderCommon {
                             ${isExisting ? "checked" : ""}
                             ${isDetail ? 'disabled' : ''}
                             hidden
-                            disabled
                         >
                         <label class="form-check-label w-100">
                             <div class="row w-100">
@@ -1341,7 +1459,7 @@ class GroupOrderCommon {
                 is_individual: isIndividual
             }
 
-            this.$detailDataTable.DataTable().row($row).data(data).draw()
+            this.$detailDataTable.DataTable().row($row).data(data).draw(false)
 
             // const $select = $row.find('.tax-select')
             // const dataScript = $('#data-script')
@@ -1364,7 +1482,7 @@ class GroupOrderCommon {
             delete dataSelectedPriceList[customerId]
             dataScript.attr('data-selected-price', JSON.stringify(dataSelectedPriceList))
 
-            this.$detailDataTable.DataTable().row($row).remove().draw()
+            this.$detailDataTable.DataTable().row($row).remove().draw(false)
             this.reLoadGuestQuantity()
             this.reCalculateDataTotalCost()
             this.loadTotalData()
@@ -1377,7 +1495,7 @@ class GroupOrderCommon {
             let rowData = this.$detailDataTable.DataTable().row($row).data()
             rowData['discount'] = Number($(e.currentTarget).val() || 0)
 
-            this.$detailDataTable.DataTable().row($row).data(rowData).draw()
+            this.$detailDataTable.DataTable().row($row).data(rowData).draw(false)
 
             this.loadDataCustomerPrice()
             this.loadTotalData()
@@ -1410,7 +1528,7 @@ class GroupOrderCommon {
 
             // remove from cost table
             const $row = $(e.currentTarget).closest('tr')
-            this.$costDataTable.DataTable().row($row).remove().draw()
+            this.$costDataTable.DataTable().row($row).remove().draw(false)
 
             // change total cost + total general price
             const productCost = Number($row.find('.cost-sub-total').attr('data-init-money') || 0)
@@ -1426,7 +1544,7 @@ class GroupOrderCommon {
 
             this.loadDataCustomerPrice()
             this.loadTotalData()
-            this.$productModalDatatable.DataTable().draw();
+            this.$productModalDatatable.DataTable().draw(false);
         })
     }
 
@@ -1442,9 +1560,10 @@ class GroupOrderCommon {
             $subTotal.attr('data-init-money', value * quantity)
             rowData['quantity'] = quantity
             rowData['sub_total'] = value * quantity
-            this.$detailDataTable.DataTable().row($row).data(rowData).draw()
+            this.$detailDataTable.DataTable().row($row).data(rowData).draw(false)
 
             $.fn.initMaskMoney2()
+            this.reLoadGuestQuantity()
             this.loadDataCustomerPrice()
             this.loadTotalData()
         })
@@ -1456,7 +1575,7 @@ class GroupOrderCommon {
             let rowData = this.$costDataTable.DataTable().row($row).data()
             const quantityType = $(e.currentTarget).attr('data-quantity-type')
             rowData['is_using_guest_quantity'] = quantityType === 'guest'
-            this.$costDataTable.DataTable().row($row).data(rowData).draw()
+            this.$costDataTable.DataTable().row($row).data(rowData).draw(false)
 
             this.reCalculateDataTotalCost()
             this.loadDataCustomerPrice()
@@ -1470,7 +1589,7 @@ class GroupOrderCommon {
             let rowData = this.$costDataTable.DataTable().row($row).data()
             rowData['quantity'] = Number($(e.currentTarget).val() || 1)
 
-            this.$costDataTable.DataTable().row($row).data(rowData).draw()
+            this.$costDataTable.DataTable().row($row).data(rowData).draw(false)
 
             this.reCalculateDataTotalCost()
             this.loadDataCustomerPrice()
@@ -1484,7 +1603,7 @@ class GroupOrderCommon {
             let rowData = this.$costDataTable.DataTable().row($row).data()
             rowData['unit_cost'] = Number($(e.currentTarget).attr('value') || 0)
 
-            this.$costDataTable.DataTable().row($row).data(rowData).draw()
+            this.$costDataTable.DataTable().row($row).data(rowData).draw(false)
 
             this.reCalculateDataTotalCost()
             this.loadDataCustomerPrice()
@@ -1492,17 +1611,33 @@ class GroupOrderCommon {
         })
     }
 
+    handleChangeCostNote(){
+        $(document).on('change', '.cost-note', (e)=>{
+            const $row = $(e.currentTarget).closest('tr')
+            let rowData = this.$costDataTable.DataTable().row($row).data()
+            rowData['note'] = $(e.currentTarget).val()
+
+            this.$costDataTable.DataTable().row($row).data(rowData).draw(false)
+        })
+    }
+
     handleAddExpense(){
         $(document).on('click', '#btn-add-expense',(e)=>{
             this.$expenseDataTable.DataTable().row.add({
+                expense_name: '',
+                cost: 0,
+                sub_total: 0,
+                quantity: 0,
+                id: '',
                 isNew: true
-            }).draw()
+            }).draw(false)
         })
     }
 
     handleChangeExpense() {
         $(document).on('change', '.expense-quantity, .expense-cost, .expense-tax-select', (e) => {
             const $row = $(e.currentTarget).closest('tr');
+            let rowData = this.$expenseDataTable.DataTable().row($row).data()
 
             const $expenseQuantity = $row.find('.expense-quantity');
             const $expenseCost = $row.find('.expense-cost');
@@ -1515,21 +1650,29 @@ class GroupOrderCommon {
 
             const dataScript = $('#data-script');
             const dataTax = JSON.parse(dataScript.attr('data-tax')) || [];
-            const tax = dataTax.find((item) => item.id === taxId);
+            const tax = dataTax.find((item) => item.id === taxId)
+            const taxTitle = dataTax.find((item) => item.id === taxId).title
             const taxRate = Number(tax?.['rate'] || 0);
 
             const valueBeforeTax = quantity * cost;
             const valueAfterTax = valueBeforeTax + (valueBeforeTax * taxRate / 100);
 
-            $subTotal.attr('data-init-money', valueAfterTax);
-            $.fn.initMaskMoney2($subTotal);
-        });
+            $subTotal.attr('data-init-money', valueAfterTax)
+
+            this.loadDataCustomerPrice()
+            this.loadTotalData()
+            $.fn.initMaskMoney2($subTotal)
+        })
+
+
     }
 
     handleDeleteExpense(){
         $(document).on('click', '.expense-del-row',(e)=>{
             const $row = $(e.currentTarget).closest('tr')
-            this.$expenseDataTable.DataTable().row($row).remove().draw()
+            this.$expenseDataTable.DataTable().row($row).remove().draw(false)
+            this.loadDataCustomerPrice()
+            this.loadTotalData()
         })
     }
 
@@ -1588,11 +1731,15 @@ class GroupOrderCommon {
     }
 
     reLoadGuestQuantity(){
-        const guestQuantity = this.$detailDataTable.DataTable().rows().count()
+        let guestQuantity = 0
+        this.$detailDataTable.DataTable().rows().every(function(){
+            let rowData = this.data()
+            guestQuantity += rowData['quantity']
+        })
         this.$costDataTable.DataTable().rows().every(function(){
             let rowData = this.data()
             rowData['guest_quantity'] = guestQuantity
-            this.data(rowData).draw()
+            this.data(rowData).draw(false)
         })
     }
 
@@ -1614,8 +1761,9 @@ class GroupOrderCommon {
         let totalAmount = 0
         let totalAmountVAT = 0
         this.$detailDataTable.DataTable().rows().every(function(){
+            let rowData = this.data()
             let row = $(this.node())
-            totalGuest++
+            totalGuest += rowData['quantity']
             totalAmount += Number(row.find('.detail-sub-total').attr('data-init-money') || 0)
         })
         const taxId = this.$taxSelect.val()
@@ -1701,7 +1849,17 @@ class GroupOrderCommon {
         this.$costPerRegisteredGuestInput.attr('value', costPerRegisterGuest)
 
         const maxGuest = Number(this.$maxGuestInput.val() || 0)
-        const costPerGuest = dataTotalCost / maxGuest
+
+        let totalExpense = 0
+        this.$expenseDataTable.DataTable().rows().every(function(){
+            const $row = $(this.node())
+            const expenseCost  = Number($row.find('.expense-cost').attr('value') || 0)
+            const quantity = Number($row.find('.expense-quantity').val() || 0)
+            const expense = expenseCost * quantity
+            totalExpense += expense
+        })
+
+        const costPerGuest = (dataTotalCost + totalExpense) / maxGuest
         this.$costPerGuestInput.attr('value', costPerGuest)
 
         let dataSelectedProductList = JSON.parse(dataScript.attr('data-selected-product') || [])
@@ -1726,7 +1884,15 @@ class GroupOrderCommon {
         const dataScript = $('#data-script');
         let dataTotalCost = Number(dataScript.attr('data-total-cost') || 0)
         const maxGuest = Number(this.$maxGuestInput.val() || 0)
-        const costPerGuest = dataTotalCost / maxGuest
+
+        let totalExpense = 0
+        this.$expenseDataTable.DataTable().rows().every(function(){
+            const $row = $(this.node())
+            const expense  = Number($row.find('.expense-sub-total').attr('data-init-money') || 0)
+            totalExpense += expense
+        })
+
+        const costPerGuest = (dataTotalCost + totalExpense) / maxGuest
         const markupPercentage = Number(this.$markupPercentageInput.val() || 1)/100
         const customerUnitPrice = costPerGuest*(1+markupPercentage) | 0
         const table = this.$detailDataTable.DataTable()
@@ -1738,7 +1904,7 @@ class GroupOrderCommon {
             rowData['sub_total'] = customerUnitPrice * quantity * (1-discount)
             this.data(rowData)
         })
-        table.draw()
+        table.draw(false)
     }
 
     clearDataCustomerCanvas(){
@@ -1784,6 +1950,17 @@ class GroupOrderCommon {
         let dataTotalCost = dataScript.attr('data-total-cost') || 0
         let dataTotalGeneralPrice = dataScript.attr('data-total-general-price') || 0
 
+        // Helper to normalize date to YYYY-MM-DD
+        const normalizeDateToServer = (dateStr) => {
+            if (!dateStr) return null;
+            // If already in YYYY-MM-DD, keep it
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                return dateStr;
+            }
+            // Convert DD-MM-YYYY to YYYY-MM-DD
+            return dateStr.split('-').reverse().join('-');
+        };
+
         // get customer data
         this.$detailDataTable.DataTable().rows().every(function(rowIdx){
             let rowData = this.data()
@@ -1793,14 +1970,11 @@ class GroupOrderCommon {
 
             const unitPrice = Number($row.find('.detail-unit-price').attr('data-init-money') || 0)
             const subTotal = Number($row.find('.detail-sub-total').attr('data-init-money') || 0)
-            // const tax = $row.find('.tax-select').val()
             rowData['unit_price'] = unitPrice
             rowData['sub_total'] = subTotal
-            // rowData['tax'] = tax
-            rowData['quantity'] = Number($row.find('.detail-quantity').val() || 0)
+            console.log(rowData)
             rowData['order'] = rowIdx
-            let tmpData = rowData['register_date'].split('-').reverse().join('-')
-            rowData['register_date'] = tmpData
+            rowData['register_date'] = normalizeDateToServer(rowData['register_date']);
             rowData['price_list_select'] = []
             rowData['email'] = rowData['email'] === 'no data' ? null : rowData['email']
             rowData['phone'] = rowData['phone'] === 'no data' ? null : rowData['phone']
@@ -1845,16 +2019,13 @@ class GroupOrderCommon {
         })
         dataForm['expense_list'] = expenseList
 
-        let serviceDuration = dataForm['service_duration']
-        let startDate = serviceDuration.split(" - ")[0]
-        let endDate = serviceDuration.split(" - ")[1]
-        dataForm['service_start_date'] = startDate.split('-').reverse().join('-')
-        dataForm['service_end_date'] = endDate.split('-').reverse().join('-')
+        dataForm['service_start_date'] = normalizeDateToServer(dataForm['service_duration'].split(" - ")[0])
+        dataForm['service_end_date'] = normalizeDateToServer(dataForm['service_duration'].split(" - ")[1])
         dataForm['planned_revenue'] = this.$plannedRevenueInput.attr('value') || 0
         dataForm['actual_revenue'] = this.$actualRevenueInput.attr('value') || 0
         dataForm['cost_per_guest'] = this.$costPerGuestInput.attr('value') || 0
         dataForm['cost_per_registered_guest'] = this.$costPerRegisteredGuestInput.attr('value') || 0
-        dataForm['service_created_date'] = dataForm['service_created_date'].split('-').reverse().join('-')
+        dataForm['service_created_date'] = normalizeDateToServer(dataForm['service_created_date'])
 
         dataForm['total_amount'] = this.$totalAmount.attr('data-init-money') || 0
         dataForm['total_amount_including_VAT'] = this.$totalAmountVAT.attr('data-init-money') || 0
@@ -1887,7 +2058,7 @@ class GroupOrderCommon {
                             }, 'success');
                             setTimeout(() => {
                                 window.location.replace(_form.dataUrlRedirect);
-                            }, 3000);
+                            }, 1000);
                         }
                     },
                     (errs) => {
@@ -2019,7 +2190,6 @@ class GroupOrderCommon {
                         $taxSelect.append(newOption).trigger('change.select2')
                         $row.find('.expense-sub-total').attr('data-init-money', subTotal)
                     })
-
 
                     dataScript.attr('data-total-cost', data?.['total_cost'])
                     dataScript.attr('data-total-general-price', data?.['total_general_price'])

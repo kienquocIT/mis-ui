@@ -69,6 +69,10 @@ $(async function () {
             if (prod_data?.['asset_type'] === 1) {
                $tableProductNew.DataTable().rows.add([prod_data]).draw();
             }
+            if (prod_data?.['asset_type'] === 2) {
+               $tableProductNew.DataTable().rows.add(prod_data?.['tool_data']).draw();
+               $scrollWH.attr('hidden', 'true');
+            }
             if (prod_data?.['asset_type'] === 3) {
                $tableProductNew.DataTable().rows.add(prod_data?.['asset_data']).draw();
                $scrollWH.attr('hidden', 'true');
@@ -161,6 +165,7 @@ $(async function () {
                     $btnSave.off().on('click', function () {
                         let temp_picked = 0;
                         let delivery_data = [];
+                        let tool_data = [];
                         let asset_data = [];
                         $tableProductNew.DataTable().rows().every(function () {
                             let row = this.node();
@@ -170,6 +175,12 @@ $(async function () {
 
                             temp_picked += rowData?.['picked_quantity'];
                             delivery_data = rowData?.['delivery_data'] ? rowData?.['delivery_data'] : [];
+                            if (rowData?.['tool_data']?.['id']) {
+                                if ($actDate.val()) {
+                                    rowData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                                }
+                                tool_data.push(rowData);
+                            }
                             if (rowData?.['asset_data']?.['id']) {
                                 if ($actDate.val()) {
                                     rowData['product_lease_start_date'] = moment($actDate.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
@@ -182,6 +193,7 @@ $(async function () {
                             let tableTargetData = _this.getProdList;
                             tableTargetData[idx]['picked_quantity'] = temp_picked;
                             tableTargetData[idx]['delivery_data'] = delivery_data;
+                            tableTargetData[idx]['tool_data'] = tool_data;
                             tableTargetData[idx]['asset_data'] = asset_data;
                             // Kiểm tra nếu giao đơn cho thuê cho SP thì dùng $actDate.val() override product_depreciation_start_date, product_lease_start_date
                             if ($actDate.val() && tableTargetData[idx]?.['asset_type'] === 1) {
@@ -482,22 +494,6 @@ $(async function () {
                 $area.data('radio-handler-bound', true);
             }
 
-            return true;
-        };
-
-        loadEventCheckboxAll($area) {
-            $area.on('click', '.table-row-checkbox-all', function () {
-                let checked = this.checked;
-                for (let checkbox of $area[0].querySelectorAll('.table-row-checkbox')) {
-                    if (checkbox) {
-                        checkbox.checked = checked;
-                        let state = prodTable.loadDeliverBySerial(checkbox);
-                        if (state === false) {
-                            break;
-                        }
-                    }
-                }
-            });
             return true;
         };
 
@@ -1002,6 +998,9 @@ $(async function () {
                             if (row?.['offset_data']?.['id']) {
                                 targetData = row?.['offset_data'];
                             }
+                            if (row?.['tool_data']?.['id']) {
+                                targetData = row?.['tool_data'];
+                            }
                             if (row?.['asset_data']?.['id']) {
                                 targetData = row?.['asset_data'];
                             }
@@ -1030,6 +1029,9 @@ $(async function () {
                             if (row?.['offset_data']?.['id']) {
                                 targetData = row?.['offset_data'];
                             }
+                            if (row?.['tool_data']?.['id']) {
+                                targetData = row?.['tool_data'];
+                            }
                             if (row?.['asset_data']?.['id']) {
                                 targetData = row?.['asset_data'];
                             }
@@ -1052,6 +1054,9 @@ $(async function () {
                         width: '20%',
                         render: (data, type, row) => {
                             let readonly = 'readonly';
+                            if (row?.['tool_data']?.['id']) {
+                                readonly = '';
+                            }
                             if (row?.['asset_data']?.['id']) {
                                 readonly = '';
                             }
@@ -1583,6 +1588,9 @@ $(async function () {
                 let checkedEle = row.querySelector('.table-row-checkbox:checked');
                 if (checkedEle) {
                     rowData['delivery_data'] = pwData;
+                    if (rowData?.['tool_data']?.['id']) {
+                        delete rowData['delivery_data'];
+                    }
                     if (rowData?.['asset_data']?.['id']) {
                         delete rowData['delivery_data'];
                     }
@@ -1595,12 +1603,23 @@ $(async function () {
                 }
                 rowData['picked_quantity'] = picked;
 
+                // CCDC lấy số nhập trực tiếp
+                if (rowData?.['tool_data']?.['id']) {
+                    let deliverEle = row.querySelector('.table-row-picked');
+                    if (deliverEle) {
+                        if (deliverEle.value) {
+                            rowData['picked_quantity'] = parseFloat(deliverEle.value);
+                            rowData['quantity_remain_recovery'] = parseFloat(deliverEle.value);
+                        }
+                    }
+                }
                 // TSCD lấy số nhập trực tiếp
                 if (rowData?.['asset_data']?.['id']) {
                     let deliverEle = row.querySelector('.table-row-picked');
                     if (deliverEle) {
                         if (deliverEle.value) {
                             rowData['picked_quantity'] = parseFloat(deliverEle.value);
+                            rowData['quantity_remain_recovery'] = parseFloat(deliverEle.value);
                         }
                     }
                 }
@@ -1821,6 +1840,7 @@ $(async function () {
                         'product_id': prod?.['product_data']?.['id'],
                         'done': prod?.['picked_quantity'],
                         'delivery_data': prod?.['delivery_data'],
+                        'tool_data': prod?.['tool_data'],
                         'asset_data': prod?.['asset_data'],
                         'product_depreciation_start_date': prod?.['product_depreciation_start_date'],
                         'product_lease_start_date': prod?.['product_lease_start_date'],

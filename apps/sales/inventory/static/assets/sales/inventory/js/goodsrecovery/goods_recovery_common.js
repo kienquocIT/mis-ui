@@ -211,13 +211,19 @@ class RecoveryLoadDataHandle {
                 let rowData = $row.data();
 
                 RecoveryDataTableHandle.$tableProductNew.DataTable().clear().draw();
-                RecoveryDataTableHandle.$tableProductNew.DataTable().rows.add(rowData?.['asset_data']).draw();
+                if (rowData?.['tool_data'].length > 0) {
+                    RecoveryDataTableHandle.$tableProductNew.DataTable().rows.add(rowData?.['tool_data']).draw();
+                }
+                if (rowData?.['asset_data'].length > 0) {
+                    RecoveryDataTableHandle.$tableProductNew.DataTable().rows.add(rowData?.['asset_data']).draw();
+                }
             }
         }
     };
 
     static loadLineDetail() {
-        let dataShow = [];
+        let dataTool = [];
+        let dataAsset = [];
         RecoveryDataTableHandle.$tableDelivery.DataTable().rows().every(function () {
             let row = this.node();
             let rowIndex = RecoveryDataTableHandle.$tableDelivery.DataTable().row(row).index();
@@ -225,18 +231,39 @@ class RecoveryLoadDataHandle {
             let rowData = $row.data();
 
             for (let productData of rowData?.['delivery_product_data'] ? rowData?.['delivery_product_data'] : []) {
+                for (let toolData of productData?.['tool_data']) {
+                    if (toolData?.['quantity_recovery']) {
+                        if (toolData?.['quantity_recovery'] > 0) {
+                            dataTool.push(toolData);
+                        }
+                    }
+                }
                 for (let assetData of productData?.['asset_data']) {
                     if (assetData?.['quantity_recovery']) {
                         if (assetData?.['quantity_recovery'] > 0) {
-                            dataShow.push(assetData);
+                            dataAsset.push(assetData);
                         }
                     }
                 }
             }
-
         });
+
+        let dataToolFn = [];
+        let dataJSON = {};
+        let clonedData = JSON.parse(JSON.stringify(dataTool));
+        for (let cloned of clonedData) {
+            if (dataJSON.hasOwnProperty(cloned?.['id'])) {
+                dataJSON[cloned?.['id']]['quantity_recovery'] += cloned?.['quantity_recovery'];
+            } else {
+                dataJSON[cloned?.['id']] = cloned;
+            }
+        }
+        for (let key in dataJSON) {
+            dataToolFn.push(dataJSON[key]);
+        }
+
         RecoveryDataTableHandle.$tableProduct.DataTable().clear().draw();
-        RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(dataShow).draw();
+        RecoveryDataTableHandle.$tableProduct.DataTable().rows.add(dataAsset.concat(dataToolFn)).draw();
 
         RecoveryDataTableHandle.$tableProduct.DataTable().rows().every(function () {
             let row = this.node();
@@ -254,6 +281,15 @@ class RecoveryLoadDataHandle {
     static loadShowDepreciation(ele) {
         let row = ele.closest('tr');
         if (row) {
+            let toolEle = row.querySelector('.table-row-tool');
+            if (toolEle) {
+                if ($(toolEle).val()) {
+                    let dataTool = SelectDDControl.get_data_from_idx($(toolEle), $(toolEle).val());
+                    if (dataTool) {
+                        RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-product-id', dataTool?.['id']);
+                    }
+                }
+            }
             let assetEle = row.querySelector('.table-row-asset');
             if (assetEle) {
                 if ($(assetEle).val()) {
@@ -357,31 +393,60 @@ class RecoveryLoadDataHandle {
             }
 
             let dataFn = [];
-            if (assetEle) {
-                let dataAsset = SelectDDControl.get_data_from_idx($(assetEle), $(assetEle).val());
-                if (dataAsset?.['depreciation_data']) {
-                    if (dataAsset?.['depreciation_data'].length > 0) {
-                        dataFn = dataAsset?.['depreciation_data'];
-                        if ($leaseStartDateEle.length > 0 && $leaseEndDateEle.length > 0) {
-                            if ($leaseStartDateEle.val() && $leaseEndDateEle.val()) {
-                                let dataOfRange = DepreciationControl.extractDataOfRange({
-                                    'data_depreciation': dataAsset?.['depreciation_data'],
-                                    'start_date': $leaseStartDateEle.val(),
-                                    'end_date': $leaseEndDateEle.val(),
-                                });
-                                dataFn = DepreciationControl.mapDataOfRange({
-                                    'data_depreciation': dataAsset?.['depreciation_data'],
-                                    'data_of_range': dataOfRange,
-                                });
-                            }
+            let depreciationDataEle = row.querySelector('.table-row-depreciation-data');
+            let depreciationLeaseDataEle = row.querySelector('.table-row-depreciation-lease-data');
+            if (depreciationDataEle && depreciationLeaseDataEle) {
+                if ($(depreciationDataEle).val()) {
+                    let dataDepreciation = JSON.parse($(depreciationDataEle).val());
+                    if (dataDepreciation.length > 0) {
+                        dataFn = dataDepreciation;
+                        if ($(depreciationLeaseDataEle).val()) {
+                            let dataLeaseDepreciation = JSON.parse($(depreciationLeaseDataEle).val());
+                            dataFn = DepreciationControl.mapDataOfRange({
+                                'data_depreciation': dataDepreciation,
+                                'data_of_range': dataLeaseDepreciation,
+                            });
                         }
-
                         RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
                         RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
                         return true;
                     }
                 }
             }
+
+            // let dataFn = [];
+            // let dataDepreciation = [];
+            // if (assetEle) {
+            //     let dataAsset = SelectDDControl.get_data_from_idx($(assetEle), $(assetEle).val());
+            //     if (dataAsset?.['depreciation_data']) {
+            //         dataDepreciation = dataAsset?.['depreciation_data'];
+            //     }
+            // }
+            // if (toolEle) {
+            //     let dataTool = SelectDDControl.get_data_from_idx($(toolEle), $(toolEle).val());
+            //     if (dataTool?.['depreciation_data']) {
+            //         dataDepreciation = dataTool?.['depreciation_data'];
+            //     }
+            // }
+            // if (dataDepreciation.length > 0) {
+            //     dataFn = dataDepreciation;
+            //     if ($leaseStartDateEle.length > 0 && $leaseEndDateEle.length > 0) {
+            //         if ($leaseStartDateEle.val() && $leaseEndDateEle.val()) {
+            //             let dataOfRange = DepreciationControl.extractDataOfRange({
+            //                 'data_depreciation': dataDepreciation,
+            //                 'start_date': $leaseStartDateEle.val(),
+            //                 'end_date': $leaseEndDateEle.val(),
+            //             });
+            //             dataFn = DepreciationControl.mapDataOfRange({
+            //                 'data_depreciation': dataDepreciation,
+            //                 'data_of_range': dataOfRange,
+            //             });
+            //         }
+            //     }
+            //     RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().clear().draw();
+            //     RecoveryDataTableHandle.$tableDepreciationDetail.DataTable().rows.add(dataFn).draw();
+            //     return true;
+            // }
         }
 
         return true;
@@ -677,8 +742,20 @@ class RecoveryDataTableHandle {
                     targets: 1,
                     width: '15%',
                     render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" readonly>${row?.['asset_data']?.['title']}</textarea>
+                        let value = "";
+                        if (row?.['tool_data']?.['id']) {
+                            value = row?.['tool_data']?.['title'] ? row?.['tool_data']?.['title'] : '';
+                        }
+                        if (row?.['asset_data']?.['id']) {
+                            value = row?.['asset_data']?.['title'] ? row?.['asset_data']?.['title'] : '';
+                        }
+                        return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" readonly>${value}</textarea>
                                 <div hidden>
+                                    <select
+                                        class="form-select table-row-tool"
+                                        data-product-id="${row?.['tool_data']?.['id']}"
+                                    >
+                                    </select>
                                     <select
                                         class="form-select table-row-asset"
                                         data-product-id="${row?.['asset_data']?.['id']}"
@@ -691,7 +768,14 @@ class RecoveryDataTableHandle {
                     targets: 2,
                     width: '15%',
                     render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-code" rows="2" readonly>${row?.['asset_data']?.['code'] ? row?.['asset_data']?.['code'] : ''}</textarea>`;
+                        let value = "";
+                        if (row?.['tool_data']?.['id']) {
+                            value = row?.['tool_data']?.['code'] ? row?.['tool_data']?.['code'] : '';
+                        }
+                        if (row?.['asset_data']?.['id']) {
+                            value = row?.['asset_data']?.['code'] ? row?.['asset_data']?.['code'] : '';
+                        }
+                        return `<textarea class="form-control table-row-code" rows="2" readonly>${value}</textarea>`;
                     }
                 },
                 {
@@ -732,11 +816,18 @@ class RecoveryDataTableHandle {
                     targets: 6,
                     width: '15%',
                     render: (data, type, row) => {
+                        let value = 0;
+                        if (row?.['tool_data']?.['id']) {
+                            value = row?.['tool_data']?.['unit_price'] ? row?.['tool_data']?.['unit_price'] : 0;
+                        }
+                        if (row?.['asset_data']?.['id']) {
+                            value = row?.['asset_data']?.['origin_cost'] ? row?.['asset_data']?.['origin_cost'] : 0;
+                        }
                         return `<div class="row">
                                     <input 
                                         type="text" 
                                         class="form-control mask-money table-row-price disabled-custom-show" 
-                                        value="${row?.['asset_data']?.['origin_cost'] ? row?.['asset_data']?.['origin_cost'] : 0}"
+                                        value="${value}"
                                         data-return-type="number"
                                         readonly
                                     >
@@ -805,10 +896,18 @@ class RecoveryDataTableHandle {
                 },
             ],
             rowCallback: function (row, data, index) {
+                let toolEle = row.querySelector('.table-row-tool');
                 let assetEle = row.querySelector('.table-row-asset');
                 let uomTimeEle = row.querySelector('.table-row-uom-time');
                 let depreciationDataEle = row.querySelector('.table-row-depreciation-data');
                 let depreciationLeaseDataEle = row.querySelector('.table-row-depreciation-lease-data');
+                if (toolEle) {
+                    let dataS2 = [];
+                    if (data?.['tool_data']) {
+                        dataS2 = [data?.['tool_data']];
+                    }
+                    RecoveryLoadDataHandle.loadInitS2($(toolEle), dataS2);
+                }
                 if (assetEle) {
                     let dataS2 = [];
                     if (data?.['asset_data']) {
@@ -946,19 +1045,33 @@ class RecoveryDataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row?.['asset_data']?.['title'] ? row?.['asset_data']?.['title'] : ''}</span>`;
+                        let value = "";
+                        if (row?.['tool_data']?.['id']) {
+                            value = row?.['tool_data']?.['title'] ? row?.['tool_data']?.['title'] : '';
+                        }
+                        if (row?.['asset_data']?.['id']) {
+                            value = row?.['asset_data']?.['title'] ? row?.['asset_data']?.['title'] : '';
+                        }
+                        return `<span class="table-row-code">${value}</span>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row?.['asset_data']?.['code'] ? row?.['asset_data']?.['code'] : ''}</span>`;
+                        let value = "";
+                        if (row?.['tool_data']?.['id']) {
+                            value = row?.['tool_data']?.['code'] ? row?.['tool_data']?.['code'] : '';
+                        }
+                        if (row?.['asset_data']?.['id']) {
+                            value = row?.['asset_data']?.['code'] ? row?.['asset_data']?.['code'] : '';
+                        }
+                        return `<span class="table-row-code">${value}</span>`;
                     },
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<span class="table-row-quantity-remain-recovery">1</span>`;
+                        return `<span class="table-row-quantity-remain-recovery">${row?.['quantity_remain_recovery'] ? row?.['quantity_remain_recovery'] : 0}</span>`;
                     }
                 },
                 {
@@ -968,10 +1081,18 @@ class RecoveryDataTableHandle {
                         if (row?.['quantity_recovery'] > 0) {
                             checked = "checked";
                         }
-                        return `<div class="form-check form-check-lg d-flex align-items-center">
+                        let hiddenCheck = "hidden"
+                        let hiddenInput = "hidden"
+                        if (row?.['tool_data']?.['id']) {
+                            hiddenInput = "";
+                        }
+                        if (row?.['asset_data']?.['id']) {
+                            hiddenCheck = "";
+                        }
+                        return `<div class="form-check form-check-lg d-flex align-items-center ${hiddenCheck}">
                                     <input type="checkbox" name="check-asset" class="form-check-input table-row-checkbox" id="check-asset-${row?.['asset_data']?.['id'].replace(/-/g, "")}" ${checked}>
                                 </div>
-                                <input class="form-control table-row-quantity-recovery text-black valid-num" value="${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : 0}" hidden>`;
+                                <input class="form-control table-row-quantity-recovery text-black valid-num" value="${row?.['quantity_recovery'] ? row?.['quantity_recovery'] : 0}" ${hiddenInput}>`;
                     }
                 },
             ],
@@ -1137,6 +1258,7 @@ class RecoveryStoreDataHandle {
         // Lưu lại data row của tất cả dtb & draw() lại row, dòng checked sẽ được lưu thêm data sub từ các dtb phụ
         // dtb data cố định => store hết, dtb data động callAjax => store data có thay đổi
 
+        let tool_data = [];
         let asset_data = [];
         let delivery_product_data = [];
 
@@ -1154,7 +1276,12 @@ class RecoveryStoreDataHandle {
             }
 
             RecoveryDataTableHandle.$tableProductNew.DataTable().row(rowIndex).data(rowData);
-            asset_data.push(rowData);
+            if (rowData?.['tool_data']?.['id']) {
+                tool_data.push(rowData);
+            }
+            if (rowData?.['asset_data']?.['id']) {
+                asset_data.push(rowData);
+            }
         });
 
         RecoveryDataTableHandle.$tableDeliveryProduct.DataTable().rows().every(function () {
@@ -1166,9 +1293,13 @@ class RecoveryStoreDataHandle {
             // update data row cho dòng đang được chọn
             let checked = row.querySelector('.table-row-checkbox:checked');
             if (checked) {
+                rowData['tool_data'] = tool_data;
                 rowData['asset_data'] = asset_data;
             }
             let recovery = 0;
+            for (let toolData of rowData?.['tool_data'] ? rowData?.['tool_data'] : []) {
+                recovery += toolData?.['quantity_recovery'] ? toolData?.['quantity_recovery'] : 0;
+            }
             for (let assetData of rowData?.['asset_data'] ? rowData?.['asset_data'] : []) {
                 recovery += assetData?.['quantity_recovery'] ? assetData?.['quantity_recovery'] : 0;
             }
@@ -1222,6 +1353,22 @@ class RecoverySubmitHandle {
             let rowData = $row.data();
             // update depreciation data for recovery product
             for (let productData of rowData?.['delivery_product_data']) {
+                for (let toolData of productData?.['tool_data']) {
+                    delete toolData['picked_quantity'];
+                    let target = RecoveryDataTableHandle.$tableProduct[0].querySelector(`[data-product-id="${RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);
+                    if (target) {
+                        let targetRow = target.closest('tr');
+                        if (targetRow) {
+                            let depreciationLeaseDataEle = targetRow.querySelector('.table-row-depreciation-lease-data');
+                            if (depreciationLeaseDataEle) {
+                                if ($(depreciationLeaseDataEle).val() && RecoveryLoadDataHandle.$date.val()) {
+                                    toolData['product_lease_end_date'] = moment(RecoveryLoadDataHandle.$date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                                    toolData['depreciation_lease_data'] = JSON.parse($(depreciationLeaseDataEle).val());
+                                }
+                            }
+                        }
+                    }
+                }
                 for (let assetData of productData?.['asset_data']) {
                     delete assetData['picked_quantity'];
                     let target = RecoveryDataTableHandle.$tableProduct[0].querySelector(`[data-product-id="${RecoveryLoadDataHandle.$btnSaveDepreciation.attr('data-product-id')}"]`);

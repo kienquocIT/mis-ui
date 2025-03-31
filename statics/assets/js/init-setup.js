@@ -6114,13 +6114,13 @@ class DocumentControl {
                 let draft = $.fn.transEle.attr('data-msg-draft');
                 let created = $.fn.transEle.attr('data-created');
                 let added = $.fn.transEle.attr('data-added');
-                let finish = $.fn.transEle.attr('data-finish');
+                let approved = $.fn.transEle.attr('data-approved');
                 let cancel = $.fn.transEle.attr('data-cancel');
                 let status_class = {
                     [draft]: "badge badge-soft-light",
                     [created]: "badge badge-soft-primary",
                     [added]: "badge badge-soft-info",
-                    [finish]: "badge badge-soft-success",
+                    [approved]: "badge badge-soft-success",
                     [cancel]: "badge badge-soft-danger",
                 }
                 let dataStatus = system_status;

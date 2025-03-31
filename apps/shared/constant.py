@@ -74,7 +74,7 @@ SYSTEM_STATUS = (
     (0, BaseMsg.DRAFT),
     (1, BaseMsg.CREATED),
     (2, BaseMsg.ADDED),
-    (3, BaseMsg.FINISH),
+    (3, BaseMsg.APPROVED),
     (4, BaseMsg.CANCEL),
 )
 

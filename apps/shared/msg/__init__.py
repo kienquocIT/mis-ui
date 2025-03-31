@@ -32,4 +32,5 @@ class BaseMsg:
     CREATED = _('Created')
     ADDED = _('Added')
     FINISH = _('Finish')
+    APPROVED = _('Approved')
     CANCEL = _('Cancel')

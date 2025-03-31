@@ -1083,11 +1083,11 @@ $(async function () {
                         width: '30%',
                         render: (data, type, row) => {
                             if (row?.['is_regis_so'] === true) {
-                                let project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-other-order')}: ${row?.['sale_order']?.['code']}</span>`;
+                                let project = `<span class="badge badge-primary mr-1">${$trans.attr('data-other-order')}: ${row?.['sale_order']?.['code']}</span>`;
                                 if ($eleSO.attr('data-so')) {
                                     let dataSO = JSON.parse($eleSO.attr('data-so'));
                                     if (row?.['sale_order_data']?.['id'] === dataSO?.['id']) {
-                                        project = `<span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-current-order')}</span>`;
+                                        project = `<span class="badge badge-primary mr-1">${$trans.attr('data-current-order')}</span>`;
                                     }
                                 }
                                 let target = ".cl-" + row?.['sale_order_data']?.['id'].replace(/-/g, "");
@@ -1122,7 +1122,7 @@ $(async function () {
                                             >
                                                 <span class="icon"><i class="fas fa-chevron-down"></i></span>
                                             </button>
-                                            <span class="badge badge-primary badge-outline mr-1">${$trans.attr('data-common-wh')}</span><span class="badge badge-pink badge-outline">${$trans.attr('data-available')}: ${row?.['available_stock']}</span>
+                                            <span class="badge badge-primary mr-1">${$trans.attr('data-common-wh')}</span><span class="badge badge-pink badge-outline">${$trans.attr('data-available')}: ${row?.['available_stock']}</span>
                                         </div>`;
                             }
                             let checked = '';

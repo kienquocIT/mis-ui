@@ -925,7 +925,7 @@ class LeaseOrderLoadDataHandle {
                         }
                     }
                     $(toolDataEle).val(JSON.stringify(toolData));
-                    $(offsetShowEle).val(titles.join("\n"));
+                    $(offsetShowEle).val(titles.join(", "));
                     $(quantityEle).val(quantity);
                 }
             }
@@ -965,7 +965,7 @@ class LeaseOrderLoadDataHandle {
                         }
                     }
                     $(assetDataEle).val(JSON.stringify(assetData));
-                    $(offsetShowEle).val(titles.join("\n"));
+                    $(offsetShowEle).val(titles.join(", "));
                     $(quantityEle).val(assetData.length);
                 }
             }

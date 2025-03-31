@@ -86,13 +86,11 @@ $(function () {
                         width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#gr_status').text())
-                            let sttData = [
-                                "light badge-outline",
-                                "warning badge-outline",
-                                "orange badge-outline",
-                                "success badge-outline",
-                            ]
-                            return `<span class="badge badge-${sttData[row?.['receipt_status']]}">${sttTxt[row?.['receipt_status']][1]}</span>`;
+                            let hidden = "hidden";
+                            if (row?.['receipt_status'] === 3) {
+                                hidden = "";
+                            }
+                            return `<span>${sttTxt[row?.['receipt_status']][1]}</span><i class="far fa-check-circle text-success ml-2" ${hidden}></i>`;
                         }
                     },
                     {

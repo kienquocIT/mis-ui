@@ -524,8 +524,10 @@
             })
 
             //
-            $('button[type=submit]').on('click', function () {
+            $('button[type=submit]').on('click', function (e) {
                 let frmID = $(this).attr('form');
+                const avtiveElement = $(document.activeElement).closest('.dataTables_filter').length
+                if (avtiveElement === 1) return false
                 if (frmID) {
                     $(this).prop('disabled', true);
                     setTimeout(() => $(this).prop('disabled', false), 1000);

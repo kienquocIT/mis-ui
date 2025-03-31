@@ -6382,7 +6382,7 @@ msgstr "Chọn sản phẩm bàn giao"
 
 #
 msgid "Asset, Tools delivery"
-msgstr "Yêu cầu bàn giao"
+msgstr "Phiếu bàn giao"
 
 #
 msgid "Edit items"

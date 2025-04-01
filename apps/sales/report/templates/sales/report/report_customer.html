@@ -48,7 +48,8 @@
         >
             <thead>
             <tr class="bg-light">
-                <th>{% trans 'Customer' %}</th>
+                <th>{% trans 'Customer code' %}</th>
+                <th>{% trans 'Customer name' %}</th>
                 <th>{% trans 'Industry name' %}</th>
                 <th>{% trans 'Revenue' %}</th>
                 <th>{% trans 'Gross profit' %}</th>
@@ -155,6 +156,10 @@
             id="data-fiscal-year"
             data-url="{% url "PeriodsConfigListAPI" %}"
             data-method="GET"
+    >
+    <input
+            type="text" id="app-url-factory"
+            data-customer-detail="{% url 'AccountDetail' 1 %}"
     >
 {% endblock %}
 {% block jsFooter %}

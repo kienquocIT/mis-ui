@@ -12,6 +12,7 @@ $(function () {
         let eleNetIncome = $('#report-customer-net-income');
         let $table = $('#table_report_customer_list');
         let eleFiscalYear = $('#data-fiscal-year');
+        let $urlFact = $('#app-url-factory');
 
         function loadDbl(data) {
             $table.DataTableDefault({
@@ -35,10 +36,18 @@ $(function () {
                 columns: [
                     {
                         targets: 0,
+                        width: '10%',
+                        render: (data, type, row) => {
+                            let link = $urlFact.attr('data-customer-detail').format_url_with_uuid(row?.['customer']?.['id']);
+                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['customer']?.['code'] ? row?.['customer']?.['code'] : ''}</a>`;
+                        }
+                    },
+                    {
+                        targets: 0,
                         width: '30%',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-soft-success">${row?.['customer']?.['code'] ? row?.['customer']?.['code'] : ''}</span>
-                                    <span>${row?.['customer']?.['title'] ? row?.['customer']?.['title'] : ''}</span>`;
+                            let link = $urlFact.attr('data-customer-detail').format_url_with_uuid(row?.['customer']?.['id']);
+                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['customer']?.['title'] ? row?.['customer']?.['title'] : ''}</a>`;
                         }
                     },
                     {
@@ -50,21 +59,21 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '18%',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '18%',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
                         targets: 4,
-                        width: '18%',
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }

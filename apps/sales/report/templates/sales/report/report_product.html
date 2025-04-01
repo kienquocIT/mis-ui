@@ -175,6 +175,10 @@
             data-url="{% url "PeriodsConfigListAPI" %}"
             data-method="GET"
     >
+    <input
+            type="text" id="app-url-factory"
+            data-product-detail="{% url 'ProductDetail' 1 %}"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>

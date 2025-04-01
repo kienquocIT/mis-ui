@@ -46,8 +46,7 @@ $(function () {
                                     <span class="badge badge-soft-success">${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</span>
                                     <span>${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</span>`;
                             }
-                            return `<span class="badge badge-secondary badge-outline cl-child" data-row="${dataRow}">${row?.['sale_order']?.['customer']?.['code'] ? row?.['sale_order']?.['customer']?.['code'] : ''}</span>
-                                    <span>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</span>`;
+                            return `<span class="cl-child" data-row="${dataRow}">${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</span>`;
                         }
                     },
                     {

@@ -8541,19 +8541,14 @@ class DiagramControl {
             if ($btnLog && $btnLog.length > 0) {
                 let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
                                 <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
-                                    <div class="offcanvas-body">
-                                        <div class="d-flex align-items-center justify-content-between mb-2">
-                                            <h5 id="offcanvasTopLabel">Diagram</h5>
-                                            <div class="d-flex justify-content-between">
-                                                <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Close">
-                                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" data-bs-dismiss="offcanvas" aria-label="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
-                                                </span>
-                                                <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reload">
-                                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
-                                                </span>
-                                            </div>
+                                    <div class="modal-header">
+                                        <h5><b>Diagram</b></h5>
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                            <button type="button" class="btn btn-outline-secondary" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reload"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
                                         </div>
-                                        <hr class="bg-dark">
+                                    </div>
+                                    <div class="offcanvas-body">
                                         <div data-simplebar class="h-800p min-w-1680p nicescroll-bar">
                                             <div class="card-group" id="flowchart_diagram"></div>
                                         </div>

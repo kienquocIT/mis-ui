@@ -115,7 +115,9 @@ function initTableZone(data) {
                 let newIndex = api.row(row).index()
                 data['order'] = newIndex + 1
             }
-            dtbZoneHDCustom();
+            if ($('#form-create_workflow').attr('data-method').toLowerCase() !== 'get') {
+                dtbZoneHDCustom();
+            }
         },
         rowCallback: function (row, data) {
             // handle onclick btn

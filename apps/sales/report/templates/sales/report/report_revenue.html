@@ -12,24 +12,27 @@
     {% csrf_token %}
 
     <div class="row">
-        <div class="col-12 col-md-2 col-lg-2">
-            <div class="mb-2"><b class="text-light">{% trans 'Revenue' %}</b></div>
-            <h5><span class="mask-money fw-bold text-primary" id="report-revenue-revenue" data-init-money="0"></span></h5>
+        <div class="col-12 col-md-8 col-lg-8">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="mb-2"><b class="text-green">{% trans 'Revenue' %}</b></div>
+                    <h5><span class="mask-money fw-bold" id="report-revenue-revenue" data-init-money="0"></span></h5>
+                </div>
+                <div>
+                    <div class="mb-2"><b class="text-yellow">{% trans 'Gross profit' %}</b></div>
+                    <h5><span class="mask-money fw-bold" id="report-revenue-gross-profit" data-init-money="0"></span></h5>
+                </div>
+                <div>
+                    <div class="mb-2"><b class="text-blue">{% trans 'Net income' %}</b></div>
+                    <h5><span class="mask-money fw-bold" id="report-revenue-net-income" data-init-money="0"></span></h5>
+                </div>
+            </div>
         </div>
-        <div class="col-12 col-md-2 col-lg-2">
-            <div class="mb-2"><b class="text-light">{% trans 'Gross profit' %}</b></div>
-            <h5><span class="mask-money fw-bold text-primary" id="report-revenue-gross-profit" data-init-money="0"></span></h5>
-        </div>
-        <div class="col-12 col-md-2 col-lg-2">
-            <div class="mb-2"><b class="text-light">{% trans 'Net income' %}</b></div>
-            <h5><span class="mask-money fw-bold text-primary" id="report-revenue-net-income" data-init-money="0"></span></h5>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-6">
+        <div class="col-12 col-md-4 col-lg-4">
             <div class="d-flex justify-content-end">
                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                     <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Filter' %}">
-                        <button type="button" class="btn btn-outline-secondary btn-square" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas"><i class="fas fa-filter"></i></button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas"><i class="fas fa-filter"></i></button>
                     </span>
                 </div>
             </div>

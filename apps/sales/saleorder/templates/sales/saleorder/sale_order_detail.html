@@ -46,12 +46,8 @@
         <div class="col-12 col-md-6 col-lg-6">
             <div class="d-flex justify-content-end">
                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                    <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Delivery' %}">
-                        <button type="button" class="btn btn-outline-secondary btn-square" id="btnDeliverySaleOrder" hidden><i class="fas fa-truck"></i></button>
-                    </span>
-                    <span id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Print' %}">
-                        <button type="button" class="btn btn-outline-secondary btn-square" id="print-document" hidden><i class="fas fa-print"></i></button>
-                    </span>
+                    <button type="button" class="btn btn-outline-secondary" id="btnDeliverySaleOrder" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Delivery' %}" hidden><i class="fas fa-truck"></i></button>
+                    <button type="button" class="btn btn-outline-secondary" id="print-document" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Print' %}" hidden><i class="fas fa-print"></i></button>
                 </div>
             </div>
         </div>

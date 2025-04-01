@@ -1351,7 +1351,7 @@ class PaymentLoadTab {
                         }
                     }
 
-                    APLoadTab.DrawTablePlan(data_table_planned)
+                    PaymentLoadTab.DrawTablePlan(data_table_planned)
                     WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }

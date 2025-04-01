@@ -2873,7 +2873,7 @@ msgstr "Ngày giao"
 
 #
 msgid "Invoice date"
-msgstr "Ngày xuất hóa đơn"
+msgstr "Ngày tạo hóa đơn"
 
 #
 msgid "Acceptance date"
@@ -11650,3 +11650,27 @@ msgstr "Quy trình kết thúc (Đã duyệt)"
 #
 msgid "Workflow ended (Rejected)"
 msgstr "Quy trình kết thúc (Từ chối)"
+
+#
+msgid "Payment type"
+msgstr "Loại thanh toán"
+
+#
+msgid "Payment to supplier"
+msgstr "Thanh toán cho nhà cung cấp"
+
+#
+msgid "Payment to customer"
+msgstr "Thanh toán cho khách hàng"
+
+#
+msgid "Advance payment to employee"
+msgstr "Tạm ứng cho nhân viên"
+
+#
+msgid "Payment on account"
+msgstr "Thanh toán vào tài khoản"
+
+#
+msgid "VAT"
+msgstr "Thuế GTGT"

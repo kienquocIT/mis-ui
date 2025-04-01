@@ -549,7 +549,7 @@ class APInvoiceHandle {
     combinesData(frmEle, for_update=false) {
         let frm = new SetupFormSubmit($(frmEle))
 
-        frm.dataForm['title'] = $('#name').val()
+        frm.dataForm['title'] = $('#title').val()
         frm.dataForm['supplier_mapped'] = supplierCodeEle.attr('data-id')
         frm.dataForm['supplier_name'] = supplierCodeEle.val()
         frm.dataForm['po_mapped'] = purchaseOrderEle.val()
@@ -622,10 +622,10 @@ function LoadDetailAPInvoice(option) {
             let data = $.fn.switcherResp(resp);
             if (data) {
                 data = data['ap_invoice_detail'];
-                console.log(data)
+                // console.log(data)
                 $x.fn.renderCodeBreadcrumb(data);
 
-                $('#name').val(data?.['title'])
+                $('#title').val(data?.['title'])
                 supplierCodeEle.val(data?.['supplier_mapped']?.['name'])
                 supplierCodeEle.attr('data-id', data?.['supplier_mapped']?.['id'])
                 loadPurchaseOrder(data?.['po_mapped'])

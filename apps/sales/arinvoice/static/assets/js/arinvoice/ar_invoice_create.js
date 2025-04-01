@@ -1,12 +1,19 @@
 $(document).ready(function () {
     new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 
-    ARInvoiceHandle.Load();
+    ARInvoiceEventHandler.InitPageEven()
+    UsualLoadPageFunction.LoadDate({element: pageElements.$posting_date})
+    UsualLoadPageFunction.LoadDate({element: pageElements.$document_date})
+    UsualLoadPageFunction.LoadDate({element: pageElements.$invoice_date})
+    ARInvoicePageFunction.LoadNormalTable()
+    ARInvoicePageFunction.LoadDescriptionTable()
+    ARInvoicePageFunction.LoadPaymentTermViewTable()
+
     WFRTControl.setWFInitialData('arinvoice')
 
     let form_validator = $('#form-create-ar-invoice').validate({
         submitHandler: function (form) {
-            let form_data = ARInvoiceHandle.CombinesData(form, 'create');
+            let form_data = ARInvoiceHandler.CombinesData(form, 'create');
             if (form_data) {
                 WFRTControl.callWFSubmitForm(form_data);
             }

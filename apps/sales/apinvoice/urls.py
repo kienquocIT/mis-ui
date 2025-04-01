@@ -6,12 +6,12 @@ from apps.sales.apinvoice.views import (
 )
 
 urlpatterns = [
-    path('ap-invoices', APInvoiceList.as_view(), name='APInvoiceList'),
-    path('ap-invoices/api', APInvoiceListAPI.as_view(), name='APInvoiceListAPI'),
-    path('ap-invoice/create', APInvoiceCreate.as_view(), name='APInvoiceCreate'),
-    path('ap-invoice/detail/<str:pk>', APInvoiceDetail.as_view(), name='APInvoiceDetail'),
-    path('ap-invoice/update/<str:pk>', APInvoiceUpdate.as_view(), name='APInvoiceUpdate'),
-    path('ap-invoice/api/<str:pk>', APInvoiceDetailAPI.as_view(), name='APInvoiceDetailAPI'),
+    path('list', APInvoiceList.as_view(), name='APInvoiceList'),
+    path('create', APInvoiceCreate.as_view(), name='APInvoiceCreate'),
+    path('detail/<str:pk>', APInvoiceDetail.as_view(), name='APInvoiceDetail'),
+    path('update/<str:pk>', APInvoiceUpdate.as_view(), name='APInvoiceUpdate'),
+    path('list/api', APInvoiceListAPI.as_view(), name='APInvoiceListAPI'),
+    path('detail/api/<str:pk>', APInvoiceDetailAPI.as_view(), name='APInvoiceDetailAPI'),
 ] + [
     path('goods-receipts/api', GoodReceiptsListForAPInvoiceAPI.as_view(), name='GoodReceiptsListForAPInvoiceAPI'),
 ]

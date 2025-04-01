@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    ARInvoiceHandle.LoadDetailARInvoice('detail');
+    ARInvoiceHandler.LoadDetailARInvoice('detail')
 })

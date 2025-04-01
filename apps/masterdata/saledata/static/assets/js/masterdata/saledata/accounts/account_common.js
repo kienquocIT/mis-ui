@@ -922,6 +922,7 @@ class AccountEventHandler {
         })
         $('#view-tax-code-info').on('click', async function () {
             if (pageElements.$tax_code.val()) {
+                alert(1)
                 let [tax_code_status, responseData] = await AccountPageFunction.CheckTaxCode()
                 $('#invalid-tax').prop('hidden', tax_code_status)
                 $('#valid-tax').prop('hidden', !tax_code_status)

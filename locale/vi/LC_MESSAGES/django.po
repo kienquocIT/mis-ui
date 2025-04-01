@@ -11674,3 +11674,7 @@ msgstr "Thanh toán vào tài khoản"
 #
 msgid "VAT"
 msgstr "Thuế GTGT"
+
+#
+msgid "Document code"
+msgstr "Mã tài liệu"

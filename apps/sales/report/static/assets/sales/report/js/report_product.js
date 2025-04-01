@@ -13,6 +13,7 @@ $(function () {
         let eleNetIncome = $('#report-product-net-income');
         let $table = $('#table_report_product_list');
         let eleFiscalYear = $('#data-fiscal-year');
+        let $urlFact = $('#app-url-factory');
 
         function loadDbl(data) {
             $table.DataTableDefault({
@@ -30,6 +31,7 @@ $(function () {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['is_product'] === true) {
                                 let target = ".cl-" + row?.['product']?.['id'].replace(/-/g, "");
+                                let link = $urlFact.attr('data-product-detail').format_url_with_uuid(row?.['product']?.['id']);
                                 return `<button 
                                         type="button" 
                                         class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-xs table-row-task cl-parent" 
@@ -44,10 +46,9 @@ $(function () {
                                         <span class="icon"><i class="fas fa-chevron-right"></i></span>
                                     </button>
                                     <span class="badge badge-soft-success">${row?.['product']?.['code'] ? row?.['product']?.['code'] : ''}</span>
-                                    <span>${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</span>`;
+                                    <a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['product']?.['title'] ? row?.['product']?.['title'] : ''}</a>`;
                             }
-                            return `<span class="badge badge-secondary badge-outline cl-child" data-row="${dataRow}">${row?.['sale_order']?.['customer']?.['code'] ? row?.['sale_order']?.['customer']?.['code'] : ''}</span>
-                                    <span>${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</span>`;
+                            return `<span class="cl-child" data-row="${dataRow}">${row?.['sale_order']?.['customer']?.['title'] ? row?.['sale_order']?.['customer']?.['title'] : ''}</span>`;
                         }
                     },
                     {

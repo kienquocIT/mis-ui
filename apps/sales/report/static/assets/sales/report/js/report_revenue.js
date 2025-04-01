@@ -5,7 +5,6 @@ $(function () {
         let boxEmployee = $('#box-report-revenue-employee');
         let boxStart = $('#report-revenue-date-from');
         let boxEnd = $('#report-revenue-date-to');
-        let btnView = $('#btn-view');
         let eleRevenue = $('#report-revenue-revenue');
         let eleGrossProfit = $('#report-revenue-gross-profit');
         let eleNetIncome = $('#report-revenue-net-income');
@@ -41,18 +40,15 @@ $(function () {
                         targets: 0,
                         width: '10%',
                         render: (data, type, row) => {
-                            return `<div class="d-flex">
-                                        <span class="badge badge-primary mr-2">${row?.['employee_inherit']?.['code'] ? row?.['employee_inherit']?.['code'] : ''}</span>
-                                        <span class="badge badge-primary badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span>
-                                    </div>`;
+                            return `<span>${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span>`;
                         }
                     },
                     {
                         targets: 1,
                         width: '15%',
                         render: (data, type, row) => {
-                            return `<span class="badge badge-light mr-2">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span>
-                                    <span>${row?.['opportunity']?.['title'] ? row?.['opportunity']?.['title'] : ''}</span>`;
+                            let link = $urlFact.attr('data-opp-detail').format_url_with_uuid(row?.['opportunity']?.['id']);
+                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['opportunity']?.['title'] ? row?.['opportunity']?.['title'] : ''}</a>`;
                         }
                     },
                     {
@@ -69,8 +65,7 @@ $(function () {
                                 title = row?.['sale_order']?.['title'];
                                 link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order']?.['id']);
                             }
-                            return `<span class="badge badge-soft-success">${code}</span>
-                                    <a href="${link}" class="link-primary underline_hover"><span>${title}</span></a>`;
+                            return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
                         }
                     },
                     {

@@ -42,16 +42,13 @@
         <div class="col-12 col-md-6 col-lg-6">
             <div class="d-flex justify-content-end">
                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                    <span
-                            id="tooltip-btn-copy" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip"
-                            data-bs-placement="bottom" title="{% trans 'Copy Quotation' %}"
-                    >
                         <button
-                                type="button" class="btn btn-outline-secondary btn-square" id="btn-copy-quotation"
+                                type="button" class="btn btn-outline-secondary" id="btn-copy-quotation"
                                 data-bs-toggle="modal" data-bs-target="#quotationModalCenter" data-copy-type="copy-from"
                                 data-zone="title"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="bottom" title="{% trans 'Copy Quotation' %}"
                         ><i class="far fa-copy"></i></button>
-                    </span>
                 </div>
             </div>
         </div>

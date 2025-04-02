@@ -6,6 +6,7 @@ $(function () {
         // Elements
         let elePurchaseRequest = $('#purchase-order-purchase-request');
         let eleTabArea = $('#tab-content-quotation-product');
+        let $tabs = $('#quotation-tabs');
         // Tables
         let tablePurchaseRequest = $('#datable-purchase-request');
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
@@ -231,6 +232,12 @@ $(function () {
 
         tablePurchaseOrderProductRequest.on('click', '.btn-view-price', function () {
             POLoadDataHandle.loadPriceListPQ(this);
+        });
+
+        // PAYMENT
+        $tabs.on('click', '.tab-payment', function () {
+            POStoreDataHandle.storeDtbData(3);
+            POStoreDataHandle.storeDtbData(4);
         });
 
         tablePaymentStage.on('change', '.table-row-ratio, .table-row-value-before-tax, .table-row-tax', function () {

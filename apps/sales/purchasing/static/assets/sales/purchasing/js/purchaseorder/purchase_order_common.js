@@ -911,87 +911,6 @@ class POLoadDataHandle {
         }
     };
 
-    static loadReInitDataTableProduct() {
-        let tableData = [];
-        let dataDetail = {};
-        let dataPriceJSON = {};
-        if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
-                    if (dataDetail?.['quotation_products_data']) {
-                        tableData = dataDetail?.['quotation_products_data'];
-                    }
-                    if (dataDetail?.['sale_order_products_data']) {
-                        tableData = dataDetail?.['sale_order_products_data'];
-                    }
-                }
-            }
-        } else {
-            PODataTableHandle.$tablePOByAdd.DataTable().rows().every(function () {
-                let row = this.node();
-                let rowIndex = PODataTableHandle.$tablePOByAdd.DataTable().row(row).index();
-                let $row = PODataTableHandle.$tablePOByAdd.DataTable().row(rowIndex);
-                let dataRow = $row.data();
-
-                let eleProduct = row.querySelector('.table-row-item');
-                tableData.push(dataRow);
-                // setup price
-                if (eleProduct) {
-                    if (dataRow?.['order'] && dataRow?.['product_unit_price']) {
-                        if (!dataPriceJSON.hasOwnProperty(dataRow?.['order'])) {
-                            dataPriceJSON[dataRow?.['order']] = dataRow?.['product_unit_price'];
-                        }
-                    }
-                }
-            });
-
-            if (tableData.length === 0 && POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
-                        if (dataDetail?.['quotation_products_data']) {
-                            tableData = dataDetail?.['quotation_products_data'];
-                        }
-                        if (dataDetail?.['sale_order_products_data']) {
-                            tableData = dataDetail?.['sale_order_products_data'];
-                        }
-                    }
-                }
-            }
-        }
-        PODataTableHandle.$tablePOByAdd.DataTable().destroy();
-        PODataTableHandle.dataTablePurchaseOrderProductAdd();
-        PODataTableHandle.$tablePOByAdd.DataTable().rows.add(tableData).draw();
-        // load dropdowns
-        POLoadDataHandle.loadDropDowns(PODataTableHandle.$tablePOByAdd);
-        // load price
-        if (POLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
-            POLoadDataHandle.loadReInitPrice(dataPriceJSON);
-        }
-        PODataTableHandle.$tablePOByAdd.DataTable().rows().every(function () {
-            let row = this.node();
-            let productEle = row.querySelector('.table-row-item');
-            let shippingEle = row.querySelector('.table-row-shipping');
-            let promotionEle = row.querySelector('.table-row-promotion');
-            QuotationCheckConfigHandle.checkConfig(1, row);
-            if (productEle) {
-                POLoadDataHandle.loadPriceProduct(productEle);
-            }
-            if (shippingEle || promotionEle) {
-                POLoadDataHandle.loadRowDisabled(row);
-            }
-        });
-        // load disabled if page detail
-        if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            POLoadDataHandle.loadTableDisabled(PODataTableHandle.$tablePOByAdd);
-        }
-        $.fn.initMaskMoney2();
-        return true;
-    };
-
     static loadReInitDataTablePayment() {
         let tableData = [];
         let dataDetail = {};
@@ -1487,7 +1406,7 @@ class POLoadDataHandle {
                 $.fn.initMaskMoney2();
             }
         });
-        POStoreDataHandle.storeDtbData(3);
+        POStoreDataHandle.storeDtbData(4);
     };
 
     static loadCheckSameMixTax() {
@@ -2900,7 +2819,7 @@ class PODataTableHandle {
             // Check if the button already exists before appending
             if (!$('#btn-add-product-purchase-order').length && !$('#btn-add-shipping-purchase-order').length) {
                 let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown">
-                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${POLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${POLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
                                     <a class="dropdown-item" href="#" id="btn-add-product-purchase-order"><i class="dropdown-icon fas fa-cube"></i><span class="mt-2">${POLoadDataHandle.transEle.attr('data-add-product')}</span></a>
@@ -2949,11 +2868,11 @@ class PODataTableHandle {
                 );
                 // Select the appended button from the DOM and attach the event listener
                 $('#btn-load-payment-stage').on('click', function () {
-                    POStoreDataHandle.storeDtbData(2);
+                    POStoreDataHandle.storeDtbData(3);
                     POLoadDataHandle.loadPaymentStage();
                 });
                 $('#btn-add-payment-stage').on('click', function () {
-                    POStoreDataHandle.storeDtbData(2);
+                    POStoreDataHandle.storeDtbData(3);
                     POLoadDataHandle.loadAddPaymentStage();
                 });
             }
@@ -2979,7 +2898,7 @@ class PODataTableHandle {
                 );
                 // Select the appended button from the DOM and attach the event listener
                 $('#btn-add-invoice').on('click', function () {
-                    POStoreDataHandle.storeDtbData(3);
+                    POStoreDataHandle.storeDtbData(4);
                     POLoadDataHandle.loadAddInvoice();
                 });
             }
@@ -3140,15 +3059,11 @@ class POStoreDataHandle {
         let dataJSON = {};
         let datas = [];
         let $table = null;
-        if (type === 1) {
-            datas = POSubmitHandle.setupDataProduct();
-            $table = PODataTableHandle.$tablePOByAdd;
-        }
-        if (type === 2) {
+        if (type === 3) {
             datas = POSubmitHandle.setupDataPaymentStage();
             $table = PODataTableHandle.$tablePayment;
         }
-        if (type === 3) {
+        if (type === 4) {
             datas = POSubmitHandle.setupDataInvoice();
             $table = PODataTableHandle.$tableInvoice;
         }
@@ -3167,13 +3082,10 @@ class POStoreDataHandle {
                     $table.DataTable().row(rowIndex).data(dataJSON?.[key]);
                 }
             });
-            if (type === 1) {
-                POLoadDataHandle.loadReInitDataTableProduct();
-            }
-            if (type === 2) {
+            if (type === 3) {
                 POLoadDataHandle.loadReInitDataTablePayment();
             }
-            if (type === 3) {
+            if (type === 4) {
                 POLoadDataHandle.loadReInitDataTableInvoice();
             }
         }
@@ -3415,14 +3327,11 @@ class POSubmitHandle {
 
     static setupDataProduct() {
         let result = [];
-        let table = document.getElementById('datable-purchase-order-product-add');
+        let $table = PODataTableHandle.$tablePOByAdd;
         if (document.getElementById('purchase-order-purchase-request').innerHTML) {
-            table = document.getElementById('datable-purchase-order-product-request');
+            $table = PODataTableHandle.$tablePOByRequest;
         }
-        if (table.querySelector('.dataTables_empty')) {
-            return []
-        }
-        $(table).DataTable().rows().every(function () {
+        $table.DataTable().rows().every(function () {
             let rowData = {};
             let row = this.node();
             let eleProduct = row.querySelector('.table-row-item');

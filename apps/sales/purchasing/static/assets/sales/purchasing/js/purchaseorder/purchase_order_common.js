@@ -952,11 +952,11 @@ class POLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
-                    tableData = dataDetail?.['sale_order_payment_stage'];
+            let detailDataEle = $('#data-detail-page');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
+                    tableData = dataDetail?.['purchase_order_payment_stage'];
                 }
             }
         } else {
@@ -970,11 +970,11 @@ class POLoadDataHandle {
             });
 
             if (tableData.length === 0 && POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
-                        tableData = dataDetail?.['sale_order_payment_stage'];
+                let detailDataEle = $('#data-detail-page');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
+                        tableData = dataDetail?.['purchase_order_payment_stage'];
                     }
                 }
             }
@@ -994,10 +994,10 @@ class POLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#data-detail-page');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     tableData = dataDetail?.['purchase_order_invoice'];
                 }
             }
@@ -1012,10 +1012,10 @@ class POLoadDataHandle {
             });
 
             if (tableData.length === 0 && POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#data-detail-page');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         tableData = dataDetail?.['purchase_order_invoice'];
                     }
                 }
@@ -1622,26 +1622,15 @@ class POLoadDataHandle {
             POLoadDataHandle.loadDataRowTable(tableProductAdd);
         }
         // payment stage
-        tablePaymentStage.DataTable().clear().draw();
-        tablePaymentStage.DataTable().rows.add(data?.['purchase_order_payment_stage']).draw();
+        if (data?.['purchase_order_payment_stage']) {
+            PODataTableHandle.$tablePayment.DataTable().clear().draw();
+            PODataTableHandle.$tablePayment.DataTable().rows.add(data?.['purchase_order_payment_stage']).draw();
+        }
+        if (data?.['purchase_order_invoice']) {
+            PODataTableHandle.$tableInvoice.DataTable().clear().draw();
+            PODataTableHandle.$tableInvoice.DataTable().rows.add(data?.['purchase_order_invoice']).draw();
+        }
         POLoadDataHandle.loadTableDropDowns();
-        tablePaymentStage.DataTable().rows().every(function () {
-            let row = this.node();
-            if (row.querySelector('.table-row-due-date')) {
-                $(row.querySelector('.table-row-due-date')).daterangepicker({
-                    singleDatePicker: true,
-                    timepicker: false,
-                    showDropdowns: false,
-                    minYear: 2023,
-                    locale: {
-                        format: 'DD/MM/YYYY'
-                    },
-                    maxYear: parseInt(moment().format('YYYY'), 10),
-                    drops: 'up',
-                    autoApply: true,
-                });
-            }
-        })
         // mask money
         $.fn.initMaskMoney2();
     };
@@ -1674,13 +1663,11 @@ class POLoadDataHandle {
 
     static loadAllTablesDisabled() {
         let form = $('#frm_purchase_order_create');
-        let tableProductAdd = $('#datable-purchase-order-product-add');
-        let tableProductRequest = $('#datable-purchase-order-product-request');
-        let tablePaymentStage = $('#datable-po-payment-stage');
         if (form.attr('data-method').toLowerCase() === 'get') {
-            POLoadDataHandle.loadTableDisabled(tableProductAdd);
-            POLoadDataHandle.loadTableDisabled(tableProductRequest);
-            POLoadDataHandle.loadTableDisabled(tablePaymentStage);
+            POLoadDataHandle.loadTableDisabled(PODataTableHandle.$tablePOByAdd);
+            POLoadDataHandle.loadTableDisabled(PODataTableHandle.$tablePOByRequest);
+            POLoadDataHandle.loadTableDisabled(PODataTableHandle.$tablePayment);
+            POLoadDataHandle.loadTableDisabled(PODataTableHandle.$tableInvoice);
         }
         return true;
     };
@@ -1734,6 +1721,18 @@ class POLoadDataHandle {
         }
         for (let ele of table[0].querySelectorAll('.table-row-due-date')) {
             ele.setAttribute('disabled', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-total')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-tax')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-total')) {
+            ele.setAttribute('readonly', 'true');
         }
     };
 

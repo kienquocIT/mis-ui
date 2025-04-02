@@ -1035,10 +1035,10 @@ class QuotationLoadDataHandle {
         let dataDetail = {};
         let dataPriceJSON = {};
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     if (dataDetail?.['quotation_products_data']) {
                         tableData = dataDetail?.['quotation_products_data'];
                     }
@@ -1067,10 +1067,10 @@ class QuotationLoadDataHandle {
             });
 
             if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         if (dataDetail?.['quotation_products_data']) {
                             tableData = dataDetail?.['quotation_products_data'];
                         }
@@ -1117,10 +1117,10 @@ class QuotationLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     if (dataDetail?.['quotation_costs_data']) {
                         tableData = dataDetail?.['quotation_costs_data'];
                     }
@@ -1140,10 +1140,10 @@ class QuotationLoadDataHandle {
             });
 
             if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         if (dataDetail?.['quotation_costs_data']) {
                             tableData = dataDetail?.['quotation_costs_data'];
                         }
@@ -1171,10 +1171,10 @@ class QuotationLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     if (dataDetail?.['quotation_expenses_data']) {
                         tableData = dataDetail?.['quotation_expenses_data'];
                     }
@@ -1194,10 +1194,10 @@ class QuotationLoadDataHandle {
             });
 
             if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         if (dataDetail?.['quotation_expenses_data']) {
                             tableData = dataDetail?.['quotation_expenses_data'];
                         }
@@ -1225,10 +1225,10 @@ class QuotationLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     tableData = dataDetail?.['sale_order_payment_stage'];
                 }
             }
@@ -1243,10 +1243,10 @@ class QuotationLoadDataHandle {
             });
 
             if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         tableData = dataDetail?.['sale_order_payment_stage'];
                     }
                 }
@@ -1269,10 +1269,10 @@ class QuotationLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     tableData = dataDetail?.['sale_order_invoice'];
                 }
             }
@@ -1287,10 +1287,10 @@ class QuotationLoadDataHandle {
             });
 
             if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         tableData = dataDetail?.['sale_order_invoice'];
                     }
                 }

@@ -12,7 +12,6 @@ $(function () {
         let tablePurchaseRequestProduct = $('#datable-purchase-request-product');
         let tablePurchaseOrderProductAdd = $('#datable-purchase-order-product-add');
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
-        let tablePaymentStage = $('#datable-po-payment-stage');
 
         // Load init
         POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [], {'account_types_mapped__account_type_order': 1}, null, true);
@@ -382,6 +381,7 @@ $(function () {
                 'total_product_revenue_before_tax',
                 // payment stage tab
                 'purchase_order_payment_stage',
+                'purchase_order_invoice',
                 // attachment
                 'attachment',
                 // abstract

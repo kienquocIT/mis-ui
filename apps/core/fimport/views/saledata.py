@@ -79,6 +79,7 @@ class ProductUOMGroupImportAPI(APIView):
         )
         return resp.auto_return(key_success='product_uom_group')
 
+
 class ProductProductTypeImportAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
@@ -86,6 +87,7 @@ class ProductProductTypeImportAPI(APIView):
             data=request.data
         )
         return resp.auto_return(key_success='product_product_type')
+
 
 class ProductProductCategoryImportAPI(APIView):
     @mask_view(login_require=True, is_api=True)
@@ -95,6 +97,7 @@ class ProductProductCategoryImportAPI(APIView):
         )
         return resp.auto_return(key_success='product_product_category')
 
+
 class ProductImportAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
@@ -102,6 +105,7 @@ class ProductImportAPI(APIView):
             data=request.data
         )
         return resp.auto_return(key_success='product')
+
 
 class ProductUOMImportAPI(APIView):
     @mask_view(login_require=True, is_api=True)
@@ -111,6 +115,7 @@ class ProductUOMImportAPI(APIView):
         )
         return resp.auto_return(key_success='product_uom')
 
+
 class PriceTaxCategoryImportAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
@@ -119,6 +124,7 @@ class PriceTaxCategoryImportAPI(APIView):
         )
         return resp.auto_return(key_success='price_tax_category')
 
+
 class PriceTaxImportAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def post(self, request, *args, **kwargs):
@@ -126,3 +132,12 @@ class PriceTaxImportAPI(APIView):
             data=request.data
         )
         return resp.auto_return(key_success='price_tax')
+
+
+class ProductManufacturerImportAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.IMPORT_SALEDATA_PRODUCT_MANUFACTURER, user=request.user).post(
+            data=request.data
+        )
+        return resp.auto_return(key_success='product_product_manufacturer')

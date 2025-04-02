@@ -313,19 +313,47 @@
                     </div>
                     <div class="tab-pane fade" id="tab_payment">
                         <div class="row">
+                            <b>{% trans 'Invoice' %}</b>
                             <table
-                                    id="datable-po-payment-stage"
-                                    class="table nowrap w-100 mb-5"
+                                    id="datable-quotation-invoice"
+                                    class="table nowrap min-w-1366p w-100 mb-5"
                             >
                                 <thead>
                                 <tr class="bg-light">
-                                    <th class="w-25">{% trans 'Description' %}</th>
-                                    <th class="w-10">% {% trans 'Payment' %}</th>
-                                    <th class="w-20">{% trans 'Value before tax' %}</th>
-                                    <th class="w-10">{% trans 'Tax' %}</th>
-                                    <th class="w-15">{% trans 'Value after tax' %}</th>
-                                    <th class="w-15">{% trans 'Due date' %}</th>
-                                    <th class="w-5"></th>
+                                    <th>{% trans 'Invoice issue' %}</th>
+                                    <th>{% trans 'Description' %}</th>
+                                    <th>{% trans 'Invoice date' %}</th>
+                                    <th>{% trans 'Percentage' %}</th>
+                                    <th>{% trans 'Tax' %}</th>
+                                    <th>{% trans 'Total value' %}</th>
+                                    <th>{% trans 'Balance due' %}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <b>{% trans 'Payment' %}</b>
+                            <table
+                                    id="datable-quotation-payment-stage"
+                                    class="table nowrap min-w-2000p w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th></th>
+                                    <th>{% trans 'Description' %}</th>
+                                    <th>{% trans 'Date' %}</th>
+                                    <th>{% trans 'Due date' %}</th>
+                                    <th>{% trans 'Percentage' %}</th>
+                                    <th>{% trans 'Invoice' %}</th>
+                                    <th>{% trans 'Payment before tax' %}</th>
+                                    <th>{% trans 'Reconcile' %}</th>
+                                    <th>{% trans 'Tax' %}</th>
+                                    <th>{% trans 'Tax value' %}</th>
+                                    <th>{% trans 'Total payment' %}</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -541,6 +569,13 @@
         data-valid="{% trans "Valid" %}"
         data-validate-total-payment="{% trans "Total payment must less than or equal to total before tax" %}"
         data-required-product="{% trans "Product is required" %}"
+    >
+    <input
+        type="text"
+        id="app-url-factory"
+        data-md-product="{% url 'ProductForSaleListAPI' %}"
+        data-md-uom="{% url "UnitOfMeasureListAPI" %}"
+        data-md-tax="{% url "TaxListAPI" %}"
     >
     <input
         type="text"

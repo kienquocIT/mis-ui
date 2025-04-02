@@ -14,24 +14,17 @@ $(function () {
         let tablePaymentStage = $('#datable-po-payment-stage');
 
         // Load init
-        if (formSubmit.attr('data-method').toLowerCase() === 'post') {
-            POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [], {'account_types_mapped__account_type_order': 1}, null, true);
-            POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle);
-            POLoadDataHandle.loadInitProduct();
-            PODataTableHandle.dataTablePurchaseRequest();
-            PODataTableHandle.dataTablePurchaseRequestProduct();
-            PODataTableHandle.dataTablePurchaseRequestProductMerge();
-            PODataTableHandle.dataTablePurchaseQuotation();
-            PODataTableHandle.dataTablePurchaseOrderProductAdd();
-            PODataTableHandle.dataTablePurchaseOrderProductRequest();
-            PODataTableHandle.dataTablePaymentStage();
-        }
-        if (formSubmit.attr('data-method').toLowerCase() === 'get') {
-            POLoadDataHandle.loadInitProduct();
-        }
-        if (formSubmit.attr('data-method').toLowerCase() === 'put') {
-            POLoadDataHandle.loadInitProduct();
-        }
+        POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [], {'account_types_mapped__account_type_order': 1}, null, true);
+        POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle);
+        POLoadDataHandle.loadInitProduct();
+        PODataTableHandle.dataTablePurchaseRequest();
+        PODataTableHandle.dataTablePurchaseRequestProduct();
+        PODataTableHandle.dataTablePurchaseRequestProductMerge();
+        PODataTableHandle.dataTablePurchaseQuotation();
+        PODataTableHandle.dataTablePurchaseOrderProductAdd();
+        PODataTableHandle.dataTablePurchaseOrderProductRequest();
+        PODataTableHandle.dataTablePaymentStage();
+        PODataTableHandle.dataTableInvoice();
 
         // init date picker
         $('.date-picker').each(function () {
@@ -184,7 +177,6 @@ $(function () {
             } else {
                 POCalculateHandle.calculateMain(tablePurchaseOrderProductAdd, row);
             }
-            POLoadDataHandle.loadChangePSRateAllTbl();
         });
 
         tablePurchaseOrderProductAdd.on('click', '.table-row-price-option', function () {
@@ -235,7 +227,6 @@ $(function () {
                 }
             }
             POCalculateHandle.calculateMain(tablePurchaseOrderProductRequest, row);
-            POLoadDataHandle.loadChangePSRateAllTbl();
         });
 
         tablePurchaseOrderProductRequest.on('click', '.btn-view-price', function () {

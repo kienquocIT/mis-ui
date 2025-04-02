@@ -6920,9 +6920,9 @@ class QuotationStoreDataHandle {
             $table.DataTable().rows().every(function () {
                 let row = this.node();
                 let rowIndex = $table.DataTable().row(row).index();
-                let eleOrder = row.querySelector('.table-row-order');
-                if (eleOrder) {
-                    let key = eleOrder.innerHTML;
+                let orderEle = row.querySelector('.table-row-order');
+                if (orderEle) {
+                    let key = orderEle.innerHTML;
                     $table.DataTable().row(rowIndex).data(dataJSON?.[key]);
                 }
             });

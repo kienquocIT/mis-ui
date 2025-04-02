@@ -193,7 +193,7 @@ function dtbZoneHDCustom() {
             if (!$('#btn-add-zone').length) {
                 let $group = $(`<button
                                         type="button"
-                                        class="btn btn-outline-secondary btn-floating"
+                                        class="btn btn-primary btn-square"
                                         id="btn-add-zone"
                                         data-bs-toggle="modal"
                                         data-bs-target="#add_zone"

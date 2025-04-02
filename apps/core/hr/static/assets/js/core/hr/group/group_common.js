@@ -312,7 +312,7 @@ function dtbGroupHDCustom() {
         textFilter$.css('display', 'flex');
         // Check if the button already exists before appending
         if (!$('#btn-add-emp-group').length) {
-            let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-emp-group" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasExample">
+            let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-emp-group" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasExample">
                                 <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${GroupLoadDataHandle.$trans.attr('data-add-emp-group')}</span></span>
                             </button>`);
             textFilter$.append(

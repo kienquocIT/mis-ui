@@ -6000,7 +6000,7 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-product-quotation-create').length && !$('#btn-add-product-group-quotation').length && !$('#btn-check-promotion').length && !$('#btn-add-shipping').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_products_data">
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_products_data">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -6040,7 +6040,7 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-expense-quotation-create').length && !$('#btn-add-labor-quotation-create').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_expenses_data">
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_expenses_data">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -6074,7 +6074,7 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-refresh-indicator').length) {
-                let html1 = `<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-refresh-indicator">${LeaseOrderLoadDataHandle.transEle.attr('data-refresh')}</button>`;
+                let html1 = `<button type="button" class="btn btn-primary btn-square" id="btn-refresh-indicator">${LeaseOrderLoadDataHandle.transEle.attr('data-refresh')}</button>`;
                 let $group = $(`<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                 ${html1}
                             </div>`);
@@ -6108,10 +6108,10 @@ class LeaseOrderDataTableHandle {
                 if ($termMD.val()) {
                     hiddenLoad = "";
                 }
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
                                     <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-detail')}</span></span>
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-payment-stage" data-zone="sale_order_payment_stage" ${hiddenAdd}>
+                                <button type="button" class="btn btn-primary btn-square" id="btn-add-payment-stage" data-zone="sale_order_payment_stage" ${hiddenAdd}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -6141,7 +6141,7 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-invoice').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-invoice" data-zone="sale_order_payment_stage">
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" data-zone="sale_order_payment_stage">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(

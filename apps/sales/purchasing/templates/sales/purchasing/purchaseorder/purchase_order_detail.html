@@ -63,7 +63,7 @@
                                         <div class="input-suffix">
                                             <button
                                                 type="button"
-                                                class="btn btn-icon btn-outline-secondary btn-floating btn-xs"
+                                                class="btn btn-icon btn-primary btn-sm"
                                                 id="btn-purchase-request-modal"
                                                 data-bs-toggle="offcanvas"
                                                 data-bs-target="#purchaseRequestCanvas"
@@ -85,7 +85,7 @@
                                         <div class="input-suffix">
                                             <button
                                                 type="button"
-                                                class="btn btn-icon btn-outline-secondary btn-floating btn-xs"
+                                                class="btn btn-icon btn-primary btn-sm"
                                                 id="btn-purchase-quotation-modal"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#purchaseQuotationModalCenter"
@@ -162,7 +162,7 @@
                                 <span class="nav-link-text">{% trans 'Product' %}</span>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item tab-payment">
                             <a class="nav-link" data-bs-toggle="tab" href="#tab_payment">
                                 <span class="nav-icon-wrap mr-1"><i class="fas fa-receipt"></i></span>
                                 <span class="nav-link-text">{% trans 'Payment' %}</span>
@@ -189,17 +189,17 @@
                                 >
                                     <thead>
                                     <tr class="bg-light">
-                                        <th></th>
-                                        <th>{% trans 'Product' %}</th>
-                                        <th>{% trans 'Description' %}</th>
-                                        <th>{% trans 'UOM' %} (PR)</th>
-                                        <th>{% trans 'Quantity' %} (PR)</th>
-                                        <th>{% trans 'Quantity' %} ({% trans 'Extra' %})</th>
-                                        <th>{% trans 'UOM' %} (PO)</th>
-                                        <th>{% trans 'Quantity' %} (PO)</th>
-                                        <th>{% trans 'Unit Price' %}</th>
-                                        <th>{% trans 'Tax' %}</th>
-                                        <th>{% trans 'Subtotal Price' %}</th>
+                                        <th class="w-1"></th>
+                                        <th class="w-20">{% trans 'Product' %}</th>
+                                        <th class="w-15">{% trans 'Description' %}</th>
+                                        <th class="w-5">{% trans 'UOM' %} (PR)</th>
+                                        <th class="w-5">{% trans 'Quantity' %} (PR)</th>
+                                        <th class="w-5">{% trans 'Quantity' %} ({% trans 'Extra' %})</th>
+                                        <th class="w-5">{% trans 'UOM' %} (PO)</th>
+                                        <th class="w-5">{% trans 'Quantity' %} (PO)</th>
+                                        <th class="w-15">{% trans 'Unit Price' %}</th>
+                                        <th class="w-5">{% trans 'Tax' %}</th>
+                                        <th class="w-15">{% trans 'Subtotal Price' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -255,15 +255,15 @@
                                 >
                                     <thead>
                                     <tr class="bg-light">
-                                        <th></th>
-                                        <th>{% trans 'Product' %}</th>
-                                        <th>{% trans 'Description' %}</th>
-                                        <th>UOM</th>
-                                        <th>{% trans 'Quantity' %}</th>
-                                        <th>{% trans 'Unit Price' %}</th>
-                                        <th>{% trans 'Tax' %}</th>
-                                        <th>{% trans 'Subtotal Price' %}</th>
-                                        <th></th>
+                                        <th class="w-1"></th>
+                                        <th class="w-20">{% trans 'Product' %}</th>
+                                        <th class="w-15">{% trans 'Description' %}</th>
+                                        <th class="w-10">{% trans 'UOM' %}</th>
+                                        <th class="w-10">{% trans 'Quantity' %}</th>
+                                        <th class="w-15">{% trans 'Unit Price' %}</th>
+                                        <th class="w-10">{% trans 'Tax' %}</th>
+                                        <th class="w-15">{% trans 'Subtotal Price' %}</th>
+                                        <th class="w-1"></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -313,19 +313,47 @@
                     </div>
                     <div class="tab-pane fade" id="tab_payment">
                         <div class="row">
+                            <b>{% trans 'Invoice' %}</b>
                             <table
-                                    id="datable-po-payment-stage"
-                                    class="table nowrap w-100 mb-5"
+                                    id="datable-quotation-invoice"
+                                    class="table nowrap min-w-1366p w-100 mb-5"
                             >
                                 <thead>
                                 <tr class="bg-light">
-                                    <th class="w-25">{% trans 'Description' %}</th>
-                                    <th class="w-10">% {% trans 'Payment' %}</th>
-                                    <th class="w-20">{% trans 'Value before tax' %}</th>
+                                    <th class="w-10">{% trans 'Invoice issue' %}</th>
+                                    <th class="w-20">{% trans 'Description' %}</th>
+                                    <th class="w-10">{% trans 'Invoice date' %}</th>
+                                    <th class="w-10">{% trans 'Percentage' %}</th>
                                     <th class="w-10">{% trans 'Tax' %}</th>
-                                    <th class="w-15">{% trans 'Value after tax' %}</th>
-                                    <th class="w-15">{% trans 'Due date' %}</th>
+                                    <th class="w-15">{% trans 'Total value' %}</th>
+                                    <th class="w-15">{% trans 'Balance due' %}</th>
                                     <th class="w-5"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <b>{% trans 'Payment' %}</b>
+                            <table
+                                    id="datable-quotation-payment-stage"
+                                    class="table nowrap min-w-2000p w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th></th>
+                                    <th>{% trans 'Description' %}</th>
+                                    <th>{% trans 'Date' %}</th>
+                                    <th>{% trans 'Due date' %}</th>
+                                    <th>{% trans 'Percentage' %}</th>
+                                    <th>{% trans 'Invoice' %}</th>
+                                    <th>{% trans 'Payment before tax' %}</th>
+                                    <th>{% trans 'Reconcile' %}</th>
+                                    <th>{% trans 'Tax' %}</th>
+                                    <th>{% trans 'Tax value' %}</th>
+                                    <th>{% trans 'Total payment' %}</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -374,6 +402,7 @@
                                     <tr class="bg-light">
                                         <th class="w-5"></th>
                                         <th class="w-80">{% trans 'Purchase request' %}</th>
+                                        <th class="w-15">{% trans 'code' %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -503,6 +532,87 @@
                     </div>
                 </div>
             </div>
+
+            <div
+                    class="modal fade" id="selectInvoiceModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectInvoiceModal"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select invoice' %}</b></h5>
+                            <button
+                                    type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                    data-bs-dismiss="modal"
+                            ><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table
+                                    id="table-select-invoice"
+                                    class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th class="w-15">{% trans 'Invoice issue' %}</th>
+                                    <th class="w-25">{% trans 'Description' %}</th>
+                                    <th class="w-20">{% trans 'Percentage' %}</th>
+                                    <th class="w-15">{% trans 'Tax' %}</th>
+                                    <th class="w-25">{% trans 'Total value' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-invoice" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                    class="modal fade" id="selectReconcileModal" tabindex="-1"
+                    role="dialog" aria-labelledby="selectReconcileModal"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Select invoice' %}</b></h5>
+                            <button
+                                    type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                    data-bs-dismiss="modal"
+                            ><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table
+                                    id="table-select-reconcile"
+                                    class="table nowrap w-100 mb-5"
+                            >
+                                <thead>
+                                <tr class="bg-light">
+                                    <th class="w-15">{% trans 'Invoice issue' %}</th>
+                                    <th class="w-25">{% trans 'Description' %}</th>
+                                    <th class="w-20">{% trans 'Percentage' %}</th>
+                                    <th class="w-15">{% trans 'Tax' %}</th>
+                                    <th class="w-25">{% trans 'Total value' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-select-reconcile" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
 
@@ -539,8 +649,21 @@
         data-validate-order-request="{% trans 'Exceeded quantity requested' %}"
         data-validate-order-actual="{% trans 'Must not less than quantity ordered' %}"
         data-valid="{% trans "Valid" %}"
-        data-validate-total-payment="{% trans "Total payment must less than or equal to total before tax" %}"
+        data-product-needed="{% trans "Please add product" %}"
+        data-purchase-quotation="{% trans "Purchase quotation" %}"
+        data-paid-in-full="{% trans "Paid in full" %}"
+        data-validate-total-payment="{% trans "Payment amount does not match" %}"
         data-required-product="{% trans "Product is required" %}"
+        data-add="{% trans "Add" %}"
+        data-add-product="{% trans "Add Product" %}"
+        data-shipping="{% trans "Shipping fee" %}"
+    >
+    <input
+        type="text"
+        id="app-url-factory"
+        data-md-product="{% url 'ProductForSaleListAPI' %}"
+        data-md-uom="{% url "UnitOfMeasureListAPI" %}"
+        data-md-tax="{% url "TaxListAPI" %}"
     >
     <input
         type="text"

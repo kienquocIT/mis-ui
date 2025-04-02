@@ -1035,10 +1035,10 @@ class QuotationLoadDataHandle {
         let dataDetail = {};
         let dataPriceJSON = {};
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     if (dataDetail?.['quotation_products_data']) {
                         tableData = dataDetail?.['quotation_products_data'];
                     }
@@ -1067,10 +1067,10 @@ class QuotationLoadDataHandle {
             });
 
             if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         if (dataDetail?.['quotation_products_data']) {
                             tableData = dataDetail?.['quotation_products_data'];
                         }
@@ -1117,10 +1117,10 @@ class QuotationLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     if (dataDetail?.['quotation_costs_data']) {
                         tableData = dataDetail?.['quotation_costs_data'];
                     }
@@ -1140,10 +1140,10 @@ class QuotationLoadDataHandle {
             });
 
             if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         if (dataDetail?.['quotation_costs_data']) {
                             tableData = dataDetail?.['quotation_costs_data'];
                         }
@@ -1171,10 +1171,10 @@ class QuotationLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     if (dataDetail?.['quotation_expenses_data']) {
                         tableData = dataDetail?.['quotation_expenses_data'];
                     }
@@ -1194,10 +1194,10 @@ class QuotationLoadDataHandle {
             });
 
             if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         if (dataDetail?.['quotation_expenses_data']) {
                             tableData = dataDetail?.['quotation_expenses_data'];
                         }
@@ -1225,10 +1225,10 @@ class QuotationLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     tableData = dataDetail?.['sale_order_payment_stage'];
                 }
             }
@@ -1243,10 +1243,10 @@ class QuotationLoadDataHandle {
             });
 
             if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         tableData = dataDetail?.['sale_order_payment_stage'];
                     }
                 }
@@ -1269,10 +1269,10 @@ class QuotationLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     tableData = dataDetail?.['sale_order_invoice'];
                 }
             }
@@ -1287,10 +1287,10 @@ class QuotationLoadDataHandle {
             });
 
             if (tableData.length === 0 && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         tableData = dataDetail?.['sale_order_invoice'];
                     }
                 }
@@ -4913,7 +4913,7 @@ class QuotationDataTableHandle {
                 if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                     dataZone = "sale_order_products_data";
                 }
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-quick-product" data-bs-toggle="modal" data-bs-target="#addQuickProduct" data-zone="${dataZone}">
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-quick-product" data-bs-toggle="modal" data-bs-target="#addQuickProduct" data-zone="${dataZone}">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-new')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -4938,8 +4938,8 @@ class QuotationDataTableHandle {
                 if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                     dataZone = "sale_order_products_data";
                 }
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
-                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
                                     <a class="dropdown-item" href="#" id="btn-add-product-quotation-create" data-bs-toggle="modal" data-bs-target="#selectProductModal"><i class="dropdown-icon fas fa-cube"></i><span class="mt-2">${QuotationLoadDataHandle.transEle.attr('data-add-product')}</span></a>
@@ -4985,8 +4985,8 @@ class QuotationDataTableHandle {
                 if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                     dataZone = "sale_order_expenses_data";
                 }
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
-                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
                                     <a class="dropdown-item" href="#" id="btn-add-expense-quotation-create"><i class="dropdown-icon fas fa-hand-holding-usd"></i><span class="mt-2">${QuotationLoadDataHandle.transEle.attr('data-add-expense')}</span></a>
@@ -5025,10 +5025,13 @@ class QuotationDataTableHandle {
                 if ($termMD.val()) {
                     hiddenLoad = "";
                 }
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
+                if (!$termMD.val()) {
+                    hiddenAdd = "";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
                                     <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-detail')}</span></span>
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-payment-stage" data-zone="sale_order_payment_stage" ${hiddenAdd}>
+                                <button type="button" class="btn btn-primary btn-square" id="btn-add-payment-stage" data-zone="sale_order_payment_stage" ${hiddenAdd}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -5058,7 +5061,7 @@ class QuotationDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-invoice').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-invoice" data-zone="sale_order_payment_stage">
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" data-zone="sale_order_payment_stage">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -5083,7 +5086,7 @@ class QuotationDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-refresh-indicator').length) {
-                let html1 = `<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-refresh-indicator">${QuotationLoadDataHandle.transEle.attr('data-refresh')}</button>`;
+                let html1 = `<button type="button" class="btn btn-primary btn-square" id="btn-refresh-indicator">${QuotationLoadDataHandle.transEle.attr('data-refresh')}</button>`;
                 let $group = $(`<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                 ${html1}
                             </div>`);
@@ -6920,9 +6923,9 @@ class QuotationStoreDataHandle {
             $table.DataTable().rows().every(function () {
                 let row = this.node();
                 let rowIndex = $table.DataTable().row(row).index();
-                let eleOrder = row.querySelector('.table-row-order');
-                if (eleOrder) {
-                    let key = eleOrder.innerHTML;
+                let orderEle = row.querySelector('.table-row-order');
+                if (orderEle) {
+                    let key = orderEle.innerHTML;
                     $table.DataTable().row(rowIndex).data(dataJSON?.[key]);
                 }
             });

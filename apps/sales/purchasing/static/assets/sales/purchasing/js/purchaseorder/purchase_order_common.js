@@ -11,6 +11,8 @@ class POLoadDataHandle {
     static eleDivTablePRProductMerge = $('#table-purchase-request-product-merge-area');
     static $priceModal = $('#viewPriceModal');
     static $elePQ = $('#purchase-order-purchase-quotation');
+    static $btnSaveInvoice = $('#btn-save-select-invoice');
+    static $btnSaveReconcile = $('#btn-save-select-reconcile');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#app-url-factory');
 
@@ -284,6 +286,41 @@ class POLoadDataHandle {
             POLoadDataHandle.loadTableProductByPurchaseRequest();
             POLoadDataHandle.loadModalPurchaseQuotation(true);
         }
+        return true;
+    };
+
+    static loadModalSInvoice(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            let orderEle = row.querySelector('.table-row-order');
+            if (orderEle) {
+                POLoadDataHandle.$btnSaveInvoice.attr('data-id', orderEle.innerHTML);
+            }
+        }
+        let datas = POSubmitHandle.setupDataInvoice();
+        PODataTableHandle.$tableSInvoice.DataTable().clear().draw();
+        PODataTableHandle.$tableSInvoice.DataTable().rows.add(datas).draw();
+        return true;
+    };
+
+    static loadModalSReconcile(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            let orderEle = row.querySelector('.table-row-order');
+            if (orderEle) {
+                POLoadDataHandle.$btnSaveReconcile.attr('data-id', orderEle.innerHTML);
+            }
+        }
+        let fnData = [];
+        let check = parseInt(POLoadDataHandle.$btnSaveReconcile.attr('data-id'));
+        let datas = POSubmitHandle.setupDataPaymentStage();
+        for (let data of datas) {
+            if (data?.['order'] < check && data?.['invoice'] === null) {
+                fnData.push(data);
+            }
+        }
+        PODataTableHandle.$tableSReconcile.DataTable().clear().draw();
+        PODataTableHandle.$tableSReconcile.DataTable().rows.add(fnData).draw();
         return true;
     };
 
@@ -961,7 +998,7 @@ class POLoadDataHandle {
             if (eleDetail && eleDetail.length > 0) {
                 if (eleDetail.val()) {
                     dataDetail = JSON.parse(eleDetail.val());
-                    tableData = dataDetail?.['sale_order_invoice'];
+                    tableData = dataDetail?.['purchase_order_invoice'];
                 }
             }
         } else {
@@ -979,7 +1016,7 @@ class POLoadDataHandle {
                 if (eleDetail && eleDetail.length > 0) {
                     if (eleDetail.val()) {
                         dataDetail = JSON.parse(eleDetail.val());
-                        tableData = dataDetail?.['sale_order_invoice'];
+                        tableData = dataDetail?.['purchase_order_invoice'];
                     }
                 }
             }
@@ -1193,12 +1230,12 @@ class POLoadDataHandle {
                 $(valTotalEle).attr('value', valBefore + $(valTaxEle).valCurrency());
                 let taxData = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
                 if (taxData?.['rate']) {
-                    let datasRelateTax1 = QuotationCalculateCaseHandle.getDatasRelateTax(valBefore, taxData?.['rate']);
+                    let datasRelateTax1 = POCalculateHandle.getDatasRelateTax(valBefore, taxData?.['rate']);
                     $(valTaxEle).attr('value', datasRelateTax1?.['valTax']);
                     $(valTotalEle).attr('value', datasRelateTax1?.['valAfter']);
 
                     if ($(valReconcileEle).valCurrency() > 0) {
-                        let datasRelateTax2 = QuotationCalculateCaseHandle.getDatasRelateTax($(valReconcileEle).valCurrency(), taxData?.['rate']);
+                        let datasRelateTax2 = POCalculateHandle.getDatasRelateTax($(valReconcileEle).valCurrency(), taxData?.['rate']);
                         $(valTaxEle).attr('value', datasRelateTax1?.['valTax'] + datasRelateTax2?.['valTax']);
                         $(valTotalEle).attr('value', datasRelateTax1?.['valAfter'] + datasRelateTax2?.['valTax']);
                     }
@@ -1732,6 +1769,8 @@ class PODataTableHandle {
     static $tablePOByAdd = $('#datable-purchase-order-product-add');
     static $tablePayment = $('#datable-quotation-payment-stage');
     static $tableInvoice = $('#datable-quotation-invoice');
+    static $tableSInvoice = $('#table-select-invoice');
+    static $tableSReconcile = $('#table-select-reconcile');
 
     static dataTablePurchaseRequest() {
         let $table = $('#datable-purchase-request');
@@ -1767,7 +1806,7 @@ class PODataTableHandle {
                 {
                     targets: 0,
                     render: (data, type, row, meta) => {
-                        return `<span class="table-row-order">${(meta.row + 1)}</span>`
+                        return `<span class="table-row-order">${(meta.row + 1)}</span>`;
                     }
                 },
                 {
@@ -1787,9 +1826,14 @@ class PODataTableHandle {
                         return `<div class="form-check form-check-lg">
                                     <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="pr-${row?.['id'].replace(/-/g, "")}" data-id="${row?.['id']}" ${checked} ${disabled}>
                                     <label class="form-check-label table-row-title" for="pr-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
-                                    <span class="badge badge-light badge-outline table-row-code">${row?.['code']}</span>
                                 </div>`;
                     },
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row, meta) => {
+                        return `<span class="table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>`;
+                    }
                 },
             ],
             drawCallback: function () {
@@ -2051,7 +2095,6 @@ class PODataTableHandle {
             columns: [  // 25,325,325,100,100,100,125,125,300,125,270 (1920p)
                 {
                     targets: 0,
-                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" id="${row?.['id']}" data-row="${dataRow}">${row?.['order']}</span>`
@@ -2059,7 +2102,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '18%',
                     render: (data, type, row) => {
                         return `<div class="row table-row-item-area">
                                     <div class="col-12 col-md-12 col-lg-12">
@@ -2080,14 +2122,12 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '15%',
                     render: (data, type, row) => {
                         return `<div class="row"><textarea class="table-row-description form-control" rows="2" readonly>${row?.['product']?.['description'] ? row?.['product']?.['description'] : ''}</textarea></div>`;
                     }
                 },
                 {
                     targets: 3,
-                    width: '7%',
                     render: (data, type, row) => {
                         let dataStr = JSON.stringify(row?.['uom_order_request']).replace(/"/g, "&quot;");
                         return `<span class="table-row-uom-order-request" id="${row?.['uom_order_request']?.['id']}">${row?.['uom_order_request']?.['title']}<input type="hidden" class="data-info" value="${dataStr}"></span>`;
@@ -2095,21 +2135,18 @@ class PODataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '5%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-order-request">${row?.['product_quantity_order_request']}</span>`;
                     }
                 },
                 {
                     targets: 5,
-                    width: '5%',
                     render: (data, type, row) => {
                         return `<span class="table-row-stock">${row?.['stock']}</span>`
                     }
                 },
                 {
                     targets: 6,
-                    width: '6%',
                     render: () => {
                         return `<div class="row">
                                     <select 
@@ -2125,7 +2162,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '6%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control valid-num table-row-quantity-order-actual valid-num" value="${row?.['product_quantity_order_actual']}" required>
@@ -2134,7 +2170,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '14%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <div class="dropend">
@@ -2158,7 +2193,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: '6%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <select 
@@ -2186,7 +2220,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 10,
-                    width: '13%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -2220,7 +2253,6 @@ class PODataTableHandle {
             columns: [  // 25,325,325,150,175,325,150,270,25 (1920p)
                 {
                     targets: 0,
-                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row?.['order']}</span>`
@@ -2228,7 +2260,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '18%',
                     render: (data, type, row) => {
                         if (row?.['is_shipping'] === true) {
                             return `<input type="text" class="form-control table-row-shipping" value="${row?.['shipping_title'] ? row?.['shipping_title'] : ''}" required>`;
@@ -2248,7 +2279,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '15%',
                     render: (data, type, row) => {
                         let readonly = "readonly";
                         if (row?.['is_shipping'] === true) {
@@ -2265,7 +2295,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '7.8125%',
                     render: () => {
                         return `<div class="row">
                                     <select 
@@ -2281,7 +2310,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '9.11458333333%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control valid-num table-row-quantity-order-actual valid-num" value="${row?.['product_quantity_order_actual']}" required>
@@ -2290,7 +2318,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '16.9270833333%',
                     render: (data, type, row) => {
                         return `<input 
                                     type="text" 
@@ -2302,7 +2329,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '7.8125%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <select 
@@ -2330,7 +2356,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '14.0625%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -2345,7 +2370,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '1.30208333333%',
                     render: () => {
                         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
@@ -2453,7 +2477,6 @@ class PODataTableHandle {
                                     class="form-control mask-money table-row-value-before-tax text-black" 
                                     value="${row?.['value_before_tax'] ? row?.['value_before_tax'] : '0'}"
                                     data-return-type="number"
-                                    readonly
                                 >`;
                     }
                 },
@@ -2506,7 +2529,6 @@ class PODataTableHandle {
                                     class="form-control mask-money table-row-value-tax text-black" 
                                     value="${row?.['value_tax'] ? row?.['value_tax'] : '0'}"
                                     data-return-type="number"
-                                    readonly
                                 >`;
                     }
                 },
@@ -2519,7 +2541,6 @@ class PODataTableHandle {
                                     class="form-control mask-money table-row-value-total text-black" 
                                     value="${row?.['value_total'] ? row?.['value_total'] : '0'}"
                                     data-return-type="number"
-                                    readonly
                                 >`;
                     }
                 },
@@ -2640,21 +2661,18 @@ class PODataTableHandle {
             columns: [
                 {
                     targets: 0,
-                    width: '8%',
                     render: (data, type, row) => {
                         return `<span class="table-row-order" data-id="${row?.['order']}">${row?.['order']}</span>`;
                     }
                 },
                 {
                     targets: 1,
-                    width: '25%',
                     render: (data, type, row) => {
                         return `<textarea class="form-control table-row-remark" rows="2">${row?.['remark'] ? row?.['remark'] : ""}</textarea>`;
                     }
                 },
                 {
                     targets: 2,
-                    width: '12%',
                     render: (data, type, row) => {
                         return `<div class="input-affix-wrapper">
                                     <input type="text" class="form-control date-picker text-black table-row-date" autocomplete="off">
@@ -2666,7 +2684,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
-                    width: '10%',
                     render: (data, type, row) => {
                         let ratio = '';
                         if (row?.['ratio']) {
@@ -2676,7 +2693,7 @@ class PODataTableHandle {
                         }
                         return `<div class="input-group">
                                     <div class="input-affix-wrapper">
-                                        <input type="text" class="form-control table-row-ratio valid-num" value="${ratio}">
+                                        <input type="text" class="form-control table-row-ratio valid-num" value="${ratio}" readonly>
                                         <div class="input-suffix"><small><i class="fas fa-percentage"></i></small></div>
                                     </div>
                                 </div>`;
@@ -2684,7 +2701,6 @@ class PODataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '10%',
                     render: () => {
                         return `<div class="table-row-tax-area">
                                     <select
@@ -2700,20 +2716,17 @@ class PODataTableHandle {
                 },
                 {
                     targets: 5,
-                    width: '15%',
                     render: (data, type, row) => {
                         return `<input 
                                     type="text" 
                                     class="form-control mask-money table-row-total text-black" 
                                     value="${row?.['total'] ? row?.['total'] : '0'}"
                                     data-return-type="number"
-                                    readonly
                                 >`;
                     }
                 },
                 {
                     targets: 6,
-                    width: '15%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <div class=input-group">
@@ -2733,9 +2746,8 @@ class PODataTableHandle {
                 },
                 {
                     targets: 7,
-                    width: '5%',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="sale_order_invoice"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],
@@ -2806,6 +2818,153 @@ class PODataTableHandle {
         });
     };
 
+    static dataTableSelectInvoice(data) {
+        PODataTableHandle.$tableSInvoice.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let checked = "";
+                        let target = PODataTableHandle.$tablePayment[0].querySelector(`[data-id="${POLoadDataHandle.$btnSaveInvoice.attr('data-id')}"]`);
+                        if (target) {
+                            let targetRow = target.closest('tr');
+                            if (targetRow) {
+                                let invoiceDataEle = targetRow.querySelector('.table-row-invoice-data');
+                                if (invoiceDataEle) {
+                                    if ($(invoiceDataEle).val()) {
+                                        let invoiceData = JSON.parse($(invoiceDataEle).val());
+                                        if (row?.['order'] === invoiceData?.['order']) {
+                                            checked = "checked";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return `<div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-invoice-${row?.['order']}" ${checked}>
+                                    <label class="form-check-label table-row-order" for="s-invoice-${row?.['order']}">${row?.['order']}</label>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['remark']}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        let txt = ``;
+                        if (row?.['ratio']) {
+                            if (row?.['ratio'] !== null) {
+                                txt = `<span>${row?.['ratio']} %</span>`;
+                            }
+                        }
+                        return txt;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['tax_data']?.['title'] ? row?.['tax_data']?.['title'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${row?.['total'] ? row?.['total'] : 0}"></span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                POLoadDataHandle.loadEventRadio(PODataTableHandle.$tableSInvoice);
+                $.fn.initMaskMoney2();
+            }
+        });
+    };
+
+    static dataTableSelectReconcile(data) {
+        PODataTableHandle.$tableSReconcile.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            autoWidth: true,
+            scrollX: true,
+            scrollY: "400px",
+            columns: [
+                {
+                    targets: 0,
+                    render: (data, type, row) => {
+                        let checked = "";
+                        let target = PODataTableHandle.$tablePayment[0].querySelector(`[data-id="${POLoadDataHandle.$btnSaveReconcile.attr('data-id')}"]`);
+                        if (target) {
+                            let targetRow = target.closest('tr');
+                            if (targetRow) {
+                                let reconcileDataEle = targetRow.querySelector('.table-row-reconcile-data');
+                                if (reconcileDataEle) {
+                                    if ($(reconcileDataEle).val()) {
+                                        let reconcileData = JSON.parse($(reconcileDataEle).val());
+                                        for (let reconcile of reconcileData) {
+                                            if (row?.['order'] === reconcile?.['order']) {
+                                                checked = "checked";
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return `<div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-reconcile-${row?.['order']}" ${checked}>
+                                    <label class="form-check-label table-row-order" for="s-reconcile-${row?.['order']}">${row?.['term_data']?.['title']}</label>
+                                </div>`;
+                    }
+                },
+                {
+                    targets: 1,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['remark']}</span>`;
+                    }
+                },
+                {
+                    targets: 2,
+                    render: (data, type, row) => {
+                        let txt = ``;
+                        if (row?.['ratio']) {
+                            if (row?.['ratio'] !== null) {
+                                txt = `<span>${row?.['ratio']} %</span>`;
+                            }
+                        }
+                        return txt;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['tax_data']?.['title'] ? row?.['tax_data']?.['title'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>`;
+                    }
+                },
+            ],
+            drawCallback: function () {
+                POLoadDataHandle.loadEventCheckbox(PODataTableHandle.$tableSReconcile);
+                $.fn.initMaskMoney2();
+            }
+        });
+    };
+
     // Custom dtb
     static dtbProductHDCustom() {
         let $table = PODataTableHandle.$tablePOByAdd;
@@ -2854,23 +3013,14 @@ class PODataTableHandle {
         if (textFilter$.length > 0) {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
-            if (!$('#btn-load-payment-stage').length && !$('#btn-add-payment-stage').length) {
-                let hiddenLoad = "hidden";
-                let hiddenAdd = "";
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
-                                    <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${POLoadDataHandle.transEle.attr('data-detail')}</span></span>
-                                </button>
-                                <button type="button" class="btn btn-primary btn-square" id="btn-add-payment-stage" data-zone="sale_order_payment_stage" ${hiddenAdd}>
+            if (!$('#btn-add-payment-stage').length) {
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-payment-stage" data-zone="sale_order_payment_stage">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${POLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                 );
                 // Select the appended button from the DOM and attach the event listener
-                $('#btn-load-payment-stage').on('click', function () {
-                    POStoreDataHandle.storeDtbData(3);
-                    POLoadDataHandle.loadPaymentStage();
-                });
                 $('#btn-add-payment-stage').on('click', function () {
                     POStoreDataHandle.storeDtbData(3);
                     POLoadDataHandle.loadAddPaymentStage();
@@ -3028,28 +3178,12 @@ class POCalculateHandle {
         return true;
     };
 
-    // payment stage
-    static calculateValueAfterTax(row) {
-        let eleValueBT = row.querySelector('.table-row-value-before-tax');
-        let eleTax = row.querySelector('.table-row-tax');
-        let eleValueAT = row.querySelector('.table-row-value-after-tax');
-        if (eleValueBT && eleTax && eleValueAT) {
-            if ($(eleTax).val()) {
-                let dataTax = SelectDDControl.get_data_from_idx($(eleTax), $(eleTax).val());
-                if (dataTax) {
-                    let valueTax = ($(eleValueBT).valCurrency() * parseFloat(dataTax?.['rate'])) / 100;
-                    let valueAT = $(eleValueBT).valCurrency() + valueTax;
-                    $(eleValueAT).attr('data-init-money', String(valueAT));
-                }
-            } else {
-                let valueAT = $(eleValueBT).valCurrency();
-                $(eleValueAT).attr('data-init-money', String(valueAT));
-            }
-        }
-        // init maskMoney
-        $.fn.initMaskMoney2();
-        return true;
-    }
+    // Calculate funcs
+    static getDatasRelateTax(valBefore, tax) {
+        let valTax = valBefore * tax / 100;
+        let valAfter = valBefore + valTax;
+        return {'valBefore': valBefore, 'valTax': valTax, 'valAfter': valAfter};
+    };
 
 }
 
@@ -3648,9 +3782,20 @@ class POSubmitHandle {
             _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTaxAdd.value);
         }
         // payment stage
-        let dataPaymentStage = POSubmitHandle.setupDataPaymentStage();
-        if (dataPaymentStage.length > 0) {
-            _form.dataForm['purchase_order_payment_stage'] = dataPaymentStage;
+        _form.dataForm['purchase_order_payment_stage'] = POSubmitHandle.setupDataPaymentStage();
+        _form.dataForm['purchase_order_invoice'] = POSubmitHandle.setupDataInvoice();
+        // validate payment stage submit
+        if (_form.dataForm?.['purchase_order_payment_stage'] && _form.dataForm?.['total_product']) {
+            if (_form.dataForm?.['purchase_order_payment_stage'].length > 0) {
+                let totalPayment = 0;
+                for (let payment of _form.dataForm['purchase_order_payment_stage']) {
+                    totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
+                }
+                if (totalPayment !== _form.dataForm?.['total_product']) {
+                    $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+                    return false;
+                }
+            }
         }
         // attachment
         if (_form.dataForm.hasOwnProperty('attachment')) {
@@ -3680,4 +3825,34 @@ function deleteRow(currentRow, table) {
     let row = table.DataTable().row(rowIndex);
     // Delete current row
     row.remove().draw();
+}
+
+function validatePSValue(ele) {
+    let row = ele.closest('tr');
+    let tablePS = $('#datable-quotation-payment-stage');
+    let eleRatio = row.querySelector('.table-row-ratio');
+    let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+    if (tableProductWrapper) {
+        let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+        let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+        let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+        if (elePretax && eleDiscount) {
+            let valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
+            let totalBT = 0;
+            tablePS.DataTable().rows().every(function () {
+                let row = this.node();
+                let eleValueBT = row.querySelector('.table-row-value-before-tax');
+                if (eleValueBT) {
+                    totalBT += $(eleValueBT).valCurrency();
+                }
+            });
+            if (totalBT > valueSO) {
+                $(ele).attr('value', String(0));
+                eleRatio.value = 0;
+                $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-paid-in-full')}, 'failure');
+                return false;
+            }
+        }
+    }
+    return true;
 }

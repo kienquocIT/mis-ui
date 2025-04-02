@@ -26,6 +26,8 @@ $(function () {
         PODataTableHandle.dataTablePurchaseOrderProductRequest();
         PODataTableHandle.dataTablePaymentStage();
         PODataTableHandle.dataTableInvoice();
+        PODataTableHandle.dataTableSelectInvoice();
+        PODataTableHandle.dataTableSelectReconcile();
 
         // init date picker
         $('.date-picker').each(function () {
@@ -240,18 +242,95 @@ $(function () {
             POStoreDataHandle.storeDtbData(4);
         });
 
-        tablePaymentStage.on('change', '.table-row-ratio, .table-row-value-before-tax, .table-row-tax', function () {
-            if ($(this).hasClass('table-row-ratio')) {
-                POLoadDataHandle.loadChangePSRate(this);
+        PODataTableHandle.$tableInvoice.on('change', '.table-row-total', function () {
+            let row = this.closest('tr');
+            if (row) {
+                let balanceEle = row.querySelector('.table-row-balance');
+                if (balanceEle) {
+                    $(balanceEle).attr('value', String($(this).valCurrency()));
+                    $.fn.initMaskMoney2();
+                }
             }
-            if ($(this).hasClass('table-row-value-before-tax')) {
-                POValidateHandle.validatePOPSValue(this);
-            }
-            POCalculateHandle.calculateValueAfterTax(this.closest('tr'));
         });
 
-        tablePaymentStage.on('click', '.del-row', function () {
-            deleteRow(this.closest('tr'), tablePaymentStage);
+        PODataTableHandle.$tableInvoice.on('click', '.del-row', function (e) {
+            deleteRow(this.closest('tr'), PODataTableHandle.$tableInvoice);
+            reOrderSTT(PODataTableHandle.$tableInvoice);
+            PODataTableHandle.$tablePayment.DataTable().clear().draw();
+        });
+
+        PODataTableHandle.$tablePayment.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-issue-invoice, .table-row-value-tax, .table-row-value-total, .table-row-due-date', function () {
+            if (POLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
+                let row = this.closest('tr');
+                if ($(this).hasClass('table-row-date')) {
+                    let isCheck = true;
+                    let eleDueDate = row.querySelector('.table-row-due-date');
+                    let eleInstallment = row.querySelector('.table-row-installment');
+                    if (eleDueDate && eleInstallment) {
+                        if ($(this).val() && $(eleDueDate).val() && !$(eleInstallment).val()) {
+                            isCheck = validateStartEndDate($(this).val(), $(eleDueDate).val());
+                        }
+                    }
+                    if (isCheck === true) {
+                        POLoadDataHandle.loadChangePSDate(this);
+                    } else {
+                        $(this).val(null);
+                        $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
+                        return false;
+                    }
+                }
+                if ($(this).hasClass('table-row-installment')) {
+                    POLoadDataHandle.loadChangeInstallment(this);
+                }
+                if ($(this).hasClass('table-row-ratio')) {
+                    POLoadDataHandle.loadPaymentValues(this);
+                    let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+                    validatePSValue(valBeforeEle);
+                    POLoadDataHandle.loadMinusBalance();
+                }
+                if ($(this).hasClass('table-row-issue-invoice')) {
+                    POLoadDataHandle.loadChangePSIssueInvoice(this);
+                }
+                if ($(this).hasClass('table-row-due-date')) {
+                    let row = this.closest('tr');
+                    let eleDate = row.querySelector('.table-row-date');
+                    let eleTerm = row.querySelector('.table-row-term');
+                    if (eleDate && eleTerm) {
+                        if ($(this).val() && $(eleDate).val() && !$(eleTerm).val()) {
+                            let isCheck = validateStartEndDate($(eleDate).val(), $(this).val());
+                            if (isCheck === false) {
+                                $(this).val(null);
+                                $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-due-date')}, 'failure');
+                                return false;
+                            }
+                        }
+                    }
+                }
+                if ($(this).hasClass('table-row-value-before-tax')) {
+                    POLoadDataHandle.loadPaymentValues(this);
+                    POLoadDataHandle.loadMinusBalance();
+                }
+                if ($(this).hasClass('table-row-value-tax')) {
+                    POLoadDataHandle.loadPaymentValues(this);
+                    POLoadDataHandle.loadMinusBalance();
+                }
+            }
+        });
+
+        PODataTableHandle.$tablePayment.on('click', '.btn-select-invoice', function () {
+            POLoadDataHandle.loadModalSInvoice(this);
+        });
+
+        POLoadDataHandle.$btnSaveInvoice.on('click', function () {
+            POLoadDataHandle.loadSaveSInvoice();
+        });
+
+        PODataTableHandle.$tablePayment.on('click', '.btn-select-reconcile', function () {
+            POLoadDataHandle.loadModalSReconcile(this);
+        });
+
+        POLoadDataHandle.$btnSaveReconcile.on('click', function () {
+            POLoadDataHandle.loadSaveSReconcile();
         });
 
         // COMMON

@@ -867,10 +867,6 @@ $(function () {
            LeaseOrderLoadDataHandle.loadSaveSTerm();
         });
 
-        $('#btn-add-payment-stage').on('click', function () {
-            LeaseOrderLoadDataHandle.loadAddPaymentStage();
-        });
-
         LeaseOrderDataTableHandle.$tablePayment.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-issue-invoice, .table-row-value-tax, .table-row-value-total, .table-row-due-date', function () {
             let row = this.closest('tr');
             if ($(this).hasClass('table-row-date')) {

@@ -1264,3 +1264,9 @@ table.dataTable tr.dtrg-group th {
     text-align: left !important
 }
 /*end*/
+
+/*Width In Percentage*/
+.w-1 {
+  width: 1% !important;
+}
+/*end*/

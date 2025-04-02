@@ -5025,6 +5025,9 @@ class QuotationDataTableHandle {
                 if ($termMD.val()) {
                     hiddenLoad = "";
                 }
+                if (!$termMD.val()) {
+                    hiddenAdd = "";
+                }
                 let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
                                     <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-detail')}</span></span>
                                 </button>

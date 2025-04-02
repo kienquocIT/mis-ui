@@ -267,7 +267,7 @@ COLUMNS_SALEDATA_ACCOUNT.add_column(
         'is_foreign_key': SHEET_SALEDATA_INDUSTRY,
         'remarks': [],
         'input_attrs': {
-            'args': ['required'],
+            'args': [],
             'kwargs': {
                 'type': 'text',
             },

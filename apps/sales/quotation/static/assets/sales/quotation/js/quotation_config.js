@@ -632,7 +632,7 @@ $(function () {
                     }
                 }
             }
-            return result
+            return result;
         }
 
         function parseItemInList(data_list) {

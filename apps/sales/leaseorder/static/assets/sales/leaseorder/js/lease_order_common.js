@@ -925,7 +925,7 @@ class LeaseOrderLoadDataHandle {
                         }
                     }
                     $(toolDataEle).val(JSON.stringify(toolData));
-                    $(offsetShowEle).val(titles.join("\n"));
+                    $(offsetShowEle).val(titles.join(", "));
                     $(quantityEle).val(quantity);
                 }
             }
@@ -965,7 +965,7 @@ class LeaseOrderLoadDataHandle {
                         }
                     }
                     $(assetDataEle).val(JSON.stringify(assetData));
-                    $(offsetShowEle).val(titles.join("\n"));
+                    $(offsetShowEle).val(titles.join(", "));
                     $(quantityEle).val(assetData.length);
                 }
             }
@@ -1203,10 +1203,10 @@ class LeaseOrderLoadDataHandle {
         let dataPriceJSON = {};
         // if page detail use data products of detail else use realtime data products in dtb
         if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     if (dataDetail?.['lease_products_data']) {
                         tableData = dataDetail?.['lease_products_data'];
                     }
@@ -1232,10 +1232,10 @@ class LeaseOrderLoadDataHandle {
             });
 
             if (tableData.length === 0 && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         if (dataDetail?.['lease_products_data']) {
                             tableData = dataDetail?.['lease_products_data'];
                         }
@@ -1279,10 +1279,10 @@ class LeaseOrderLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     if (dataDetail?.['lease_costs_data']) {
                         tableData = dataDetail?.['lease_costs_data'];
                     }
@@ -1299,10 +1299,10 @@ class LeaseOrderLoadDataHandle {
             });
 
             if (tableData.length === 0 && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         if (dataDetail?.['lease_costs_data']) {
                             tableData = dataDetail?.['lease_costs_data'];
                         }
@@ -1327,10 +1327,10 @@ class LeaseOrderLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     if (dataDetail?.['lease_expenses_data']) {
                         tableData = dataDetail?.['lease_expenses_data'];
                     }
@@ -1347,10 +1347,10 @@ class LeaseOrderLoadDataHandle {
             });
 
             if (tableData.length === 0 && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         if (dataDetail?.['lease_expenses_data']) {
                             tableData = dataDetail?.['lease_expenses_data'];
                         }
@@ -1375,10 +1375,10 @@ class LeaseOrderLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     tableData = dataDetail?.['lease_payment_stage'];
                 }
             }
@@ -1393,10 +1393,10 @@ class LeaseOrderLoadDataHandle {
             });
 
             if (tableData.length === 0 && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         tableData = dataDetail?.['sale_order_payment_stage'];
                     }
                 }
@@ -1419,10 +1419,10 @@ class LeaseOrderLoadDataHandle {
         let tableData = [];
         let dataDetail = {};
         if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-            let eleDetail = $('#quotation-detail-data');
-            if (eleDetail && eleDetail.length > 0) {
-                if (eleDetail.val()) {
-                    dataDetail = JSON.parse(eleDetail.val());
+            let detailDataEle = $('#quotation-detail-data');
+            if (detailDataEle && detailDataEle.length > 0) {
+                if (detailDataEle.val()) {
+                    dataDetail = JSON.parse(detailDataEle.val());
                     tableData = dataDetail?.['lease_invoice'];
                 }
             }
@@ -1437,10 +1437,10 @@ class LeaseOrderLoadDataHandle {
             });
 
             if (tableData.length === 0 && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'put') {
-                let eleDetail = $('#quotation-detail-data');
-                if (eleDetail && eleDetail.length > 0) {
-                    if (eleDetail.val()) {
-                        dataDetail = JSON.parse(eleDetail.val());
+                let detailDataEle = $('#quotation-detail-data');
+                if (detailDataEle && detailDataEle.length > 0) {
+                    if (detailDataEle.val()) {
+                        dataDetail = JSON.parse(detailDataEle.val());
                         tableData = dataDetail?.['lease_invoice'];
                     }
                 }
@@ -3392,6 +3392,7 @@ class LeaseOrderLoadDataHandle {
             LeaseOrderLoadDataHandle.loadTableDisabled(tableCost);
             LeaseOrderLoadDataHandle.loadTableDisabled(tableExpense);
             LeaseOrderLoadDataHandle.loadTableDisabled(LeaseOrderDataTableHandle.$tablePayment);
+            LeaseOrderLoadDataHandle.loadTableDisabled(LeaseOrderDataTableHandle.$tableInvoice);
             // mask money
             $.fn.initMaskMoney2();
         }
@@ -3521,6 +3522,18 @@ class LeaseOrderLoadDataHandle {
             ele.setAttribute('disabled', 'true');
         }
         for (let ele of table[0].querySelectorAll('.table-row-supplied-by')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-total')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-before-tax')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-tax')) {
+            ele.setAttribute('readonly', 'true');
+        }
+        for (let ele of table[0].querySelectorAll('.table-row-value-total')) {
             ele.setAttribute('readonly', 'true');
         }
         LeaseOrderLoadDataHandle.$btnSavePrice[0].setAttribute('disabled', 'true');
@@ -5496,7 +5509,7 @@ class LeaseOrderDataTableHandle {
                     $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : []));
                 }
                 if (valBeforeEle) {
-                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed" && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                         valBeforeEle.removeAttribute('readonly');
                     }
                 }
@@ -5519,12 +5532,12 @@ class LeaseOrderDataTableHandle {
                     }
                 }
                 if (valTaxEle) {
-                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed" && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                         valTaxEle.removeAttribute('readonly');
                     }
                 }
                 if (valTotalEle) {
-                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed" && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                         valTotalEle.removeAttribute('readonly');
                     }
                 }
@@ -5720,7 +5733,7 @@ class LeaseOrderDataTableHandle {
                     $(termDataEle).val(JSON.stringify(data?.['term_data'] ? data?.['term_data'] : []));
                 }
                 if (totalEle) {
-                    if (!$termMD.val() || checkTax?.['check'] === "mixed") {
+                    if (!$termMD.val() || checkTax?.['check'] === "mixed" && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                         totalEle.removeAttribute('readonly');
                     }
                 }
@@ -5987,7 +6000,7 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-product-quotation-create').length && !$('#btn-add-product-group-quotation').length && !$('#btn-check-promotion').length && !$('#btn-add-shipping').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_products_data">
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_products_data">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -6027,7 +6040,7 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-expense-quotation-create').length && !$('#btn-add-labor-quotation-create').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_expenses_data">
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_expenses_data">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -6061,7 +6074,7 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-refresh-indicator').length) {
-                let html1 = `<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-refresh-indicator">${LeaseOrderLoadDataHandle.transEle.attr('data-refresh')}</button>`;
+                let html1 = `<button type="button" class="btn btn-primary btn-square" id="btn-refresh-indicator">${LeaseOrderLoadDataHandle.transEle.attr('data-refresh')}</button>`;
                 let $group = $(`<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                 ${html1}
                             </div>`);
@@ -6095,10 +6108,13 @@ class LeaseOrderDataTableHandle {
                 if ($termMD.val()) {
                     hiddenLoad = "";
                 }
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
+                if (!$termMD.val()) {
+                    hiddenAdd = "";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
                                     <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-detail')}</span></span>
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-payment-stage" data-zone="sale_order_payment_stage" ${hiddenAdd}>
+                                <button type="button" class="btn btn-primary btn-square" id="btn-add-payment-stage" data-zone="sale_order_payment_stage" ${hiddenAdd}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -6128,7 +6144,7 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-invoice').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-invoice" data-zone="sale_order_payment_stage">
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" data-zone="sale_order_payment_stage">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(

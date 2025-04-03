@@ -727,10 +727,6 @@ $(function () {
            QuotationLoadDataHandle.loadSaveSTerm();
         });
 
-        $('#btn-add-payment-stage').on('click', function () {
-            QuotationLoadDataHandle.loadAddPaymentStage();
-        });
-
         QuotationDataTableHandle.$tablePayment.on('change', '.table-row-date, .table-row-installment, .table-row-ratio, .table-row-value-before-tax, .table-row-issue-invoice, .table-row-value-tax, .table-row-value-total, .table-row-due-date', function () {
             if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order') && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');

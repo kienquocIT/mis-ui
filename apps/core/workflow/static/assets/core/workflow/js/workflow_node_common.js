@@ -807,24 +807,35 @@ class NodeDataTableHandle {
                                             data-row="${dataRow}"
                                             ${checked}
                                         >
-                                        <span class="badge badge-primary mr-2 table-row-code">${row?.['code']}</span>
-                                        <span class="badge badge-primary badge-outline table-row-title">${row?.['full_name']}</span>
                                     </div>`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="badge badge-light badge-outline">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span>`;
+                        return `<span class="table-row-code">${row?.['code']}</span>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
+                        return `<span class="table-row-title">${row?.['full_name']}</span>`;
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
+                        return `<span>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '25%',
+                    render: (data, type, row) => {
                         if (row.hasOwnProperty('role') && Array.isArray(row?.['role'])) {
                             let result = [];
-                            row?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-light badge-outline mb-1 mr-1">` + item?.['title'] + `</span>`) : null);
-                            return result.join(" ");
+                            row?.['role'].map(item => item?.['title'] ? result.push(`<span>` + item?.['title'] + `</span>`) : null);
+                            return result.join(", ");
                         }
                         return '';
                     }

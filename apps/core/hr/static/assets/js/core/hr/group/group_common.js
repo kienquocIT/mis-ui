@@ -165,44 +165,50 @@ function dataTableEmployee() {
         columns: [
             {
                 targets: 0,
+                width: '5%',
                 render: (data, type, row, meta) => {
                     return `<span class="table-row-order">${(meta.row + 1)}</span>`
                 }
             },
             {
                 targets: 1,
+                width: '15%',
                 render: (data, type, row) => {
                     return `<span class="table-row-code">${row?.['code']}</span>`
                 }
             },
             {
                 targets: 2,
+                width: '20%',
                 render: (data, type, row) => {
                     return `<span class="table-row-title">${row?.['full_name']}</span>`
                 }
             },
             {
                 targets: 3,
+                width: '20%',
                 render: (data, type, row) => {
                     if (row?.['group']?.['title']) {
-                        return `<span class="badge badge-light badge-outline table-row-group">${row?.['group']?.['title']}</span>`;
+                        return `<span>${row?.['group']?.['title']}</span>`;
                     }
                     return ``;
                 },
             },
             {
                 targets: 4,
+                width: '20%',
                 render: (data, type, row) => {
                     if (row?.role && Array.isArray(row?.['role'])) {
                         let result = [];
-                        row.role.map(item => item.title ? result.push(`<span class="badge badge-light badge-outline mb-1 mr-1">` + item.title + `</span>`) : null);
-                        return result.join(" ");
+                        row.role.map(item => item.title ? result.push(`<span>` + item.title + `</span>`) : null);
+                        return result.join(", ");
                     }
                     return '';
                 },
             },
             {
                 targets: 5,
+                width: '15%',
                 render: (data, type, row) => {
                     if (row?.['date_joined']) {
                         return moment(row?.['date_joined']).format('DD/MM/YYYY');
@@ -212,6 +218,7 @@ function dataTableEmployee() {
             },
             {
                 targets: 6,
+                width: '5%',
                 render: (data, type, row) => {
                     let role = JSON.stringify(row?.['role']).replace(/"/g, "&quot;");
                     let checked = "";
@@ -305,7 +312,7 @@ function dtbGroupHDCustom() {
         textFilter$.css('display', 'flex');
         // Check if the button already exists before appending
         if (!$('#btn-add-emp-group').length) {
-            let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-emp-group" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasExample">
+            let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-emp-group" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasExample">
                                 <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${GroupLoadDataHandle.$trans.attr('data-add-emp-group')}</span></span>
                             </button>`);
             textFilter$.append(

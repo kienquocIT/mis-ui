@@ -5,8 +5,8 @@ $(function () {
         let $boxEmployee = $('#employee_inherit_id');
         let $boxSO = $('#sale_order_id');
         let $boxLO = $('#lease_order_id');
-        let btnRefresh = $('#btn-refresh-data');
         let eleTrans = $('#app-trans-factory');
+        let eleUrls = $('#app-url-factory');
         let $table = $('#table_final_acceptance_list');
         let updateIndicatorData = {};
         let $form = $('#frm_final_acceptance_update');
@@ -52,7 +52,7 @@ $(function () {
                 columns: [
                     {
                         targets: 0,
-                        width: '12%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['acceptance_affect_by'] === 1) {
@@ -68,34 +68,69 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '12%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let faAffectBy = row?.['acceptance_affect_by'];
                             let app = '';
-                            let title = '';
-                            let code = '';
                             if (row?.['is_sale_order'] === true) {
-                                title = row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : '';
-                                code = row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : '';
+                                app = eleTrans.attr('data-sale-order');
                             }
                             if (faAffectBy === 4) {
                                 app = eleTrans.attr('data-payment');
-                                title = row?.['payment']?.['title'] ? row?.['payment']?.['title'] : '';
-                                code = row?.['payment']?.['code'] ? row?.['payment']?.['code'] : '';
                             }
                             if (faAffectBy === 3) {
                                 app = eleTrans.attr('data-delivery');
-                                title = row?.['delivery_sub']?.['title'] ? row?.['delivery_sub']?.['title'] : '';
-                                code = row?.['delivery_sub']?.['code'] ? row?.['delivery_sub']?.['code'] : '';
                             }
-                            return `<span class="badge badge-light badge-outline">${app}</span>
-                                    <span class="badge badge-light">${code}</span>
-                                    <span class="table-row-title">${title}</span>`;
+                            return `<span>${app}</span>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '15%',
+                        width: '10%',
+                        render: (data, type, row) => {
+                            let faAffectBy = row?.['acceptance_affect_by'];
+                            let code = '';
+                            let link = '#';
+                            if (row?.['is_sale_order'] === true) {
+                                code = row?.['sale_order']?.['code'] ? row?.['sale_order']?.['code'] : '';
+                                link = eleUrls.attr('data-sale-order').format_url_with_uuid(row?.['sale_order']?.['id']);
+                            }
+                            if (faAffectBy === 4) {
+                                code = row?.['payment']?.['code'] ? row?.['payment']?.['code'] : '';
+                                link = eleUrls.attr('data-payment').format_url_with_uuid(row?.['payment']?.['id']);
+                            }
+                            if (faAffectBy === 3) {
+                                code = row?.['delivery_sub']?.['code'] ? row?.['delivery_sub']?.['code'] : '';
+                                link = eleUrls.attr('data-delivery').format_url_with_uuid(row?.['delivery_sub']?.['id']);
+                            }
+                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${code}</a>`;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        width: '10%',
+                        render: (data, type, row) => {
+                            let faAffectBy = row?.['acceptance_affect_by'];
+                            let title = '';
+                            let link = '#';
+                            if (row?.['is_sale_order'] === true) {
+                                title = row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : '';
+                                link = eleUrls.attr('data-sale-order').format_url_with_uuid(row?.['sale_order']?.['id']);
+                            }
+                            if (faAffectBy === 4) {
+                                title = row?.['payment']?.['title'] ? row?.['payment']?.['title'] : '';
+                                link = eleUrls.attr('data-payment').format_url_with_uuid(row?.['payment']?.['id']);
+                            }
+                            if (faAffectBy === 3) {
+                                title = row?.['delivery_sub']?.['title'] ? row?.['delivery_sub']?.['title'] : '';
+                                link = eleUrls.attr('data-delivery').format_url_with_uuid(row?.['delivery_sub']?.['id']);
+                            }
+                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${title}</a>`;
+                        }
+                    },
+                    {
+                        targets: 4,
+                        width: '12%',
                         render: (data, type, row) => {
                             if (row?.['acceptance_affect_by'] === 1) {
                                 return `<span class="mask-money table-row-planed-value" data-init-money="${parseFloat(row?.['indicator_value'])}"></span>`;
@@ -105,8 +140,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 3,
-                        width: '15%',
+                        targets: 5,
+                        width: '12%',
                         render: (data, type, row) => {
                             let dataFA = {};
                             if ($eleDataFact.attr('data-detail')) {
@@ -156,8 +191,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 4,
-                        width: '15%',
+                        targets: 6,
+                        width: '12%',
                         render: (data, type, row) => {
                             if (row?.['acceptance_affect_by'] === 1) {
                                 return `<span class="mask-money table-row-different-value" data-init-money="${parseFloat(row?.['different_value'])}"></span>`;
@@ -167,8 +202,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 5,
-                        width: '6%',
+                        targets: 7,
+                        width: '5%',
                         render: (data, type, row) => {
                             if (row?.['acceptance_affect_by'] === 1) {
                                 let rate = parseInt(row?.['rate_value'].toFixed(1));
@@ -179,8 +214,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 6,
-                        width: '25%',
+                        targets: 8,
+                        width: '15%',
                         render: (data, type, row) => {
                             let dataFA = {};
                             if ($eleDataFact.attr('data-detail')) {
@@ -190,7 +225,7 @@ $(function () {
                             if (dataFA?.['system_status'] === 3) {
                                 disabled = "disabled"
                             }
-                            return `<input class="form-control table-row-remark" value="${row?.['remark'] ? row?.['remark'] : ''}" ${disabled}>`;
+                            return `<textarea class="form-control table-row-remark" rows="2" ${disabled}>${row?.['remark'] ? row?.['remark'] : ''}</textarea>`;
                         }
                     },
                 ],

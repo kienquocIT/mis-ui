@@ -115,7 +115,9 @@ function initTableZone(data) {
                 let newIndex = api.row(row).index()
                 data['order'] = newIndex + 1
             }
-            dtbZoneHDCustom();
+            if ($('#form-create_workflow').attr('data-method').toLowerCase() !== 'get') {
+                dtbZoneHDCustom();
+            }
         },
         rowCallback: function (row, data) {
             // handle onclick btn
@@ -191,7 +193,7 @@ function dtbZoneHDCustom() {
             if (!$('#btn-add-zone').length) {
                 let $group = $(`<button
                                         type="button"
-                                        class="btn btn-outline-secondary btn-floating"
+                                        class="btn btn-primary btn-square"
                                         id="btn-add-zone"
                                         data-bs-toggle="modal"
                                         data-bs-target="#add_zone"

@@ -285,8 +285,9 @@
                                             </span>
                                         </div>
                                         <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="outFormCanvas" aria-labelledby="outFormCanvas">
-                                            <div class="offcanvas-header">
-                                                <h5 id="offcanvasRightLabel">{% trans 'Add Employee' %}</h5>
+                                            <div class="modal-header">
+                                                <h5><b>{% trans 'Add Employee' %}</b></h5>
+                                                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                             </div>
                                             <div class="offcanvas-body form-group">
                                                 <table
@@ -297,9 +298,11 @@
                                                 >
                                                     <thead>
                                                     <tr class="bg-light">
-                                                        <th class="w-30">{% trans 'Employee' %}</th>
-                                                        <th class="w-30">{% trans 'Group' %}</th>
-                                                        <th class="w-40">{% trans 'Role' %}</th>
+                                                        <th class="w-5"></th>
+                                                        <th class="w-10">{% trans 'Employee code' %}</th>
+                                                        <th class="w-20">{% trans 'Employee name' %}</th>
+                                                        <th class="w-20">{% trans 'Group' %}</th>
+                                                        <th class="w-25">{% trans 'Role' %}</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -652,6 +655,7 @@
 
 {% block dataHiddenGroup %}
     <input type="text" id="app-url-factory"
+           data-application="{% url "TenantApplicationListAPI" %}"
            data-employees="{% url 'EmployeeListAPI' %}"
            data-node="{% url 'NodeSystemListAPI' %}"
            data-app-property="{% url 'ApplicationPropertyListAPI' %}"

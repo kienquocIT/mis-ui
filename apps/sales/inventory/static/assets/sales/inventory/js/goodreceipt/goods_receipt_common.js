@@ -2047,7 +2047,7 @@ class GRDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-edit-product-good-receipt').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-edit-product-good-receipt" data-bs-toggle="offcanvas" data-bs-target="#productCanvas">
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-edit-product-good-receipt" data-bs-toggle="offcanvas" data-bs-target="#productCanvas">
                                     <span><span class="icon"><span class="feather-icon"><i class="far fa-edit"></i></span></span><span>${GRLoadDataHandle.transEle.attr('data-edit')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -2068,7 +2068,7 @@ class GRDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-manage-lot').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-manage-lot">
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-manage-lot">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${GRLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -2093,7 +2093,7 @@ class GRDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-manage-serial').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary btn-floating" id="btn-add-manage-serial">
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-manage-serial">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${GRLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(

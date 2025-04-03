@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from apps.core.fimport.columns_template import ResolveColumnsFImport, SHEET_SALEDATA_PRICE_TAX
 from apps.core.fimport.columns_template.app_name import (
     SHEET_SALEDATA_PRODUCT_UOMGROUP, SHEET_SALEDATA_PRODUCT_PRODUCT_TYPE, SHEET_SALEDATA_PRODUCT_PRODUCT_CATEGORY,
-    SHEET_SALEDATA_PRODUCT_UOM, SHEET_SALEDATA_PRODUCT,
+    SHEET_SALEDATA_PRODUCT_UOM, SHEET_SALEDATA_PRODUCT, SHEET_SALEDATA_PRODUCT_MANUFACTURER,
 )
 
 COLUMNS_SALEDATA_PRODUCT_UOMGROUP = ResolveColumnsFImport(
@@ -270,6 +270,62 @@ COLUMNS_SALEDATA_PRODUCT_UOM.add_column(
     }
 )
 
+COLUMNS_SALEDATA_PRODUCT_MANUFACTURER = ResolveColumnsFImport(
+    sheet_name=SHEET_SALEDATA_PRODUCT_MANUFACTURER,
+    app_id='d6e7d038-aef7-4e4e-befd-b13895974ec5',
+    url_name='ProductManufacturerImportAPI',
+    template_link='fimport/template/import-saledata-product-manufacturer.xlsx',
+    validate={},
+)
+
+COLUMNS_SALEDATA_PRODUCT_MANUFACTURER.add_column(
+    name=_('Code'), data={
+        'name': _('Code'),
+        'input_name': 'code',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+                'minlength': 1,
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_MANUFACTURER.add_column(
+    name=_('Title'), data={
+        'name': _('Title'),
+        'input_name': 'title',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+                'minlength': 1,
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT_MANUFACTURER.add_column(
+    name=_('Remarks'), data={
+        'name': _('Remarks'),
+        'input_name': 'description',
+        'type': 'string',
+        'remarks': [],
+        'input_attrs': {
+            'args': [],
+            'kwargs': {
+                'type': 'text',
+                'maxlength': 200,
+            },
+        },
+    }
+)
+
 COLUMNS_SALEDATA_PRODUCT = ResolveColumnsFImport(
     sheet_name=SHEET_SALEDATA_PRODUCT,
     app_id='a8badb2e-54ff-4654-b3fd-0d2d3c777538',
@@ -388,6 +444,21 @@ COLUMNS_SALEDATA_PRODUCT.add_column(
         'remarks': [],
         'input_attrs': {
             'args': ['required'],
+            'kwargs': {
+                'type': 'text',
+            },
+        },
+    }
+)
+
+COLUMNS_SALEDATA_PRODUCT.add_column(
+    name=_('Manufacturer'), data={
+        'name': _('Manufacturer'),
+        'input_name': 'general_manufacturer',
+        'type': 'string',
+        'is_foreign_key': SHEET_SALEDATA_PRODUCT_MANUFACTURER,
+        'remarks': [],
+        'input_attrs': {
             'kwargs': {
                 'type': 'text',
             },
@@ -575,17 +646,23 @@ COLUMNS_SALEDATA_PRODUCT.add_column(
     name=_('Inventory Valuation Method'), data={
         'name': _('Inventory Valuation Method'),
         'input_name': 'valuation_method',
-        'type': 'string',
+        'type': 'select',
+        'data_list': [
+                (0, _('FIFO')),
+                (1, _('weighted average')),
+                # (2, _('Serial number'))
+        ],
+        'select2_config': {
+            'allowClear': True,
+        },
         'remarks': [
             _(
                 "Valuation method selection, chosen from: 0 (FIFO), 1 (weighted average), 2 (Specific identification method)"
-            ),
-        ],
+            ),],
         'input_attrs': {
             'args': ['required'],
             'kwargs': {
                 'type': 'text',
-                'pattern': '[0-1-2]'
             },
         },
     }

@@ -193,33 +193,36 @@
                                                 <i class="fa-solid fa-unlock"></i>
                                             </span>
                                         </button>
-                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                            <span id="tooltip-btn-save-zone" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Save edit zone' %}">
-                                                <button
-                                                        class="hidden btn-action-wf btn btn-outline-primary btn-square"
-                                                        type="submit"
-                                                        form=""
-                                                        data-value=""
-                                                        id="idxSaveInZoneWF"
-                                                ><i class="fa-solid fa-floppy-disk"></i></button>
-                                            </span>
-                                            <span id="tooltip-btn-save-zone-approve" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Save edit zone and approve' %}">
-                                                <button
-                                                        class="hidden btn-action-wf btn btn-outline-primary btn-square"
-                                                        type="submit"
-                                                        form=""
-                                                        data-wf-action=""
-                                                        id="idxSaveInZoneWFThenNext"
-                                                ><i class="fa-solid fa-check-double"></i></button>
-                                            </span>
-                                            <span id="tooltip-btn-approve" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Approval' %}">
-                                                <button
-                                                        type="button"
-                                                        class="hidden btn-action-wf btn btn-outline-primary btn-square"
-                                                        data-value=""
-                                                        id="btnMainApprove"
-                                                ><i class="fas fa-check"></i></button>
-                                            </span>
+                                        <div class="d-flex justify-content-between">
+                                            <button
+                                                    class="hidden btn-action-wf btn btn-outline-primary mr-1"
+                                                    type="submit"
+                                                    form=""
+                                                    data-value=""
+                                                    id="idxSaveInZoneWF"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom"
+                                                    title="{% trans 'Save edit zone' %}"
+                                            >{% trans 'Save' %}</button>
+                                            <button
+                                                    class="hidden btn-action-wf btn btn-outline-primary mr-1"
+                                                    type="submit"
+                                                    form=""
+                                                    data-wf-action=""
+                                                    id="idxSaveInZoneWFThenNext"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom"
+                                                    title="{% trans 'Save edit zone and approve' %}"
+                                            >{% trans 'Save and approve' %}</button>
+                                            <button
+                                                    type="button"
+                                                    class="hidden btn-action-wf btn btn-primary"
+                                                    data-value=""
+                                                    id="btnMainApprove"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom"
+                                                    title="{% trans 'Approval' %}"
+                                            >{% trans 'Approve' %}</button>
                                         </div>
                                         <div class="dropdown hidden">
                                             <button
@@ -526,8 +529,10 @@
             })
 
             //
-            $('button[type=submit]').on('click', function () {
+            $('button[type=submit]').on('click', function (e) {
                 let frmID = $(this).attr('form');
+                const avtiveElement = $(document.activeElement).closest('.dataTables_filter').length
+                if (avtiveElement === 1) return false
                 if (frmID) {
                     $(this).prop('disabled', true);
                     setTimeout(() => $(this).prop('disabled', false), 1000);

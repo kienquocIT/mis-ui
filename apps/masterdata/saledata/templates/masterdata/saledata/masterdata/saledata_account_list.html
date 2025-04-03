@@ -32,16 +32,17 @@
         <div class="col-12 col-md-10 col-lg-10">
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="section-account-type" role="tabpanel">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-new-account-type">
-                        <button class="btn btn-sm btn-outline-primary btn-modal">
-                            <span>
-                                <span>{% trans 'Add' %}</span>
-                                <span class="icon">
-                                    <i class="fa-solid fa-plus"></i>
-                                </span>
-                            </span>
-                        </button>
-                    </a>
+{#                    Ko cho nhập account type #}
+{#                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-new-account-type">#}
+{#                        <button class="btn btn-sm btn-outline-primary btn-modal">#}
+{#                            <span>#}
+{#                                <span>{% trans 'Add' %}</span>#}
+{#                                <span class="icon">#}
+{#                                    <i class="fa-solid fa-plus"></i>#}
+{#                                </span>#}
+{#                            </span>#}
+{#                        </button>#}
+{#                    </a>#}
                     <table id="datatable-account-type-list" class="table nowrap w-100"
                            data-url="{% url "AccountTypeListAPI" %}"
                            data-method="GET">

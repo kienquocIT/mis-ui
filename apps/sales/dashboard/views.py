@@ -12,7 +12,7 @@ from apps.shared.msg import SaleMsg
 class DashboardGeneralList(View):
     @mask_view(
         auth_require=True,
-        template='sales/dashboard/dashboard_general_new.html',
+        template='sales/dashboard/dashboard_general.html',
         breadcrumb='DASHBOARD_GENERAL_LIST_PAGE',
         menu_active='id_menu_dashboard_general',
     )
@@ -28,7 +28,7 @@ class DashboardGeneralList(View):
 class DashboardPipelineList(View):
     @mask_view(
         auth_require=True,
-        template='sales/dashboard/dashboard_pipeline_new.html',
+        template='sales/dashboard/dashboard_pipeline.html',
         breadcrumb='DASHBOARD_PIPELINE_LIST_PAGE',
         menu_active='id_menu_dashboard_pipeline',
     )

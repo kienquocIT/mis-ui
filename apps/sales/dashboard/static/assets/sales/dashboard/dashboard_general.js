@@ -1,5 +1,28 @@
 $(document).ready(function () {
-    const HEIGHT = 280
+    const CHART_COLORS = {
+        blue: 'rgb(54, 162, 235)',
+        red: 'rgb(255, 99, 132)',
+        orange: 'rgb(255, 159, 64)',
+        yellow: 'rgb(255, 205, 86)',
+        green: 'rgb(75, 192, 96)',
+        purple: 'rgb(153, 102, 255)',
+        grey: 'rgb(201, 203, 207)',
+        custom1: 'rgb(58, 110, 31)',
+        custom2: 'rgb(194, 0, 35)',
+        custom3: 'rgb(13, 46, 118)',
+    }
+    const CHART_COLORS_OPACITY = {
+        blue: 'rgba(54, 162, 235, 0.6)',
+        red: 'rgba(255, 99, 132, 0.6)',
+        orange: 'rgba(255, 159, 64, 0.6)',
+        yellow: 'rgba(255, 205, 86, 0.6)',
+        green: 'rgba(75, 192, 96, 0.6)',
+        purple: 'rgba(153, 102, 255, 0.6)',
+        grey: 'rgba(201, 203, 207, 0.6)',
+        custom1: 'rgba(58, 110, 31, 0.6)',
+        custom2: 'rgba(194, 0, 35, 0.6)',
+        custom3: 'rgba(13, 46, 118, 0.6)'
+    }
     const scriptUrlEle = $('#script-url')
     const trans_script = $('#trans-script')
     const moneyDisplayEle = $('#money-display')
@@ -10,42 +33,49 @@ $(document).ready(function () {
     let period_selected_Setting = current_period
     let fiscal_year_Setting = current_period?.['fiscal_year']
     let space_month_Setting = current_period?.['space_month']
-    let COMPANY_CURRENT_REVENUE = null
-    let COMPANY_CURRENT_PROFIT = null
 
     moneyDisplayEle.on('change', function () {
         COMPANY_CURRENT_REVENUE = null
         COMPANY_CURRENT_PROFIT = null
-        UpdateRevenueChart()
-        UpdateProfitChart()
-        UpdateTopSellersChart()
-        UpdateTopCustomersChart()
-        UpdateTopCategoriesChart()
-        UpdateTopProductsChart()
+        DrawRevenueProfitChart(false)
+        DrawTopSaleCustomerChart(false)
     })
 
     moneyRoundEle.on('change', function () {
-        UpdateRevenueChart()
-        UpdateProfitChart()
-        UpdateTopSellersChart()
-        UpdateTopCustomersChart()
-        UpdateTopCategoriesChart()
-        UpdateTopProductsChart()
+        $(this).val($(this).val() || 1);
+        DrawRevenueProfitChart(false)
+        DrawTopSaleCustomerChart(false)
     })
 
-    function GetQuarterFromMonth(month) {
-        if ([1,2,3].includes(month)) {
-            return 1
+    function GetQuarter(dateApproved, period) {
+        let sub_current = null
+        for (let i=0; i < period?.['subs'].length; i++) {
+            let sub = period?.['subs'][i]
+            let start_date = sub?.['start_date'];
+            let end_date = sub?.['end_date'];
+
+            if (!start_date || !end_date) return false;
+
+            let approvedDate = new Date(dateApproved);
+            let startDate = new Date(start_date);
+            let endDate = new Date(end_date);
+
+            if (startDate <= approvedDate && approvedDate <= endDate) {
+                sub_current = sub
+            }
         }
-        if ([4,5,6].includes(month)) {
-            return 2
+        if (sub_current) {
+            if ([1, 2, 3].includes(sub_current?.['order'])) {
+                return 1
+            } else if ([4, 5, 6].includes(sub_current?.['order'])) {
+                return 2
+            } else if ([7, 8, 9].includes(sub_current?.['order'])) {
+                return 3
+            } else if ([10, 11, 12].includes(sub_current?.['order'])) {
+                return 4
+            }
         }
-        if ([7,8,9].includes(month)) {
-            return 3
-        }
-        if ([10,11,12].includes(month)) {
-            return 4
-        }
+        return null
     }
 
     function getMonthOrder(space_month) {
@@ -79,45 +109,27 @@ $(document).ready(function () {
             period_selected_Setting = SelectDDControl.get_data_from_idx(periodFiscalYearFilterEle, periodFiscalYearFilterEle.val())
             fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
             space_month_Setting = period_selected_Setting?.['space_month']
-            CallAjaxRevenueChart()
-            CallAjaxProfitChart()
-            topSellersTimeEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
-            topSellersNumberEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
-            topCustomersTimeEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
-            topCustomersNumberEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
-            topCategoriesTimeEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
-            topCategoriesNumberEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
-            topProductsTimeEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
-            topProductsNumberEle.prop('disabled', fiscal_year_Setting !== new Date().getFullYear())
+            DrawRevenueProfitChart(false)
+            DrawTopSaleCustomerChart(false)
+            DrawTopCategoryProductChart(false)
         })
     }
 
-    function Check_in_period(dateApproved, period_selected_Setting) {
-        if (Object.keys(period_selected_Setting).length === 0) {
-            period_selected_Setting = current_period
-            fiscal_year_Setting = current_period?.['fiscal_year']
-            space_month_Setting = current_period?.['space_month']
-        }
-        const month = dateApproved.getMonth() + 1
-        const year = dateApproved.getFullYear()
-        const space_month = period_selected_Setting?.['space_month']
-        const fiscal_year = period_selected_Setting?.['fiscal_year']
-        let list_month_period = []
-        for (let i = 0; i < 12; i++) {
-            let period_month = i + space_month + 1
-            let period_year = fiscal_year
-            if (period_month > 12) {
-                period_month = period_month - 12
-                period_year = fiscal_year + 1
-            }
-            list_month_period.push(period_month.toString() + period_year.toString())
-        }
-        return list_month_period.includes(month.toString() + year.toString());
+    function Check_in_period(dateApproved, period) {
+        let start_date = period?.['start_date'];
+        let end_date = period?.['end_date'];
+
+        if (!start_date || !end_date) return false;
+
+        let approvedDate = new Date(dateApproved);
+        let startDate = new Date(start_date);
+        let endDate = new Date(end_date);
+
+        return startDate <= approvedDate && approvedDate <= endDate;
     }
 
-    function GetCurrentSub(date) {
-        let period_selected_Setting = SelectDDControl.get_data_from_idx(periodFiscalYearFilterEle, periodFiscalYearFilterEle.val())
-        let subs = period_selected_Setting?.['subs'] ? period_selected_Setting?.['subs'] : []
+    function GetSub(date, period) {
+        let subs = period?.['subs'] ? period?.['subs'] : []
         for (let i=subs.length - 1; i >= 0; i--) {
             if (new Date(date) >= new Date(subs[i]?.['start_date'])) {
                 return subs[i]?.['order']
@@ -126,771 +138,82 @@ $(document).ready(function () {
     }
 
     $('.large-view-btn').on('click', function () {
-        $('.view-space').each(function () {
-            $(this).attr('class', 'view-space col-12 col-md-6 col-lg-4 mt-3')
-        })
-        $(this).closest('.view-space').attr('class', 'view-space col-12 col-md-8 col-lg-8 mt-3')
-
+        if ($(this).closest('.view-space').attr('class') === 'view-space col-6 col-md-6 col-lg-6 mt-3') {
+            $(this).closest('.view-space').attr('class', 'view-space col-12 col-md-12 col-lg-12 mt-3')
+        }
+        else {
+            $(this).closest('.view-space').attr('class', 'view-space col-6 col-md-6 col-lg-6 mt-3')
+        }
     })
 
-    // Revenue chart
+    // common of Revenue and Profit
 
-    const revenueGroupEle = $('#revenue-group')
-    const revenueViewTypeEle = $('#revenue-view-type')
+    let revenueprofit_DF = []
     let revenue_chart = null
-    let revenue_DF = []
     let revenue_expected_DF = []
-    let revenue_expected_detail_DF = []
-
-    function LoadRevenueGroup(data) {
-        revenueGroupEle.initSelect2({
-            allowClear: true,
-            ajax: {
-                url: revenueGroupEle.attr('data-url'),
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]
-            },
-            data: (data ? data : null),
-            keyResp: 'group_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            UpdateRevenueChart()
-        })
-    }
-
-    function CombineRevenueChartDataPeriod(group_filter, show_billion, titleY = 'Revenue', titleX = 'Month', chart_title = '') {
-        const cast_billion = show_billion ? 1e9 : 1e6
-        let revenue_chart_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        for (const item of revenue_DF) {
-            const group_id = item?.['group_inherit_id']
-            const dateApproved = new Date(item?.['date_approved'])
-            if (Check_in_period(dateApproved, period_selected_Setting)) {
-                if (!group_filter) {
-                    revenue_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
-                } else {
-                    if (group_id === group_filter) {
-                        revenue_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
-                    }
-                }
-            }
-        }
-
-        let revenue_expected_data = []
-        if (group_filter) {
-            let group_found_data = revenue_expected_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
-            if (group_found_data) {
-                let group_expected_data = group_found_data?.['group_month_target']
-                for (let i = 0; i < group_expected_data.length; i++) {
-                    revenue_expected_data.push(group_expected_data[i] / cast_billion)
-                }
-            }
-            else {
-                revenue_expected_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            }
-        }
-        else {
-            for (let i = 0; i < revenue_expected_DF.length; i++) {
-                revenue_expected_data.push(revenue_expected_DF[i] / cast_billion)
-            }
-        }
-
-        let series_data = [
-            {name: "Expected", data: revenue_expected_data},
-            {name: "Reality", data: revenue_chart_data}
-        ]
-        if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1 - space_month_Setting; i < 12; i++) {
-                revenue_chart_data[i] = null;
-            }
-            series_data = [
-                {name: "Expected", data: revenue_expected_data},
-                {name: "Reality", data: revenue_chart_data}
-            ]
-        }
-
-        COMPANY_CURRENT_REVENUE = COMPANY_CURRENT_REVENUE === null ? (revenue_chart_data[GetCurrentSub(new Date().toString()) - 1] * cast_billion) : COMPANY_CURRENT_REVENUE
-        $('#current-revenue').attr('data-init-money', COMPANY_CURRENT_REVENUE)
-        $.fn.initMaskMoney2()
-
-        return {
-            series: series_data,
-            chart: {
-                height: HEIGHT,
-                type: 'area',
-                dropShadow: {
-                    enabled: true,
-                    color: '#000',
-                    top: 18,
-                    left: 7,
-                    blur: 10,
-                    opacity: 0.2
-                },
-                toolbar: {
-                    show: false
-                }
-            },
-            colors: ['#ADC6F4', '#417DDC'],
-            dataLabels: {
-                enabled: false,
-            },
-            stroke: {
-                curve: 'smooth'
-            },
-            title: {
-                text: chart_title,
-                align: 'left'
-            },
-            grid: {
-                borderColor: '#e7e7e7',
-                row: {
-                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                    opacity: 0
-                },
-            },
-            markers: {
-                size: 5
-            },
-            xaxis: {
-                categories: getMonthOrder(space_month_Setting),
-                title: {
-                    text: titleX
-                }
-            },
-            yaxis: {
-                title: {
-                    text: titleY
-                },
-                labels: {
-                    formatter: function (val) {
-                        if (val) {
-                            return val.toFixed(parseInt(moneyRoundEle.val()))
-                        } else {
-                            return val
-                        }
-                    }
-                }
-                // min: 5,
-                // max: 40
-            },
-            legend: {
-                position: 'top',
-                horizontalAlign: 'right',
-                floating: true,
-                offsetY: -25,
-                offsetX: -5
-            },
-            tooltip: {
-                theme: 'dark',
-                x: {
-                    show: true
-                },
-                y: {
-                    show: true,
-                }
-            },
-        };
-    }
-
-    function CombineRevenueChartDataAccumulated(group_filter, show_billion, titleY = 'Revenue', titleX = 'Month', chart_title = '') {
-        const cast_billion = show_billion ? 1e9 : 1e6
-        let revenue_chart_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        for (const item of revenue_DF) {
-            const group_id = item?.['group_inherit_id']
-            const dateApproved = new Date(item?.['date_approved']);
-            if (Check_in_period(dateApproved, period_selected_Setting)) {
-                if (!group_filter) {
-                    revenue_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
-                } else {
-                    if (group_id === group_filter) {
-                        revenue_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
-                    }
-                }
-            }
-        }
-
-        for (let i = 0; i < revenue_chart_data.length; i++) {
-            let last_sum = 0
-            if (i > 0) {
-                last_sum = revenue_chart_data[i - 1]
-            }
-            revenue_chart_data[i] += last_sum
-        }
-
-        let revenue_expected_data = []
-        if (group_filter) {
-            let group_found_data = revenue_expected_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
-            if (group_found_data) {
-                let group_expected_data = group_found_data?.['group_month_target']
-                for (let i = 0; i < group_expected_data.length; i++) {
-                    revenue_expected_data.push(group_expected_data[i] / cast_billion)
-                }
-            }
-            else {
-                revenue_expected_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            }
-        }
-        else {
-            for (let i = 0; i < revenue_expected_DF.length; i++) {
-                revenue_expected_data.push(revenue_expected_DF[i] / cast_billion)
-            }
-        }
-
-        for (let i = 0; i < revenue_expected_data.length; i++) {
-            let last_sum = 0
-            if (i > 0) {
-                last_sum = revenue_expected_data[i - 1]
-            }
-            revenue_expected_data[i] += last_sum
-        }
-
-        let series_data = [
-            {name: "Expected", data: revenue_expected_data},
-            {name: "Reality", data: revenue_chart_data}
-        ]
-        if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1 - space_month_Setting; i < 12; i++) {
-                revenue_chart_data[i] = null;
-            }
-            series_data = [
-                {name: "Expected", data: revenue_expected_data},
-                {name: "Reality", data: revenue_chart_data}
-            ]
-        }
-
-        return {
-            series: series_data,
-            chart: {
-                height: HEIGHT,
-                type: 'area',
-                dropShadow: {
-                    enabled: true,
-                    color: '#000',
-                    top: 18,
-                    left: 7,
-                    blur: 10,
-                    opacity: 0.2
-                },
-                toolbar: {
-                    show: false
-                }
-            },
-            colors: ['#ADC6F4', '#417DDC'],
-            dataLabels: {
-                enabled: false,
-            },
-            stroke: {
-                curve: 'smooth'
-            },
-            title: {
-                text: chart_title,
-                align: 'left'
-            },
-            grid: {
-                borderColor: '#e7e7e7',
-                row: {
-                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                    opacity: 0
-                },
-            },
-            markers: {
-                size: 5
-            },
-            xaxis: {
-                categories: getMonthOrder(space_month_Setting),
-                title: {
-                    text: titleX
-                }
-            },
-            yaxis: {
-                title: {
-                    text: titleY
-                },
-                labels: {
-                    formatter: function (val) {
-                        if (val) {
-                            return val.toFixed(parseInt(moneyRoundEle.val()))
-                        } else {
-                            return val
-                        }
-                    }
-                }
-                // min: 5,
-                // max: 40
-            },
-            legend: {
-                position: 'top',
-                horizontalAlign: 'right',
-                floating: true,
-                offsetY: -25,
-                offsetX: -5
-            },
-            tooltip: {
-                theme: 'dark',
-                x: {
-                    show: true
-                },
-                y: {
-                    show: true,
-                }
-            },
-        };
-    }
-
-    function InitRevenueChart() {
-        const group = revenueGroupEle.val()
-        const calculate_type = revenueViewTypeEle.val()
-        const isBillionChecked = moneyDisplayEle.val() === '1'
-        const options = calculate_type === '0' ? CombineRevenueChartDataPeriod(
-            group,
-            isBillionChecked
-        ) : CombineRevenueChartDataAccumulated(
-            group,
-            isBillionChecked
-        )
-        revenue_chart = new ApexCharts(document.querySelector("#revenue_chart"), options);
-        revenue_chart.render();
-    }
-
-    function UpdateRevenueChart() {
-        const group = revenueGroupEle.val()
-        const calculate_type = revenueViewTypeEle.val()
-        const isBillionChecked = moneyDisplayEle.val() === '1'
-        const options = calculate_type === '0' ? CombineRevenueChartDataPeriod(
-            group,
-            isBillionChecked,
-        ) : CombineRevenueChartDataAccumulated(
-            group,
-            isBillionChecked
-        )
-        revenue_chart.updateOptions(options)
-    }
-
-    function CallAjaxRevenueChart(is_init=false) {
-        let revenue_chart_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-report-revenue-profit-list'),
-            data: {},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('report_revenue_list')) {
-                    return data?.['report_revenue_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            })
-
-        let company_revenue_plan_list_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-company-revenue-plan-list'),
-            data: {},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
-                    for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
-                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === parseInt(fiscal_year_Setting)) {
-                            return data?.['revenue_plan_list'][i]
-                        }
-                    }
-                }
-                return [];
-            },
-            (errs) => {
-                console.log(errs);
-            })
-
-        Promise.all([revenue_chart_ajax, company_revenue_plan_list_ajax]).then(
-            (results) => {
-                revenue_DF = results[0] ? results[0] : [];
-                revenue_expected_DF = results[1]?.['company_month_target'] ? results[1]?.['company_month_target'] : [];
-                revenue_expected_detail_DF = results[1]?.['company_month_target_detail'] ? results[1]?.['company_month_target_detail'] : [];
-
-                period_selected_Setting = results[1]?.['period_mapped'] ? results[1]?.['period_mapped'] : {}
-                fiscal_year_Setting = period_selected_Setting ? period_selected_Setting?.['fiscal_year'] : null
-                space_month_Setting = period_selected_Setting ? period_selected_Setting?.['space_month'] : null
-                // LoadPeriod(period_selected_Setting)
-                if (is_init) {
-                    InitRevenueChart()
-                }
-                else {
-                    UpdateRevenueChart()
-                }
-                $('#revenue-spinner').prop('hidden', true)
-            })
-    }
-
-    revenueViewTypeEle.on('change', function () {
-        UpdateRevenueChart()
-    })
-
-    $('#reload-revenue-data-btn').on('click', function () {
-        $('#revenue-spinner').prop('hidden', false)
-        CallAjaxRevenueChart()
-        $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
-    })
-
-    // Profit chart
-
-    const profitGroupEle = $('#profit-group')
-    const profitTypeEle = $('#profit-type')
-    const profitViewTypeEle = $('#profit-view-type')
     let profit_chart = null
-    let profit_chart_DF = []
     let profit_expected_DF = []
-    let profit_expected_detail_DF = []
-    let profit_type_DF = profitTypeEle.val()
+    let profit_expected_type = null
+    let COMPANY_CURRENT_REVENUE = null
+    let COMPANY_CURRENT_PROFIT = null
 
-    function LoadProfitGroup(data) {
-        profitGroupEle.initSelect2({
-            allowClear: true,
-            ajax: {
-                url: profitGroupEle.attr('data-url'),
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]
-            },
-            data: (data ? data : null),
-            keyResp: 'group_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            UpdateProfitChart()
-        })
-    }
-
-    function CombineProfitChartDataPeriod(group_filter, show_billion, profit_type='gross_profit', titleY = 'Profit', titleX = 'Month', chart_title = '') {
-        const cast_billion = show_billion ? 1e9 : 1e6
-        let profit_chart_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        for (const item of profit_chart_DF) {
-            const group_id = item?.['group_inherit_id']
-            const dateApproved = new Date(item?.['date_approved'])
-            if (Check_in_period(dateApproved, period_selected_Setting)) {
-                if (!group_filter) {
-                    profit_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
-                } else {
-                    if (group_id === group_filter) {
-                        profit_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
-                    }
-                }
-            }
-        }
-
-        let profit_expected_DF_copy = [...profit_expected_DF]  //create a copy
-        if (profit_type_DF + (profitTypeEle.val() === '1' ? 1 : 0) === 1) {
-            profit_expected_DF_copy = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        }
-        let profit_expected_data = []
-        if (group_filter) {
-            let group_found_data = profit_expected_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
-            if (group_found_data) {
-                let group_expected_data = group_found_data?.['group_month_profit_target']
-                for (let i = 0; i < group_expected_data.length; i++) {
-                    profit_expected_data.push(group_expected_data[i] / cast_billion)
-                }
-            }
-            else {
-                profit_expected_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            }
-        }
-        else {
-            for (let i = 0; i < profit_expected_DF_copy.length; i++) {
-                profit_expected_data.push(profit_expected_DF_copy[i] / cast_billion)
-            }
-        }
-
-        let series_data = [
-            {name: "Expected", data: profit_expected_data},
-            {name: "Reality", data: profit_chart_data}
-        ]
-        if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1 - space_month_Setting; i < 12; i++) {
-                profit_chart_data[i] = null;
-            }
-            series_data = [
-                {name: "Expected", data: profit_expected_data},
-                {name: "Reality", data: profit_chart_data}
-            ]
-        }
-
-        COMPANY_CURRENT_PROFIT = COMPANY_CURRENT_PROFIT === null ? (profit_chart_data[GetCurrentSub(new Date().toString()) - 1] * cast_billion) : COMPANY_CURRENT_PROFIT
-        $('#current-profit').attr('data-init-money', COMPANY_CURRENT_PROFIT)
-        $.fn.initMaskMoney2()
-
+    function RevenueProfitChartCfg(chart_type, labelX, data_list, chart_title='', titleX='', titleY='') {
         return {
-            series: series_data,
-            chart: {
-                height: HEIGHT,
-                type: 'area',
-                dropShadow: {
-                    enabled: true,
-                    color: '#000',
-                    top: 18,
-                    left: 7,
-                    blur: 10,
-                    opacity: 0.2
-                },
-                toolbar: {
-                    show: false
-                }
+            type: chart_type,
+            data: {
+                labels: labelX,
+                datasets: data_list
             },
-            colors: [
-                '#82DBA6',
-                '#44A65E'
-            ],
-            dataLabels: {
-                enabled: false,
-            },
-            stroke: {
-                curve: 'smooth'
-            },
-            title: {
-                text: chart_title,
-                align: 'left'
-            },
-            grid: {
-                borderColor: '#e7e7e7',
-                row: {
-                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                    opacity: 0
-                },
-            },
-            markers: {
-                size: 5
-            },
-            xaxis: {
-                categories: getMonthOrder(space_month_Setting),
-                title: {
-                    text: titleX
-                }
-            },
-            yaxis: {
-                title: {
-                    text: titleY
-                },
-                labels: {
-                    formatter: function (val) {
-                        if (val) {
-                            return val.toFixed(parseInt(moneyRoundEle.val()))
-                        } else {
-                            return val
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: titleX,
                         }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: titleY,
+                        },
+                    },
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: chart_title
                     }
-                }
-                // min: 5,
-                // max: 40
-            },
-            legend: {
-                position: 'top',
-                horizontalAlign: 'right',
-                floating: true,
-                offsetY: -25,
-                offsetX: -5
-            },
-            tooltip: {
-                theme: 'dark',
-                x: {
-                    show: true
                 },
-                y: {
-                    show: true,
-                }
-            },
-        };
-    }
-
-    function CombineProfitChartDataAccumulated(group_filter, show_billion, profit_type='gross_profit', titleY = 'Profit', titleX = 'Month', chart_title = '') {
-        const cast_billion = show_billion ? 1e9 : 1e6
-        let profit_chart_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        for (const item of profit_chart_DF) {
-            const group_id = item?.['group_inherit_id']
-            const dateApproved = new Date(item?.['date_approved']);
-            if (Check_in_period(dateApproved, period_selected_Setting)) {
-                if (!group_filter) {
-                    profit_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
-                } else {
-                    if (group_id === group_filter) {
-                        profit_chart_data[GetCurrentSub(item?.['date_approved']) - 1] += (item?.[profit_type] ? item?.[profit_type] : 0) / cast_billion
+                animations: {
+                    radius: {
+                        duration: 500,
+                        easing: 'linear',
+                        loop: (context) => context.active
                     }
-                }
-            }
-        }
-        for (let i = 0; i < profit_chart_data.length; i++) {
-            let last_sum = 0
-            if (i > 0) {
-                last_sum = profit_chart_data[i - 1]
-            }
-            profit_chart_data[i] += last_sum
-        }
-
-        let profit_expected_DF_copy = [...profit_expected_DF]  //create a copy
-        if (profit_type_DF + (profitTypeEle.val() === '1' ? 1 : 0) === 1) {
-            profit_expected_DF_copy = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        }
-        let profit_expected_data = []
-        if (group_filter) {
-            let group_found_data = profit_expected_detail_DF.find(item => item?.['group_mapped_id'] === group_filter)
-            if (group_found_data) {
-                let group_expected_data = group_found_data?.['group_month_profit_target']
-                for (let i = 0; i < group_expected_data.length; i++) {
-                    profit_expected_data.push(group_expected_data[i] / cast_billion)
-                }
-            }
-            else {
-                profit_expected_data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            }
-        }
-        else {
-            for (let i = 0; i < profit_expected_DF_copy.length; i++) {
-                profit_expected_data.push(profit_expected_DF_copy[i] / cast_billion)
-            }
-        }
-
-        for (let i = 0; i < profit_expected_data.length; i++) {
-            let last_sum = 0
-            if (i > 0) {
-                last_sum = profit_expected_data[i - 1]
-            }
-            profit_expected_data[i] += last_sum
-        }
-
-        let series_data = [
-            {name: "Expected", data: profit_expected_data},
-            {name: "Reality", data: profit_chart_data}
-        ]
-        if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1 - space_month_Setting; i < 12; i++) {
-                profit_chart_data[i] = null;
-            }
-            series_data = [
-                {name: "Expected", data: profit_expected_data},
-                {name: "Reality", data: profit_chart_data}
-            ]
-        }
-
-        return {
-            series: series_data,
-            chart: {
-                height: HEIGHT,
-                type: 'area',
-                dropShadow: {
-                    enabled: true,
-                    color: '#000',
-                    top: 18,
-                    left: 7,
-                    blur: 10,
-                    opacity: 0.2
                 },
-                toolbar: {
-                    show: false
-                }
-            },
-            colors: [
-                '#82DBA6',
-                '#44A65E'
-            ],
-            dataLabels: {
-                enabled: false,
-            },
-            stroke: {
-                curve: 'smooth'
-            },
-            title: {
-                text: chart_title,
-                align: 'left'
-            },
-            grid: {
-                borderColor: '#e7e7e7',
-                row: {
-                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                    opacity: 0
+                hoverRadius: 15,
+                interaction: {
+                    mode: 'nearest',
+                    intersect: false,
+                    axis: 'x'
                 },
-            },
-            markers: {
-                size: 5
-            },
-            xaxis: {
-                categories: getMonthOrder(space_month_Setting),
-                title: {
-                    text: titleX
-                }
-            },
-            yaxis: {
-                title: {
-                    text: titleY
-                },
-                labels: {
-                    formatter: function (val) {
-                        if (val) {
-                            return val.toFixed(parseInt(moneyRoundEle.val()))
-                        } else {
-                            return val
-                        }
-                    }
-                }
-                // min: 5,
-                // max: 40
-            },
-            legend: {
-                position: 'top',
-                horizontalAlign: 'right',
-                floating: true,
-                offsetY: -25,
-                offsetX: -5
-            },
-            tooltip: {
-                theme: 'dark',
-                x: {
-                    show: true
-                },
-                y: {
-                    show: true,
-                }
-            },
-        };
+            }
+        }
     }
 
-    function InitProfitChart() {
-        const group = profitGroupEle.val()
-        const calculate_type = profitViewTypeEle.val()
-        const isBillionChecked = moneyDisplayEle.val() === '1'
-        const options = calculate_type === '0' ? CombineProfitChartDataPeriod(
-            group,
-            isBillionChecked
-        ) : CombineProfitChartDataAccumulated(
-            group,
-            isBillionChecked
-        )
-        profit_chart = new ApexCharts(document.querySelector("#profit_chart"), options);
-        profit_chart.render();
-    }
-
-    function UpdateProfitChart() {
-        const group = profitGroupEle.val()
-        const calculate_type = profitViewTypeEle.val()
-        const isBillionChecked = moneyDisplayEle.val() === '1'
-        const profit_type = profitTypeEle.val() === '1' ? 'net_income' : 'gross_profit'
-
-        let options = calculate_type === '0' ? CombineProfitChartDataPeriod(
-            group,
-            isBillionChecked,
-            profit_type
-        ) : CombineProfitChartDataAccumulated(
-            group,
-            profit_type
-        )
-        profit_chart.updateOptions(options)
-    }
-
-    function CallAjaxProfitChart(is_init=false) {
-        let profit_chart_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-report-revenue-profit-list'),
+    function DrawRevenueProfitChart(is_init=false) {
+        $('#revenue-spinner').prop('hidden', false)
+        $('#profit-spinner').prop('hidden', false)
+        let report_revenue_ajax = $.fn.callAjax2({
+            url: scriptUrlEle.attr('data-url-report-revenue-profit'),
             data: {},
             method: 'GET'
         }).then(
@@ -905,19 +228,15 @@ $(document).ready(function () {
                 console.log(errs);
             })
 
-        let company_revenue_plan_list_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-company-revenue-plan-list'),
-            data: {},
+        let revenue_plan_by_report_perm_ajax = $.fn.callAjax2({
+            url: scriptUrlEle.attr('data-url-revenue-plan-by-report-perm'),
+            data: {'fiscal_year': fiscal_year_Setting},
             method: 'GET'
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_list')) {
-                    for (let i = 0; i < data?.['revenue_plan_list'].length; i++) {
-                        if (new Date(data?.['revenue_plan_list'][i]?.['period_mapped']?.['start_date']).getFullYear() === parseInt(fiscal_year_Setting)) {
-                            return data?.['revenue_plan_list'][i]
-                        }
-                    }
+                if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_by_report_perm_list')) {
+                    return data?.['revenue_plan_by_report_perm_list']
                 }
                 return [];
             },
@@ -925,834 +244,851 @@ $(document).ready(function () {
                 console.log(errs);
             })
 
-        Promise.all([profit_chart_ajax, company_revenue_plan_list_ajax]).then(
+        Promise.all([report_revenue_ajax, revenue_plan_by_report_perm_ajax]).then(
             (results) => {
-                profit_chart_DF = results[0] ? results[0] : [];
-                profit_expected_DF = results[1]?.['company_month_profit_target'] ? results[1]?.['company_month_profit_target'] : [];
-                profit_type_DF = results[1]?.['profit_target_type'] ? results[1]?.['profit_target_type'] : null
-                profitTypeEle.val(results[1]?.['profit_target_type'])
-                profit_expected_detail_DF = results[1]?.['company_month_target_detail'] ? results[1]?.['company_month_target_detail'] : [];
+                revenueprofit_DF = (results[0] ? results[0] : []).filter(item => {
+                    return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
+                })
+                if (revenueprofitGroupEle.val()) {
+                    revenueprofit_DF = revenueprofit_DF.filter(item => {
+                        return item?.['group_inherit_id'] === revenueprofitGroupEle.val()
+                    })
+                }
 
-                period_selected_Setting = results[1]?.['period_mapped'] ? results[1]?.['period_mapped'] : {}
-                fiscal_year_Setting = period_selected_Setting ? period_selected_Setting?.['fiscal_year'] : null
-                space_month_Setting = period_selected_Setting ? period_selected_Setting?.['space_month'] : null
-                // LoadPeriod(period_selected_Setting)
-                if (is_init) {
-                    InitProfitChart()
+                revenue_expected_DF = Array(12).fill(0)
+                profit_expected_DF = Array(12).fill(0)
+                profit_expected_type = results[1].length ? results[1][0]?.['profit_target_type'] : null
+                if (parseInt(profit_expected_type) === parseInt(profitTypeEle.val())) {
+                    for (let i = 0; i < results[1].length; i++) {
+                        if (!revenueprofitGroupEle.val() || results[1][i]?.['employee_mapped']?.['group']?.['id'] === revenueprofitGroupEle.val()) {
+                            const empMonthTarget = results[1][i]?.['emp_month_target']
+                            if (Array.isArray(empMonthTarget)) {
+                                for (let j = 0; j < empMonthTarget.length; j++) {
+                                    revenue_expected_DF[j] += empMonthTarget[j] || 0
+                                }
+                            }
+                            const empMonthProfitTarget = results[1][i]?.['emp_month_profit_target']
+                            if (Array.isArray(empMonthProfitTarget)) {
+                                for (let j = 0; j < empMonthProfitTarget.length; j++) {
+                                    profit_expected_DF[j] += empMonthProfitTarget[j] || 0
+                                }
+                            }
+                        }
+                    }
                 }
-                else {
-                    UpdateProfitChart()
+
+                if (!is_init) {
+                    revenue_chart.destroy();
+                    profit_chart.destroy();
                 }
+
+                let [revenueChartDataset, profitChartDataset] = GetRevenueProfitChartDatasets()
+                revenue_chart = new Chart(
+                    $('#revenue_chart')[0].getContext('2d'),
+                    RevenueProfitChartCfg(
+                        revenueprofitChartTypeEle.val() === '0' ? 'line' : 'bar',
+                        getMonthOrder(space_month_Setting),
+                        revenueChartDataset,
+                        trans_script.attr('data-trans-chart-revenue'),
+                        trans_script.attr('data-trans-month'),
+                        trans_script.attr('data-trans-revenue'),
+                    )
+                )
+                $('#revenue-spinner').prop('hidden', true)
+                profit_chart = new Chart(
+                    $('#profit_chart')[0].getContext('2d'),
+                    RevenueProfitChartCfg(
+                        revenueprofitChartTypeEle.val() === '0' ? 'line' : 'bar',
+                        getMonthOrder(space_month_Setting),
+                        profitChartDataset,
+                        trans_script.attr('data-trans-chart-profit'),
+                        trans_script.attr('data-trans-month'),
+                        trans_script.attr('data-trans-profit')
+                    )
+                )
                 $('#profit-spinner').prop('hidden', true)
             })
     }
 
+    function GetRevenueProfitChartDatasets() {
+        const type = revenueprofitViewTypeEle.val() === '0' ? 'Period' : 'Accumulated'
+        const cast_billion = moneyDisplayEle.val() === '1' ? 1e9 : 1e6
+
+        let revenue_chart_data = Array(12).fill(0)
+        let profit_chart_data = Array(12).fill(0)
+        for (const item of revenueprofit_DF) {
+            let index = GetSub(item?.['date_approved'], period_selected_Setting) - 1
+
+            revenue_chart_data[index] += Number((
+                (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
+            ).toFixed(parseInt(moneyRoundEle.val())))
+
+            if (profitTypeEle.val() === '0') {
+                profit_chart_data[index] += Number((
+                    (item?.['gross_profit'] ? item?.['gross_profit'] : 0) / cast_billion
+                ).toFixed(parseInt(moneyRoundEle.val())))
+            }
+            else {
+                profit_chart_data[index] += Number((
+                    (item?.['net_income'] ? item?.['net_income'] : 0) / cast_billion
+                ).toFixed(parseInt(moneyRoundEle.val())))
+            }
+        }
+
+        let revenue_expected_data = revenue_expected_DF.map(value => Number((value / cast_billion).toFixed(parseInt(moneyRoundEle.val()))));
+        let profit_expected_data = profit_expected_DF.map(value => Number((value / cast_billion).toFixed(parseInt(moneyRoundEle.val()))));
+
+        if (type === 'Period') {
+            COMPANY_CURRENT_REVENUE = COMPANY_CURRENT_REVENUE === null ? (revenue_chart_data[GetSub(new Date().toString(), period_selected_Setting) - 1] * cast_billion) : COMPANY_CURRENT_REVENUE
+            $('#current-revenue').attr('data-init-money', COMPANY_CURRENT_REVENUE)
+
+            COMPANY_CURRENT_PROFIT = COMPANY_CURRENT_PROFIT === null ? (profit_chart_data[GetSub(new Date().toString(), period_selected_Setting) - 1] * cast_billion) : COMPANY_CURRENT_PROFIT
+            $('#current-profit').attr('data-init-money', COMPANY_CURRENT_PROFIT)
+
+            $.fn.initMaskMoney2()
+        }
+
+        if (type === 'Accumulated') {
+            for (let i = 0; i < revenue_chart_data.length; i++) {
+                let last_sum = 0
+                if (i > 0) {
+                    last_sum = revenue_chart_data[i - 1]
+                }
+                revenue_chart_data[i] += last_sum
+            }
+            for (let i = 0; i < revenue_expected_data.length; i++) {
+                let last_sum = 0
+                if (i > 0) {
+                    last_sum = revenue_expected_data[i - 1]
+                }
+                revenue_expected_data[i] += last_sum
+            }
+
+            for (let i = 0; i < profit_chart_data.length; i++) {
+                let last_sum = 0
+                if (i > 0) {
+                    last_sum = profit_chart_data[i - 1]
+                }
+                profit_chart_data[i] += last_sum
+            }
+            for (let i = 0; i < profit_expected_data.length; i++) {
+                let last_sum = 0
+                if (i > 0) {
+                    last_sum = profit_expected_data[i - 1]
+                }
+                profit_expected_data[i] += last_sum
+            }
+        }
+
+        let revenue_series_data = [
+            {
+                label: trans_script.attr('data-trans-expected'),
+                data: revenue_expected_data,
+                pointStyle: 'circle',
+                pointRadius: 5,
+                borderColor: CHART_COLORS?.['blue'],
+                backgroundColor: CHART_COLORS_OPACITY?.['blue'],
+                borderWidth: 1,
+            },
+            {
+                label: trans_script.attr('data-trans-reality'),
+                data: revenue_chart_data,
+                pointStyle: 'circle',
+                pointRadius: 5,
+                borderColor: CHART_COLORS?.['red'],
+                backgroundColor: CHART_COLORS_OPACITY?.['red'],
+                borderWidth: 1,
+            }
+        ]
+
+        let profit_series_data = [
+            {
+                label: trans_script.attr('data-trans-expected'),
+                data: profit_expected_data,
+                pointStyle: 'circle',
+                pointRadius: 5,
+                borderColor: CHART_COLORS?.['blue'],
+                backgroundColor: CHART_COLORS_OPACITY?.['blue'],
+                borderWidth: 1,
+            },
+            {
+                label: trans_script.attr('data-trans-reality'),
+                data: profit_chart_data,
+                pointStyle: 'circle',
+                pointRadius: 5,
+                borderColor: CHART_COLORS?.['green'],
+                backgroundColor: CHART_COLORS_OPACITY?.['green'],
+                borderWidth: 1,
+            }
+        ]
+
+        if (new Date().getFullYear() === fiscal_year_Setting) {
+            for (let i = new Date().getMonth() + 1 - space_month_Setting; i < 12; i++) {
+                revenue_chart_data[i] = null;
+                profit_chart_data[i] = null;
+            }
+
+            revenue_series_data = [
+                {
+                    label: trans_script.attr('data-trans-expected'),
+                    data: revenue_expected_data,
+                    pointStyle: 'circle',
+                    pointRadius: 5,
+                    borderColor: CHART_COLORS?.['blue'],
+                    backgroundColor: CHART_COLORS_OPACITY?.['blue'],
+                    borderWidth: 1,
+                },
+                {
+                    label: trans_script.attr('data-trans-reality'),
+                    data: revenue_chart_data,
+                    pointStyle: 'circle',
+                    pointRadius: 5,
+                    borderColor: CHART_COLORS?.['red'],
+                    backgroundColor: CHART_COLORS_OPACITY?.['red'],
+                    borderWidth: 1,
+                }
+            ]
+
+            profit_series_data = [
+                {
+                    label: trans_script.attr('data-trans-expected'),
+                    data: profit_expected_data,
+                    pointStyle: 'circle',
+                    pointRadius: 5,
+                    borderColor: CHART_COLORS?.['blue'],
+                    backgroundColor: CHART_COLORS_OPACITY?.['blue'],
+                    borderWidth: 1,
+                },
+                {
+                    label: trans_script.attr('data-trans-reality'),
+                    data: profit_chart_data,
+                    pointStyle: 'circle',
+                    pointRadius: 5,
+                    borderColor: CHART_COLORS?.['green'],
+                    backgroundColor: CHART_COLORS_OPACITY?.['green'],
+                    borderWidth: 1,
+                }
+            ]
+        }
+
+        return [revenue_series_data, profit_series_data]
+    }
+
+    $('#reload-revenue-profit-data-btn').on('click', function () {
+        DrawRevenueProfitChart(false)
+    })
+
+    const revenueprofitChartTypeEle = $('#revenue-profit-chart-type')
+    revenueprofitChartTypeEle.on('change', function () {
+        DrawRevenueProfitChart(false)
+    })
+
+    const revenueprofitViewTypeEle = $('#revenue-profit-view-type')
+    revenueprofitViewTypeEle.on('change', function () {
+        DrawRevenueProfitChart(false)
+    })
+
+    const revenueprofitGroupEle = $('#revenue-profit-group')
+    function LoadRevenueGroup(data) {
+        revenueprofitGroupEle.initSelect2({
+            allowClear: true,
+            placeholder: trans_script.attr('data-trans-all'),
+            ajax: {
+                url: revenueprofitGroupEle.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                return resp.data[keyResp]
+            },
+            data: (data ? data : null),
+            keyResp: 'group_list',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+            DrawRevenueProfitChart(false)
+        })
+    }
+
+    const profitTypeEle = $('#profit-type')
     profitTypeEle.on('change', function () {
-        UpdateProfitChart()
+        DrawRevenueProfitChart(false)
     })
 
-    profitViewTypeEle.on('change', function () {
-        UpdateProfitChart()
+    // common of Top sale and Top Customer
+
+    function TopSaleCustomerChartCfg(chart_type, labelX, data_list, chart_title='', titleX='', titleY='', indexAxis='x') {
+        return {
+            type: chart_type,
+            data: {
+                labels: labelX,
+                datasets: data_list
+            },
+            options: {
+                borderWidth: 1,
+                indexAxis: indexAxis,
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: titleX,
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: titleY,
+                        },
+                    },
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: chart_title
+                    }
+                },
+            }
+        }
+    }
+
+    function DrawTopSaleCustomerChart(is_init=false, chart_name=['sale', 'customer']) {
+        if (chart_name.includes('sale')) {
+            $('#topsale-spinner').prop('hidden', false)
+        }
+        if (chart_name.includes('customer')) {
+            $('#topcustomer-spinner').prop('hidden', false)
+        }
+
+        let report_top_sale_customer_ajax = $.fn.callAjax2({
+            url: scriptUrlEle.attr('data-url-top-sale-customer-list'),
+            data: {},
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('report_customer_list')) {
+                    return data?.['report_customer_list'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([report_top_sale_customer_ajax]).then(
+            (results) => {
+                if (chart_name.includes('sale')) {
+                    topSale_DF = (results[0] ? results[0] : []).filter(item => {
+                        return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
+                    })
+
+                    if (!is_init) {
+                        topSale_chart.destroy();
+                    }
+                    let [topX_full_name, series_data] = GetTopSaleDatasets()
+                    topSale_chart = new Chart(
+                        $('#topsale_chart')[0].getContext('2d'),
+                        TopSaleCustomerChartCfg(
+                            'bar',
+                            topX_full_name,
+                            series_data,
+                            trans_script.attr('data-trans-chart-topsale'),
+                            trans_script.attr('data-trans-revenue'),
+                            '',
+                            'y'
+                        )
+                    )
+                    $('#topsale-spinner').prop('hidden', true)
+                }
+                if (chart_name.includes('customer')) {
+                    topCustomer_DF = (results[0] ? results[0] : []).filter(item => {
+                        return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
+                    })
+
+                    if (!is_init) {
+                        topCustomer_chart.destroy();
+                    }
+                    let [topX_title, series_data] = GetTopCustomerDatasets()
+                    topCustomer_chart = new Chart(
+                        $('#topcustomer_chart')[0].getContext('2d'),
+                        TopSaleCustomerChartCfg(
+                            'bar',
+                            topX_title,
+                            series_data,
+                            trans_script.attr('data-trans-chart-topcustomer'),
+                            trans_script.attr('data-trans-revenue'),
+                            '',
+                            'y'
+                        )
+                    )
+                    $('#topcustomer-spinner').prop('hidden', true)
+                }
+            })
+    }
+
+    $('#reload-top-sale-customer-data-btn').on('click', function () {
+        DrawTopSaleCustomerChart(false)
     })
 
-    $('#reload-profit-data-btn').on('click', function () {
-        $('#profit-spinner').prop('hidden', false)
-        CallAjaxProfitChart()
-        $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
+    const topSaleCustomerTimeEle = $('#top-sale-customer-time')
+    topSaleCustomerTimeEle.on('change', function () {
+        topSaleCustomerTimeDetailEle.empty()
+        if ($(this).val() === '0') {
+            topSaleCustomerTimeDetailEle.prop('disabled', false)
+            for (let i = 0; i < period_selected_Setting?.['subs'].length; i++) {
+                let sub = period_selected_Setting?.['subs'][i]
+                let value = sub?.['order'] + space_month_Setting
+                topSaleCustomerTimeDetailEle.append(`<option value="${value <= 12 ? value : value - 12}">${moment(sub?.['start_date'], 'YYYY-MM-DD').format('MM/YYYY')}</option>`)
+            }
+        }
+        else if ($(this).val() === '1') {
+            topSaleCustomerTimeDetailEle.prop('disabled', false)
+            for (let i = 1; i <= 4; i++) {
+                topSaleCustomerTimeDetailEle.append(`<option value="${i}">${trans_script.attr(`data-trans-quarter-${i}`)}</option>`)
+            }
+        }
+        else if ($(this).val() === '2') {
+            topSaleCustomerTimeDetailEle.prop('disabled', true)
+        }
+        DrawTopSaleCustomerChart(false)
     })
 
-    // Top sellers chart
+    const topSaleCustomerTimeDetailEle = $('#top-sale-customer-time-detail')
+    topSaleCustomerTimeDetailEle.on('change', function () {
+        DrawTopSaleCustomerChart(false)
+    })
 
-    const topSellersTimeEle = $('#top-sellers-time')
-    const topSellersNumberEle = $('#top-sellers-number')
-    let top_sellers_chart = null
-    let top_sellers_chart_DF = []
+    // Top sale chart
 
-    function CombineTopSellersChartData(show_billion, titleY = "Seller", titleX = 'Revenue', chart_title='') {
-        const cast_billion = show_billion ? 1e9 : 1e6
+    let topSale_chart = null
+    let topSale_DF = []
 
-        const current_month = new Date().getMonth() + 1
-        const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
+    function GetTopSaleDatasets() {
+        const cast_billion = moneyDisplayEle.val() === '1' ? 1e9 : 1e6
 
-        let top_sellers_chart_data = []
-        for (const item of top_sellers_chart_DF) {
+        let topSale_chart_data = []
+        for (const item of topSale_DF) {
             const dateApproved = new Date(item?.['date_approved'])
-            const month = dateApproved.getMonth() + 1
-            const quarter = GetQuarterFromMonth(month - space_month_Setting)
-            const filterTimes = topSellersTimeEle.val()
-            if (Check_in_period(dateApproved, period_selected_Setting)) {
-                if (filterTimes === '0') {
-                    if (month === current_month) {
-                        top_sellers_chart_data.push({
-                            'id': item?.['employee_inherit']?.['id'],
-                            'full_name': item?.['employee_inherit']?.['full_name'],
-                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                        })
-                    }
-                }
-                else if (filterTimes === '1') {
-                    if (quarter === current_quarter) {
-                        top_sellers_chart_data.push({
-                            'id': item?.['employee_inherit']?.['id'],
-                            'full_name': item?.['employee_inherit']?.['full_name'],
-                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                        })
-                    }
-                }
-                else if (filterTimes === '2') {
-                    top_sellers_chart_data.push({
-                            'id': item?.['employee_inherit']?.['id'],
-                            'full_name': item?.['employee_inherit']?.['full_name'],
-                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                        })
+            const filterTimes = topSaleCustomerTimeEle.val()
+            if (filterTimes === '0') {
+                if (dateApproved.getMonth() + 1 === parseInt(topSaleCustomerTimeDetailEle.val())) {
+                    topSale_chart_data.push({
+                        'id': item?.['employee_inherit']?.['id'],
+                        'full_name': item?.['employee_inherit']?.['full_name'],
+                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                    })
                 }
             }
+            else if (filterTimes === '1') {
+                if (GetQuarter(dateApproved, period_selected_Setting) === parseInt(topSaleCustomerTimeDetailEle.val())) {
+                    topSale_chart_data.push({
+                        'id': item?.['employee_inherit']?.['id'],
+                        'full_name': item?.['employee_inherit']?.['full_name'],
+                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                    })
+                }
+            }
+            else if (filterTimes === '2') {
+                topSale_chart_data.push({
+                    'id': item?.['employee_inherit']?.['id'],
+                    'full_name': item?.['employee_inherit']?.['full_name'],
+                    'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                })
+            }
         }
-        let top_sellers_chart_data_sum = {}
-        for (const item of top_sellers_chart_data) {
-            if (top_sellers_chart_data_sum[item.id] !== undefined) {
-                top_sellers_chart_data_sum[item.id].revenue += item.revenue
+        let topSale_chart_data_sum = {}
+        for (const item of topSale_chart_data) {
+            if (topSale_chart_data_sum[item.id] !== undefined) {
+                topSale_chart_data_sum[item.id].revenue += item.revenue
             } else {
-                top_sellers_chart_data_sum[item.id] = item
+                topSale_chart_data_sum[item.id] = item
             }
         }
-        top_sellers_chart_data = Object.values(top_sellers_chart_data_sum)
+        topSale_chart_data = Object.values(topSale_chart_data_sum)
 
-        top_sellers_chart_data.sort((a, b) => b.revenue - a.revenue);
-        let topX = top_sellers_chart_data.slice(0, topSellersNumberEle.val())
+        topSale_chart_data.sort((a, b) => b.revenue - a.revenue);
+        let topX = topSale_chart_data.slice(0, topSaleNumberEle.val())
         let topX_revenue = topX.map(item => item.revenue);
         let topX_full_name = topX.map(item => item.full_name);
+        let series_data = [{
+            data: topX_revenue,
+            borderColor: CHART_COLORS?.['orange'],
+            backgroundColor: CHART_COLORS_OPACITY?.['orange'],
+            borderWidth: 1,
+        }]
 
-        return {
-            series: [{
-                data: topX_revenue
-            }],
-            chart: {
-                type: 'bar',
-                height: HEIGHT
-            },
-            colors: ['#FA8019'],
-            plotOptions: {
-                bar: {
-                    horizontal: true,
-                }
-            },
-            dataLabels: {
-                enabled: true,
-                formatter: function (val) {
-                    if (val) {
-                        return val.toFixed(parseInt(moneyRoundEle.val()))
-                    } else {
-                        return val
-                    }
-                    // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
-                },
-            },
-            xaxis: {
-                categories: topX_full_name,
-                labels: {
-                    show: true,
-                    formatter: function (val) {
-                        if (val) {
-                            return val.toFixed(parseInt(moneyRoundEle.val()))
-                        } else {
-                            return val
-                        }
-                    }
-                },
-                title: {
-                    text: titleX
-                },
-            },
-            yaxis: {
-                labels: {
-                    show: true
-                },
-                title: {
-                    text: titleY
-                },
-            },
-            title: {
-                text: chart_title,
-                align: 'left'
-            },
-            tooltip: {
-                theme: 'dark',
-                x: {
-                    show: true
-                },
-                y: {
-                    show: true,
-                    title: {
-                        formatter: function () {
-                            return ''
-                        }
-                    }
-                }
-            },
-            legend: {
-                show: false
-            }
-        };
+        return [topX_full_name, series_data]
     }
 
-    function InitTopSellersChart() {
-        const isBillionChecked = moneyDisplayEle.val() === '1'
-        let options = CombineTopSellersChartData(
-            isBillionChecked
-        )
-        top_sellers_chart = new ApexCharts(document.querySelector("#top_sellers_chart"), options);
-        top_sellers_chart.render();
-    }
-
-    function UpdateTopSellersChart() {
-        const isBillionChecked = moneyDisplayEle.val() === '1'
-        let options = CombineTopSellersChartData(
-            isBillionChecked
-        )
-        top_sellers_chart.updateOptions(options)
-    }
-
-    function CallAjaxTopSellersChart(is_init=false) {
-        let top_sellers_chart_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-top-sellers-customers-list'),
-            data: {},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('report_customer_list')) {
-                    return data?.['report_customer_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            })
-
-        Promise.all([top_sellers_chart_ajax]).then(
-            (results) => {
-                top_sellers_chart_DF = results[0];
-                $('#top-sellers-time-filter-year').val(new Date().getFullYear())
-                if (is_init) {
-                    InitTopSellersChart()
-                }
-                else {
-                    UpdateTopSellersChart()
-                }
-                $('#top-sellers-spinner').prop('hidden', true)
-            })
-    }
-
-    topSellersTimeEle.on('change', function () {
-        UpdateTopSellersChart()
+    const topSaleNumberEle = $('#top-sale-number')
+    topSaleNumberEle.on('change', function () {
+        DrawTopSaleCustomerChart(false, ['sale'])
     })
 
-    topSellersNumberEle.on('change', function () {
-        UpdateTopSellersChart()
-    })
+    // Top customer chart
 
-    $('#reload-top-sellers-data-btn').on('click', function () {
-        $('#top-sellers-spinner').prop('hidden', false)
-        CallAjaxTopSellersChart()
-        $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
-    })
+    let topCustomer_chart = null
+    let topCustomer_DF = []
 
-    // Top customers chart
+    function GetTopCustomerDatasets() {
+        const cast_billion = moneyDisplayEle.val() === '1' ? 1e9 : 1e6
 
-    const topCustomersTimeEle = $('#top-customers-time')
-    const topCustomersNumberEle = $('#top-customers-number')
-    let top_customers_chart = null
-    let top_customers_chart_DF = []
-
-    function CombineTopCustomersChartData(show_billion, titleY = "Customer", titleX = 'Revenue', chart_title="") {
-        const cast_billion = show_billion ? 1e9 : 1e6
-        const current_month = new Date().getMonth() + 1
-        const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
-        let top_customers_chart_data = []
-        for (const item of top_customers_chart_DF) {
+        let topCustomer_chart_data = []
+        for (const item of topCustomer_DF) {
             const dateApproved = new Date(item?.['date_approved'])
-            const month = dateApproved.getMonth() + 1
-            const quarter = GetQuarterFromMonth(month - space_month_Setting)
-            const filterTimes = topCustomersTimeEle.val()
-            if (Check_in_period(dateApproved, period_selected_Setting)) {
-                if (filterTimes === '0') {
-                    if (month === current_month) {
-                        top_customers_chart_data.push({
-                            'id': item?.['customer']?.['id'],
-                            'title': item?.['customer']?.['title'],
-                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                        })
-                    }
-                }
-                else if (filterTimes === '1') {
-                    if (quarter === current_quarter) {
-                        top_customers_chart_data.push({
-                            'id': item?.['customer']?.['id'],
-                            'title': item?.['customer']?.['title'],
-                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                        })
-                    }
-                }
-                else if (filterTimes === '2') {
-                    top_customers_chart_data.push({
-                            'id': item?.['customer']?.['id'],
-                            'title': item?.['customer']?.['title'],
-                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                        })
+            const filterTimes = topSaleCustomerTimeEle.val()
+            if (filterTimes === '0') {
+                if (dateApproved.getMonth() + 1 === parseInt(topSaleCustomerTimeDetailEle.val())) {
+                    topCustomer_chart_data.push({
+                        'id': item?.['customer']?.['id'],
+                        'title': item?.['customer']?.['title'],
+                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                    })
                 }
             }
+            else if (filterTimes === '1') {
+                if (GetQuarter(dateApproved, period_selected_Setting) === parseInt(topSaleCustomerTimeDetailEle.val())) {
+                    topCustomer_chart_data.push({
+                        'id': item?.['customer']?.['id'],
+                        'title': item?.['customer']?.['title'],
+                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                    })
+                }
+            }
+            else if (filterTimes === '2') {
+                topCustomer_chart_data.push({
+                    'id': item?.['customer']?.['id'],
+                    'title': item?.['customer']?.['title'],
+                    'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                })
+            }
         }
-        let top_customers_chart_data_sum = {}
-        for (const item of top_customers_chart_data) {
-            if (top_customers_chart_data_sum[item.id] !== undefined) {
-                top_customers_chart_data_sum[item.id].revenue += item.revenue
+        let topCustomer_chart_data_sum = {}
+        for (const item of topCustomer_chart_data) {
+            if (topCustomer_chart_data_sum[item.id] !== undefined) {
+                topCustomer_chart_data_sum[item.id].revenue += item.revenue
             } else {
-                top_customers_chart_data_sum[item.id] = item
+                topCustomer_chart_data_sum[item.id] = item
             }
         }
-        top_customers_chart_data = Object.values(top_customers_chart_data_sum)
+        topCustomer_chart_data = Object.values(topCustomer_chart_data_sum)
 
-        top_customers_chart_data.sort((a, b) => b.revenue - a.revenue);
-        let topX = top_customers_chart_data.slice(0, topCustomersNumberEle.val())
+        topCustomer_chart_data.sort((a, b) => b.revenue - a.revenue);
+        let topX = topCustomer_chart_data.slice(0, topCustomerNumberEle.val())
         let topX_revenue = topX.map(item => item.revenue);
         let topX_title = topX.map(item => item.title);
+        let series_data = [{
+            data: topX_revenue,
+            borderColor: CHART_COLORS?.['purple'],
+            backgroundColor: CHART_COLORS_OPACITY?.['purple'],
+            borderWidth: 1,
+        }]
 
+        return [topX_title, series_data]
+    }
+
+    const topCustomerNumberEle = $('#top-customer-number')
+    topCustomerNumberEle.on('change', function () {
+        DrawTopSaleCustomerChart(false, ['customer'])
+    })
+
+    // common of Top Category and Top Produce
+
+    function TopCategoryProductChartCfg(chart_type, labelX, data_list, chart_title='', titleX='', titleY='', indexAxis='x') {
         return {
-            series: [{
-                data: topX_revenue
-            }],
-            chart: {
-                type: 'bar',
-                height: HEIGHT
+            type: chart_type,
+            data: {
+                labels: labelX,
+                datasets: data_list
             },
-            colors: ['#50C9D9'],
-            plotOptions: {
-                bar: {
-                    horizontal: true,
-                }
-            },
-            dataLabels: {
-                enabled: true,
-                formatter: function (val) {
-                    if (val) {
-                        return val.toFixed(parseInt(moneyRoundEle.val()))
-                    } else {
-                        return val
-                    }
-                    // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
-                },
-            },
-            xaxis: {
-                categories: topX_title,
-                labels: {
-                    show: true,
-                    formatter: function (val) {
-                        if (val) {
-                            return val.toFixed(parseInt(moneyRoundEle.val()))
-                        } else {
-                            return val
+            options: {
+                borderWidth: 1,
+                indexAxis: indexAxis,
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: titleX,
                         }
-                    }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: titleY,
+                        },
+                    },
                 },
-                title: {
-                    text: titleX
-                },
-            },
-            yaxis: {
-                labels: {
-                    show: true
-                },
-                title: {
-                    text: titleY
-                },
-            },
-            title: {
-                text: chart_title,
-                align: 'left'
-            },
-            tooltip: {
-                theme: 'dark',
-                x: {
-                    show: true
-                },
-                y: {
-                    show: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
                     title: {
-                        formatter: function () {
-                            return ''
-                        }
+                        display: true,
+                        text: chart_title
                     }
-                }
-            },
-            legend: {
-                show: false
+                },
             }
-        };
+        }
     }
 
-    function InitTopCustomersChart() {
-        const isBillionChecked = moneyDisplayEle.val() === '1'
-        let options = CombineTopCustomersChartData(
-            isBillionChecked
-        )
-        top_customers_chart = new ApexCharts(document.querySelector("#top_customers_chart"), options);
-        top_customers_chart.render();
-    }
+    function DrawTopCategoryProductChart(is_init=false, chart_name=['category', 'product']) {
+        if (chart_name.includes('category')) {
+            $('#topcategory-spinner').prop('hidden', false)
+        }
+        if (chart_name.includes('product')) {
+            $('#topproduct-spinner').prop('hidden', false)
+        }
 
-    function UpdateTopCustomersChart() {
-        const isBillionChecked = moneyDisplayEle.val() === '1'
-        let options = CombineTopCustomersChartData(
-            isBillionChecked
-        )
-        top_customers_chart.updateOptions(options)
-    }
-
-    function CallAjaxTopCustomersChart(is_init=false) {
-        let top_customers_chart_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-top-sellers-customers-list'),
+        let report_top_category_product_ajax = $.fn.callAjax2({
+            url: scriptUrlEle.attr('data-url-top-category-product-list'),
             data: {},
             method: 'GET'
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('report_customer_list')) {
-                    return data?.['report_customer_list'];
+                if (data && typeof data === 'object' && data.hasOwnProperty('report_product_list')) {
+                    return data?.['report_product_list'];
                 }
                 return {};
             },
             (errs) => {
                 console.log(errs);
-            })
+            }
+        )
 
-        Promise.all([top_customers_chart_ajax]).then(
+        Promise.all([report_top_category_product_ajax]).then(
             (results) => {
-                top_customers_chart_DF = results[0];
-                $('#top-customers-time-filter-year').val(new Date().getFullYear())
-                if (is_init) {
-                    InitTopCustomersChart()
+                if (chart_name.includes('category')) {
+                    topCategory_DF = (results[0] ? results[0] : []).filter(item => {
+                        return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
+                    })
+
+                    if (!is_init) {
+                        topCategory_chart.destroy();
+                    }
+                    let [topX_title, series_data] = GetTopCategoryDatasets()
+                    topCategory_chart = new Chart(
+                        $('#topcategory_chart')[0].getContext('2d'),
+                        TopCategoryProductChartCfg(
+                            'bar',
+                            topX_title,
+                            series_data,
+                            trans_script.attr('data-trans-chart-topcategory'),
+                            trans_script.attr('data-trans-revenue'),
+                            '',
+                            'y'
+                        )
+                    )
+                    $('#topcategory-spinner').prop('hidden', true)
                 }
-                else {
-                    UpdateTopCustomersChart()
+                if (chart_name.includes('product')) {
+                    topProduct_DF = (results[0] ? results[0] : []).filter(item => {
+                        return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
+                    })
+
+                    if (!is_init) {
+                        topProduct_chart.destroy();
+                    }
+                    let [topX_title, series_data] = GetTopProductDatasets()
+                    topProduct_chart = new Chart(
+                        $('#topproduct_chart')[0].getContext('2d'),
+                        TopCategoryProductChartCfg(
+                            'bar',
+                            topX_title,
+                            series_data,
+                            trans_script.attr('data-trans-chart-topproduct'),
+                            trans_script.attr('data-trans-revenue'),
+                            '',
+                            'y'
+                        )
+                    )
+                    $('#topproduct-spinner').prop('hidden', true)
                 }
-                $('#top-customers-spinner').prop('hidden', true)
             })
     }
 
-    topCustomersTimeEle.on('change', function () {
-        UpdateTopCustomersChart()
+    $('#reload-top-category-product-data-btn').on('click', function () {
+        DrawTopCategoryProductChart(false)
     })
 
-    topCustomersNumberEle.on('change', function () {
-        UpdateTopCustomersChart()
+    const topCategoryProductTimeEle = $('#top-category-product-time')
+    topCategoryProductTimeEle.on('change', function () {
+        topCategoryProductTimeDetailEle.empty()
+        if ($(this).val() === '0') {
+            topCategoryProductTimeDetailEle.prop('disabled', false)
+            for (let i = 0; i < period_selected_Setting?.['subs'].length; i++) {
+                let sub = period_selected_Setting?.['subs'][i]
+                let value = sub?.['order'] + space_month_Setting
+                topCategoryProductTimeDetailEle.append(`<option value="${value <= 12 ? value : value - 12}">${moment(sub?.['start_date'], 'YYYY-MM-DD').format('MM/YYYY')}</option>`)
+            }
+        }
+        else if ($(this).val() === '1') {
+            topCategoryProductTimeDetailEle.prop('disabled', false)
+            for (let i = 1; i <= 4; i++) {
+                topCategoryProductTimeDetailEle.append(`<option value="${i}">${trans_script.attr(`data-trans-quarter-${i}`)}</option>`)
+            }
+        }
+        else if ($(this).val() === '2') {
+            topCategoryProductTimeDetailEle.prop('disabled', true)
+        }
+        DrawTopCategoryProductChart(false)
     })
 
-    $('#reload-top-customers-data-btn').on('click', function () {
-        $('#top-customers-spinner').prop('hidden', false)
-        CallAjaxTopCustomersChart()
-        $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
+    const topCategoryProductTimeDetailEle = $('#top-category-product-time-detail')
+    topCategoryProductTimeDetailEle.on('change', function () {
+        DrawTopCategoryProductChart(false)
     })
 
-    // Top categories chart
+    // Top category chart
 
-    const topCategoriesTimeEle = $('#top-categories-time')
-    const topCategoriesNumberEle = $('#top-categories-number')
-    let top_categories_chart = null
-    let top_categories_chart_DF = []
+    let topCategory_chart = null
+    let topCategory_DF = []
 
-    function CombineTopCategoriesChartData(show_billion, titleY = "Revenue", titleX = "Category", chart_title="") {
-        const cast_billion = show_billion ? 1e9 : 1e6
-        const current_month = new Date().getMonth() + 1
-        const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
+    function GetTopCategoryDatasets() {
+        const cast_billion = moneyDisplayEle.val() === '1' ? 1e9 : 1e6
 
-        let top_categories_chart_data = []
-        for (const item of top_categories_chart_DF) {
+        let topCategory_chart_data = []
+        for (const item of topCategory_DF) {
             const dateApproved = new Date(item?.['date_approved'])
-            const month = dateApproved.getMonth() + 1
-            const quarter = GetQuarterFromMonth(month - space_month_Setting)
-            const filterTimes = topCategoriesTimeEle.val()
-            if (Check_in_period(dateApproved, period_selected_Setting)) {
-                if (filterTimes === '0') {
-                    if (month === current_month) {
-                        top_categories_chart_data.push({
-                            'id': item?.['product']?.['general_product_category']?.['id'],
-                            'title': item?.['product']?.['general_product_category']?.['title'],
-                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                        })
-                    }
-                }
-                else if (filterTimes === '1') {
-                    if (quarter === current_quarter) {
-                        top_categories_chart_data.push({
-                            'id': item?.['product']?.['general_product_category']?.['id'],
-                            'title': item?.['product']?.['general_product_category']?.['title'],
-                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                        })
-                    }
-                }
-                else if (filterTimes === '2') {
-                    top_categories_chart_data.push({
+            const filterTimes = topCategoryProductTimeEle.val()
+            if (filterTimes === '0') {
+                if (dateApproved.getMonth() + 1 === parseInt(topCategoryProductTimeDetailEle.val())) {
+                    topCategory_chart_data.push({
                         'id': item?.['product']?.['general_product_category']?.['id'],
                         'title': item?.['product']?.['general_product_category']?.['title'],
                         'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
                     })
                 }
             }
-        }
-        let top_categories_chart_data_sum = {}
-        for (const item of top_categories_chart_data) {
-            if (top_categories_chart_data_sum[item.id] !== undefined) {
-                top_categories_chart_data_sum[item.id].revenue += item.revenue
-            } else {
-                top_categories_chart_data_sum[item.id] = item
+            else if (filterTimes === '1') {
+                if (GetQuarter(dateApproved, period_selected_Setting) === parseInt(topCategoryProductTimeDetailEle.val())) {
+                    topCategory_chart_data.push({
+                        'id': item?.['product']?.['general_product_category']?.['id'],
+                        'title': item?.['product']?.['general_product_category']?.['title'],
+                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                    })
+                }
+            }
+            else if (filterTimes === '2') {
+                topCategory_chart_data.push({
+                    'id': item?.['product']?.['general_product_category']?.['id'],
+                    'title': item?.['product']?.['general_product_category']?.['title'],
+                    'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                })
             }
         }
-        top_categories_chart_data = Object.values(top_categories_chart_data_sum)
+        let topCategory_chart_data_sum = {}
+        for (const item of topCategory_chart_data) {
+            if (topCategory_chart_data_sum[item.id] !== undefined) {
+                topCategory_chart_data_sum[item.id].revenue += item.revenue
+            } else {
+                topCategory_chart_data_sum[item.id] = item
+            }
+        }
+        topCategory_chart_data = Object.values(topCategory_chart_data_sum)
 
-        top_categories_chart_data.sort((a, b) => b.revenue - a.revenue);
-        let topX = top_categories_chart_data.slice(0, topCategoriesNumberEle.val())
+        topCategory_chart_data.sort((a, b) => b.revenue - a.revenue);
+        let topX = topCategory_chart_data.slice(0, topCategoryNumberEle.val())
         let topX_revenue = topX.map(item => item.revenue);
         let topX_title = topX.map(item => item.title);
+        let series_data = [{
+            data: topX_revenue,
+            borderColor: CHART_COLORS?.['blue'],
+            backgroundColor: CHART_COLORS_OPACITY?.['blue'],
+            borderWidth: 1,
+        }]
 
-        return {
-            series: [{
-                data: topX_revenue
-            }],
-            chart: {
-                type: 'bar',
-                height: HEIGHT
-            },
-            colors: ['#DC3545'],
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                }
-            },
-            dataLabels: {
-                enabled: true,
-                formatter: function (val) {
-                    if (val) {
-                        return val.toFixed(parseInt(moneyRoundEle.val()))
-                    } else {
-                        return val
-                    }
-                    // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
-                },
-            },
-            xaxis: {
-                categories: topX_title,
-                labels: {
-                    show: true
-                },
-                title: {
-                    text: titleX
-                },
-            },
-            yaxis: {
-                labels: {
-                    show: true,
-                    formatter: function (val) {
-                        if (val) {
-                            return val.toFixed(parseInt(moneyRoundEle.val()))
-                        } else {
-                            return val
-                        }
-                    }
-                },
-                title: {
-                    text: titleY
-                },
-            },
-            title: {
-                text: chart_title,
-                align: 'left'
-            },
-            fill: {
-                opacity: 1
-            },
-            tooltip: {
-                theme: 'dark',
-                x: {
-                    show: true
-                },
-                y: {
-                    show: true,
-                    title: {
-                        formatter: function () {
-                            return ''
-                        }
-                    }
-                }
-            },
-        };
+        return [topX_title, series_data]
     }
 
-    function InitTopCategoriesChart() {
-        const isBillionChecked = moneyDisplayEle.val() === '1'
-        let options = CombineTopCategoriesChartData(
-            isBillionChecked
-        )
-        top_categories_chart = new ApexCharts(document.querySelector("#top_categories_chart"), options);
-        top_categories_chart.render();
-    }
-
-    function UpdateTopCategoriesChart() {
-        const isBillionChecked = moneyDisplayEle.val() === '1'
-        let options = CombineTopCategoriesChartData(
-            isBillionChecked
-        )
-        top_categories_chart.updateOptions(options)
-    }
-
-    function CallAjaxTopCategoriesChart(is_init=false) {
-        let top_categories_chart_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-top-categories-products-list'),
-            data: {},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('report_product_list')) {
-                    return data?.['report_product_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            })
-
-        Promise.all([top_categories_chart_ajax]).then(
-            (results) => {
-                top_categories_chart_DF = results[0];
-                $('#top-categories-time-filter-year').val(new Date().getFullYear())
-                if (is_init) {
-                    InitTopCategoriesChart()
-                }
-                else {
-                    UpdateTopCategoriesChart()
-                }
-                $('#top-categories-spinner').prop('hidden', true)
-            })
-    }
-
-    topCategoriesNumberEle.on('change', function () {
-        UpdateTopCategoriesChart()
+    const topCategoryNumberEle = $('#top-category-number')
+    topCategoryNumberEle.on('change', function () {
+        DrawTopCategoryProductChart(false, ['category'])
     })
 
-    topCategoriesTimeEle.on('change', function () {
-        UpdateTopCategoriesChart()
-    })
+    // Top product chart
 
-    $('#reload-top-categories-data-btn').on('click', function () {
-        $('#top-categories-spinner').prop('hidden', false)
-        CallAjaxTopCategoriesChart()
-        $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
-    })
+    let topProduct_chart = null
+    let topProduct_DF = []
 
-    // Top products chart
+    function GetTopProductDatasets() {
+        const cast_billion = moneyDisplayEle.val() === '1' ? 1e9 : 1e6
 
-    const topProductsTimeEle = $('#top-products-time')
-    const topProductsNumberEle = $('#top-products-number')
-    let top_products_chart = null
-    let top_products_chart_DF = []
-
-    function CombineTopProductsChartData(show_billion, titleY = "Revenue", titleX = "Product", chart_title="") {
-        const cast_billion = show_billion ? 1e9 : 1e6
-        const current_month = new Date().getMonth() + 1
-        const current_quarter = GetQuarterFromMonth(current_month - space_month_Setting)
-
-        let top_products_chart_data = []
-        for (const item of top_products_chart_DF) {
+        let topProduct_chart_data = []
+        for (const item of topProduct_DF) {
             const dateApproved = new Date(item?.['date_approved'])
-            const month = dateApproved.getMonth() + 1
-            const quarter = GetQuarterFromMonth(month - space_month_Setting)
-            const filterTimes = topProductsTimeEle.val()
-            if (Check_in_period(dateApproved, period_selected_Setting)) {
-                if (filterTimes === '0') {
-                    if (month === current_month) {
-                        top_products_chart_data.push({
-                            'id': item?.['product']?.['id'],
-                            'title': item?.['product']?.['title'],
-                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                        })
-                    }
-                }
-                else if (filterTimes === '1') {
-                    if (quarter === current_quarter) {
-                        top_products_chart_data.push({
-                            'id': item?.['product']?.['id'],
-                            'title': item?.['product']?.['title'],
-                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                        })
-                    }
-                }
-                else if (filterTimes === '2') {
-                    top_products_chart_data.push({
-                            'id': item?.['product']?.['id'],
-                            'title': item?.['product']?.['title'],
-                            'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                        })
+            const filterTimes = topCategoryProductTimeEle.val()
+            if (filterTimes === '0') {
+                if (dateApproved.getMonth() + 1 === parseInt(topCategoryProductTimeDetailEle.val())) {
+                    topProduct_chart_data.push({
+                        'id': item?.['product']?.['id'],
+                        'title': item?.['product']?.['title'],
+                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                    })
                 }
             }
+            else if (filterTimes === '1') {
+                if (GetQuarter(dateApproved, period_selected_Setting) === parseInt(topCategoryProductTimeDetailEle.val())) {
+                    topProduct_chart_data.push({
+                        'id': item?.['product']?.['id'],
+                        'title': item?.['product']?.['title'],
+                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                    })
+                }
+            }
+            else if (filterTimes === '2') {
+                topProduct_chart_data.push({
+                    'id': item?.['product']?.['id'],
+                    'title': item?.['product']?.['title'],
+                    'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
+                })
+            }
         }
-        let top_products_chart_data_sum = {}
-        for (const item of top_products_chart_data) {
-            if (top_products_chart_data_sum[item.id] !== undefined) {
-                top_products_chart_data_sum[item.id].revenue += item.revenue
+        let topProduct_chart_data_sum = {}
+        for (const item of topProduct_chart_data) {
+            if (topProduct_chart_data_sum[item.id] !== undefined) {
+                topProduct_chart_data_sum[item.id].revenue += item.revenue
             } else {
-                top_products_chart_data_sum[item.id] = item
+                topProduct_chart_data_sum[item.id] = item
             }
         }
-        top_products_chart_data = Object.values(top_products_chart_data_sum)
+        topProduct_chart_data = Object.values(topProduct_chart_data_sum)
 
-        top_products_chart_data.sort((a, b) => b.revenue - a.revenue);
-        let topX = top_products_chart_data.slice(0, topProductsNumberEle.val())
+        topProduct_chart_data.sort((a, b) => b.revenue - a.revenue);
+        let topX = topProduct_chart_data.slice(0, topProductNumberEle.val())
         let topX_revenue = topX.map(item => item.revenue);
         let topX_title = topX.map(item => item.title);
+        let series_data = [{
+            data: topX_revenue,
+            borderColor: CHART_COLORS?.['red'],
+            backgroundColor: CHART_COLORS_OPACITY?.['red'],
+            borderWidth: 1,
+        }]
 
-        return {
-            series: [{
-                data: topX_revenue
-            }],
-            chart: {
-                type: 'bar',
-                height: HEIGHT
-            },
-            colors: ['#2B77A4'],
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                }
-            },
-            dataLabels: {
-                enabled: true,
-                formatter: function (val) {
-                    if (val) {
-                        return val.toFixed(parseInt(moneyRoundEle.val()))
-                    } else {
-                        return val
-                    }
-                    // return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
-                },
-            },
-            xaxis: {
-                categories: topX_title,
-                labels: {
-                    show: true
-                },
-                title: {
-                    text: titleX
-                },
-            },
-            yaxis: {
-                labels: {
-                    show: true,
-                    formatter: function (val) {
-                        if (val) {
-                            return val.toFixed(parseInt(moneyRoundEle.val()))
-                        } else {
-                            return val
-                        }
-                    }
-                },
-                title: {
-                    text: titleY
-                },
-            },
-            title: {
-                text: chart_title,
-                align: 'left'
-            },
-            fill: {
-                opacity: 1
-            },
-            tooltip: {
-                theme: 'dark',
-                x: {
-                    show: true
-                },
-                y: {
-                    show: true,
-                    title: {
-                        formatter: function () {
-                            return ''
-                        }
-                    }
-                }
-            },
-        };
+        return [topX_title, series_data]
     }
 
-    function InitTopProductsChart() {
-        const isBillionChecked = moneyDisplayEle.val() === '1'
-        let options = CombineTopProductsChartData(
-            isBillionChecked
-        )
-        top_products_chart = new ApexCharts(document.querySelector("#top_products_chart"), options);
-        top_products_chart.render();
-    }
-
-    function UpdateTopProductsChart() {
-        const isBillionChecked = moneyDisplayEle.val() === '1'
-        let options = CombineTopProductsChartData(
-            isBillionChecked
-        )
-        top_products_chart.updateOptions(options)
-    }
-
-    function CallAjaxTopProductsChart(is_init=false) {
-        let top_products_chart_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-top-categories-products-list'),
-            data: {},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('report_product_list')) {
-                    return data?.['report_product_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            })
-
-        Promise.all([top_products_chart_ajax]).then(
-            (results) => {
-                top_products_chart_DF = results[0];
-                $('#top-products-time-filter-year').val(new Date().getFullYear())
-                if (is_init) {
-                    InitTopProductsChart()
-                }
-                else {
-                    UpdateTopProductsChart()
-                }
-                $('#top-products-spinner').prop('hidden', true)
-            })
-    }
-
-    topProductsNumberEle.on('change', function () {
-        UpdateTopProductsChart()
-    })
-
-    topProductsTimeEle.on('change', function () {
-        UpdateTopProductsChart()
-    })
-
-    $('#reload-top-products-data-btn').on('click', function () {
-        $('#top-products-spinner').prop('hidden', false)
-        CallAjaxTopProductsChart()
-        $.fn.notifyB({description: 'Reloaded latest data'}, 'success')
+    const topProductNumberEle = $('#top-product-number')
+    topProductNumberEle.on('change', function () {
+        DrawTopCategoryProductChart(false, ['product'])
     })
 
     // Load Page
+
     LoadPeriod(current_period)
     LoadRevenueGroup()
-    CallAjaxRevenueChart(true)
-    LoadProfitGroup()
-    CallAjaxProfitChart(true)
-    CallAjaxTopSellersChart(true)
-    CallAjaxTopCustomersChart(true)
-    CallAjaxTopCategoriesChart(true)
-    CallAjaxTopProductsChart(true)
+    DrawRevenueProfitChart(true)
+    DrawTopSaleCustomerChart(true)
+    DrawTopCategoryProductChart(true)
 })

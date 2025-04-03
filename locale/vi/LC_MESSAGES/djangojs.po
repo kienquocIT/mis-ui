@@ -404,3 +404,7 @@ msgstr "Thuế GTGT"
 #
 msgid "value"
 msgstr "giá trị"
+
+#
+msgid "Invoiced"
+msgstr "Đã lập hóa đơn"

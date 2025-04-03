@@ -51,7 +51,11 @@ class APInvoiceCreate(View):
         menu_active='menu_ap_invoice_list',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
+        return {
+            'invoice_signs': resp.result[0] if len(resp.result) > 0 else '',
+            'form_id': 'form-create-ap-invoice',
+        }, status.HTTP_200_OK
 
 
 class APInvoiceDetail(View):
@@ -64,7 +68,10 @@ class APInvoiceDetail(View):
         menu_active='menu_ap_invoice_detail',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
+        return {
+            'invoice_signs': resp.result[0] if len(resp.result) > 0 else ''
+        }, status.HTTP_200_OK
 
 
 class APInvoiceUpdate(View):
@@ -77,7 +84,11 @@ class APInvoiceUpdate(View):
         menu_active='menu_ap_invoice_detail',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
+        return {
+            'invoice_signs': resp.result[0] if len(resp.result) > 0 else '',
+            'form_id': 'form-create-ap-invoice',
+        }, status.HTTP_200_OK
 
 
 class APInvoiceDetailAPI(APIView):
@@ -102,6 +113,19 @@ class APInvoiceDetailAPI(APIView):
             resp.result['message'] = SaleMsg.AP_INVOICE_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class PurchaseOrderListForAPInvoiceAPI(APIView):
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PO_LIST_AR_INVOICE).get(params)
+        return resp.auto_return(key_success='purchase_order_list')
 
 
 class GoodReceiptsListForAPInvoiceAPI(APIView):

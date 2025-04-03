@@ -18,10 +18,13 @@ class UsualLoadPageFunction {
             timePicker: false,
             showDropdowns: true,
             autoApply: true,
+            autoUpdateInput: false,
             minYear: parseInt(moment().format('YYYY')),
             locale: {format: output_format},
             maxYear: parseInt(moment().format('YYYY')) + 100,
-        }).val('')
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY'));
+        }).val('');
     }
 
     /**

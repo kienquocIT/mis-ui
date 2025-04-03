@@ -153,7 +153,7 @@ class CommonHandler{
                 url: this.$APInvoiceDatatable.attr('data-url'),
                 type: 'GET',
                 data: {
-                    'po_mapped__purchase_requests__request_for': 2
+                    'purchase_order_mapped__purchase_requests__request_for': 2
                 },
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
@@ -183,7 +183,7 @@ class CommonHandler{
                     targets: 2,
                     width: '40%',
                     render: (data, type, row) => {
-                        return `<div>${row?.['po_mapped']?.['title']}</div>`
+                        return `<div>${row?.['purchase_order_mapped']?.['title']}</div>`
                     }
                 },
             ]

@@ -1,89 +1,135 @@
 {% load i18n %}
 
 <div class="modal fade" id="supplier-select-modal" tabindex="-1" role="dialog" aria-labelledby="supplier-select-modal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered min-w-1000p" role="document">
+    <div class="modal-dialog" style="min-width: 70%" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{% trans 'Select Supplier' %}</h5>
+                <h5 class="modal-title">{% trans 'Select supplier' %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="table-responsive" style="max-height: 500px;">
-                    <table class="table nowrap w-100" id="table-select-supplier"
-                       data-method="GET" data-url="{% url 'AccountListAPI' %}"
-                >
-                    <thead class="bg-primary-light-5">
-                    <tr>
-                        <td class="w-5"></td>
-                        <td class="w-25"><b>{% trans 'Supplier code' %}</b></td>
-                        <td class="w-50"><b>{% trans 'Supplier name' %}</b></td>
-                        <td class="w-25"><b>{% trans 'Tax number' %}</b></td>
-                        <td class="w-5"><b>{% trans 'Select' %}</b></td>
-                    </tr>
-                    </thead>
-                </table>
+                <div class="table-responsive">
+                    <table class="table nowrap w-100"
+                           id="table-select-supplier"
+                           data-method="GET" data-url="{% url 'SupplierListAPI' %}"
+                    >
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th>{% trans 'Customer' %}</th>
+                                <th>{% trans 'Tax number' %}</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button type="button" id="select-supplier-btn" class="btn btn-primary">{% trans 'Select' %}</button>
+                <button type="button" id="accept-supplier-select-btn" class="btn btn-primary">{% trans 'Select' %}</button>
             </div>
         </div>
     </div>
 </div>
 
 <div class="offcanvas offcanvas-end w-80" tabindex="-1" id="select-goods-receipt-offcanvas" aria-labelledby="offcanvasTopLabel">
-                <div class="offcanvas-header px-5 py-5">
-                        <h5 id="offcanvasRightLabel">
-                            {% trans 'AP Invoice create' %}&nbsp;
-                            <i class="fas fa-angle-right"></i>&nbsp;
-                            <span class="badge badge-primary">
-                                <span>
-                                    <span class="icon"><span class="feather-icon"><i data-feather="package"></i></span></span>
-                                    {% trans 'Select Goods Receipt' %}
-                                </span>
-                            </span>
-                        </h5>
-{#                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>#}
-                </div>
-                <div class="offcanvas-body px-5 py-5">
-                    <div class="table-responsive" style="max-height: 300px;">
-                        <table class="table w-100 nowrap" id="table-select-goods-receipt">
-                            <thead class="bg-primary-light-5">
-                            <tr>
-                                <td class="w-10"></td>
-                                <td class="w-20">{% trans 'Code' %}</td>
-                                <td class="w-50">{% trans 'Name' %}</td>
-                                <td class="w-10 text-center">{% trans 'Already' %}</td>
-                                <td class="w-10 text-center">{% trans 'Select' %}</td>
-                            </tr>
-                            </thead>
-                        </table>
-                    </div>
-                    <hr class="bg-teal mt-10 mb-10">
-                    <div class="table-responsive" style="max-height: 300px;">
-                        <table class="table w-100 nowrap" id="table-product-detail">
-                            <thead class="bg-secondary-light-5">
-                            <tr>
-                                <td class="w-10"></td>
-                                <td class="w-30">{% trans 'Product' %}</td>
-                                <td class="w-15">{% trans 'UOM' %}</td>
-                                <td class="w-15">{% trans 'Total' %}</td>
-                                <td class="w-15">{% trans 'Already' %}</td>
-                                <td class="w-15">{% trans 'This time' %}</td>
-                            </tr>
-                            </thead>
-                        </table>
-                    </div>
-                    <div class="text-right mt-10">
-                        <button type="button" id="add-product-btn" class="btn btn-custom btn-gradient-primary btn-wth-icon btn-rounded">
-                            <span>
-                                <span>{% trans 'Add' %}</span>
-                                <span class="icon"><span class="feather-icon"><i class="fas fa-plus"></i></span></span>
-                            </span>
-                        </button>
-                    </div>
-                </div>
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">{% trans 'Select product from goods receipt' %}</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row">
+            <div class="col-12">
+                <table class="table w-100 nowrap" id="goods-receipt-table">
+                    <thead class="bg-primary-light-5">
+                    <tr>
+                        <td></td>
+                        <td>{% trans 'Name' %}</td>
+                        <th>{% trans 'Received date' %}</th>
+                        <td>{% trans 'This time' %}</td>
+                    </tr>
+                    </thead>
+                </table>
             </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12">
+                <table class="table w-100 nowrap" id="goods-receipt-product-table">
+                    <thead class="bg-secondary-light-5">
+                    <tr>
+                        <td class="w-10"></td>
+                        <td class="w-30">{% trans 'Product' %}</td>
+                        <td class="w-15">{% trans 'UOM' %}</td>
+                        <td class="w-15">{% trans 'Total' %}</td>
+                        <td class="w-15">{% trans 'Already' %}</td>
+                        <td class="w-15">{% trans 'This time' %}</td>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12 text-right">
+                <script id="gr_product_data_script"></script>
+                <button type="button" id="accept-gr-product-btn" class="btn btn-sm btn-custom btn-success btn-wth-icon">
+                    <span>
+                        <span>{% trans 'Select' %}</span>
+                        <span class="icon"><span class="feather-icon"><i class="fa-solid fa-check"></i></span></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-view-tax-code-info" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">{% trans 'View tax code information' %}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="tax-code-info-international-name">{% trans 'International name' %}</label>
+                            <textarea disabled readonly rows="1" class="form-control form-control-line text-primary" id="tax-code-info-international-name"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="tax-code-info-name">{% trans 'Name' %}</label>
+                            <textarea disabled readonly rows="1" class="form-control form-control-line text-primary" id="tax-code-info-name"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="tax-code-info-short-name">{% trans 'Short name' %}</label>
+                            <textarea disabled readonly rows="1" class="form-control form-control-line text-primary" id="tax-code-info-short-name"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="tax-code-info-tax-code">{% trans 'Tax code' %}</label>
+                            <textarea disabled readonly rows="1" class="form-control form-control-line text-primary" id="tax-code-info-tax-code"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="tax-code-info-address">{% trans 'Address' %}</label>
+                            <textarea disabled readonly class="form-control form-control-line text-primary" id="tax-code-info-address"></textarea>
+                        </div>
+                    </div>
+                </div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+			</div>
+		</div>
+	</div>
+</div>

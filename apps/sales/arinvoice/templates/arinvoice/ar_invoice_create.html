@@ -21,7 +21,7 @@
 {% endblock %}
 {% block pageContent %}
     {{ data.invoice_signs | json_script:"invoice_signs" }}
-    {{ data.data.employee_current | json_script:"employee_current" }}
+
     <script id="script-url"
             data-url-product-list="{% url 'ProductListAPI' %}"
             data-url-uom-list="{% url 'UnitOfMeasureListAPI' %}"

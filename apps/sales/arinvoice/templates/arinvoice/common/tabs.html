@@ -2,7 +2,7 @@
 
 <div class="row mt-5 mb-10">
     <div class="col-12">
-        <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
+        <ul class="nav nav-tabs nav-icon nav-light">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                     <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-list"></i></span></span>
@@ -69,12 +69,12 @@
                                 {% trans 'Add new row' %}
                             </button>
                             <div class="dropdown-menu dropdown-bordered">
-                                <h6 class="dropdown-header">{% trans 'If not referring to order' %}</h6>
+                                <h6 class="dropdown-header">{% trans 'If not referring to SO' %}</h6>
                                 <a class="dropdown-item" href="#" id="btn-add-optionally">
                                     <i class="dropdown-icon fa-solid fa-plus"></i>
                                     <span>{% trans 'Add row optionally' %}</span>
                                 </a>
-                                <h6 class="dropdown-header">{% trans 'If referring to order' %}</h6>
+                                <h6 class="dropdown-header">{% trans 'If referring to SO' %}</h6>
                                 <a class="dropdown-item btn-group-for-delivery-ar disabled" href="#" id="btn-select-from-delivery">
                                     <i class="dropdown-icon fa-solid fa-square-check"></i>
                                     <span>{% trans 'Select product from delivery' %}</span>
@@ -85,9 +85,6 @@
                                 </a>
                             </div>
                         </div>
-                        <button hidden type="button" class="btn btn-sm btn-danger" id="delete-rows-description">
-                            {% trans 'Delete selected row' %}
-                        </button>
                     </div>
                 </div>
                 <div class="row">

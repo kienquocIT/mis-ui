@@ -13,7 +13,7 @@
                 <div class="table-responsive">
                     <table class="table nowrap w-100"
                            id="table-select-customer"
-                           data-method="GET" data-url="{% url 'AccountListAPI' %}"
+                           data-method="GET" data-url="{% url 'CustomerListAPI' %}"
                     >
                         <thead>
                             <tr>
@@ -28,7 +28,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button type="button" id="select-customer-btn" class="btn btn-primary">{% trans 'Select' %}</button>
+                <button type="button" id="accept-select-customer-btn" class="btn btn-primary">{% trans 'Select' %}</button>
             </div>
         </div>
     </div>
@@ -107,7 +107,9 @@
                     </thead>
                 </table>
             </div>
-            <div class="col-12 text-right mt-5">
+        </div>
+        <div class="row mt-5">
+            <div class="col-12 text-right">
                 <script id="delivery_product_data_script"></script>
                 <button type="button" id="accept-delivery-product-btn" class="btn btn-sm btn-custom btn-success btn-wth-icon">
                     <span>

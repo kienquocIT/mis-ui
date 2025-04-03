@@ -113,7 +113,7 @@ $(document).ready(function () {
         } else {
             let rowData = DTBControl.getRowData($(this));
             if (rowData.id) {
-                WindowControl.showLoading();
+                WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
                 let urlBase = $('#url-factory').attr('data-url-app-workflow-detail');
                 let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, rowData.id);
                 $.fn.callAjax(urlData, 'PUT', {'mode': valId}, $("input[name=csrfmiddlewaretoken]").val(),).then((resp) => {
@@ -145,7 +145,7 @@ $(document).ready(function () {
         } else {
             let rowData = DTBControl.getRowData($(this));
             if (rowData.id) {
-                WindowControl.showLoading();
+                WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
                 let urlBase = $('#url-factory').attr('data-url-app-workflow-detail');
                 let urlData = SetupFormSubmit.getUrlDetailWithID(urlBase, rowData.id);
                 $.fn.callAjax(urlData, 'PUT', {'workflow_currently': valId}, $("input[name=csrfmiddlewaretoken]").val(),).then((resp) => {

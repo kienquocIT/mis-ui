@@ -2,7 +2,7 @@ from django.urls import path
 from apps.sales.apinvoice.views import (
     APInvoiceList, APInvoiceCreate, APInvoiceDetail, APInvoiceUpdate,
     APInvoiceListAPI, APInvoiceDetailAPI,
-    GoodReceiptsListForAPInvoiceAPI
+    GoodReceiptsListForAPInvoiceAPI, PurchaseOrderListForAPInvoiceAPI
 )
 
 urlpatterns = [
@@ -13,5 +13,6 @@ urlpatterns = [
     path('list/api', APInvoiceListAPI.as_view(), name='APInvoiceListAPI'),
     path('detail/api/<str:pk>', APInvoiceDetailAPI.as_view(), name='APInvoiceDetailAPI'),
 ] + [
+    path('purchase-order/api', PurchaseOrderListForAPInvoiceAPI.as_view(), name='PurchaseOrderListForAPInvoiceAPI'),
     path('goods-receipts/api', GoodReceiptsListForAPInvoiceAPI.as_view(), name='GoodReceiptsListForAPInvoiceAPI'),
 ]

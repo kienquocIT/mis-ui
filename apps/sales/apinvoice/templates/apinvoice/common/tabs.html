@@ -2,80 +2,86 @@
 
 <div class="row mt-5 mb-10">
     <div class="col-12">
-        <ul class="nav nav-tabs nav-icon nav-light" id="tab-select-table">
-        <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
-                <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
-                <span class="nav-link-text">{% trans 'Line Detail' %}</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
-                <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-file-alt"></i></span></span>
-                <span class="nav-link-text">{% trans 'Attachment' %}</span>
-            </a>
-        </li>
-    </ul>
+        <ul class="nav nav-tabs nav-icon nav-light">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-list-ol"></i></span></span>
+                    <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="far fa-file-alt"></i></span></span>
+                    <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                </a>
+            </li>
+        </ul>
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_line_detail">
-                <div class="row" style="position: relative; overflow: auto">
+                <div class="row">
                     <div class="col-12">
-                        <script id="data-line-detail-table"></script>
-                        <table id="tab_line_detail_datatable" data-goods-receipt-selected="" class="table nowrap w-100"
+                        <table id="tab_line_detail_datatable"
+                               data-goods-receipt-selected=""
+                               class="table nowrap w-100"
                                data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
                                data-url-tax-list="{% url 'TaxListAPI' %}">
                             <thead>
                             <tr>
-                                <th class="text-center" style="min-width: 50px"></th>
-                                <th class="required" style="min-width: 300px">{% trans 'Product' %}</th>
-                                <th class="required" style="min-width: 200px">{% trans 'UoM' %}</th>
-                                <th class="required" style="min-width: 200px">{% trans 'Quantity' %}</th>
-                                <th class="required" style="min-width: 300px">{% trans 'Unit price' %}</th>
-                                <th style="min-width: 200px">{% trans 'Tax value' %}</th>
-                                <th class="required" style="min-width: 300px">{% trans 'Subtotal price' %}</th>
+                                <th style="min-width: 30px"></th>
+                                <th style="min-width: 30px"></th>
+                                <th style="min-width: 250px">{% trans 'Product' %}</th>
+                                <th style="min-width: 150px">{% trans 'UoM' %}</th>
+                                <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                                <th style="min-width: 150px">{% trans 'Unit price' %}</th>
+                                <th style="min-width: 150px">{% trans 'Subtotal price' %}</th>
+                                <th style="min-width: 150px">{% trans 'Tax' %}</th>
+                                <th style="min-width: 150px">{% trans 'Total amount' %}</th>
+                                <th style="min-width: 200px">{% trans 'Note' %}</th>
                             </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
                     </div>
                 </div>
-                <div class="row mt-5">
-                    <div class="col-7">
-                        <button class="btn btn-outline-primary" type="button" id="btn-add-row-line-detail">
-                            <span>
-                                <span class="icon">
-                                    <span class="feather-icon"><i class="far fa-edit"></i></span>
-                                </span>
-                                <span>{% trans 'Edit' %}</span>
-                            </span>
-                        </button>
-{#                                <button class="btn btn-outline-secondary" type="button" id="btn-add-row-line-detail-discount">#}
-{#                                    <span>#}
-{#                                        <span class="icon">#}
-{#                                            <span class="feather-icon"><i class="fas fa-gift"></i></span>#}
-{#                                        </span>#}
-{#                                        <span>{% trans 'Add' %} {% trans 'discount' %}</span>#}
-{#                                    </span>#}
-{#                                </button>#}
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div class="btn-group dropend">
+                            <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% trans 'Add new row' %}
+                            </button>
+                            <div class="dropdown-menu dropdown-bordered">
+                                <h6 class="dropdown-header">{% trans 'If referring to PO' %}</h6>
+                                <a class="dropdown-item btn-group-for-delivery-ar disabled" href="#" id="btn-select-from-gr">
+                                    <i class="dropdown-icon fa-solid fa-square-check"></i>
+                                    <span>{% trans 'Select product from goods receipt' %}</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-4 border text-primary">
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-7"></div>
+                    <div class="col-12 col-lg-5 mt-3 text-right">
+                        <div class="row mt-1">
+                            <label for="pretax-value" class="col-4 col-form-label">{% trans 'Pretax Amount' %}</label>
+                            <div class="col-8">
+                                <input disabled readonly class="text-right fw-bold form-control form-control-line mask-money zone-readonly" id="pretax-value" value="0">
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <label for="taxes-value" class="col-4 col-form-label">{% trans 'VAT' %}</label>
+                            <div class="col-8 dropdown">
+                                <input disabled readonly class="text-right form-control form-control-line mask-money zone-readonly" id="taxes-value" value="0">
+                                <a href="#" class="badge badge-sm badge-light" data-bs-toggle="dropdown">{% trans 'Detail' %}</a>
+                                <div role="menu" class="dropdown-menu dropdown-bordered col-12" id="dropdown-tax-detail"></div>
+                            </div>
+                        </div>
                         <div class="row mt-3">
-                            <div class="col-4">{% trans "Pretax price" %}</div>
-                            <span class="col-8 text-right mask-money" id="pretax-value">0</span>
-                        </div>
-                        <div class="row"><i class="bi bi-plus"></i></div>
-                        <div class="row">
-                            <div class="col-4">{% trans "Taxes" %}</div>
-                            <span class="col-8 text-right mask-money" id="taxes-value">0</span>
-                        </div>
-                        <hr class="bg-teal">
-{#                                <div class="row mb-3 text-danger" style="font-weight: bold">#}
-{#                                    <div class="col-4">{% trans "Discount" %}</div>#}
-{#                                    <span class="col-8 text-right mask-money" id="discount-all">0</span>#}
-{#                                </div>#}
-                        <div class="row mb-3" style="font-weight: bold">
-                            <div class="col-4">{% trans "Total" %}</div>
-                            <span class="col-8 text-right mask-money" id="total-value">0</span>
+                            <label style="font-size: larger" for="total-value" class="col-4 col-form-label fw-bold">{% trans 'TOTAL' %}</label>
+                            <div class="col-8">
+                                <input style="font-size: larger" disabled readonly class="text-right fw-bold form-control form-control-line mask-money zone-readonly" id="total-value" value="0">
+                                <span class="text-muted" id="total-value-by-words"></span>
+                            </div>
                         </div>
                     </div>
                 </div>

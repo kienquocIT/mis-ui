@@ -2316,10 +2316,6 @@ msgid "Create Opportunity"
 msgstr "Tạo cơ hội kinh doanh"
 
 #
-msgid "Select Customer"
-msgstr "Chọn khách hàng"
-
-#
 msgid "title of quotation"
 msgstr "Tiêu đề của báo giá"
 
@@ -11376,11 +11372,11 @@ msgid "Add row optionally"
 msgstr "Thêm dòng tùy chọn"
 
 #
-msgid "If not referring to order"
+msgid "If not referring to SO"
 msgstr "Nếu không tham chiếu tới đơn hàng nào"
 
 #
-msgid "If referring to order"
+msgid "If referring to SO"
 msgstr "Nếu tham chiếu tới đơn hàng"
 
 #
@@ -11674,3 +11670,15 @@ msgstr "Thanh toán vào tài khoản"
 #
 msgid "VAT"
 msgstr "Thuế GTGT"
+
+#
+msgid "Select supplier"
+msgstr "Chọn nhà cung cấp"
+
+#
+msgid "Select product from goods receipt"
+msgstr "Chọn sản phẩm từ phiếu nhập hàng"
+
+#
+msgid "If referring to PO"
+msgstr "Nếu tham chiếu tới đơn mua hàng"

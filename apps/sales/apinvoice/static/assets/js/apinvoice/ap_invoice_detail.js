@@ -1,3 +1,4 @@
 $(document).ready(function () {
-    LoadDetailAPInvoice('detail');
+    APInvoiceEventHandler.InitPageEven()
+    APInvoiceHandler.LoadDetailAPInvoice('detail');
 })

@@ -1,36 +1,16 @@
 $(document).ready(function () {
-    new APInvoiceHandle().load();
+    APInvoiceEventHandler.InitPageEven()
+    APInvoiceHandler.LoadDetailAPInvoice('update')
 
-    LoadDetailAPInvoice('update');
+    WFRTControl.setWFInitialData('apinvoice')
 
-    let pk = $.fn.getPkDetail();
-    $('#form-detail-ap-invoice').submit(function (event) {
-        event.preventDefault();
-        let combinesData = new APInvoiceHandle().combinesData($(this), true);
-        if (combinesData) {
-            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
-            $.fn.callAjax2(combinesData)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            setTimeout(() => {
-                                window.location.replace($(this).attr('data-url-redirect').format_url_with_uuid(pk));
-                                location.reload.bind(location);
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        setTimeout(
-                            () => {
-                                WindowControl.hideLoading();
-                            },
-                            1000
-                        )
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    }
-                )
+    let form_validator = $('#form-detail-ap-invoice').validate({
+        submitHandler: function (form) {
+            let form_data = APInvoiceHandler.CombinesData(form);
+            if (form_data) {
+                WFRTControl.callWFSubmitForm(form_data);
+            }
         }
     })
+    AutoValidator.CustomValidator(form_validator)
 })

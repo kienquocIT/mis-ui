@@ -5,11 +5,11 @@ class ARInvoicePageElements {
     constructor() {
         // info
         this.$script_url = $('#script-url')
-        this.$select_customer_btn = $('#select-customer-btn')
-        this.$customer_name = $('#customer-name')
-        this.$customer_code = $('#customer-code')
         this.$customer_select_btn = $('#customer-select-btn')
         this.$customer_select_modal = $('#customer-select-modal')
+        this.$accept_select_customer_btn = $('#accept-select-customer-btn')
+        this.$customer_name = $('#customer-name')
+        this.$customer_code = $('#customer-code')
         this.$table_select_customer = $('#table-select-customer')
         this.$tax_code = $('#tax_code')
         this.$view_tax_code_info = $('#view-tax-code-info')
@@ -72,14 +72,8 @@ class ARInvoicePageFunction {
                 type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        let res = []
-                        for (let i = 0; i < resp.data['account_list'].length; i++) {
-                            if (resp.data['account_list'][i]['account_type'].some(item => item === "Customer")) {
-                                res.push(resp.data['account_list'][i])
-                            }
-                        }
-                        return res;
+                    if (data && typeof data === 'object' && data.hasOwnProperty('customer_list')) {
+                        return data?.['customer_list'];
                     }
                     return [];
                 },
@@ -95,11 +89,11 @@ class ARInvoicePageFunction {
                     className: 'wrap-text w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
-                            <input type="radio"
-                                name="customer-selected-radio"
-                                class="form-check-input"
-                                data-customer='${JSON.stringify(row)}'/>
-                        </div>`
+                                    <input type="radio"
+                                    name="customer-selected-radio"
+                                    class="form-check-input"
+                                    data-customer='${JSON.stringify(row)}'/>
+                                </div>`
                     }
                 },
                 {
@@ -113,7 +107,7 @@ class ARInvoicePageFunction {
                     data: 'tax_code',
                     className: 'wrap-text w-20',
                     render: (data, type, row) => {
-                        return row.tax_code
+                        return row?.['tax_code']
                     }
                 },
             ],
@@ -127,7 +121,6 @@ class ARInvoicePageFunction {
                 method: 'GET',
             },
             callbackDataResp: function (resp, keyResp) {
-                console.log(resp.data[keyResp])
                 return resp.data[keyResp].filter(function (item) {
                     return item?.['has_not_ar_delivery'] === true
                 });
@@ -166,7 +159,7 @@ class ARInvoicePageFunction {
             scrollY: '30vh',
             scrollCollapse: true,
             ajax: {
-                url: pageElements.$script_url.attr('data-url-delivery-list') + '?sale_order_id=' + pageElements.$sale_order.val(),
+                url: pageElements.$script_url.attr('data-url-delivery-list') + '?order_delivery__sale_order_id=' + pageElements.$sale_order.val(),
                 type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
@@ -184,28 +177,24 @@ class ARInvoicePageFunction {
                     }
                 },
                 {
-                    data: 'code',
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<span class="badge badge-primary">${row?.['code']}</span>`
                     }
                 },
                 {
-                    data: 'name',
                     className: 'wrap-text',
                     render: (data, type, row) => {
                         return `${moment(row?.['actual_delivery_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}`
                     }
                 },
                 {
-                    data: 'already',
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         return row?.['already'] ? `<i class="fas fa-check-circle text-success"></i>` : ''
                     }
                 },
                 {
-                    data: 'select',
                     className: 'wrap-text text-center',
                     render: (data, type, row) => {
                         return `<div class="form-check" ${row?.['already'] ? 'hidden' : ''}>
@@ -322,7 +311,7 @@ class ARInvoicePageFunction {
                 {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
-                        return `<input ${from_delivery} class="product_unit_price mask-money form-control text-right" value="${row?.['product_unit_price'] || 0}">`
+                        return `<input ${from_delivery} class="form-control product_unit_price mask-money recalculate-field text-right" value="${row?.['product_unit_price'] || 0}">`
                     }
                 },
                 {
@@ -334,7 +323,7 @@ class ARInvoicePageFunction {
                 {
                     className: 'wrap-text text-right',
                     render: (data, type, row) => {
-                        return `<input ${from_delivery} class="recalculate-field form-control product_discount_value text-right text-danger mask-money" value="${row?.['product_discount_value'] || 0}">`
+                        return `<input ${from_delivery} class="form-control product_discount_value mask-money recalculate-field text-danger text-right" value="${row?.['product_discount_value'] || 0}">`
                     }
                 },
                 {
@@ -757,28 +746,23 @@ class ARInvoiceHandler {
         frm.dataForm['customer_mapped'] = pageElements.$customer_name.attr('data-id') || null
         frm.dataForm['buyer_name'] = pageElements.$buyer_name.val()
         frm.dataForm['tax_number'] = pageElements.$tax_code.val()
-        frm.dataForm['billing_address_id'] = pageElements.$billing_address.val()
+        frm.dataForm['billing_address_id'] = pageElements.$billing_address.val() || null
         frm.dataForm['invoice_method'] = pageElements.$invoice_method.val()
-        frm.dataForm['bank_account_id'] = pageElements.$bank_number.val() ? pageElements.$bank_number.val() : null
-        frm.dataForm['sale_order_mapped'] = pageElements.$sale_order.val() ? pageElements.$sale_order.val() : null
+        frm.dataForm['bank_account_id'] = pageElements.$bank_number.val() || null
+        frm.dataForm['sale_order_mapped'] = pageElements.$sale_order.val() || null
         frm.dataForm['note'] = pageElements.$note.val()
-
         frm.dataForm['posting_date'] = moment(pageElements.$posting_date.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
         frm.dataForm['document_date'] = moment(pageElements.$document_date.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
         frm.dataForm['invoice_date'] = moment(pageElements.$invoice_date.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
         frm.dataForm['invoice_sign'] = pageElements.$invoice_sign.val()
         frm.dataForm['invoice_number'] = pageElements.$invoice_number.val()
         frm.dataForm['invoice_example'] = pageElements.$invoice_exp.val()
-
         frm.dataForm['delivery_mapped_list'] = pageElements.$normal_datatable.attr('data-delivery-selected') !== '' ? pageElements.$normal_datatable.attr('data-delivery-selected').split(',') : []
 
         // let vat_number = []
         let data_item_list = []
         if (!pageElements.$normal_datatable.closest('.table_space').prop('hidden')) {
             pageElements.$normal_datatable.find('tbody tr').each(function () {
-                // if ($(this).find('.product_taxes').val()) {
-                //     vat_number.push($(this).find('.product_taxes').val())
-                // }
                 data_item_list.push({
                     'item_index': $(this).find('td:first-child').text(),
                     'product_id': $(this).find('.product-select').val() || null,
@@ -820,7 +804,7 @@ class ARInvoiceHandler {
     static LoadDetailARInvoice(option) {
         let url_loaded = $('#form-detail-ar-invoice').attr('data-url');
         $.fn.callAjax(url_loaded, 'GET').then(
-            async (resp) => {
+            (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     data = data['ar_invoice_detail'];
@@ -833,11 +817,9 @@ class ARInvoiceHandler {
                     if (pageVariables.invoice_signs?.['many_vat_sign'] === data?.['invoice_sign']) {
                         pageElements.$invoice_sign.val(pageVariables.invoice_signs?.['many_vat_sign'])
                     }
-
                     if (pageVariables.invoice_signs?.['one_vat_sign'] === data?.['invoice_sign']) {
                         pageElements.$invoice_sign.val(pageVariables.invoice_signs?.['one_vat_sign'])
                     }
-
                     if (pageVariables.invoice_signs?.['sale_invoice_sign'] === data?.['invoice_sign']) {
                         pageElements.$invoice_sign.val(pageVariables.invoice_signs?.['sale_invoice_sign'])
                     }
@@ -846,7 +828,6 @@ class ARInvoiceHandler {
                     pageElements.$customer_name.attr('data-id', data?.['customer_mapped_data']?.['id'])
                     pageElements.$customer_name.val(data?.['customer_mapped_data']?.['name'])
                     pageElements.$customer_code.val(data?.['customer_mapped_data']?.['code'])
-
                     pageElements.$buyer_name.val(data?.['buyer_name'])
                     pageElements.$tax_code.val(data?.['customer_mapped_data']?.['tax_code'])
                     for (let i = 0; i < (data?.['customer_mapped_data']?.['billing_address_list'] || []).length; i++) {
@@ -873,7 +854,6 @@ class ARInvoiceHandler {
                         pageElements.$bank_number.closest('.form-group').find('label').addClass('required')
                     }
                     ARInvoicePageFunction.LoadSaleOrder(data?.['sale_order_mapped_data'])
-                    pageElements.$sale_order.prop('disabled', false)
 
                     pageElements.$posting_date.val(moment(data?.['posting_date'].split(' ')[0]).format('DD/MM/YYYY'))
                     pageElements.$document_date.val(moment(data?.['document_date'].split(' ')[0]).format('DD/MM/YYYY'))
@@ -915,6 +895,7 @@ class ARInvoiceHandler {
                     else {
                         pageElements.$btn_group_for_delivery_ar.addClass('disabled')
                     }
+
                     if (Object.keys(data?.['sale_order_mapped_data']).length > 0) {
                         pageElements.$btn_add_optionally.addClass('disabled')
                     }
@@ -930,11 +911,12 @@ class ARInvoiceHandler {
 
                     $.fn.initMaskMoney2();
 
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
+
                     UsualLoadPageFunction.DisablePage(
                         option==='detail',
                         ['#view-tax-code-info', '#view-payment-term']
                     )
-                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }
@@ -956,7 +938,7 @@ class ARInvoiceEventHandler {
         pageElements.$customer_select_btn.on('click', function () {
             ARInvoicePageFunction.LoadCustomerTable()
         })
-        pageElements.$select_customer_btn.on('click', function () {
+        pageElements.$accept_select_customer_btn.on('click', function () {
             let selected_obj = null
             $('input[name="customer-selected-radio"]').each(async function () {
                 if ($(this).prop('checked')) {
@@ -1028,7 +1010,7 @@ class ARInvoiceEventHandler {
         pageElements.$accept_delivery_product_btn.on('click', function () {
             pageElements.$normal_datatable.closest('.table_space').prop('hidden', false)
             pageElements.$description_datatable.closest('.table_space').prop('hidden', true)
-            ARInvoicePageFunction.LoadNormalTable(pageElements.$delivery_product_data_script.text() ? JSON.parse(pageElements.$delivery_product_data_script.text()) : [])
+            ARInvoicePageFunction.LoadNormalTable(JSON.parse(pageElements.$delivery_product_data_script.text() || '[]'))
             $('#select-delivery-offcanvas').offcanvas('hide')
             let data_product = []
             $('.selected-delivery').each(function () {
@@ -1077,6 +1059,13 @@ class ARInvoiceEventHandler {
                 $.fn.notifyB({description: "You have not selected Sale order yet."}, 'warning')
             }
         })
+        $(document).on("click", '.delete-item-row', function () {
+            UsualLoadPageFunction.DeleteTableRow(
+                $(this).closest('tr').find('.product_quantity').length === 0 ? pageElements.$description_datatable : pageElements.$normal_datatable,
+                parseInt($(this).closest('tr').find('td:first-child').text())
+            )
+            ARInvoicePageFunction.CalculatePrice($(this).closest('tr').find('.product_quantity').length === 1 ? 'normal' : 'des')
+        })
         $(document).on("change", '.product-select', function () {
             if ($(this).val()) {
                 let selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
@@ -1094,6 +1083,15 @@ class ARInvoiceEventHandler {
                 })
             }
         })
+        $(document).on("change", '.product_quantity', function () {
+            if ($(this).val() < 0) {
+                $(this).val(0)
+            }
+        })
+        $(document).on("change", '.recalculate-field', function () {
+            ARInvoicePageFunction.CalculatePriceRow($(this).closest('tr'), $(this).closest('tr').find('.product_quantity').length === 1 ? 'normal' : 'des')
+            ARInvoicePageFunction.CalculatePrice($(this).closest('tr').find('.product_quantity').length === 1 ? 'normal' : 'des')
+        })
         $(document).on("change", '.selected-delivery', function () {
             // xử lí dữ liệu product delivery
             let data_product = []
@@ -1101,13 +1099,13 @@ class ARInvoiceEventHandler {
             $('.selected-delivery').each(function () {
                 if ($(this).prop('checked') && $(this).attr('data-already') === '0') {
                     data_product = data_product.concat(
-                        JSON.parse($(this).attr('data-detail') || [])
+                        JSON.parse($(this).attr('data-detail') || '[]')
                     )
                 }
 
                 if ($(this).prop('checked') && $(this).attr('data-already') === '1') {
                     data_product_already = data_product_already.concat(
-                        JSON.parse($(this).attr('data-detail') || [])
+                        JSON.parse($(this).attr('data-detail') || '[]')
                     )
                 }
             })
@@ -1143,30 +1141,6 @@ class ARInvoiceEventHandler {
 
             ARInvoicePageFunction.LoadDeliveryProductTable(data_product)
             pageElements.$delivery_product_data_script.text(JSON.stringify(data_product))
-        })
-        $(document).on("change", '.product_unit_price', function () {
-            let subtotal = parseFloat($(this).attr('value')) * parseFloat($(this).closest('tr').find('.product_quantity').text())
-            $(this).closest('tr').find('.product_subtotal_price').attr('data-init-money', subtotal)
-            $.fn.initMaskMoney2()
-        })
-        $(document).on("change", '.product_discount_value', function () {
-            ARInvoicePageFunction.CalculatePrice()
-        })
-        $(document).on("click", '.delete-item-row', function () {
-            UsualLoadPageFunction.DeleteTableRow(
-                $(this).closest('tr').find('.product_quantity').length === 0 ? pageElements.$description_datatable : pageElements.$normal_datatable,
-                parseInt($(this).closest('tr').find('td:first-child').text())
-            )
-            ARInvoicePageFunction.CalculatePrice($(this).closest('tr').find('.product_quantity').length === 1 ? 'normal' : 'des')
-        })
-        $(document).on("change", '.recalculate-field', function () {
-            ARInvoicePageFunction.CalculatePriceRow($(this).closest('tr'), $(this).closest('tr').find('.product_quantity').length === 1 ? 'normal' : 'des')
-            ARInvoicePageFunction.CalculatePrice($(this).closest('tr').find('.product_quantity').length === 1 ? 'normal' : 'des')
-        })
-        $(document).on("change", '.product_quantity', function () {
-            if ($(this).val() < 0) {
-                $(this).val(0)
-            }
         })
     }
 }

@@ -116,8 +116,12 @@
     <input
             type="text"
             id="app-url-factory"
+            data-indicator="{% url 'QuotationIndicatorListAPI' %}"
+            data-detail-indicator="{% url 'QuotationIndicatorDetailAPI' 1 %}"
             data-url-app-emp-config="{% url "AppEmpConfigListAPI" %}"
 
+            data-md-property="{% url "ApplicationPropertyListAPI" %}"
+            data-md-function="{% url "IndicatorParamListAPI" %}"
             data-md-labor="{% url "ExpenseListAPI" %}"
             data-md-expense-item="{% url "ExpenseItemListAPI" %}"
             data-md-product="{% url "ProductForSaleListAPI" %}"

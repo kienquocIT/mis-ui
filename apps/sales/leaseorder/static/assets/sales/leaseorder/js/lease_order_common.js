@@ -6704,25 +6704,25 @@ class LeaseOrderIndicatorHandle {
         for (let indicator of indicator_list) {
             let rateValue = 0;
             let parse_formula = "";
-            let formula_data = indicator.formula_data;
+            let formula_data = indicator?.['formula_data'];
             for (let item of formula_data) {
                 if (typeof item === 'object' && item !== null) {
                     if (item.hasOwnProperty('is_property')) {
-                        if (data_form.hasOwnProperty(item.code)) {
-                            parse_formula += data_form[item.code];
+                        if (data_form.hasOwnProperty(item?.['code'])) {
+                            parse_formula += data_form[item?.['code']];
                         }
                     } else if (item.hasOwnProperty('is_indicator')) {
-                        if (result_json.hasOwnProperty(item.order)) {
-                            if (item.order < indicator.order) {
-                                parse_formula += result_json[item.order].indicator_value;
+                        if (result_json.hasOwnProperty(item?.['order'])) {
+                            if (item?.['order'] < indicator?.['order']) {
+                                parse_formula += result_json[item?.['order']]?.['indicator_value'];
                             }
                         }
                     } else if (item.hasOwnProperty('param_type')) {
-                        if (item.param_type === 2) { // FUNCTION
-                            if (item.code === 'max' || item.code === 'min') {
+                        if (item?.['param_type'] === 2) { // FUNCTION
+                            if (item?.['code'] === 'max' || item?.['code'] === 'min') {
                                 let functionData = LeaseOrderIndicatorHandle.functionMaxMin(item, data_form, result_json);
                                 parse_formula += functionData;
-                            } else if (item.code === 'sumItemIf') {
+                            } else if (item?.['code'] === 'sumItemIf') {
                                 let functionData = LeaseOrderIndicatorHandle.functionSumItemIf(item, data_form);
                                 parse_formula += functionData;
                             }
@@ -6845,13 +6845,13 @@ class LeaseOrderIndicatorHandle {
         let leftValueJSON = null;
         let rightValue = null;
         let operator_list = ['===', '!==', '<', '>', '<=', '>='];
-        let condition_operator = operator_list.filter((element) => item.function_data.includes(element))[0];
-        let operatorIndex = item.function_data.indexOf(condition_operator);
-        if (operatorIndex !== -1 && operatorIndex > 0 && operatorIndex < item.function_data.length - 1) {
-            leftValueJSON = item.function_data[operatorIndex - 1];
-            rightValue = item.function_data[operatorIndex + 1];
+        let condition_operator = operator_list.filter((element) => item?.['function_data'].includes(element))[0];
+        let operatorIndex = item?.['function_data'].indexOf(condition_operator);
+        if (operatorIndex !== -1 && operatorIndex > 0 && operatorIndex < item?.['function_data'].length - 1) {
+            leftValueJSON = item?.['function_data'][operatorIndex - 1];
+            rightValue = item?.['function_data'][operatorIndex + 1];
         }
-        let lastElement = item.function_data[item.function_data.length - 1];
+        let lastElement = item?.['function_data'][item?.['function_data'].length - 1];
         let dataList = [];
         // Tab Products
         if (data_form?.['lease_products_data'] && leftValueJSON?.['code'].includes("product_data")) {
@@ -6872,13 +6872,13 @@ class LeaseOrderIndicatorHandle {
         let functionBody = "";
         for (let data of data_list) {
             if (typeof leftValueJSON === 'object' && leftValueJSON !== null) {
-                let val = LeaseOrderIndicatorHandle.findKey(data, leftValueJSON.code);
+                let val = LeaseOrderIndicatorHandle.findKey(data, leftValueJSON?.['code']);
                 if (val) {
                     if (Array.isArray(val)) {
                         val = val.map(item => item.replace(/\s/g, "").toLowerCase());
                         let check = val.includes(rightValue);
                         if (check === true) {
-                            functionBody += String(data[lastElement.code]);
+                            functionBody += String(data[lastElement?.['code']]);
                             functionBody += ",";
                         }
                     }
@@ -6887,7 +6887,7 @@ class LeaseOrderIndicatorHandle {
                         let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
                         let check = LeaseOrderIndicatorHandle.evaluateFormula(checkExpression);
                         if (check === true) {
-                            functionBody += String(data[lastElement.code]);
+                            functionBody += String(data[lastElement?.['code']]);
                             functionBody += ",";
                         }
                     }

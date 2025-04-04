@@ -15,8 +15,8 @@
     <thead>
     <tr class="bg-light">
         <th class="w-10">{% trans 'STT' %}</th>
-        <th class="w-35">{% trans 'Indicator' %}</th>
-        <th class="w-5"></th>
+        <th class="w-30">{% trans 'Indicator' %}</th>
+        <th class="w-10"></th>
         <th class="w-40">{% trans 'Description' %}</th>
         <th class="w-10"></th>
     </tr>
@@ -25,56 +25,155 @@
     </tbody>
 </table>
 
-<div
-        class="modal fade" id="indicatorCreateModalCenter" tabindex="-1"
-        role="dialog" aria-labelledby="indicatorCreateModalCenter"
-        aria-hidden="true" data-bs-backdrop="static"
->
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><b>{% trans 'Add indicator' %}</b></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="form-group">
-                        <label class="form-label" for="indicator-create-title">{% trans 'Title' %}<span class="required"></span></label>
-                        <input
-                                type="text" class="form-control"
-                                id="indicator-create-title"
-                                name="indicator_title"
-                        >
+<div class="canvas-modal-area">
+
+    <div
+            class="modal fade" id="indicatorCreateModalCenter" tabindex="-1"
+            role="dialog" aria-labelledby="indicatorCreateModalCenter"
+            aria-hidden="true" data-bs-backdrop="static"
+    >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>{% trans 'Add indicator' %}</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="form-label" for="indicator-create-title">{% trans 'Title' %}<span class="required"></span></label>
+                            <input
+                                    type="text" class="form-control"
+                                    id="indicator-create-title"
+                                    name="indicator_title"
+                            >
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="form-label" for="indicator-create-description">{% trans 'Description' %}<span class="required"></span></label>
+                            <input
+                                    type="text" class="form-control"
+                                    id="indicator-create-description"
+                                    name="indicator_description"
+                            >
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="form-group">
-                        <label class="form-label" for="indicator-create-description">{% trans 'Description' %}<span class="required"></span></label>
-                        <input
-                                type="text" class="form-control"
-                                id="indicator-create-description"
-                                name="indicator_description"
-                        >
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button
+                            type="button"
+                            class="btn btn-primary"
+                            id="btn-create-indicator"
+                            data-url="{% url 'QuotationIndicatorListAPI' %}"
+                            data-url-redirect="{% url 'QuotationConfigDetail' %}"
+                            data-url-update="{% url 'QuotationIndicatorDetailAPI' 1 %}"
+                            data-method="post"
+                    >{% trans 'Save' %}</button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button
-                        type="button"
-                        class="btn btn-primary"
-                        id="btn-create-indicator"
-                        data-url="{% url 'QuotationIndicatorListAPI' %}"
-                        data-url-redirect="{% url 'QuotationConfigDetail' %}"
-                        data-url-update="{% url 'QuotationIndicatorDetailAPI' 1 %}"
-                        data-method="post"
-                >{% trans 'Save' %}</button>
             </div>
         </div>
     </div>
+
+
+    <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="formulaCanvas" aria-labelledby="offcanvasTopLabel">
+        <div class="modal-header">
+            <h5><b>{% trans 'Edit formula' %} <span id="formula_title"></span></b></h5>
+            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="row">
+                <div class="form-group">
+                    <label class="form-label" for="formula_editor">{% trans 'Editor' %}</label>
+                    <textarea class="form-control indicator-editor" id="formula_editor" rows="4" cols="50" name=""></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <ul class="nav nav-line nav-tabs nav-light border-bottom">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_formula_indicator">
+                        <span class="nav-link-text">{% trans 'Indicator' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_formula_property">
+                        <span class="nav-link-text">{% trans 'Property' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_formula_function">
+                        <span class="nav-link-text">{% trans 'Function' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" hidden>
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_formula_operator">
+                        <span class="nav-link-text">{% trans 'Operator' %}</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content h-300p">
+                    <div class="row tab-pane fade show active" id="tab_formula_indicator">
+                        <div class="row">
+                            <div class="col-4 indicator-list" id="indicator_md"></div>
+                            <div class="col-8 indicator-description" id="indicator_remark"></div>
+                        </div>
+                    </div>
+                    <div class="row tab-pane fade" id="tab_formula_property">
+                        <div class="row">
+                            <div class="col-4 property-list" id="property_md"></div>
+                            <div class="col-8 property-description" id="property_remark"></div>
+                        </div>
+                    </div>
+                    <div class="row tab-pane fade" id="tab_formula_function">
+                        <div class="row">
+                            <div class="col-4 function-list" id="function_md"></div>
+                            <div class="col-8 function-description" id="function_remark"></div>
+                        </div>
+                    </div>
+                    <div class="row tab-pane fade" id="tab_formula_operator">
+                        <div class="col-6"></div>
+                        <div class="col-6"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row final-acceptance-zone">
+                <b>{% trans 'Final acceptance setting' %}</b>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-group form-group-data-source">
+                        <label class="form-label">{% trans 'Data source' %}</label>
+                        <select
+                            class="form-select box-acceptance-affect"
+                            id="box_acceptance_affect"
+                            data-url=""
+                            data-method="GET"
+                            data-keyResp=""
+                        >
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="form-check form-check-lg mt-5">
+                        <input type="checkbox" class="form-check-input acceptance-editable" id="acceptance_editable">
+                        <label class="form-check-label" for="acceptance_editable">{% trans 'Editable' %}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas" data-zone="lease_costs_data">{% trans 'Close' %}</button>
+            <button type="button" class="btn btn-primary" id="btn-save-formula" data-bs-dismiss="offcanvas">{% trans 'Save' %}</button>
+            <span class="text-red" id="formula_validate_txt"></span>
+        </div>
+    </div>
+
 </div>
+
+
 
 <div
         class="modal fade" id="restoreIndicatorModalCenter" tabindex="-1"

@@ -876,6 +876,7 @@ $(function () {
                 info: false,
                 autoWidth: true,
                 scrollX: true,
+                fixedColumns: true,
                 columns: [  // 280, <310x12=3720> (4000p)
                     {
                         targets: 0,
@@ -1321,10 +1322,30 @@ $(function () {
                     // change TH by months
                     changeTHTableYearByMonths();
                     // add css to Dtb
-                    loadCssToDtb('table_report_cashflow_year_list');
+                    dtbHDCustom();
                 },
             });
         }
+
+        function dtbHDCustom() {
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+            headerToolbar$.prepend(textFilter$);
+
+            if (textFilter$.length > 0) {
+                textFilter$.css('display', 'flex');
+                // Check if the button already exists before appending
+                if (!$('#btn-open-filter').length) {
+                    let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                        <span><span class="icon"><i class="fas fa-filter"></i></span><span>${eleTrans.attr('data-filter')}</span></span>
+                                    </button>`);
+                    textFilter$.append(
+                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                    );
+                }
+            }
+        };
 
         function loadDblMonth(data) {
             $tableMonth.DataTableDefault({
@@ -1500,12 +1521,33 @@ $(function () {
                     // change TH by weeks
                     changeTHTableMonthByWeeks();
                     // add css to Dtb
-                    loadCssToDtb('table_report_cashflow_month_list');
+                    dtbMonthHDCustom();
                 },
             });
         }
 
         loadDblMonth();
+
+        function dtbMonthHDCustom() {
+            let $table = $tableMonth;
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+            headerToolbar$.prepend(textFilter$);
+
+            if (textFilter$.length > 0) {
+                textFilter$.css('display', 'flex');
+                // Check if the button already exists before appending
+                if (!$('#btn-open-month-filter').length) {
+                    let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-open-month-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                        <span><span class="icon"><i class="fas fa-filter"></i></span><span>${eleTrans.attr('data-filter')}</span></span>
+                                    </button>`);
+                    textFilter$.append(
+                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                    );
+                }
+            }
+        };
 
         function loadCssToDtb(tableID) {
             let tableIDWrapper = tableID + '_wrapper';
@@ -1703,7 +1745,7 @@ $(function () {
                             boxYear.val(currentYear).trigger('change');
                             loadDbl();
 
-                            btnView.click();
+                            $('#btn-apply-filter').click();
                         }
                     }
                 }
@@ -2238,7 +2280,7 @@ $(function () {
             return true
         }
 
-        btnView.on('click', function () {
+        $('#btn-apply-filter').on('click', function () {
             let dataParams = {};
             if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');

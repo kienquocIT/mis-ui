@@ -120,12 +120,12 @@ $(function () {
                     $.fn.initMaskMoney2();
                     loadTotal();
                     // add css to Dtb
-                    dtbPaymentHDCustom();
+                    dtbHDCustom();
                 },
             });
         }
 
-        function dtbPaymentHDCustom() {
+        function dtbHDCustom() {
             let wrapper$ = $table.closest('.dataTables_wrapper');
             let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
             let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');

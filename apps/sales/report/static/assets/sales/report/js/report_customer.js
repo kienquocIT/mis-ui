@@ -13,6 +13,7 @@ $(function () {
         let $table = $('#table_report_customer_list');
         let eleFiscalYear = $('#data-fiscal-year');
         let $urlFact = $('#app-url-factory');
+        let $transFact = $('#app-trans-factory');
 
         function loadDbl(data) {
             $table.DataTableDefault({
@@ -84,10 +85,30 @@ $(function () {
                     $.fn.initMaskMoney2();
                     loadTotal();
                     // add css to Dtb
-                    loadCssToDtb('table_report_customer_list');
+                    dtbPaymentHDCustom();
                 },
             });
         }
+
+        function dtbPaymentHDCustom() {
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+            headerToolbar$.prepend(textFilter$);
+
+            if (textFilter$.length > 0) {
+                textFilter$.css('display', 'flex');
+                // Check if the button already exists before appending
+                if (!$('#btn-open-filter').length) {
+                    let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                        <span><span class="icon"><i class="fas fa-filter"></i></span><span>${$transFact.attr('data-filter')}</span></span>
+                                    </button>`);
+                    textFilter$.append(
+                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                    );
+                }
+            }
+        };
 
         function loadCssToDtb(tableID) {
             let tableIDWrapper = tableID + '_wrapper';

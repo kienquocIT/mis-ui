@@ -295,51 +295,13 @@ $(function () {
             loadAcceptance($(this));
         });
 
-        $formulaCanvas.on('click', '.param-item', function () {
-            let dataEle = this.querySelector('.data-show');
-            if (dataEle) {
-                if ($(dataEle).val()) {
-                    let data = JSON.parse($(dataEle).val());
-                    let tabEle = this.closest('.tab-pane');
-                    if (tabEle) {
-                        if (tabEle.id === "tab_formula_indicator") {
-                            // show editor
-                            $formulaEditor.val($formulaEditor.val() + data.syntax);
-                            // on blur editor to validate formula
-                            $formulaEditor.blur();
-                        }
-                        if (tabEle.id === "tab_formula_property") {
-                            if (data?.['type'] === 5) {
-                                let boxMDEle = $propertyRemark[0].querySelector('.box-property-md');
-                                if (boxMDEle) {
-                                    boxMDEle.removeAttribute('disabled');
-                                }
-                            } else {
-                                // show editor
-                                $formulaEditor.val($formulaEditor.val() + data.syntax);
-                                // on blur editor to validate formula
-                                $formulaEditor.blur();
-                            }
-                        }
-                        if (tabEle.id === "tab_formula_function") {
-                            // show editor
-                            $formulaEditor.val($formulaEditor.val() + data.syntax);
-                            // on blur editor to validate formula
-                            $formulaEditor.blur();
-                        }
-                    }
-                }
-            }
-            return true;
-        });
-
         $formulaCanvas.on('mouseenter', '.param-item', function () {
             let dataEle = this.querySelector('.data-show');
             if (dataEle) {
                 if ($(dataEle).val()) {
                     let data = JSON.parse($(dataEle).val());
                     let dataStr = JSON.stringify(data);
-                    let htmlBase = `<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-280p position-relative overflow-y-scroll">
+                    let htmlBase = `<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-300p position-relative overflow-y-scroll">
                                         <div class="row">
                                             <h5>${data?.['title_i18n'] ? data?.['title_i18n'] : ''}</h5>
                                             <p>${data?.['remark'] ? data?.['remark'] : ''}</p>
@@ -388,7 +350,7 @@ $(function () {
                                     $(boxMDEle).attr('data-keyResp', keyResp);
                                     $(boxMDEle).attr('data-show', dataStr);
                                     $(boxMDEle).attr('disabled', 'true');
-                                    loadInitS2($(boxMDEle));
+                                    loadInitS2($(boxMDEle), [], {}, $propertyRemark, true);
 
                                     $(areaBoxMDEle).removeClass('hidden');
                                 }
@@ -397,6 +359,44 @@ $(function () {
                         if (tabEle.id === "tab_formula_function") {
                             $functionRemark.empty();
                             $functionRemark.append(htmlBase);
+                        }
+                    }
+                }
+            }
+            return true;
+        });
+
+        $formulaCanvas.on('click', '.param-item', function () {
+            let dataEle = this.querySelector('.data-show');
+            if (dataEle) {
+                if ($(dataEle).val()) {
+                    let data = JSON.parse($(dataEle).val());
+                    let tabEle = this.closest('.tab-pane');
+                    if (tabEle) {
+                        if (tabEle.id === "tab_formula_indicator") {
+                            // show editor
+                            $formulaEditor.val($formulaEditor.val() + data.syntax);
+                            // on blur editor to validate formula
+                            $formulaEditor.blur();
+                        }
+                        if (tabEle.id === "tab_formula_property") {
+                            if (data?.['type'] === 5) {
+                                let boxMDEle = $propertyRemark[0].querySelector('.box-property-md');
+                                if (boxMDEle) {
+                                    boxMDEle.removeAttribute('disabled');
+                                }
+                            } else {
+                                // show editor
+                                $formulaEditor.val($formulaEditor.val() + data.syntax);
+                                // on blur editor to validate formula
+                                $formulaEditor.blur();
+                            }
+                        }
+                        if (tabEle.id === "tab_formula_function") {
+                            // show editor
+                            $formulaEditor.val($formulaEditor.val() + data.syntax);
+                            // on blur editor to validate formula
+                            $formulaEditor.blur();
                         }
                     }
                 }
@@ -1129,7 +1129,7 @@ $(function () {
                                                 </div>`;
                     }
                 })
-                $indicatorMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-280p position-relative overflow-y-scroll">
+                $indicatorMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-300p position-relative overflow-y-scroll">
                                 ${indicator_list}
                             </div>`);
             }
@@ -1177,7 +1177,7 @@ $(function () {
                                                         </button>
                                                     </div>`;
                             })
-                            $propertyMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-280p position-relative overflow-y-scroll">
+                            $propertyMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-300p position-relative overflow-y-scroll">
                                             ${param_list}
                                         </div>`);
                         }
@@ -1210,7 +1210,7 @@ $(function () {
                                                 </button>
                                             </div>`
                             })
-                            $functionMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-280p position-relative overflow-y-scroll">
+                            $functionMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-300p position-relative overflow-y-scroll">
                                             ${param_list}
                                         </div>`);
                         }

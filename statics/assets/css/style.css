@@ -89990,7 +89990,7 @@ Project:	Jampack
 /*Blog App*/
 .blogapp-wrap {
   position: relative;
-  height: calc(100vh - 65px);
+  height: calc(100vh);
 }
 .blogapp-wrap .blogapp-sidebar {
   position: absolute;

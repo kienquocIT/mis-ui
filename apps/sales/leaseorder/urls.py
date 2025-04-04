@@ -2,7 +2,7 @@ from django.urls import path
 
 from apps.sales.leaseorder.views import LeaseOrderCreate, LeaseOrderDetail, LeaseOrderListAPI, LeaseOrderDetailAPI, \
     LeaseOrderUpdate, LeaseOrderList, LeaseOrderDetailDeliveryAPI, LORecurrenceListAPI, LeaseOrderConfigDetail, \
-    LeaseOrderConfigDetailAPI
+    LeaseOrderConfigDetailAPI, LeaseOrderAssetList
 
 urlpatterns = [
     path('config', LeaseOrderConfigDetail.as_view(), name='LeaseOrderConfigDetail'),
@@ -16,4 +16,6 @@ urlpatterns = [
     path('detail-api/<str:pk>/delivery', LeaseOrderDetailDeliveryAPI.as_view(), name='LeaseOrderDetailDeliveryAPI'),
 
     path('lease-order-recurrence/list', LORecurrenceListAPI.as_view(), name='LORecurrenceListAPI'),
+
+    path('lists-asset', LeaseOrderAssetList.as_view(), name='LeaseOrderAssetList'),
 ]

@@ -139,7 +139,11 @@
             overflow-y: auto
         }
         .sidebar .menu .main-menu-item {
-            padding: 8px 10px;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+        .sidebar .menu .child-menu-item {
+            padding: 5px 5px;
             border-radius: 8px;
         }
         .sidebar .menu .main-menu-item:not(.active):hover {
@@ -257,12 +261,21 @@
         </span>
     </button>
     <div class="btn-group mb-3 w-100" id="menu-tenant" data-space-selected="{{ base.space_current_detail.code }}">
-        <button id="menu-tenant-text" type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" data-dropdown-animation aria-haspopup="true" aria-expanded="false">
+        <button id="menu-tenant-text" type="button" class="btn btn-lg btn-animated btn-custom btn-dark btn-floating rounded" data-bs-toggle="dropdown" data-dropdown-animation aria-haspopup="true" aria-expanded="false">
             {% if base.space_current_detail.name %}
-                {{ base.space_current_detail.icon|safe }} {{ base.space_current_detail.name }}
+                 <span>
+                    <span class="icon">
+                        <span class="feather-icon">{{ base.space_current_detail.icon|safe }}</span>
+                    </span>
+                    <span>{{ base.space_current_detail.name }}</span>
+                    <span class="icon">
+                        <span class="feather-icon"><i class="fa-solid fa-caret-down"></i></span>
+                    </span>
+                </span>
             {% else %}
                 --
             {% endif %}
+
         </button>
         <div class="dropdown-menu dropdown-menu-dark dropdown-bordered w-80" data-url="{% url 'SpaceChangeView' %}" data-url-redirect="{% url 'HomeView' %}" data-method="PUT">
             {% csrf_token %}
@@ -662,7 +675,7 @@
                 $('#breadcrumb-data').addClass('hidden');
             }
             if (wWidth < 350) {
-                $('#menu-tenant-text').text("_");
+                $('#menu-tenant-text').text("--");
             }
         }
 

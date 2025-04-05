@@ -104,14 +104,18 @@
             background-color: #f0f2f5;
             transition: all 0.3s ease-in-out;
         }
-        .content {
+        #content {
             margin-left: 300px;
-            transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
             width: calc(100% - 300px);
+            transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
         }
-        .content.full-width {
+        #content.full-width {
             margin-left: 65px;
             width: calc(100% - 65px);
+        }
+        #content .blogapp-wrap {
+          position: relative; !important;
+          height: 100vh; !important;
         }
         .sidebar {
             background: white;
@@ -302,7 +306,7 @@
 
 <!-- Main Content -->
 {% block fullBody %}
-<div class="content full-width" id="content">
+<div class="full-width" id="content">
     <div class="blogapp-wrap blogapp-sidebar-toggle">
         <div class="blogapp-content">
             <div class="blogapp-detail-wrap w-100">

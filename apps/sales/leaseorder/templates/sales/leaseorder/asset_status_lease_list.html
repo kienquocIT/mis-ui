@@ -22,11 +22,11 @@
                 <th>{% trans 'Name' %}</th>
                 <th>{% trans 'Type' %}</th>
                 <th>{% trans 'Quantity' %}</th>
-                <th>{% trans 'Quantity leased' %}</th>
+                <th>{% trans 'Leased' %}</th>
                 <th>{% trans 'Contract name' %}</th>
                 <th>{% trans 'Contract code' %}</th>
-                <th>{% trans 'Start lease' %}</th>
-                <th>{% trans 'End lease' %}</th>
+                <th>{% trans 'Lease from' %}</th>
+                <th>{% trans 'Lease to' %}</th>
                 <th>{% trans 'Customer name' %}</th>
                 <th>{% trans 'Original cost' %}</th>
                 <th>{% trans 'Net value' %}</th>
@@ -75,12 +75,14 @@
     <input
             type="text" id="app-urls-factory"
             data-asset-status-lease="{% url 'AssetStatusLeaseListAPI' %}"
+            data-tool-status-lease="{% url 'ToolStatusLeaseListAPI' %}"
 
     >
     <input
             type="text"
             id="app-trans-factory"
             data-filter="{% trans 'Filter' %}"
+            data-month="{% trans 'Month' %}"
     >
 {% endblock %}
 {% block jsFooter %}
@@ -88,5 +90,7 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+
+    <script src="{% static 'assets/js/extends/depreciation/depreciation_common.js' %}"></script>
     <script src="{% static 'assets/sales/leaseorder/js/asset_status_lease_list.js' %}"></script>
 {% endblock %}

@@ -15,80 +15,97 @@ $(function () {
                 columns: [
                     {
                         targets: 0,
+                        width: '3%',
                         render: (data, type, row) => {
                             return `<span>${row?.['code'] ? row?.['code'] : ''}</span>`;
                         }
                     },
                     {
                         targets: 1,
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span>${row?.['title'] ? row?.['title'] : ''}</span>`;
                         }
                     },
                     {
                         targets: 2,
+                        width: '3%',
                         render: (data, type, row) => {
                             return `<span>${row?.['asset_type'] ? row?.['asset_type'] : ''}</span>`;
                         }
                     },
                     {
                         targets: 3,
+                        width: '3%',
                         render: (data, type, row) => {
-                            return `<span>1</span>`;
+                            return `<span>${row?.['quantity'] ? row?.['quantity'] : 0}</span>`;
                         }
                     },
                     {
                         targets: 4,
+                        width: '5%',
                         render: (data, type, row) => {
-                            return `<span>1</span>`;
+                            return `<span>${row?.['quantity_leased'] ? row?.['quantity_leased'] : 0}</span>`;
                         }
                     },
                     {
                         targets: 5,
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span>${row?.['lease_order_data']?.['title'] ? row?.['lease_order_data']?.['title'] : ''}</span>`;
                         }
                     },
                     {
                         targets: 6,
+                        width: '8%',
                         render: (data, type, row) => {
                             return `<span>${row?.['lease_order_data']?.['code'] ? row?.['lease_order_data']?.['code'] : ''}</span>`;
                         }
                     },
                     {
                         targets: 7,
+                        width: '5%',
                         render: (data, type, row) => {
-                            return `<span>${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span>`;
+                            return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_order_data']?.['product_lease_start_date'])}</span>`;
                         }
                     },
                     {
                         targets: 8,
+                        width: '5%',
                         render: (data, type, row) => {
-                            return `<span>${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span>`;
+                            return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_order_data']?.['product_lease_end_date'])}</span>`;
                         }
                     },
                     {
                         targets: 9,
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span>${row?.['lease_order_data']?.['customer']?.['title'] ? row?.['lease_order_data']?.['customer']?.['title'] : ''}</span>`;
                         }
                     },
                     {
                         targets: 10,
+                        width: '10%',
                         render: (data, type, row) => {
-                            return `<span>${row?.['original_cost'] ? row?.['original_cost'] : 0}</span>`;
+                            return `<span class="mask-money table-row-net-value" data-init-money="${row?.['origin_cost'] ? row?.['origin_cost'] : 0}"></span>`;
                         }
                     },
                     {
                         targets: 11,
+                        width: '10%',
                         render: (data, type, row) => {
-                            return `<span>${row?.['net_value'] ? row?.['net_value'] : 0}</span>`;
+                            let netValue = DepreciationControl.getNetValue({
+                                "data_depreciation": row?.['depreciation_data'],
+                                "current_date": DateTimeControl.getCurrentDate("DMY", "/")
+                            })
+                            return `<span class="mask-money table-row-net-value" data-init-money="${netValue ? netValue : 0}"></span>`;
                         }
                     },
                     {
                         targets: 12,
+                        width: '10%',
                         render: (data, type, row) => {
-                            return `<span>${row?.['depreciation_time'] ? row?.['depreciation_time'] : 0}</span>`;
+                            return `<span>${row?.['depreciation_time'] ? row?.['depreciation_time'] : 0} ${$transFact.attr('data-month')}</span>`;
                         }
                     },
                 ],
@@ -119,82 +136,6 @@ $(function () {
                     );
                 }
             }
-        }
-
-        function callAjaxData() {
-            let newRevenue = 0;
-            let newGrossProfit = 0;
-            let newNetIncome = 0;
-            $table.DataTable().rows().every(function () {
-                let row = this.node();
-                let rowRevenue = row?.querySelector('.table-row-revenue')?.getAttribute('data-init-money');
-                let rowGrossProfit = row?.querySelector('.table-row-gross-profit')?.getAttribute('data-init-money');
-                let rowNetIncome = row?.querySelector('.table-row-net-income')?.getAttribute('data-init-money');
-                if (rowRevenue) {
-                    newRevenue += parseFloat(rowRevenue);
-                }
-                if (rowGrossProfit) {
-                    newGrossProfit += parseFloat(rowGrossProfit);
-                }
-                if (rowNetIncome) {
-                    newNetIncome += parseFloat(rowNetIncome);
-                }
-            });
-            eleRevenue.attr('data-init-money', String(newRevenue));
-            eleGrossProfit.attr('data-init-money', String(newGrossProfit));
-            eleNetIncome.attr('data-init-money', String(newNetIncome));
-        }
-
-        function storeLoadInitByDataFiscalYear() {
-            $.fn.callAjax2({
-                    'url': eleFiscalYear.attr('data-url'),
-                    'method': eleFiscalYear.attr('data-method'),
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('periods_list') && Array.isArray(data.periods_list)) {
-                            eleFiscalYear.val(JSON.stringify(data.periods_list));
-                            let currentYear = new Date().getFullYear();
-                            for (let period of data.periods_list) {
-                                if (period?.['fiscal_year'] === currentYear) {
-                                    let {startDate, endDate} = getYearRange(period?.['start_date']);
-                                    // set init val date range
-                                    let startDateObj = new Date(startDate);
-                                    let endDateObj = new Date(endDate);
-                                    let formattedStartDate = `${padWithZero(startDateObj.getDate())}/${padWithZero(startDateObj.getMonth() + 1)}/${startDateObj.getFullYear()}`;
-                                    let formattedEndDate = `${padWithZero(endDateObj.getDate())}/${padWithZero(endDateObj.getMonth() + 1)}/${endDateObj.getFullYear()}`;
-                                    boxStart.val(formattedStartDate);
-                                    boxEnd.val(formattedEndDate);
-                                    $.fn.callAjax2({
-                                            'url': $table.attr('data-url'),
-                                            'method': $table.attr('data-method'),
-                                            'data': {
-                                                'is_initial': false,
-                                                'date_approved__gte': startDate,
-                                                'date_approved__lte': endDate,
-                                            },
-                                            isLoading: true,
-                                        }
-                                    ).then(
-                                        (resp) => {
-                                            let data = $.fn.switcherResp(resp);
-                                            if (data) {
-                                                if (data.hasOwnProperty('report_revenue_list') && Array.isArray(data.report_revenue_list)) {
-                                                    $table.DataTable().clear().draw();
-                                                    $table.DataTable().rows.add(data.report_revenue_list).draw();
-                                                    loadTotal();
-                                                }
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            )
         }
 
         function padWithZero(num) {
@@ -276,7 +217,7 @@ $(function () {
         function initData() {
             loadInitS2($boxLease, [], {}, null, true);
             loadDbl();
-            $('#btn-apply-filter').trigger('click');
+            callAjaxAssetTool();
         }
 
         initData();
@@ -304,6 +245,51 @@ $(function () {
             return true;
         }
 
+        function callAjaxAssetTool() {
+            let dataParams1 = {};
+            let dataParams2 = {};
+            if ($boxLease.val() && $boxLease.val().length > 0) {
+                dataParams1['delivery_pa_asset__delivery_sub__order_delivery__lease_order_id__in'] = $boxLease.val().join(',');
+                dataParams2['delivery_pt_tool__delivery_sub__order_delivery__lease_order_id__in'] = $boxLease.val().join(',');
+            }
+            WindowControl.showLoading();
+            $.fn.callAjax2({
+                    'url': $urlFact.attr('data-asset-status-lease'),
+                    'method': 'GET',
+                    'data': dataParams1,
+                    isLoading: true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('fixed_asset_status_lease_list') && Array.isArray(data.fixed_asset_status_lease_list)) {
+                            let data1 = data.fixed_asset_status_lease_list;
+                            $.fn.callAjax2({
+                                    'url': $urlFact.attr('data-tool-status-lease'),
+                                    'method': 'GET',
+                                    'data': dataParams2,
+                                    isLoading: true,
+                                }
+                            ).then(
+                                (resp) => {
+                                    let data = $.fn.switcherResp(resp);
+                                    if (data) {
+                                        if (data.hasOwnProperty('instrument_tool_status_lease_list') && Array.isArray(data.instrument_tool_status_lease_list)) {
+                                            let dataFn = data1.concat(data.instrument_tool_status_lease_list);
+                                            $table.DataTable().clear().draw();
+                                            $table.DataTable().rows.add(dataFn).draw();
+                                            WindowControl.hideLoading();
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            )
+        }
+
         // init date picker
         $('.date-picker').each(function () {
             $(this).daterangepicker({
@@ -328,29 +314,7 @@ $(function () {
         $.fn.initMaskMoney2();
 
         $('#btn-apply-filter').on('click', function () {
-            let dataParams1 = {};
-            if ($boxLease.val() && $boxLease.val().length > 0) {
-                dataParams1['delivery_pa_asset__delivery_sub__order_delivery__lease_order_id__in'] = $boxLease.val().join(',');
-            }
-            WindowControl.showLoading();
-            $.fn.callAjax2({
-                    'url': $urlFact.attr('data-asset-status-lease'),
-                    'method': 'GET',
-                    'data': dataParams1,
-                    isLoading: true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('fixed_asset_status_lease_list') && Array.isArray(data.fixed_asset_status_lease_list)) {
-                            $table.DataTable().clear().draw();
-                            $table.DataTable().rows.add(data.fixed_asset_status_lease_list).draw();
-                            WindowControl.hideLoading();
-                        }
-                    }
-                }
-            )
+            callAjaxAssetTool();
         });
 
     });

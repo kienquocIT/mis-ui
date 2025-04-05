@@ -873,6 +873,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     CHART_OF_ACCOUNTS_LIST = StringUrl('accounting-setting/chart-of-accounts/list')
     CHART_OF_ACCOUNTS_DETAIL = StringUrl('accounting-setting/chart-of-accounts/{pk}')
     INSTRUMENT_TOOL_FOR_LEASE_LIST = StringUrl('asset/instrument-tool-for-lease/list')
+    INSTRUMENT_TOOL_STATUS_LEASE_LIST = StringUrl('asset/instrument-tool-status-lease/list')
 
     DEFAULT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/default-account-determination/list')
     DEFAULT_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/default-account-determination/detail/{pk}')

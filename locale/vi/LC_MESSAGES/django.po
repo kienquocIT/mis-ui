@@ -10412,8 +10412,8 @@ msgid "Sale activity chart"
 msgstr "Biểu đồ Hoạt động bán hàng"
 
 #
-msgid "Reload data"
-msgstr "Tải lại dữ liệu"
+msgid "Refresh data"
+msgstr "Làm mới dữ liệu"
 
 #
 msgid "Purchase request for Sale order"

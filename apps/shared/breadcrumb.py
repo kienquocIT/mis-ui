@@ -466,6 +466,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Lease order
     LEASE_ORDER_CONFIG_PAGE = BreadcrumbChildren(_('Lease Order'), 'LeaseOrderConfigDetail')
     LEASE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Lease order'), 'LeaseOrderList')
+    LEASE_ASSET_LIST_PAGE = BreadcrumbChildren(_('Lease asset list'), 'LeaseOrderAssetList')
 
     # Partnercenter
     PARTNER_CENTER_LIST_PAGE = BreadcrumbChildren(_('Lists'), 'ListList')
@@ -1224,6 +1225,9 @@ class BreadcrumbView:
     LEASE_ORDER_CREATE_PAGE = LEASE_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     LEASE_ORDER_DETAIL_PAGE = LEASE_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     LEASE_ORDER_UPDATE_PAGE = LEASE_ORDER_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+    LEASE_ASSET_LIST_PAGE = [
+        BreadcrumbItem.LEASE_ASSET_LIST_PAGE
+    ]
 
     # CONTRACT TEMPLATE
     CONTRACT_TEMPLATE_LIST_PAGE = [

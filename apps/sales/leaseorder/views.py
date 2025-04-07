@@ -263,8 +263,8 @@ class LeaseOrderAssetList(View):
     @mask_view(
         auth_require=True,
         template='sales/leaseorder/asset_status_lease_list.html',
-        menu_active='menu_lease_order_list',
-        breadcrumb='LEASE_ORDER_LIST_PAGE',
+        menu_active='menu_lease_asset_list',
+        breadcrumb='LEASE_ASSET_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

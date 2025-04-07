@@ -255,3 +255,16 @@ class LORecurrenceListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.LEASE_ORDER_RECURRENCE_LIST).get(data)
         return resp.auto_return(key_success='lease_order_recurrence')
+
+
+class LeaseOrderAssetList(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='sales/leaseorder/asset_status_lease_list.html',
+        menu_active='menu_lease_asset_list',
+        breadcrumb='LEASE_ASSET_LIST_PAGE',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

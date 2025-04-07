@@ -6604,6 +6604,33 @@ class DateTimeControl {
                 throw new Error("Invalid dateType. Use 'YMD', 'DMY', or 'MDY'.");
         }
     }
+
+    static formatDateType(fromType, toType, dateStr) {
+        const formatMap = {
+            'YYYY': 'year',
+            'MM': 'month',
+            'DD': 'day'
+        };
+
+        const getDateParts = (format, dateStr) => {
+            const formatParts = format.split(/[-/]/);
+            const dateParts = dateStr.split(/[-/]/);
+            const result = {};
+
+            formatParts.forEach((part, index) => {
+                result[formatMap[part]] = dateParts[index];
+            });
+
+            return result;
+        };
+
+        const parts = getDateParts(fromType, dateStr);
+
+        return toType
+            .replace('YYYY', parts.year)
+            .replace('MM', parts.month)
+            .replace('DD', parts.day);
+    }
 }
 
 class Beautiful {

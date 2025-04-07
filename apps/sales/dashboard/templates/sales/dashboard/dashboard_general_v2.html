@@ -1,0 +1,239 @@
+{% extends 'base_v2.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'General Dashboard' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        #setting-btn:hover .icon i {
+            transform: rotate(360deg);
+            transition: transform 1s ease-in-out;
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button id="setting-btn" class="btn btn-icon btn-rounded btn-light" data-bs-toggle="modal" data-bs-target="#settingModal">
+        <span class="icon"><i class="fa-solid fa-gear"></i></span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    {{ data.data.current_period | json_script:"current_period" }}
+    <script id="script-url"
+            data-url-report-revenue-profit="{% url 'ReportRevenueListAPI' %}"
+            data-url-top-sale-customer-list="{% url 'ReportCustomerListAPI' %}"
+            data-url-top-category-product-list="{% url 'ReportProductListAPIRDashBoard' %}"
+            data-url-company-revenue-plan="{% url 'RevenuePlanListAPI' %}"
+            data-url-revenue-plan-by-report-perm="{% url 'RevenuePlanByReportPermListAPI' %}"
+    ></script>
+    <script id="trans-script"
+            data-trans-m1th="{% trans 'Jan ' %}"
+            data-trans-m2th="{% trans 'Feb ' %}"
+            data-trans-m3th="{% trans 'Mar ' %}"
+            data-trans-m4th="{% trans 'Apr ' %}"
+            data-trans-m5th="{% trans 'May ' %}"
+            data-trans-m6th="{% trans 'Jun ' %}"
+            data-trans-m7th="{% trans 'Jul ' %}"
+            data-trans-m8th="{% trans 'Aug ' %}"
+            data-trans-m9th="{% trans 'Sep ' %}"
+            data-trans-m10th="{% trans 'Oct ' %}"
+            data-trans-m11th="{% trans 'Nov ' %}"
+            data-trans-m12th="{% trans 'Dec ' %}"
+            data-trans-revenue="{% trans 'Revenue' %}"
+            data-trans-profit="{% trans 'Profit' %}"
+            data-trans-month="{% trans 'Month' %}"
+            data-trans-chart-revenue="{% trans 'Revenue chart' %}"
+            data-trans-chart-profit="{% trans 'Profit chart' %}"
+            data-trans-expected="{% trans 'Expected' %}"
+            data-trans-reality="{% trans 'Reality' %}"
+            data-trans-chart-topsale="{% trans 'Top sale' %}"
+            data-trans-chart-topcustomer="{% trans 'Top customer' %}"
+            data-trans-chart-topcategory="{% trans 'Top category' %}"
+            data-trans-chart-topproduct="{% trans 'Top product' %}"
+            data-trans-quarter-1="{% trans 'Quarter' %} 1"
+            data-trans-quarter-2="{% trans 'Quarter' %} 2"
+            data-trans-quarter-3="{% trans 'Quarter' %} 3"
+            data-trans-quarter-4="{% trans 'Quarter' %} 4"
+            data-trans-all="{% trans 'Default all' %}"
+    ></script>
+
+    <div class="row">
+        <div class="col-6">
+            <button class="btn btn-xs btn-outline-secondary" data-bs-toggle="collapse" href="#revenueprofitCollapse">
+                <span>
+                    <span class="icon"><span class="feather-icon"><i class="bi bi-filter-circle"></i></span></span>
+                    <span>{% trans 'Filter' %}</span>
+                </span>
+            </button>
+        </div>
+        <div class="col-6 text-right">
+            <button class="btn btn-xs btn-soft-success" id="reload-revenue-profit-data-btn" data-bs-toggle="tooltip" title="{% trans 'Refresh data' %}">
+                <i class="fas fa-sync"></i>
+            </button>
+        </div>
+    </div>
+    <div class="collapse" id="revenueprofitCollapse">
+        <div class="row">
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label class="form-label" for="revenue-profit-group">{% trans 'Group' %}</label>
+                    <select class="form-select select2" id="revenue-profit-group" data-method="GET" data-url="{% url 'GroupListAPI' %}"></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label class="form-label" for="revenue-profit-view-type">{% trans 'View by' %}</label>
+                    <select class="form-select select2" id="revenue-profit-view-type">
+                        <option value="0" selected>{% trans 'Period revenue / profit' %}</option>
+                        <option value="1">{% trans 'Accumulated revenue / profit' %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label class="form-label" for="profit-type">{% trans 'Profit type' %}</label>
+                                <select class="form-select select2" id="profit-type">
+                                    <option value="0" selected>{% trans 'Gross profit' %}</option>
+                                    <option value="1">{% trans 'Net income' %}</option>
+                                </select>
+                            </div>
+                        </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-12 col-lg-6 mt-2">
+            <div class="border rounded p-2">
+                <div id="revenue-spinner" class="spinner-grow" role="status"></div>
+                <div id="revenue_chart" style="width: 100%; height: 300px"></div>
+                <div class="mt-3 text-right">
+                    <span class="small text-muted">{% trans 'This month revenue' %}</span>
+                    <span class="fw-bold h5 mask-money" id="current-revenue" style="color: rgb(255, 99, 132)">0</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-12 col-lg-6 mt-2">
+            <div class="border rounded p-2">
+                <div id="profit-spinner" class="spinner-grow" role="status"></div>
+                <div id="profit_chart" style="width: 100%; height: 300px"></div>
+                <div class="mt-3 text-right">
+                    <span class="small text-muted">{% trans 'This month profit' %}</span>
+                    <span class="fw-bold h5 mask-money" id="current-profit" style="color: rgb(75, 192, 96)">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-6">
+            <button class="btn btn-xs btn-outline-secondary" data-bs-toggle="collapse" href="#topsalecustomerCollapse">
+                <span>
+                    <span class="icon"><span class="feather-icon"><i class="bi bi-filter-circle"></i></span></span>
+                    <span>{% trans 'Filter' %}</span>
+                </span>
+            </button>
+        </div>
+        <div class="col-6 text-right">
+            <button class="btn btn-xs btn-soft-success" id="reload-top-sale-customer-data-btn" data-bs-toggle="tooltip" title="{% trans 'Refresh data' %}">
+                <i class="fas fa-sync"></i>
+            </button>
+        </div>
+    </div>
+    <div class="collapse" id="topsalecustomerCollapse">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label" for="top-sale-customer-time">{% trans 'Time range' %}</label>
+                    <div class="input-group">
+                        <select class="form-select select2" id="top-sale-customer-time">
+                            <option value="0">{% trans 'Month' %}</option>
+                            <option value="1">{% trans 'Quarter' %}</option>
+                            <option value="2" selected>{% trans 'Whole year' %}</option>
+                        </select>
+                        <label class="input-group-text" for="top-sale-customer-time-detail" hidden></label>
+                        <select class="form-select select2" id="top-sale-customer-time-detail" disabled></select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label for="top-sale-number" class="form-label">{% trans 'Sale number viewed' %}</label>
+                    <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label for="top-customer-number" class="form-label">{% trans 'Customer number viewed' %}</label>
+                                <input class="form-control" type="number" id="top-customer-number" min="1" max="20" value="10">
+                            </div>
+                        </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-12 col-lg-6 mt-2">
+            <div class="border rounded p-2">
+                <div id="topsale-spinner" class="spinner-grow" role="status"></div>
+                <div id="topsale_chart" style="width: 100%; height: 300px"></div>
+            </div>
+        </div>
+        <div class="col-12 col-md-12 col-lg-6 mt-2">
+            <div class="border rounded p-2">
+                <div id="topcustomer-spinner" class="spinner-grow" role="status"></div>
+                <div id="topcustomer_chart" style="width: 100%; height: 300px"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="settingModal" tabindex="-1" role="dialog" aria-labelledby="settingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="settingModalLabel">{% trans 'Dashboard setting' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 mb-5">
+                            <span class="small text-orange">{% trans 'For data to display correctly, the view permissions of Revenue Plan and Revenue Report must correspond.' %}</span>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label for="money-display" class="form-check-label">{% trans 'Money display' %}</label>
+                                <select class="form-select select2" id="money-display">
+                                    <option value="0" selected>{% trans 'Million' %}</option>
+                                    <option value="1">{% trans 'Billion' %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-2 col-lg-2">
+                            <div class="form-group">
+                                <label for="money-round" class="form-check-label">{% trans 'Money round' %}</label>
+                                <input id="money-round" type="number" class="form-control" value="1" min="0">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label for="period-filter" class="form-check-label">{% trans 'Fiscal year' %}</label>
+                                <select class="form-select select2"
+                                        id="period-filter"
+                                        data-url="{% url 'PeriodsConfigListAPI' %}"
+                                        data-method="GET"
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooterUnCompress %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/echartjs/echart.js' %}"></script>
+    <script src="{% static 'assets/sales/dashboard/dashboard_general_v2.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
+{% endblock %}

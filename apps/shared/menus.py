@@ -79,16 +79,16 @@ class MenusCompanySystem:
             ),
             MenuCommon(
                 name='Org Charts', code='menu_company_diagram', view_name='TenantDiagramView',
-                icon='<i class="fa-solid fa-diagram-project"></i>',
+                icon='<i class="fas fa-solid fa-diagram-project"></i>',
             ),
         ]
     )
     WORKING_CALENDAR = MenuCommon(
         name='Working calendar', code='menu_working_calendar', view_name='WorkingCalendarConfig',
-        icon='<i class="far fa-calendar"></i>',
+        icon='<i class="fas far fa-calendar"></i>',
     )
     WORKFLOW_PROCESS = MenuCommon(
-        name='Process Management', code='menu_process_management', icon='<i class="fab fa-stumbleupon-circle"></i>',
+        name='Process Management', code='menu_process_management', icon='<i class="fas fab fa-stumbleupon-circle"></i>',
         child=[
             MenuCommon(
                 name='Workflow', code='menu_workflow_list', view_name='WorkflowList',
@@ -96,7 +96,7 @@ class MenusCompanySystem:
             ),
             MenuCommon(
                 name='Config Process', code='menu_process', view_name='ProcessList',
-                icon='<i class="fa-solid fa-microchip"></i>',
+                icon='<i class="fas fa-solid fa-microchip"></i>',
             ),
             MenuCommon(
                 name='Automation', code='', view_name='#', icon='<i class="fas fa-robot"></i>',
@@ -104,28 +104,28 @@ class MenusCompanySystem:
         ]
     )
     PROCESS = MenuCommon(
-        name='Process', code='process_group', icon='<i class="fa-solid fa-microchip"></i>',
+        name='Process', code='process_group', icon='<i class="fas fa-solid fa-microchip"></i>',
         expanded=True,
         child=[
             MenuCommon(
                 name='Config Process', code='menu_process', view_name='ProcessList',
-                icon='<i class="fa-solid fa-microchip"></i>',
+                icon='<i class="fas fa-solid fa-microchip"></i>',
             ),
             MenuCommon(
                 name='My Process Runtime',
                 code='menu_process_runtime',
                 view_name='ProcessRuntimeListMeRedirect',
-                icon='<i class="fa-solid fa-microchip"></i>',
+                icon='<i class="fas fa-solid fa-microchip"></i>',
             ),
         ]
     )
     TENANT_MANAGE = MenuCommon(
         name='Tenant', code='menu_company_overview_list', view_name='CompanyListOverviewList',
-        icon='<i class="fa-solid fa-city"></i>',
+        icon='<i class="fas fa-solid fa-city"></i>',
     )
     COMPANY_SITE_BUILDER = MenuCommon(
         name='Site Config', code='menu_site_config_builder', view_name='MyCompanyWebsiteList',
-        icon='<i class="fa-solid fa-globe"></i>',
+        icon='<i class="fas fa-solid fa-globe"></i>',
     )
 
 
@@ -136,11 +136,11 @@ class MenusCoreConfigurations:
         child=[
             MenuCommon(
                 name='Accounting policies', code='id_menu_master_data_accounting_policies', view_name='AccountingPoliciesList',
-                icon='<i class="bi bi-calculator"></i>',
+                icon='<i class="fas bi bi-calculator"></i>',
             ),
             MenuCommon(
                 name='Posting periods', code='id_menu_master_data_periods_config', view_name='PeriodsConfigList',
-                icon='<i class="far fa-calendar-alt"></i>',
+                icon='<i class="fas far fa-calendar-alt"></i>',
             ),
             MenuCommon(
                 name='Categories', code='id_menu_master_data_categories', view_name='CategoryMasterDataList',
@@ -148,7 +148,7 @@ class MenusCoreConfigurations:
             ),
             MenuCommon(
                 name='Bank', code='id_menu_master_data_bank', view_name='BankMasterDataList',
-                icon='<i class="fa-solid fa-building-columns"></i>',
+                icon='<i class="fas fa-solid fa-building-columns"></i>',
             ),
         ]
     )
@@ -158,19 +158,19 @@ class MenusCoreConfigurations:
         child=[
             MenuCommon(
                 name='Contact', code='id_menu_master_data_contact', view_name='ContactMasterDataList',
-                icon='<i class="bi bi-journal-bookmark-fill"></i>',
+                icon='<i class="fas bi bi-journal-bookmark-fill"></i>',
             ),
             MenuCommon(
                 name='Account', code='id_menu_master_data_account', view_name='AccountMasterDataList',
-                icon='<i class="bi bi-person-rolodex"></i>',
+                icon='<i class="fas bi bi-person-rolodex"></i>',
             ),
             MenuCommon(
                 name='Item', code='id_menu_master_data_product', view_name='ProductMasterDataList',
-                icon='<i class="bi bi-diagram-2-fill"></i>',
+                icon='<i class="fas bi bi-diagram-2-fill"></i>',
             ),
             MenuCommon(
                 name='Price', code='id_menu_master_data_price', view_name='PriceMasterDataList',
-                icon='<i class="bi bi-currency-exchange"></i>',
+                icon='<i class="fas bi bi-currency-exchange"></i>',
             ),
             MenuCommon(
                 name='Document', code='id_menu_master_data_document', view_name='DocumentTypeMasterDataList',
@@ -208,27 +208,27 @@ class MenusCoreConfigurations:
             # ),
             MenuCommon(
                 name='Opportunity', code='menu_opportunity_config', view_name='OpportunityConfig',
-                icon='<i class="fa-solid fa-lightbulb"></i>',
+                icon='<i class="fas fa-solid fa-lightbulb"></i>',
             ),
             MenuCommon(
                 name='Task', code='menu_opportunity_task_config', view_name='OpportunityTaskConfig',
-                icon='<i class="fa-solid fa-clipboard-check"></i>',
+                icon='<i class="fas fa-solid fa-clipboard-check"></i>',
             ),
             # MenuCommon(
             #     name='Payment', code='menu_payment_config', view_name='PaymentConfigList',
-            #     icon='<i class="bi bi-credit-card-fill"></i>',
+            #     icon='<i class="fas bi bi-credit-card-fill"></i>',
             # ),
             MenuCommon(
                 name='Expense Items', code='id_menu_expense_item_list', view_name='ExpenseItemList',
-                icon='<i class="bi bi-wallet2"></i>',
+                icon='<i class="fas bi bi-wallet2"></i>',
             ),
             MenuCommon(
                 name='Internal Labor Items', code='id_menu_expense_list', view_name='ExpenseList',
-                icon='<i class="bi bi-cash-coin"></i>',
+                icon='<i class="fas bi bi-cash-coin"></i>',
             ),
             MenuCommon(
                 name='Leave', code='menu_leave_config', view_name='LeaveConfigDetail',
-                icon='<i class="fa-solid fa-arrow-right-from-bracket"></i>',
+                icon='<i class="fas fa-solid fa-arrow-right-from-bracket"></i>',
             ),
             MenuCommon(
                 name='Purchase Request Config', code='menu_purchase_request_config', view_name='PurchaseRequestConfig',
@@ -236,7 +236,7 @@ class MenusCoreConfigurations:
             ),
             MenuCommon(
                 name='Asset, Tools', code='menu_asset_tools_config', view_name='AssetToolsConfigView',
-                icon='<i class="fa-solid fa-pen-ruler"></i>',
+                icon='<i class="fas fa-solid fa-pen-ruler"></i>',
             ),
             MenuCommon(
                 name='Revenue plan config', code='id_menu_master_data_revenue_plan_config',
@@ -256,7 +256,7 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Project config', code='menu_project_config',
                 view_name='ProjectConfig',
-                icon='<i class="fa-brands fa-r-project"></i>',
+                icon='<i class="fas fa-brands fa-r-project"></i>',
             ),
             MenuCommon(
                 name='Bidding Result Config', code='menu_bidding_result_config', view_name='BiddingResultConfigList',
@@ -265,29 +265,29 @@ class MenusCoreConfigurations:
             MenuCommon(
                 name='Inventory interact config', code='menu_inventory_interact_config',
                 view_name='InventoryInteractConfigList',
-                icon='<i class="fa-solid fa-arrow-right-to-bracket"></i>'
+                icon='<i class="fas fa-solid fa-arrow-right-to-bracket"></i>'
             )
         ]
     )
     TEMPLATES_DATA_CONFIG = MenuCommon(
         name='Templates', code='menu_templates', view_name='#',
-        icon='<i class="fa-solid fa-swatchbook"></i>',
+        icon='<i class="fas fa-solid fa-swatchbook"></i>',
         child=[
             MenuCommon(
                 name='Print Template', code='menu_print_template', view_name='PrintTemplatesListView',
-                icon='<i class="fa-solid fa-print"></i>'
+                icon='<i class="fas fa-solid fa-print"></i>'
             ),
             MenuCommon(
                 name='Mail Template', code='menu_mail_template', view_name='MailTemplatesListView',
-                icon='<i class="fa-regular fa-envelope"></i>'
+                icon='<i class="fas fa-regular fa-envelope"></i>'
             ),
             MenuCommon(
                 name='Import Data', code='menu_import_data', view_name='FImportCreateView',
-                icon='<i class="fa-solid fa-file-import"></i>'
+                icon='<i class="fas fa-solid fa-file-import"></i>'
             ),
             MenuCommon(
                 name='Contract Template', code='menu_contract_template', view_name='ContractTemplateList',
-                icon='<i class="fa-solid fa-file-contract"></i>'
+                icon='<i class="fas fa-solid fa-file-contract"></i>'
             ),
         ]
     )
@@ -298,14 +298,14 @@ class MenusForms:
         name='Forms',
         code='menu_form_data',
         view_name='FormListView',
-        icon='<i class="fa-brands fa-wpforms"></i>'
+        icon='<i class="fas fa-brands fa-wpforms"></i>'
     )
 
 
 class MenusCRM:
     HOME = MenuCommon(
         name='Home', code='id_menu_home_page', view_name='HomeView',
-        icon='<i class="fas fa-home"></i>',
+        icon='<i class="fas fas fa-home"></i>',
     )
     DASHBOARD = MenuCommon(
         name='Dashboard', code='id_menu_dashboard', view_name='#',
@@ -337,23 +337,23 @@ class MenusCRM:
     )
     LEAD = MenuCommon(
         name='Lead', code='menu_lead_list', view_name='LeadList',
-        icon='<i class="far fa-star"></i>',
+        icon='<i class="fas far fa-star"></i>',
     )
     CALENDAR = MenuCommon(
         name='Calendar', code='menu_calendar', view_name='ProgrammeList',
-        icon='<i class="far fa-calendar"></i>',
+        icon='<i class="fas far fa-calendar"></i>',
     )
     CONTACT = MenuCommon(
         name='Contact', code='id_menu_contact', view_name='ContactList',
-        icon='<i class="fa-solid fa-id-card"></i>',
+        icon='<i class="fas fa-solid fa-id-card"></i>',
     )
     ACCOUNT = MenuCommon(
         name='Account', code='id_menu_account', view_name='AccountList',
-        icon='<i class="fa-solid fa-id-card-clip"></i>',
+        icon='<i class="fas fa-solid fa-id-card-clip"></i>',
     )
     OPPORTUNITY = MenuCommon(
         name='Opportunity', code='menu_opportunity_list', view_name='OpportunityList',
-        icon='<i class="far fa-lightbulb"></i>',
+        icon='<i class="fas far fa-lightbulb"></i>',
     )
     QUOTATION = MenuCommon(
         name='Quotation', code='menu_quotation_list', view_name='QuotationList',
@@ -399,7 +399,7 @@ class MenusCRM:
     )
     AR_INVOICE = MenuCommon(
         name='AR invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
-        icon='<i class="bi bi-receipt"></i>',
+        icon='<i class="fas bi bi-receipt"></i>',
     )
     FINAL_ACCEPTANCE = MenuCommon(
         name='Final acceptance', code='menu_final_acceptance_list', view_name='FinalAcceptanceList',
@@ -411,7 +411,7 @@ class MenusCRM:
     )
     PRODUCT = MenuCommon(
         name='Product', code='id_menu_product_list', view_name='ProductList',
-        icon='<i class="bi bi-nut-fill"></i>',
+        icon='<i class="fas bi bi-nut-fill"></i>',
     )
     OPP_BOM = MenuCommon(
         name='Opportunity BOM', code='menu_project_bom_list', view_name='OpportunityBOMList',
@@ -419,7 +419,7 @@ class MenusCRM:
     )
     PRICING = MenuCommon(
         name='Pricing', code='menu_pricing', view_name='',
-        icon='<i class="bi bi-tags-fill"></i>',
+        icon='<i class="fas bi bi-tags-fill"></i>',
         child=[
             MenuCommon(
                 name='Price List', code='id_menu_pricing_list', view_name='PriceList',
@@ -445,7 +445,7 @@ class MenusCRM:
             ),
             MenuCommon(
                 name='Payment', code='id_menu_payment', view_name='PaymentList',
-                icon='<i class="far fa-credit-card"></i>',
+                icon='<i class="fas far fa-credit-card"></i>',
             ),
             MenuCommon(
                 name='Return advance', code='id_menu_return_advance', view_name='ReturnAdvanceList',
@@ -455,7 +455,7 @@ class MenusCRM:
     )
     SALE_ACTIVITIES = MenuCommon(
         name='Sale activities', code='menu_sale_activities', view_name='',
-        icon='<i class="bi bi-ui-checks-grid"></i>',
+        icon='<i class="fas bi bi-ui-checks-grid"></i>',
         child=[
             MenuCommon(
                 name='Call to customer', code='id_menu_log_a_call', view_name='OpportunityCallLogList',
@@ -463,32 +463,32 @@ class MenusCRM:
             ),
             MenuCommon(
                 name='Email to customer', code='id_menu_email', view_name='OpportunityEmailList',
-                icon='<i class="bi bi-envelope-fill"></i>',
+                icon='<i class="fas bi bi-envelope-fill"></i>',
             ),
             MenuCommon(
                 name='Meeting with customer', code='id_menu_meeting', view_name='OpportunityMeetingList',
-                icon='<i class="bi bi-person-workspace"></i>',
+                icon='<i class="fas bi bi-person-workspace"></i>',
             ),
             MenuCommon(
                 name='Document for customer', code='menu_opportunity_document',
                 view_name='OpportunityDocumentList',
-                icon='<i class="bi bi-file-earmark"></i>',
+                icon='<i class="fas bi bi-file-earmark"></i>',
             ),
 
         ],
     )
     TASK = MenuCommon(
         name='Task', code='menu_opportunity_task', view_name='OpportunityTaskList',
-        icon='<i class="fa-solid fa-list-check"></i>',
+        icon='<i class="fas fa-solid fa-list-check"></i>',
         child=[],
     )
     CONSULTING = MenuCommon(
         name='Consulting', code='menu_consulting_list', view_name='ConsultingList',
-        icon='<i class="fa-solid fa-briefcase"></i>',
+        icon='<i class="fas fa-solid fa-briefcase"></i>',
     )
     CHAT_3RD = MenuCommon(
         name='Chat Third party', code='menu_chat_third_party', view_name='Chat3rdView',
-        icon='<i class="fa-solid fa-comments"></i>',
+        icon='<i class="fas fa-solid fa-comments"></i>',
     )
 
 
@@ -564,13 +564,13 @@ class MenusInventory:
                 name='Goods registration',
                 code='menu_goods_registration_list',
                 view_name='GoodsRegistrationList',
-                icon='<i class="bi bi-ui-radios-grid"></i>',
+                icon='<i class="fas bi bi-ui-radios-grid"></i>',
             ),
             MenuCommon(
                 name='Goods detail',
                 code='menu_goods_detail_list',
                 view_name='GoodsDetail',
-                icon='<i class="bi bi-info-square"></i>',
+                icon='<i class="fas bi bi-info-square"></i>',
             ),
             MenuCommon(
                 name='Goods issue',
@@ -582,7 +582,7 @@ class MenusInventory:
                 name='Goods return',
                 code='menu_goods_return',
                 view_name='GoodsReturnList',
-                icon='<i class="far fa-arrow-alt-circle-left"></i>',
+                icon='<i class="fas far fa-arrow-alt-circle-left"></i>',
             ),
             MenuCommon(
                 name='Goods transfer',
@@ -594,7 +594,7 @@ class MenusInventory:
                 name='Inventory adjustment',
                 code='menu_inventory_adjustment_list',
                 view_name='InventoryAdjustmentList',
-                icon='<i class="bi bi-sliders"></i>',
+                icon='<i class="fas bi bi-sliders"></i>',
             ),
             MenuCommon(
                 name='Goods recovery',
@@ -611,43 +611,43 @@ class MenuEOffice:
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     CALENDAR = MenuCommon(
-        name='Calendar', code='menu_calendar', view_name='ProgrammeList', icon='<i class="far fa-calendar"></i>',
+        name='Calendar', code='menu_calendar', view_name='ProgrammeList', icon='<i class="fas far fa-calendar"></i>',
     )
     LEAVE = MenuCommon(
-        name='Leave', code='menu_leave', icon='<i class="fa-solid fa-arrow-right-from-bracket"></i>',
+        name='Leave', code='menu_leave', icon='<i class="fas fa-solid fa-arrow-right-from-bracket"></i>',
         child=[
             MenuCommon(
                 name='Leave request', code='menu_leave_request', view_name='LeaveRequestList',
-                icon='<i class="fa-solid fa-arrow-right-from-bracket"></i>'
+                icon='<i class="fas fa-solid fa-arrow-right-from-bracket"></i>'
             ),
             MenuCommon(
                 name='Available list', code='menu_leave_available', view_name='LeaveAvailableList',
-                icon='<i class="fa-regular fa-calendar-check"></i>',
+                icon='<i class="fas fa-regular fa-calendar-check"></i>',
             )
         ]
     )
     BUSINESS_TRIP = MenuCommon(
         name='Business trip', code='menu_business', view_name='BusinessTripRequestList',
-        icon='<i class="fa-solid fa-business-time"></i>',
+        icon='<i class="fas fa-solid fa-business-time"></i>',
     )
     ASSET_TOOLS = MenuCommon(
-        name='Asset, tools', code='menu_asset_tools', icon='<i class="fa-solid fa-pen-ruler"></i>',
+        name='Asset, tools', code='menu_asset_tools', icon='<i class="fas fa-solid fa-pen-ruler"></i>',
         child=[
             MenuCommon(
                 name='Provide request', code='menu_asset_provide', view_name='AssetToolsProvideRequestList',
-                icon='<i class="fa-solid fa-hand-holding"></i>',
+                icon='<i class="fas fa-solid fa-hand-holding"></i>',
             ),
             MenuCommon(
                 name='Asset, tools delivery', code='menu_asset_delivery', view_name='AssetToolsDeliveryList',
-                icon='<i class="fa-solid fa-truck-fast"></i>',
+                icon='<i class="fas fa-solid fa-truck-fast"></i>',
             ),
             MenuCommon(
                 name='Asset, tools list', code='menu_asset_list', view_name='AssetToolsList',
-                icon='<i class="fa-solid fa-list"></i>',
+                icon='<i class="fas fa-solid fa-list"></i>',
             ),
             MenuCommon(
                 name='Asset, tools return list', code='menu_asset_return', view_name='AssetToolsReturnList',
-                icon='<i class="fa-solid fa-backward-fast"></i>',
+                icon='<i class="fas fa-solid fa-backward-fast"></i>',
             ),
         ]
     )
@@ -686,43 +686,43 @@ class MenusReport:
                 name='Pipeline report',
                 code='menu_report_pipeline_list',
                 view_name='ReportPipelineList',
-                icon='<i class="bi bi-dot"></i>',
+                icon='<i class="fas bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='Revenue report',
                 code='menu_report_revenue_list',
                 view_name='ReportRevenueList',
-                icon='<i class="bi bi-dot"></i>',
+                icon='<i class="fas bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='General revenue report',
                 code='menu_report_general_list',
                 view_name='ReportGeneralList',
-                icon='<i class="bi bi-dot"></i>',
+                icon='<i class="fas bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='Product report',
                 code='menu_report_product_list',
                 view_name='ReportProductList',
-                icon='<i class="bi bi-dot"></i>',
+                icon='<i class="fas bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='Customer report',
                 code='menu_report_customer_list',
                 view_name='ReportCustomerList',
-                icon='<i class="bi bi-dot"></i>',
+                icon='<i class="fas bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='Cashflow report',
                 code='menu_report_cashflow_list',
                 view_name='ReportCashflowList',
-                icon='<i class="bi bi-dot"></i>',
+                icon='<i class="fas bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='Budget report',
                 code='menu_budget_report',
                 view_name='BudgetReportList',
-                icon='<i class="bi bi-dot"></i>',
+                icon='<i class="fas bi bi-dot"></i>',
             ),
         ],
     )
@@ -733,13 +733,13 @@ class MenusReport:
                 name='Inventory report',
                 code='menu_inventory_report',
                 view_name='ReportInventoryList',
-                icon='<i class="bi bi-dot"></i>',
+                icon='<i class="fas bi bi-dot"></i>',
             ),
             MenuCommon(
                 name='Items detail report',
                 code='menu_items_detail_report',
                 view_name='ReportInventoryDetailList',
-                icon='<i class="bi bi-dot"></i>',
+                icon='<i class="fas bi bi-dot"></i>',
             ),
         ],
     )
@@ -750,7 +750,7 @@ class MenusReport:
                 name='Purchase order report',
                 code='menu_po_report',
                 view_name='PurchaseOrderReportList',
-                icon='<i class="bi bi-dot"></i>',
+                icon='<i class="fas bi bi-dot"></i>',
             ),
         ],
     )
@@ -762,15 +762,15 @@ class MenusProject:
     )
     LIST = MenuCommon(
         name='Project list', code='menu_project', view_name='ProjectList',
-        icon='<i class="fa-solid fa-bars-progress"></i>',
+        icon='<i class="fas fa-solid fa-bars-progress"></i>',
     )
     ACTIVITIES = MenuCommon(
         name='Project activities', code='menu_project_activities', view_name='ProjectActivities',
-        icon='<i class="fa-solid fa-fire-flame-curved"></i>',
+        icon='<i class="fas fa-solid fa-fire-flame-curved"></i>',
     )
     TASKS = MenuCommon(
         name='Project task list', code='menu_project_task_list', view_name='ProjectTaskList',
-        icon='<i class="fa-solid fa-list"></i>',
+        icon='<i class="fas fa-solid fa-list"></i>',
     )
 
 
@@ -779,11 +779,11 @@ class MenusProduction:
         name='Home', code='id_menu_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     PRODUCTION = MenuCommon(
-        name='Production', code='menu_purchase_activities', view_name='', icon='<i class="bi bi-robot"></i>',
+        name='Production', code='menu_purchase_activities', view_name='', icon='<i class="fas bi bi-robot"></i>',
         child=[
             MenuCommon(
                 name='Production BOM', code='menu_bom_list', view_name='BOMList',
-                icon='<i class="fab fa-connectdevelop"></i>',
+                icon='<i class="fas fab fa-connectdevelop"></i>',
             ),
             MenuCommon(
                 name='Production order',
@@ -806,11 +806,11 @@ class MenusHRM:
         name='Home', code='id_menu_hrm_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     HUMAN_RESOURCES = MenuCommon(
-        name='Human resources', code='menu_human_resources', view_name='', icon='<i class="fa-solid fa-person"></i>',
+        name='Human resources', code='menu_human_resources', view_name='', icon='<i class="fas fa-solid fa-person"></i>',
         child=[
             MenuCommon(
                 name='Employee data', code='menu_employee_data_list', view_name='HRMEmployeeList',
-                icon='<i class="fa-solid fa-user-check"></i>',
+                icon='<i class="fas fa-solid fa-user-check"></i>',
             ),
         ]
     )
@@ -821,7 +821,7 @@ class MenusPartnerCenter:
         name='Home', code='id_menu_partner_center_home_page', view_name='HomeView', icon='<i class="fas fa-home"></i>',
     )
     LISTS = MenuCommon(
-        name='Lists', code='menu_partner_center_lists', view_name='ListList', icon='<i class="fa-solid fa-search"></i>',
+        name='Lists', code='menu_partner_center_lists', view_name='ListList', icon='<i class="fas fa-solid fa-search"></i>',
     )
 
 
@@ -838,7 +838,7 @@ class MenusFinancials:
             ),
             MenuCommon(
                 name='Default account determination', code='menu_default_account_determination_list', view_name='DefaultAccountDeterminationList',
-                icon='<i class="bi bi-journal-text"></i>',
+                icon='<i class="fas bi bi-journal-text"></i>',
             ),
         ],
     )
@@ -867,11 +867,11 @@ class MenusFinancials:
         ],
     )
     GENERAL = MenuCommon(
-        name='General', code='menu_general', view_name='', icon='<i class="bi bi-link"></i>',
+        name='General', code='menu_general', view_name='', icon='<i class="fas bi bi-link"></i>',
         child=[
             MenuCommon(
                 name='Reconciliation', code='menu_reconciliation', view_name='ReconList',
-                icon='<i class="bi bi-ui-checks"></i>',
+                icon='<i class="fas bi bi-ui-checks"></i>',
             ),
         ],
     )
@@ -889,7 +889,8 @@ class MenusFinancials:
         ],
     )
     JOURNAL_ENTRY = MenuCommon(
-        name='Journal entry', code='menu_journal_entry_list', view_name='JournalEntryList', icon='<i class="bi bi-journal-text"></i>',
+        name='Journal entry', code='menu_journal_entry_list', view_name='JournalEntryList',
+        icon='<i class="fas bi bi-journal-text"></i>',
     )
 
 
@@ -935,7 +936,7 @@ class SpaceItem:
         'crm': SpaceCommon(
             'Sales',
             'crm',
-            icon='<i class="fa-solid fa-users-gear"></i>',
+            icon='<i class="fas fa-solid fa-users-gear"></i>',
             menus=[
                 MenusCRM.HOME,
                 MenusCRM.DASHBOARD,
@@ -968,7 +969,7 @@ class SpaceItem:
         'kms': SpaceCommon(
             'KMS',
             'kms',
-            icon='<i class="far fa-folder-open"></i>',
+            icon='<i class="fas far fa-folder-open"></i>',
             menus=[
                 MenuDMS.WORK_SPACE,
                 MenuDMS.MY_SPACE,
@@ -977,7 +978,7 @@ class SpaceItem:
         'e-office': SpaceCommon(
             'E-office',
             'e-office',
-            icon='<i class="fa-solid fa-laptop-file"></i>',
+            icon='<i class="fas fa-solid fa-laptop-file"></i>',
             menus=[
                 MenuEOffice.HOME,
                 MenuEOffice.CALENDAR,
@@ -1003,7 +1004,7 @@ class SpaceItem:
         'forms': SpaceCommon(
             'Forms',
             'forms',
-            icon='<svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"/><g stroke-linecap="round" stroke-linejoin="round"/><path fill-rule="evenodd" clip-rule="evenodd" d="M3.586 2.586C3 3.172 3 4.114 3 6v10c0 2.828 0 4.243.879 5.121.641.642 1.568.815 3.121.862V19a1 1 0 1 1 2 0v3h6v-3a1 1 0 1 1 2 0v2.983c1.553-.047 2.48-.22 3.121-.862C21 20.243 21 18.828 21 16V6c0-1.886 0-2.828-.586-3.414S18.886 2 17 2H7c-1.886 0-2.828 0-3.414.586M8 8a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2zm0 6h8a1 1 0 1 0 0-2H8a1 1 0 1 0 0 2"/></svg>',
+            icon='<i class="fas fa-solid fa-pager"></i>',
             menus=[
                 MenusForms.FORM_DATA_CONFIG,
             ]
@@ -1011,7 +1012,7 @@ class SpaceItem:
         'hrm': SpaceCommon(
             'HRM',
             'hrm',
-            icon='<i class="fa-solid fa-user-tag"></i>',
+            icon='<i class="fas fa-solid fa-user-tag"></i>',
             menus=[
                 MenusHRM.HOME,
                 MenusHRM.HUMAN_RESOURCES,
@@ -1020,7 +1021,7 @@ class SpaceItem:
         'inventory': SpaceCommon(
             'Inventory',
             'inventory',
-            icon='<i class="fas fa-warehouse"></i>',
+            icon='<i class="fas fas fa-warehouse"></i>',
             menus=[
                 MenusPurchase.HOME,
                 MenusInventory.INVENTORY,
@@ -1029,7 +1030,7 @@ class SpaceItem:
         'purchase': SpaceCommon(
             'Purchasing',
             'purchase',
-            icon='<i class="fas fa-cash-register"></i>',
+            icon='<i class="fas fas fa-cash-register"></i>',
             menus=[
                 MenusPurchase.HOME,
                 MenusPurchase.PURCHASE,
@@ -1038,7 +1039,7 @@ class SpaceItem:
         'production': SpaceCommon(
             'Production',
             'production',
-            icon='<i class="bi bi-robot"></i>',
+            icon='<i class="fas bi bi-robot"></i>',
             menus=[
                 MenusProduction.HOME,
                 MenusProduction.PRODUCTION,
@@ -1047,7 +1048,7 @@ class SpaceItem:
         'project': SpaceCommon(
             'Project',
             'project',
-            icon='<i class="fa-solid fa-weight-scale"></i>',
+            icon='<i class="fas fa-solid fa-weight-scale"></i>',
             menus=[
                 MenusProject.HOME,
                 MenusProject.LIST,
@@ -1070,7 +1071,7 @@ class SpaceItem:
         'definition': SpaceCommon(
             'Definition',
             'definition',
-            icon='<i class="fa-solid fa-square-pen"></i>',
+            icon='<i class="fas fa-solid fa-square-pen"></i>',
             menus=[
                 MenusCompanySystem.WORKFLOW_PROCESS.child[0],
                 MenusCompanySystem.PROCESS,
@@ -1079,7 +1080,7 @@ class SpaceItem:
         'company-system': SpaceCommon(
             'Company',
             'company-system',
-            icon='<i class="far fa-building"></i>',
+            icon='<i class="fas far fa-building"></i>',
             menus=[
                 MenusCompanySystem.COMPANY_LIST,
                 MenusCompanySystem.USER_LIST,
@@ -1093,7 +1094,7 @@ class SpaceItem:
         'core-configurations': SpaceCommon(
             'Settings',
             'core-configurations',
-            icon='<i class="fas fa-cog"></i>',
+            icon='<i class="fas fas fa-cog"></i>',
             menus=[
                 MenusCoreConfigurations.FINANCIAL_CONFIG,
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,
@@ -1104,7 +1105,7 @@ class SpaceItem:
         'partner-center': SpaceCommon(
             'Partner Center',
             'partner-center',
-            icon='<i class="fa-solid fa-user-tag"></i>',
+            icon='<i class="fas fa-solid fa-user-tag"></i>',
             menus=[
                 MenusPartnerCenter.HOME,
                 MenusPartnerCenter.LISTS,

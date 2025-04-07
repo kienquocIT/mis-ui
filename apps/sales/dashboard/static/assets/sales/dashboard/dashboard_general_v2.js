@@ -1,34 +1,74 @@
-$(document).ready(function () {
-    const CHART_COLORS = {
-        blue: 'rgb(54, 162, 235)',
-        red: 'rgb(255, 99, 132)',
-        orange: 'rgb(255, 159, 64)',
-        yellow: 'rgb(255, 205, 86)',
-        green: 'rgb(75, 192, 96)',
-        purple: 'rgb(153, 102, 255)',
-        grey: 'rgb(201, 203, 207)',
-        custom1: 'rgb(58, 110, 31)',
-        custom2: 'rgb(194, 0, 35)',
-        custom3: 'rgb(13, 46, 118)',
+/**
+ * Khai báo các element trong page
+ */
+class DashBoardGeneralPageElements {
+    constructor() {
+        this.$script_url = $('#script-url')
+        this.$trans_script = $('#trans-script')
+        this.$money_display = $('#money-display')
+        this.$money_round = $('#money-round')
+        this.$period_filter = $('#period-filter')
+        this.$current_period = $('#current_period')
     }
-    const scriptUrlEle = $('#script-url')
-    const trans_script = $('#trans-script')
-    const moneyDisplayEle = $('#money-display')
-    const moneyRoundEle = $('#money-round')
-    const periodFiscalYearFilterEle = $('#period-filter')
-    const current_period_Ele = $('#current_period')
-    const current_period = current_period_Ele.text() ? JSON.parse(current_period_Ele.text()) : {}
-    let period_selected_Setting = current_period
-    let fiscal_year_Setting = current_period?.['fiscal_year']
-    let space_month_Setting = current_period?.['space_month']
+}
+const pageElements = new DashBoardGeneralPageElements()
 
-    moneyDisplayEle.on('change', function () {
+/**
+ * Khai báo các biến sử dụng trong page
+ */
+class DashBoardGeneralPageVariables {
+    constructor() {
+        this.CHART_COLORS = {
+            blue: 'rgb(54, 162, 235)',
+            red: 'rgb(255, 99, 132)',
+            orange: 'rgb(255, 159, 64)',
+            yellow: 'rgb(255, 205, 86)',
+            green: 'rgb(75, 192, 96)',
+            purple: 'rgb(153, 102, 255)',
+            grey: 'rgb(201, 203, 207)',
+            custom1: 'rgb(58, 110, 31)',
+            custom2: 'rgb(194, 0, 35)',
+            custom3: 'rgb(13, 46, 118)',
+        }
+        this.CURRENT_PERIOD = pageElements.$current_period.text() ? JSON.parse(pageElements.$current_period.text()) : {}
+    }
+}
+const pageVariables = new DashBoardGeneralPageVariables()
+
+/**
+ * Các hàm load page và hàm hỗ trợ
+ */
+class DashBoardGeneralPageFunction {
+
+}
+
+/**
+ * Khai báo các hàm chính
+ */
+class DashBoardGeneralHandler {
+
+}
+
+/**
+ * Khai báo các Event
+ */
+class DashBoardGeneralEventHandler {
+    static InitPageEven() {
+
+    }
+}
+
+
+
+
+$(document).ready(function () {
+    pageElements.$money_display.on('change', function () {
         COMPANY_CURRENT_REVENUE = null
         COMPANY_CURRENT_PROFIT = null
         DrawRevenueProfitChart()
     })
 
-    moneyRoundEle.on('change', function () {
+    pageElements.$money_round.on('change', function () {
         $(this).val($(this).val() || 1);
         DrawRevenueProfitChart()
     })
@@ -71,18 +111,18 @@ $(document).ready(function () {
             if (trans_order > 12) {
                 trans_order -= 12
             }
-            month_order.push(trans_script.attr(`data-trans-m${trans_order}th`))
+            month_order.push(pageElements.$trans_script.attr(`data-trans-m${trans_order}th`))
         }
         return month_order
     }
 
     function LoadPeriod(data) {
         if (Object.keys(data).length === 0) {
-            data = current_period
+            data = pageVariables.CURRENT_PERIOD
         }
-        periodFiscalYearFilterEle.initSelect2({
+        pageElements.$period_filter.initSelect2({
             ajax: {
-                url: periodFiscalYearFilterEle.attr('data-url'),
+                url: pageElements.$period_filter.attr('data-url'),
                 method: 'GET',
             },
             data: (data ? data : null),
@@ -92,9 +132,7 @@ $(document).ready(function () {
         }).on('change', function () {
             $('#revenue-spinner').prop('hidden', false)
             $('#profit-spinner').prop('hidden', false)
-            period_selected_Setting = SelectDDControl.get_data_from_idx(periodFiscalYearFilterEle, periodFiscalYearFilterEle.val())
-            fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
-            space_month_Setting = period_selected_Setting?.['space_month']
+            pageVariables.CURRENT_PERIOD = SelectDDControl.get_data_from_idx(pageElements.$period_filter, pageElements.$period_filter.val())
             DrawRevenueProfitChart()
         })
     }
@@ -137,7 +175,7 @@ $(document).ready(function () {
         $('#profit-spinner').prop('hidden', false)
 
         let report_revenue_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-report-revenue-profit'),
+            url: pageElements.$script_url.attr('data-url-report-revenue-profit'),
             data: {},
             method: 'GET'
         }).then(
@@ -153,8 +191,8 @@ $(document).ready(function () {
             })
 
         let revenue_plan_by_report_perm_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-revenue-plan-by-report-perm'),
-            data: {'fiscal_year': fiscal_year_Setting},
+            url: pageElements.$script_url.attr('data-url-revenue-plan-by-report-perm'),
+            data: {'fiscal_year': pageVariables.CURRENT_PERIOD?.['fiscal_year']},
             method: 'GET'
         }).then(
             (resp) => {
@@ -172,7 +210,7 @@ $(document).ready(function () {
         Promise.all([report_revenue_ajax, revenue_plan_by_report_perm_ajax]).then(
             (results) => {
                 revenueprofit_DF = (results[0] ? results[0] : []).filter(item => {
-                    return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
+                    return Check_in_period(new Date(item?.['date_approved']), pageVariables.CURRENT_PERIOD)
                 })
                 if (revenueprofitGroupEle.val()) {
                     revenueprofit_DF = revenueprofit_DF.filter(item => {
@@ -216,7 +254,7 @@ $(document).ready(function () {
                 revenue_chart = echarts.init($('#revenue_chart')[0])
                 let revenue_option = {
                     title: {
-                        text: trans_script.attr('data-trans-chart-revenue'),
+                        text: pageElements.$trans_script.attr('data-trans-chart-revenue'),
                         textStyle: {
                             fontFamily: 'Roboto, sans-serif'
                         }
@@ -231,7 +269,7 @@ $(document).ready(function () {
                         formatter: function (params) {
                             let result = `${params[0]?.['axisValue']}<br/>`;
                             params.forEach(item => {
-                                let value = parseFloat(item.value).toFixed(parseInt(moneyRoundEle.val() || 0));
+                                let value = item?.['value'] !== undefined ? parseFloat(item?.['value']).toFixed(parseInt(pageElements.$money_round.val() || 0)) : '-';
                                 result += `${item?.['marker']} ${item?.['seriesName']}: <b>${value}</b><br/>`;
                             });
                             return result;
@@ -270,7 +308,7 @@ $(document).ready(function () {
                     },
                     xAxis: {
                         type: 'category',
-                        data: getMonthOrder(space_month_Setting),
+                        data: getMonthOrder(pageVariables.CURRENT_PERIOD?.['space_month']),
                         axisLabel: {
                             color: '#333',
                         },
@@ -310,10 +348,10 @@ $(document).ready(function () {
                             type: 'line',
                             smooth: 0.25,
                             lineStyle: {
-                                color: CHART_COLORS?.['blue']
+                                color: pageVariables.CHART_COLORS?.['blue']
                             },
                             itemStyle: {
-                                color: CHART_COLORS?.['blue']
+                                color: pageVariables.CHART_COLORS?.['blue']
                             },
                             data: revenueChartDataset[0]?.['data'],
                         },
@@ -322,10 +360,10 @@ $(document).ready(function () {
                             type: 'line',
                             smooth: 0.25,
                             lineStyle: {
-                                color: CHART_COLORS?.['red']
+                                color: pageVariables.CHART_COLORS?.['red']
                             },
                             itemStyle: {
-                                color: CHART_COLORS?.['red']
+                                color: pageVariables.CHART_COLORS?.['red']
                             },
                             data: revenueChartDataset[1]?.['data'],
                         }
@@ -337,7 +375,7 @@ $(document).ready(function () {
                 profit_chart = echarts.init($('#profit_chart')[0])
                 let profit_option = {
                     title: {
-                        text: trans_script.attr('data-trans-chart-profit'),
+                        text: pageElements.$trans_script.attr('data-trans-chart-profit'),
                         textStyle: {
                             fontFamily: 'Roboto, sans-serif'
                         }
@@ -352,7 +390,7 @@ $(document).ready(function () {
                         formatter: function (params) {
                             let result = `${params[0]?.['axisValue']}<br/>`;
                             params.forEach(item => {
-                                let value = parseFloat(item.value).toFixed(parseInt(moneyRoundEle.val() || 0));
+                                let value = item?.['value'] !== undefined ? parseFloat(item?.['value']).toFixed(parseInt(pageElements.$money_round.val() || 0)) : '-';
                                 result += `${item?.['marker']} ${item?.['seriesName']}: <b>${value}</b><br/>`;
                             });
                             return result;
@@ -391,7 +429,7 @@ $(document).ready(function () {
                     },
                     xAxis: {
                         type: 'category',
-                        data: getMonthOrder(space_month_Setting),
+                        data: getMonthOrder(pageVariables.CURRENT_PERIOD?.['space_month']),
                         axisLabel: {
                             color: '#333',
                         },
@@ -431,10 +469,10 @@ $(document).ready(function () {
                             type: 'line',
                             smooth: 0.25,
                             lineStyle: {
-                                color: CHART_COLORS?.['blue']
+                                color: pageVariables.CHART_COLORS?.['blue']
                             },
                             itemStyle: {
-                                color: CHART_COLORS?.['blue']
+                                color: pageVariables.CHART_COLORS?.['blue']
                             },
                             data: profitChartDataset[0]?.['data'],
                         },
@@ -443,10 +481,10 @@ $(document).ready(function () {
                             type: 'line',
                             smooth: 0.25,
                             lineStyle: {
-                                color: CHART_COLORS?.['green']
+                                color: pageVariables.CHART_COLORS?.['green']
                             },
                             itemStyle: {
-                                color: CHART_COLORS?.['green']
+                                color: pageVariables.CHART_COLORS?.['green']
                             },
                             data: profitChartDataset[1]?.['data'],
                         }
@@ -461,37 +499,37 @@ $(document).ready(function () {
 
     function GetRevenueProfitChartDatasets() {
         const type = revenueprofitViewTypeEle.val() === '0' ? 'Period' : 'Accumulated'
-        const cast_billion = moneyDisplayEle.val() === '1' ? 1e9 : 1e6
+        const cast_billion = pageElements.$money_display.val() === '1' ? 1e9 : 1e6
 
         let revenue_chart_data = Array(12).fill(0)
         let profit_chart_data = Array(12).fill(0)
         for (const item of revenueprofit_DF) {
-            let index = GetSub(item?.['date_approved'], period_selected_Setting) - 1
+            let index = GetSub(item?.['date_approved'], pageVariables.CURRENT_PERIOD) - 1
 
             revenue_chart_data[index] += Number((
                 (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
-            ).toFixed(parseInt(moneyRoundEle.val())))
+            ).toFixed(parseInt(pageElements.$money_round.val())))
 
             if (profitTypeEle.val() === '0') {
                 profit_chart_data[index] += Number((
                     (item?.['gross_profit'] ? item?.['gross_profit'] : 0) / cast_billion
-                ).toFixed(parseInt(moneyRoundEle.val())))
+                ).toFixed(parseInt(pageElements.$money_round.val())))
             }
             else {
                 profit_chart_data[index] += Number((
                     (item?.['net_income'] ? item?.['net_income'] : 0) / cast_billion
-                ).toFixed(parseInt(moneyRoundEle.val())))
+                ).toFixed(parseInt(pageElements.$money_round.val())))
             }
         }
 
-        let revenue_expected_data = revenue_expected_DF.map(value => Number((value / cast_billion).toFixed(parseInt(moneyRoundEle.val()))));
-        let profit_expected_data = profit_expected_DF.map(value => Number((value / cast_billion).toFixed(parseInt(moneyRoundEle.val()))));
+        let revenue_expected_data = revenue_expected_DF.map(value => Number((value / cast_billion).toFixed(parseInt(pageElements.$money_round.val()))));
+        let profit_expected_data = profit_expected_DF.map(value => Number((value / cast_billion).toFixed(parseInt(pageElements.$money_round.val()))));
 
         if (type === 'Period') {
-            COMPANY_CURRENT_REVENUE = COMPANY_CURRENT_REVENUE === null ? (revenue_chart_data[GetSub(new Date().toString(), period_selected_Setting) - 1] * cast_billion) : COMPANY_CURRENT_REVENUE
+            COMPANY_CURRENT_REVENUE = COMPANY_CURRENT_REVENUE === null ? (revenue_chart_data[GetSub(new Date().toString(), pageVariables.CURRENT_PERIOD) - 1] * cast_billion) : COMPANY_CURRENT_REVENUE
             $('#current-revenue').attr('data-init-money', COMPANY_CURRENT_REVENUE)
 
-            COMPANY_CURRENT_PROFIT = COMPANY_CURRENT_PROFIT === null ? (profit_chart_data[GetSub(new Date().toString(), period_selected_Setting) - 1] * cast_billion) : COMPANY_CURRENT_PROFIT
+            COMPANY_CURRENT_PROFIT = COMPANY_CURRENT_PROFIT === null ? (profit_chart_data[GetSub(new Date().toString(), pageVariables.CURRENT_PERIOD) - 1] * cast_billion) : COMPANY_CURRENT_PROFIT
             $('#current-profit').attr('data-init-money', COMPANY_CURRENT_PROFIT)
 
             $.fn.initMaskMoney2()
@@ -531,50 +569,50 @@ $(document).ready(function () {
 
         let revenue_series_data = [
             {
-                label: trans_script.attr('data-trans-expected'),
+                label: pageElements.$trans_script.attr('data-trans-expected'),
                 data: revenue_expected_data,
             },
             {
-                label: trans_script.attr('data-trans-reality'),
+                label: pageElements.$trans_script.attr('data-trans-reality'),
                 data: revenue_chart_data,
             }
         ]
 
         let profit_series_data = [
             {
-                label: trans_script.attr('data-trans-expected'),
+                label: pageElements.$trans_script.attr('data-trans-expected'),
                 data: profit_expected_data,
             },
             {
-                label: trans_script.attr('data-trans-reality'),
+                label: pageElements.$trans_script.attr('data-trans-reality'),
                 data: profit_chart_data,
             }
         ]
 
-        if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1 - space_month_Setting; i < 12; i++) {
+        if (new Date().getFullYear() === pageVariables.CURRENT_PERIOD?.['fiscal_year']) {
+            for (let i = new Date().getMonth() + 1 - pageVariables.CURRENT_PERIOD?.['space_month']; i < 12; i++) {
                 revenue_chart_data[i] = null;
                 profit_chart_data[i] = null;
             }
 
             revenue_series_data = [
                 {
-                    label: trans_script.attr('data-trans-expected'),
+                    label: pageElements.$trans_script.attr('data-trans-expected'),
                     data: revenue_expected_data,
                 },
                 {
-                    label: trans_script.attr('data-trans-reality'),
+                    label: pageElements.$trans_script.attr('data-trans-reality'),
                     data: revenue_chart_data,
                 }
             ]
 
             profit_series_data = [
                 {
-                    label: trans_script.attr('data-trans-expected'),
+                    label: pageElements.$trans_script.attr('data-trans-expected'),
                     data: profit_expected_data,
                 },
                 {
-                    label: trans_script.attr('data-trans-reality'),
+                    label: pageElements.$trans_script.attr('data-trans-reality'),
                     data: profit_chart_data,
                 }
             ]
@@ -596,7 +634,7 @@ $(document).ready(function () {
     function LoadRevenueGroup(data) {
         revenueprofitGroupEle.initSelect2({
             allowClear: true,
-            placeholder: trans_script.attr('data-trans-all'),
+            placeholder: pageElements.$trans_script.attr('data-trans-all'),
             ajax: {
                 url: revenueprofitGroupEle.attr('data-url'),
                 method: 'GET',
@@ -620,7 +658,7 @@ $(document).ready(function () {
 
     // Load Page
 
-    LoadPeriod(current_period)
+    LoadPeriod(pageVariables.CURRENT_PERIOD)
     LoadRevenueGroup()
     DrawRevenueProfitChart()
 })

@@ -58,23 +58,22 @@
             data-trans-all="{% trans 'Default all' %}"
     ></script>
 
-    <div class="row mb-2">
-        <div class="col-12">
-            <button class="btn btn-xs btn-outline-light" data-bs-toggle="collapse" href="#revenueprofitCollapse">
+    <div class="row">
+        <div class="col-6">
+            <button class="btn btn-xs btn-outline-secondary" data-bs-toggle="collapse" href="#revenueprofitCollapse">
                 <span>
                     <span class="icon"><span class="feather-icon"><i class="bi bi-filter-circle"></i></span></span>
                     <span>{% trans 'Filter' %}</span>
                 </span>
             </button>
-            <button class="btn btn-xs btn-outline-light" id="reload-revenue-profit-data-btn">
-                <span>
-                    <span class="icon"><span class="feather-icon"><i class="fas fa-sync"></i></span></span>
-                    <span>{% trans 'Refresh data' %}</span>
-                </span>
+        </div>
+        <div class="col-6 text-right">
+            <button class="btn btn-xs btn-soft-success" id="reload-revenue-profit-data-btn" data-bs-toggle="tooltip" title="{% trans 'Refresh data' %}">
+                <i class="fas fa-sync"></i>
             </button>
         </div>
     </div>
-    <div class="collapse show" id="revenueprofitCollapse">
+    <div class="collapse" id="revenueprofitCollapse">
         <div class="row">
             <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
@@ -92,18 +91,18 @@
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-3">
-                <div class="form-group">
-                    <label class="form-label" for="profit-type">{% trans 'Profit type' %}</label>
-                    <select class="form-select select2" id="profit-type">
-                        <option value="0" selected>{% trans 'Gross profit' %}</option>
-                        <option value="1">{% trans 'Net income' %}</option>
-                    </select>
-                </div>
-            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="profit-type">{% trans 'Profit type' %}</label>
+                                <select class="form-select select2" id="profit-type">
+                                    <option value="0" selected>{% trans 'Gross profit' %}</option>
+                                    <option value="1">{% trans 'Net income' %}</option>
+                                </select>
+                            </div>
+                        </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-12 col-md-12 col-lg-6">
+        <div class="col-12 col-md-12 col-lg-6 mt-2">
             <div class="border rounded p-2">
                 <div id="revenue-spinner" class="spinner-grow" role="status"></div>
                 <div id="revenue_chart" style="width: 100%; height: 300px"></div>
@@ -113,7 +112,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-12 col-lg-6">
+        <div class="col-12 col-md-12 col-lg-6 mt-2">
             <div class="border rounded p-2">
                 <div id="profit-spinner" class="spinner-grow" role="status"></div>
                 <div id="profit_chart" style="width: 100%; height: 300px"></div>
@@ -121,6 +120,66 @@
                     <span class="small text-muted">{% trans 'This month profit' %}</span>
                     <span class="fw-bold h5 mask-money" id="current-profit" style="color: rgb(75, 192, 96)">0</span>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-6">
+            <button class="btn btn-xs btn-outline-secondary" data-bs-toggle="collapse" href="#topsalecustomerCollapse">
+                <span>
+                    <span class="icon"><span class="feather-icon"><i class="bi bi-filter-circle"></i></span></span>
+                    <span>{% trans 'Filter' %}</span>
+                </span>
+            </button>
+        </div>
+        <div class="col-6 text-right">
+            <button class="btn btn-xs btn-soft-success" id="reload-top-sale-customer-data-btn" data-bs-toggle="tooltip" title="{% trans 'Refresh data' %}">
+                <i class="fas fa-sync"></i>
+            </button>
+        </div>
+    </div>
+    <div class="collapse" id="topsalecustomerCollapse">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label" for="top-sale-customer-time">{% trans 'Time range' %}</label>
+                    <div class="input-group">
+                        <select class="form-select select2" id="top-sale-customer-time">
+                            <option value="0">{% trans 'Month' %}</option>
+                            <option value="1">{% trans 'Quarter' %}</option>
+                            <option value="2" selected>{% trans 'Whole year' %}</option>
+                        </select>
+                        <label class="input-group-text" for="top-sale-customer-time-detail" hidden></label>
+                        <select class="form-select select2" id="top-sale-customer-time-detail" disabled></select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label for="top-sale-number" class="form-label">{% trans 'Sale number viewed' %}</label>
+                    <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                            <div class="form-group">
+                                <label for="top-customer-number" class="form-label">{% trans 'Customer number viewed' %}</label>
+                                <input class="form-control" type="number" id="top-customer-number" min="1" max="20" value="10">
+                            </div>
+                        </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-12 col-lg-6 mt-2">
+            <div class="border rounded p-2">
+                <div id="topsale-spinner" class="spinner-grow" role="status"></div>
+                <div id="topsale_chart" style="width: 100%; height: 300px"></div>
+            </div>
+        </div>
+        <div class="col-12 col-md-12 col-lg-6 mt-2">
+            <div class="border rounded p-2">
+                <div id="topcustomer-spinner" class="spinner-grow" role="status"></div>
+                <div id="topcustomer_chart" style="width: 100%; height: 300px"></div>
             </div>
         </div>
     </div>

@@ -78,13 +78,11 @@
                                             <input type="text" name="tenant_code" id="inp-tenant-code" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="inp-username" class="form-label">
-                                                {% trans 'username' %}
-                                            </label>
+                                            <label for="inp-username" class="form-label d-none"></label>
                                             <div class="input-group mb-3">
                                                 <input
                                                         type="text" name="username" id="inp-username"
-                                                        class="form-control" placeholder=""
+                                                        class="form-control" placeholder="{% trans 'Username' %}"
                                                         autofocus
                                                         required
                                                 >

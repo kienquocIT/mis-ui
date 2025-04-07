@@ -1,95 +1,104 @@
 {% load i18n %}
 
-<div class="modal fade" id="payment-method-modal" tabindex="-1" role="dialog" aria-labelledby="payment-method-modal" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">{% trans 'Payment method' %}</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-                <div class="row">
-                    <div class="col-12 col-md-12 col-lg-12">
-                        <div class="form-group">
-                            <label class="form-label" for="total_payment_modal">{% trans "Total payment" %}</label>
-                            <input disabled readonly class="form-control form-control-line mask-money" value="0" id="total_payment_modal">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-12 col-lg-12">
-                        <div class="form-group">
-                            <label class="form-label" for="cash_value">{% trans "Cash value" %}</label>
-                            <input name="cash_value" class="form-control mask-money" value="0" id="cash_value">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-12 col-lg-12">
-                        <div class="form-group">
-                            <label class="form-label" for="bank_value">{% trans "Bank value" %}</label>
-                            <input name="bank_value" class="form-control mask-money" value="0" id="bank_value">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-12 col-lg-12">
-                        <div class="form-group">
-                            <label class="form-label" for="company_bank_account">{% trans "Select company bank account" %}</label>
-                            <select name="company_bank_account" class="form-select" id="company_bank_account" data-method=GET data-url="{% url 'BankAccountMasterDataListAPI' %}"></select>
-                        </div>
-                    </div>
+<div class="modal fade" id="supplier-select-modal" tabindex="-1" role="dialog" aria-labelledby="supplier-select-modal">
+    <div class="modal-dialog" style="min-width: 70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Select supplier' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table nowrap w-100"
+                           id="table-select-supplier"
+                           data-method="GET" data-url="{% url 'SupplierListAPI' %}"
+                    >
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th>{% trans 'Supplier' %}</th>
+                                <th>{% trans 'Tax number' %}</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-				<button type="button" id="save-changes-payment-method" class="btn btn-primary">{% trans 'Save changes' %}</button>
-			</div>
-		</div>
-	</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="accept-select-supplier-btn" class="btn btn-primary">{% trans 'Select' %}</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="modal fade" id="detail-payment-value-modal" tabindex="-1" role="dialog" aria-labelledby="detail-payment-value-modal" aria-hidden="true">
-	<div class="modal-dialog modal-lg" style="min-width: 90%" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">{% trans 'Detail payment value by invoice' %}</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-                <div class="row">
-                    <div class="col-12 col-md-12 col-lg-12">
-                        <table id="detail-payment-table" class="table nowrap w-100">
-                            <thead>
+<div class="modal fade" id="customer-select-modal" tabindex="-1" role="dialog" aria-labelledby="customer-select-modal">
+    <div class="modal-dialog" style="min-width: 70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Select customer' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table nowrap w-100"
+                           id="table-select-customer"
+                           data-method="GET" data-url="{% url 'CustomerListAPI' %}"
+                    >
+                        <thead>
                             <tr>
-                                <th style="min-width: 30px"></th>
-                                <th style="min-width: 30px"></th>
-                                <th style="min-width: 120px">{% trans 'Installment' %}</th>
-                                <th style="min-width: 100px">{% trans 'Description' %}</th>
-                                <th style="min-width: 100px">{% trans 'Issue invoice' %}</th>
-                                <th style="min-width: 100px">
-                                    {% trans 'Invoice value' %}
-                                    <i class="fas fa-info-circle" data-bs-toggle="tooltip" title="{% trans 'After tax' %}"></i>
-                                </th>
-                                <th style="min-width: 100px">{% trans 'Total payment' %}</th>
-                                <th style="min-width: 100px">{% trans 'Balance value' %}</th>
-                                <th style="min-width: 200px">{% trans 'Payment value' %}</th>
-                                <th style="min-width: 100px">{% trans 'Due date' %}</th>
+                                <th></th>
+                                <th></th>
+                                <th>{% trans 'Customer' %}</th>
+                                <th>{% trans 'Tax number' %}</th>
                             </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                    <div class="col-12 col-md-12 col-lg-12 mt-5">
-                        <div class="form-group text-right">
-                            <label class="form-label fw-bold text-decoration-underline" for="total-detail-payment-modal">{% trans "Total" %}:</label>
-                            <span class="mask-money fw-bold" data-init-money="0" id="total-detail-payment-modal"></span>
-                        </div>
-                    </div>
+                        </thead>
+                    </table>
                 </div>
             </div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-				<button type="button" id="save-detail-payment-value" class="btn btn-primary">{% trans 'Save' %}</button>
-			</div>
-		</div>
-	</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="accept-select-customer-btn" class="btn btn-primary">{% trans 'Select' %}</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="modal fade" id="employee-select-modal" tabindex="-1" role="dialog" aria-labelledby="employee-select-modal">
+    <div class="modal-dialog" style="min-width: 70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Select employee' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table nowrap w-100"
+                           id="table-select-employee"
+                           data-method="GET" data-url="{% url 'EmployeeListAPI' %}"
+                    >
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th>{% trans 'Employee' %}</th>
+                                <th>{% trans 'Group' %}</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="accept-select-employee-btn" class="btn btn-primary">{% trans 'Select' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+

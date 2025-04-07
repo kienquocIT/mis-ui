@@ -97,3 +97,25 @@ class CashOutflowDetailAPI(APIView):
             resp.result['message'] = SaleMsg.GRT_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class AdvanceForSupplierListForCashOutflowAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ADVANCE_FOR_SUPPLIER_LIST_FOR_CASHOUTFLOW).get(data)
+        return resp.auto_return(key_success='advance_for_supplier_list')
+
+
+class APInvoiceListForCashOutflowAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.AP_INVOICE_LIST_FOR_CASHOUTFLOW).get(data)
+        return resp.auto_return(key_success='ap_invoice_list')

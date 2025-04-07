@@ -60,6 +60,65 @@ class UsualLoadPageFunction {
     }
 
     /**
+     * Load bảng Customer (expected-data-url = CustomerListAPI)
+     * @param {HTMLElement} element - element
+     * @param {Object} data_params - data_params
+     * @param {string} data_url - data_url
+     * @returns {void}
+     */
+    static LoadEmployeeTable({element, data_params = {}, data_url=''}) {
+        element.DataTable().clear().destroy()
+        element.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            reloadCurrency: true,
+            scrollY: '50vh',
+            scrollX: '100vw',
+            scrollCollapse: true,
+            ajax: {
+                url: data_url || element.attr('data-url'),
+                data: data_params,
+                type: 'GET',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('employee_list')) {
+                        return data?.['employee_list'];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'wrap-text w-5',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                                    <input type="radio" name="employee-selected-radio" class="form-check-input" data-employee='${JSON.stringify(row)}'/>
+                                </div>`
+                    }
+                },
+                {
+                    className: 'wrap-text w-70',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-soft-primary mr-2">${row?.['code'] || ''}</span><span>${row?.['full_name'] || ''}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text w-20',
+                    render: (data, type, row) => {
+                        return (row?.['group'] || {})?.['title']|| ''
+                    }
+                },
+            ],
+        })
+    }
+
+    /**
      * Load ô Industry (expected-data-url = IndustryListAPI)
      * @param {HTMLElement} element - element
      * @param {Object} data - data json
@@ -188,6 +247,65 @@ class UsualLoadPageFunction {
     }
 
     /**
+     * Load bảng Customer (expected-data-url = CustomerListAPI)
+     * @param {HTMLElement} element - element
+     * @param {Object} data_params - data_params
+     * @param {string} data_url - data_url
+     * @returns {void}
+     */
+    static LoadCustomerTable({element, data_params = {}, data_url=''}) {
+        element.DataTable().clear().destroy()
+        element.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            reloadCurrency: true,
+            scrollY: '50vh',
+            scrollX: '100vw',
+            scrollCollapse: true,
+            ajax: {
+                url: data_url || element.attr('data-url'),
+                data: data_params,
+                type: 'GET',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('customer_list')) {
+                        return data?.['customer_list'];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'wrap-text w-5',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                                    <input type="radio" name="customer-selected-radio" class="form-check-input" data-customer='${JSON.stringify(row)}'/>
+                                </div>`
+                    }
+                },
+                {
+                    className: 'wrap-text w-70',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-soft-primary mr-2">${row?.['code'] || ''}</span><span>${row?.['name'] || ''}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text w-20',
+                    render: (data, type, row) => {
+                        return row?.['tax_code'] || ''
+                    }
+                },
+            ],
+        })
+    }
+
+    /**
      * Load ô Supplier (expected-data-url = SupplierListAPI)
      * @param {HTMLElement} element - element
      * @param {Object} data - data json
@@ -216,6 +334,65 @@ class UsualLoadPageFunction {
             keyResp: 'supplier_list',
             keyId: 'id',
             keyText: 'name',
+        })
+    }
+
+    /**
+     * Load bảng Supplier (expected-data-url = SupplierListAPI)
+     * @param {HTMLElement} element - element
+     * @param {Object} data_params - data_params
+     * @param {string} data_url - data_url
+     * @returns {void}
+     */
+    static LoadSupplierTable({element, data_params = {}, data_url=''}) {
+        element.DataTable().clear().destroy()
+        element.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            reloadCurrency: true,
+            scrollY: '50vh',
+            scrollX: '100vw',
+            scrollCollapse: true,
+            ajax: {
+                url: data_url || element.attr('data-url'),
+                data: data_params,
+                type: 'GET',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('supplier_list')) {
+                        return data?.['supplier_list'];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    className: 'wrap-text w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'wrap-text w-5',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                                    <input type="radio" name="supplier-selected-radio" class="form-check-input" data-supplier='${JSON.stringify(row)}'/>
+                                </div>`
+                    }
+                },
+                {
+                    className: 'wrap-text w-70',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-soft-primary mr-2">${row?.['code'] || ''}</span><span>${row?.['name'] || ''}</span>`
+                    }
+                },
+                {
+                    className: 'wrap-text w-20',
+                    render: (data, type, row) => {
+                        return row?.['tax_code'] || ''
+                    }
+                },
+            ],
         })
     }
 
@@ -551,5 +728,4 @@ class UsualLoadPageFunction {
             observer.observe(container, { childList: true, subtree: true });
         }
     }
-
 }

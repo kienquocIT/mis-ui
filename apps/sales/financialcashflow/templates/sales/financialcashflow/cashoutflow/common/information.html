@@ -13,18 +13,44 @@
                 <div class="form-group">
                     <label class="form-label required" for="payment_type">{% trans "Payment type" %}</label>
                     <select required id="payment_type" class="form-select">
-                        <option value=""></option>
-                        <option value="0">{% trans 'Payment to supplier' %}</option>
+                        <option value="0" selected>{% trans 'Payment to supplier' %}</option>
                         <option value="1">{% trans 'Payment to customer' %}</option>
                         <option value="2">{% trans 'Advance payment to employee' %}</option>
                         <option value="3">{% trans 'Payment on account' %}</option>
                     </select>
                 </div>
             </div>
-            <div class="col-12 col-md-9 col-lg-9">
+            <div class="col-12 col-md-9 col-lg-9 supplier-space">
                 <div class="form-group">
-                    <label class="form-label required" for="supplier">{% trans "Supplier" %}</label>
-                    <select required id="supplier" class="select2 form-select" data-method="GET" data-url="{% url 'SupplierListAPI' %}"></select>
+                    <label class="form-label required" for="supplier-name">{% trans "Supplier" %}</label>
+                    <div style="display: flex;">
+                        <input disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="supplier-name">
+                        <button type="button" class="btn btn-xs btn-primary btn-animated ml-1" id="supplier-select-btn" data-bs-toggle="modal" data-bs-target="#supplier-select-modal">
+                            <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Select supplier' %}</span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-9 col-lg-9 customer-space" hidden>
+                <div class="form-group">
+                    <label class="form-label required" for="customer-name">{% trans "Customer" %}</label>
+                    <div style="display: flex;">
+                        <input disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="customer-name">
+                        <button type="button" class="btn btn-xs btn-primary btn-animated ml-1" id="customer-select-btn" data-bs-toggle="modal" data-bs-target="#customer-select-modal">
+                            <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Select customer' %}</span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-9 col-lg-9 employee-space" hidden>
+                <div class="form-group">
+                    <label class="form-label required" for="employee-name">{% trans "Employee" %}</label>
+                    <div style="display: flex;">
+                        <input disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="employee-name">
+                        <button type="button" class="btn btn-xs btn-primary btn-animated ml-1" id="employee-select-btn" data-bs-toggle="modal" data-bs-target="#employee-select-modal">
+                            <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Select employee' %}</span></span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,7 +83,7 @@
     </div>
 </div>
 
-<div class="row mt-5">
+<div class="row mt-5 supplier-space">
     <div class="col-12 col-md-5 col-lg-5">
         <div class="form-group">
             <label for="advance_to_supplier" class="form-label fw-bold h5">
@@ -67,7 +93,7 @@
         </div>
     </div>
 </div>
-<div class="row mt-5">
+<div class="row mt-5 supplier-space">
     <div class="col-12 col-md-6 col-lg-6">
         <div class="dropdown">
             <span data-bs-toggle="dropdown">
@@ -83,13 +109,12 @@
     </div>
     <div class="col-12">
         <div id="area_table_advance_to_supplier">
-            <table id="advance-to-supplier-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'CustomerAdvanceListForCashInflowAPI' %}">
+            <table id="advance-to-supplier-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'AdvanceForSupplierListForCashOutflowAPI' %}">
                 <thead>
                 <tr >
                     <th style="min-width: 30px"></th>
                     <th style="min-width: 50px"></th>
                     <th style="min-width: 80px">{% trans 'PO code' %}</th>
-                    <th style="min-width: 100px">{% trans 'Installment' %}</th>
                     <th style="min-width: 100px">{% trans 'Description' %}</th>
                     <th style="min-width: 80px">{% trans 'Due date' %}</th>
                     <th style="min-width: 150px">{% trans 'Total' %}</th>
@@ -102,7 +127,7 @@
             <span class="small text-muted">{% trans 'Order by Due date' %}</span>
         </div>
         <div hidden id="area_table_ap_invoice">
-            <table id="ap-invoice-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'ARInvoiceListForCashInflowAPI' %}">
+            <table id="ap-invoice-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'APInvoiceListForCashOutflowAPI' %}">
                 <thead>
                 <tr>
                     <th style="min-width: 30px"></th>
@@ -118,6 +143,26 @@
                 </thead>
                 <tbody></tbody>
             </table>
+        </div>
+    </div>
+</div>
+<div class="row mt-5 customer-space" hidden>
+    <div class="col-12 col-md-5 col-lg-5">
+        <div class="form-group">
+            <label for="payment_to_customer" class="form-label fw-bold h5">
+                {% trans "Payment to customer" %}
+            </label>
+            <input name="payment_to_customer" class="form-control mask-money" value="0" id="payment_to_customer">
+        </div>
+    </div>
+</div>
+<div class="row mt-5 employee-space" hidden>
+    <div class="col-12 col-md-5 col-lg-5">
+        <div class="form-group">
+            <label for="advance_to_employee" class="form-label fw-bold h5">
+                {% trans "Advance payment to employee" %}
+            </label>
+            <input name="advance_to_employee" class="form-control mask-money" value="0" id="advance_to_employee">
         </div>
     </div>
 </div>

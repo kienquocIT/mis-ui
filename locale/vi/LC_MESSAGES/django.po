@@ -10412,10 +10412,6 @@ msgid "Sale activity chart"
 msgstr "Biểu đồ Hoạt động bán hàng"
 
 #
-msgid "Refresh data"
-msgstr "Làm mới dữ liệu"
-
-#
 msgid "Purchase request for Sale order"
 msgstr "Yêu cầu mua hàng cho Đơn hàng"
 
@@ -11589,7 +11585,7 @@ msgstr "Mã hóa đơn"
 
 #
 msgid "PO code"
-msgstr "Mã Đơn mua hàng"
+msgstr "Mã ĐMH"
 
 msgctxt "group_order"
 msgid "Unpaid"
@@ -11682,3 +11678,7 @@ msgstr "Chọn sản phẩm từ phiếu nhập hàng"
 #
 msgid "If referring to PO"
 msgstr "Nếu tham chiếu tới đơn mua hàng"
+
+#
+msgid "Select employee"
+msgstr "Chọn nhân viên"

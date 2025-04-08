@@ -210,7 +210,7 @@ class JSPlumbsHandle {
                 let disabled = "";
                 if (item?.['is_system'] === true) {
                     clsSys = 'control-system'
-                    bg = 'bg-blue-light-5';
+                    bg = 'bg-blue-light-4';
                     if (["approved", "completed"].includes(item?.['code'])) {
                         clsModal = "";
                         disabled = "disabled";
@@ -277,7 +277,7 @@ class JSPlumbsHandle {
                 let clsModal = "modal";
                 let disabled = "";
                 if (item?.['is_system'] === true) {
-                    bg = 'bg-blue-light-5';
+                    bg = 'bg-blue-light-4';
 
                     if (["approved", "completed"].includes(item?.['code'])) {
                         clsModal = "";
@@ -331,7 +331,7 @@ class JSPlumbsHandle {
                     let clsModal = "modal";
                     if (this.classList.contains('control-system')) {
                         clsSys = 'clone-system'
-                        bg = 'bg-blue-light-5';
+                        bg = 'bg-blue-light-4';
                     }
 
 

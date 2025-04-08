@@ -3559,7 +3559,10 @@ class WFRTControl {
             3: "green-light-4",
             4: "red-light-4",
         }
-        return `<span class="p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
+        if (status || status === 0) {
+            return `<span class="p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
+        }
+        return ``;
     }
 
 }
@@ -6117,7 +6120,7 @@ class DocumentControl {
             if (code) {
                 let clsState = 'hidden';
                 if (is_active === true) {
-                    clsState = 'badge badge-info badge-indicator';
+                    clsState = 'badge badge-info badge-indicator-processing badge-indicator';
                 } else if (clsState === false) {
                     clsState = 'badge badge-light badge-indicator';
                 }

@@ -125,15 +125,7 @@ $(function () {
                         targets: 7,
                         width: '10%',
                         render: (data, type, row) => {
-                            let sttTxt = JSON.parse($('#stt_sys').text())
-                            let sttData = [
-                                "light",
-                                "primary",
-                                "info",
-                                "success",
-                                "danger",
-                            ]
-                            return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
+                            return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                         }
                     },
                     {

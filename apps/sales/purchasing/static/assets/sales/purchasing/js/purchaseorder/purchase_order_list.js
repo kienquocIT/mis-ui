@@ -34,7 +34,7 @@ $(function () {
                         width: '10%',
                         render: (data, type, row) => {
                             let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover"><span class="badge badge-primary">${row?.['code']}</span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover"><span>${row?.['code']}</span></a>`;
                         }
                     },
                     {
@@ -70,15 +70,7 @@ $(function () {
                         targets: 5,
                         width: '10%',
                         render: (data, type, row) => {
-                            let sttTxt = JSON.parse($('#stt_sys').text())
-                            let sttData = [
-                                "light",
-                                "primary",
-                                "info",
-                                "success",
-                                "danger",
-                            ]
-                            return `<span class="badge badge-soft-${sttData[row?.['system_status']]}">${sttTxt[row?.['system_status']][1]}</span>`;
+                            return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                         }
                     },
                     {

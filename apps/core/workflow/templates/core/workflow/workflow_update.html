@@ -139,7 +139,7 @@
                 <div class="d-flex justify-content-start">
                     <button
                             type="button"
-                            class="btn btn-outline-primary open-modal-node mb-2"
+                            class="btn btn-primary btn-square open-modal-node mb-2"
                             id="btn-new-node"
                             data-bs-toggle="modal"
                             data-bs-target="#nodeModal"
@@ -150,11 +150,11 @@
 
 
                 <div class="wrap-flowchart">
-                    <div id="node_dragbox">
+                    <div id="node_dragbox" class="bg-grey-light-5">
                         <p class="text-center pt-3">{% trans 'No content available' %}</p>
                     </div>
                     <div class="wrap-flowchart_wf">
-                        <div id="flowchart_workflow"></div>
+                        <div id="flowchart_workflow" class="bg-grey-light-5"></div>
                     </div>
                     <div class="wrap-btn_extend">
                         <button type="button" class="btn btn-extend_space" data-btn-type="minus">

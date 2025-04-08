@@ -3544,6 +3544,24 @@ class WFRTControl {
             WFRTControl.changePropertiesElementIsZone($(ele$).next('.select2-container').find('.select2-selection'), config)
     }
 
+    static displayRuntimeStatus(status) {
+        let sttTxt = {
+            0: $.fn.transEle.attr('data-draft'),
+            1: $.fn.transEle.attr('data-created'),
+            2: $.fn.transEle.attr('data-added'),
+            3: $.fn.transEle.attr('data-approved'),
+            4: $.fn.transEle.attr('data-cancel'),
+        }
+        let sttBadge = {
+            0: "grey-light-4",
+            1: "yellow-light-4",
+            2: "blue-light-4",
+            3: "green-light-4",
+            4: "red-light-4",
+        }
+        return `<span class="p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
+    }
+
 }
 
 class WFAssociateControl {
@@ -6106,7 +6124,7 @@ class DocumentControl {
                 $breadcrumbCode.html(
                     `
                     <span class="${clsState}"></span>
-                    <span class="badge badge-primary" id="documentCode" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${code}</span>
+                    <b class="fs-6" id="documentCode" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${code}</b>
                 `
                 ).removeClass('hidden');
             }
@@ -6117,11 +6135,11 @@ class DocumentControl {
                 let approved = $.fn.transEle.attr('data-approved');
                 let cancel = $.fn.transEle.attr('data-cancel');
                 let status_class = {
-                    [draft]: "badge badge-soft-light",
-                    [created]: "badge badge-soft-primary",
-                    [added]: "badge badge-soft-info",
-                    [approved]: "badge badge-soft-success",
-                    [cancel]: "badge badge-soft-danger",
+                    [draft]: "grey-light-4",
+                    [created]: "yellow-light-4",
+                    [added]: "blue-light-4",
+                    [approved]: "green-light-4",
+                    [cancel]: "red-light-4",
                 }
                 let dataStatus = system_status;
                 let dataInheritID = employee_inherit?.['id'];
@@ -6131,11 +6149,11 @@ class DocumentControl {
                 }
                 if (window.location.href.includes('/update/') && dataStatus === 3) {
                     $breadcrumbCode.append(
-                        `<span class="badge badge-soft-blue" id="systemStatus" data-status="${dataStatus}" data-status-cr="${dataStatus + 2}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
+                        `<span class="p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-blue-light-4" id="systemStatus" data-status="${dataStatus}" data-status-cr="${dataStatus + 2}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
                     ).removeClass('hidden');
                 } else {
                     $breadcrumbCode.append(
-                        `<span class="${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-status-cr="" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
+                        `<span class="p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-status-cr="" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
                     ).removeClass('hidden');
                 }
             }

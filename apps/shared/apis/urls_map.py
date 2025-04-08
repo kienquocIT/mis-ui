@@ -867,6 +867,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FIXED_ASSET_LIST = StringUrl('asset/fixed-asset/list')
     FIXED_ASSET_DETAIL = StringUrl('asset/fixed-asset/detail')
     FIXED_ASSET_FOR_LEASE_LIST = StringUrl('asset/fixed-asset-for-lease/list')
+    FIXED_ASSET_STATUS_LEASE_LIST = StringUrl('asset/fixed-asset-status-lease/list')
 
     # masterdata/ instrument tool
     INSTRUMENT_TOOL_CLASSIFICATION_LIST = StringUrl('saledata/tool/classification/list')
@@ -878,6 +879,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     CHART_OF_ACCOUNTS_LIST = StringUrl('accounting-setting/chart-of-accounts/list')
     CHART_OF_ACCOUNTS_DETAIL = StringUrl('accounting-setting/chart-of-accounts/{pk}')
     INSTRUMENT_TOOL_FOR_LEASE_LIST = StringUrl('asset/instrument-tool-for-lease/list')
+    INSTRUMENT_TOOL_STATUS_LEASE_LIST = StringUrl('asset/instrument-tool-status-lease/list')
 
     DEFAULT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/default-account-determination/list')
     DEFAULT_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/default-account-determination/detail/{pk}')

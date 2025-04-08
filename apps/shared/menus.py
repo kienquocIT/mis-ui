@@ -375,6 +375,10 @@ class MenusCRM:
         name='Lease order', code='menu_lease_order_list', view_name='LeaseOrderList',
         icon='<i class="fas fa-handshake"></i>',
     )
+    LEASE_ASSET_LIST = MenuCommon(
+        name='Lease asset list', code='menu_lease_asset_list', view_name='LeaseOrderAssetList',
+        icon='<i class="fas fa-hand-holding-usd"></i>',
+    )
     RECURRENCE = MenuCommon(
         name='Recurrence transaction', code='menu_recurrence', view_name='',
         icon='<i class="fas fa-sync-alt"></i>',
@@ -953,6 +957,7 @@ class SpaceItem:
                 MenusCRM.GROUP_ORDER,
                 MenusCRM.AR_INVOICE,
                 MenusCRM.LEASE_ORDER,
+                MenusCRM.LEASE_ASSET_LIST,
                 MenusCRM.RECURRENCE,
                 MenusCRM.WORK_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,

@@ -1038,7 +1038,7 @@ class POLoadDataHandle {
             'order': order,
             'ratio': 0,
             'value_before_tax': 0,
-            'is_ar_invoice': false,
+            'is_ap_invoice': false,
         };
         PODataTableHandle.$tablePayment.DataTable().row.add(dataAdd).draw().node();
         // mask money
@@ -3626,10 +3626,10 @@ class POSubmitHandle {
             let invoiceEle = row.querySelector('.table-row-invoice');
             if (invoiceEle) {
                 rowData['invoice'] = null;
-                rowData['is_ar_invoice'] = false;
+                rowData['is_ap_invoice'] = false;
                 if ($(invoiceEle).val()) {
                     rowData['invoice'] = parseInt($(invoiceEle).val());
-                    rowData['is_ar_invoice'] = true;
+                    rowData['is_ap_invoice'] = true;
                 }
             }
             let invoiceDataEle = row.querySelector('.table-row-invoice-data');

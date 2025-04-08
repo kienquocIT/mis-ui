@@ -1161,7 +1161,7 @@ ul.dm-uploader-result-list li:hover .btn-download-file {
     font-weight: 500;
     border-radius: 0.5rem;
     padding: .2rem .625rem;
-    font-size: 75%;
+    font-size: 100%;
     min-width: 25px;
     letter-spacing: 0.3px;
     vertical-align: middle;
@@ -1173,13 +1173,13 @@ ul.dm-uploader-result-list li:hover .btn-download-file {
 }
 
 .badge-parent.badge-parent-primary {
-    background: #007D88;
-    color: #fff;
+    /*background: #298dff;*/
+    color: #2f343a;
 }
 
 .badge-parent.badge-parent-secondary {
-    background: #6f6f6f;
-    color: #fff;
+    /*background: #eaeaea;*/
+    color: #2f343a;
 }
 
 .badge-child {
@@ -1189,16 +1189,16 @@ ul.dm-uploader-result-list li:hover .btn-download-file {
     min-width: 20px;
     height: 20px;
     border-radius: 50%;
-    font-size: 82%;
+    font-size: 80%;
     line-height: 18px;
-    padding: 0 .2rem;
+    padding: 0 .1rem;
     border: 2px solid #fff;
     font-weight: bold;
 }
 
 .badge-child.badge-child-blue {
-    background-color: #298dff;
-    color: #fff;
+    background-color: #d0e6ff;
+    color: #2f343a;
 }
 
 /* -- Badge parent */

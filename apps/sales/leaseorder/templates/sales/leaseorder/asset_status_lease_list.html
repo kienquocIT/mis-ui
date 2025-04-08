@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Lease asset list' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block pageAction %}{% endblock %}
+
+{% block pageContent %}
+    {% csrf_token %}
+
+    <div class="row">
+        <table
+                id="table_asset_status_lease_list"
+                class="table nowrap min-w-1600p w-100 mb-5"
+        >
+            <thead>
+            <tr class="bg-light">
+                <th>{% trans 'Code' %}</th>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Type' %}</th>
+                <th>{% trans 'Quantity' %}</th>
+                <th>{% trans 'Leased' %}</th>
+                <th>{% trans 'Contract name' %}</th>
+                <th>{% trans 'Contract code' %}</th>
+                <th>{% trans 'Lease from' %}</th>
+                <th>{% trans 'Lease to' %}</th>
+                <th>{% trans 'Customer name' %}</th>
+                <th>{% trans 'Original cost' %}</th>
+                <th>{% trans 'Net value' %}</th>
+                <th>{% trans 'Depreciation time' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="modal-canvas-area">
+
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
+            <div class="modal-header">
+                <h5><b>{% trans 'Filter' %}</b></h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label" for="box-lease-order">{% trans 'Lease order' %}</label>
+                        <select
+                                class="form-select"
+                                id="box-lease-order"
+                                data-url="{% url "LeaseOrderListAPI" %}"
+                                data-method="GET"
+                                data-keyResp="lease_order_list"
+                                multiple
+                        ></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas" data-zone="lease_costs_data">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-primary" id="btn-apply-filter" data-bs-dismiss="offcanvas">{% trans 'Apply' %}</button>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+            type="text" id="app-urls-factory"
+            data-asset-status-lease="{% url 'AssetStatusLeaseListAPI' %}"
+            data-tool-status-lease="{% url 'ToolStatusLeaseListAPI' %}"
+
+    >
+    <input
+            type="text"
+            id="app-trans-factory"
+            data-filter="{% trans 'Filter' %}"
+            data-month="{% trans 'Month' %}"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+
+    <script src="{% static 'assets/js/extends/depreciation/depreciation_common.js' %}"></script>
+    <script src="{% static 'assets/sales/leaseorder/js/asset_status_lease_list.js' %}"></script>
+{% endblock %}

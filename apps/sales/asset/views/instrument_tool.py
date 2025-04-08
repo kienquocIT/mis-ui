@@ -15,6 +15,7 @@ __all__ = [
     'InstrumentToolListAPI',
     'InstrumentToolDetailAPI',
     'ToolForLeaseListAPI',
+    'ToolStatusLeaseListAPI',
 ]
 
 def create(request, url, msg):
@@ -141,3 +142,14 @@ class ToolForLeaseListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.INSTRUMENT_TOOL_FOR_LEASE_LIST).get(data)
         return resp.auto_return(key_success='instrument_tool_for_lease_list')
+
+
+class ToolStatusLeaseListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.INSTRUMENT_TOOL_STATUS_LEASE_LIST).get(data)
+        return resp.auto_return(key_success='instrument_tool_status_lease_list')

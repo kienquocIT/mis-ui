@@ -701,7 +701,7 @@ class UsualLoadPageFunction {
         if (active) {
             const shouldExclude = (el) => except.some(selector => el.matches(selector));
 
-            const container = document.querySelector('#idxPageContent, #idxModalData');
+            const container = document.querySelector('#idxPageContent, .idxModalData');
             if (!container) return;
 
             container.querySelectorAll('select, input, textarea, button').forEach(el => {

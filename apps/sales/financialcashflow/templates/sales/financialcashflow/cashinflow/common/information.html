@@ -24,7 +24,7 @@
                     <label class="form-label required" for="posting_date">{% trans "Posting date" %}</label>
                     <div class="input-group mb-3">
                         <span class="input-affix-wrapper">
-                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <span class="input-prefix">📅</span>
                             <input required name="posting_date" class="form-control" id="posting_date">
                         </span>
                     </div>
@@ -35,7 +35,7 @@
                     <label class="form-label required" for="document_date">{% trans "Document date" %}</label>
                     <div class="input-group mb-3">
                         <span class="input-affix-wrapper">
-                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <span class="input-prefix">📅</span>
                             <input required name="document_date" class="form-control" id="document_date">
                         </span>
                     </div>
@@ -44,7 +44,6 @@
         </div>
     </div>
 </div>
-
 <div class="row mt-5">
     <div class="col-12 col-md-5 col-lg-5">
         <div class="form-group">
@@ -113,21 +112,18 @@
     <div class="col-12 col-md-5 col-lg-5">
         <div class="form-group">
             <label for="total_payment" class="form-label text-muted fw-bold">{% trans "Total payment" %}</label>
-            <input disabled readonly name="total_payment" class="form-control form-control-line mask-money" value="0" id="total_payment">
+            <div style="display: flex;">
+                <input disabled readonly name="total_payment" class="form-control form-control-line mask-money" value="0" id="total_payment">
+                <button id="btn-modal-payment-method" data-payment-method='' disabled type="button" class="btn btn-danger ml-1" data-bs-toggle="modal" data-bs-target="#payment-method-modal">
+                    <span>
+                        <span class="icon"><span class="feather-icon"><i class="fas fa-bars"></i></span></span>
+                        <span>{% trans 'Payment method' %} <i hidden id="icon-done-payment-method" class="bi bi-check2-all"></i></span>
+                    </span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-12">
-        <button id="btn-modal-payment-method" data-payment-method='' disabled type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#payment-method-modal">
-            <span>
-                <span class="icon"><span class="feather-icon"><i class="fas fa-bars"></i></span></span>
-                <span>{% trans 'Payment method' %} <i hidden id="icon-done-payment-method" class="bi bi-check2-all"></i></span>
-            </span>
-        </button>
-    </div>
-</div>
-
 <div class="row mt-5">
     <div class="col-12">
         <div class="form-group">

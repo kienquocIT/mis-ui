@@ -11585,7 +11585,7 @@ msgstr "Mã hóa đơn"
 
 #
 msgid "PO code"
-msgstr "Mã ĐMH"
+msgstr "Mã Đơn mua hàng"
 
 msgctxt "group_order"
 msgid "Unpaid"

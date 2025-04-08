@@ -12,7 +12,7 @@
             <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
                     <label class="form-label required" for="payment_type">{% trans "Payment type" %}</label>
-                    <select required id="payment_type" class="form-select">
+                    <select required id="payment_type" class="form-select" disabled readonly>
                         <option value="0" selected>{% trans 'Payment to supplier' %}</option>
                         <option value="1">{% trans 'Payment to customer' %}</option>
                         <option value="2">{% trans 'Advance payment to employee' %}</option>
@@ -62,7 +62,7 @@
                     <label class="form-label required" for="posting_date">{% trans "Posting date" %}</label>
                     <div class="input-group mb-3">
                         <span class="input-affix-wrapper">
-                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <span class="input-prefix">📅</span>
                             <input required name="posting_date" class="form-control" id="posting_date">
                         </span>
                     </div>
@@ -73,7 +73,7 @@
                     <label class="form-label required" for="document_date">{% trans "Document date" %}</label>
                     <div class="input-group mb-3">
                         <span class="input-affix-wrapper">
-                            <span class="input-prefix"><i class="far fa-calendar-alt"></i></span>
+                            <span class="input-prefix">📅</span>
                             <input required name="document_date" class="form-control" id="document_date">
                         </span>
                     </div>
@@ -82,14 +82,13 @@
         </div>
     </div>
 </div>
-
 <div class="row mt-5 supplier-space">
     <div class="col-12 col-md-5 col-lg-5">
         <div class="form-group">
             <label for="advance_to_supplier" class="form-label fw-bold h5">
                 {% trans "Advance payment to supplier (not according to Purchase order)" %}
             </label>
-            <input name="advance_to_supplier" class="form-control mask-money" value="0" id="advance_to_supplier">
+            <input name="advance_for_supplier_value" class="form-control mask-money" value="0" id="advance_for_supplier_value">
         </div>
     </div>
 </div>
@@ -166,7 +165,22 @@
         </div>
     </div>
 </div>
-
+<div class="row mt-5">
+    <div class="col-12 col-md-5 col-lg-5">
+        <div class="form-group">
+            <label for="total_payment" class="form-label text-muted fw-bold">{% trans "Total payment" %}</label>
+            <div style="display: flex;">
+                <input disabled readonly name="total_payment" class="form-control form-control-line mask-money" value="0" id="total_payment">
+                <button id="btn-modal-payment-method" data-payment-method='' disabled type="button" class="btn btn-danger ml-1" data-bs-toggle="modal" data-bs-target="#payment-method-modal">
+                    <span>
+                        <span class="icon"><span class="feather-icon"><i class="fas fa-bars"></i></span></span>
+                        <span>{% trans 'Payment method' %} <i hidden id="icon-done-payment-method" class="bi bi-check2-all"></i></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row mt-5">
     <div class="col-12">
         <div class="form-group">

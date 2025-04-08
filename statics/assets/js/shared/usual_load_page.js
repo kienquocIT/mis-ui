@@ -551,7 +551,7 @@ class UsualLoadPageFunction {
             },
             callbackDataResp: function (resp, keyResp) {
                 return resp.data[keyResp].filter(function (item) {
-                    return Object.keys(item?.['referenced_unit']).length !== 0 && item?.['code'] !== 'Import';
+                    return Object.keys(item?.['referenced_unit']).length !== 0 && item?.['code'] !== 'ImportGroup';
                 });
             },
             data: (data ? data : null),

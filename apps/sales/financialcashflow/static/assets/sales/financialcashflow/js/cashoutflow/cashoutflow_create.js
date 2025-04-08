@@ -17,12 +17,13 @@ $(document).ready(function () {
     })
     COFPageFunction.LoadAdvanceToSupplierTable()
     COFPageFunction.LoadAPInvoiceTable()
+    COFPageFunction.LoadCompanyBankAccount()
     WFRTControl.setWFInitialData('cashoutflow')
 
     // SUBMIT FORM CREATE
     let form_validator = $('#form-create-cashoutflow').validate({
         submitHandler: function (form) {
-            let form_data = COFHandler.CombinesData(form, 'create');
+            let form_data = COFHandler.CombinesData(form);
             if (form_data) {
                 WFRTControl.callWFSubmitForm(form_data);
             }

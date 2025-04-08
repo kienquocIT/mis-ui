@@ -11,7 +11,7 @@ $(document).ready(function () {
     // SUBMIT FORM CREATE
     let form_validator = $('#form-create-cashinflow').validate({
         submitHandler: function (form) {
-            let form_data = CIFHandler.CombinesData(form, 'create');
+            let form_data = CIFHandler.CombinesData(form);
             if (form_data) {
                 WFRTControl.callWFSubmitForm(form_data);
             }

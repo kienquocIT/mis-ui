@@ -24,7 +24,7 @@ class CashOutflowCreate(View):
     )
     def get(self, request, *args, **kwargs):
         return {
-            'data': {},
+            'form_id': 'form-create-cashoutflow'
         }, status.HTTP_200_OK
 
 
@@ -49,9 +49,7 @@ class CashOutflowUpdate(View):
     def get(self, request, *args, **kwargs):
         # input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_RETURN
         return {
-            'data': {},
-            # 'input_mapping_properties': input_mapping_properties,
-            # 'form_id': 'frm_goods_return_update'
+            'form_id': 'form-detail-cashoutflow'
         }, status.HTTP_200_OK
 
 
@@ -62,7 +60,7 @@ class CashOutflowListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_LIST).get(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.FINANCIAL_CASHOUTFLOW_LIST).get(data)
         return resp.auto_return(key_success='cash_outflow_list')
 
     @mask_view(
@@ -70,9 +68,9 @@ class CashOutflowListAPI(APIView):
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_LIST).post(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.FINANCIAL_CASHOUTFLOW_LIST).post(request.data)
         if resp.state:
-            resp.result['message'] = SaleMsg.GRT_CREATE
+            resp.result['message'] = SaleMsg.COF_CREATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
@@ -83,7 +81,7 @@ class CashOutflowDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_DETAIL.fill_key(pk=pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.FINANCIAL_CASHOUTFLOW_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='cash_outflow_detail')
 
     @mask_view(
@@ -91,10 +89,9 @@ class CashOutflowDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, pk, *arg, **kwargs):
-        data = request.data
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RETURN_DETAIL.fill_key(pk=pk)).put(data)
+        resp = ServerAPI(user=request.user, url=ApiURL.FINANCIAL_CASHOUTFLOW_DETAIL.fill_key(pk=pk)).put(request.data)
         if resp.state:
-            resp.result['message'] = SaleMsg.GRT_UPDATE
+            resp.result['message'] = SaleMsg.COF_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 

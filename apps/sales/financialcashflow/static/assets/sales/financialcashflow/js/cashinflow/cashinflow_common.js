@@ -244,6 +244,7 @@ const pageVariables = new CIFPageVariables();
  * Các hàm load page và hàm hỗ trợ
  */
 class CIFPageFunction {
+    // load page
     static LoadDate(element) {
         element.daterangepicker({
             singleDatePicker: true,
@@ -269,8 +270,14 @@ class CIFPageFunction {
             keyText: 'name',
         }).on('change', function () {
             if (pageElements.$customer.val()) {
-                CIFPageFunction.LoadCustomerAdvanceTable({'sale_order__customer_id': pageElements.$customer.val(), 'cash_inflow_done': false})
-                CIFPageFunction.LoadARInvoiceTable({'customer_mapped_id': pageElements.$customer.val(),'cash_inflow_done': false})
+                CIFPageFunction.LoadCustomerAdvanceTable({
+                    'sale_order__customer_id': pageElements.$customer.val(),
+                    'cash_inflow_done': false
+                })
+                CIFPageFunction.LoadARInvoiceTable({
+                    'customer_mapped_id': pageElements.$customer.val(),
+                    'cash_inflow_done': false
+                })
             }
         })
     }
@@ -617,7 +624,9 @@ class CIFHandler {
                             $('#area_table_ar_invoice').prop('hidden', true)
                             // nếu thu tạm ứng theo hđ
                             CIFPageFunction.LoadCustomerAdvanceTable(
-                                {'sale_order__customer_id': pageElements.$customer.val()},
+                                {
+                                    'sale_order__customer_id': pageElements.$customer.val(),
+                                },
                                 data?.['cash_in_customer_advance_data'],
                                 data?.['system_status'] === 3
                             )
@@ -630,7 +639,9 @@ class CIFHandler {
                             // nếu thu theo hóa đơn
                             CIFPageFunction.LoadCustomerAdvanceTable()
                             CIFPageFunction.LoadARInvoiceTable(
-                                {'customer_mapped_id': pageElements.$customer.val()},
+                                {
+                                    'customer_mapped_id': pageElements.$customer.val(),
+                                },
                                 data?.['cash_in_ar_invoice_data'],
                                 data?.['system_status'] === 3
                             )
@@ -648,12 +659,18 @@ class CIFHandler {
                             $('#area_table_ar_invoice').prop('hidden', false)
                         }
                         CIFPageFunction.LoadCustomerAdvanceTable(
-                            {'sale_order__customer_id': pageElements.$customer.val()},
+                            {
+                                'sale_order__customer_id': pageElements.$customer.val(),
+                                'cash_inflow_done': false
+                            },
                             data?.['cash_in_customer_advance_data'],
                             data?.['system_status'] === 3
                         )
                         CIFPageFunction.LoadARInvoiceTable(
-                            {'customer_mapped_id': pageElements.$customer.val()},
+                            {
+                                'customer_mapped_id': pageElements.$customer.val(),
+                                'cash_inflow_done': false
+                            },
                             data?.['cash_in_ar_invoice_data'],
                             data?.['system_status'] === 3
                         )

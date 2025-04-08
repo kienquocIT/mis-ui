@@ -170,7 +170,7 @@ class APInvoicePageFunction {
                 {
                     className: 'wrap-text w-20 text-center',
                     render: (data, type, row) => {
-                        return `${row?.['already'] ? `<i class="fas fa-check-circle text-success"></i>` + $.fn.gettext('Invoiced') : ''}
+                        return `${row?.['already'] ? `<i class="fas fa-check-circle text-success mr-1"></i>` + $.fn.gettext('Invoiced') : ''}
                                 <div class="form-check" ${row?.['already'] ? 'hidden' : ''}>
                                     <input data-detail='${JSON.stringify(row?.['details'] || [])}' ${row?.['already'] ? 'checked' : ''} data-already="${row?.['already'] ? '1' : '0'}" data-id="${row?.['id']}" type="checkbox" name="selected-goods-receipt" class="form-check-input selected-goods-receipt">
                                     <label class="form-check-label"></label>

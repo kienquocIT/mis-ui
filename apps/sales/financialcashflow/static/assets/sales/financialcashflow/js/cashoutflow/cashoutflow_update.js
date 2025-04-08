@@ -19,7 +19,7 @@ $(document).ready(function () {
     COFPageFunction.LoadAPInvoiceTable()
     COFPageFunction.LoadCompanyBankAccount()
     WFRTControl.setWFInitialData('cashoutflow')
-    COFHandler.LoadDetailCOF('detail')
+    COFHandler.LoadDetailCOF('update')
 
     // SUBMIT FORM UPDATE
     let form_validator = $('#form-detail-cashoutflow').validate({

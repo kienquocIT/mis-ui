@@ -172,32 +172,28 @@ class ARInvoicePageFunction {
             },
             columns: [
                 {
+                    className: 'wrap-text w-10',
                     'render': () => {
                         return ``;
                     }
                 },
                 {
-                    className: 'wrap-text',
+                    className: 'wrap-text w-40',
                     render: (data, type, row) => {
                         return `<span class="badge badge-primary">${row?.['code']}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text',
+                    className: 'wrap-text w-25',
                     render: (data, type, row) => {
                         return `${moment(row?.['actual_delivery_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}`
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'wrap-text w-25 text-center',
                     render: (data, type, row) => {
-                        return row?.['already'] ? `<i class="fas fa-check-circle text-success"></i>` : ''
-                    }
-                },
-                {
-                    className: 'wrap-text text-center',
-                    render: (data, type, row) => {
-                        return `<div class="form-check" ${row?.['already'] ? 'hidden' : ''}>
+                        return `${row?.['already'] ? `<i class="fas fa-check-circle text-success mr-1"></i>` + $.fn.gettext('Invoiced') : ''}
+                                <div class="form-check" ${row?.['already'] ? 'hidden' : ''}>
                                     <input data-detail='${JSON.stringify(row?.['details'] || [])}' data-already="${row?.['already'] ? 1 : 0}" data-id="${row?.['id']}" type="checkbox" name="selected-delivery" class="form-check-input selected-delivery" ${row?.['already'] ? 'checked' : ''}>
                                     <label class="form-check-label"></label>
                                 </div>`

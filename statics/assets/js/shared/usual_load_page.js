@@ -701,31 +701,33 @@ class UsualLoadPageFunction {
         if (active) {
             const shouldExclude = (el) => except.some(selector => el.matches(selector));
 
-            const container = document.querySelector('#idxPageContent, .idxModalData');
-            if (!container) return;
+            const containers = document.querySelectorAll('#idxPageContent, .idxModalData');
+            containers.forEach(container => {
+                if (!container) return;
 
-            container.querySelectorAll('select, input, textarea, button').forEach(el => {
-                if (shouldExclude(el)) return;
-                if (el.matches('select')) el.disabled = true;
-                if (el.matches('input')) el.readOnly = true;
-                if (el.matches('textarea')) el.readOnly = true;
-                if (el.matches('button')) el.disabled = true;
-            });
+                container.querySelectorAll('select, input, textarea, button').forEach(el => {
+                    if (shouldExclude(el)) return;
+                    if (el.matches('select')) el.disabled = true;
+                    if (el.matches('input')) el.readOnly = true;
+                    if (el.matches('textarea')) el.readOnly = true;
+                    if (el.matches('button')) el.disabled = true;
+                });
 
-            const observer = new MutationObserver(mutations => {
-                mutations.forEach(mutation => {
-                    mutation.addedNodes.forEach(node => {
-                        if (node.nodeType === 1 && !shouldExclude(node)) {
-                            if (node.matches('select')) node.disabled = true;
-                            if (node.matches('input')) node.readOnly = true;
-                            if (node.matches('textarea')) node.readOnly = true;
-                            if (node.matches('button')) node.disabled = true;
-                        }
+                const observer = new MutationObserver(mutations => {
+                    mutations.forEach(mutation => {
+                        mutation.addedNodes.forEach(node => {
+                            if (node.nodeType === 1 && !shouldExclude(node)) {
+                                if (node.matches('select')) node.disabled = true;
+                                if (node.matches('input')) node.readOnly = true;
+                                if (node.matches('textarea')) node.readOnly = true;
+                                if (node.matches('button')) node.disabled = true;
+                            }
+                        });
                     });
                 });
-            });
 
-            observer.observe(container, { childList: true, subtree: true });
+                observer.observe(container, { childList: true, subtree: true });
+            });
         }
     }
 }

@@ -58,6 +58,7 @@ class COFPageVariables {
                 render: (data, type, row) => {
                     return row?.['is_ap_invoice'] ? `<div class="form-check">
                         <input type="checkbox"
+                               ${pageVariables.is_detail_page ? 'disabled': ''}
                                class="form-check-input selected_payment_stage"
                                data-po-pm-stage-id="${row?.['id']}"
                         >
@@ -120,6 +121,7 @@ class COFPageVariables {
                 render: (data, type, row) => {
                     return `<div class="form-check">
                     <input type="checkbox"
+                           ${pageVariables.is_detail_page ? 'disabled': ''}
                            class="form-check-input select_row_advance_for_supplier"
                            data-advance-for-supplier-id="${row?.['id']}"
                     >
@@ -160,7 +162,7 @@ class COFPageVariables {
             {
                 className: 'wrap-text text-right w-15',
                 render: () => {
-                    return `<input class="form-control text-right mask-money cash_out_value_advance" value="0"">`;
+                    return `<input ${pageVariables.is_detail_page ? 'disabled readonly': ''} class="form-control text-right mask-money cash_out_value_advance" value="0"">`;
                 }
             },
         ]
@@ -176,6 +178,7 @@ class COFPageVariables {
                 render: (data, type, row) => {
                     return `<div class="form-check">
                                 <input type="checkbox"
+                                       ${pageVariables.is_detail_page ? 'disabled': ''}
                                        class="form-check-input select_row_ap_invoice"
                                        data-ap-invoice-id="${row?.['id']}"
                                 >
@@ -252,7 +255,7 @@ class COFPageFunction {
         if (approved) {
             let stage_id = []
             for (let i = 0; i < data_list.length; i++) {
-                stage_id.push(data_list[i]?.['sale_order_stage_data']?.['id'])
+                stage_id.push(data_list[i]?.['purchase_order_stage_data']?.['id'])
             }
             data_params['id__in'] = stage_id.join(',')
         }
@@ -283,14 +286,13 @@ class COFPageFunction {
                 columns: pageVariables.advance_to_supplier_table_cfg,
                 initComplete: function () {
                     for (let i=0; i < data_list.length; i++) {
-                        let row_checkbox = pageElements.$advance_for_supplier_table.find(`tbody .select_row_advance_for_supplier[data-advance-for-supplier-id="${data_list[i]?.['sale_order_stage_data']?.['id']}"]`)
+                        let row_checkbox = pageElements.$advance_for_supplier_table.find(`tbody .select_row_advance_for_supplier[data-advance-for-supplier-id="${data_list[i]?.['purchase_order_stage_data']?.['id']}"]`)
                         row_checkbox.prop('checked', true)
                         if (approved) {
                             row_checkbox.closest('tr').find('.recon_balance_value_advance').attr('data-init-money', data_list[i]?.['sum_balance_value'])
                         }
                         row_checkbox.closest('tr').find('.cash_out_value_advance').attr('value', data_list[i]?.['sum_payment_value'])
                     }
-                    UsualLoadPageFunction.DisablePage(pageVariables.is_detail_page, ['#btn-modal-payment-method'])
                 }
             });
         }
@@ -362,7 +364,6 @@ class COFPageFunction {
                         }
                         row_checkbox.closest('tr').find('.cash_out_value').attr('value', data_list[i]?.['sum_payment_value'])
                     }
-                    UsualLoadPageFunction.DisablePage(pageVariables.is_detail_page, ['#btn-modal-payment-method'])
                 }
             });
         }

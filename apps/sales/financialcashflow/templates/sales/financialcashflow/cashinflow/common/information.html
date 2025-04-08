@@ -114,7 +114,7 @@
             <label for="total_payment" class="form-label text-muted fw-bold">{% trans "Total payment" %}</label>
             <div style="display: flex;">
                 <input disabled readonly name="total_payment" class="form-control form-control-line mask-money" value="0" id="total_payment">
-                <button id="btn-modal-payment-method" data-payment-method='' disabled type="button" class="btn btn-danger ml-1" data-bs-toggle="modal" data-bs-target="#payment-method-modal">
+                <button id="btn-modal-payment-method" data-payment-method='' disabled type="button" class="btn btn-sm btn-danger ml-1" data-bs-toggle="modal" data-bs-target="#payment-method-modal">
                     <span>
                         <span class="icon"><span class="feather-icon"><i class="fas fa-bars"></i></span></span>
                         <span>{% trans 'Payment method' %} <i hidden id="icon-done-payment-method" class="bi bi-check2-all"></i></span>

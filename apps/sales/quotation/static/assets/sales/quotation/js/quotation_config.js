@@ -295,6 +295,8 @@ $(function () {
             loadAcceptance($(this));
         });
 
+        // BEGIN FORMULA
+
         $formulaCanvas.on('mouseenter', '.param-item', function () {
             let dataEle = this.querySelector('.data-show');
             if (dataEle) {
@@ -432,7 +434,153 @@ $(function () {
             }
         });
 
-        // BEGIN VALIDATE FORMULA
+        function loadFormulaTitleEditor($ele) {
+            let targetRow = $ele[0].closest('tr');
+            if (targetRow) {
+                let targetRowIndex = tableIndicator.DataTable().row(targetRow).index();
+                let $targetRow = tableIndicator.DataTable().row(targetRowIndex);
+                let targetDataRow = $targetRow.data();
+                $formulaTitle[0].innerHTML = "(" + targetDataRow?.['title'] + ")";
+                $formulaEditor.val(targetDataRow?.['formula_data_show']);
+            }
+        }
+
+        function loadIndicatorMD($ele) {
+            let targetRow = $ele[0].closest('tr');
+            if (targetRow) {
+                let targetRowIndex = tableIndicator.DataTable().row(targetRow).index();
+                let $targetRow = tableIndicator.DataTable().row(targetRowIndex);
+                let targetDataRow = $targetRow.data();
+                $indicatorMD.empty();
+                let indicator_list = ``;
+                tableIndicator.DataTable().rows().every(function () {
+                    let row = this.node();
+                    let rowIndex = tableIndicator.DataTable().row(row).index();
+                    let $row = tableIndicator.DataTable().row(rowIndex);
+                    let dataRow = $row.data();
+
+                    dataRow['is_indicator'] = true;
+                    dataRow['syntax'] = "indicator(" + dataRow?.['title'] + ")";
+                    dataRow['syntax_show'] = "indicator(" + dataRow?.['title'] + ")";
+                    let dataStr = JSON.stringify(dataRow).replace(/"/g, "&quot;");
+                    if (dataRow?.['id'] !== targetDataRow?.['id'] && dataRow?.['order'] < targetDataRow?.['order']) { // check & not append this current indicator or higher indicators
+                        indicator_list += `<div class="row param-item mb-2">
+                                                    <button type="button" class="btn btn-flush-light">
+                                                        <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="indicator-title">${dataRow?.['title']}</span></span></div>
+                                                        <input type="hidden" class="data-show" value="${dataStr}">
+                                                    </button>
+                                                </div>`;
+                    }
+                })
+                $indicatorMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
+                                ${indicator_list}
+                            </div>`);
+            }
+            return true;
+        }
+
+        function loadPropertyMD() {
+            let code_app = "quotation";
+            if ($form.hasClass('sale-order')) {
+                code_app = "saleorder";
+            }
+            $propertyMD.empty();
+            $.fn.callAjax2({
+                    'url': $eleUrlFact.attr('data-md-property'),
+                    'method': "GET",
+                    'data': {
+                        'application__code': code_app,
+                        'is_sale_indicator': true,
+                    },
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
+                            let param_list = ``;
+                            data.application_property_list.map(function (item) {
+                                item['is_property'] = true;
+                                item['syntax'] = "prop(" + item.title + ")";
+                                item['syntax_show'] = "prop(" + item.title + ")";
+                                let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                                let iconMD = ``;
+                                if (item?.['type'] === 5) {
+                                    iconMD = `<span class="icon"><span class="feather-icon"><i class="fas fa-database"></i></span></span>`;
+                                }
+                                param_list += `<div class="row param-item mb-2">
+                                                        <button type="button" class="btn btn-flush-light">
+                                                            <div class="float-left">
+                                                                <div class="d-flex justify-content-between">
+                                                                    <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title mr-2">${item?.['title_i18n']}</span>${iconMD}</span>
+                                                                </div>
+                                                            </div>
+                                                            <input type="hidden" class="data-show" value="${dataStr}">
+                                                        </button>
+                                                    </div>`;
+                            })
+                            $propertyMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
+                                            ${param_list}
+                                        </div>`);
+                        }
+                    }
+                }
+            )
+            return true;
+        }
+
+        function loadFunctionMD() {
+            $functionMD.empty();
+            $.fn.callAjax2({
+                    'url': $eleUrlFact.attr('data-md-function'),
+                    'method': "GET",
+                    'data': {'param_type': 2},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('indicator_param') && Array.isArray(data.indicator_param)) {
+                            let param_list = ``;
+                            data.indicator_param.map(function (item) {
+                                let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                                param_list += `<div class="row param-item mb-2">
+                                                <button type="button" class="btn btn-flush-light">
+                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span></div>
+                                                    <input type="hidden" class="data-show" value="${dataStr}">
+                                                </button>
+                                            </div>`
+                            })
+                            $functionMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
+                                            ${param_list}
+                                        </div>`);
+                        }
+                    }
+                }
+            )
+            return true;
+        }
+
+        function loadAcceptance($ele) {
+            let targetRow = $ele[0].closest('tr');
+            if (targetRow) {
+                let targetRowIndex = tableIndicator.DataTable().row(targetRow).index();
+                let $targetRow = tableIndicator.DataTable().row(targetRowIndex);
+                let targetDataRow = $targetRow.data();
+                $isAcceptanceEditable[0].checked = targetDataRow?.['is_acceptance_editable'];
+                $isAcceptanceEditable[0].removeAttribute('disabled');
+                $boxAcceptanceAffect.val(targetDataRow?.['acceptance_affect_by']).trigger('change');
+                if (targetDataRow?.['acceptance_affect_by'] === 1) {
+                    $isAcceptanceEditable[0].checked = false;
+                    $isAcceptanceEditable[0].setAttribute('disabled', 'true');
+                }
+            }
+            return true;
+        }
+
+        // VALIDATE FORMULA
 
         $formulaEditor.on('blur', function () {
             let editorValue = $(this).val();
@@ -550,7 +698,7 @@ $(function () {
             return operatorCount === (valueCount - 1);
         }
 
-        // BEGIN SETUP FORMULA
+        // SETUP FORMULA
 
         let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|%/g;
         let body_nested_regex = /\((.*)\)/;
@@ -656,7 +804,8 @@ $(function () {
 
             return data_list
         }
-// END setup formula
+
+        // END FORMULA
 
 // BEGIN SUBMIT
         // submit create indicator
@@ -1087,152 +1236,6 @@ $(function () {
             }
             if (data?.['ls_role']) {
                 loadInitS2(boxLRole, data?.['ls_role']);
-            }
-            return true;
-        }
-
-        function loadFormulaTitleEditor($ele) {
-            let targetRow = $ele[0].closest('tr');
-            if (targetRow) {
-                let targetRowIndex = tableIndicator.DataTable().row(targetRow).index();
-                let $targetRow = tableIndicator.DataTable().row(targetRowIndex);
-                let targetDataRow = $targetRow.data();
-                $formulaTitle[0].innerHTML = "(" + targetDataRow?.['title'] + ")";
-                $formulaEditor.val(targetDataRow?.['formula_data_show']);
-            }
-        }
-
-        function loadIndicatorMD($ele) {
-            let targetRow = $ele[0].closest('tr');
-            if (targetRow) {
-                let targetRowIndex = tableIndicator.DataTable().row(targetRow).index();
-                let $targetRow = tableIndicator.DataTable().row(targetRowIndex);
-                let targetDataRow = $targetRow.data();
-                $indicatorMD.empty();
-                let indicator_list = ``;
-                tableIndicator.DataTable().rows().every(function () {
-                    let row = this.node();
-                    let rowIndex = tableIndicator.DataTable().row(row).index();
-                    let $row = tableIndicator.DataTable().row(rowIndex);
-                    let dataRow = $row.data();
-
-                    dataRow['is_indicator'] = true;
-                    dataRow['syntax'] = "indicator(" + dataRow?.['title'] + ")";
-                    dataRow['syntax_show'] = "indicator(" + dataRow?.['title'] + ")";
-                    let dataStr = JSON.stringify(dataRow).replace(/"/g, "&quot;");
-                    if (dataRow?.['id'] !== targetDataRow?.['id'] && dataRow?.['order'] < targetDataRow?.['order']) { // check & not append this current indicator or higher indicators
-                        indicator_list += `<div class="row param-item mb-2">
-                                                    <button type="button" class="btn btn-flush-light">
-                                                        <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="indicator-title">${dataRow?.['title']}</span></span></div>
-                                                        <input type="hidden" class="data-show" value="${dataStr}">
-                                                    </button>
-                                                </div>`;
-                    }
-                })
-                $indicatorMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
-                                ${indicator_list}
-                            </div>`);
-            }
-            return true;
-        }
-
-        function loadPropertyMD() {
-            let code_app = "quotation";
-            if ($form.hasClass('sale-order')) {
-                code_app = "saleorder";
-            }
-            $propertyMD.empty();
-            $.fn.callAjax2({
-                    'url': $eleUrlFact.attr('data-md-property'),
-                    'method': "GET",
-                    'data': {
-                        'application__code': code_app,
-                        'is_sale_indicator': true,
-                    },
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
-                            let param_list = ``;
-                            data.application_property_list.map(function (item) {
-                                item['is_property'] = true;
-                                item['syntax'] = "prop(" + item.title + ")";
-                                item['syntax_show'] = "prop(" + item.title + ")";
-                                let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                                let iconMD = ``;
-                                if (item?.['type'] === 5) {
-                                    iconMD = `<span class="icon"><span class="feather-icon"><i class="fas fa-database"></i></span></span>`;
-                                }
-                                param_list += `<div class="row param-item mb-2">
-                                                        <button type="button" class="btn btn-flush-light">
-                                                            <div class="float-left">
-                                                                <div class="d-flex justify-content-between">
-                                                                    <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title mr-2">${item?.['title_i18n']}</span>${iconMD}</span>
-                                                                </div>
-                                                            </div>
-                                                            <input type="hidden" class="data-show" value="${dataStr}">
-                                                        </button>
-                                                    </div>`;
-                            })
-                            $propertyMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
-                                            ${param_list}
-                                        </div>`);
-                        }
-                    }
-                }
-            )
-            return true;
-        }
-
-        function loadFunctionMD() {
-            $functionMD.empty();
-            $.fn.callAjax2({
-                    'url': $eleUrlFact.attr('data-md-function'),
-                    'method': "GET",
-                    'data': {'param_type': 2},
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('indicator_param') && Array.isArray(data.indicator_param)) {
-                            let param_list = ``;
-                            data.indicator_param.map(function (item) {
-                                let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
-                                param_list += `<div class="row param-item mb-2">
-                                                <button type="button" class="btn btn-flush-light">
-                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span></div>
-                                                    <input type="hidden" class="data-show" value="${dataStr}">
-                                                </button>
-                                            </div>`
-                            })
-                            $functionMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
-                                            ${param_list}
-                                        </div>`);
-                        }
-                    }
-                }
-            )
-            return true;
-        }
-
-        function loadAcceptance($ele) {
-            let targetRow = $ele[0].closest('tr');
-            if (targetRow) {
-                let targetRowIndex = tableIndicator.DataTable().row(targetRow).index();
-                let $targetRow = tableIndicator.DataTable().row(targetRowIndex);
-                let targetDataRow = $targetRow.data();
-                $isAcceptanceEditable[0].checked = targetDataRow?.['is_acceptance_editable'];
-                $isAcceptanceEditable[0].removeAttribute('disabled');
-                $boxAcceptanceAffect.val(targetDataRow?.['acceptance_affect_by']).trigger('change');
-                if (targetDataRow?.['acceptance_affect_by'] === 1) {
-                    $isAcceptanceEditable[0].checked = false;
-                    $isAcceptanceEditable[0].setAttribute('disabled', 'true');
-                }
             }
             return true;
         }

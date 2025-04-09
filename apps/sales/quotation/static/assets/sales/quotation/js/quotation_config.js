@@ -301,7 +301,7 @@ $(function () {
                 if ($(dataEle).val()) {
                     let data = JSON.parse($(dataEle).val());
                     let dataStr = JSON.stringify(data);
-                    let htmlBase = `<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-300p position-relative overflow-y-scroll">
+                    let htmlBase = `<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
                                         <div class="row">
                                             <h5>${data?.['title_i18n'] ? data?.['title_i18n'] : ''}</h5>
                                             <p>${data?.['remark'] ? data?.['remark'] : ''}</p>
@@ -1129,7 +1129,7 @@ $(function () {
                                                 </div>`;
                     }
                 })
-                $indicatorMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-300p position-relative overflow-y-scroll">
+                $indicatorMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
                                 ${indicator_list}
                             </div>`);
             }
@@ -1177,7 +1177,7 @@ $(function () {
                                                         </button>
                                                     </div>`;
                             })
-                            $propertyMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-300p position-relative overflow-y-scroll">
+                            $propertyMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
                                             ${param_list}
                                         </div>`);
                         }
@@ -1210,7 +1210,7 @@ $(function () {
                                                 </button>
                                             </div>`
                             })
-                            $functionMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-300p position-relative overflow-y-scroll">
+                            $functionMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
                                             ${param_list}
                                         </div>`);
                         }

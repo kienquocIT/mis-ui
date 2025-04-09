@@ -295,6 +295,8 @@ $(function () {
             loadAcceptance($(this));
         });
 
+        // BEGIN FORMULA
+
         $formulaCanvas.on('mouseenter', '.param-item', function () {
             let dataEle = this.querySelector('.data-show');
             if (dataEle) {
@@ -578,7 +580,7 @@ $(function () {
             return true;
         }
 
-        // BEGIN VALIDATE FORMULA
+        // VALIDATE FORMULA
 
         $formulaEditor.on('blur', function () {
             let editorValue = $(this).val();
@@ -696,7 +698,7 @@ $(function () {
             return operatorCount === (valueCount - 1);
         }
 
-        // BEGIN SETUP FORMULA
+        // SETUP FORMULA
 
         let main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|%/g;
         let body_nested_regex = /\((.*)\)/;
@@ -802,7 +804,8 @@ $(function () {
 
             return data_list
         }
-// END setup formula
+
+        // END FORMULA
 
 // BEGIN SUBMIT
         // submit create indicator

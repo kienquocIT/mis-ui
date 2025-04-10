@@ -60,18 +60,20 @@ class FlowChartLoadDataHandle {
         FlowChartLoadDataHandle.$btnSave.attr('data-node-in', node_in);
         FlowChartLoadDataHandle.$btnSave.attr('data-node-out', node_out);
 
-
         let data_cond = [];
         let $eleAssociate = $('#node-associate');
         let associate_temp = $eleAssociate.val();
         if (associate_temp) {
             let associate_data_json = JSON.parse(associate_temp);
-            data_cond = associate_data_json[targetID];
+            if (associate_data_json?.[targetID]) {
+                data_cond = associate_data_json?.[targetID];
+            }
         }
-
         let associateData = FlowJsP.getAssociate;
         if (associateData) {
-            data_cond = associateData[targetID];
+            if (associateData?.[targetID]) {
+                data_cond = associateData?.[targetID];
+            }
         }
 
         FlowChartLoadDataHandle.loadRenderCondition(data_cond?.['condition']);
@@ -899,7 +901,8 @@ class JSPlumbsHandle {
                         temp[key] = end_result;
                         end_result = temp
                     }
-                    elm_focus.val(JSON.stringify(end_result))
+                    FlowJsP.setAssociateList = end_result;
+                    elm_focus.val(JSON.stringify(end_result));
                 }
             })
 
@@ -929,6 +932,7 @@ class JSPlumbsHandle {
                         current_data = JSON.parse(current_data)
                         if (current_data.hasOwnProperty(key)) {
                             delete current_data[key];
+                            FlowJsP.setAssociateList = current_data;
                             elm_focus.val(JSON.stringify(current_data))
                         }
                     }

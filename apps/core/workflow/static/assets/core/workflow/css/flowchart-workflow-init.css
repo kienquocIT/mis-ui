@@ -94,10 +94,9 @@
     padding: 10px 10px;
     margin-bottom: 10px;
     border: solid 1px #000000;
-    border-radius: 999px;
     display: flex;
     width: 148px;
-    height: 48px;
+    height: 78px;
     align-items: center;
     justify-content: center;
     position: relative;

@@ -212,12 +212,17 @@
                             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
                         <div class="modal-body modal-body-collab">
-                            <div class="form-group">
-                                <label class="form-label required" for="node-title"><b>{% trans 'Title' %}</b></label>
-                                <input
-                                        type="text" class="form-control"
-                                        id="node-title"
-                                >
+                            <div class="row">
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="node-title"><b>{% trans 'Title' %}</b></label>
+                                        <input
+                                                type="text" class="form-control"
+                                                id="node-title"
+                                                maxlength="30"
+                                        >
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group" hidden>
                                 <label class="form-label" for="node-remark">{% trans 'Note' %}</label>
@@ -232,7 +237,7 @@
                                         </button>
                                         <div class="dropdown-menu action-list w-160p h-120p"></div>
                                     </div>
-                                    <div class="form-control div-input action-show w-25" readonly></div>
+                                    <div class="form-control div-input action-show w-20" readonly></div>
                                 </div>
                             </div>
                             <br>

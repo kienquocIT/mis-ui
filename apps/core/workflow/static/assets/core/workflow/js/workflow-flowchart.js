@@ -156,8 +156,8 @@ class FlowChartLoadDataHandle {
                                             <select class="form-select operator-and-or-child ${clsMain} operator-and-or-${order}-${orderChild}" ${disabled}></select>
                                         </div>
                                         <div class="col-12 col-md-11 col-lg-11">
-                                            <div class="d-flex">
-                                                <button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-sm btn-del-block-cond-child" data-idx="${order}-${orderChild}" ${hiddenDel}><span class="icon"><i class="fas fa-trash-alt"></i></span></button>
+                                            <div class="d-flex justify-content-end">
+                                                <button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-sm mr-4 btn-del-block-cond-child" data-idx="${order}-${orderChild}" ${hiddenDel}><span class="icon"><i class="fas fa-trash-alt"></i></span></button>
                                             </div>
                                         </div>
                                     </div><br>`;
@@ -503,11 +503,13 @@ class JSPlumbsHandle {
                 let item = DEFAULT_NODE_LIST[val];
                 let clsSys = '';
                 let bg = '';
+                let color = 'text-white';
                 let clsModal = "modal";
                 let disabled = "";
                 if (item?.['is_system'] === true) {
-                    clsSys = 'control-system'
-                    bg = 'bg-blue-light-4';
+                    clsSys = 'control-system';
+                    bg = 'bg-white';
+                    color = '';
                     if (["approved", "completed"].includes(item?.['code'])) {
                         clsModal = "";
                         disabled = "disabled";
@@ -515,7 +517,7 @@ class JSPlumbsHandle {
                 }
                 strHTMLDragNode += `<div class="btn-group dropdown">
                                         <div class="control ${clsSys} ${bg}" id="drag-${item?.['order']}" data-drag="${item?.['order']}" title="${item?.['title']}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
-                                            <p class="drag-title" contentEditable="true" title="${item?.['remark']}">${item?.['title']}</p>
+                                            <p class="drag-title ${color}" contentEditable="true" title="${item?.['remark']}">${item?.['title']}</p>
                                         </div>
                                         <div class="dropdown-menu dropdown-bordered w-160p">
                                             <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
@@ -570,22 +572,24 @@ class JSPlumbsHandle {
                     wrap_w = wrap_w + 300
                     $wrapWF.css("width", wrap_w);
                 }
+                let clsSys = '';
                 let bg = '';
+                let color = 'text-white';
                 let clsModal = "modal";
                 let disabled = "";
                 if (item?.['is_system'] === true) {
-                    bg = 'bg-blue-light-4';
+                    clsSys = 'clone-system';
+                    bg = 'bg-white';
+                    color = '';
 
                     if (["approved", "completed"].includes(item?.['code'])) {
                         clsModal = "";
                         disabled = "disabled";
                     }
                 }
-                // HTML_temp += `<div class="clone ${bg}" data-drag="${val}" title="${item.title}" id="control-${val}" style="left:${left_coord}px;top:${top_coord}px"><p class="drag-title">${item.title}</p></div>`;
-
                 HTML_temp += `<div class="btn-group dropdown">
-                                    <div class="clone ${bg}" data-drag="${val}" title="${item.title}" id="control-${val}" style="left:${left_coord}px;top:${top_coord}px" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
-                                        <p class="drag-title">${item.title}</p>
+                                    <div class="clone ${clsSys} ${bg}" data-drag="${val}" title="${item?.['title']}" id="control-${val}" style="left:${left_coord}px;top:${top_coord}px" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
+                                        <p class="drag-title ${color}">${item?.['title']}</p>
                                     </div>
                                     <div class="dropdown-menu dropdown-bordered w-160p">
                                         <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
@@ -625,20 +629,16 @@ class JSPlumbsHandle {
                 helper: function () {
                     let clsSys = '';
                     let bg = '';
+                    let color = 'text-white';
                     let clsModal = "modal";
                     if (this.classList.contains('control-system')) {
-                        clsSys = 'clone-system'
-                        bg = 'bg-blue-light-4';
+                        clsSys = 'clone-system';
+                        bg = 'bg-white';
+                        color = '';
                     }
-
-
-//                     return `<div class="clone ${clsSys} ${bg}" data-drag="${$(this).attr('data-drag')}" title="${$(this).find('.drag-title').text()}">
-// <p class="drag-title">${$(this).find('.drag-title').text()}</p>
-// </div>`;
-
                     return `<div class="btn-group dropdown">
                                 <div class="clone ${clsSys} ${bg}" data-drag="${$(this).attr('data-drag')}" title="${$(this).find('.drag-title').text()}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <p class="drag-title">${$(this).find('.drag-title').text()}</p>
+                                    <p class="drag-title ${color}">${$(this).find('.drag-title').text()}</p>
                                 </div>
                                 <div class="dropdown-menu dropdown-bordered w-160p">
                                     <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>

@@ -5799,32 +5799,32 @@ class indicatorHandle {
     static functionMaxMin(item, data_form, result_json) {
         let functionBody = "[";
         let idx = 0;
-        for (let function_child of item.function_data) {
+        for (let function_child of item?.['function_data']) {
             idx++;
             if (typeof function_child === 'object' && function_child !== null) {
                 if (function_child.hasOwnProperty('is_property')) {
-                    if (data_form.hasOwnProperty(function_child.code)) {
-                        functionBody += data_form[function_child.code];
-                        if (idx < item.function_data.length) {
+                    if (data_form.hasOwnProperty(function_child?.['code'])) {
+                        functionBody += data_form[function_child?.['code']];
+                        if (idx < item?.['function_data'].length) {
                             functionBody += ",";
                         }
                     }
                 } else if (function_child.hasOwnProperty('is_indicator')) {
-                    if (result_json.hasOwnProperty(function_child.order)) {
-                        functionBody += result_json[function_child.order].indicator_value;
-                        if (idx < item.function_data.length) {
+                    if (result_json.hasOwnProperty(function_child?.['order'])) {
+                        functionBody += result_json[function_child?.['order']]?.['indicator_value'];
+                        if (idx < item?.['function_data'].length) {
                             functionBody += ",";
                         }
                     }
                 }
             } else if (typeof function_child === 'string') {
                 functionBody += function_child;
-                if (idx < item.function_data.length) {
+                if (idx < item?.['function_data'].length) {
                     functionBody += ",";
                 }
             }
         }
-        return item.syntax + functionBody + "])";
+        return item?.['syntax'] + functionBody + "])";
     };
 
     static functionSumItemIf(item, data_form) {
@@ -5847,6 +5847,7 @@ class indicatorHandle {
             for (let key in data_form) {
                 if (key.includes("products_data")) {
                     dataTarget = data_form[key];
+                    break;
                 }
             }
             dataList = dataTarget;
@@ -5856,6 +5857,7 @@ class indicatorHandle {
             for (let key in data_form) {
                 if (key.includes("expenses_data")) {
                     dataTarget = data_form[key];
+                    break;
                 }
             }
             dataList = dataTarget;

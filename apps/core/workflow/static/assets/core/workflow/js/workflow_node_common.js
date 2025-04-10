@@ -1,6 +1,7 @@
 // LoadData
 class NodeLoadDataHandle {
     static $form = $('#form-create_workflow');
+    static $boxApp = $("#select-box-features");
 
     static $nodeDragBox = $('#node_dragbox');
     static $flowChart = $('#flowchart_workflow');
@@ -16,8 +17,12 @@ class NodeLoadDataHandle {
     static $boxInWFOpt = $('#box-in-workflow-option');
     static $boxInWFEmp = $('#box-in-workflow-employee');
     static $boxInWFPos = $('#box-in-workflow-position');
+    static $modalCondition = $('#conditionModal');
+    static $btnSaveCondition = $('#btn-save-condition');
+
 
     static transEle = $('#node-trans-factory');
+    static $urlsEle = $('#app-url-factory');
     static dataNode = [
         {
             'title': NodeLoadDataHandle.transEle.attr('data-node-initial'),
@@ -144,6 +149,12 @@ class NodeLoadDataHandle {
         });
 
         return true;
+    };
+
+    static loadInit() {
+        NodeLoadDataHandle.loadInitEmpData();
+        NodeFormulaHandle.loadPropertyMD();
+        NodeFormulaHandle.loadFunctionMD();
     };
 
     static loadInitEmpData() {
@@ -862,13 +873,13 @@ class NodeDataTableHandle {
                         if (row?.['employee']) {
                             let dataEmp = SelectDDControl.get_data_from_idx(NodeLoadDataHandle.$boxInWFEmp, row?.['employee']);
                             if (dataEmp) {
-                                return `<span class="table-row-title badge badge-primary badge-outline" data-row="${dataRow}">${dataEmp?.['full_name'] ? dataEmp?.['full_name'] : ''}</span>`;
+                                return `<span class="mr-2"><i class="fas fa-user-circle"></i></span><span class="table-row-title" data-row="${dataRow}">${dataEmp?.['full_name'] ? dataEmp?.['full_name'] : ''}</span>`;
                             }
                         }
                         if (row?.['position_choice']) {
                             for (let dataPos of NodeLoadDataHandle.dataInWFPosition) {
                                 if (dataPos?.['id'] === row?.['position_choice']) {
-                                    return `<span class="table-row-title badge badge-warning badge-outline" data-row="${dataRow}">${dataPos?.['title']}</span>`;
+                                    return `<span class="mr-2"><i class="fas fa-sitemap"></i></span><span class="table-row-title" data-row="${dataRow}">${dataPos?.['title']}</span>`;
                                 }
                             }
                         }
@@ -993,7 +1004,7 @@ class NodeDataTableHandle {
             if (!$('#btn-add-collab-in-wf').length) {
                 let $group = $(`<button
                                         type="button"
-                                        class="btn btn-outline-secondary"
+                                        class="btn btn-primary btn-square"
                                         data-bs-toggle="offcanvas"
                                         data-bs-target="#inWFCanvas"
                                         aria-controls="inWFCanvas"
@@ -1231,6 +1242,311 @@ class NodeStoreHandle {
         return true;
     };
 
+}
+
+// Formula
+class NodeFormulaHandle {
+    static $formulaCanvas = $('#formulaCanvas');
+    static $formulaEditor = $('#formula_editor');
+    static $propertyMD = $('#property_md');
+    static $propertyRemark = $('#property_remark');
+    static $functionMD = $('#function_md');
+    static $functionRemark = $('#function_remark');
+    static $formulaValidateTxt = $('#formula_validate_txt');
+    static $btnSaveFormula = $('#btn-save-formula');
+
+    static appMapMDUrls = {
+        "saledata.product": {
+            "url": NodeLoadDataHandle.$urlsEle.attr('data-md-product'),
+            "keyResp": "product_sale_list"
+        },
+        "saledata.producttype": {
+            "url": NodeLoadDataHandle.$urlsEle.attr('data-md-product-type'),
+            "keyResp": "product_type_list"
+        },
+        "saledata.productcategory": {
+            "url": NodeLoadDataHandle.$urlsEle.attr('data-md-product-category'),
+            "keyResp": "product_category_list"
+        },
+        "saledata.expense": {
+            "url": NodeLoadDataHandle.$urlsEle.attr('data-md-expense'),
+            "keyResp": "expense_list"
+        },
+        "saledata.expenseitem": {
+            "url": NodeLoadDataHandle.$urlsEle.attr('data-md-expense-item'),
+            "keyResp": "expense_item_list"
+        },
+    }
+
+    static main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|%/g;
+    static body_nested_regex = /\((.*)\)/;
+    static main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|".*?"|==|!=|>=|<=|>|</g;
+
+    static loadPropertyMD() {
+        NodeFormulaHandle.$propertyMD.empty();
+        $.fn.callAjax2({
+                'url': NodeLoadDataHandle.$urlsEle.attr('data-md-property'),
+                'method': "GET",
+                'data': {
+                    'application_id': NodeLoadDataHandle.$boxApp.val(),
+                    'is_wf_condition': true,
+                },
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('application_property_list') && Array.isArray(data.application_property_list)) {
+                        let param_list = ``;
+                        data.application_property_list.map(function (item) {
+                            item['is_property'] = true;
+                            item['syntax'] = "prop(" + item.title + ")";
+                            item['syntax_show'] = "prop(" + item.title + ")";
+                            let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                            let iconMD = ``;
+                            if (item?.['type'] === 5) {
+                                iconMD = `<span class="icon"><span class="feather-icon"><i class="fas fa-database"></i></span></span>`;
+                            }
+                            param_list += `<div class="row param-item mb-2">
+                                                        <button type="button" class="btn btn-flush-light">
+                                                            <div class="float-left">
+                                                                <div class="d-flex justify-content-between">
+                                                                    <span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title mr-2">${item?.['title_i18n']}</span>${iconMD}</span>
+                                                                </div>
+                                                            </div>
+                                                            <input type="hidden" class="data-show" value="${dataStr}">
+                                                        </button>
+                                                    </div>`;
+                        })
+                        NodeFormulaHandle.$propertyMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-380p position-relative overflow-y-scroll">
+                                            ${param_list}
+                                        </div>`);
+                    }
+                }
+            }
+        )
+        return true;
+    };
+
+    static loadFunctionMD() {
+        NodeFormulaHandle.$functionMD.empty();
+        $.fn.callAjax2({
+                'url': NodeLoadDataHandle.$urlsEle.attr('data-md-function'),
+                'method': "GET",
+                'data': {'param_type': 2},
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('indicator_param') && Array.isArray(data.indicator_param)) {
+                        let param_list = ``;
+                        data.indicator_param.map(function (item) {
+                            let dataStr = JSON.stringify(item).replace(/"/g, "&quot;");
+                            param_list += `<div class="row param-item mb-2">
+                                                <button type="button" class="btn btn-flush-light">
+                                                    <div class="float-left"><span><span class="icon mr-2"><span class="feather-icon"><i class="fa-solid fa-hashtag"></i></span></span><span class="property-title">${item.title}</span></span></div>
+                                                    <input type="hidden" class="data-show" value="${dataStr}">
+                                                </button>
+                                            </div>`
+                        })
+                        NodeFormulaHandle.$functionMD.append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-380p position-relative overflow-y-scroll">
+                                            ${param_list}
+                                        </div>`);
+                    }
+                }
+            }
+        )
+        return true;
+    };
+
+    static validateEditor(strValue) {
+        let isValid = NodeFormulaHandle.validateParentheses(strValue);
+        if (isValid === false) {
+            return {
+                'result': false,
+                'remark': 'parentheses'
+            }
+        }
+        isValid = NodeFormulaHandle.hasNonMatchingValue(strValue);
+        if (isValid === false) {
+            return {
+                'result': false,
+                'remark': 'syntax'
+            }
+        }
+        isValid = NodeFormulaHandle.hasSingleQuote(strValue);
+        if (isValid === false) {
+            return {
+                'result': false,
+                'remark': 'quote'
+            }
+        }
+        isValid = NodeFormulaHandle.notBalanceOperatorAndValue(strValue);
+        if (isValid === false) {
+            return {
+                'result': false,
+                'remark': 'unbalance'
+            }
+        }
+        return {
+            'result': true,
+            'remark': ''
+        }
+    };
+
+    static validateParentheses(strValue) {
+        let stack = [];
+        for (let i = 0; i < strValue.length; i++) {
+            let char = strValue[i];
+            if (char === "(") {
+                // Push opening parenthesis to the stack
+                stack.push(char);
+            } else if (char === ")") {
+                // Check if there is a corresponding opening parenthesis
+                if (stack.length === 0 || stack.pop() !== "(") {
+                    return false;
+                }
+            }
+        }
+        // Check if there are any unclosed parentheses
+        return stack.length === 0;
+    };
+
+    static hasNonMatchingValue(strValue) {
+        let str_test = "";
+        let strValueNoSpace = strValue.replace(/\s/g, "");
+        if (strValueNoSpace.length === 0) {
+            return false;
+        }
+        let list_data = strValueNoSpace.match(NodeFormulaHandle.main_regex);
+        if (list_data.length > 0) {
+            for (let item of list_data) {
+                str_test += item
+            }
+        }
+        let str_test_no_space = str_test.replace(/\s/g, "");
+        return strValueNoSpace.length === str_test_no_space.length
+    };
+
+    static hasSingleQuote(strValue) {
+        return !strValue.includes("'")
+    };
+
+    static notBalanceOperatorAndValue(strValue) {
+        let list_data = NodeFormulaHandle.parseStringToArray(strValue);
+        let valueCount = 0;
+        let operatorCount = 0;
+        for (let data of list_data) {
+            if (!["(", ")", "%"].includes(data)) {
+                if (["+", "-", "*", "/"].includes(data)) {
+                    operatorCount++;
+                } else {
+                    valueCount++
+                }
+            }
+        }
+        return operatorCount === (valueCount - 1);
+    };
+
+    static setupFormula() {
+        let formula_list_raw = NodeFormulaHandle.parseStringToArray(NodeFormulaHandle.$formulaEditor.val());
+        formula_list_raw = NodeFormulaHandle.parseItemInList(formula_list_raw);
+        return {"formulaData": NodeFormulaHandle.parseFormulaRaw(formula_list_raw), "formulaShow": NodeFormulaHandle.$formulaEditor.val()};
+    };
+
+    static parseStringToArray(expression) {
+        let data = expression.replace(/\s/g, "");
+        return data.match(NodeFormulaHandle.main_regex);
+    };
+
+    static parseFormulaRaw(formula_list_raw) {
+        let formula_data = [];
+        let functionList = ['contains', 'empty', 'concat', 'min', 'max', 'sumItemIf'];
+        for (let item of formula_list_raw) {
+            if (functionList.some(value => item.includes(value))) { // FUNCTION
+                let functionValue = functionList.find(value => item.includes(value));
+                let functionJSON = NodeFormulaHandle.checkMatchPropertyIndicator(functionValue, 3);
+                let functionBodyData = [];
+                let functionBody = item.match(NodeFormulaHandle.body_nested_regex)[1];
+                let body_list_raw = functionBody.match(NodeFormulaHandle.main_body_regex).map((match) => match.replace(/^"(.*)"$/, '$1'));
+                for (let body_item of body_list_raw) {
+                    if (body_item.includes("indicator")) {
+                        let indicatorValue = body_item.match(NodeFormulaHandle.body_nested_regex)[1];
+                        functionBodyData.push(NodeFormulaHandle.checkMatchPropertyIndicator(indicatorValue, 1));
+                    } else if (body_item.includes("prop")) {
+                        let propertyValue = body_item.match(NodeFormulaHandle.body_nested_regex)[1];
+                        functionBodyData.push(NodeFormulaHandle.checkMatchPropertyIndicator(propertyValue, 2));
+                    } else {
+                        functionBodyData.push(body_item.toLowerCase());
+                    }
+                }
+                functionBodyData = NodeFormulaHandle.parseItemInList(functionBodyData);
+                functionJSON['function_data'] = functionBodyData;
+                formula_data.push(functionJSON);
+            } else if (item.includes("indicator")) { // INDICATOR
+                let indicatorValue = item.match(NodeFormulaHandle.body_nested_regex)[1];
+                formula_data.push(NodeFormulaHandle.checkMatchPropertyIndicator(indicatorValue, 1));
+            } else if (item.includes("prop")) { // PROPERTY
+                let propertyValue = item.match(NodeFormulaHandle.body_nested_regex)[1];
+                formula_data.push(NodeFormulaHandle.checkMatchPropertyIndicator(propertyValue, 2));
+            } else {
+                formula_data.push(item)
+            }
+        }
+        return formula_data;
+    };
+
+    static checkMatchPropertyIndicator(check_value, type) {
+        let result = "";
+        let params = [];
+        // if (type === 1) {
+        //     params = $indicatorMD[0].querySelectorAll('.param-item');
+        // }
+        if (type === 2) {
+            params = NodeFormulaHandle.$propertyMD[0].querySelectorAll('.param-item');
+        }
+        if (type === 3) {
+            params = NodeFormulaHandle.$functionMD[0].querySelectorAll('.param-item');
+        }
+        for (let param of params) {
+            let dataShowEle = param.querySelector('.data-show');
+            if (dataShowEle) {
+                if ($(dataShowEle).val()) {
+                    let data = JSON.parse($(dataShowEle).val());
+                    if (data?.['title'].replace(/\s/g, "") === check_value) {
+                        result = data;
+                        break
+                    }
+                }
+            }
+        }
+        return result;
+    };
+
+    static parseItemInList(data_list) {
+        // valid "==", "!="
+        for (let i = 0; i < data_list.length; i++) {
+            let data = data_list[i];
+            if (data === "==") {
+                data_list[i] = "===";
+            }
+            if (data === "!=") {
+                data_list[i] = "!==";
+            }
+        }
+        // valid percent %
+        data_list = data_list.map((item) => {
+            if (item === "%") {
+                return ["/", "100"];
+            }
+            return item;
+        }).flat();
+
+        return data_list;
+    };
 }
 
 // Submit Form

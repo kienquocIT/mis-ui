@@ -199,6 +199,7 @@
 
 
         <div class="modal-area">
+
             <div
                 class="modal fade" id="nodeModal" tabindex="-1" role="dialog"
                 aria-labelledby="nodeModal" aria-hidden="true" data-bs-backdrop="static"
@@ -210,12 +211,17 @@
                             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
                         <div class="modal-body modal-body-collab">
-                            <div class="form-group">
-                                <label class="form-label required" for="node-title"><b>{% trans 'Title' %}</b></label>
-                                <input
-                                        type="text" class="form-control"
-                                        id="node-title"
-                                >
+                            <div class="row">
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="node-title"><b>{% trans 'Title' %}</b></label>
+                                        <input
+                                                type="text" class="form-control"
+                                                id="node-title"
+                                                maxlength="30"
+                                        >
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group" hidden>
                                 <label class="form-label" for="node-remark">{% trans 'Note' %}</label>
@@ -230,7 +236,7 @@
                                         </button>
                                         <div class="dropdown-menu action-list w-160p h-120p"></div>
                                     </div>
-                                    <div class="form-control div-input action-show w-25" readonly></div>
+                                    <div class="form-control div-input action-show w-20" readonly></div>
                                 </div>
                             </div>
                             <br>
@@ -474,6 +480,124 @@
                     </div>
                 </div>
             </div>
+
+            <div
+                    class="modal fade" id="conditionModal" tabindex="-1"
+                    role="dialog" aria-labelledby="conditionModal"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>{% trans 'Next node conditions' %}</b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="d-flex justify-content-start">
+                                <button type="button" class="btn btn-primary btn-square btn-add-block-cond" hidden>
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>{% trans 'Add' %}</span></span>
+                                </button>
+                            </div>
+                            <div class="modal-body-cond"></div>
+                            <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="formulaCanvas" aria-labelledby="offcanvasTopLabel">
+                                <div class="modal-header">
+                                    <h5><b>{% trans 'Edit formula' %} <span id="formula_title"></span></b></h5>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                                </div>
+                                <div class="offcanvas-body">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="form-label" for="formula_editor">{% trans 'Editor' %}</label>
+                                            <textarea class="form-control indicator-editor" id="formula_editor" rows="4" cols="50" name=""></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <ul class="nav nav-line nav-tabs nav-light border-bottom">
+                                            <li class="nav-item" hidden>
+                                                <a class="nav-link" data-bs-toggle="tab" href="#tab_formula_indicator">
+                                                <span class="nav-link-text">{% trans 'Indicator' %}</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link active" data-bs-toggle="tab" href="#tab_formula_property">
+                                                <span class="nav-link-text">{% trans 'Property' %}</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-bs-toggle="tab" href="#tab_formula_function">
+                                                <span class="nav-link-text">{% trans 'Function' %}</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item" hidden>
+                                                <a class="nav-link" data-bs-toggle="tab" href="#tab_formula_operator">
+                                                <span class="nav-link-text">{% trans 'Operator' %}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <div class="tab-content h-400p">
+                                            <div class="row tab-pane fade" id="tab_formula_indicator">
+                                                <div class="row">
+                                                    <div class="col-4 indicator-list" id="indicator_md"></div>
+                                                    <div class="col-8 indicator-description" id="indicator_remark"></div>
+                                                </div>
+                                            </div>
+                                            <div class="row tab-pane fade show active" id="tab_formula_property">
+                                                <div class="row">
+                                                    <div class="col-4 property-list" id="property_md"></div>
+                                                    <div class="col-8 property-description" id="property_remark"></div>
+                                                </div>
+                                            </div>
+                                            <div class="row tab-pane fade" id="tab_formula_function">
+                                                <div class="row">
+                                                    <div class="col-4 function-list" id="function_md"></div>
+                                                    <div class="col-8 function-description" id="function_remark"></div>
+                                                </div>
+                                            </div>
+                                            <div class="row tab-pane fade" id="tab_formula_operator">
+                                                <div class="col-6"></div>
+                                                <div class="col-6"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row final-acceptance-zone" hidden>
+                                        <b>{% trans 'Final acceptance setting' %}</b>
+                                        <div class="col-12 col-md-6 col-lg-6">
+                                            <div class="form-group form-group-data-source">
+                                                <label class="form-label">{% trans 'Data source' %}</label>
+                                                <select
+                                                    class="form-select box-acceptance-affect"
+                                                    id="box_acceptance_affect"
+                                                    data-url=""
+                                                    data-method="GET"
+                                                    data-keyResp=""
+                                                >
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-6">
+                                            <div class="form-check form-check-lg mt-5">
+                                                <input type="checkbox" class="form-check-input acceptance-editable" id="acceptance_editable">
+                                                <label class="form-check-label" for="acceptance_editable">{% trans 'Editable' %}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas" data-zone="lease_costs_data">{% trans 'Close' %}</button>
+                                    <button type="button" class="btn btn-primary" id="btn-save-formula" data-bs-dismiss="offcanvas">{% trans 'Save' %}</button>
+                                    <span class="text-red" id="formula_validate_txt"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-save-condition" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </form>
 
@@ -520,15 +644,6 @@
                             </div>
                         </div>
                         <label for="property_list_choices">{% trans 'Select property' %}:</label>
-{#                        <select class="form-control dropdown-select_two"#}
-{#                                data-placeholder="{% trans 'Nothing selected' %}"#}
-{#                                name="property_list"#}
-{#                                id="property_list_choices"#}
-{#                                data-multiple="true"#}
-{#                                data-prefix="application_property_list"#}
-{#                                data-url="{% url 'ApplicationPropertyListAPI' %}"#}
-{#                        ></select>#}
-
                         <select
                                 class="form-select"
                                 name="property_list"
@@ -667,11 +782,13 @@
            data-md-account="{% url 'AccountListAPI' %}"
            data-md-industry="{% url 'IndustryListAPI' %}"
            data-md-employee="{% url 'EmployeeListAPI' %}"
-           data-md-product="{% url 'ProductListAPI' %}"
+           data-md-product="{% url 'ProductForSaleListAPI' %}"
            data-md-product-type="{% url 'ProductTypeListAPI' %}"
            data-md-product-category="{% url 'ProductCategoryListAPI' %}"
            data-md-expense="{% url 'ExpenseListAPI' %}"
            data-md-expense-item="{% url 'ExpenseItemListAPI' %}"
+           data-md-property="{% url "ApplicationPropertyListAPI" %}"
+           data-md-function="{% url "IndicatorParamListAPI" %}"
     >
     <input type="text" id="translate-factory"
            data-context_delete="{% trans 'Delete connection' %}"
@@ -732,9 +849,11 @@
         data-check-collab="{% trans "Collaborator configuration conflict with the association node" %}"
         data-add-zone="{% trans "Add zone" %}"
         data-required-application="{% trans "Please select Function Applied first" %}"
+        data-syntax="{% trans 'Syntax' %}"
+        data-example="{% trans 'Example' %}"
+        data-add="{% trans 'Add' %}"
+        data-delete-block="{% trans 'Delete block' %}"
     >
-
-
 
     <input
         type="text"

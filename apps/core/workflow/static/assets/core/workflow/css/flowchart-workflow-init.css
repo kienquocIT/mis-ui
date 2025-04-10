@@ -72,21 +72,37 @@
 
 .wrap-flowchart .control,
 .wrap-flowchart .clone {
-    background: white;
+    background: #007d88;
     padding: 10px 10px;
     margin-bottom: 10px;
-    border: solid 1px #000000;
-    border-radius: 8px;
+    border: solid 1px unset;
+    border-radius: 5px;
     display: flex;
-    width: 138px;
-    height: 88px;
+    width: 148px;
+    height: 78px;
     align-items: center;
     justify-content: center;
     position: relative;
     cursor: grab;
     user-select: none;
     -webkit-user-select: none;
-    box-shadow: -1px 4px 10px 1px rgba(154, 173, 236, .45);
+    /*box-shadow: -1px 4px 10px 1px rgba(154, 173, 236, .45);*/
+}
+
+.wrap-flowchart .control-system,
+.wrap-flowchart .clone-system {
+    padding: 10px 10px;
+    margin-bottom: 10px;
+    border: solid 1px #000000;
+    display: flex;
+    width: 148px;
+    height: 78px;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .wrap-flowchart .control {

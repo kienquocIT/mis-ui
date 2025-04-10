@@ -2,121 +2,420 @@
  * list of node user has declare and default system node
  * ***/
 let DEFAULT_NODE_LIST = {};
-let _MOUSE_POSITION = 0;
 let has_edited = false;
 let nodeChanged = false
 /***
- * function handle user on click into Node
- * @param event: element of Node
- * @action on save: get data of modal and store data to NODE_LIST
- */
-function eventNodeClick(event) {
-    let $Elm = $(event.currentTarget);
-    let data = DEFAULT_NODE_LIST[$Elm.attr('data-drag')]
-    let $modal = $('#exit-node')
-    let action_name = JSON.parse($('#wf_action').text())
-    let html = ``;
-    let condition = {};
-    // check it user right-click
-    const isRClick = event.button;
-    if (isRClick === 2) return true;
-    for (let cond of data.condition){
-        condition[cond.action] = cond
-    }
-    for (let item of data?.['action'] ? data?.['action'] : []) {
-        let midd = ``
-        // set if node type is approved/create and collab option is in-form/out-form
-        if (item <= 1 && data.collaborators.option < 2 || item >= 4){
-            let val = item >= 4 ? data.collaborators.total_config : condition[item] ? condition[item].min_collaborator : 1
-            midd = `<input class="form-control formula-input" type="text" `
-                + `value="${val}" readonly>`;
-        }
-        else if (item <= 1 && data.collaborators.option === 2){
-            // else node type is approved/create and collab option is in workflow
-            let val = condition[item] ? condition[item].min_collaborator : data.collaborators.total_config;
-            midd = `<input class="form-control formula-input" type="number" min="1" value="1" `
-                + `max="${val}">`;
-        }
-        else if (item > 1 && item < 4) {
-            let num = data.collaborators.total_config + 1 - 1;
-            let opt = '', optElse = '';
-            if (condition[item]) {
-                if (condition[item] === 'else') {
-                    optElse = 'selected'
-                } else {
-                    num = condition[item].min_collaborator
-                    opt = 'selected'
-
-                }
-            }
-
-            midd = `<select class="form-select"><option value=""></option>`
-                + `<option class="formular_opt" value="${num}" ${opt}>${num}</option>`
-                + `<option class="formular_opt_else" value="else" ${optElse}>else</option></select>`;
-        }
-        let next_text = item === 2 ? 'Reject node' : item === 3 ? '1st node' : item >= 4 ? 'Completed node' : '';
-        html += `<tr>` + `<td>${action_name[item]}<input type="hidden" name="node-action_${item}" value="${item}"></td>`
-            + `<td>${midd}</td><td>${next_text}</td></tr>`;
-    }
-    $modal.find('table tbody').html(html);
-    $modal.modal('show');
-
-    // input form on change
-    $modal.find('.formula-input').off().on('change', function () {
-        let _val = parseInt(this.value);
-        let calc = data.collaborators.total_config + 1 - _val;
-        $modal.find('.form-select .formular_opt').val(calc).text(calc);
-    })
-    // select option on change
-    $modal.find('.form-select').off().on('change', function (event) {
-        let $this_elm = $(event.currentTarget)
-        let is_class = this.value === 'else' ? '.formular_opt' : '.formular_opt_else'
-        let is_index = $this_elm.parents('tr').index() === 1 ? 3 : 2;
-
-        $this_elm.parents('table').find('tr').eq(is_index).find('.form-select ' + is_class).prop('selected', true)
-    });
-    // call btn click action
-    $('#btn-save-exit-node').off().on("click", () => {
-        let condition = []
-        $modal.find('table tbody tr').each(function () {
-            let temp = $(this).find('select option:selected').val()
-            if ($(this).find('.formula-input').length) temp = $(this).find('.formula-input').val()
-            condition.push({
-                action: parseInt($(this).find('[name*="node-action_"]').val()), min_collaborator: temp,
-            })
-        });
-        let temp = FlowJsP.getCommitNode;
-        temp[data.order]['condition'] = condition;
-        FlowJsP.setCommitNodeList = temp;
-        $modal.modal('hide');
-    })
-
-}
-
-/***
  * on click in connection of JSPlumbs open modal config associate
  */
-function clickConnection(connect) {
-    let node_in = parseInt(connect.component.source.dataset.drag);
-    let node_out = parseInt(connect.component.target.dataset.drag);
-    $("#next-node-association .formsets").html('')
-    $('#form-create-condition [name="node_in"]').val(node_in)
-    $('#form-create-condition [name="node_out"]').val(node_out)
-    $("#next-node-association").modal('show');
+class FlowChartLoadDataHandle {
+    static $modal = $('#conditionModal');
+    static $btnSave = $('#btn-save-condition');
+    static $transEle = $('#node-trans-factory');
+    static dataOperatorAndOr = [
+        {'id': "AND", 'title': "AND"},
+        {'id': "OR", 'title': "OR"},
+    ];
+    static dataOperatorMath = [
+        {"id": "=", "title": "="},
+        {"id": "!=", "title": "≠"},
+        {"id": ">", "title": ">"},
+        {"id": "<", "title": "<"},
+        {"id": ">=", "title": "≥"},
+        {"id": "<=", "title": "≤"},
+    ]
 
-    // render modal popup of connection
-    let data_cond = FlowJsP.getAssociate
-    data_cond = data_cond[node_in + '_' + node_out]
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = ``;
+                let res2 = ``;
+                if (customRes?.['res1']) {
+                    res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`;
+                }
+                if (customRes?.['res2']) {
+                    res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`;
+                }
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
+        $ele.initSelect2(opts);
+        return true;
+    };
 
-    let $eleAssociate = $('#node-associate');
-    let associate_temp = $eleAssociate.val();
-    if (associate_temp) {
-        let associate_data_json = JSON.parse(associate_temp);
-        data_cond = associate_data_json[node_in + '_' + node_out];
-    }
+    static clickConnection(connect) {
+        let node_in = parseInt(connect.component.source.dataset.drag);
+        let node_out = parseInt(connect.component.target.dataset.drag);
+        let targetID = node_in + '_' + node_out;
+        FlowChartLoadDataHandle.$btnSave.attr('data-node-in', node_in);
+        FlowChartLoadDataHandle.$btnSave.attr('data-node-out', node_out);
 
-    condition.loadCondition($formset_cond, data_cond.condition)
+        let data_cond = [];
+        let $eleAssociate = $('#node-associate');
+        let associate_temp = $eleAssociate.val();
+        if (associate_temp) {
+            let associate_data_json = JSON.parse(associate_temp);
+            if (associate_data_json?.[targetID]) {
+                data_cond = associate_data_json?.[targetID];
+            }
+        }
+        let associateData = FlowJsP.getAssociate;
+        if (associateData) {
+            if (associateData?.[targetID]) {
+                data_cond = associateData?.[targetID];
+            }
+        }
+
+        FlowChartLoadDataHandle.loadRenderCondition(data_cond?.['condition']);
+        FlowChartLoadDataHandle.loadConditionData(data_cond?.['condition']);
+        let $tabProperty = $('#tab_formula_property');
+        $tabProperty.addClass('show');
+        $tabProperty.addClass('active');
+
+        FlowChartLoadDataHandle.$modal.modal('show');
+    };
+
+    static loadRenderCondition(conditions) {
+        let modalBodyCondEle = FlowChartLoadDataHandle.$modal[0].querySelector('.modal-body-cond');
+        if (modalBodyCondEle) {
+            if (conditions.length === 0) {
+                conditions = [[{"left_show": "", "left_cond": [], "right_show": "", "right_cond": []}, "AND"], "AND"];
+            }
+            let htmlBody = FlowChartLoadDataHandle.loadConditionHTML(conditions);
+            $(modalBodyCondEle).empty();
+            $(modalBodyCondEle).append(`<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-500p position-relative overflow-y-scroll scroll-cond">${htmlBody}</div>`)
+        }
+    };
+
+    static loadConditionHTML(conditions) {
+        let htmlBody = ``;
+        let htmlAndOr = ``;
+        let htmlCond = ``;
+        let order = 0;
+        for (let condition of conditions) {
+            order++;
+            if (Array.isArray(condition)) {
+                htmlAndOr = ``;
+                let orderChild = 0;
+                for (let cond of condition) {
+                    orderChild++;
+                    if (typeof cond === 'object' && cond !== null && !Array.isArray(cond)) {
+                        htmlCond += `<div class="row param-child">
+                                    <div class="col-12 col-md-5 col-lg-5">
+                                        <div class="d-flex align-items-center">
+                                            <textarea class="form-control left-param left-param-${order}-${orderChild}" rows="2" readonly></textarea>
+                                            <button
+                                                type="button"
+                                                class="btn btn-icon btn-cond"
+                                                data-bs-toggle="offcanvas"
+                                                data-bs-target="#formulaCanvas"
+                                                data-cls-target="left-param-${order}-${orderChild}"
+                                            ><i class="fas fa-ellipsis-h"></i>
+                                            </button>      
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-2 col-lg-2">
+                                        <select class="form-select operator-math operator-math-${order}-${orderChild}"></select>
+                                    </div>
+                                    <div class="col-12 col-md-5 col-lg-5">
+                                        <div class="d-flex align-items-center">
+                                            <textarea class="form-control right-param right-param-${order}-${orderChild}" rows="2" readonly></textarea>
+                                            <button
+                                                type="button"
+                                                class="btn btn-icon btn-cond"
+                                                data-bs-toggle="offcanvas"
+                                                data-bs-target="#formulaCanvas"
+                                                data-cls-target="right-param-${order}-${orderChild}"
+                                            ><i class="fas fa-ellipsis-h"></i>
+                                            </button>      
+                                        </div>
+                                    </div>
+                                </div>`;
+                    }
+                    if (typeof cond === 'string') {
+                        let clsMain = "";
+                        let disabled = "";
+                        let hiddenDel = "";
+                        if (orderChild <= 2) {
+                            clsMain = "operator-and-or-child-main";
+                            hiddenDel = "hidden";
+                        }
+                        if (orderChild > 2) {
+                            disabled = "disabled";
+                        }
+                        htmlCond += `<div class="row">
+                                        <div class="col-12 col-md-1 col-lg-1">
+                                            <select class="form-select operator-and-or-child ${clsMain} operator-and-or-${order}-${orderChild}" ${disabled}></select>
+                                        </div>
+                                        <div class="col-12 col-md-11 col-lg-11">
+                                            <div class="d-flex justify-content-end">
+                                                <button class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-sm mr-4 btn-del-block-cond-child" data-idx="${order}-${orderChild}" ${hiddenDel}><span class="icon"><i class="fas fa-trash-alt"></i></span></button>
+                                            </div>
+                                        </div>
+                                    </div><br>`;
+                    }
+                }
+            }
+            if (typeof condition === 'string') {
+                let clsMain = "";
+                let disabled = "";
+                if (order <= 2) {
+                    clsMain = "operator-and-or-main";
+                }
+                if (order > 2) {
+                    disabled = "disabled";
+                }
+                htmlAndOr = `<select class="form-select operator-and-or ${clsMain} operator-and-or-${order}" ${disabled}></select>`;
+
+                htmlBody += `<hr><div class="row block-cond">
+                                    <div class="col-12 col-md-1 col-lg-1">${htmlAndOr}</div>
+                                    <div class="col-12 col-md-11 col-lg-11 block-cond-child">
+                                        ${htmlCond}
+                                        <div class="d-flex justify-content-between">
+                                            <button type="button" class="btn btn-primary btn-square btn-add-block-cond-child" data-idx="${order-1}">
+                                                <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${FlowChartLoadDataHandle.$transEle.attr('data-add')}</span></span>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary btn-square btn-del-block-cond mr-5" data-idx="${order}">
+                                                <span><span class="icon"><i class="fas fa-trash-alt"></i></span><span>${FlowChartLoadDataHandle.$transEle.attr('data-delete-block')}</span></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>`;
+                htmlCond = ``;
+            }
+        }
+        return htmlBody;
+    };
+
+    static loadConditionData(conditions) {
+        let modalBodyCondEle = FlowChartLoadDataHandle.$modal[0].querySelector('.modal-body-cond');
+        if (modalBodyCondEle) {
+            if (conditions.length === 0) {
+                conditions = [[{"left_show": "", "left_cond": [], "right_show": "", "right_cond": []}, "AND"], "AND"];
+            }
+            let order = 0;
+            for (let condition of conditions) {
+                order++;
+                if (Array.isArray(condition)) {
+                    let orderChild = 0;
+                    for (let cond of condition) {
+                        orderChild++;
+                        if (typeof cond === 'object' && cond !== null && !Array.isArray(cond)) {
+                            let leftEle = modalBodyCondEle.querySelector(`.left-param-${order}-${orderChild}`);
+                            let mathEle = modalBodyCondEle.querySelector(`.operator-math-${order}-${orderChild}`);
+                            let rightEle = modalBodyCondEle.querySelector(`.right-param-${order}-${orderChild}`);
+                            if (leftEle && mathEle && rightEle) {
+                                if (cond?.['left_show'] && cond?.['left_cond']) {
+                                    $(leftEle).val(cond?.['left_show']);
+                                    $(leftEle).attr('data-formula', JSON.stringify(cond?.['left_cond']));
+                                }
+                                FlowChartLoadDataHandle.loadInitS2($(mathEle), FlowChartLoadDataHandle.dataOperatorMath);
+                                if (cond?.['operator']) {
+                                    $(mathEle).val(cond?.['operator']).trigger('change');
+                                }
+                                if (cond?.['right_show'] && cond?.['right_cond']) {
+                                    $(rightEle).val(cond?.['right_show']);
+                                    $(rightEle).attr('data-formula', JSON.stringify(cond?.['right_cond']));
+                                }
+                            }
+                        }
+                        let operatorAndOrEle = modalBodyCondEle.querySelector(`.operator-and-or-${order}-${orderChild}`);
+                        if (operatorAndOrEle) {
+                            FlowChartLoadDataHandle.loadInitS2($(operatorAndOrEle), FlowChartLoadDataHandle.dataOperatorAndOr);
+                            $(operatorAndOrEle).val(condition).trigger('change');
+                        }
+                    }
+                }
+                if (typeof condition === 'string') {
+                    let operatorAndOrEle = modalBodyCondEle.querySelector(`.operator-and-or-${order}`);
+                    if (operatorAndOrEle) {
+                        FlowChartLoadDataHandle.loadInitS2($(operatorAndOrEle), FlowChartLoadDataHandle.dataOperatorAndOr);
+                        $(operatorAndOrEle).val(condition).trigger('change');
+                    }
+                }
+            }
+        }
+    };
+
+    static loadAddBlockCond() {
+        let operatorAndOrMainEle = FlowChartLoadDataHandle.$modal[0].querySelector('.operator-and-or-main');
+        if (operatorAndOrMainEle) {
+            if ($(operatorAndOrMainEle).val()) {
+                let dataCondition = FlowChartLoadDataHandle.loadSetupCondition();
+                dataCondition.push([{
+                    "left_show": "",
+                    "left_cond": [],
+                    "right_show": "",
+                    "right_cond": []
+                }, "AND"], $(operatorAndOrMainEle).val());
+                FlowChartLoadDataHandle.loadRenderCondition(dataCondition);
+                FlowChartLoadDataHandle.loadConditionData(dataCondition);
+            }
+        }
+    };
+
+    static loadAddBlockCondChild(ele) {
+        let blockCondChildEle = ele.closest('.block-cond-child');
+        if (blockCondChildEle) {
+            let operatorAndOrChildMainEle = blockCondChildEle.querySelector('.operator-and-or-child-main');
+            if (operatorAndOrChildMainEle) {
+                if ($(operatorAndOrChildMainEle).val() && $(ele).attr('data-idx')) {
+                    let idx = parseInt($(ele).attr('data-idx'));
+                    let dataCondition = FlowChartLoadDataHandle.loadSetupCondition();
+                    let count = 0;
+                    for (let dataCond of dataCondition) {
+                        count++;
+                        if (count === idx) {
+                            dataCond.push({
+                                "left_show": "",
+                                "left_cond": [],
+                                "right_show": "",
+                                "right_cond": []
+                            })
+                            dataCond.push($(operatorAndOrChildMainEle).val());
+                            break;
+                        }
+                    }
+                    FlowChartLoadDataHandle.loadRenderCondition(dataCondition);
+                    FlowChartLoadDataHandle.loadConditionData(dataCondition);
+                }
+            }
+        }
+    };
+
+    static loadDeleteBlockCond(ele) {
+        if ($(ele).attr('data-idx')) {
+            let idx = parseInt($(ele).attr('data-idx'));
+            let dataCondition = FlowChartLoadDataHandle.loadSetupCondition();
+            let count = 0;
+            for (let dataCond of dataCondition) {
+                count++;
+                if (count === idx) {
+                    dataCondition.splice(count - 1, 1);
+                    dataCondition.splice(count - 2, 1);
+                    break;
+                }
+            }
+            FlowChartLoadDataHandle.loadRenderCondition(dataCondition);
+            FlowChartLoadDataHandle.loadConditionData(dataCondition);
+        }
+        return true;
+    };
+
+    static loadDeleteBlockCondChild(ele) {
+        if ($(ele).attr('data-idx')) {
+            let parts = $(ele).attr('data-idx').split("-");
+            let idx = parseInt(parts[0]);
+            let idxChild = parseInt(parts[1]);
+            let dataCondition = FlowChartLoadDataHandle.loadSetupCondition();
+            let count = 0;
+            for (let dataCond of dataCondition) {
+                count++;
+                if (count === idx) {
+                    let countChild = 0;
+                    for (let data of dataCond) {
+                        countChild++;
+                        if (countChild === idxChild) {
+                            dataCond.splice(countChild - 1, 1);
+                            dataCond.splice(countChild - 2, 1);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            FlowChartLoadDataHandle.loadRenderCondition(dataCondition);
+            FlowChartLoadDataHandle.loadConditionData(dataCondition);
+        }
+        return true;
+    };
+
+    static loadSaveCondition() {
+        if (FlowChartLoadDataHandle.$btnSave.attr('data-node-in') && FlowChartLoadDataHandle.$btnSave.attr('data-node-out')) {
+            let target = FlowChartLoadDataHandle.$btnSave.attr('data-node-in') + "_" + FlowChartLoadDataHandle.$btnSave.attr('data-node-out');
+            let nodeIn = parseInt(FlowChartLoadDataHandle.$btnSave.attr('data-node-in'));
+            let nodeOut = parseInt(FlowChartLoadDataHandle.$btnSave.attr('data-node-out'));
+            let dataCondition = FlowChartLoadDataHandle.loadSetupCondition();
+            // add new association to flowchart class
+            let getAssoc = FlowJsP.getAssociate
+            getAssoc[target] = {
+                "node_in": nodeIn, "node_out": nodeOut, "condition": dataCondition
+            }
+            FlowJsP.setAssociateList = getAssoc;
+            $('#node-associate').val(JSON.stringify(getAssoc));
+        }
+        return true;
+    };
+
+    static loadSetupCondition() {
+        let result = [];
+        for (let blockCondEle of FlowChartLoadDataHandle.$modal[0].querySelectorAll('.block-cond')) {
+            let dataCondChild = [];
+            let dataChildParam = [];
+            let dataChildOperator = [];
+            let blockCondChildEle = blockCondEle.querySelector('.block-cond-child');
+            if (blockCondChildEle) {
+                for (let paramChildEle of blockCondChildEle.querySelectorAll('.param-child')) {
+                    let params = {};
+                    let leftEle = paramChildEle.querySelector('.left-param');
+                    let mathEle = paramChildEle.querySelector('.operator-math');
+                    let rightEle = paramChildEle.querySelector('.right-param');
+                    if (leftEle && mathEle && rightEle) {
+                        if ($(leftEle).val() && $(leftEle).attr('data-formula')) {
+                            params['left_show'] = $(leftEle).val();
+                            params['left_cond'] = JSON.parse($(leftEle).attr('data-formula'));
+                        }
+                        if ($(mathEle).val()) {
+                            params['operator'] = $(mathEle).val();
+                        }
+                        if ($(rightEle).val() && $(rightEle).attr('data-formula')) {
+                            params['right_show'] = $(rightEle).val();
+                            params['right_cond'] = JSON.parse($(rightEle).attr('data-formula'));
+                        }
+                    }
+                    dataChildParam.push(params);
+                }
+                for (let operatorAndOrChildEle of blockCondChildEle.querySelectorAll('.operator-and-or-child')) {
+                    if ($(operatorAndOrChildEle).val()) {
+                        dataChildOperator.push($(operatorAndOrChildEle).val())
+                    }
+                }
+                //
+                if (dataChildParam.length === dataChildOperator.length) {
+                    let i = 0;
+                    for (let item of dataChildParam) {
+                        dataCondChild.push(item);
+                        dataCondChild.push(dataChildOperator[i]);
+                    }
+                }
+                result.push(dataCondChild);
+            }
+            let operatorAndOrEle = blockCondEle.querySelector('.operator-and-or');
+            if (operatorAndOrEle) {
+                if ($(operatorAndOrEle).val()) {
+                    result.push($(operatorAndOrEle).val());
+                }
+            }
+        }
+        return result;
+    };
+
+
 }
+
+
+
+
 
 /*** plus/minus button increase/decrease size of drop space
  * if size of space is less than default size -> do nothing
@@ -206,11 +505,13 @@ class JSPlumbsHandle {
                 let item = DEFAULT_NODE_LIST[val];
                 let clsSys = '';
                 let bg = '';
+                let color = 'text-white';
                 let clsModal = "modal";
                 let disabled = "";
                 if (item?.['is_system'] === true) {
-                    clsSys = 'control-system'
-                    bg = 'bg-blue-light-4';
+                    clsSys = 'control-system';
+                    bg = 'bg-white';
+                    color = '';
                     if (["approved", "completed"].includes(item?.['code'])) {
                         clsModal = "";
                         disabled = "disabled";
@@ -218,7 +519,7 @@ class JSPlumbsHandle {
                 }
                 strHTMLDragNode += `<div class="btn-group dropdown">
                                         <div class="control ${clsSys} ${bg}" id="drag-${item?.['order']}" data-drag="${item?.['order']}" title="${item?.['title']}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
-                                            <p class="drag-title" contentEditable="true" title="${item?.['remark']}">${item?.['title']}</p>
+                                            <p class="drag-title ${color}" contentEditable="true" title="${item?.['remark']}">${item?.['title']}</p>
                                         </div>
                                         <div class="dropdown-menu dropdown-bordered w-160p">
                                             <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
@@ -273,22 +574,24 @@ class JSPlumbsHandle {
                     wrap_w = wrap_w + 300
                     $wrapWF.css("width", wrap_w);
                 }
+                let clsSys = '';
                 let bg = '';
+                let color = 'text-white';
                 let clsModal = "modal";
                 let disabled = "";
                 if (item?.['is_system'] === true) {
-                    bg = 'bg-blue-light-4';
+                    clsSys = 'clone-system';
+                    bg = 'bg-white';
+                    color = '';
 
                     if (["approved", "completed"].includes(item?.['code'])) {
                         clsModal = "";
                         disabled = "disabled";
                     }
                 }
-                // HTML_temp += `<div class="clone ${bg}" data-drag="${val}" title="${item.title}" id="control-${val}" style="left:${left_coord}px;top:${top_coord}px"><p class="drag-title">${item.title}</p></div>`;
-
                 HTML_temp += `<div class="btn-group dropdown">
-                                    <div class="clone ${bg}" data-drag="${val}" title="${item.title}" id="control-${val}" style="left:${left_coord}px;top:${top_coord}px" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
-                                        <p class="drag-title">${item.title}</p>
+                                    <div class="clone ${clsSys} ${bg}" data-drag="${val}" title="${item?.['title']}" id="control-${val}" style="left:${left_coord}px;top:${top_coord}px" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
+                                        <p class="drag-title ${color}">${item?.['title']}</p>
                                     </div>
                                     <div class="dropdown-menu dropdown-bordered w-160p">
                                         <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
@@ -319,7 +622,7 @@ class JSPlumbsHandle {
             // declare style connection type
             instance.registerConnectionTypes({
                 "pink-connection": {
-                    paintStyle: {stroke: "#4f4f4f", strokeWidth: 1.5},
+                    paintStyle: {stroke: "#6f6f6f", strokeWidth: 1.5},
                     hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4}
                 }
             })
@@ -328,20 +631,16 @@ class JSPlumbsHandle {
                 helper: function () {
                     let clsSys = '';
                     let bg = '';
+                    let color = 'text-white';
                     let clsModal = "modal";
                     if (this.classList.contains('control-system')) {
-                        clsSys = 'clone-system'
-                        bg = 'bg-blue-light-4';
+                        clsSys = 'clone-system';
+                        bg = 'bg-white';
+                        color = '';
                     }
-
-
-//                     return `<div class="clone ${clsSys} ${bg}" data-drag="${$(this).attr('data-drag')}" title="${$(this).find('.drag-title').text()}">
-// <p class="drag-title">${$(this).find('.drag-title').text()}</p>
-// </div>`;
-
                     return `<div class="btn-group dropdown">
                                 <div class="clone ${clsSys} ${bg}" data-drag="${$(this).attr('data-drag')}" title="${$(this).find('.drag-title').text()}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <p class="drag-title">${$(this).find('.drag-title').text()}</p>
+                                    <p class="drag-title ${color}">${$(this).find('.drag-title').text()}</p>
                                 </div>
                                 <div class="dropdown-menu dropdown-bordered w-160p">
                                     <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
@@ -381,7 +680,7 @@ class JSPlumbsHandle {
                     }
                     if (sys_code !== 'completed')
                         instance.addEndpoint(is_id, {
-                            endpoint: ["Dot", {radius: 5}],
+                            endpoint: ["Dot", {radius: 4}],
                             anchor: ["Bottom", "BottomRight", "BottomLeft"],
                             isSource: true,
                             connectorOverlays: [
@@ -392,7 +691,7 @@ class JSPlumbsHandle {
                                         cssClass: "cssAssociateLabel",
                                         events: {
                                             click: function (labelOverlay) {
-                                                clickConnection(labelOverlay)
+                                                FlowChartLoadDataHandle.clickConnection(labelOverlay)
                                             }
                                         },
                                     },
@@ -408,7 +707,7 @@ class JSPlumbsHandle {
                     //
                     if (sys_code !== 'initial')
                         instance.addEndpoint(is_id, {
-                            endpoint: ["Rectangle", {width: 10, height: 10}],
+                            endpoint: ["Rectangle", {width: 9, height: 9}],
                             anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
                             isTarget: true,
                             connectorOverlays: [
@@ -419,7 +718,7 @@ class JSPlumbsHandle {
                                         cssClass: "cssAssociateLabel",
                                         events: {
                                             click: function (labelOverlay) {
-                                                clickConnection(labelOverlay)
+                                                FlowChartLoadDataHandle.clickConnection(labelOverlay)
                                             }
                                         },
                                     },
@@ -454,7 +753,7 @@ class JSPlumbsHandle {
                         let sys_code = DEFAULT_NODE_LIST[$(this).data('drag')].code_node_system
                         if (sys_code !== 'completed')
                             instance.addEndpoint(is_id, {
-                                endpoint: ["Dot", {radius: 5}],
+                                endpoint: ["Dot", {radius: 4}],
                                 anchor: ["Bottom", "BottomRight", "BottomLeft"],
                                 isSource: true,
                                 connectorOverlays: [
@@ -465,7 +764,7 @@ class JSPlumbsHandle {
                                             cssClass: "cssAssociateLabel",
                                             events: {
                                                 click: function (labelOverlay) {
-                                                    clickConnection(labelOverlay)
+                                                    FlowChartLoadDataHandle.clickConnection(labelOverlay)
                                                 }
                                             },
                                         },
@@ -481,7 +780,7 @@ class JSPlumbsHandle {
                         //
                         if (sys_code !== 'initial')
                             instance.addEndpoint(is_id, {
-                                endpoint: ["Rectangle", {width: 10, height: 10}],
+                                endpoint: ["Rectangle", {width: 9, height: 9}],
                                 anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
                                 // anchor: "Perimeter",
                                 isTarget: true,
@@ -493,7 +792,7 @@ class JSPlumbsHandle {
                                             cssClass: "cssAssociateLabel",
                                             events: {
                                                 click: function (labelOverlay) {
-                                                    clickConnection(labelOverlay)
+                                                    FlowChartLoadDataHandle.clickConnection(labelOverlay)
                                                 }
                                             },
                                         },
@@ -527,16 +826,16 @@ class JSPlumbsHandle {
                                     cssClass: "cssAssociateLabel",
                                     events: {
                                         click: function (labelOverlay) {
-                                            clickConnection(labelOverlay)
+                                            FlowChartLoadDataHandle.clickConnection(labelOverlay)
                                         }
                                     },
                                 },
                             ]
                         ],
                         anchors: ["Bottom", "Top"],
-                        endpoint: ["Dot", {radius: 5}],
+                        endpoint: ["Dot", {radius: 4}],
                         endpointStyle: {fill: "#374986", opacity: ".8"},
-                        paintStyle: {stroke: "#4f4f4f", strokeWidth: 1.5},
+                        paintStyle: {stroke: "#6f6f6f", strokeWidth: 1.5},
                         hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
                         connectionType: "pink-connection",
                         connector: ["Flowchart", {cornerRadius: 5}],
@@ -549,7 +848,7 @@ class JSPlumbsHandle {
                                 cssClass: "cssAssociateLabel",
                                 events: {
                                     click: function (labelOverlay) {
-                                        clickConnection(labelOverlay)
+                                        FlowChartLoadDataHandle.clickConnection(labelOverlay)
                                     }
                                 },
                             },
@@ -602,7 +901,8 @@ class JSPlumbsHandle {
                         temp[key] = end_result;
                         end_result = temp
                     }
-                    elm_focus.val(JSON.stringify(end_result))
+                    FlowJsP.setAssociateList = end_result;
+                    elm_focus.val(JSON.stringify(end_result));
                 }
             })
 
@@ -632,6 +932,7 @@ class JSPlumbsHandle {
                         current_data = JSON.parse(current_data)
                         if (current_data.hasOwnProperty(key)) {
                             delete current_data[key];
+                            FlowJsP.setAssociateList = current_data;
                             elm_focus.val(JSON.stringify(current_data))
                         }
                     }

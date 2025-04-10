@@ -251,7 +251,7 @@ var jampack = function () {
     let isTimeout
     $('.hk-menu').on('mouseenter', function(e){
         if ($(this).closest('.hk-menu').length)
-            isTimeout = setTimeout(()=>this.classList.add('active'), 600)
+            isTimeout = setTimeout(()=>this.classList.add('active'), 500)
     })
     .on('mouseleave', function () {
         clearTimeout(isTimeout)

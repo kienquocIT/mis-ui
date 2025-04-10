@@ -136,18 +136,20 @@ class AssetToolsProvideRequestEditAPI(APIView):
 class AssetProductListByProvideIDAPI(APIView):
     @classmethod
     def get_callback_success(cls, result):
-        new_lst = []
         compare_id = {}
         for item in result:
-            if item['product']['id'] in compare_id:
-                current_item = compare_id[item['product']['id']]
-                current_item['quantity'] += item['quantity']
-                current_item['delivered'] += item['delivered']
+            product_id = item['product'].get('id')
+            order = item['order']
+            if product_id:
+                if product_id in compare_id:
+                    compare_id[product_id]['quantity'] += item['quantity']
+                    compare_id[product_id]['delivered'] += item['delivered']
+                else:
+                    compare_id[product_id] = item
             else:
-                compare_id[item['product']['id']] = item
-        for idx in compare_id:
-            new_lst.append(compare_id[idx])
-        new_lst.sort(key=lambda x: x['order'])
+                compare_id[order] = item
+
+        new_lst = sorted(compare_id.values(), key=lambda x: x['order'])
         return {
             'asset_provide_product_list': new_lst,
         }

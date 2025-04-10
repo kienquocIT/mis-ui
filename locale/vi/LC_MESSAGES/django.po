@@ -6389,10 +6389,6 @@ msgid "Edit items"
 msgstr "Chọn sản phẩm"
 
 #
-msgid "Warehouse is required"
-msgstr "Kho là bắt buộc"
-
-#
 msgid "Done number is not valid value"
 msgstr "Số hoàn tất không chính xác"
 

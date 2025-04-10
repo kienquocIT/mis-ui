@@ -88,9 +88,8 @@
                                     <th>{% trans 'Product' %}</th>
                                     <th>{% trans 'Request' %}</th>
                                     <th>{% trans 'Provided' %}</th>
-                                    <th><span class="required">{% trans 'Warehouse' %}</span></th>
-                                    <th>{% trans 'Done' %}</th>
-                                    <th>{% trans 'Date' %}</th>
+                                    <th><span class="required">{% trans 'Done' %}</span></th>
+                                    <th><span class="required">{% trans 'Date' %}</span></th>
                                     <th></th>
                                 </tr>
                                 </thead>
@@ -128,16 +127,14 @@
         </a>
     </div>
     <input type="text" id="url-factory"
-           data-warehouse-url="{% url 'WarehouseGetProductsListAPI' %}"
            data-provide_detail-url="{% url 'AssetProductListByProvideIDAPI'%}"
-           data-prod-detail="{% url 'ProductDetail' 1%}"
+           data-prod-detail="{% url 'InstrumentToolDetail' 1%}"
            data-detail-url="{% url 'AssetToolsDeliveryDetailAPI' data.pk %}"
     >
     <input type="text" id="trans-factory" data-products="{% trans 'List of Asset, Tools request is empty' %}"
     data-return="{% trans 'Detail' %}"
     data-avail="{% trans 'Available' %}"
     data-uom="{% trans 'UoM' %}"
-    data-empty-warehouse="{% trans 'Warehouse is required' %}"
     data-err-done="{% trans 'Done number is not valid value' %}"
     data-out_of_stock="{% trans 'Out of stock' %}">
 {% endblock %}

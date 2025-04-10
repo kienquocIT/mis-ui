@@ -73,18 +73,6 @@ $(document).ready(function(){
                         }
                     },
                     {
-                        data: 'warehouse',
-                        width: '20%',
-                        render: (row, type, data, meta) => {
-                            if (!row && data?.['warehouse_data']) row = data['warehouse_data']
-                            let html = $(`<select>`).addClass('form-select row_warehouse')
-                                .attr('name', `warehouse_${meta.row}`).attr('disabled', true)
-                            if (row && Object.keys(row).length > 0)
-                                html.append(`<option selected value="${row.id}">${row.title}</option>`)
-                            return html.prop('outerHTML')
-                        }
-                    },
-                    {
                         data: 'done',
                         width: '15%',
                         render: (row, type, data, meta) => {

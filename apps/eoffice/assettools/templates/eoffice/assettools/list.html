@@ -70,7 +70,8 @@
                             <th>{% trans 'Name' %}</th>
                             <th>{% trans 'Code' %}</th>
                             <th>{% trans 'UoM' %}</th>
-                            <th>{% trans 'Warehouse' %}</th>
+                            <th>{% trans 'Manage Department' %}</th>
+                            <th>{% trans 'Use Department' %}</th>
                             <th>{% trans 'Total' %}</th>
                             <th>{% trans 'Using Total' %}</th>
                             <th>{% trans 'Available' %}</th>
@@ -87,7 +88,7 @@
     <input type="text" id="url-factory" aria-label="url-factory"
            data-employee-list="{% url 'EmployeeListAPI' %}"
            data-asset-list="{% url 'AssetToolsListAPI' %}"
-           data-product-asset-list="{% url 'ProductWarehouseAssetList' %}"
+           data-instrument_tool_lst="{% url 'InstrumentToolListAPI' %}"
            data-asset-return-list="{% url 'AssetToolsReturnListAPI' %}"
     >
     <input type="text" id="trans-factory" aria-label="trans-factory"

@@ -70,14 +70,8 @@ class ProductsTable {
                         data: 'price',
                         width: '15%',
                         render: (row, type, data, meta) => {
-                            // const amount = row;
-                            // const formatAmount = new Intl.NumberFormat('vi-VI', {
-                            //     style: 'currency',
-                            //     currency: 'VND',
-                            //     currencyDisplay: 'code'
-                            // }).format(amount)
-                            // return `<input type="text" class="mask-money form-control" data-zone="products" name="price_${meta.row}" data-init-money="${parseFloat(row ? row : 0)}">`
-                            return `<input type="text" class="form-control" data-zone="products" name="price_${meta.row}" value="${row}" data-value-format="${row}">`
+                            return `<input type="text" class="form-control mask-money" data-zone="products" ` +
+                            `name="price_${meta.row}" data-value-format="${row}" value="${row}">`
                         }
                     },
                     {
@@ -100,6 +94,9 @@ class ProductsTable {
 
                     $('[name*="remark_"]', row).on('blur', function () {
                         data.product_remark = this.value ? this.value : ''
+                    })
+                    $('input[name*="uom_"]', row).on('blur', function () {
+                        data.uom = this.value ? this.value : ''
                     })
 
                     // load product item
@@ -131,14 +128,15 @@ class ProductsTable {
                     // load price
                     $.fn.initMaskMoney2($('[name*="price_"]', row), 'input')
                     $('[name*="price_"]', row).on('change', function () {
-                        data.price = !isNaN($(this).valCurrency()) ? parseInt($(this).valCurrency()) : 0
+                        let _price = $.inArray($(this).valCurrency(), ['undefined', undefined, '0']) === -1 ? $(this).valCurrency() : $(this).val()
+                        data.price = !isNaN(_price) ? parseInt(_price) : 0
                         ProductsTable.calcSubtotal(data, index)
                     })
 
                     // init subtotal
                     $.fn.initMaskMoney2($('[name*="subtotal_"]', row), 'input')
 
-                    //delete row
+                    // delete row
                     $('.btn-remove-row', row).off().on('click', () => {
                         $tbl.DataTable().row(row).remove().draw(false)
                     })
@@ -167,6 +165,8 @@ class ProductsTable {
                 'product_remark': '',
                 'uom': '',
                 'quantity': 0,
+                'price': 0,
+                'subtotal': 0
             }
             if ($(this).attr('data-type') === 'crt_prod') newData.has_prod = true
             else newData.new_prod = true
@@ -190,6 +190,7 @@ function submitHandleFunc() {
     formData.products = ProductsTable.get_data()
     for(let item of formData.products){
         if (item['product'].hasOwnProperty('id')) item['product'] = item['product']['id']
+        else delete item['product']
     }
     // if (frm.dataMethod.toLowerCase() === 'put')
     let $elmFooter = $('.products_detail_tbl_wrapper .dataTables_scrollFootInner table tfoot tr th')

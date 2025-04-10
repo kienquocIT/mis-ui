@@ -147,6 +147,10 @@ $(function () {
         }
 
         // NODE EVENTS
+        NodeLoadDataHandle.$boxApp.on('change', function () {
+            NodeFormulaHandle.loadPropertyMD();
+        });
+
         NodeLoadDataHandle.$btnNewNode.on('click', function () {
             NodeLoadDataHandle.$btnSaveNode[0].setAttribute('data-save-type', '0');
             NodeLoadDataHandle.$btnSaveNode[0].removeAttribute('data-order');

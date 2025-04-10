@@ -1,6 +1,7 @@
 // LoadData
 class NodeLoadDataHandle {
     static $form = $('#form-create_workflow');
+    static $boxApp = $("#select-box-features");
 
     static $nodeDragBox = $('#node_dragbox');
     static $flowChart = $('#flowchart_workflow');
@@ -872,13 +873,13 @@ class NodeDataTableHandle {
                         if (row?.['employee']) {
                             let dataEmp = SelectDDControl.get_data_from_idx(NodeLoadDataHandle.$boxInWFEmp, row?.['employee']);
                             if (dataEmp) {
-                                return `<span class="table-row-title badge badge-primary badge-outline" data-row="${dataRow}">${dataEmp?.['full_name'] ? dataEmp?.['full_name'] : ''}</span>`;
+                                return `<span class="mr-2"><i class="fas fa-user-circle"></i></span><span class="table-row-title" data-row="${dataRow}">${dataEmp?.['full_name'] ? dataEmp?.['full_name'] : ''}</span>`;
                             }
                         }
                         if (row?.['position_choice']) {
                             for (let dataPos of NodeLoadDataHandle.dataInWFPosition) {
                                 if (dataPos?.['id'] === row?.['position_choice']) {
-                                    return `<span class="table-row-title badge badge-warning badge-outline" data-row="${dataRow}">${dataPos?.['title']}</span>`;
+                                    return `<span class="mr-2"><i class="fas fa-sitemap"></i></span><span class="table-row-title" data-row="${dataRow}">${dataPos?.['title']}</span>`;
                                 }
                             }
                         }
@@ -1003,7 +1004,7 @@ class NodeDataTableHandle {
             if (!$('#btn-add-collab-in-wf').length) {
                 let $group = $(`<button
                                         type="button"
-                                        class="btn btn-outline-secondary"
+                                        class="btn btn-primary btn-square"
                                         data-bs-toggle="offcanvas"
                                         data-bs-target="#inWFCanvas"
                                         aria-controls="inWFCanvas"
@@ -1287,7 +1288,7 @@ class NodeFormulaHandle {
                 'url': NodeLoadDataHandle.$urlsEle.attr('data-md-property'),
                 'method': "GET",
                 'data': {
-                    'application__code': "quotation",
+                    'application_id': NodeLoadDataHandle.$boxApp.val(),
                     'is_wf_condition': true,
                 },
                 'isDropdown': true,

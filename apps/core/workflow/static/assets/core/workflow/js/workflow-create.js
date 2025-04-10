@@ -5,7 +5,7 @@ $(function () {
 
         initTableZone();
 
-        NodeLoadDataHandle.loadInitEmpData();
+        NodeLoadDataHandle.loadInit();
 
         // form submit
         SetupFormSubmit.validate(formSubmit, {
@@ -233,12 +233,207 @@ $(function () {
 
         NodeLoadDataHandle.$btnSaveNode.on('click', function () {
             NodeStoreHandle.storeNode();
-
         });
 
         NodeDataTableHandle.$tableInWFExitCon.on('change', '.table-row-min-collab', function () {
             NodeLoadDataHandle.loadChangeExitCon(this);
         });
 
+        NodeLoadDataHandle.$modalCondition.on('click', '.btn-cond', function () {
+            NodeFormulaHandle.$formulaEditor.val("");
+            NodeFormulaHandle.$btnSaveFormula.attr('data-cls-target', $(this).attr('data-cls-target'));
+            let targetEle = NodeLoadDataHandle.$modalCondition[0].querySelector(`.${NodeFormulaHandle.$btnSaveFormula.attr('data-cls-target')}`);
+            if (targetEle) {
+                NodeFormulaHandle.$formulaEditor.val($(targetEle).val());
+            }
+        });
+
+        NodeLoadDataHandle.$modalCondition.on('change', '.operator-and-or-main', function () {
+            for (let operatorAndOrEle of NodeLoadDataHandle.$modalCondition[0].querySelectorAll('.operator-and-or')) {
+                if (operatorAndOrEle !== this) {
+                    $(operatorAndOrEle).val($(this).val()).trigger('change');
+                }
+            }
+        });
+
+        NodeLoadDataHandle.$modalCondition.on('change', '.operator-and-or-child-main', function () {
+            let blockCondChildEle = this.closest('.block-cond-child');
+            if (blockCondChildEle) {
+                for (let operatorAndOrChildEle of blockCondChildEle.querySelectorAll('.operator-and-or-child')) {
+                    if (operatorAndOrChildEle !== this) {
+                        $(operatorAndOrChildEle).val($(this).val()).trigger('change');
+                    }
+                }
+            }
+        });
+
+        NodeLoadDataHandle.$modalCondition.on('click', '.btn-add-block-cond', function () {
+            FlowChartLoadDataHandle.loadAddBlockCond();
+        });
+
+        NodeLoadDataHandle.$modalCondition.on('click', '.btn-add-block-cond-child', function () {
+            FlowChartLoadDataHandle.loadAddBlockCondChild(this);
+        });
+
+        NodeLoadDataHandle.$modalCondition.on('click', '.btn-del-block-cond', function () {
+            FlowChartLoadDataHandle.loadDeleteBlockCond(this);
+        });
+
+        NodeLoadDataHandle.$modalCondition.on('click', '.btn-del-block-cond-child', function () {
+            FlowChartLoadDataHandle.loadDeleteBlockCondChild(this);
+        });
+
+        NodeFormulaHandle.$formulaCanvas.on('mouseenter', '.param-item', function () {
+            let dataEle = this.querySelector('.data-show');
+            if (dataEle) {
+                if ($(dataEle).val()) {
+                    let data = JSON.parse($(dataEle).val());
+                    let dataStr = JSON.stringify(data);
+                    let htmlBase = `<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-380p position-relative overflow-y-scroll">
+                                        <div class="row">
+                                            <h5>${data?.['title_i18n'] ? data?.['title_i18n'] : ''}</h5>
+                                            <p>${data?.['remark'] ? data?.['remark'] : ''}</p>
+                                        </div>
+                                        <div class="row area-property-md hidden">
+                                            <div class="form-group">
+                                                <select class="form-select box-property-md"></select>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <b>${NodeLoadDataHandle.transEle.attr('data-syntax')}</b>
+                                            <p>${data?.['syntax_show'] ? data?.['syntax_show'] : ''}</p>
+                                        </div>
+                                        <div class="row">
+                                            <b>${NodeLoadDataHandle.transEle.attr('data-example')}</b>
+                                            <p>${data?.['example'] ? data?.['example'] : ''}</p>
+                                        </div>
+                                    </div>`;
+
+                    let tabEle = this.closest('.tab-pane');
+                    if (tabEle) {
+                        if (tabEle.id === "tab_formula_property") {
+                            NodeFormulaHandle.$propertyRemark.empty();
+                            NodeFormulaHandle.$propertyRemark.append(htmlBase);
+                            if (data?.['type'] === 5) {
+                                let url = "";
+                                let keyResp = "";
+                                if (NodeFormulaHandle.appMapMDUrls?.[data?.['content_type']]) {
+                                    if (NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['url']) {
+                                        url = NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['url'];
+                                    }
+                                    if (NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['keyResp']) {
+                                        keyResp = NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['keyResp'];
+                                    }
+                                }
+                                let areaBoxMDEle = NodeFormulaHandle.$propertyRemark[0].querySelector('.area-property-md');
+                                let boxMDEle = NodeFormulaHandle.$propertyRemark[0].querySelector('.box-property-md');
+                                if (areaBoxMDEle && boxMDEle) {
+                                    $(boxMDEle).attr('data-url', url);
+                                    $(boxMDEle).attr('data-method', 'GET');
+                                    $(boxMDEle).attr('data-keyResp', keyResp);
+                                    $(boxMDEle).attr('data-show', dataStr);
+                                    $(boxMDEle).attr('disabled', 'true');
+                                    loadInitS2($(boxMDEle), [], {}, NodeFormulaHandle.$propertyRemark, true);
+
+                                    $(areaBoxMDEle).removeClass('hidden');
+                                }
+                            }
+                        }
+                        if (tabEle.id === "tab_formula_function") {
+                            NodeFormulaHandle.$functionRemark.empty();
+                            NodeFormulaHandle.$functionRemark.append(htmlBase);
+                        }
+                    }
+                }
+            }
+            return true;
+        });
+
+        NodeFormulaHandle.$formulaCanvas.on('click', '.param-item', function () {
+            let dataEle = this.querySelector('.data-show');
+            if (dataEle) {
+                if ($(dataEle).val()) {
+                    let data = JSON.parse($(dataEle).val());
+                    let tabEle = this.closest('.tab-pane');
+                    if (tabEle) {
+                        if (tabEle.id === "tab_formula_property") {
+                            if (data?.['type'] === 5) {
+                                let boxMDEle = NodeFormulaHandle.$propertyRemark[0].querySelector('.box-property-md');
+                                if (boxMDEle) {
+                                    boxMDEle.removeAttribute('disabled');
+                                }
+                            } else {
+                                // show editor
+                                NodeFormulaHandle.$formulaEditor.val(NodeFormulaHandle.$formulaEditor.val() + data.syntax);
+                                // on blur editor to validate formula
+                                NodeFormulaHandle.$formulaEditor.blur();
+                            }
+                        }
+                        if (tabEle.id === "tab_formula_function") {
+                            // show editor
+                            NodeFormulaHandle.$formulaEditor.val(NodeFormulaHandle.$formulaEditor.val() + data.syntax);
+                            // on blur editor to validate formula
+                            NodeFormulaHandle.$formulaEditor.blur();
+                        }
+                    }
+                }
+            }
+            return true;
+        });
+
+        NodeFormulaHandle.$formulaCanvas.on('change', '.box-property-md', function () {
+            let dataShowRaw = $(this).attr('data-show');
+            if (dataShowRaw) {
+                let dataShow = JSON.parse(dataShowRaw);
+                let dataSelected = SelectDDControl.get_data_from_idx($(this), $(this).val());
+                if (dataSelected) {
+                    // show editor
+                    NodeFormulaHandle.$formulaEditor.val(`${NodeFormulaHandle.$formulaEditor.val() + dataShow?.['syntax']}=="${dataSelected?.['title']}"`);
+                    // on blur editor to validate formula
+                    NodeFormulaHandle.$formulaEditor.blur();
+                }
+            }
+        });
+
+        NodeFormulaHandle.$formulaEditor.on('blur', function () {
+            let editorValue = $(this).val();
+            // validate editor
+            let isValid = NodeFormulaHandle.validateEditor(editorValue);
+            if (isValid?.['result'] === true) {
+                if (NodeFormulaHandle.$btnSaveFormula[0].hasAttribute('disabled')) {
+                    NodeFormulaHandle.$btnSaveFormula[0].removeAttribute('disabled')
+                }
+                NodeFormulaHandle.$formulaValidateTxt.empty();
+            } else {
+                if (!NodeFormulaHandle.$btnSaveFormula[0].hasAttribute('disabled')) {
+                    NodeFormulaHandle.$btnSaveFormula[0].setAttribute('disabled', 'true');
+                }
+                let error = "";
+                if (isValid?.['remark'] === "parentheses") {
+                    error = ") expected";
+                } else if (isValid?.['remark'] === "syntax") {
+                    error = "syntax error";
+                } else if (isValid?.['remark'] === "quote") {
+                    error = "single quote (') not allowed";
+                } else if (isValid?.['remark'] === "unbalance") {
+                    error = "value or operator expected";
+                }
+                NodeFormulaHandle.$formulaValidateTxt.text(error);
+            }
+        });
+
+        NodeFormulaHandle.$btnSaveFormula.on('click', function () {
+            let dataSetup = NodeFormulaHandle.setupFormula();
+            let targetEle = NodeLoadDataHandle.$modalCondition[0].querySelector(`.${NodeFormulaHandle.$btnSaveFormula.attr('data-cls-target')}`);
+            if (targetEle) {
+                $(targetEle).attr('data-formula', JSON.stringify(dataSetup?.['formulaData']));
+                $(targetEle).val(dataSetup?.['formulaShow']);
+            }
+        });
+
+        NodeLoadDataHandle.$btnSaveCondition.on('click', function () {
+            FlowChartLoadDataHandle.loadSaveCondition();
+        });
     });
 });

@@ -2,7 +2,8 @@ __all__ = ['AssetToolsProvideRequestList', 'AssetToolsProvideRequestListAPI', 'A
            'AssetToolsProvideRequestCreateAPI', 'AssetToolsProvideRequestDetail', 'AssetToolsProvideRequestDetailAPI',
            'AssetToolsProvideRequestEdit', 'AssetToolsProvideRequestEditAPI', 'AssetProductListByProvideIDAPI'
            ]
-
+import unicodedata
+import re
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
@@ -139,7 +140,8 @@ class AssetProductListByProvideIDAPI(APIView):
         compare_id = {}
         for item in result:
             product_id = item['product'].get('id')
-            order = item['order']
+            if item['delivered'] == item['is_returned']:  # nếu đã trả hết thì ko cộng
+                continue
             if product_id:
                 if product_id in compare_id:
                     compare_id[product_id]['quantity'] += item['quantity']
@@ -147,7 +149,14 @@ class AssetProductListByProvideIDAPI(APIView):
                 else:
                     compare_id[product_id] = item
             else:
-                compare_id[order] = item
+                temp = unicodedata.normalize('NFD', item['product_remark'])
+                temp = ''.join(c for c in temp if unicodedata.category(c) != 'Mn')
+                key_word = re.sub(r'\s+', '_', temp.strip().lower())
+                if key_word in compare_id:
+                    compare_id[key_word]['quantity'] += item['quantity']
+                    compare_id[key_word]['delivered'] += item['delivered']
+                else:
+                    compare_id[key_word] = item
 
         new_lst = sorted(compare_id.values(), key=lambda x: x['order'])
         return {

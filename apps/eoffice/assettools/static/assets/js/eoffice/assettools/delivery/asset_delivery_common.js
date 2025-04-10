@@ -7,14 +7,6 @@ function renderTemplateResult(state) {
     )
 }
 
-function renderTemplateWarehouse(state) {
-    if (!state.id) return state.text
-    return $(
-        `<p class="d-flex justify-content-normal sl_temp_cont"><b>${state?.data?.code}</b>`
-        + `<span class="one-row-txt" title="${state?.data?.title}">&nbsp;|&nbsp;&nbsp;${state?.data?.title}</span></p>`
-    )
-}
-
 class DeliveryTableHandle {
     static initBtnAdd(){
         let $table = $('#products_detail_tbl')
@@ -24,14 +16,14 @@ class DeliveryTableHandle {
             for (let item of prodSlt){
                 dataList.push({
                     product: item['product'],
-                    warehouse: item['product_warehouse'],
+                    product_remark: item.product_remark,
                     product_available: item.product_available,
                     order: item?.['order'],
                     request_number: item.quantity,
                     delivered_number: item?.['delivered'],
                     done: 0,
-                    is_inventory: item['product']['is_inventory'],
-                    date_delivered: moment().format('YYYY-MM-DD')
+                    date_delivered: moment().format('YYYY-MM-DD'),
+                    uom: item.uom
                 })
             }
             if (dataList.length > 0) $table.DataTable().rows.add(dataList).draw()
@@ -58,9 +50,11 @@ class DeliveryTableHandle {
                             let isFormat = [
                                 {name: $elmTrans.attr('data-title'), value: 'title'},
                                 {name: $elmTrans.attr('data-code'), value: 'code'},
-                                {name: $localTrans.attr('data-uom'), value: 'uom_data.title'},
+                                {name: $localTrans.attr('data-uom'), value: 'uom'},
                                 {name: $localTrans.attr('data-avail'), value: 'available'}
                             ]
+                            row.uom = data.uom
+                            row.available = data.product_available
                             const dataCont = DataTableAction.item_view(row, $('#url-factory').attr('data-prod-detail'),
                                 isFormat)
                             return `<div class="input-group title_prod">
@@ -68,7 +62,7 @@ class DeliveryTableHandle {
                                             <i class="fas fa-info-circle text-blue info-btn"></i>
                                             <div class="dropdown-menu w-210p">${dataCont}</div>
                                         </div>
-                                        <p>${row.title}</p>
+                                        <p>${row?.title ? row.title : data?.product_remark}</p>
                                     </div>`;
                         }
                     },
@@ -84,19 +78,6 @@ class DeliveryTableHandle {
                         width: '10%',
                         render: (row, type, data, meta) => {
                             return row
-                        }
-                    },
-                    {
-                        data: 'warehouse',
-                        width: '20%',
-                        render: (row, type, data, meta) => {
-                            let html = $(`<select>`).addClass('form-select row_warehouse')
-                                .attr('name', `warehouse_${meta.row}`)
-                                .attr('data-zone', 'products')
-                                .attr('data-keyText', "title")
-                                .attr('data-keyId', "id")
-                            if (row?.['selected']) html.attr('data-onload', JSON.stringify(row))
-                            return html.prop('outerHTML')
                         }
                     },
                     {
@@ -131,31 +112,6 @@ class DeliveryTableHandle {
                     $('.btn-remove-row', row).off().on('click', () => {
                         $table.DataTable().row(row).remove().draw(false)
                     })
-
-                    // init warehouse selected
-                    const warehouseLst = JSON.parse($('#warehouse_lst').text())
-                    if (!data.warehouse) data.warehouse = warehouseLst[0].id
-                    else if (Array.isArray(data.warehouse)) data.warehouse = warehouseLst[0].id
-                    $('[name*="warehouse_"]', row)
-                        .initSelect2({
-                            "data": warehouseLst,
-                            "dropdownAutoWidth": true,
-                            "templateResult": renderTemplateWarehouse,
-                        })
-                        .on('select2:select', function (e) {
-                            data.warehouse = e.params.data.data.id
-                            const prodAvail = data.product_available[data.warehouse] ?
-                                data.product_available[data.warehouse] : '--'
-                            $('.title_prod .dropdown-menu .mb-1:nth-child(5) p', row).text(prodAvail)
-                        })
-                    let prodAvail = data.product_available[warehouseLst[0].id]
-                    if (data?.warehouse.hasOwnProperty('selected')){
-                        prodAvail = data.product_available[data?.warehouse.id]
-                        $('[name*="warehouse_"]', row).val(data?.warehouse.id).trigger('change')
-                    }
-                    else $('[name*="warehouse_"]', row).val(warehouseLst[0].id).trigger('change')
-                    if ($('[name*="warehouse_"]', row).hasClass("select2-hidden-accessible"))
-                        $('.title_prod .dropdown-menu .mb-1:nth-child(5) p', row).text(prodAvail)
                     // handle done input
                     $('[name*="done_"]', row).on('change', function(){
                         let isErr = false, isVal = parseInt(this.value)
@@ -230,7 +186,7 @@ class ModalProvideProdList {
                         data: 'product',
                         width: '50%',
                         render: (row, type, data, meta) => {
-                            return data['product'].title
+                            return row?.title ? row.title : data.product_remark
                         }
                     },
                     {
@@ -249,8 +205,6 @@ class ModalProvideProdList {
                     }
                 ],
                 rowCallback: (row, data, index) => {
-                    data['product']["uom_data"] = data?.['uom_data']
-                    data['product']["available"] = data?.['product_available']
                     $(`#check_select_${index}`, row).on('change', function(){
                         if (this.checked) $(this).parents('tr').addClass('selected')
                         else $(this).parents('tr').removeClass('selected')
@@ -289,21 +243,19 @@ function submitHandleFunc() {
     formData.products = DeliveryTableHandle.get_data()
     formData.date_created = moment(formData.date_created, 'DD/MM/YYYY').format('YYYY-MM-DD')
     for (let item of formData.products) {
-        item.product = item.product.id
-        if(!item['warehouse'].valid_uuid4()){
-            $.fn.notifyB({description: $('#trans-factory').attr('data-empty-warehouse')}, 'failure');
-            return false
-        }
-        if (item.done === 0){
+        item.product = item.product?.id
+        if (
+            ((item.done + item.delivered_number) > item.request_number || item.done === 0)
+            && item.product_remark === '' ){
             $.fn.notifyB({description: $('#trans-factory').attr('data-err-done')}, 'failure');
             return false
         }
-        const prodAvail = item.product_available[item['warehouse']]
-        if (!prodAvail){
+        const prodAvail = item.product_available
+        if (!prodAvail && item.product_remark === ''){
             $.fn.notifyB({description: $('#trans-factory').attr('data-out_of_stock')}, 'failure');
             return false
         }
-        if (item.done > prodAvail){
+        if (item.done > prodAvail && item.product_remark === ''){
             $.fn.notifyB({description: $('#trans-factory').attr('data-err-low_stock')}, 'failure');
             return false
         }

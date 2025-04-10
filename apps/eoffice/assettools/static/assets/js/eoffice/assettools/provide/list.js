@@ -1,5 +1,16 @@
 $(document).ready(function(){
-    const $tblElm = $('#asset_provide_tb')
+    const $tblElm = $('#asset_provide_tb');
+    const sttData = [
+        "soft-light",
+        "soft-primary",
+        "soft-info",
+        "soft-success",
+        "soft-danger",
+    ];
+    const deli_status = {
+        0: $.fn.gettext('Delivered'),
+        1: $.fn.gettext('Not yet')
+    }
     $tblElm.DataTableDefault({
         useDataServer: true,
         ajax: {
@@ -44,14 +55,16 @@ $(document).ready(function(){
                 render: (row, type, data) => {
                     if (!row) row = 1
                     let sttTxt = JSON.parse($('#stt_sys').text())
-                    const sttData = [
-                        "soft-light",
-                        "soft-primary",
-                        "soft-info",
-                        "soft-success",
-                        "soft-danger",
-                    ]
                     return `<span class="badge badge-${sttData[row]}">${sttTxt[row][1]}</span>`;
+                }
+            },
+            {
+                data: 'complete_delivered',
+                render: (row, type, data) => {
+
+                    return `<span class="badge badge-${row ? 'soft-primary' : 'soft-warning'}">${
+                        row ? deli_status[0] : deli_status[1]
+                    }</span>`;
                 }
             },
         ]

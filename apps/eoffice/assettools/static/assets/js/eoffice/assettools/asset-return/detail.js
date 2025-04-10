@@ -38,7 +38,7 @@ $(document).ready(function(){
                             let isFormat = [
                                 {name: $elmTrans.attr('data-title'), value: 'title'},
                                 {name: $elmTrans.attr('data-code'), value: 'code'},
-                                {name: $elmCrtTrans.attr('data-uom'), value: 'uom_data.title'},
+                                {name: $elmCrtTrans.attr('data-uom'), value: 'uom'},
                                 {name: $elmCrtTrans.attr('data-available'), value: 'available'}
                             ]
                             const dataCont = DataTableAction.item_view(row, $('#url-factory').attr('data-prod-detail'),
@@ -48,7 +48,7 @@ $(document).ready(function(){
                                             <i class="fas fa-info-circle text-blue info-btn"></i>
                                             <div class="dropdown-menu w-210p">${dataCont}</div>
                                         </div>
-                                        <p>${row.title}</p>
+                                        <p>${row?.title ? row.title : data.product_remark}</p>
                                     </div>`;
                         }
                     },

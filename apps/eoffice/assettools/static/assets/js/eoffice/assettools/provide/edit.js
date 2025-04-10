@@ -13,7 +13,6 @@ $(document).ready(function(){
             $('#dateCreatedInput').val($x.fn.reformatData(data.date_created, 'YYYY-MM-DD', 'DD/MM/YYYY'))
             $('#remarkInput').val(data.remark)
             $('#SystemStatusInput').val(JSON.parse($('#sys_stt').text())[data.system_status][1])
-            $('#selectDeparture').attr('data-onload', JSON.stringify({...data.departure, 'selected': true})).initSelect2()
             data.employee_inherit.selected = true
             $('#selectEmployeeInherit').initSelect2({data:data.employee_inherit})
             ProductsTable.init(data.products)

@@ -90,6 +90,7 @@ class InstrumentToolUpdate(View):
         }
         return ctx, status.HTTP_200_OK
 
+
 class InstrumentToolListAPI(APIView):
     @mask_view(
         auth_require=True,

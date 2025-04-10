@@ -318,7 +318,6 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     CALENDAR_LIST_PAGE = BreadcrumbChildren(_('Calendar'), 'ProgrammeList')
 
     # Asset tools
-    ASSET_TOOLS_CONFIG = BreadcrumbChildren(_('Asset, Tools config'), 'AssetToolsConfigView')
     ASSET_TOOLS_PROVIDE_LIST = BreadcrumbChildren(_('Asset, Tools provide list'), 'AssetToolsProvideRequestList')
     ASSET_TOOLS_DELIVERY_LIST = BreadcrumbChildren(_('Asset, Tools delivery list'), 'AssetToolsDeliveryList')
     ASSET_TOOLS_RETURN_LIST = BreadcrumbChildren(_('Asset, Tools return list'), 'AssetToolsReturnList')
@@ -988,10 +987,6 @@ class BreadcrumbView:
     CALENDAR_LIST_PAGE = [BreadcrumbItem.HOME_PAGE, BreadcrumbItem.CALENDAR_LIST_PAGE]
 
     # Asset tools
-    ASSET_TOOLS_CONFIG_PAGE = [
-        BreadcrumbItem.HOME_PAGE,
-        BreadcrumbItem.ASSET_TOOLS_CONFIG
-    ]
     ASSET_TOOLS_PROVIDE_LIST = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.ASSET_TOOLS_PROVIDE_LIST

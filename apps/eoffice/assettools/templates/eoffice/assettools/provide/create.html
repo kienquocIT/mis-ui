@@ -30,7 +30,6 @@
         {% csrf_token %}
         <input type="hidden" name="employee_inherit_id" value="{{ data.employee_inherit.id }}">
         <input type="hidden" name="pretax_amount">
-        <input type="hidden" name="taxes">
         <input type="hidden" name="total_amount">
         <div class="row">
             <div class="col-xs-12 col-md-6 form-group">
@@ -89,7 +88,6 @@
                                     <th>{% trans 'UoM' %}</th>
                                     <th>{% trans 'Quantity' %}</th>
                                     <th>{% trans 'Unit price' %}</th>
-                                    <th>{% trans 'Tax' %}</th>
                                     <th>{% trans 'Subtotal price' %}</th>
                                     <th></th>
                                 </tr>
@@ -97,31 +95,28 @@
                                 <tbody></tbody>
                                 <tfoot>
                                 <tr>
-                                    <th colspan="5" class="border-0"></th>
-                                    <th class="border-0"><p style="text-align:right">{% trans 'Pretax Amount' %}:</p></th>
-                                    <th colspan="2" class="border-0"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
+                                    <th colspan="6" class="border-0"></th>
                                 </tr>
                                 <tr>
-                                    <th colspan="5" class="border-0"></th>
-                                    <th class="border-0"><p style="text-align:right">{% trans 'Taxes' %}:</p></th>
-                                    <th colspan="2" class="border-0"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
-                                </tr>
-                                <tr>
-                                    <th colspan="5" class="border-0"></th>
+                                    <th colspan="4" class="border-0"></th>
                                     <th class="border-bottom-0 border-dark"><p style="text-align:right">{% trans 'Total' %}:</p></th>
                                     <th colspan="2" class="border-bottom-0 border-dark"><p class="pl-3 font-3"><b><i>0 VND</i></b></p></th>
                                 </tr>
                                 </tfoot>
                             </table>
-                        <div>
-                            <button class="btn btn-outline-primary" type="button" id="add_new_line">
-                                <span>
-                                    <span>{% trans 'Add new' %}</span>
-                                    <span class="icon">
-                                        <i class="fa-regular fa-plus"></i>
-                                    </span>
-                                </span>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" data-dropdown-animation>
+                                {% trans 'Add new' %}
                             </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item add_new_line" href="#" data-type="crt_prod">
+                                    {% trans 'Product available' %}
+                                </a>
+                                <a class="dropdown-item add_new_line" href="#" data-type="new_prod">
+                                    {% trans 'Buy new product' %}
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="attachment">
@@ -141,13 +136,12 @@
         </a>
     </div>
     <input type="text" id="url-factory"
-           data-prod-url="{% url 'ProductListAPI' %}"
+           data-prod-url="{% url 'InstrumentToolListAPI' %}"
            data-tax-url="{% url 'TaxListAPI' %}"
            data-uom-url="{% url 'UnitOfMeasureListAPI' %}"
     >
     <input type="text" id="trans-factory" data-products="{% trans 'List of Asset, Tools request is empty' %}">
     {{ data.employee|json_script:'employee_current' }}
-    {{ data.product_type|json_script:'prod_filter'}}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

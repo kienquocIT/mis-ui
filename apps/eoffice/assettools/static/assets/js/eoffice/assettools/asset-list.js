@@ -1,10 +1,13 @@
+
+
 class ListByUserHandle {
     static loadToolsList(data=[]){
         const $tbsTools = $('#asset_tbl')
         if (data)
             if ($tbsTools.hasClass('dataTable')) {
                 $tbsTools.DataTable().clear().rows.add(data).draw()
-            } else {
+            }
+            else {
                 $tbsTools.DataTableDefault({
                     data: data,
                     info: false,
@@ -16,8 +19,8 @@ class ListByUserHandle {
                         {
                             data: 'product_data',
                             width: '35%',
-                            render: (row) => {
-                                return row ? row?.title : '--'
+                            render: (row, index, data) => {
+                                return row?.title ? row.title : data?.['prod_buy_new'] ? data['prod_buy_new'] : '--'
                             }
                         },
                         {
@@ -30,8 +33,8 @@ class ListByUserHandle {
                         {
                             data: 'product_data',
                             width: '10%',
-                            render: (row) => {
-                                return row?.uom?.title ? row.uom.title : '--'
+                            render: (row, index, data) => {
+                                return row?.uom ? row.uom : data?.uom ? data.uom : '--'
                             }
                         },
                         {
@@ -54,7 +57,25 @@ class ListByUserHandle {
             'data': {'employee_inherit': empID}
         }).then((resp) => {
                 let data = $.fn.switcherResp(resp)?.['asset_tools_list'];
-                ListByUserHandle.loadToolsList(data)
+                let temp = {}
+                for (let item of data){
+                    if (Object.keys(item?.product_data).length > 0){
+                        if(temp[item?.product_data?.id]){
+                            temp[item.product_data.id].done += item.done
+                        }
+                        else
+                            temp[item.product_data.id] = item
+                    }
+                    else{
+                        const str_temp = item['prod_buy_new'].trim().toLowerCase().replaceAll(' ', '_')
+                        if (temp[str_temp] && temp[str_temp]['prod_buy_new'].trim() === item['prod_buy_new'].trim())
+                            temp[str_temp].done += item.done
+                        else
+                            temp[str_temp] = item
+                    }
+                }
+                const new_data = Object.values(temp).map(item => item)
+                ListByUserHandle.loadToolsList(new_data)
             },
             (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
         )
@@ -63,6 +84,7 @@ class ListByUserHandle {
     static init(){
         const $EmTable = $('#employee_tbl')
         const $urlElm = $('#url-factory');
+
         // load employee table
         $EmTable.DataTableDefault({
             ajax: {
@@ -79,6 +101,7 @@ class ListByUserHandle {
             pageLength: 50,
             autoWidth: true,
             scrollX: true,
+            scrollY: "400px",
             columns: [
                 {
                     data: 'full_name',
@@ -144,9 +167,9 @@ class ListByAssetHandle{
         if (!tabElm.length) return false
         $('#product_list_tb').DataTableDefault({
             ajax: {
-                url: $urlElm.attr('data-product-asset-list'),
+                url: $urlElm.attr('data-instrument_tool_lst'),
                 type: "GET",
-                dataSrc: 'data.warehouse_product_asset_list',
+                dataSrc: 'data.instrument_tool_list',
             },
             useDataServer: true,
             info: false,
@@ -155,64 +178,77 @@ class ListByAssetHandle{
             scrollX: true,
             columns: [
                 {
-                    data: 'product',
-                    width: '30%',
+                    data: 'product', // name
+                    width: '25%',
                     render: (row) => {
                         return row?.title ? row.title : '--'
                     }
                 },
                 {
-                    data: 'product',
+                    data: 'product', // code
                     width: '10%',
                     render: (row) => {
                         return `${row?.code ? row.code : '--'}`
                     }
                 },
                 {
-                    data: 'uom',
+                    data: 'product', // UoM
                     width: '10%',
                     render: (row) => {
                         let txt = '--'
-                        if (row?.title) txt = row.title
-                        return `${txt}`
+                        if (row?.['measure_unit']) txt = row['measure_unit']
+                        return txt
                     }
                 },
                 {
-                    data: 'warehouse',
-                    width: '20%',
+                    data: 'manage_department',
+                    width: '15%',
                     render: (row) => {
                         let txt = '--'
-                        if (row?.title) txt = row.title
-                        return `${txt}`
+                        if (row?.title && row?.code) txt = `<span class="badge badge-soft-success">${
+                            row.title + ' - ' + row.code
+                        }</span>`
+                        return txt
                     }
                 },
                 {
-                    data: 'stock_amount',
-                    width: '10%',
+                    data: 'use_department',
+                    width: '15%',
+                    render: (row) => {
+                        let txt = ''
+                        for (let item of row){
+                            if (item?.title && item?.code)
+                                txt += `<span class="badge badge-soft-success">${
+                                    item.title + ' - ' + item.code
+                                }</span>`
+                        }
+                        return txt
+                    }
+                },
+                {
+                    data: 'product', // quantity
+                    width: '5%',
                     className: 'text-center',
                     render: (row) => {
-                        return row
+                        return row?.quantity ? row.quantity : '--'
                     }
                 },
                 {
-                    data: 'used_amount',
+                    data: 'allocated_quantity',
                     width: '10%',
                     className: 'text-center',
-                    render: (row) => {
-                        return row
-                    }
                 },
                 {
-                    data: 'id',
+                    data: 'product', // total available
                     width: '10%',
                     className: 'text-center',
-                    render: (row, type, data) => {
-                        let available = 0
-                        if ('stock_amount' in data && 'used_amount' in data)
-                            available = data.stock_amount - data.used_amount
-                        return available
+                    render: (row, index, data) => {
+                        let available_num = '--';
+                        if (row?.['quantity'] && 'allocated_quantity' in data && 'write_off_quantity' in data)
+                            available_num = row.quantity - data['allocated_quantity'] - data.write_off_quantity
+                        return available_num
                     }
-                },
+                }
             ],
         })
     }
@@ -220,7 +256,7 @@ class ListByAssetHandle{
 
 $(document).ready(function () {
     // load employee list
-    ListByUserHandle.init()
+    ListByUserHandle.init();
 
     // load asset list by product
     ListByAssetHandle.init()

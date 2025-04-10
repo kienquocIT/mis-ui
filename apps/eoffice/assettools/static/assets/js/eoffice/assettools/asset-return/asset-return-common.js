@@ -23,7 +23,7 @@ class ModalProdByEmployeeList {
                         data: 'product',
                         width: '50%',
                         render: (row, type, data, meta) => {
-                            return row.title
+                            return row?.title ? row.title : data.product_remark
                         }
                     },
                     {
@@ -114,7 +114,7 @@ class AssetReturnProductList {
                             let isFormat = [
                                 {name: $elmTrans.attr('data-title'), value: 'title'},
                                 {name: $elmTrans.attr('data-code'), value: 'code'},
-                                {name: 'UoM', value: 'uom_data.title'},
+                                {name: 'UoM', value: 'uom'},
                                 {name: 'Available', value: 'available'}
                             ]
                             const dataCont = DataTableAction.item_view(row, $('#url-factory').attr('data-prod-detail'),
@@ -124,7 +124,7 @@ class AssetReturnProductList {
                                             <i class="fas fa-info-circle text-blue info-btn"></i>
                                             <div class="dropdown-menu w-210p">${dataCont}</div>
                                         </div>
-                                        <p>${row.title}</p>
+                                        <p>${row?.title ? row.title : data.product_remark}</p>
                                     </div>`;
                         }
                     },
@@ -191,18 +191,14 @@ function submitHandleFunc() {
         return false
     }
     for (let item of temp) {
-        if(!item['product_warehouse'][0]['id'].valid_uuid4()){
-            $.fn.notifyB({description: $('#trans-factory').attr('data-empty-warehouse')}, 'failure');
-            return false
-        }
         if (item.return_number > item.quantity){
             $.fn.notifyB({description: $('#trans-factory').attr('data-err-02')}, 'failure');
             return false
         }
         products.push({
             'order': item.order,
-            'product': item.product.id,
-            'warehouse_stored_product': item['product_warehouse'][0]['id'],
+            'product': item?.product?.id,
+            'product_remark': item.product_remark,
             'return_number': item.return_number
         })
     }

@@ -89,21 +89,21 @@
     /*box-shadow: -1px 4px 10px 1px rgba(154, 173, 236, .45);*/
 }
 
+.wrap-flowchart .control-system,
 .wrap-flowchart .clone-system {
     padding: 10px 10px;
     margin-bottom: 10px;
     border: solid 1px #000000;
     border-radius: 999px;
     display: flex;
-    width: 138px;
-    height: 38px;
+    width: 148px;
+    height: 48px;
     align-items: center;
     justify-content: center;
     position: relative;
     cursor: grab;
     user-select: none;
     -webkit-user-select: none;
-    /*box-shadow: -1px 4px 10px 1px rgba(154, 173, 236, .45);*/
 }
 
 .wrap-flowchart .control {

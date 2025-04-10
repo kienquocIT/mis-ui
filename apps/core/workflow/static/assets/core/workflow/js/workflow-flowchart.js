@@ -620,7 +620,7 @@ class JSPlumbsHandle {
             // declare style connection type
             instance.registerConnectionTypes({
                 "pink-connection": {
-                    paintStyle: {stroke: "#4f4f4f", strokeWidth: 1.5},
+                    paintStyle: {stroke: "#6f6f6f", strokeWidth: 1.5},
                     hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4}
                 }
             })
@@ -678,7 +678,7 @@ class JSPlumbsHandle {
                     }
                     if (sys_code !== 'completed')
                         instance.addEndpoint(is_id, {
-                            endpoint: ["Dot", {radius: 5}],
+                            endpoint: ["Dot", {radius: 4}],
                             anchor: ["Bottom", "BottomRight", "BottomLeft"],
                             isSource: true,
                             connectorOverlays: [
@@ -705,7 +705,7 @@ class JSPlumbsHandle {
                     //
                     if (sys_code !== 'initial')
                         instance.addEndpoint(is_id, {
-                            endpoint: ["Rectangle", {width: 10, height: 10}],
+                            endpoint: ["Rectangle", {width: 9, height: 9}],
                             anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
                             isTarget: true,
                             connectorOverlays: [
@@ -751,7 +751,7 @@ class JSPlumbsHandle {
                         let sys_code = DEFAULT_NODE_LIST[$(this).data('drag')].code_node_system
                         if (sys_code !== 'completed')
                             instance.addEndpoint(is_id, {
-                                endpoint: ["Dot", {radius: 5}],
+                                endpoint: ["Dot", {radius: 4}],
                                 anchor: ["Bottom", "BottomRight", "BottomLeft"],
                                 isSource: true,
                                 connectorOverlays: [
@@ -778,7 +778,7 @@ class JSPlumbsHandle {
                         //
                         if (sys_code !== 'initial')
                             instance.addEndpoint(is_id, {
-                                endpoint: ["Rectangle", {width: 10, height: 10}],
+                                endpoint: ["Rectangle", {width: 9, height: 9}],
                                 anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
                                 // anchor: "Perimeter",
                                 isTarget: true,
@@ -831,9 +831,9 @@ class JSPlumbsHandle {
                             ]
                         ],
                         anchors: ["Bottom", "Top"],
-                        endpoint: ["Dot", {radius: 5}],
+                        endpoint: ["Dot", {radius: 4}],
                         endpointStyle: {fill: "#374986", opacity: ".8"},
-                        paintStyle: {stroke: "#4f4f4f", strokeWidth: 1.5},
+                        paintStyle: {stroke: "#6f6f6f", strokeWidth: 1.5},
                         hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
                         connectionType: "pink-connection",
                         connector: ["Flowchart", {cornerRadius: 5}],

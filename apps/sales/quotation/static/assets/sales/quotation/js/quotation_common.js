@@ -5883,6 +5883,10 @@ class indicatorHandle {
                             functionBody += String(data[lastElement?.['code']]);
                             functionBody += ",";
                         }
+                        if (check === false) {
+                            functionBody += String(0);
+                            functionBody += ",";
+                        }
                     }
                     if (typeof val === 'string') {
                         let leftValue = val.replace(/\s/g, "").toLowerCase();

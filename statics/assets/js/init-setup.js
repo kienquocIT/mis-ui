@@ -3844,14 +3844,18 @@ class WFAssociateControl {
     static extractDataToSum(data, leftValueJSON, condition_operator, rightValue, lastElement) {
         let functionBody = "";
         if (typeof leftValueJSON === 'object' && leftValueJSON !== null) {
-            let val = WFAssociateControl.findKeyParam(data, leftValueJSON?.['code']);
+            let val = WFAssociateControl.findKey(data, leftValueJSON?.['code']);
             if (val) {
                 if (Array.isArray(val)) {
                     val = val.map(item => item.replace(/\s/g, "").toLowerCase());
                     let check = val.includes(rightValue);
                     if (check === true) {
-                        let valData = WFAssociateControl.findKeyParam(data, lastElement?.['code']);
+                        let valData = WFAssociateControl.findKey(data, lastElement?.['code']);
                         functionBody += String(valData);
+                        functionBody += ",";
+                    }
+                    if (check === false) {
+                        functionBody += String(0);
                         functionBody += ",";
                     }
                 }
@@ -3861,6 +3865,10 @@ class WFAssociateControl {
                     let check = WFAssociateControl.evaluateFormula(checkExpression);
                     if (check === true) {
                         functionBody += String(data[lastElement?.['code']]);
+                        functionBody += ",";
+                    }
+                    if (check === false) {
+                        functionBody += String(0);
                         functionBody += ",";
                     }
                 }
@@ -3896,30 +3904,6 @@ class WFAssociateControl {
     static formatExpression(input) {
         // Replace consecutive subtraction operators with a space before each minus sign
         return input.replace(/--/g, '+');
-    };
-
-    static findKeyParam(data, key) {
-        if (!key.includes("__")) {
-            return data?.[key];
-        }
-        let listSub = key.split("__");
-        return listSub.reduce((acc, curr) => {
-            if (Array.isArray(acc)) {
-                // If the current accumulator is an array, use flatMap to continue reduction
-                return acc.flatMap(item => {
-                    if (Array.isArray(item?.[curr])) {
-                        // If the current item is also an array, return the array itself
-                        return item?.[curr];
-                    } else {
-                        // If the item is not an array, proceed normally
-                        return item?.[curr];
-                    }
-                });
-            } else {
-                // Regular reduction step if `acc` is not an array
-                return acc?.[curr];
-            }
-        }, data);
     };
 
 }

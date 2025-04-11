@@ -228,6 +228,7 @@ $(document).ready(function () {
             let data = $.fn.switcherResp(resp)?.['leave_request_detail']
 
             $x.fn.renderCodeBreadcrumb(data);
+            $.fn.compareStatusShowPageAction(data);
             $('#inputTitle').val(data.title)
             $('#inputRequestDate').val(moment(data.request_date, 'YYYY-MM-DD').format('DD/MM/YYYY'))
             $EmpElm.append(

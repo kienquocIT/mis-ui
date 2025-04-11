@@ -163,7 +163,7 @@
     height: 10px;
     background: #7e96e8;
     transition: transform .5s ease-in;
-    border-radius: 5px;
+    /*border-radius: 5px;*/
 }
 
 .jtk-connector path:hover + .cssAssociateLabel {

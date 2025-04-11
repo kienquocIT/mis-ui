@@ -1282,7 +1282,15 @@ class NodeFormulaHandle {
         },
     }
 
-    static main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|%/g;
+    // static main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|%/g;
+    static main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+(?:\.\d+)?|%/g;
+    /*
+    This main_regex parts are:
+    function calls with nested parentheses
+    any plain word or variable
+    numbers, including decimals
+    any single operator or parenthesis: +, -, *, /, (, ).
+    */
     static body_nested_regex = /\((.*)\)/;
     static main_body_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|".*?"|==|!=|>=|<=|>|</g;
 

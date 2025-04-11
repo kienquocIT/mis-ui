@@ -12,8 +12,8 @@ class FlowChartLoadDataHandle {
     static $btnSave = $('#btn-save-condition');
     static $transEle = $('#node-trans-factory');
     static dataOperatorAndOr = [
-        {'id': "AND", 'title': "AND"},
-        {'id': "OR", 'title': "OR"},
+        {'id': "AND", 'title': FlowChartLoadDataHandle.$transEle.attr('data-and')},
+        {'id': "OR", 'title': FlowChartLoadDataHandle.$transEle.attr('data-or')},
     ];
     static dataOperatorMath = [
         {"id": "=", "title": "="},

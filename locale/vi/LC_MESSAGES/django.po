@@ -11682,3 +11682,7 @@ msgstr "Chọn sản phẩm từ phiếu nhập hàng"
 #
 msgid "If referring to PO"
 msgstr "Nếu tham chiếu tới đơn mua hàng"
+
+#
+msgid "Delete block"
+msgstr "Xóa khối"

@@ -3670,7 +3670,7 @@ class WFAssociateControl {
                         return isMatch;
                     }
                 }
-                if (condition?.['operator'] === 'not_contains') {
+                if (condition?.['operator'] === 'not_contain') {
                     if (Array.isArray(left)) {
                         isMatch = !left.includes(right);
                         return isMatch;
@@ -3749,10 +3749,7 @@ class WFAssociateControl {
         return result;
     };
 
-
-
-
-    // Condition param calculate
+    // Calculate condition param of association
 
     static calculateParam(dataForm, param) {
         let result_json = {};

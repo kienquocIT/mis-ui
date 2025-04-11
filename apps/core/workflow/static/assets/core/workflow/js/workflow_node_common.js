@@ -1276,6 +1276,10 @@ class NodeFormulaHandle {
             "url": NodeLoadDataHandle.$urlsEle.attr('data-md-expense-item'),
             "keyResp": "expense_item_list"
         },
+        "base.city": {
+            "url": NodeLoadDataHandle.$urlsEle.attr('data-md-city'),
+            "keyResp": "cities"
+        },
     }
 
     static main_regex = /[a-zA-Z]+\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)|[a-zA-Z]+|[-+*/()]|\d+|%/g;

@@ -780,6 +780,8 @@
            data-md-product-category="{% url 'ProductCategoryListAPI' %}"
            data-md-expense="{% url 'ExpenseListAPI' %}"
            data-md-expense-item="{% url 'ExpenseItemListAPI' %}"
+           data-md-city="{% url 'CityListAPI' %}"
+
            data-md-property="{% url "ApplicationPropertyListAPI" %}"
            data-md-function="{% url "IndicatorParamListAPI" %}"
     >
@@ -848,6 +850,9 @@
         data-delete-block="{% trans 'Delete block' %}"
         data-and="{% trans 'And' %}"
         data-or="{% trans 'Or' %}"
+        data-is="{% trans 'is' %}"
+        data-contains="{% trans 'contains' %}"
+        data-not-contain="{% trans 'does not contain' %}"
     >
 
     <input

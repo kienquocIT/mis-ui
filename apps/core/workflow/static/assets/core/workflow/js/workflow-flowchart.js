@@ -22,6 +22,9 @@ class FlowChartLoadDataHandle {
         {"id": "<", "title": "<"},
         {"id": ">=", "title": "≥"},
         {"id": "<=", "title": "≤"},
+        {"id": "is", "title": FlowChartLoadDataHandle.$transEle.attr('data-is')},
+        {"id": "contains", "title": FlowChartLoadDataHandle.$transEle.attr('data-contains')},
+        {"id": "not_contain", "title": FlowChartLoadDataHandle.$transEle.attr('data-not-contain')},
     ]
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -220,6 +223,7 @@ class FlowChartLoadDataHandle {
                                     $(leftEle).attr('data-formula', JSON.stringify(cond?.['left_cond']));
                                 }
                                 FlowChartLoadDataHandle.loadInitS2($(mathEle), FlowChartLoadDataHandle.dataOperatorMath);
+                                $(mathEle).val("=").trigger('change');
                                 if (cond?.['operator']) {
                                     $(mathEle).val(cond?.['operator']).trigger('change');
                                 }

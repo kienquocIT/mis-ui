@@ -5892,6 +5892,10 @@ class indicatorHandle {
                             functionBody += String(data[lastElement?.['code']]);
                             functionBody += ",";
                         }
+                        if (check === false) {
+                            functionBody += String(0);
+                            functionBody += ",";
+                        }
                     }
                 }
             }

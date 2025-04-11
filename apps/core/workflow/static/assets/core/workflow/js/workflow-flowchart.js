@@ -706,7 +706,7 @@ class JSPlumbsHandle {
                             endpointStyle: {fill: "#374986", opacity: ".8"},
                             HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
                             connectionType: "pink-connection",
-                            connector: ["Flowchart", {cornerRadius: 5}],
+                            connector: ["Flowchart", {cornerRadius: 10}],
                         });
                     //
                     if (sys_code !== 'initial')
@@ -733,7 +733,7 @@ class JSPlumbsHandle {
                             endpointStyle: {fill: "#374986", opacity: ".8"},
                             HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
                             connectionType: "pink-connection",
-                            connector: ["Flowchart", {cornerRadius: 5}],
+                            connector: ["Flowchart", {cornerRadius: 10}],
                         });
 
                     // add drop node to commit node list
@@ -779,7 +779,7 @@ class JSPlumbsHandle {
                                 endpointStyle: {fill: "#374986", opacity: ".8"},
                                 HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
                                 connectionType: "pink-connection",
-                                connector: ["Flowchart", {cornerRadius: 5}],
+                                connector: ["Flowchart", {cornerRadius: 10}],
                             });
                         //
                         if (sys_code !== 'initial')
@@ -807,7 +807,7 @@ class JSPlumbsHandle {
                                 endpointStyle: {fill: "#374986", opacity: ".8"},
                                 HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
                                 connectionType: "pink-connection",
-                                connector: ["Flowchart", {cornerRadius: 5}],
+                                connector: ["Flowchart", {cornerRadius: 10}],
                             });
 
                         let numID = $('#node_dragbox').find(`[data-drag="${$(this).data('drag')}"]`)
@@ -842,7 +842,7 @@ class JSPlumbsHandle {
                         paintStyle: {stroke: "#6f6f6f", strokeWidth: 1.5},
                         hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
                         connectionType: "pink-connection",
-                        connector: ["Flowchart", {cornerRadius: 5}],
+                        connector: ["Flowchart", {cornerRadius: 10}],
                     });
                     jsPlumb.select({source: 'control-' + assoc.node_in}).addOverlay(
                         ["Label",

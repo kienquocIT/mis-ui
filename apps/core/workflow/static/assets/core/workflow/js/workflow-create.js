@@ -370,15 +370,15 @@ $(function () {
                             } else {
                                 // show editor
                                 NodeFormulaHandle.$formulaEditor.val(NodeFormulaHandle.$formulaEditor.val() + data.syntax);
-                                // on blur editor to validate formula
-                                NodeFormulaHandle.$formulaEditor.blur();
+                                NodeFormulaHandle.$formulaEditor.focus();
+                                NodeFormulaHandle.showValidate();
                             }
                         }
                         if (tabEle.id === "tab_formula_function") {
                             // show editor
                             NodeFormulaHandle.$formulaEditor.val(NodeFormulaHandle.$formulaEditor.val() + data.syntax);
-                            // on blur editor to validate formula
-                            NodeFormulaHandle.$formulaEditor.blur();
+                            NodeFormulaHandle.$formulaEditor.focus();
+                            NodeFormulaHandle.showValidate();
                         }
                     }
                 }
@@ -401,30 +401,7 @@ $(function () {
         });
 
         NodeFormulaHandle.$formulaEditor.on('blur', function () {
-            let editorValue = $(this).val();
-            // validate editor
-            let isValid = NodeFormulaHandle.validateEditor(editorValue);
-            if (isValid?.['result'] === true) {
-                if (NodeFormulaHandle.$btnSaveFormula[0].hasAttribute('disabled')) {
-                    NodeFormulaHandle.$btnSaveFormula[0].removeAttribute('disabled')
-                }
-                NodeFormulaHandle.$formulaValidateTxt.empty();
-            } else {
-                if (!NodeFormulaHandle.$btnSaveFormula[0].hasAttribute('disabled')) {
-                    NodeFormulaHandle.$btnSaveFormula[0].setAttribute('disabled', 'true');
-                }
-                let error = "";
-                if (isValid?.['remark'] === "parentheses") {
-                    error = ") expected";
-                } else if (isValid?.['remark'] === "syntax") {
-                    error = "syntax error";
-                } else if (isValid?.['remark'] === "quote") {
-                    error = "single quote (') not allowed";
-                } else if (isValid?.['remark'] === "unbalance") {
-                    error = "value or operator expected";
-                }
-                NodeFormulaHandle.$formulaValidateTxt.text(error);
-            }
+            NodeFormulaHandle.showValidate();
         });
 
         NodeFormulaHandle.$btnSaveFormula.on('click', function () {

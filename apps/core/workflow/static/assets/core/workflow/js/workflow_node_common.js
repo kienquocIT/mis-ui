@@ -1374,6 +1374,33 @@ class NodeFormulaHandle {
         return true;
     };
 
+    static showValidate() {
+        // validate editor
+        let isValid = NodeFormulaHandle.validateEditor(NodeFormulaHandle.$formulaEditor.val());
+        if (isValid?.['result'] === true) {
+            if (NodeFormulaHandle.$btnSaveFormula[0].hasAttribute('disabled')) {
+                NodeFormulaHandle.$btnSaveFormula[0].removeAttribute('disabled')
+            }
+            NodeFormulaHandle.$formulaValidateTxt.empty();
+        } else {
+            if (!NodeFormulaHandle.$btnSaveFormula[0].hasAttribute('disabled')) {
+                NodeFormulaHandle.$btnSaveFormula[0].setAttribute('disabled', 'true');
+            }
+            let error = "";
+            if (isValid?.['remark'] === "parentheses") {
+                error = ") expected";
+            } else if (isValid?.['remark'] === "syntax") {
+                error = "syntax error";
+            } else if (isValid?.['remark'] === "quote") {
+                error = "single quote (') not allowed";
+            } else if (isValid?.['remark'] === "unbalance") {
+                error = "value or operator expected";
+            }
+            NodeFormulaHandle.$formulaValidateTxt.text(error);
+        }
+        return true;
+    }
+
     static validateEditor(strValue) {
         let isValid = NodeFormulaHandle.validateParentheses(strValue);
         if (isValid === false) {

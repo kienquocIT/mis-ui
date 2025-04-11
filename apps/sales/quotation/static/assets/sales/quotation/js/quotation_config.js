@@ -390,15 +390,15 @@ $(function () {
                             } else {
                                 // show editor
                                 $formulaEditor.val($formulaEditor.val() + data.syntax);
-                                // on blur editor to validate formula
-                                $formulaEditor.blur();
+                                $formulaEditor.focus();
+                                showValidate();
                             }
                         }
                         if (tabEle.id === "tab_formula_function") {
                             // show editor
                             $formulaEditor.val($formulaEditor.val() + data.syntax);
-                            // on blur editor to validate formula
-                            $formulaEditor.blur();
+                            $formulaEditor.focus();
+                            showValidate();
                         }
                     }
                 }
@@ -583,9 +583,12 @@ $(function () {
         // VALIDATE FORMULA
 
         $formulaEditor.on('blur', function () {
-            let editorValue = $(this).val();
+            showValidate();
+        })
+
+        function showValidate() {
             // validate editor
-            let isValid = validateEditor(editorValue);
+            let isValid = validateEditor($formulaEditor.val());
             if (isValid?.['result'] === true) {
                 if ($btnSaveFormula[0].hasAttribute('disabled')) {
                     $btnSaveFormula[0].removeAttribute('disabled')
@@ -607,7 +610,7 @@ $(function () {
                 }
                 $formulaValidateTxt.text(error);
             }
-        })
+        }
 
         function validateEditor(strValue) {
             let isValid = validateParentheses(strValue);

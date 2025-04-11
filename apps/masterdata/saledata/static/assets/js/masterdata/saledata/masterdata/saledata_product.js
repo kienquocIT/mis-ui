@@ -122,7 +122,7 @@ $(document).ready(function () {
                                     return accCodeA - accCodeB;
                                 });
                                 account_determination_data_list[product_type_mapped_id] = data_list
-                                console.log(data_list)
+                                // console.log(data_list)
                                 return data_list ? data_list : [];
                             }
                             return [];
@@ -595,7 +595,7 @@ $(document).ready(function () {
             },
             callbackDataResp: function (resp, keyResp) {
                 return resp.data[keyResp].filter(function (item) {
-                    return item?.['code'] !== 'Import';
+                    return item?.['code'] !== 'ImportGroup';
                 });
             },
             data: (data ? data : {}),
@@ -642,7 +642,14 @@ $(document).ready(function () {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('unit_of_measure')) {
-                        return resp.data['unit_of_measure'] ? resp.data['unit_of_measure'] : []
+                        const unit_of_measure = (resp.data['unit_of_measure'] || []).sort((a, b) => {
+                            const groupA = a?.['group']?.['code'];
+                            const groupB = b?.['group']?.['code'];
+                            if (groupA < groupB) return -1;
+                            if (groupA > groupB) return 1;
+                            return 0;
+                        });
+                        return unit_of_measure ? unit_of_measure : []
                     }
                     throw Error('Call data raise errors.')
                 },

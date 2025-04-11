@@ -10,21 +10,12 @@ class ProductsTable {
 
     static calcSubtotal(data, index) {
         if (data.price > 0 && data.quantity > 0) {
-            let total = parseInt(data.price) * parseInt(data.quantity)
-            if (data.tax_data || data.tax) {
-                let tempTax = data.tax ? data.tax : data['data_tax'] ? data['data_tax'] : {}
-                let tax = tempTax?.rate > 0 ? total / 100 * tempTax.rate : 0
-                total += tax
-            }
-            data.subtotal = total
+            data.subtotal = parseInt(data.price) * parseInt(data.quantity)
         } else data.subtotal = 0
-        $tbl.DataTable().cell(index, 6).data(data.subtotal).draw(false)
+        $tbl.DataTable().cell(index, 5).data(data.subtotal).draw(false)
     }
 
     static init(dataList = []) {
-        let params_prod = {
-            asset_tools_filter: JSON.parse($('#prod_filter').text())
-        }
         if ($tbl.hasClass('dataTable')) $tbl.DataTable().clear().rows.add(dataList).draw()
         else
             $tbl.DataTableDefault({
@@ -41,18 +32,17 @@ class ProductsTable {
                         width: '20%',
                         render: (row, type, data, meta) => {
                             let dataLoad = []
-                            if (!row && data?.['product_data']) row = data['product_data']
                             if (row && Object.keys(row).length > 0) dataLoad.push({...row, selected: true})
                             let html = $(`<select>`).addClass('form-select row_product-item')
                                 .attr('name', `product_${meta.row}`).attr('data-zone', 'products')
-                                .attr('data-params', JSON.stringify(params_prod))
                             if (row && Object.keys(row).length > 0) html.attr('data-onload', JSON.stringify(dataLoad))
+                            if (data.new_prod) html.attr('disabled', true)
                             return html.prop('outerHTML')
                         }
                     },
                     {
                         data: 'product_remark',
-                        width: '20%',
+                        width: '25%',
                         render: (row, type, data, meta) => {
                             return `<input type="text" class="form-control" data-zone="products" name="remark_${meta.row}" value="${row ? row : ''}">`
                         }
@@ -62,10 +52,10 @@ class ProductsTable {
                         width: '10%',
                         render: (row, type, data, meta) => {
                             if (!row && data?.['uom_data']) row = data['uom_data']
-                            let html = $(`<select>`).addClass('form-select row_uom-item')
+                            let html = $(`<input type="text">`)
+                                .addClass('form-control')
                                 .attr('name', `uom_${meta.row}`)
-                            if (row && Object.keys(row).length > 0)
-                                html.append(`<option value="${row.id}" selected>${row.title}</option>`)
+                                .attr('value', row)
                             return html.prop('outerHTML')
                         }
                     },
@@ -80,21 +70,8 @@ class ProductsTable {
                         data: 'price',
                         width: '15%',
                         render: (row, type, data, meta) => {
-                            return `<input type="text" class="mask-money form-control" data-zone="products" name="price_${meta.row}" data-init-money="${parseFloat(row ? row : 0)}">`
-                        }
-                    },
-                    {
-                        data: 'tax',
-                        width: '10%',
-                        render: (row, type, data, meta) => {
-                            let dataLoad = []
-                            if (!row && data?.['tax_data']) row = data['tax_data']
-                            if (row && Object.keys(row).length > 0) dataLoad.push({...row, selected: true})
-                            else if(row) delete data['tax']
-                            let html = $(`<select>`).addClass('form-select row_tax')
-                                .attr('name', `tax_${meta.row}`).attr('data-zone', 'products')
-                            if (row && Object.keys(row).length > 0) html.attr('data-onload', JSON.stringify(dataLoad))
-                            return html.prop('outerHTML')
+                            return `<input type="text" class="form-control mask-money" data-zone="products" ` +
+                            `name="price_${meta.row}" data-value-format="${row}" value="${row}">`
                         }
                     },
                     {
@@ -118,23 +95,28 @@ class ProductsTable {
                     $('[name*="remark_"]', row).on('blur', function () {
                         data.product_remark = this.value ? this.value : ''
                     })
+                    $('input[name*="uom_"]', row).on('blur', function () {
+                        data.uom = this.value ? this.value : ''
+                    })
 
                     // load product item
                     $('[name*="product_"]', row).attr('data-url', $urlElm.attr('data-prod-url'))
-                        .attr('data-keyResp', "product_list")
+                        .attr('data-keyResp', "instrument_tool_list")
                         .attr('data-keyText', "title")
                         .attr('data-keyId', "id")
                         .initSelect2()
                         .on('select2:select', function (e) {
                             const product = e.params.data.data
-                            data.product = product.id
-                            // reset all reference product has selected
-                            $('[name*="uom_"]', row).html('').attr('data-params', JSON.stringify({
-                                'group': product.general_uom_group.id
-                            })).append(`<option value="${product?.['inventory_uom']?.id}" selected>${product?.['inventory_uom']?.['title']}</option>`)
-                            data.uom = product?.['inventory_uom']?.id
-                        })
+                            data.product = product
+                            data.uom = product.product['measure_unit']
+                            data.price = product.product.unit_price
 
+                            $('[name*="uom_"], [name*="price_"]', row).prop('readonly', true)
+
+                            $tbl.DataTable().cell(index, 2).data(product.product['measure_unit']).draw(false)
+                            $tbl.DataTable().cell(index, 4).data(product.product.unit_price).draw(false)
+                            $.fn.initMaskMoney2($('[name*="price_"]', row), 'input')
+                        })
                     // load quantity
                     $('[name*="quantity_"]', row).on('change', function () {
                         let temp = this.value.replace('-', '').replace(/^0+|[a-z]/g, '')
@@ -146,25 +128,15 @@ class ProductsTable {
                     // load price
                     $.fn.initMaskMoney2($('[name*="price_"]', row), 'input')
                     $('[name*="price_"]', row).on('change', function () {
-                        data.price = !isNaN($(this).valCurrency()) ? parseInt($(this).valCurrency()) : 0
+                        let _price = $.inArray($(this).valCurrency(), ['undefined', undefined, '0']) === -1 ? $(this).valCurrency() : $(this).val()
+                        data.price = !isNaN(_price) ? parseInt(_price) : 0
                         ProductsTable.calcSubtotal(data, index)
                     })
-
-                    // load tax
-                    $('[name*="tax_"]', row).attr('data-url', $urlElm.attr('data-tax-url'))
-                        .attr('data-keyResp', "tax_list")
-                        .attr('data-keyText', "title")
-                        .attr('data-keyId', "id")
-                        .initSelect2()
-                        .on('select2:select', function (e) {
-                            data.tax = e.params.data.data
-                            ProductsTable.calcSubtotal(data, index)
-                        })
 
                     // init subtotal
                     $.fn.initMaskMoney2($('[name*="subtotal_"]', row), 'input')
 
-                    //delete row
+                    // delete row
                     $('.btn-remove-row', row).off().on('click', () => {
                         $tbl.DataTable().row(row).remove().draw(false)
                     })
@@ -173,38 +145,31 @@ class ProductsTable {
                     let api = this.api();
 
                     // Total footer row
-                    let totalPrice = 0
                     let allSubtotal = 0
-                    let calcTax = 0
                     api.rows().every(function () {
                         let data = this.data()
-                        let taxRate = data?.tax?.rate ? data.tax.rate : data?.['tax_data']?.['rate'] ? data.tax_data.rate : 0
-                        if (taxRate && data?.['price'] > 0 && data?.['quantity'] > 0)
-                            calcTax += data.price * data.quantity / 100 * taxRate
-                        if (data?.['price'] > 0 && data?.['quantity'] > 0)
-                            totalPrice += parseInt(data.price) * parseInt(data.quantity)
                         if (data?.['subtotal']) allSubtotal += parseInt(data.subtotal)
                     });
 
                     // Update footer
-                    $('[name="pretax_amount"]').val(totalPrice)
-                    $('[name="taxes"]').val(calcTax)
                     $('[name="total_amount"]').val(allSubtotal)
-                    $(api.column(6).footer()).html(`<p class="pl-3 font-3"><span class="mask-money pretax_amount" data-init-money="${totalPrice}"></span></p>`);
-                    $('tr:eq(1) th:eq(2)', api.table().footer()).html(`<p class="pl-3 font-3"><span class="mask-money taxes" data-init-money="${calcTax}"></span></p>`);
-                    $('tr:eq(2) th:eq(2)', api.table().footer()).html(`<p class="pl-3 font-3"><span class="mask-money total" data-init-money="${allSubtotal}"></span></p>`);
+                    $('tr:eq(1) th:eq(2)', api.table().footer()).html(`<p class="pl-3 font-3"><span class="mask-money total" data-init-money="${allSubtotal}"></span></p>`);
                     $.fn.initMaskMoney2()
                 },
             })
 
-        const $addNewBtn = $('#add_new_line')
+        const $addNewBtn = $('.add_new_line')
         $addNewBtn.off().on('click', function () {
             const newData = {
                 'product': '',
                 'product_remark': '',
                 'uom': '',
                 'quantity': 0,
+                'price': 0,
+                'subtotal': 0
             }
+            if ($(this).attr('data-type') === 'crt_prod') newData.has_prod = true
+            else newData.new_prod = true
             $tbl.DataTable().row.add(newData).draw()
         })
     }
@@ -225,13 +190,12 @@ function submitHandleFunc() {
     formData.products = ProductsTable.get_data()
     for(let item of formData.products){
         if (item['product'].hasOwnProperty('id')) item['product'] = item['product']['id']
-        if (item['uom'].hasOwnProperty('id')) item['uom'] = item['uom']['id']
-        if (item.hasOwnProperty('tax') && item['tax'].hasOwnProperty('id')) item['tax'] = item['tax']['id']
+        else delete item['product']
     }
     // if (frm.dataMethod.toLowerCase() === 'put')
     let $elmFooter = $('.products_detail_tbl_wrapper .dataTables_scrollFootInner table tfoot tr th')
     formData.total = $elmFooter.find('.total').attr('data-init-money')
-    formData.taxes = $elmFooter.find('.taxes').attr('data-init-money')
+    // formData.taxes = $elmFooter.find('.taxes').attr('data-init-money')
     formData.pretax_amount = $elmFooter.find('.pretax_amount').attr('data-init-money')
     if (formData.total === 0){
         $.fn.notifyB({description: $transElm.attr('data-products')}, 'failure');

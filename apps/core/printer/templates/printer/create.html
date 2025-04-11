@@ -18,6 +18,8 @@
             data-url="{% url 'PrintTemplateCreateAPI' %}"
             data-method="POST"
             data-url-redirect="{% url 'PrintTemplatesListView' %}"
+            data-url-upload="{% url 'AttachmentUpload' %}"
+            data-url-template = {% url 'PrintApplicationTemplateSample' app_id='__app_id__' %}
     >
         <div class="row mb-3">
             <div class="col-12">
@@ -108,65 +110,5 @@
 
 {% block jsFooter %}
     <script src="{% static 'printer/print.js' %}"></script>
-    <script>
-        $(document).ready(function (){
-            $('#btn-instruction-editor').on('click', function (){
-                $('#idx-instruction-editor').fadeToggle('fast');
-            })
-
-            let txtArea = $('#inp-contents');
-            let btnPrint = $('#idx-btn-print');
-
-            $('#inp-application').initSelect2().on('change', function (){
-                txtArea.prop('disabled', false);
-                btnPrint.prop('disabled', false);
-                if (txtArea.tinymce()) txtArea.tinymce().destroy();
-                PrintTinymceControl.init_tinymce_editable(txtArea, $(this).val(), {
-                    height: 420,
-                    readonly: 0,
-                    templateUrl: "{% url 'PrintApplicationTemplateSample' app_id='__app_id__' %}",
-                });
-            })
-
-            let stateChange = null;
-            window.addEventListener('beforeunload', function (event) {
-                if (stateChange === true) event.stopImmediatePropagation();
-            });
-
-            let frm = $('#frm-new-print-template');
-            new SetupFormSubmit(frm).validate({
-                submitHandler: function (form, event){
-                    let frmSetup = new SetupFormSubmit(frm);
-                    $.fn.callAjax2({
-                        url: frmSetup.dataUrl,
-                        method: frmSetup.dataMethod,
-                        data: frmSetup.dataForm
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data){
-                                $.fn.notifyB({
-                                    'description': $.fn.transEle.attr('data-success'),
-                                }, 'success');
-                                stateChange = true;
-                                setTimeout(
-                                    () => {
-                                        window.onbeforeunload = null;
-                                        window.location.href = frm.attr('data-url-redirect');
-                                    },
-                                    1000
-                                )
-                            }
-                        },
-                        (errs) => console.log(errs),
-                    )
-                },
-            })
-
-            // Print
-            btnPrint.on('click', function (){
-                txtArea.tinymce().execCommand('mcePrint');
-            })
-        })
-    </script>
+    <script src="{% static 'printer/create.js' %}"></script>
 {% endblock %}

@@ -1,10 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'base_v2.html' %}
 {% load static i18n %}
 {% block title %}{% trans 'Cash outflow' %}{% endblock %}
 {% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frmDetail">
+    <button class="btn btn-outline-primary" type="submit" form="form-detail-cashoutflow">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -14,12 +15,22 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <div class="row">
-        <div class="col-12">
-        </div>
-    </div>
+    <form id="form-detail-cashoutflow"
+          data-method="PUT"
+          data-url="{% url 'CashOutflowDetailAPI' pk=pk %}"
+          data-url-redirect="{% url 'CashOutflowDetail' pk=pk %}"
+    >
+        {% csrf_token %}
+        {% include 'sales/financialcashflow/cashoutflow/common/information.html' %}
+    </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'sales/financialcashflow/cashoutflow/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/sales/financialcashflow/js/cashoutflow/cashoutflow_common.js' %}"></script>
     <script src="{% static 'assets/sales/financialcashflow/js/cashoutflow/cashoutflow_update.js' %}"></script>
 {% endblock %}

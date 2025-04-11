@@ -244,6 +244,7 @@ const pageVariables = new CIFPageVariables();
  * Các hàm load page và hàm hỗ trợ
  */
 class CIFPageFunction {
+    // load page
     static LoadDate(element) {
         element.daterangepicker({
             singleDatePicker: true,
@@ -269,8 +270,14 @@ class CIFPageFunction {
             keyText: 'name',
         }).on('change', function () {
             if (pageElements.$customer.val()) {
-                CIFPageFunction.LoadCustomerAdvanceTable({'sale_order__customer_id': pageElements.$customer.val(), 'cash_inflow_done': false})
-                CIFPageFunction.LoadARInvoiceTable({'customer_mapped_id': pageElements.$customer.val(),'cash_inflow_done': false})
+                CIFPageFunction.LoadCustomerAdvanceTable({
+                    'sale_order__customer_id': pageElements.$customer.val(),
+                    'cash_inflow_done': false
+                })
+                CIFPageFunction.LoadARInvoiceTable({
+                    'customer_mapped_id': pageElements.$customer.val(),
+                    'cash_inflow_done': false
+                })
             }
         })
     }
@@ -292,11 +299,11 @@ class CIFPageFunction {
         })
     }
     // Function
-    static LoadCustomerAdvanceTable(data_params={}, cash_in_customer_advance_data=[], approved=false) {
+    static LoadCustomerAdvanceTable(data_params={}, data_list=[], approved=false) {
         if (approved) {
             let stage_id = []
-            for (let i = 0; i < cash_in_customer_advance_data.length; i++) {
-                stage_id.push(cash_in_customer_advance_data[i]?.['sale_order_stage_data']?.['id'])
+            for (let i = 0; i < data_list.length; i++) {
+                stage_id.push(data_list[i]?.['sale_order_stage_data']?.['id'])
             }
             data_params['id__in'] = stage_id.join(',')
         }
@@ -326,13 +333,13 @@ class CIFPageFunction {
                 },
                 columns: pageVariables.customer_advance_table_cfg,
                 initComplete: function () {
-                    for (let i=0; i < cash_in_customer_advance_data.length; i++) {
-                        let row_checkbox = pageElements.$customer_advance_table.find(`tbody .select_row_customer_advance[data-customer-advance-id="${cash_in_customer_advance_data[i]?.['sale_order_stage_data']?.['id']}"]`)
+                    for (let i=0; i < data_list.length; i++) {
+                        let row_checkbox = pageElements.$customer_advance_table.find(`tbody .select_row_customer_advance[data-customer-advance-id="${data_list[i]?.['sale_order_stage_data']?.['id']}"]`)
                         row_checkbox.prop('checked', true)
                         if (approved) {
-                            row_checkbox.closest('tr').find('.recon_balance_value_advance').attr('data-init-money', cash_in_customer_advance_data[i]?.['sum_balance_value'])
+                            row_checkbox.closest('tr').find('.recon_balance_value_advance').attr('data-init-money', data_list[i]?.['sum_balance_value'])
                         }
-                        row_checkbox.closest('tr').find('.cash_in_value_advance').attr('value', cash_in_customer_advance_data[i]?.['sum_payment_value'])
+                        row_checkbox.closest('tr').find('.cash_in_value_advance').attr('value', data_list[i]?.['sum_payment_value'])
                     }
                     CIFHandler.Disable()
                 }
@@ -352,11 +359,11 @@ class CIFPageFunction {
             });
         }
     }
-    static LoadARInvoiceTable(data_params={}, cash_in_ar_invoice_data=[], approved=false) {
+    static LoadARInvoiceTable(data_params={}, data_list=[], approved=false) {
         if (approved) {
             let ar_invoice = []
-            for (let i = 0; i < cash_in_ar_invoice_data.length; i++) {
-                ar_invoice.push(cash_in_ar_invoice_data[i]?.['ar_invoice_data']?.['id'])
+            for (let i = 0; i < data_list.length; i++) {
+                ar_invoice.push(data_list[i]?.['ar_invoice_data']?.['id'])
             }
             data_params['id__in'] = ar_invoice.join(',')
         }
@@ -386,11 +393,11 @@ class CIFPageFunction {
                 },
                 columns: pageVariables.ar_invoice_table_cfg,
                 initComplete: function () {
-                    for (let i=0; i < cash_in_ar_invoice_data.length; i++) {
-                        let row_checkbox = pageElements.$ar_invoice_table.find(`tbody .select_row_ar_invoice[data-ar-invoice-id="${cash_in_ar_invoice_data[i]?.['ar_invoice_data']?.['id']}"]`)
+                    for (let i=0; i < data_list.length; i++) {
+                        let row_checkbox = pageElements.$ar_invoice_table.find(`tbody .select_row_ar_invoice[data-ar-invoice-id="${data_list[i]?.['ar_invoice_data']?.['id']}"]`)
                         row_checkbox.prop('checked', true)
                         row_checkbox.closest('tr').find('.btn_selected_payment_stage').prop('hidden', false)
-                        let detail_payment = cash_in_ar_invoice_data[i]?.['detail_payment'] || []
+                        let detail_payment = data_list[i]?.['detail_payment'] || []
                         let valid_detail_payment = []
                         for (let j=0; j < detail_payment.length; j++) {
                             valid_detail_payment.push({
@@ -402,9 +409,9 @@ class CIFPageFunction {
                         row_checkbox.closest('tr').find('.btn_selected_payment_stage').attr('data-approved', approved)
                         row_checkbox.closest('tr').find('.btn_selected_payment_stage').attr('data-detail-payment', JSON.stringify(valid_detail_payment))
                         if (approved) {
-                            row_checkbox.closest('tr').find('.recon_balance_value').attr('data-init-money', cash_in_ar_invoice_data[i]?.['sum_balance_value'])
+                            row_checkbox.closest('tr').find('.recon_balance_value').attr('data-init-money', data_list[i]?.['sum_balance_value'])
                         }
-                        row_checkbox.closest('tr').find('.cash_in_value').attr('value', cash_in_ar_invoice_data[i]?.['sum_payment_value'])
+                        row_checkbox.closest('tr').find('.cash_in_value').attr('value', data_list[i]?.['sum_payment_value'])
                     }
                     CIFHandler.Disable()
                 }
@@ -617,7 +624,9 @@ class CIFHandler {
                             $('#area_table_ar_invoice').prop('hidden', true)
                             // nếu thu tạm ứng theo hđ
                             CIFPageFunction.LoadCustomerAdvanceTable(
-                                {'sale_order__customer_id': pageElements.$customer.val()},
+                                {
+                                    'sale_order__customer_id': pageElements.$customer.val(),
+                                },
                                 data?.['cash_in_customer_advance_data'],
                                 data?.['system_status'] === 3
                             )
@@ -630,7 +639,9 @@ class CIFHandler {
                             // nếu thu theo hóa đơn
                             CIFPageFunction.LoadCustomerAdvanceTable()
                             CIFPageFunction.LoadARInvoiceTable(
-                                {'customer_mapped_id': pageElements.$customer.val()},
+                                {
+                                    'customer_mapped_id': pageElements.$customer.val(),
+                                },
                                 data?.['cash_in_ar_invoice_data'],
                                 data?.['system_status'] === 3
                             )
@@ -648,12 +659,18 @@ class CIFHandler {
                             $('#area_table_ar_invoice').prop('hidden', false)
                         }
                         CIFPageFunction.LoadCustomerAdvanceTable(
-                            {'sale_order__customer_id': pageElements.$customer.val()},
+                            {
+                                'sale_order__customer_id': pageElements.$customer.val(),
+                                'cash_inflow_done': false
+                            },
                             data?.['cash_in_customer_advance_data'],
                             data?.['system_status'] === 3
                         )
                         CIFPageFunction.LoadARInvoiceTable(
-                            {'customer_mapped_id': pageElements.$customer.val()},
+                            {
+                                'customer_mapped_id': pageElements.$customer.val(),
+                                'cash_inflow_done': false
+                            },
                             data?.['cash_in_ar_invoice_data'],
                             data?.['system_status'] === 3
                         )

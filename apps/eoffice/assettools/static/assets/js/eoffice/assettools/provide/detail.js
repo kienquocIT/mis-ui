@@ -53,10 +53,11 @@ $(document).ready(function(){
                         data: 'uom',
                         width: '10%',
                         render: (row, type, data, meta) => {
-                            let html = $(`<select>`).addClass('form-select row_uom-item')
-                                .attr('name', `uom_${meta.row}`).attr('disabled', true)
-                            if (row && Object.keys(row).length > 0)
-                                html.append(`<option value="${row.id}" selected>${row.title}</option>`)
+                            if (!row && data?.['uom_data']) row = data['uom_data']
+                            let html = $(`<input type="text">`)
+                                .addClass('form-control')
+                                .attr('name', `uom_${meta.row}`)
+                                .attr('value', row)
                             return html.prop('outerHTML')
                         }
                     },
@@ -75,17 +76,6 @@ $(document).ready(function(){
                         }
                     },
                     {
-                        data: 'tax',
-                        width: '10%',
-                        render: (row, type, data, meta) => {
-                            let html = $(`<select>`).addClass('form-select row_tax-item')
-                                .attr('name', `tax_${meta.row}`).attr('disabled', true)
-                            if (row && Object.keys(row).length > 0)
-                                html.append(`<option value="${row.id}" selected>${row.title}</option>`)
-                            return html.prop('outerHTML')
-                        }
-                    },
-                    {
                         data: 'subtotal',
                         width: '15%',
                         render: (row, type, data, meta) => {
@@ -101,23 +91,14 @@ $(document).ready(function(){
                     let api = this.api();
 
                     // Total footer row
-                    let totalPrice = 0
                     let allSubtotal = 0
-                    let calcTax = 0
                     api.rows().every(function () {
                         let data = this.data()
-                        let taxRate = data?.tax?.rate ? data.tax.rate : data?.['tax_data']?.['rate'] ? data.tax_data.rate : 0
-                        if (taxRate && data?.['price'] > 0 && data?.['quantity'] > 0)
-                            calcTax += data.price * data.quantity / 100 * taxRate
-                        if (data?.['price'] > 0 && data?.['quantity'] > 0)
-                            totalPrice += parseInt(data.price) * parseInt(data.quantity)
                         if (data?.['subtotal']) allSubtotal += parseInt(data.subtotal)
                     });
 
                     // Update footer
-                    $(api.column(6).footer()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${totalPrice}"></span></p>`);
-                    $('tr:eq(1) th:eq(2)', api.table().footer()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${calcTax}"></span></p>`);
-                    $('tr:eq(2) th:eq(2)', api.table().footer()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${allSubtotal}"></span></p>`);
+                    $('tr:eq(1) th:eq(2)', api.table().footer()).html(`<p class="pl-3 font-3"><span class="mask-money" data-init-money="${allSubtotal}"></span></p>`);
                     $.fn.initMaskMoney2()
                 },
             })

@@ -235,10 +235,6 @@ class MenusCoreConfigurations:
                 icon='<i class="fas fa-shopping-cart"></i>',
             ),
             MenuCommon(
-                name='Asset, Tools', code='menu_asset_tools_config', view_name='AssetToolsConfigView',
-                icon='<i class="fas fa-solid fa-pen-ruler"></i>',
-            ),
-            MenuCommon(
                 name='Revenue plan config', code='id_menu_master_data_revenue_plan_config',
                 view_name='RevenuePlanConfigList',
                 icon='<i class="fas fa-hand-holding-usd"></i>',
@@ -886,10 +882,10 @@ class MenusFinancials:
                 name='Cash inflow', code='menu_cash_inflow', view_name='CashInflowList',
                 icon='<i class="fas fa-reply"></i>',
             ),
-            # MenuCommon(
-            #     name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
-            #     icon='<i class="fas fa-share"></i>',
-            # ),
+            MenuCommon(
+                name='Cash outflow', code='menu_cash_outflow', view_name='CashOutflowList',
+                icon='<i class="fas fa-share"></i>',
+            ),
         ],
     )
     JOURNAL_ENTRY = MenuCommon(

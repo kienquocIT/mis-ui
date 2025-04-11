@@ -16,16 +16,7 @@ class AssetToolsList(View):
         breadcrumb='ASSET_TOOLS_LIST',
     )
     def get(self, request, *args, **kwargs):
-        is_view = False
-        employee_current_data = getattr(request.user, 'employee_current_data', {})
-        config = ServerAPI(user=request.user, url=ApiURL.ASSET_TOOLS_CONFIG).get()
-        if config.state:
-            admin_view_list = config.result.get('employee_tools_list_access', {})
-            for item in admin_view_list:
-                if employee_current_data.get('id', '') == item.get('id', ''):
-                    is_view = True
-                    break
-        return {'is_view': is_view}, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class AssetToolsListAPI(APIView):

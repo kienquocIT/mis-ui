@@ -191,7 +191,7 @@ class ProductPageFunction {
             },
             callbackDataResp: function (resp, keyResp) {
                 return resp.data[keyResp].filter(function (item) {
-                    return Object.keys(item?.['referenced_unit']).length !== 0 && item?.['code'] !== 'Import';
+                    return Object.keys(item?.['referenced_unit']).length !== 0 && item?.['code'] !== 'ImportGroup';
                 });
             },
             data: (data ? data : null),
@@ -1066,7 +1066,7 @@ class ProductHandler {
         data['general_product_category'] = pageElements.$general_product_category.val() || null;
         data['general_uom_group'] = pageElements.$general_uom_group.val() || null;
         data['general_manufacturer'] = pageElements.$general_manufacturer.val() || null;
-        data['general_traceability_method'] = $('#general-traceability-method option:selected').attr('value');
+        data['general_traceability_method'] = $('#general-traceability-method').val();
         data['standard_price'] = pageElements.$general_standard_price.attr('value')
 
         let variant_attribute_create_valid = true;
@@ -1309,7 +1309,7 @@ class ProductHandler {
                         ProductPageFunction.LoadGeneralProductCategory(general_information['product_category']);
                         ProductPageFunction.LoadGeneralUoMGroup(general_information['uom_group']);
                         ProductPageFunction.LoadGeneralManufacturer(general_information['general_manufacturer']);
-                        pageElements.$general_traceability_method.val(general_information['traceability_method']).prop('disabled', true)
+                        pageElements.$general_traceability_method.val(general_information['traceability_method'])
                         pageElements.$general_standard_price.attr('value', general_information['standard_price'])
                         if (Object.keys(general_information['product_size']).length !== 0) {
                             pageElements.$length.val(general_information['product_size']['length']);

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_v2.html' %}
 {% load static i18n %}
 {% block title %}{% trans 'Cash outflow' %}{% endblock %}
 {% block cssHeader %}
@@ -18,10 +18,10 @@
 {% block pageContent %}
     <div class="row">
         <div class="col-12">
-            <table id="table-cash-inflow"
+            <table id="table-cash-outflow"
                    class="table nowrap w-100"
-                   data-url="{% url 'CashInflowListAPI' %}"
-                   data-url-detail="{% url 'CashInflowDetail' pk=0 %}"
+                   data-url="{% url 'CashOutflowListAPI' %}"
+                   data-url-detail="{% url 'CashOutflowDetail' pk=0 %}"
                    data-method="GET"
             >
                 <thead>
@@ -29,7 +29,7 @@
                         <th style="min-width: 30px"></th>
                         <th style="min-width: 80px">{% trans 'Code' %}</th>
                         <th style="min-width: 200px">{% trans 'Name' %}</th>
-                        <th style="min-width: 200px">{% trans 'Customer' %}</th>
+                        <th style="min-width: 200px">{% trans 'Supplier' %}</th>
                         <th style="min-width: 200px">{% trans 'Total value' %}</th>
                         <th style="min-width: 100px">{% trans 'Date created' %}</th>
                         <th style="min-width: 100px">{% trans 'Status' %}</th>

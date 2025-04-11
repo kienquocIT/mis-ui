@@ -1,9 +1,9 @@
-__all__ = ['AssetToolsConfigView', 'AssetToolsConfigViewAPI', 'AssetToolsProvideRequestList',
-           'AssetToolsProvideRequestListAPI', 'AssetToolsProvideRequestCreate', 'AssetToolsProvideRequestCreateAPI',
-           'AssetToolsProvideRequestDetail', 'AssetToolsProvideRequestDetailAPI', 'AssetToolsProvideRequestEdit',
-           'AssetToolsProvideRequestEditAPI', 'AssetProductListByProvideIDAPI'
+__all__ = ['AssetToolsProvideRequestList', 'AssetToolsProvideRequestListAPI', 'AssetToolsProvideRequestCreate',
+           'AssetToolsProvideRequestCreateAPI', 'AssetToolsProvideRequestDetail', 'AssetToolsProvideRequestDetailAPI',
+           'AssetToolsProvideRequestEdit', 'AssetToolsProvideRequestEditAPI', 'AssetProductListByProvideIDAPI'
            ]
-
+import unicodedata
+import re
 from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
@@ -11,41 +11,6 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL, SYSTEM_STATUS, InputMappingProperties
 from apps.shared.msg import BaseMsg
 from apps.shared.msg.eoffice import AssetToolsMsg
-
-
-class AssetToolsConfigView(View):
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        template='eoffice/assettools/config.html',
-        menu_active='menu_asset_tools_config',
-        breadcrumb='ASSET_TOOLS_CONFIG_PAGE',
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
-class AssetToolsConfigViewAPI(APIView):
-    @mask_view(
-        login_require=True,
-        is_api=True
-    )
-    def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ASSET_TOOLS_CONFIG).get()
-        if resp.state:
-            return resp.result, status.HTTP_200_OK
-        return resp.auto_return()
-
-    @mask_view(
-        login_require=True,
-        is_api=True
-    )
-    def put(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.ASSET_TOOLS_CONFIG).put(request.data)
-        if resp.state:
-            resp.result['message'] = f'{BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
-            return resp.result, status.HTTP_200_OK
-        return resp.auto_return()
 
 
 class AssetToolsProvideRequestList(View):
@@ -79,6 +44,7 @@ class AssetToolsProvideRequestCreate(View):
         breadcrumb='ASSET_TOOLS_PROVIDE_CREATE',
     )
     def get(self, request, *args, **kwargs):
+        print('user current', request.user.employee_current_data)
         reps_employee = ServerAPI(
             user=request.user, url=ApiURL.EMPLOYEE_DETAIL_PK.fill_key(pk=request.user.employee_current_data['id'])
         ).get({'list_from_app': 'assettools.assettoolsprovide.create'})
@@ -90,10 +56,7 @@ class AssetToolsProvideRequestCreate(View):
                 'selected': 'true',
                 'group': reps_employee.result['group']
             }
-        response = ServerAPI(user=request.user, url=ApiURL.ASSET_TOOLS_CONFIG).get()
-        resp_config = response.result if response.state else {}
         return {
-                   'product_type': resp_config['product_type']['id'] if 'product_type' in resp_config else '',
                    'employee': current_emp,
                    'list_from_app': 'assettools.assettoolsprovide.create'
                }, status.HTTP_200_OK
@@ -149,14 +112,11 @@ class AssetToolsProvideRequestEdit(View):
     )
     def get(self, request, pk, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.ASSET_PROVIDE_DATA_MAP
-        response = ServerAPI(user=request.user, url=ApiURL.ASSET_TOOLS_CONFIG).get()
-        resp_config = response.result if response.state else {}
         return {
                    'input_mapping_properties': input_mapping_properties,
                    'form_id': 'asset_provide_form',
                    'pk': pk,
                    'system_status': SYSTEM_STATUS,
-                   'product_type': resp_config['product_type']['id'],
                }, status.HTTP_200_OK
 
 
@@ -177,18 +137,28 @@ class AssetToolsProvideRequestEditAPI(APIView):
 class AssetProductListByProvideIDAPI(APIView):
     @classmethod
     def get_callback_success(cls, result):
-        new_lst = []
         compare_id = {}
         for item in result:
-            if item['product']['id'] in compare_id:
-                current_item = compare_id[item['product']['id']]
-                current_item['quantity'] += item['quantity']
-                current_item['delivered'] += item['delivered']
+            product_id = item['product'].get('id')
+            if item['delivered'] == item['is_returned']:  # nếu đã trả hết thì ko cộng
+                continue
+            if product_id:
+                if product_id in compare_id:
+                    compare_id[product_id]['quantity'] += item['quantity']
+                    compare_id[product_id]['delivered'] += item['delivered']
+                else:
+                    compare_id[product_id] = item
             else:
-                compare_id[item['product']['id']] = item
-        for idx in compare_id:
-            new_lst.append(compare_id[idx])
-        new_lst.sort(key=lambda x: x['order'])
+                temp = unicodedata.normalize('NFD', item['product_remark'])
+                temp = ''.join(c for c in temp if unicodedata.category(c) != 'Mn')
+                key_word = re.sub(r'\s+', '_', temp.strip().lower())
+                if key_word in compare_id:
+                    compare_id[key_word]['quantity'] += item['quantity']
+                    compare_id[key_word]['delivered'] += item['delivered']
+                else:
+                    compare_id[key_word] = item
+
+        new_lst = sorted(compare_id.values(), key=lambda x: x['order'])
         return {
             'asset_provide_product_list': new_lst,
         }

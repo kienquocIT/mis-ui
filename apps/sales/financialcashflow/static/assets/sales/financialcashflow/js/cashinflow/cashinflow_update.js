@@ -12,7 +12,7 @@ $(document).ready(function () {
     // SUBMIT FORM UPDATE
     let form_validator = $('#form-detail-cashinflow').validate({
         submitHandler: function (form) {
-            let form_data = CIFHandler.CombinesData(form, 'update');
+            let form_data = CIFHandler.CombinesData(form);
             if (form_data) {
                 WFRTControl.callWFSubmitForm(form_data);
             }

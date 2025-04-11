@@ -1,18 +1,15 @@
 from django.urls import path
 
-from apps.eoffice.assettools.views import AssetToolsConfigView, AssetToolsConfigViewAPI, AssetToolsProvideRequestList, \
-    AssetToolsProvideRequestListAPI, AssetToolsProvideRequestCreate, AssetToolsProvideRequestDetail, \
-    AssetToolsProvideRequestCreateAPI, AssetToolsProvideRequestEdit, AssetToolsProvideRequestEditAPI, \
-    AssetToolsProvideRequestDetailAPI, AssetToolsDeliveryCreate, AssetProductListByProvideIDAPI, \
-    AssetToolsDeliveryCreateAPI, AssetToolsDeliveryList, AssetToolsDeliveryListAPI, AssetToolsDeliveryDetail, \
-    AssetToolsDeliveryEdit, AssetToolsDeliveryDetailAPI, AssetToolsDeliveryEditAPI, AssetToolsList, AssetToolsListAPI, \
-    AssetToolsReturnCreate, AssetToolsReturnList, AssetToolsReturnCreateAPI, AssetToolsReturnListAPI, \
-    AssetToolsReturnDetail, AssetToolsReturnDetailAPI, AssetToolsReturnEditAPI, AssetToolsReturnEdit
+from apps.eoffice.assettools.views import AssetToolsProvideRequestList, AssetToolsProvideRequestListAPI, \
+    AssetToolsProvideRequestCreate, AssetToolsProvideRequestDetail, AssetToolsProvideRequestCreateAPI, \
+    AssetToolsProvideRequestEdit, AssetToolsProvideRequestEditAPI, AssetToolsProvideRequestDetailAPI, \
+    AssetToolsDeliveryCreate, AssetProductListByProvideIDAPI, AssetToolsDeliveryCreateAPI, AssetToolsDeliveryList, \
+    AssetToolsDeliveryListAPI, AssetToolsDeliveryDetail, AssetToolsDeliveryEdit, AssetToolsDeliveryDetailAPI, \
+    AssetToolsDeliveryEditAPI, AssetToolsList, AssetToolsListAPI, AssetToolsReturnCreate, AssetToolsReturnList, \
+    AssetToolsReturnCreateAPI, AssetToolsReturnListAPI, AssetToolsReturnDetail, AssetToolsReturnDetailAPI, \
+    AssetToolsReturnEditAPI, AssetToolsReturnEdit
 
 urlpatterns = [
-    # config
-    path('config', AssetToolsConfigView.as_view(), name='AssetToolsConfigView'),
-    path('config-api', AssetToolsConfigViewAPI.as_view(), name='AssetToolsConfigViewAPI'),
     # ASSET, TOOLS LIST
     path('list', AssetToolsList.as_view(), name='AssetToolsList'),
     path('list-api', AssetToolsListAPI.as_view(), name='AssetToolsListAPI'),

@@ -632,7 +632,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     BUSINESS_TRIP_DETAIL = StringUrl('business-trip/detail')
 
     # Asset, Tools
-    ASSET_TOOLS_CONFIG = StringUrl('asset-tools/config')
     ASSET_TOOLS_PROVIDE = StringUrl('asset-tools/provide')
     ASSET_TOOLS_PROVIDE_DETAIL = StringUrl('asset-tools/provide/detail')
     ASSET_TOOLS_PRODUCT_LIST_BY_PROVIDE = StringUrl('asset-tools/provide/product-list-by-provide-id')
@@ -826,6 +825,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FINANCIAL_CASHINFLOW_DETAIL = StringUrl('financial-cashflow/cashinflow/{pk}')
     CUSTOMER_ADVANCE_LIST_FOR_CASHINFLOW = StringUrl('financial-cashflow/customer-advance-for-cashinflow/list')
     AR_INVOICE_LIST_FOR_CASHINFLOW = StringUrl('financial-cashflow/ar-invoice-for-cashinflow/list')
+
+    # Cash outflow
+    FINANCIAL_CASHOUTFLOW_LIST = StringUrl('financial-cashflow/cashoutflows')
+    FINANCIAL_CASHOUTFLOW_DETAIL = StringUrl('financial-cashflow/cashoutflow/{pk}')
+    ADVANCE_FOR_SUPPLIER_LIST_FOR_CASHOUTFLOW = StringUrl('financial-cashflow/advance-for-supplier-for-cashoutflow/list')
+    AP_INVOICE_LIST_FOR_CASHOUTFLOW = StringUrl('financial-cashflow/ap-invoice-for-cashoutflow/list')
 
     # Recon
     FINANCIAL_RECON_LIST = StringUrl('financial-reconciliation/list')

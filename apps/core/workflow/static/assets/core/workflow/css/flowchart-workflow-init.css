@@ -159,8 +159,8 @@
 }
 
 .cssAssociateLabel {
-    width: 10px;
-    height: 10px;
+    width: 13px;
+    height: 13px;
     background: #7e96e8;
     transition: transform .5s ease-in;
     /*border-radius: 5px;*/

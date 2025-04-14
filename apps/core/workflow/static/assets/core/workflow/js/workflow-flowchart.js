@@ -867,7 +867,7 @@ class JSPlumbsHandle {
                     event.preventDefault();
                     window.selectedConnection = component;
                     Swal.fire({
-                        title: $.fn.transEle.attr('data-msg-are-u-sure'),
+                        title: FlowChartLoadDataHandle.$transEle.attr('data-confirm-delete-associate'),
                         text: $.fn.transEle.attr('data-warning-can-not-undo'),
                         icon: "warning",
                         allowOutsideClick: false,

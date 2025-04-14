@@ -11666,3 +11666,7 @@ msgstr "Chọn nhân viên"
 #
 msgid "Delete block"
 msgstr "Xóa khối"
+
+#
+msgid "Are you sure to delete node association?"
+msgstr "Bạn có chắc muốn xóa liên kết trạm?"

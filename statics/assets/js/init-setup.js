@@ -2549,10 +2549,10 @@ class WFRTControl {
     static setupHTMLSelectAssociation(AssociationData, type) {
         let htmlCustom = ``;
         let commonTxt = $.fn.transEle.attr('data-select-association-type-1');
-        let commonImg = `<i class="far fa-check-circle text-green fs-5"></i>`;
+        let commonImg = `<i class="fas fa-check-circle text-green fs-5"></i>`;
         if (type === 1) {
             commonTxt = $.fn.transEle.attr('data-select-association-type-2');
-            commonImg = `<i class="far fa-exclamation-triangle text-red fs-5"></i>`;
+            commonImg = `<i class="fas fa-exclamation-triangle text-red fs-5"></i>`;
         }
         htmlCustom += `<div class="d-flex mb-5">${commonImg}<span>${commonTxt}</span></div>`;
         for (let associate of AssociationData) {

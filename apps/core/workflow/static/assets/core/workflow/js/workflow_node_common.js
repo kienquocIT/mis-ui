@@ -305,18 +305,20 @@ class NodeLoadDataHandle {
                                 if (data?.['collab_out_form']?.['employee_list'].length > 0) {
                                     NodeDataTableHandle.$tableOFEmp.DataTable().rows().every(function () {
                                         let row = this.node();
-                                        if (row.querySelector('.table-row-checkbox')) {
-                                            row.querySelector('.table-row-checkbox').checked = false;
-                                            if (row.querySelector('.table-row-checkbox').getAttribute('data-row')) {
-                                                let dataRow = JSON.parse(row.querySelector('.table-row-checkbox').getAttribute('data-row'));
+                                        let checkEle = row.querySelector('.table-row-checkbox');
+                                        if (checkEle) {
+                                            checkEle.checked = false;
+                                            if (checkEle.getAttribute('data-row')) {
+                                                let dataRow = JSON.parse(checkEle.getAttribute('data-row'));
                                                 if (data?.['collab_out_form']?.['employee_list'].includes(dataRow?.['id'])) {
-                                                    row.querySelector('.table-row-checkbox').checked = true;
+                                                    checkEle.checked = true;
                                                 }
                                             }
                                         }
                                     });
-                                    if (NodeLoadDataHandle.$modalNode[0].querySelector('.btn-save-out-form-employee')) {
-                                        $(NodeLoadDataHandle.$modalNode[0].querySelector('.btn-save-out-form-employee')).trigger('click');
+                                    let btnSaveOFEmpEle = NodeLoadDataHandle.$modalNode[0].querySelector('.btn-save-out-form-employee');
+                                    if (btnSaveOFEmpEle) {
+                                        $(btnSaveOFEmpEle).trigger('click');
                                     }
                                 }
                             }

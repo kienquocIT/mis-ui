@@ -18,6 +18,7 @@ const $lead_source = $('#lead-source')
 const $lead_status = $('#lead-status')
 
 const $create_contact_btn = $('#convert-to-contact-btn')
+const $convert_to_opp_open_modal = $('#convert-to-opp-open-modal')
 const $convert_opp_btn = $('#convert-to-opp-btn')
 const $convert_opp_create = $('#convert-to-new-opp-radio')
 const $convert_opp_select = $('#select-an-existing-opp-radio')
@@ -134,10 +135,10 @@ $convert_opp_btn.on('click', function () {
             </div>
         </div>`
         if ($convert_opp_create.prop('checked')) {
-            alert_html += `<h6>1. Convert to new Opportunity</h6>`
+            alert_html += `<h6 class="mt-5 text-muted">1. Convert to new Opportunity</h6>`
             if ($account_existing.val()) {
                 let account_name = SelectDDControl.get_data_from_idx($account_existing, $account_existing.val())?.['name']
-                alert_html += `<h6>2. Match with Account ${account_name}</h6>`
+                alert_html += `<h6 class="text-muted">2. Match with Account ${account_name}</h6>`
             }
             else {
                 flag = false
@@ -145,13 +146,13 @@ $convert_opp_btn.on('click', function () {
             }
             if ($assign_to_sale_config.val()) {
                 let sale_config_fullname = SelectDDControl.get_data_from_idx($assign_to_sale_config, $assign_to_sale_config.val())?.['full_name']
-                alert_html += `<h6>3. Assign to sale ${sale_config_fullname}</h6>`
+                alert_html += `<h6 class="text-muted">3. Assign to sale ${sale_config_fullname}</h6>`
             }
         }
         else {
             let opp_code = $select_an_existing_opp_table.find('input:checked').closest('div').find('label').text()
             if (opp_code) {
-                alert_html += `<h6>1. Match with Opportunity ${opp_code}</h6>`
+                alert_html += `<h6 class="mt-5 text-muted">1. Match with Opportunity ${opp_code}</h6>`
             }
             else {
                 flag = false
@@ -324,8 +325,8 @@ function LoadDetailLead(option) {
 
                 $leadDetailData.attr('data-lead-detail', JSON.stringify(data))
 
-                LoadStage(STAGE_LIST, data?.['current_lead_stage']['level'], 'detail || update')
-                CURRENT_LEVEL = data?.['current_lead_stage']['level']
+                LoadStage(STAGE_LIST, data?.['current_lead_stage_data']?.['level'], 'detail || update')
+                CURRENT_LEVEL = data?.['current_lead_stage_data']?.['level']
 
                 // lead main data
                 $lead_name.val(data?.['title'])
@@ -334,18 +335,18 @@ function LoadDetailLead(option) {
                 $mobile.val(data?.['mobile'])
                 $email.val(data?.['email'])
                 $company_name.val(data?.['company_name'])
-                LoadIndustry(data?.['industry'])
+                LoadIndustry(data?.['industry_data'])
                 $total_employees.val(data?.['total_employees']).trigger('change')
                 $revenue.val(data?.['revenue']).trigger('change')
                 $lead_source.val(data?.['source'])
                 $lead_status.val(data?.['lead_status'])
-                LoadSales(data?.['assign_to_sale'])
+                LoadSales(data?.['assign_to_sale_data'])
 
                 // lead note data
                 let detail = option === 'detail' ? 'disabled readonly' : ''
                 for (const note_content of data?.['note_data']) {
                     $('#note-area').prepend(`
-                        <textarea ${detail} class="form-control lead-note mb-3">${note_content}</textarea>
+                        <textarea ${detail} class="form-control lead-note mb-2">${note_content}</textarea>
                     `)
                 }
 
@@ -367,8 +368,8 @@ function LoadDetailLead(option) {
                 if (data?.['config_data']?.['convert_opp']) {
                     $('#btn-edit-lead').remove()
                     $('#btn-update-lead').remove()
-                    $('#btn-opp').prop('disabled', true).attr('data-bs-target', '')
-                    $('#btn-opp').after(`
+                    $convert_opp_btn.remove()
+                    $convert_to_opp_open_modal.after(`
                         &nbsp;
                         <a target="_blank" href="${$convert_opp_btn.attr('data-url-detail-opp').replace('0', data?.['config_data']?.['opp_mapped']?.['id'])}">
                             <i class="fa-solid fa-up-right-from-square"></i>
@@ -378,6 +379,8 @@ function LoadDetailLead(option) {
                     `)
                     $assign_to_sale_config.prop('disabled', true)
                     $account_existing.prop('disabled', true)
+                    $convert_opp_create.prop('disabled', true)
+                    $convert_opp_select.prop('disabled', true)
                     $convert_to_opp_radio_group.prop('disabled', true)
                     $convert_to_opp_option_radio_group.prop('disabled', true)
                     $('#create-to-new-account-btn').remove()

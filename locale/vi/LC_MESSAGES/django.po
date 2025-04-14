@@ -9614,11 +9614,11 @@ msgstr "Chọn tài liệu cho thầu"
 
 #
 msgid "Out form"
-msgstr "Chọn một cộng tác viên thao tác"
+msgstr "Chọn một cộng tác viên theo danh sách"
 
 #
 msgid "In workflow"
-msgstr "Một hoặc nhiều cộng tác viên cùng thao tác"
+msgstr "Nhiều cộng tác viên cùng thao tác"
 
 #
 msgid "Configuration"

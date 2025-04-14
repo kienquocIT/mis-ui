@@ -602,8 +602,8 @@ class NodeLoadDataHandle {
                 if (row.querySelector('.table-row-checkbox:checked')) {
                     if (row.querySelector('.table-row-checkbox').getAttribute('data-row')) {
                         let dataRow = JSON.parse(row.querySelector('.table-row-checkbox').getAttribute('data-row'));
-                        htmlShow += `<div class="chip chip-outline-secondary bg-white mr-1 mb-1 out-form-emp-show" data-id="${dataRow?.['id']}">
-                                        <span><span class="chip-text">${dataRow?.['full_name']}</span></span>
+                        htmlShow += `<div class="chip chip-outline-secondary chip-wth-icon bg-white mr-1 mb-1 out-form-emp-show" data-id="${dataRow?.['id']}">
+                                        <span><i class="fas fa-user-circle"></i><span class="chip-text">${dataRow?.['full_name']}</span></span>
                                     </div>`;
                     }
                 }

@@ -258,19 +258,23 @@
                             </div>
                             <div id="node-custom-area" hidden>
                                 <label class="form-label required" for="box-list-source"><b>{% trans 'Collaborators at node' %}</b></label>
-                                <div class="form-group form-group-data-source">
-                                    <label class="form-label" for="box-list-source">{% trans 'Type' %}</label>
-                                    <select
-                                        class="form-select"
-                                        id="box-list-source"
-                                        data-url=""
-                                        data-method="GET"
-                                        data-link-detail=""
-                                        name="list_source"
-                                        data-keyResp=""
-                                    >
-                                    </select>
-                                    <small class="form-text text-muted source-note"></small>
+                                <div class="row">
+                                    <div class="col-12 col-md-4 col-lg-4">
+                                        <div class="form-group form-group-data-source">
+                                            <label class="form-label" for="box-list-source">{% trans 'Type' %}</label>
+                                            <select
+                                                class="form-select"
+                                                id="box-list-source"
+                                                data-url=""
+                                                data-method="GET"
+                                                data-link-detail=""
+                                                name="list_source"
+                                                data-keyResp=""
+                                            >
+                                            </select>
+                                            <small class="form-text text-muted source-note hidden"></small>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row collab-area mb-5" id="collab-area-1" hidden>
                                     <div class="form-group">
@@ -303,11 +307,11 @@
                                                 >
                                                     <thead>
                                                     <tr class="bg-light">
-                                                        <th class="w-5"></th>
-                                                        <th class="w-10">{% trans 'Employee code' %}</th>
-                                                        <th class="w-20">{% trans 'Employee name' %}</th>
-                                                        <th class="w-20">{% trans 'Group' %}</th>
-                                                        <th class="w-25">{% trans 'Role' %}</th>
+                                                        <th></th>
+                                                        <th>{% trans 'Employee code' %}</th>
+                                                        <th>{% trans 'Employee name' %}</th>
+                                                        <th>{% trans 'Group' %}</th>
+                                                        <th>{% trans 'Role' %}</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -380,8 +384,9 @@
                                         </div>
                                     </div>
                                     <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="inWFCanvas" aria-labelledby="inWFCanvas">
-                                        <div class="offcanvas-header">
-                                            <h5 id="offcanvasRightLabel"><b>{% trans 'Add Employee' %}</b></h5>
+                                        <div class="modal-header">
+                                            <h5><b>{% trans 'Add Employee' %}</b></h5>
+                                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
                                         </div>
                                         <div class="offcanvas-body">
                                             <div class="form-group">

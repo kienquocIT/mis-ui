@@ -864,13 +864,22 @@ class JSPlumbsHandle {
             // append context menu for R-Click
             instance.bind("contextmenu", function (component, event) {
                 if (component.hasClass("jtk-connector")) {
-                    event.preventDefault()
+                    event.preventDefault();
                     window.selectedConnection = component;
-                    $(`<div class="custom-menu"><a href="#" class="delete-connect">${$('#translate-factory').data('context_delete')}</a></div>`)
-                        .appendTo("body")
-                        .css({
-                            top: event.pageY + "px", left: event.pageX + "px"
-                        });
+                    Swal.fire({
+                        title: $.fn.transEle.attr('data-msg-are-u-sure'),
+                        text: $.fn.transEle.attr('data-warning-can-not-undo'),
+                        icon: "warning",
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
+                        confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                        showCancelButton: true,
+                        cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            instance.deleteConnection(window.selectedConnection);
+                        }
+                    })
                 }
             })
 
@@ -950,12 +959,6 @@ class JSPlumbsHandle {
                 )
             });
 
-
-            // declare event on click for context menu
-            $("body").on("click", ".delete-connect", function () {
-                instance.deleteConnection(window.selectedConnection)
-                $(this).parent('.custom-menu').remove();
-            });
         });
     };
 

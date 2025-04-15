@@ -662,12 +662,10 @@ class JSPlumbsHandle {
                     const clone = $(ui.helper).clone(true);
                     const numID = ui.draggable.attr('data-drag')
                     let is_id = 'control-' + numID
-                    // clone.attr("id", is_id)
                     clone.find('.clone').attr("id", is_id);
                     clone.appendTo(this);
                     let $this_elm = ui.draggable;
                     $this_elm.draggable("disable");
-                    // instance.draggable(is_id, {containment: true})
                     instance.draggable(is_id);
                     let sys_code = "";
                     // check default system node
@@ -706,7 +704,7 @@ class JSPlumbsHandle {
                             endpointStyle: {fill: "#374986", opacity: ".8"},
                             HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
                             connectionType: "pink-connection",
-                            connector: ["Flowchart", {cornerRadius: 10}],
+                            connector: ["Flowchart", {cornerRadius: 5}],
                         });
                     //
                     if (sys_code !== 'initial')
@@ -733,7 +731,7 @@ class JSPlumbsHandle {
                             endpointStyle: {fill: "#374986", opacity: ".8"},
                             HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
                             connectionType: "pink-connection",
-                            connector: ["Flowchart", {cornerRadius: 10}],
+                            connector: ["Flowchart", {cornerRadius: 5}],
                         });
 
                     // add drop node to commit node list
@@ -751,7 +749,6 @@ class JSPlumbsHandle {
                 instance.doWhileSuspended(function () {
                     $('#flowchart_workflow .clone').each(function () {
                         let is_id = $(this).attr('id')
-                        // instance.draggable(is_id, {containment: true})
                         instance.draggable(is_id);
 
                         let sys_code = DEFAULT_NODE_LIST[$(this).data('drag')].code_node_system
@@ -779,7 +776,7 @@ class JSPlumbsHandle {
                                 endpointStyle: {fill: "#374986", opacity: ".8"},
                                 HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
                                 connectionType: "pink-connection",
-                                connector: ["Flowchart", {cornerRadius: 10}],
+                                connector: ["Flowchart", {cornerRadius: 5}],
                             });
                         //
                         if (sys_code !== 'initial')
@@ -807,7 +804,7 @@ class JSPlumbsHandle {
                                 endpointStyle: {fill: "#374986", opacity: ".8"},
                                 HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
                                 connectionType: "pink-connection",
-                                connector: ["Flowchart", {cornerRadius: 10}],
+                                connector: ["Flowchart", {cornerRadius: 5}],
                             });
 
                         let numID = $('#node_dragbox').find(`[data-drag="${$(this).data('drag')}"]`)
@@ -842,7 +839,7 @@ class JSPlumbsHandle {
                         paintStyle: {stroke: "#6f6f6f", strokeWidth: 1.5},
                         hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
                         connectionType: "pink-connection",
-                        connector: ["Flowchart", {cornerRadius: 10}],
+                        connector: ["Flowchart", {cornerRadius: 5}],
                     });
                     jsPlumb.select({source: 'control-' + assoc.node_in}).addOverlay(
                         ["Label",
@@ -883,7 +880,7 @@ class JSPlumbsHandle {
                 }
             })
 
-            // update association data when connect 2 nodes, LHPHUC
+            // update association data when connect 2 nodes
             instance.bind("connection", function (connection) {
                 // add value connection to global variable.
                 // change condition value by key: {nodeIN}_{nodeOut}
@@ -929,7 +926,7 @@ class JSPlumbsHandle {
                 return that_cls.clsManage.addConnection(node_in, node_out, true);
             });
 
-            // update association data when disconnect 2 nodes, LHPHUC
+            // update association data when disconnect 2 nodes
             instance.bind("connectionDetached", function (connection) {
                 // remove value connection to global variable.
                 // change condition value by key: {nodeIN}_{nodeOut}
@@ -996,11 +993,6 @@ class JSPlumbsHandle {
         this.clsManage.setNodeState = nodeData;
     }
 
-    set setAssociation(transData) {
-        // load association config in here (case load exist config)
-        this.associationData = transData;
-        this.clsManage.setAssociationList = transData;
-    }
 }
 
 // # left=INIT, right=COMPLETE, middle=APPROVED, null="NO CONNECTION TO SYSTEM"

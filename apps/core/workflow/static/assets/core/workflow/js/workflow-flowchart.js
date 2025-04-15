@@ -815,7 +815,7 @@ class JSPlumbsHandle {
                 }) // end do while suspended
 
                 for (let assoc in that_cls._ASSOCIATION) {
-                    assoc = that_cls._ASSOCIATION[assoc]
+                    assoc = that_cls._ASSOCIATION[assoc];
                     instance.connect({
                         source: 'control-' + assoc.node_in,
                         target: 'control-' + assoc.node_out,
@@ -964,7 +964,7 @@ class JSPlumbsHandle {
         this.setNodeList = NodeSubmitHandle.setupDataFlowChart();
         this.setNodeState = this.nodeData;
         let $form = $('#form-create_workflow');
-        if (['GET', 'PUT'].includes($form.attr('data-method'))){
+        if (['get', 'put'].includes($form.attr('data-method').toLowerCase())){
             // detail and update page
             if (!has_edited){
                 $('#node_dragbox').empty();
@@ -1087,11 +1087,6 @@ class NodeHandler {
                 }
             } else this.nodeState[key] = null;
         });
-    }
-
-    set setAssociationList(associationData) {
-        this.associationList = associationData;
-        this.allNodeInOut = this.parseInOut(this.associationList);
     }
 
     getAllNodeOfGroup(node_idx_from, all_data) {

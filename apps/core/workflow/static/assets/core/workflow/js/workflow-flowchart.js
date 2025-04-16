@@ -65,9 +65,8 @@ class FlowChartLoadDataHandle {
 
         let data_cond = [];
         let $eleAssociate = $('#node-associate');
-        let associate_temp = $eleAssociate.val();
-        if (associate_temp) {
-            let associate_data_json = JSON.parse(associate_temp);
+        if ($eleAssociate.val()) {
+            let associate_data_json = JSON.parse($eleAssociate.val());
             if (associate_data_json?.[targetID]) {
                 data_cond = associate_data_json?.[targetID];
             }
@@ -456,11 +455,77 @@ class JSPlumbsHandle {
     clsManage = new NodeHandler(this.nodeData, this.associationData); // class to check for connection the validation
     _commitNodeList = {};
     _ASSOCIATION = [];
+    static $flowChart = $('#flowchart_workflow');
     static $trans = $('#node-trans-factory');
 
-    static addEndPoint(instance, is_id, sys_code) {
+    static instance = jsPlumb.getInstance({
+        ConnectionOverlays: [
+            ["Arrow", {location: 1, id: "arrow", length: 12, width: 12, height: 13, foldback: 1}],
+        ],
+        Container: "flowchart_workflow",
+    });
+
+    static initDragFromNodeBox(ele) {
+        let clsSys = '';
+        let bg = '';
+        let color = 'text-white';
+        let clsModal = "modal";
+        if (ele.classList.contains('control-system')) {
+            clsSys = 'clone-system';
+            bg = 'bg-white';
+            color = '';
+        }
+        return `<div class="btn-group dropdown">
+                    <div class="clone ${clsSys} ${bg}" data-drag="${$(ele).attr('data-drag')}" title="${$(ele).find('.drag-title').text()}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <p class="drag-title ${color}">${$(ele).find('.drag-title').text()}</p>
+                    </div>
+                    <div class="dropdown-menu dropdown-bordered w-160p">
+                        <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
+                    </div>
+                </div>`;
+    };
+
+    static handleNodeDrop(ui, that_cls, top_coord = null, left_coord = null) {
+        // when user drag to space clone and disable main node
+        let clone = $(ui.helper).clone(true);
+        let numID = ui.draggable.attr('data-drag');
+        let is_id = 'control-' + numID;
+        clone.find('.clone').attr("id", is_id);
+        if (top_coord && left_coord) {
+            clone.css({top: top_coord, left: left_coord, position: 'absolute'});
+        }
+        clone.appendTo(JSPlumbsHandle.$flowChart[0]);
+        let $this_elm = ui.draggable;
+        if ($this_elm.hasClass("ui-draggable")) {
+            $this_elm.draggable("disable");
+        }
+        // $this_elm.draggable("disable");
+        JSPlumbsHandle.instance.draggable(is_id);
+        let sys_code = "";
+        // check default system node
+        for (let idx in DEFAULT_NODE_LIST) {
+            let item = DEFAULT_NODE_LIST[idx];
+            if (item.order === parseInt(ui.draggable.attr('data-drag'))) {
+                if (item.hasOwnProperty('code_node_system')) {
+                    if (item?.['code_node_system'] !== null) {
+                        sys_code = item.code_node_system.toLowerCase();
+                    }
+                }
+                break;
+            }
+        }
+        JSPlumbsHandle.addEndPoint(is_id, sys_code);
+        // add drop node to commit node list
+        let temp = that_cls.getCommitNode;
+        temp[numID] = DEFAULT_NODE_LIST[numID];
+        that_cls.setCommitNodeList = temp;
+    };
+
+    static addEndPoint(is_id, sys_code) {
         if (sys_code !== 'completed') {
-            instance.addEndpoint(is_id, {
+            JSPlumbsHandle.instance.addEndpoint(is_id, {
                 endpoint: ["Dot", {radius: 4}],
                 anchor: ["Bottom", "BottomRight", "BottomLeft"],
                 isSource: true,
@@ -487,7 +552,7 @@ class JSPlumbsHandle {
             });
         }
         if (sys_code !== 'initial') {
-            instance.addEndpoint(is_id, {
+            JSPlumbsHandle.instance.addEndpoint(is_id, {
                 endpoint: ["Rectangle", {width: 9, height: 9}],
                 anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
                 // anchor: "Perimeter",
@@ -560,7 +625,6 @@ class JSPlumbsHandle {
     }
 
     htmlDragRender(target_elm) {
-
         let strHTMLDragNode = '';
         if (Object.keys(DEFAULT_NODE_LIST).length > 0) {
             for (let val in DEFAULT_NODE_LIST) {
@@ -595,7 +659,11 @@ class JSPlumbsHandle {
         else if (target_elm) target_elm.html(strHTMLDragNode)
     };
 
-    renderToFlowchart() {
+    render() {
+
+    }
+
+    renderClones() {
         let assocList = $('#node-associate').val();
         if (assocList){
             assocList = JSON.parse(assocList)
@@ -615,7 +683,6 @@ class JSPlumbsHandle {
         // loop in DEFAULT_NODE_LIST and render to chart
         let assoc = this.convertAssociateToOrder();
         for (let val in DEFAULT_NODE_LIST) {
-            let tmpHTML = '';
             let item = DEFAULT_NODE_LIST[val];
             let coordinates = item?.['coordinates']
             if (coordinates)
@@ -636,41 +703,22 @@ class JSPlumbsHandle {
                     wrap_w = wrap_w + 300
                     $wrapWF.css("width", wrap_w);
                 }
-                let clsSys = '';
-                let bg = '';
-                let color = 'text-white';
-                let clsModal = "modal";
-                let disabled = "";
-                if (item?.['is_system'] === true) {
-                    clsSys = 'clone-system';
-                    bg = 'bg-white';
-                    color = '';
+                let $nodeDragBoxEle = $('#node_dragbox');
+                let controlEle = $nodeDragBoxEle[0].querySelector(`.control[data-drag="${val}"]`);
+                if (controlEle) {
+                    // simulate the drag helper
+                    const $helper = $(JSPlumbsHandle.initDragFromNodeBox(controlEle));
+                    const $draggable = $(controlEle);
 
-                    if (["approved", "completed"].includes(item?.['code'])) {
-                        clsModal = "";
-                        disabled = "disabled";
-                    }
+                    // simulate the UI object
+                    const ui = {
+                        helper: $helper,
+                        draggable: $draggable
+                    };
+
+                    // now trigger the drop handling manually
+                    JSPlumbsHandle.handleNodeDrop(ui, this, top_coord, left_coord);
                 }
-                tmpHTML = `<div class="btn-group dropdown">
-                                    <div class="clone ${clsSys} ${bg}" data-drag="${val}" title="${item?.['title']}" id="control-${val}" style="left:${left_coord}px;top:${top_coord}px" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
-                                        <p class="drag-title ${color}">${item?.['title']}</p>
-                                    </div>
-                                    <div class="dropdown-menu dropdown-bordered w-160p">
-                                        <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
-                                    </div>
-                                </div>`;
-
-                $wrapWF.append(tmpHTML);
-                let targetEle = $wrapWF[0].querySelector(`#control-${val}`);
-                if (targetEle) {
-                    $(targetEle).css({
-                        left: `${left_coord}px`,
-                        top: `${top_coord}px`
-                    });
-                }
-
                 // get and set commit code to list in case detail page
                 let NodeListTemp = this.getCommitNode
                 NodeListTemp[item?.['order']] = item
@@ -679,18 +727,63 @@ class JSPlumbsHandle {
         }
     }
 
+    renderAssociation() {
+        for (let assoc in this._ASSOCIATION) {
+            assoc = this._ASSOCIATION[assoc];
+            JSPlumbsHandle.instance.connect({
+                source: 'control-' + assoc?.['node_in'],
+                target: 'control-' + assoc?.['node_out'],
+                overlays: [
+                    ["Label",
+                        {
+                            label: '',
+                            location: 0.5,
+                            cssClass: "cssAssociateLabel",
+                            events: {
+                                click: function (labelOverlay) {
+                                    FlowChartLoadDataHandle.clickConnection(labelOverlay)
+                                }
+                            },
+                        },
+                    ]
+                ],
+                anchors: ["Bottom", "Top"],
+                endpoint: ["Dot", {radius: 4}],
+                endpointStyle: {fill: "#374986", opacity: ".8"},
+                paintStyle: {stroke: "#6f6f6f", strokeWidth: 1.5},
+                hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
+                connectionType: "pink-connection",
+                connector: ["Flowchart", {cornerRadius: 5}],
+            });
+            jsPlumb.select({source: 'control-' + assoc.node_in}).addOverlay(
+                ["Label",
+                    {
+                        label: 'aLabel',
+                        location: 0.5,
+                        cssClass: "cssAssociateLabel",
+                        events: {
+                            click: function (labelOverlay) {
+                                FlowChartLoadDataHandle.clickConnection(labelOverlay)
+                            }
+                        },
+                    },
+                ]
+            );
+        }
+    }
+
     initJSPlumbs() {
-        const instance = jsPlumb.getInstance({
-            ConnectionOverlays: [
-                ["Arrow", {location: 1, id: "arrow", length: 12, width: 12, height: 13, foldback: 1}],
-            ],
-            Container: "flowchart_workflow",
-        });
+        // const instance = jsPlumb.getInstance({
+        //     ConnectionOverlays: [
+        //         ["Arrow", {location: 1, id: "arrow", length: 12, width: 12, height: 13, foldback: 1}],
+        //     ],
+        //     Container: "flowchart_workflow",
+        // });
         let that_cls = this; // save this - using for callback instance (because inside callback this was overridden)
 
-        instance.bind("ready", function () {
+        JSPlumbsHandle.instance.bind("ready", function () {
             // declare style connection type
-            instance.registerConnectionTypes({
+            JSPlumbsHandle.instance.registerConnectionTypes({
                 "pink-connection": {
                     paintStyle: {stroke: "#6f6f6f", strokeWidth: 1.5},
                     hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4}
@@ -699,126 +792,19 @@ class JSPlumbsHandle {
             // init drag node
             $('#node_dragbox .control').draggable({
                 helper: function () {
-                    let clsSys = '';
-                    let bg = '';
-                    let color = 'text-white';
-                    let clsModal = "modal";
-                    if (this.classList.contains('control-system')) {
-                        clsSys = 'clone-system';
-                        bg = 'bg-white';
-                        color = '';
-                    }
-                    return `<div class="btn-group dropdown">
-                                <div class="clone ${clsSys} ${bg}" data-drag="${$(this).attr('data-drag')}" title="${$(this).find('.drag-title').text()}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <p class="drag-title ${color}">${$(this).find('.drag-title').text()}</p>
-                                </div>
-                                <div class="dropdown-menu dropdown-bordered w-160p">
-                                    <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
-                                </div>
-                            </div>`;
+                    return JSPlumbsHandle.initDragFromNodeBox(this);
                 },
                 appendTo: "#flowchart_workflow",
             });
             // init drop node
             $('#flowchart_workflow').droppable({
                 drop: function (event, ui) {
-                    // when user drag to space clone and disable main node
-                    const clone = $(ui.helper).clone(true);
-                    const numID = ui.draggable.attr('data-drag')
-                    let is_id = 'control-' + numID
-                    clone.find('.clone').attr("id", is_id);
-                    clone.appendTo(this);
-                    let $this_elm = ui.draggable;
-                    $this_elm.draggable("disable");
-                    instance.draggable(is_id);
-                    let sys_code = "";
-                    // check default system node
-                    for (let idx in DEFAULT_NODE_LIST) {
-                        let item = DEFAULT_NODE_LIST[idx]
-                        if (item.order === parseInt(ui.draggable.attr('data-drag'))) {
-                            if (item.hasOwnProperty('code_node_system')) {
-                                if (item?.['code_node_system'] !== null) {
-                                    sys_code = item.code_node_system.toLowerCase();
-                                }
-                            }
-                            break;
-                        }
-                    }
-                    JSPlumbsHandle.addEndPoint(instance, is_id, sys_code);
-                    // add drop node to commit node list
-                    let temp = that_cls.getCommitNode
-                    temp[numID] = DEFAULT_NODE_LIST[numID]
-                    that_cls.setCommitNodeList = temp
+                    JSPlumbsHandle.handleNodeDrop(ui, that_cls);
                 }
             });
 
-            // check if workflow detail or edit page show flowchart
-            let $form = $('#form-create_workflow');
-            if (['get', 'put'].includes($form.attr('data-method').toLowerCase())) {
-                instance.doWhileSuspended(function () {
-                    $('#flowchart_workflow .clone').each(function () {
-                        let is_id = $(this).attr('id')
-                        instance.draggable(is_id);
-
-                        let sys_code = '';
-                        if (DEFAULT_NODE_LIST[$(this).data('drag')]?.['code_node_system']) {
-                            sys_code = DEFAULT_NODE_LIST[$(this).data('drag')]?.['code_node_system'].toLowerCase();
-                        }
-                        JSPlumbsHandle.addEndPoint(instance, is_id, sys_code);
-                        let numID = $('#node_dragbox').find(`[data-drag="${$(this).data('drag')}"]`)
-
-                        // disable node drag in left side
-                        numID.draggable("disable");
-                    })
-                }) // end do while suspended
-                for (let assoc in that_cls._ASSOCIATION) {
-                    assoc = that_cls._ASSOCIATION[assoc];
-                    instance.connect({
-                        source: 'control-' + assoc?.['node_in'],
-                        target: 'control-' + assoc?.['node_out'],
-                        overlays: [
-                            ["Label",
-                                {
-                                    label: '',
-                                    location: 0.5,
-                                    cssClass: "cssAssociateLabel",
-                                    events: {
-                                        click: function (labelOverlay) {
-                                            FlowChartLoadDataHandle.clickConnection(labelOverlay)
-                                        }
-                                    },
-                                },
-                            ]
-                        ],
-                        anchors: ["Bottom", "Top"],
-                        endpoint: ["Dot", {radius: 4}],
-                        endpointStyle: {fill: "#374986", opacity: ".8"},
-                        paintStyle: {stroke: "#6f6f6f", strokeWidth: 1.5},
-                        hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
-                        connectionType: "pink-connection",
-                        connector: ["Flowchart", {cornerRadius: 5}],
-                    });
-                    jsPlumb.select({source: 'control-' + assoc.node_in}).addOverlay(
-                        ["Label",
-                            {
-                                label: 'aLabel',
-                                location: 0.5,
-                                cssClass: "cssAssociateLabel",
-                                events: {
-                                    click: function (labelOverlay) {
-                                        FlowChartLoadDataHandle.clickConnection(labelOverlay)
-                                    }
-                                },
-                            },
-                        ]
-                    );
-                }
-            }
-
             // append context menu for R-Click
-            instance.bind("contextmenu", function (component, event) {
+            JSPlumbsHandle.instance.bind("contextmenu", function (component, event) {
                 if (component.hasClass("jtk-connector")) {
                     event.preventDefault();
                     window.selectedConnection = component;
@@ -833,13 +819,13 @@ class JSPlumbsHandle {
                         cancelButtonText: $.fn.transEle.attr('data-cancel'),
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            instance.deleteConnection(window.selectedConnection);
+                            JSPlumbsHandle.instance.deleteConnection(window.selectedConnection);
                         }
                     })
                 }
             })
 
-            instance.bind('beforeDrop', function (info) {
+            JSPlumbsHandle.instance.bind('beforeDrop', function (info) {
                 // Check rule connection two node.
                 // Allow: return true
                 // Deny: return false
@@ -850,11 +836,14 @@ class JSPlumbsHandle {
             });
 
             // update association data when connect 2 nodes
-            instance.bind("connection", function (connection) {
+            JSPlumbsHandle.instance.bind("connection", function (connection) {
                 // add value connection to global variable.
                 // change condition value by key: {nodeIN}_{nodeOut}
                 let elm_focus = $('#node-associate');
-                let before_data = elm_focus.val();
+                let before_data = {};
+                if (elm_focus.val()) {
+                    before_data = JSON.parse(elm_focus.val());
+                }
                 let end_result = {
                     'node_in': '',
                     'node_out': '',
@@ -871,22 +860,16 @@ class JSPlumbsHandle {
                     key = node_in + "_" + node_out;
                 }
                 if (key) {
-                    if (before_data) {
-                        before_data = JSON.parse(before_data);
+                    if (!before_data.hasOwnProperty(key)) {
                         before_data[key] = end_result;
-                        end_result = before_data
-                    } else {
-                        let temp = {}
-                        temp[key] = end_result;
-                        end_result = temp
                     }
-                    FlowJsP.setAssociateList = end_result;
-                    elm_focus.val(JSON.stringify(end_result));
+                    FlowJsP.setAssociateList = before_data;
+                    elm_focus.val(JSON.stringify(before_data));
                 }
             })
 
             // update association data when disconnect 2 nodes
-            instance.bind("connectionDetached", function (connection) {
+            JSPlumbsHandle.instance.bind("connectionDetached", function (connection) {
                 // remove value connection to global variable.
                 // change condition value by key: {nodeIN}_{nodeOut}
                 let key = "";
@@ -908,7 +891,7 @@ class JSPlumbsHandle {
                 }
             });
 
-            instance.bind("beforeDetach", function (conn) {
+            JSPlumbsHandle.instance.bind("beforeDetach", function (conn) {
                 return that_cls.clsManage.removeConnection(
                     conn.source.dataset.drag,
                     conn.target.dataset.drag
@@ -927,10 +910,11 @@ class JSPlumbsHandle {
             // detail and update page
             if (!has_edited){
                 $('#node_dragbox').empty();
-                if (nodeChanged) $('#flowchart_workflow').empty();
-                if (!nodeChanged) this.renderToFlowchart();
+                $('#flowchart_workflow').empty();
                 this.htmlDragRender();
                 this.initJSPlumbs();
+                this.renderClones();
+                this.renderAssociation();
                 has_edited = true
             }
 

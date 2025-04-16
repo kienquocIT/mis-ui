@@ -391,9 +391,13 @@ function LoadCurrency(data) {
             url: company_config.attr('data-url-currency-list'),
             method: 'GET',
         },
+        callbackDataResp(resp, keyResp) {
+            console.log(resp.data[keyResp])
+            return resp.data[keyResp]
+        },
         data: (data ? data : null),
         keyResp: 'currency_list',
-        keyId: 'code',
+        keyId: 'id',
         keyText: 'title',
     })
 }
@@ -565,7 +569,7 @@ function LoadDetailCompany(frm, option) {
             }
 
             $('#idxLanguage').val(data1['config']['language']).trigger('change.select2');
-            LoadCurrency(data1['config']['currency'])
+            LoadCurrency(data1['config']?.['currency']?.['master_data_currency'])
             $('#idxCurrencyMaskPrefix').val(data1['config']['currency_rule'].prefix);
             $('#idxCurrencyMaskSuffix').val(data1['config']['currency_rule'].suffix);
             $('#idxCurrencyMaskThousand').val(data1['config']['currency_rule'].thousands);

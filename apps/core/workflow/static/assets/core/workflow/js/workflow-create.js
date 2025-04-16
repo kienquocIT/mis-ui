@@ -71,12 +71,8 @@ $(function () {
             _form.dataForm['associate'] = "";
             let $eleAssociate = $('#node-associate');
             if ($eleAssociate.val()) {
-                _form.dataForm['associate'] = $eleAssociate.val();
-            }
-            let associate_temp = _form.dataForm['associate'];
-            if (associate_temp) {
                 let associate_data_submit = [];
-                let associate_data_json = JSON.parse(associate_temp);
+                let associate_data_json = JSON.parse($eleAssociate.val());
                 for (let key in associate_data_json) {
                     let item = associate_data_json[key]
                     if (typeof item.node_in === "object") {

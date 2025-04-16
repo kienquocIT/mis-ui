@@ -458,6 +458,64 @@ class JSPlumbsHandle {
     _ASSOCIATION = [];
     static $trans = $('#node-trans-factory');
 
+    static addEndPoint(instance, is_id, sys_code) {
+        if (sys_code !== 'completed') {
+            instance.addEndpoint(is_id, {
+                endpoint: ["Dot", {radius: 4}],
+                anchor: ["Bottom", "BottomRight", "BottomLeft"],
+                isSource: true,
+                connectorOverlays: [
+                    ["Label",
+                        {
+                            label: '',
+                            location: 0.5,
+                            cssClass: "cssAssociateLabel",
+                            events: {
+                                click: function (labelOverlay) {
+                                    FlowChartLoadDataHandle.clickConnection(labelOverlay)
+                                }
+                            },
+                        },
+                    ]
+                ],
+                maxConnections: -1,
+                connectionsDetachable: true,
+                endpointStyle: {fill: "#374986", opacity: ".8"},
+                HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
+                connectionType: "pink-connection",
+                connector: ["Flowchart", {cornerRadius: 5}],
+            });
+        }
+        if (sys_code !== 'initial') {
+            instance.addEndpoint(is_id, {
+                endpoint: ["Rectangle", {width: 9, height: 9}],
+                anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
+                // anchor: "Perimeter",
+                isTarget: true,
+                connectorOverlays: [
+                    ["Label",
+                        {
+                            label: '',
+                            location: 0.5,
+                            cssClass: "cssAssociateLabel",
+                            events: {
+                                click: function (labelOverlay) {
+                                    FlowChartLoadDataHandle.clickConnection(labelOverlay)
+                                }
+                            },
+                        },
+                    ]
+                ],
+                maxConnections: -1,
+                connectionsDetachable: true,
+                endpointStyle: {fill: "#374986", opacity: ".8"},
+                HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
+                connectionType: "pink-connection",
+                connector: ["Flowchart", {cornerRadius: 5}],
+            });
+        }
+    };
+
     set setNodeList(strData) {
         let temp = {};
         for (let item of strData) {
@@ -680,62 +738,8 @@ class JSPlumbsHandle {
                             break;
                         }
                     }
-                    if (sys_code !== 'completed')
-                        instance.addEndpoint(is_id, {
-                            endpoint: ["Dot", {radius: 4}],
-                            anchor: ["Bottom", "BottomRight", "BottomLeft"],
-                            isSource: true,
-                            connectorOverlays: [
-                                ["Label",
-                                    {
-                                        label: '',
-                                        location: 0.5,
-                                        cssClass: "cssAssociateLabel",
-                                        events: {
-                                            click: function (labelOverlay) {
-                                                FlowChartLoadDataHandle.clickConnection(labelOverlay)
-                                            }
-                                        },
-                                    },
-                                ]
-                            ],
-                            maxConnections: -1,
-                            connectionsDetachable: true,
-                            endpointStyle: {fill: "#374986", opacity: ".8"},
-                            HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
-                            connectionType: "pink-connection",
-                            connector: ["Flowchart", {cornerRadius: 5}],
-                        });
-                    //
-                    if (sys_code !== 'initial')
-                        instance.addEndpoint(is_id, {
-                            endpoint: ["Rectangle", {width: 9, height: 9}],
-                            anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
-                            isTarget: true,
-                            connectorOverlays: [
-                                ["Label",
-                                    {
-                                        label: '',
-                                        location: 0.5,
-                                        cssClass: "cssAssociateLabel",
-                                        events: {
-                                            click: function (labelOverlay) {
-                                                FlowChartLoadDataHandle.clickConnection(labelOverlay)
-                                            }
-                                        },
-                                    },
-                                ]
-                            ],
-                            maxConnections: -1,
-                            connectionsDetachable: true,
-                            endpointStyle: {fill: "#374986", opacity: ".8"},
-                            HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
-                            connectionType: "pink-connection",
-                            connector: ["Flowchart", {cornerRadius: 5}],
-                        });
-
+                    JSPlumbsHandle.addEndPoint(instance, is_id, sys_code);
                     // add drop node to commit node list
-
                     let temp = that_cls.getCommitNode
                     temp[numID] = DEFAULT_NODE_LIST[numID]
                     that_cls.setCommitNodeList = temp
@@ -751,62 +755,11 @@ class JSPlumbsHandle {
                         let is_id = $(this).attr('id')
                         instance.draggable(is_id);
 
-                        let sys_code = DEFAULT_NODE_LIST[$(this).data('drag')].code_node_system
-                        if (sys_code !== 'completed')
-                            instance.addEndpoint(is_id, {
-                                endpoint: ["Dot", {radius: 4}],
-                                anchor: ["Bottom", "BottomRight", "BottomLeft"],
-                                isSource: true,
-                                connectorOverlays: [
-                                    ["Label",
-                                        {
-                                            label: '',
-                                            location: 0.5,
-                                            cssClass: "cssAssociateLabel",
-                                            events: {
-                                                click: function (labelOverlay) {
-                                                    FlowChartLoadDataHandle.clickConnection(labelOverlay)
-                                                }
-                                            },
-                                        },
-                                    ]
-                                ],
-                                maxConnections: -1,
-                                connectionsDetachable: true,
-                                endpointStyle: {fill: "#374986", opacity: ".8"},
-                                HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
-                                connectionType: "pink-connection",
-                                connector: ["Flowchart", {cornerRadius: 5}],
-                            });
-                        //
-                        if (sys_code !== 'initial')
-                            instance.addEndpoint(is_id, {
-                                endpoint: ["Rectangle", {width: 9, height: 9}],
-                                anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
-                                // anchor: "Perimeter",
-                                isTarget: true,
-                                connectorOverlays: [
-                                    ["Label",
-                                        {
-                                            label: '',
-                                            location: 0.5,
-                                            cssClass: "cssAssociateLabel",
-                                            events: {
-                                                click: function (labelOverlay) {
-                                                    FlowChartLoadDataHandle.clickConnection(labelOverlay)
-                                                }
-                                            },
-                                        },
-                                    ]
-                                ],
-                                maxConnections: -1,
-                                connectionsDetachable: true,
-                                endpointStyle: {fill: "#374986", opacity: ".8"},
-                                HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
-                                connectionType: "pink-connection",
-                                connector: ["Flowchart", {cornerRadius: 5}],
-                            });
-
+                        let sys_code = '';
+                        if (DEFAULT_NODE_LIST[$(this).data('drag')]?.['code_node_system']) {
+                            sys_code = DEFAULT_NODE_LIST[$(this).data('drag')]?.['code_node_system'].toLowerCase();
+                        }
+                        JSPlumbsHandle.addEndPoint(instance, is_id, sys_code);
                         let numID = $('#node_dragbox').find(`[data-drag="${$(this).data('drag')}"]`)
 
                         // disable node drag in left side
@@ -968,7 +921,6 @@ class JSPlumbsHandle {
             // detail and update page
             if (!has_edited){
                 $('#node_dragbox').empty();
-                //
                 if (nodeChanged) $('#flowchart_workflow').empty();
                 if (!nodeChanged) this.renderToFlowchart();
                 this.htmlDragRender();

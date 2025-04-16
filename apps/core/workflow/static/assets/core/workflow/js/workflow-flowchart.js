@@ -613,18 +613,18 @@ class JSPlumbsHandle {
             top_coord = 0,
             left_coord = 0;
         // loop in DEFAULT_NODE_LIST and render to chart
-        let HTML_temp = '';
         let assoc = this.convertAssociateToOrder();
         for (let val in DEFAULT_NODE_LIST) {
+            let tmpHTML = '';
             let item = DEFAULT_NODE_LIST[val];
-            const coordinates = item.coordinates
+            let coordinates = item?.['coordinates']
             if (coordinates)
                 // check if node has coordinates
                 if (coordinates.hasOwnProperty("top") && coordinates.hasOwnProperty("left")){
-                    top_coord = coordinates.top
-                    left_coord = coordinates.left;
+                    top_coord = coordinates?.['top']
+                    left_coord = coordinates?.['left'];
                 }
-            if (assoc.includes(item.order)){
+            if (assoc.includes(item?.['order'])){
 
                 // check if node coord larger than wrap workflow node
                 if ((top_coord + 90) > wrap_h) {
@@ -651,7 +651,7 @@ class JSPlumbsHandle {
                         disabled = "disabled";
                     }
                 }
-                HTML_temp += `<div class="btn-group dropdown">
+                tmpHTML = `<div class="btn-group dropdown">
                                     <div class="clone ${clsSys} ${bg}" data-drag="${val}" title="${item?.['title']}" id="control-${val}" style="left:${left_coord}px;top:${top_coord}px" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
                                         <p class="drag-title ${color}">${item?.['title']}</p>
                                     </div>
@@ -662,13 +662,21 @@ class JSPlumbsHandle {
                                     </div>
                                 </div>`;
 
+                $wrapWF.append(tmpHTML);
+                let targetEle = $wrapWF[0].querySelector(`#control-${val}`);
+                if (targetEle) {
+                    $(targetEle).css({
+                        left: `${left_coord}px`,
+                        top: `${top_coord}px`
+                    });
+                }
+
                 // get and set commit code to list in case detail page
                 let NodeListTemp = this.getCommitNode
-                NodeListTemp[item.order] = item
+                NodeListTemp[item?.['order']] = item
                 this.setCommitNodeList = NodeListTemp
             } // end loop default node list
         }
-        $wrapWF.html(HTML_temp)
     }
 
     initJSPlumbs() {
@@ -744,7 +752,6 @@ class JSPlumbsHandle {
                     temp[numID] = DEFAULT_NODE_LIST[numID]
                     that_cls.setCommitNodeList = temp
                 }
-
             });
 
             // check if workflow detail or edit page show flowchart
@@ -766,12 +773,11 @@ class JSPlumbsHandle {
                         numID.draggable("disable");
                     })
                 }) // end do while suspended
-
                 for (let assoc in that_cls._ASSOCIATION) {
                     assoc = that_cls._ASSOCIATION[assoc];
                     instance.connect({
-                        source: 'control-' + assoc.node_in,
-                        target: 'control-' + assoc.node_out,
+                        source: 'control-' + assoc?.['node_in'],
+                        target: 'control-' + assoc?.['node_out'],
                         overlays: [
                             ["Label",
                                 {
@@ -833,6 +839,16 @@ class JSPlumbsHandle {
                 }
             })
 
+            instance.bind('beforeDrop', function (info) {
+                // Check rule connection two node.
+                // Allow: return true
+                // Deny: return false
+                let node_in = info.connection.source.dataset.drag;
+                let node_out = info.connection.target.dataset.drag;
+                // return checkConnection(node_in, node_out, true);
+                return that_cls.clsManage.addConnection(node_in, node_out, true);
+            });
+
             // update association data when connect 2 nodes
             instance.bind("connection", function (connection) {
                 // add value connection to global variable.
@@ -868,16 +884,6 @@ class JSPlumbsHandle {
                     elm_focus.val(JSON.stringify(end_result));
                 }
             })
-
-            instance.bind('beforeDrop', function (info) {
-                // Check rule connection two node.
-                // Allow: return true
-                // Deny: return false
-                let node_in = info.connection.source.dataset.drag;
-                let node_out = info.connection.target.dataset.drag;
-                // return checkConnection(node_in, node_out, true);
-                return that_cls.clsManage.addConnection(node_in, node_out, true);
-            });
 
             // update association data when disconnect 2 nodes
             instance.bind("connectionDetached", function (connection) {

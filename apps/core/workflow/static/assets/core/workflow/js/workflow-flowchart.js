@@ -527,7 +527,8 @@ class JSPlumbsHandle {
         if (sys_code !== 'completed') {
             JSPlumbsHandle.instance.addEndpoint(is_id, {
                 endpoint: ["Dot", {radius: 4}],
-                anchor: ["Bottom", "BottomRight", "BottomLeft"],
+                // anchor: ["Bottom", "BottomRight", "BottomLeft"],
+                anchor: "BottomCenter",
                 isSource: true,
                 connectorOverlays: [
                     ["Label",
@@ -554,8 +555,8 @@ class JSPlumbsHandle {
         if (sys_code !== 'initial') {
             JSPlumbsHandle.instance.addEndpoint(is_id, {
                 endpoint: ["Rectangle", {width: 9, height: 9}],
-                anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
-                // anchor: "Perimeter",
+                // anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
+                anchor: "TopCenter",
                 isTarget: true,
                 connectorOverlays: [
                     ["Label",
@@ -840,9 +841,9 @@ class JSPlumbsHandle {
                 // add value connection to global variable.
                 // change condition value by key: {nodeIN}_{nodeOut}
                 let elm_focus = $('#node-associate');
-                let before_data = {};
+                let current_data = {};
                 if (elm_focus.val()) {
-                    before_data = JSON.parse(elm_focus.val());
+                    current_data = JSON.parse(elm_focus.val());
                 }
                 let end_result = {
                     'node_in': '',
@@ -860,11 +861,11 @@ class JSPlumbsHandle {
                     key = node_in + "_" + node_out;
                 }
                 if (key) {
-                    if (!before_data.hasOwnProperty(key)) {
-                        before_data[key] = end_result;
+                    if (!current_data.hasOwnProperty(key)) {
+                        current_data[key] = end_result;
                     }
-                    FlowJsP.setAssociateList = before_data;
-                    elm_focus.val(JSON.stringify(before_data));
+                    FlowJsP.setAssociateList = current_data;
+                    elm_focus.val(JSON.stringify(current_data));
                 }
             })
 

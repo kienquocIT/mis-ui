@@ -1234,6 +1234,12 @@ class NodeHandler {
                 break;
         }
 
+        // Check same node
+        if (node_input === node_output) {
+            state = false;
+            msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-4');
+        }
+
         // Check node collab
         let dataNodeIn = FlowJsP.nodeData[node_input];
         let dataNodeOut = FlowJsP.nodeData[node_output];

@@ -5755,7 +5755,7 @@ msgstr "Kiểm kê định kỳ"
 
 #
 msgid "Default inventory value method"
-msgstr "Phương pháp tính giá cost hàng tồn kho mặc định"
+msgstr "PP tính giá cost hàng tồn kho mặc định"
 
 #
 msgid "FIFO"
@@ -9337,20 +9337,16 @@ msgid "Select tools"
 msgstr "Chọn Công cụ"
 
 #
-msgid "Company system settings need a Period year to match."
-msgstr "Những cấu hình hệ thống Công ty cần kết nối với một Kì kế toán."
+msgid "Company system settings need a Posting period to match."
+msgstr "Những cấu hình hệ thống Công ty cần kết nối với một Kỳ kế toán."
 
 #
-msgid "You need to create current Period year before Update Company setting."
-msgstr "Bạn cần tạo Kì kế toán hiện tại trước khi cập nhập cấu hình Công ty"
+msgid "You need to create current Posting period for this company before update config."
+msgstr "Bạn cần tạo Kỳ kế toán hiện tại cho công ty này trước khi cập nhập cấu hình"
 
 #
-msgid "You can see Period year list in Setting space."
-msgstr "Bạn có thể xem danh sách Kì kế toán ở Space Setting"
-
-#
-msgid "Create new Accounting Period year"
-msgstr "Tạo mới Kì kế toán"
+msgid "Contact the admin to create a new Posting period."
+msgstr "Liên hệ quản trị viên để tạo mới Kỳ kế toán."
 
 #
 msgid "Customer is required"
@@ -9905,7 +9901,7 @@ msgid "Can not delete this period!"
 msgstr "Không thể xóa kỳ kế toán này!"
 
 #
-msgid "Posting periods"
+msgid "Posting period"
 msgstr "Kỳ kế toán"
 
 #
@@ -11670,3 +11666,15 @@ msgstr "Xóa khối"
 #
 msgid "Are you sure to delete node association?"
 msgstr "Bạn có chắc muốn xóa liên kết trạm?"
+
+#
+msgid "Add Company Address"
+msgstr "Thêm địa chỉ công ty"
+
+#
+msgid "This field cannot be changed."
+msgstr "Trường này không thể thay đổi."
+
+#
+msgid "This field cannot be changed after it has been saved."
+msgstr "Trường này không thể thay đổi sau khi được lưu."

@@ -9,62 +9,7 @@ $(document).ready(function () {
         $('#save-company').prop('hidden', false)
     }
 
-    let pk = $.fn.getPkDetail()
-    let redirect_create_period = $('#form-create-periods-config').attr('data-url-redirect').replace(`/0`, `/${pk}`)
-    $('#form-create-periods-config').attr('data-url-redirect', redirect_create_period)
-
-    $("#form-company-bank-account").submit(function (event) {
-        event.preventDefault();
-        let combinesData = new CompanyHandle().combinesDataCompanyBankAccount($(this), false);
-        if (combinesData) {
-            WindowControl.showLoading();
-            $.fn.callAjax2(combinesData)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            $.fn.notifyB({description: "Successfully"}, 'success')
-                            setTimeout(() => {
-                                loadCompanyBankAccountTable('update', true)
-                                WindowControl.hideLoading();
-                                $('#modal-company-bank-account').modal('hide')
-                                $('#form-company-bank-account')[0].reset();
-                            }, 1000);
-                        }
-                    },
-                    (errs) => {
-                        setTimeout(
-                            () => {
-                                WindowControl.hideLoading();
-                            },
-                            1000
-                        )
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    }
-                )
-        }
-    })
-    $(document).on("change", '.activate_bank_account', function () {
-        if ($(this).attr('data-id')) {
-            Swal.fire({
-                html: `<h5 class="text-primary">${$("#form-company-bank-account").attr('data-trans-message')}</h5>`,
-                customClass: {
-                    confirmButton: 'btn btn-primary',
-                },
-                showCancelButton: false,
-                buttonsStyling: false,
-                confirmButtonText: 'OK',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    loadCompanyBankAccountTable('update', true, [], {
-                        'disabled_account': $(this).prop('checked') ? '1' : '0',
-                        'pk': $(this).attr('data-id')
-                    })
-                }
-            })
-        }
-    })
+    const pk = $.fn.getPkDetail()
 
     new CompanyHandle().load();
     LoadDetailCompany($('#frm-update-company'), 'update');
@@ -91,13 +36,6 @@ $(document).ready(function () {
                 <div>
                     <span class="text-white small fst-italic">${trans_script.attr('data-trans-alert-toastr-3')}</span>
                 </div>
-                <div class="mt-3">
-                    <button id="showModalButton"
-                            class="btn btn-sm btn-light"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modal-periods-create"
-                    >${trans_script.attr('data-trans-alert-toastr-4')}</button>
-                </div>
             </div>
         `;
 
@@ -123,6 +61,7 @@ $(document).ready(function () {
         let frmConfig = new SetupFormSubmit($('#tblCompanyConfig'));
         let configState = false;
         let dataBodyConfig = frmConfig.dataForm
+        dataBodyConfig['config_id'] = company_config.attr('data-config-id')
         dataBodyConfig['currency_rule'] = SetupFormSubmit.groupDataFromPrefix(dataBodyConfig, 'currency_rule__');
         dataBodyConfig['sub_domain'] = $(this).find('input[name="sub_domain"]').val();
         dataBodyConfig['definition_inventory_valuation'] = !$('#perpetual-selection').prop('checked');
@@ -162,7 +101,7 @@ $(document).ready(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        $.fn.notifyB({'title': 'General information', 'description': $.fn.transEle.attr('data-success')}, 'success')
+                        $.fn.notifyB({'title': 'General information:', 'description': $.fn.transEle.attr('data-success')}, 'success')
                         return $.fn.callAjax2({
                             'url': frmConfig.dataUrl,
                             'method': frmConfig.dataMethod,
@@ -176,7 +115,7 @@ $(document).ready(function () {
                             (resp) => {
                                 let data = $.fn.switcherResp(resp);
                                 if (data['status'] === 200) {
-                                    $.fn.notifyB({'title': 'Config', 'description': $.fn.transEle.attr('data-success')}, 'success')
+                                    $.fn.notifyB({'title': 'Config:', 'description': $.fn.transEle.attr('data-success')}, 'success')
 
                                     if (logoFiles || iconFiles){
                                         let formData = new FormData();
@@ -196,7 +135,7 @@ $(document).ready(function () {
                                             (resp) => {
                                                 let data = $.fn.switcherResp(resp);
                                                 if (data){
-                                                    $.fn.notifyB({'title': 'Logo', 'description': $.fn.transEle.attr('data-success')}, 'success')
+                                                    $.fn.notifyB({'title': 'Logo:', 'description': $.fn.transEle.attr('data-success')}, 'success')
                                                     setTimeout(() => {
                                                         window.location.replace($(this).attr('data-url-redirect').format_url_with_uuid(pk));
                                                         location.reload.bind(location);
@@ -214,6 +153,7 @@ $(document).ready(function () {
                                 }
                             },
                             (errs) => {
+                                $.fn.notifyB({'title': 'Config:', 'description': 'Can not update configs'}, 'failure')
                                 $.fn.switcherResp(errs)
                                 if (Object.keys(errs.data.errors).length > 0) {
                                     let key = Object.keys(errs.data.errors)[0]

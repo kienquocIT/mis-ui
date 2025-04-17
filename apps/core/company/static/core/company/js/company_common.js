@@ -306,7 +306,7 @@ function loadFunctionNumberTable(option='detail', table_detail_data = []) {
     $('#function_number_table').DataTableDefault({
         rowIdx: true,
         scrollX: '100vw',
-        scrollY: '26vh',
+        scrollY: '30vh',
         scrollCollapse: true,
         paging: false,
         data: table_detail_data,
@@ -377,14 +377,13 @@ function LoadCountry(ele, data) {
     })
 }
 
-function LoadCurrency(data) {
+function LoadCurrency(data, data_url=null) {
     $('#idxCurrencyDefault').initSelect2({
         ajax: {
-            url: company_config.attr('data-url-currency-list'),
+            url: company_config.attr('data-url-currency-list') || $('#idxCurrencyDefault').attr('data-url'),
             method: 'GET',
         },
         callbackDataResp(resp, keyResp) {
-            console.log(resp.data[keyResp])
             return resp.data[keyResp]
         },
         data: (data ? data : null),
@@ -539,6 +538,7 @@ function LoadDetailCompany(frm, option) {
         $.fn.initMaskMoney2();
 
         if (data1['config']) {
+            company_config.attr('data-config-id', data1['config']?.['id'])
             if (!data1['config']?.['definition_inventory_valuation']) {
                 $('#perpetual-selection').prop('checked', true);
             } else {
@@ -561,7 +561,7 @@ function LoadDetailCompany(frm, option) {
             }
 
             $('#idxLanguage').val(data1['config']['language']).trigger('change.select2');
-            LoadCurrency(data1['config']?.['currency']?.['master_data_currency'])
+            LoadCurrency(data1['config']?.['master_data_currency'])
             $('#idxCurrencyMaskPrefix').val(data1['config']['currency_rule'].prefix);
             $('#idxCurrencyMaskSuffix').val(data1['config']['currency_rule'].suffix);
             $('#idxCurrencyMaskThousand').val(data1['config']['currency_rule'].thousands);

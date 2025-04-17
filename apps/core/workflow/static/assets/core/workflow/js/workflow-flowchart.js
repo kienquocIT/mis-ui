@@ -470,14 +470,28 @@ class JSPlumbsHandle {
         let bg = '';
         let color = 'text-white';
         let clsModal = "modal";
+        let disabled = "";
+        let endPointsHTML = `<div class="drag-handle jsplumb-handle"></div>
+                            <div class="drop-target jsplumb-handle"></div>`;
         if (ele.classList.contains('control-system')) {
             clsSys = 'clone-system';
             bg = 'bg-white';
             color = '';
         }
+        if ($(ele).attr("data-code") === "initial") {
+            endPointsHTML = `<div class="drag-handle jsplumb-handle"></div>`;
+        }
+        if ($(ele).attr("data-code") === "approved") {
+            disabled = "disabled";
+        }
+        if ($(ele).attr("data-code") === "completed") {
+            disabled = "disabled";
+            endPointsHTML = `<div class="drop-target jsplumb-handle"></div>`;
+        }
         return `<div class="btn-group dropdown">
-                    <div class="clone ${clsSys} ${bg}" data-drag="${$(ele).attr('data-drag')}" title="${$(ele).find('.drag-title').text()}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="clone ${clsSys} ${bg}" data-drag="${$(ele).attr('data-drag')}" title="${$(ele).find('.drag-title').text()}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
                         <p class="drag-title ${color}">${$(ele).find('.drag-title').text()}</p>
+                        ${endPointsHTML}
                     </div>
                     <div class="dropdown-menu dropdown-bordered w-160p">
                         <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
@@ -501,7 +515,6 @@ class JSPlumbsHandle {
         if ($this_elm.hasClass("ui-draggable")) {
             $this_elm.draggable("disable");
         }
-        // $this_elm.draggable("disable");
         JSPlumbsHandle.instance.draggable(is_id);
         let sys_code = "";
         // check default system node
@@ -516,16 +529,17 @@ class JSPlumbsHandle {
                 break;
             }
         }
-        JSPlumbsHandle.addEndPoint(is_id, sys_code);
+        JSPlumbsHandle.makeSourceTarget(is_id, sys_code);
         // add drop node to commit node list
         let temp = that_cls.getCommitNode;
         temp[numID] = DEFAULT_NODE_LIST[numID];
         that_cls.setCommitNodeList = temp;
     };
 
-    static addEndPoint(is_id, sys_code) {
+    static makeSourceTarget(is_id, sys_code) {
         if (sys_code !== 'completed') {
-            JSPlumbsHandle.instance.addEndpoint(is_id, {
+            JSPlumbsHandle.instance.makeSource(document.getElementById(is_id), {
+                filter: ".drag-handle",
                 endpoint: ["Dot", {radius: 4}],
                 // anchor: ["Bottom", "BottomRight", "BottomLeft"],
                 anchor: "BottomCenter",
@@ -553,7 +567,8 @@ class JSPlumbsHandle {
             });
         }
         if (sys_code !== 'initial') {
-            JSPlumbsHandle.instance.addEndpoint(is_id, {
+            JSPlumbsHandle.instance.makeTarget(document.getElementById(is_id), {
+                filter: ".drop-target",
                 endpoint: ["Rectangle", {width: 9, height: 9}],
                 // anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
                 anchor: "TopCenter",
@@ -645,7 +660,7 @@ class JSPlumbsHandle {
                     }
                 }
                 strHTMLDragNode += `<div class="btn-group dropdown">
-                                        <div class="control ${clsSys} ${bg}" id="drag-${item?.['order']}" data-drag="${item?.['order']}" title="${item?.['title']}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
+                                        <div class="control ${clsSys} ${bg}" id="drag-${item?.['order']}" data-code="${item?.['code']}" data-drag="${item?.['order']}" title="${item?.['title']}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
                                             <p class="drag-title ${color}" contentEditable="true" title="${item?.['remark']}">${item?.['title']}</p>
                                         </div>
                                         <div class="dropdown-menu dropdown-bordered w-160p">

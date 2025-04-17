@@ -178,6 +178,39 @@
     margin-left: -6.5px; /* Half width to center */
 }
 
+.clone {
+    position: relative;
+}
+
+.drag-handle,
+.drop-target {
+    width: 12px;
+    height: 12px;
+    background: #374986;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+/* Bottom center */
+.drag-handle {
+    bottom: -6px; /* show slightly outside */
+    cursor: crosshair;
+}
+
+/* Top center */
+.drop-target {
+    background: #374986;
+    position: absolute;
+    top: -6px;          /* Show slightly outside the top */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    cursor: pointer;
+    border-radius: 1px; /* Optional: subtle rounding */
+}
 
 .jtk-connector path:hover + .cssAssociateLabel {
     transform: scale(1.3);

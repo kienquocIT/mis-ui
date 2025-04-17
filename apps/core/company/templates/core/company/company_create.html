@@ -73,13 +73,6 @@
                                    id="address"></textarea>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 col-lg-4">
-                        <div class="form-group">
-                            <label class="form-label required" for="idxCurrencyDefault">{% trans 'Primary currency' %} </label>
-                            <select required data-url="{% url 'CurrencyListAPI' %}" class="form-control select2" name="currency_mapped" id="idxCurrencyDefault"></select>
-                            <span class="text-danger small">{% trans 'This field cannot be changed after it has been saved.' %}</span>
-                        </div>
-                    </div>
                     <div hidden class="col-12">
                         <div class="form-group">
                             <label class="form-label" for="parent_company">{% trans 'Parent Company' %}</label>

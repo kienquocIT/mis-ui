@@ -11670,11 +11670,3 @@ msgstr "Bạn có chắc muốn xóa liên kết trạm?"
 #
 msgid "Add Company Address"
 msgstr "Thêm địa chỉ công ty"
-
-#
-msgid "This field cannot be changed."
-msgstr "Trường này không thể thay đổi."
-
-#
-msgid "This field cannot be changed after it has been saved."
-msgstr "Trường này không thể thay đổi sau khi được lưu."

@@ -54,7 +54,8 @@
     </form>
 
     {% include 'core/company/common/tabs.html' %}
-
+{% endblock %}
+{% block modalData %}
     <div class="modal fade" id="modal-company-address" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -123,7 +124,7 @@
     </div>
 
     <div class="modal fade" id="modal-function-number" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{% trans "Add Schema" %}</h5>
@@ -243,7 +244,7 @@
     </div>
 
     <div class="modal fade" id="modal-periods-create" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="min-width: 60%" role="document">
+        <div class="modal-dialog" style="min-width: 60%" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{% trans 'New period' %}</h5>

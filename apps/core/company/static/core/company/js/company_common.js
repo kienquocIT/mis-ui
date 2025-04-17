@@ -306,7 +306,7 @@ function loadFunctionNumberTable(option='detail', table_detail_data = []) {
     $('#function_number_table').DataTableDefault({
         rowIdx: true,
         scrollX: '100vw',
-        scrollY: '40vh',
+        scrollY: '26vh',
         scrollCollapse: true,
         paging: false,
         data: table_detail_data,
@@ -317,49 +317,41 @@ function loadFunctionNumberTable(option='detail', table_detail_data = []) {
                     return ``;
                 }
             }, {
-                data: 'function',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="text-primary"><b>${FunctionNumberTableData[row.function].function}</b></span>`;
+                    return `<span class="text-primary"><b>${FunctionNumberTableData[row?.['function']]?.['function']}</b></span>`;
                 }
             }, {
-                data: '',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    let disabled = '';
-                    if (option === 'detail') {
-                        disabled = 'disabled';
-                    }
                     let system = trans_script_ele.attr('data-trans-numbering0');
                     let user_defined = trans_script_ele.attr('data-trans-numbering1');
                     if (row?.['numbering_by']) {
-                        return `<select ${disabled} class="form-select numbering-by-selection">
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select numbering-by-selection">
                             <option value="0">${system}</option>
                             <option value="1" selected>${user_defined}</option>
                         </select>`;
                     } else {
-                        return `<select ${disabled} class="form-select numbering-by-selection">
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select numbering-by-selection">
                             <option value="0" selected>${system}</option>
                             <option value="1">${user_defined}</option>
                         </select>`;
                     }
                 }
             }, {
-                data: '',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (row.schema) {
-                        return `<span data-schema="${row.schema}" data-first-number="${row.first_number}" data-last-number="${row.last_number}" data-reset-frequency="${row.reset_frequency}" data-min-number-char="${row.min_number_char}" class="schema-show text-primary">${row.schema_text}</span>`;
+                    if (row?.['schema']) {
+                        return `<span data-schema="${row?.['schema']}" data-first-number="${row?.['first_number']}" data-last-number="${row?.['last_number']}" data-reset-frequency="${row?.['reset_frequency']}" data-min-number-char="${row?.['min_number_char']}" class="schema-show text-primary">${row?.['schema_text']}</span>`;
                     } else {
                         return `<span class="schema-show text-primary"></span>`;
                     }
                 }
             }, {
-                data: '',
-                className: 'wrap-text text-center',
+                className: 'wrap-text text-right',
                 render: (data, type, row) => {
                     if (option !== 'detail') {
-                        if (row.schema) {
+                        if (row?.['schema']) {
                             return `<span class="text-primary schema-custom" data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
                         } else {
                             return `<span class="text-primary schema-custom" hidden data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;

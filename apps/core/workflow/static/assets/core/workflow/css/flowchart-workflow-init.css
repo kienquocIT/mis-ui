@@ -158,13 +158,26 @@
     cursor: no-drop;
 }
 
+/*.cssAssociateLabel {*/
+/*    width: 13px;*/
+/*    height: 13px;*/
+/*    background: #7e96e8;*/
+/*    transition: transform .5s ease-in;*/
+/*}*/
+
 .cssAssociateLabel {
     width: 13px;
     height: 13px;
     background: #7e96e8;
-    transition: transform .5s ease-in;
-    /*border-radius: 5px;*/
+    transform: rotate(45deg) !important;
+    transition: transform 0.5s ease-in;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -6.5px; /* Half height to center */
+    margin-left: -6.5px; /* Half width to center */
 }
+
 
 .jtk-connector path:hover + .cssAssociateLabel {
     transform: scale(1.3);

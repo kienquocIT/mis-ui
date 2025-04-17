@@ -660,10 +660,6 @@ class JSPlumbsHandle {
         else if (target_elm) target_elm.html(strHTMLDragNode)
     };
 
-    render() {
-
-    }
-
     renderClones() {
         let assocList = $('#node-associate').val();
         if (assocList){

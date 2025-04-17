@@ -1244,14 +1244,22 @@ class NodeHandler {
                 msgFailed = "Create connection is failure";
                 break;
         }
-
         // Check same node
         if (node_input === node_output) {
             state = false;
             msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-4');
         }
-
-        // Check node collab
+        // Check connected before
+        let elm_focus = $('#node-associate');
+        if (elm_focus.val()) {
+            let current_data = JSON.parse(elm_focus.val());
+            let key = node_input + "_" + node_output;
+            if (current_data.hasOwnProperty(key)) {
+                state = false;
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-2');
+            }
+        }
+        // Check node collab type
         let dataNodeIn = FlowJsP.nodeData[node_input];
         let dataNodeOut = FlowJsP.nodeData[node_output];
         if (dataNodeOut?.['collaborators']?.['option'] === 1) {

@@ -183,7 +183,7 @@ class CommonHandler{
                     targets: 2,
                     width: '40%',
                     render: (data, type, row) => {
-                        return `<div>${row?.['purchase_order_mapped']?.['title']}</div>`
+                        return `<div>${row?.['purchase_order_mapped_data']?.['title']}</div>`
                     }
                 },
             ]
@@ -267,7 +267,6 @@ class CommonHandler{
         const apInvoiceId = this.$APInvoiceDetailDatatable.attr('data-id')
         const dataScript = $('#data-script')
         const dataApInvoiceDetailList = JSON.parse(dataScript.attr('data-apinvoice-detail-list'))
-        console.log(dataApInvoiceDetailList)
         const apDetailData = dataApInvoiceDetailList[apInvoiceId]
         if (apInvoiceId){
             let url = this.$APInvoiceDetailDatatable.attr('data-url').format_url_with_uuid(apInvoiceId)
@@ -286,7 +285,6 @@ class CommonHandler{
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             if (resp.data['ap_invoice_detail']){
-                                console.log(resp.data['ap_invoice_detail']?.['item_mapped'])
                                 return resp.data['ap_invoice_detail']?.['item_mapped']
                             }
                         }
@@ -305,7 +303,7 @@ class CommonHandler{
                         targets: 1,
                         width: '5%',
                         render: (data, type, row) => {
-                            return `<div>${row?.['quantity_import']}</div>`
+                            return `<div>${row?.['product_quantity']}</div>`
                         }
                     },
                     {
@@ -319,7 +317,7 @@ class CommonHandler{
                         targets: 3,
                         width: '15%',
                         render: (data, type, row) => {
-                            const totalValue = Number(row?.['product_subtotal_price'])
+                            const totalValue = Number(row?.['product_subtotal'])
                             return `<span class="mask-money total-value" data-init-money="${totalValue}"></span>`
                         }
                     },
@@ -327,7 +325,7 @@ class CommonHandler{
                         targets: 4,
                         width: '15%',
                         render: (data, type, row) => {
-                            const totalValueAfterTax = Number(row?.['product_subtotal_price']) + Number(row?.['product_tax_value'])
+                            const totalValueAfterTax = Number(row?.['product_subtotal']) + Number(row?.['product_tax_value'])
                             return `<span class="mask-money total-value-after-tax" data-init-money="${totalValueAfterTax}"></span>`
                         }
                     },
@@ -358,9 +356,19 @@ class CommonHandler{
                         render: (data, type, row) => {
                             const apInvoiceProdId = row?.['id']
                             let value = 0
-                            console.log(apDetailData)
                             if(apDetailData){
                                 value = apDetailData[apInvoiceProdId]
+                            } else {
+                               let dataFADetail = $('#data-script').attr('data-fixed-asset-detail')
+                                if (dataFADetail){
+                                    dataFADetail = JSON.parse(dataFADetail)
+                                }
+                                if(dataFADetail?.['ap_invoice_items']){
+                                    const fixedAssetAPInvoiceItem = dataFADetail?.['ap_invoice_items'].find(item=>item.ap_invoice_item_id=apInvoiceProdId)
+                                    if(fixedAssetAPInvoiceItem){
+                                        value= fixedAssetAPInvoiceItem?.['increased_FA_value']
+                                    }
+                                }
                             }
                             return `<input value="${value}" data-apinvoice-prod-id="${apInvoiceProdId}" type="text" data-id="${apInvoiceId}" class="mask-money form-control current-increased-fa">`
                         }

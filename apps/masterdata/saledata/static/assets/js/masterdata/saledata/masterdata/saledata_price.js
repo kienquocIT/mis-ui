@@ -59,21 +59,24 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    data: 'title',
-                    className: 'wrap-text w-35',
-                    render: (data) => {
-                        return `<b>${data}</b>`
-                    }
-                },
-                {
                     data: 'abbreviation',
                     className: 'wrap-text w-25',
                     render: (data, type, row) => {
-                        if (!row?.['is_default']) {
-                            return `<span class="text-primary">${data}</span></a>`
+                        if (row?.['is_default']) {
+                            return `<span class="badge badge-light w-70">${data}</span>`
                         } else {
-                            return `<span class="text-muted">${data}</span></a>`
+                            return `<span class="badge badge-primary w-70">${data}</span>`
                         }
+                    }
+                },
+                {
+                    data: 'title',
+                    className: 'wrap-text w-35',
+                    render: (data, type, row) => {
+                        if (!row?.['is_default']) {
+                            return `${data}`
+                        }
+                        return `<b>${data}</b>`
                     }
                 },
                 {

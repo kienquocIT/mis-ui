@@ -49,6 +49,7 @@
                                 <div class="form-group">
                                     <label class="form-label required"  for="idxCurrencyDefault">{% trans 'Primary currency' %} </label>
                                     <select class="form-control select2" required name="master_data_currency" id="idxCurrencyDefault"></select>
+                                    <span class="text-danger small">{% trans 'This data cannot be modified during the fiscal year.' %}</span>
                                 </div>
                             </div>
                         </div>
@@ -117,6 +118,9 @@
         </div>
         <div class="tab-pane fade" id="tab_inventory_management">
             <div class="row">
+                <div class="col-12 mb-3">
+                    <span class="text-danger">{% trans "If there are any transactions (e.g. goods receipt, delivery, etc.), the data below can't be edited during this fiscal year." %}</span>
+                </div>
                 <div class="col-12 col-md-3 col-lg-3">
                     <div class="form-group">
                         <label class="form-label required" for="default-inventory-value-method">{% trans 'Default inventory value method' %}</label>

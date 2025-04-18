@@ -23,13 +23,13 @@
             <div class="nav-header">
                 <span class="d-block mb-2">Spaces</span>
                 <div
-                                class="btn-group w-100"
+                                class="row btn-group w-100"
                                 id="menu-tenant"
                                 data-space-selected="{{ base.space_current_detail.code }}"
                         >
                             <button
                                     id="menu-tenant-text"
-                                    type="button" class="btn btn-outline-dark dropdown-toggle"
+                                    type="button" class="btn btn-primary dropdown-toggle"
                                     data-bs-toggle="dropdown"
                                     data-dropdown-animation aria-haspopup="true" aria-expanded="false"
                             >
@@ -40,7 +40,7 @@
                                 {% endif %}
                             </button>
                             <div
-                                    class="dropdown-menu dropdown-menu-dark" data-url="{% url 'SpaceChangeView' %}"
+                                    class="dropdown-menu border border-primary" data-url="{% url 'SpaceChangeView' %}"
                                     data-url-redirect="{% url 'HomeView' %}" data-method="PUT"
                             >
                                 {% csrf_token %}
@@ -48,7 +48,7 @@
                                     {% if item.child|length > 0 %}
                                         {% for item_child in item.child %}
                                             <a
-                                                    class="dropdown-item space-item {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
+                                                    class="dropdown-item space-item {% if base.space_current_detail.code == item_child.code %} text-primary {% endif %}"
                                                     data-space-code="{{ item_child.code }}"
                                                     data-space-name="{{ item_child.name }}"
                                                     href="#"
@@ -79,11 +79,11 @@
                         {% if item.child|length > 0 %}
                             <li class="nav-item">
                                 <a
-                                        class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
+                                        class="nav-link d-flex align-items-center gap-2" href="javascript:void(0);" data-bs-toggle="collapse"
                                         data-bs-target="#{{ item.code }}"
                                         aria-expanded="{% if item.expanded %}true{% else %}false{% endif %}"
                                 >
-                                <span class="nav-icon-wrap">
+                                <span class="nav-icon-wrap d-flex align-items-center justify-content-center min-w-25p">
                                     <span class="svg-icon menu-child-icon">
                                         {{ item.icon|safe }}
                                     </span>
@@ -95,8 +95,8 @@
                                         <ul class="nav flex-column">
                                             {% for child in item.child %}
                                                 <li class="nav-item" id="{{ child.code }}">
-                                                    <a class="nav-link" href="{{ child.url }}">
-                                                    <span class="nav-icon-wrap">
+                                                    <a class="nav-link d-flex align-items-center gap-2" href="{{ child.url }}">
+                                                    <span class="nav-icon-wrap d-flex align-items-center justify-content-center min-w-25p">
                                                         <span class="svg-icon menu-child-icon">
                                                             {{ child.icon|safe }}
                                                         </span>
@@ -113,8 +113,8 @@
                             </li>
                         {% else %}
                             <li class="nav-item" id="{{ item.code }}">
-                                <a class="nav-link" href="{{ item.url }}">
-                                <span class="nav-icon-wrap">
+                                <a class="nav-link d-flex align-items-center gap-2" href="{{ item.url }}">
+                                <span class="nav-icon-wrap d-flex align-items-center justify-content-center min-w-25p">
                                     <span class="svg-icon menu-child-icon">
                                         {{ item.icon|safe }}
                                     </span>

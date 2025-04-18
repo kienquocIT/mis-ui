@@ -237,8 +237,9 @@ $(document).ready(function () {
                             }
                         }, {
                             title: $transFact.attr('data-wait-complete'), // data: 'is_active',
+                            class: 'text-center',
                             render: (data, type, row, meta) => {
-                                return `<span class="p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-yellow-light-4">0</span>`;
+                                return `<span>0</span>`;
                             }
                         }, {
                             title: $transFact.attr('data-action'),

@@ -11682,3 +11682,7 @@ msgstr "Trường này không được sửa đổi trong suốt năm tài chín
 #
 msgid "If there are any transactions (e.g. goods receipt, delivery, etc.), the data below can't be edited during this fiscal year."
 msgstr "Nếu đã phát sinh giao dịch (ví dụ: nhập kho, giao hàng, v.v.), dữ liệu bên dưới sẽ không thể chỉnh sửa trong năm tài chính này."
+
+#
+msgid "Cash outflow type"
+msgstr "Loại phiếu thu"

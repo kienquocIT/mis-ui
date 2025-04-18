@@ -4,7 +4,7 @@
 class COFPageElements {
     constructor() {
         this.$title = $('#title')
-        this.$payment_type = $('#payment_type')
+        this.$cof_type = $('#cof_type')
         this.$supplier_space = $('.supplier-space')
         this.$customer_space = $('.customer-space')
         this.$employee_space = $('.employee-space')
@@ -26,6 +26,7 @@ class COFPageElements {
         this.$advance_for_supplier_value = $('#advance_for_supplier_value')
         this.$advance_for_supplier_table = $('#advance-to-supplier-table')
         this.$ap_invoice_table = $('#ap-invoice-table')
+        this.$advance_for_employee_value = $('#advance_for_employee_value')
         this.$detail_payment_value_modal = $('#detail-payment-value-modal')
         this.$detail_payment_table = $('#detail-payment-table')
         this.$total_payment = $('#total_payment')
@@ -444,17 +445,28 @@ class COFPageFunction {
     // function
     static RecalculateTotalPayment() {
         let total_payment = 0
-        total_payment += pageElements.$advance_for_supplier_value.attr('value') ? parseFloat(pageElements.$advance_for_supplier_value.attr('value')) : 0
-        const cof_value = $('#cof_type_label').attr('data-value')
-        if (cof_value === '0') {
-            pageElements.$advance_for_supplier_table.find('tbody tr').each(function () {
-                total_payment += $(this).find('.cash_out_value_advance').attr('value') ? parseFloat($(this).find('.cash_out_value_advance').attr('value')) : 0
-            })
+        if (pageElements.$cof_type.val() === '0') {
+            total_payment += pageElements.$advance_for_supplier_value.attr('value') ? parseFloat(pageElements.$advance_for_supplier_value.attr('value')) : 0
+            const cof_value = $('#cof_type_label').attr('data-value')
+            if (cof_value === '0') {
+                pageElements.$advance_for_supplier_table.find('tbody tr').each(function () {
+                    total_payment += $(this).find('.cash_out_value_advance').attr('value') ? parseFloat($(this).find('.cash_out_value_advance').attr('value')) : 0
+                })
+            }
+            else if (cof_value === '1') {
+                pageElements.$ap_invoice_table.find('tbody tr').each(function () {
+                    total_payment += $(this).find('.cash_out_value').attr('value') ? parseFloat($(this).find('.cash_out_value').attr('value')) : 0
+                })
+            }
         }
-        else if (cof_value === '1') {
-            pageElements.$ap_invoice_table.find('tbody tr').each(function () {
-                total_payment += $(this).find('.cash_out_value').attr('value') ? parseFloat($(this).find('.cash_out_value').attr('value')) : 0
-            })
+        else if (pageElements.$cof_type.val() === '1') {
+
+        }
+        else if (pageElements.$cof_type.val() === '2') {
+            total_payment += pageElements.$advance_for_employee_value.attr('value') ? parseFloat(pageElements.$advance_for_employee_value.attr('value')) : 0
+        }
+        else if (pageElements.$cof_type.val() === '3') {
+
         }
         pageElements.$total_payment.attr('value', total_payment)
         pageElements.$total_payment_modal.attr('value', pageElements.$total_payment.attr('value'))
@@ -501,48 +513,60 @@ class COFHandler {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['title'] = pageElements.$title.val()
-        frm.dataForm['supplier_id'] = pageElements.$supplier_name.attr('data-id')
+        frm.dataForm['cof_type'] = pageElements.$cof_type.val()
         frm.dataForm['posting_date'] = moment(pageElements.$posting_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
         frm.dataForm['document_date'] = moment(pageElements.$document_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
         frm.dataForm['description'] = pageElements.$description.val()
-        let cash_out_advance_for_supplier_data = []
-        let cash_out_ap_invoice_data = []
-        let payment_method_data = pageElements.$btn_modal_payment_method.attr('data-payment-method') ? JSON.parse(pageElements.$btn_modal_payment_method.attr('data-payment-method')) : {}
 
-        frm.dataForm['advance_for_supplier_value'] = pageElements.$advance_for_supplier_value.attr('value') ? pageElements.$advance_for_supplier_value.attr('value') : 0
-        const cof_value = $('#cof_type_label').attr('data-value')
-        if (cof_value === '0') {
-            cash_out_ap_invoice_data = []
-            pageElements.$advance_for_supplier_table.find('tbody tr').each(function () {
-                if ($(this).find('.select_row_advance_for_supplier').prop('checked')) {
-                    cash_out_advance_for_supplier_data.push({
-                        'purchase_order_stage_id': $(this).find('.select_row_advance_for_supplier').attr('data-advance-for-supplier-id'),
-                        'sum_balance_value': $(this).find('.recon_balance_value_advance').attr('data-init-money'),
-                        'sum_payment_value': $(this).find('.cash_out_value_advance').attr('value'),
-                    })
-                }
-            })
+        if (pageElements.$cof_type.val() === '0') {
+            frm.dataForm['supplier'] = pageElements.$supplier_name.attr('data-id') || null
+            let cash_out_advance_for_supplier_data = []
+            let cash_out_ap_invoice_data = []
+
+            frm.dataForm['advance_for_supplier_value'] = pageElements.$advance_for_supplier_value.attr('value') ? pageElements.$advance_for_supplier_value.attr('value') : 0
+            const cof_value = $('#cof_type_label').attr('data-value')
+            if (cof_value === '0') {
+                cash_out_ap_invoice_data = []
+                pageElements.$advance_for_supplier_table.find('tbody tr').each(function () {
+                    if ($(this).find('.select_row_advance_for_supplier').prop('checked')) {
+                        cash_out_advance_for_supplier_data.push({
+                            'purchase_order_stage_id': $(this).find('.select_row_advance_for_supplier').attr('data-advance-for-supplier-id') || null,
+                            'sum_balance_value': $(this).find('.recon_balance_value_advance').attr('data-init-money'),
+                            'sum_payment_value': $(this).find('.cash_out_value_advance').attr('value'),
+                        })
+                    }
+                })
+            } else if (cof_value === '1') {
+                cash_out_advance_for_supplier_data = []
+                pageElements.$ap_invoice_table.find('tbody tr').each(function () {
+                    if ($(this).find('.select_row_ap_invoice').prop('checked')) {
+                        let detail_payment = $(this).find('.btn_selected_payment_stage').attr('data-detail-payment')
+                        cash_out_ap_invoice_data.push({
+                            'ap_invoice_id': $(this).find('.select_row_ap_invoice').attr('data-ap-invoice-id') || null,
+                            'sum_balance_value': $(this).find('.recon_balance_value').attr('data-init-money'),
+                            'sum_payment_value': $(this).find('.cash_out_value').attr('value'),
+                            'discount_payment': 0,
+                            'discount_value': 0,
+                            'detail_payment': detail_payment ? JSON.parse(detail_payment) : []
+                        })
+                    }
+                })
+            }
+
+            frm.dataForm['cash_out_advance_for_supplier_data'] = cash_out_advance_for_supplier_data
+            frm.dataForm['cash_out_ap_invoice_data'] = cash_out_ap_invoice_data
         }
-        else if (cof_value === '1') {
-            cash_out_advance_for_supplier_data = []
-            pageElements.$ap_invoice_table.find('tbody tr').each(function () {
-                if ($(this).find('.select_row_ap_invoice').prop('checked')) {
-                    let detail_payment = $(this).find('.btn_selected_payment_stage').attr('data-detail-payment')
-                    cash_out_ap_invoice_data.push({
-                        'ap_invoice_id': $(this).find('.select_row_ap_invoice').attr('data-ap-invoice-id'),
-                        'sum_balance_value': $(this).find('.recon_balance_value').attr('data-init-money'),
-                        'sum_payment_value': $(this).find('.cash_out_value').attr('value'),
-                        'discount_payment': 0,
-                        'discount_value': 0,
-                        'detail_payment': detail_payment ? JSON.parse(detail_payment) : []
-                    })
-                }
-            })
+        else if (pageElements.$cof_type.val() === '1') {
+            frm.dataForm['advance_for_employee_value'] = pageElements.$advance_for_employee_value.val()
+        }
+        else if (pageElements.$cof_type.val() === '2') {
+
+        }
+        else if (pageElements.$cof_type.val() === '3') {
+
         }
 
-        frm.dataForm['cash_out_advance_for_supplier_data'] = cash_out_advance_for_supplier_data
-        frm.dataForm['cash_out_ap_invoice_data'] = cash_out_ap_invoice_data
-        frm.dataForm['payment_method_data'] = payment_method_data
+        frm.dataForm['payment_method_data'] = pageElements.$btn_modal_payment_method.attr('data-payment-method') ? JSON.parse(pageElements.$btn_modal_payment_method.attr('data-payment-method')) : {}
 
         // console.log(frm)
         return frm
@@ -561,77 +585,88 @@ class COFHandler {
                     // console.log(data)
 
                     pageElements.$title.val(data?.['title'])
+                    pageElements.$cof_type.val(data?.['cof_type'])
                     pageElements.$posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     pageElements.$document_date.val(moment(data?.['document_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
-                    pageElements.$supplier_name.val((data?.['supplier_data'] || {})?.['name'] || '')
-                    pageElements.$supplier_name.attr('data-id', (data?.['supplier_data'] || {})?.['id'] || '')
                     pageElements.$description.val(data?.['description'])
 
-                    pageElements.$advance_for_supplier_value.attr('value', data?.['advance_for_supplier_value'] ? data?.['advance_for_supplier_value'] : 0)
-
-                    if (data?.['system_status'] === 3) {
-                        if (data?.['cash_out_advance_for_supplier_data'].length === 0 && data?.['cash_out_ap_invoice_data'].length === 0) {
-                            // phiếu đã duyệt nhưng chỉ chi tạm ứng không theo hđ
-                            COFPageFunction.LoadAdvanceToSupplierTable()
-                            COFPageFunction.LoadAPInvoiceTable()
+                    if (pageElements.$cof_type.val() === '0') {
+                        let supplier_data = data?.['supplier_data'] || {}
+                        pageElements.$supplier_name.val(supplier_data?.['name'] || '')
+                        pageElements.$supplier_name.attr('data-id', supplier_data?.['id'] || '')
+                        pageElements.$advance_for_supplier_value.attr('value', data?.['advance_for_supplier_value'] ? data?.['advance_for_supplier_value'] : 0)
+                        if (data?.['system_status'] === 3) {
+                            if (data?.['cash_out_advance_for_supplier_data'].length === 0 && data?.['cash_out_ap_invoice_data'].length === 0) {
+                                // phiếu đã duyệt nhưng chỉ chi tạm ứng không theo hđ
+                                COFPageFunction.LoadAdvanceToSupplierTable()
+                                COFPageFunction.LoadAPInvoiceTable()
+                            }
+                            else if (data?.['cash_out_advance_for_supplier_data'].length > 0) {
+                                $('#cof_type_label').text($('#cof_type .dropdown-item:eq(0)').text()).attr('data-value', '0')
+                                $('#area_table_advance_to_supplier').prop('hidden', false)
+                                $('#area_table_ap_invoice').prop('hidden', true)
+                                // nếu chi tạm ứng theo hđ
+                                COFPageFunction.LoadAdvanceToSupplierTable(
+                                    {
+                                        'purchase_order__supplier_id': pageElements.$supplier_name.attr('data-id'),
+                                    },
+                                    data?.['cash_out_advance_for_supplier_data'],
+                                    data?.['system_status'] === 3
+                                )
+                                COFPageFunction.LoadAPInvoiceTable()
+                            }
+                            else if (data?.['cash_out_ap_invoice_data'].length > 0) {
+                                $('#cof_type_label').text($('#cof_type .dropdown-item:eq(1)').text()).attr('data-value', '1')
+                                $('#area_table_advance_to_supplier').prop('hidden', true)
+                                $('#area_table_ap_invoice').prop('hidden', false)
+                                // nếu chi theo hóa đơn
+                                COFPageFunction.LoadAdvanceToSupplierTable()
+                                COFPageFunction.LoadAPInvoiceTable(
+                                    {
+                                        'supplier_mapped_id': pageElements.$supplier_name.attr('data-id'),
+                                    },
+                                    data?.['cash_out_ap_invoice_data'],
+                                    data?.['system_status'] === 3
+                                )
+                            }
                         }
-                        else if (data?.['cash_out_advance_for_supplier_data'].length > 0) {
-                            $('#cof_type_label').text($('#cof_type .dropdown-item:eq(0)').text()).attr('data-value', '0')
-                            $('#area_table_advance_to_supplier').prop('hidden', false)
-                            $('#area_table_ap_invoice').prop('hidden', true)
-                            // nếu chi tạm ứng theo hđ
+                        else {
+                            if (data?.['cash_out_advance_for_supplier_data'].length > 0) {
+                                $('#cof_type_label').text($('#cof_type .dropdown-item:eq(0)').text()).attr('data-value', '0')
+                                $('#area_table_advance_to_supplier').prop('hidden', false)
+                                $('#area_table_ap_invoice').prop('hidden', true)
+                            }
+                            else if (data?.['cash_out_ap_invoice_data'].length > 0) {
+                                $('#cof_type_label').text($('#cof_type .dropdown-item:eq(1)').text()).attr('data-value', '1')
+                                $('#area_table_advance_to_supplier').prop('hidden', true)
+                                $('#area_table_ap_invoice').prop('hidden', false)
+                            }
                             COFPageFunction.LoadAdvanceToSupplierTable(
                                 {
                                     'purchase_order__supplier_id': pageElements.$supplier_name.attr('data-id'),
+                                    'cash_outflow_done': false
                                 },
                                 data?.['cash_out_advance_for_supplier_data'],
                                 data?.['system_status'] === 3
                             )
-                            COFPageFunction.LoadAPInvoiceTable()
-                        }
-                        else if (data?.['cash_out_ap_invoice_data'].length > 0) {
-                            $('#cof_type_label').text($('#cof_type .dropdown-item:eq(1)').text()).attr('data-value', '1')
-                            $('#area_table_advance_to_supplier').prop('hidden', true)
-                            $('#area_table_ap_invoice').prop('hidden', false)
-                            // nếu chi theo hóa đơn
-                            COFPageFunction.LoadAdvanceToSupplierTable()
                             COFPageFunction.LoadAPInvoiceTable(
                                 {
                                     'supplier_mapped_id': pageElements.$supplier_name.attr('data-id'),
+                                    'cash_outflow_done': false
                                 },
                                 data?.['cash_out_ap_invoice_data'],
                                 data?.['system_status'] === 3
                             )
                         }
                     }
-                    else {
-                        if (data?.['cash_out_advance_for_supplier_data'].length > 0) {
-                            $('#cof_type_label').text($('#cof_type .dropdown-item:eq(0)').text()).attr('data-value', '0')
-                            $('#area_table_advance_to_supplier').prop('hidden', false)
-                            $('#area_table_ap_invoice').prop('hidden', true)
-                        }
-                        else if (data?.['cash_out_ap_invoice_data'].length > 0) {
-                            $('#cof_type_label').text($('#cof_type .dropdown-item:eq(1)').text()).attr('data-value', '1')
-                            $('#area_table_advance_to_supplier').prop('hidden', true)
-                            $('#area_table_ap_invoice').prop('hidden', false)
-                        }
-                        COFPageFunction.LoadAdvanceToSupplierTable(
-                            {
-                                'purchase_order__supplier_id': pageElements.$supplier_name.attr('data-id'),
-                                'cash_outflow_done': false
-                            },
-                            data?.['cash_out_advance_for_supplier_data'],
-                            data?.['system_status'] === 3
-                        )
-                        COFPageFunction.LoadAPInvoiceTable(
-                            {
-                                'supplier_mapped_id': pageElements.$supplier_name.attr('data-id'),
-                                'cash_outflow_done': false
-                            },
-                            data?.['cash_out_ap_invoice_data'],
-                            data?.['system_status'] === 3
-                        )
+                    if (pageElements.$cof_type.val() === '1') {}
+                    if (pageElements.$cof_type.val() === '2') {
+                        let employee_data = data?.['employee_data'] || {}
+                        pageElements.$employee_name.val(employee_data?.['full_name'] || '' + '(' + employee_data?.['group']?.['title'] || '' + ')')
+                        pageElements.$employee_name.attr('data-id', employee_data?.['id'] || '')
+                        pageElements.$advance_for_employee_value.attr('value', data?.['advance_for_employee_value'] ? data?.['advance_for_employee_value'] : 0)
                     }
+                    if (pageElements.$cof_type.val() === '3') {}
 
                     pageElements.$total_payment.attr('value', data?.['total_value'])
 
@@ -665,7 +700,7 @@ class COFHandler {
  */
 class COFEventHandler {
     static InitPageEven() {
-        pageElements.$payment_type.on('change', function () {
+        pageElements.$cof_type.on('change', function () {
             if ($(this).val() === '0') {
                 pageElements.$supplier_space.prop('hidden', false)
                 pageElements.$customer_space.prop('hidden', true)
@@ -681,7 +716,7 @@ class COFEventHandler {
                 pageElements.$customer_space.prop('hidden', true)
                 pageElements.$employee_space.prop('hidden', false)
             }
-            else {
+            else if ($(this).val() === '3') {
                 pageElements.$supplier_space.prop('hidden', true)
                 pageElements.$customer_space.prop('hidden', true)
                 pageElements.$employee_space.prop('hidden', true)
@@ -851,6 +886,11 @@ class COFEventHandler {
             $('#cof_type_label').text($(this).text()).attr('data-value', $(this).attr('data-value'))
             $('#area_table_advance_to_supplier').prop('hidden', $(this).attr('data-value') !== '0')
             $('#area_table_ap_invoice').prop('hidden', $(this).attr('data-value') !== '1')
+        })
+
+        // thay đổi giá trị tạm ứng cho nhân viên
+        pageElements.$advance_for_employee_value.on('change', function () {
+            COFPageFunction.RecalculateTotalPayment()
         })
     }
 }

@@ -9177,6 +9177,10 @@ msgid "Must go through approval node"
 msgstr "Phải đi qua trạm chấp thuận"
 
 #
+msgid "Already connected"
+msgstr "Đã liên kết trước đó"
+
+#
 msgid "No return at approval node"
 msgstr "Không quay lại tại trạm chấp thuận"
 

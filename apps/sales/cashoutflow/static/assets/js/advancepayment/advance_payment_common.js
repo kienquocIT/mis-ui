@@ -1441,7 +1441,6 @@ class APAction {
             let tax_selected = JSON.parse($('#' + tr.find('.expense-tax-select-box').attr('data-idx-data-loaded')).text())[tr.find('.expense-tax-select-box').val()];
             tax_rate = tax_selected?.['rate'];
         }
-        $.fn.initMaskMoney2();
         if (unit_price.attr('value') && quantity.val()) {
             let subtotal_value = parseFloat(unit_price.attr('value')) * parseFloat(quantity.val())
             subtotal.attr('value', subtotal_value);

@@ -468,7 +468,7 @@ class HomeChart {
                         formatter: function (value) {
                             let txt = value
                             if (value) {
-                                txt = newMoney.applyConfig(value)
+                                txt = newMoney.applyConfig('', value)
                                 if (dataconfig?.['suffix']) txt = txt.replace(dataconfig?.['suffix'],'')
                                 else txt = txt.replace(dataconfig?.['prefix'], '')
                             }

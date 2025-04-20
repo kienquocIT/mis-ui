@@ -10,12 +10,14 @@
                     <span class="nav-link-text">{% trans 'Line Detail' %}</span>
                 </a>
             </li>
+            {% if pk %}
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_activity" id="link-tab-sale">
                     <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-ui-checks-grid"></i></span></span>
                     <span class="nav-link-text">{% trans 'Activities' %}</span>
                 </a>
             </li>
+            {% endif %}
         </ul>
     </div>
 </div>
@@ -123,25 +125,25 @@
         <div class="row">
             <div class="col-12">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-12">
                         <label class="form-label" for="lead-note">{% trans "Note" %}</label>
                     </div>
-                    <div class="col-6 text-right">
+                    <div class="col-12">
                         <button type="button" id="btn-add-note" class="mb-2 btn btn-outline-primary btn-xs">
                             <i class="fas fa-plus-circle"></i>
                             {% trans 'Add new note' %}
                         </button>
                     </div>
                 </div>
-                <div class="row" style="position: relative; overflow: auto; max-height: 25vh;">
-                    <div class="col-12" id="note-area">
-                        <textarea class="form-control lead-note mb-2" placeholder="{% trans 'Note' %} 1"></textarea>
-                    </div>
+                <div class="row" style="position: relative; overflow: auto; max-height: 22vh;">
+                    <div class="col-12" id="note-area"></div>
                 </div>
             </div>
         </div>
     </div>
+    {% if pk %}
     <div class="tab-pane fade" id="tab_activity">
         {% include 'sales/lead/activities/activities_collapse.html' %}
     </div>
+    {% endif %}
 </div>

@@ -3250,8 +3250,8 @@ class QuotationDataTableHandle {
                 }
             },
             drawCallback: function () {
+                QuotationDataTableHandle.dtbProductHDCustom();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    QuotationDataTableHandle.dtbProductHDCustom();
                     // set again WF runtime
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
@@ -3709,8 +3709,8 @@ class QuotationDataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
+                QuotationDataTableHandle.dtbExpenseHDCustom();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    QuotationDataTableHandle.dtbExpenseHDCustom();
                     // set again WF runtime
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
@@ -4365,8 +4365,8 @@ class QuotationDataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
+                QuotationDataTableHandle.dtbPaymentHDCustom();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    QuotationDataTableHandle.dtbPaymentHDCustom();
                     // set again WF runtime
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
@@ -4558,9 +4558,7 @@ class QuotationDataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
-                if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    QuotationDataTableHandle.dtbInvoiceHDCustom();
-                }
+                QuotationDataTableHandle.dtbInvoiceHDCustom();
             },
         });
     };
@@ -4957,7 +4955,11 @@ class QuotationDataTableHandle {
                 if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                     dataZone = "sale_order_products_data";
                 }
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
+                let hidden = "";
+                if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -5025,7 +5027,11 @@ class QuotationDataTableHandle {
                 if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                     dataZone = "sale_order_expenses_data";
                 }
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
+                let hidden = "";
+                if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -5076,6 +5082,10 @@ class QuotationDataTableHandle {
                 if (!$termMD.val()) {
                     hiddenAdd = "";
                 }
+                if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hiddenLoad = "hidden";
+                    hiddenAdd = "hidden";
+                }
                 let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
                                     <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-detail')}</span></span>
                                 </button>
@@ -5117,7 +5127,11 @@ class QuotationDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-invoice').length) {
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" data-zone="sale_order_payment_stage">
+                let hidden = "";
+                if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" data-zone="sale_order_payment_stage" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(

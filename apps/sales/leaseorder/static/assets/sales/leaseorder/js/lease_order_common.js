@@ -3956,9 +3956,7 @@ class LeaseOrderDataTableHandle {
                 }
             },
             drawCallback: function () {
-                if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    LeaseOrderDataTableHandle.dtbProductHDCustom();
-                }
+                LeaseOrderDataTableHandle.dtbProductHDCustom();
             },
         });
     };
@@ -4452,9 +4450,7 @@ class LeaseOrderDataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
-                if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    LeaseOrderDataTableHandle.dtbExpenseHDCustom();
-                }
+                LeaseOrderDataTableHandle.dtbExpenseHDCustom();
             },
         });
     };
@@ -5555,8 +5551,8 @@ class LeaseOrderDataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
+                LeaseOrderDataTableHandle.dtbPaymentHDCustom();
                 if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    LeaseOrderDataTableHandle.dtbPaymentHDCustom();
                     // set again WF runtime
                     LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
                 }
@@ -5748,9 +5744,7 @@ class LeaseOrderDataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
-                if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    LeaseOrderDataTableHandle.dtbInvoiceHDCustom();
-                }
+                LeaseOrderDataTableHandle.dtbInvoiceHDCustom();
             },
         });
     };
@@ -6011,7 +6005,11 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-product-quotation-create').length && !$('#btn-add-product-group-quotation').length && !$('#btn-check-promotion').length && !$('#btn-add-shipping').length) {
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_products_data">
+                let hidden = "";
+                if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_products_data" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -6072,7 +6070,11 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-expense-quotation-create').length && !$('#btn-add-labor-quotation-create').length) {
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_expenses_data">
+                let hidden = "";
+                if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_expenses_data" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -6159,6 +6161,10 @@ class LeaseOrderDataTableHandle {
                 if (!$termMD.val()) {
                     hiddenAdd = "";
                 }
+                if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hiddenLoad = "hidden";
+                    hiddenAdd = "hidden";
+                }
                 let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
                                     <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-detail')}</span></span>
                                 </button>
@@ -6200,7 +6206,11 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-invoice').length) {
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" data-zone="sale_order_payment_stage">
+                let hidden = "";
+                if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" data-zone="sale_order_payment_stage" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(

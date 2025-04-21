@@ -23,7 +23,7 @@
             <div class="nav-header">
                 <span class="d-block mb-2">Spaces</span>
                 <div
-                                class="row btn-group w-100"
+                                class="d-flex justify-content-center btn-group w-100"
                                 id="menu-tenant"
                                 data-space-selected="{{ base.space_current_detail.code }}"
                         >
@@ -40,7 +40,7 @@
                                 {% endif %}
                             </button>
                             <div
-                                    class="dropdown-menu border border-primary" data-url="{% url 'SpaceChangeView' %}"
+                                    class="dropdown-menu w-230p border border-primary" data-url="{% url 'SpaceChangeView' %}"
                                     data-url-redirect="{% url 'HomeView' %}" data-method="PUT"
                             >
                                 {% csrf_token %}

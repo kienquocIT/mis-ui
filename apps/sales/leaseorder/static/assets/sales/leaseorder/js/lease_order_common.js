@@ -6075,7 +6075,7 @@ class LeaseOrderDataTableHandle {
                     hidden = "hidden";
                 }
                 let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_expenses_data" ${hidden}>
-                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
                                     <a class="dropdown-item" href="#" id="btn-add-expense-quotation-create"><i class="dropdown-icon fas fa-hand-holding-usd"></i><span class="mt-2">${LeaseOrderLoadDataHandle.transEle.attr('data-add-expense')}</span></a>
@@ -6744,17 +6744,12 @@ class LeaseOrderIndicatorHandle {
                 dataDetail = JSON.parse(eleDetail.val());
             }
         }
-        // check zone before calculate
+        // Replace zones hidden with data in detail
         let keyHidden = WFRTControl.getZoneHiddenKeyData();
         if (keyHidden) {
             if (keyHidden.length > 0) {
-                // special case: tab cost depend on tab detail
-                if (!keyHidden.includes('lease_products_data')) {
-                    LeaseOrderLoadDataHandle.loadDataTableCost();
-                    LeaseOrderSubmitHandle.setupDataSubmit(_form, 1);
-                    data_form = _form.dataForm;
-                    LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
-                }
+                let keyHiddenRelated = WFRTControl.getZoneHiddenKeyRelatedData();
+                keyHidden = keyHidden.concat(keyHiddenRelated);
                 // set data detail to zones hidden
                 if (data_form && dataDetail) {
                     for (let key of keyHidden) {

@@ -3243,6 +3243,14 @@ class WFRTControl {
         return [];
     }
 
+    static getZoneHiddenKeyRelatedData() {
+        let itemEle = $('#idxZonesHiddenKeyRelatedData');
+        if (itemEle && itemEle.length > 0) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    }
+
     static setRuntimeDoc(docData) {
         if (typeof docData === 'object' && docData !== null) {
             let $RuntimeDoc = $('#idxRuntimeDoc');
@@ -3285,12 +3293,15 @@ class WFRTControl {
 
     static setZoneHiddenData(zonesHiddenData) {
         let body_fields = [];
+        let body_fields_related = [];
         if (zonesHiddenData && Array.isArray(zonesHiddenData)) {
             zonesHiddenData.map((item) => {
                 body_fields.push(item.code);
+                body_fields_related = body_fields_related.concat(item?.['code_related']);
             });
             let $hiddenData = $('#idxZonesHiddenData');
             let $hiddenKey = $('#idxZonesHiddenKeyData');
+            let $hiddenRelate = $('#idxZonesHiddenKeyRelatedData');
             if ($hiddenData && $hiddenData.length > 0) {
                 $hiddenData.empty().html(`${JSON.stringify(zonesHiddenData)}`);
             } else {
@@ -3300,6 +3311,11 @@ class WFRTControl {
                 $hiddenKey.empty().html(`${JSON.stringify(body_fields)}`);
             } else {
                 $('html').append(`<script class="hidden" id="idxZonesHiddenKeyData">${JSON.stringify(body_fields)}</script>`);
+            }
+            if ($hiddenRelate && $hiddenRelate.length > 0) {
+                $hiddenRelate.empty().html(`${JSON.stringify(body_fields_related)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesHiddenKeyRelatedData">${JSON.stringify(body_fields_related)}</script>`);
             }
         }
     }

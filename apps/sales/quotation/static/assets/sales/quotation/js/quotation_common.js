@@ -5738,17 +5738,12 @@ class indicatorHandle {
                 dataDetail = JSON.parse(eleDetail.val());
             }
         }
-        // check zone before calculate
+        // Replace zones hidden with data in detail
         let keyHidden = WFRTControl.getZoneHiddenKeyData();
         if (keyHidden) {
             if (keyHidden.length > 0) {
-                // special case: tab cost depend on tab detail
-                if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
-                    QuotationLoadDataHandle.loadDataTableCost();
-                    QuotationSubmitHandle.setupDataSubmit(_form, 1);
-                    data_form = _form.dataForm;
-                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
-                }
+                let keyHiddenRelated = WFRTControl.getZoneHiddenKeyRelatedData();
+                keyHidden = keyHidden.concat(keyHiddenRelated);
                 // set data detail to zones hidden
                 if (data_form && dataDetail) {
                     for (let key of keyHidden) {

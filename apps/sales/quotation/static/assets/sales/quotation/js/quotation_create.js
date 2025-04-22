@@ -363,6 +363,7 @@ $(function () {
             if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
                 QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableCost, row);
+                QuotationStoreDataHandle.storeDtbData(2);
             }
         });
 
@@ -866,30 +867,13 @@ $(function () {
                  is_sale_order = true;
              }
              let _form = new SetupFormSubmit(QuotationLoadDataHandle.$form);
-            // Load again indicator when Submit
-            indicatorHandle.loadIndicator();
-            let result = QuotationSubmitHandle.setupDataSubmit(_form);
-            if (result === false) {
-                return false;
-            }
-            let keyHidden = WFRTControl.getZoneHiddenKeyData();
-            if (keyHidden) {
-                if (keyHidden.length > 0) {
-                    // special case: loadCost if products is not in hidden zones
-                    if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
-                        QuotationStoreDataHandle.storeDtbData(1);
-                        QuotationStoreDataHandle.storeDtbData(2);
-                        QuotationLoadDataHandle.loadDataTableCost();
-                        QuotationSubmitHandle.setupDataSubmit(_form);
-                        QuotationLoadDataHandle.loadSetWFRuntimeZone();
-                    }
-                } else {
-                    QuotationStoreDataHandle.storeDtbData(1);
-                    QuotationStoreDataHandle.storeDtbData(2);
-                    QuotationLoadDataHandle.loadDataTableCost();
-                    QuotationSubmitHandle.setupDataSubmit(_form);
-                }
-            }
+             // Load again indicator when Submit
+             indicatorHandle.loadIndicator();
+             QuotationLoadDataHandle.loadDataTableCost();
+             let result = QuotationSubmitHandle.setupDataSubmit(_form);
+             if (result === false) {
+                 return false;
+             }
             let submitFields = [
                 // process
                 'process',

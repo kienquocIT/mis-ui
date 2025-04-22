@@ -443,7 +443,7 @@ $(function () {
                     LeaseOrderLoadDataHandle.loadShowDepreciation(btnDepreciationEle);
                     LeaseOrderLoadDataHandle.loadSaveDepreciation();
                 }
-                QuotationStoreDataHandle.storeDtbData(2);
+                LeaseOrderStoreDataHandle.storeDtbData(2);
             }
         });
 

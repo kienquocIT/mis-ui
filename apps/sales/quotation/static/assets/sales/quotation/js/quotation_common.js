@@ -2318,6 +2318,8 @@ class QuotationLoadDataHandle {
         // Set form novalidate
         QuotationLoadDataHandle.$form[0].setAttribute('novalidate', 'novalidate');
         QuotationLoadDataHandle.loadCheckDataCopy();
+        // Reinit dtb payment
+        QuotationLoadDataHandle.loadReInitDataTablePayment();
         // set again WF runtime
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
         return true;

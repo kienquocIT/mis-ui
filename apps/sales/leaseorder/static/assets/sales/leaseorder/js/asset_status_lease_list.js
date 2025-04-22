@@ -66,14 +66,20 @@ $(function () {
                         targets: 7,
                         width: '5%',
                         render: (data, type, row) => {
-                            return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_order_data']?.['product_lease_start_date'])}</span>`;
+                            if (row?.['lease_order_data']?.['product_lease_start_date']) {
+                               return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_order_data']?.['product_lease_start_date'])}</span>`;
+                            }
+                            return ``;
                         }
                     },
                     {
                         targets: 8,
                         width: '5%',
                         render: (data, type, row) => {
-                            return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_order_data']?.['product_lease_end_date'])}</span>`;
+                            if (row?.['lease_order_data']?.['product_lease_end_date']) {
+                                return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_order_data']?.['product_lease_end_date'])}</span>`;
+                            }
+                            return ``;
                         }
                     },
                     {

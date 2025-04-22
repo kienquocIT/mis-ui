@@ -233,7 +233,7 @@ $(function () {
                 textFilter$.css('display', 'flex');
                 // Check if the button already exists before appending
                 if (!$('#btn-open-filter').length) {
-                    let $group = $(`<button type="button" class="btn btn-outline-secondary btn-square" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                    let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
                                         <span><span class="icon"><i class="fas fa-filter"></i></span><span>${eleTrans.attr('data-filter')}</span></span>
                                     </button>`);
                     textFilter$.append(

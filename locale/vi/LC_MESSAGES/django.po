@@ -11686,3 +11686,7 @@ msgstr "Nếu đã phát sinh giao dịch (ví dụ: nhập kho, giao hàng, v.v
 #
 msgid "Cash outflow type"
 msgstr "Loại phiếu thu"
+
+#
+msgid "Lease asset list"
+msgstr "Tài sản cho thuê"

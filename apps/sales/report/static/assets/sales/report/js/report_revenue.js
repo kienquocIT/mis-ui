@@ -55,21 +55,26 @@ $(function () {
                         targets: 2,
                         width: '10%',
                         render: (data, type, row) => {
-                            let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order']?.['id']);
-                            let title = row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : '';
-                            if (row?.['quotation']?.['title']) {
-                                link = $urlFact.data('quotation-detail').format_url_with_uuid(row?.['quotation']?.['id']);
-                                title = row?.['quotation']?.['title'] ? row?.['quotation']?.['title'] : '';
+                            let text = "";
+                            if (row?.['sale_order']?.['title']) {
+                                text = $transFact.attr('data-filter-so');
                             }
-                            return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
+                            if (row?.['lease_order']?.['title']) {
+                                text = $transFact.attr('data-filter-lo');
+                            }
+                            return `<span>${text}</span>`;
                         }
                     },
                     {
                         targets: 3,
                         width: '10%',
                         render: (data, type, row) => {
-                            let link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order']?.['id']);
-                            let title = row?.['lease_order']?.['title'] ? row?.['lease_order']?.['title'] : '';
+                            let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order']?.['id']);
+                            let title = row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : '';
+                            if (row?.['lease_order']?.['id'] && row?.['lease_order']?.['title']) {
+                                link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order']?.['id']);
+                                title = row?.['lease_order']?.['title'] ? row?.['lease_order']?.['title'] : '';
+                            }
                             return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
                         }
                     },
@@ -141,7 +146,7 @@ $(function () {
                 textFilter$.css('display', 'flex');
                 // Check if the button already exists before appending
                 if (!$('#btn-open-filter').length) {
-                    let $group = $(`<button type="button" class="btn btn-outline-secondary btn-square" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                    let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
                                         <span><span class="icon"><i class="fas fa-filter"></i></span><span>${$transFact.attr('data-filter')}</span></span>
                                     </button>`);
                     textFilter$.append(

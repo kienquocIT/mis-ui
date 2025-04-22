@@ -11689,4 +11689,16 @@ msgstr "Loại phiếu thu"
 
 #
 msgid "Lease asset list"
-msgstr "Tài sản cho thuê"
+msgstr "Tài sản công cụ cho thuê"
+
+#
+msgid "Leased"
+msgstr "Cho thuê"
+
+#
+msgid "Contract name"
+msgstr "Tên hợp đồng"
+
+#
+msgid "Contract code"
+msgstr "Mã hợp đồng"

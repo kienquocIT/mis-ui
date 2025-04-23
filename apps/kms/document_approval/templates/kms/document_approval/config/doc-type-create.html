@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Document Type create' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form_doc_type">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form id="form_doc_type" data-method="POST" data-url="{% url 'DocumentTypeConfigCreateAPI' %}"
+          data-url-redirect="{% url 'DocumentTypeConfigList' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label" for="txt_code">{% trans 'Code' %}</label>
+                <input type="text" class="form-control" name="code"
+                       id="txt_code">
+            </div>
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label" for="txt_name">{% trans 'Name' %}</label>
+                <input type="text" class="form-control" name="name"
+                       id="txt_name">
+            </div>
+            <div class="col-md-12 col-lg-6 form-group">
+                <label for="select-box-numbering" class="form-label">{% trans 'Numbering' %}</label>
+                <select class="form-select" id="select-box-numbering"
+                        data-url=""
+                        data-method="GET"
+                        data-keyResp=""
+                        name="numbering"
+                >
+                </select>
+            </div>
+            <div class="col-md-12 col-lg-6 form-group">
+                <label for="select-box-folder" class="form-label">{% trans 'Folder' %}</label>
+                <select class="form-select" id="select-box-folder"
+                        data-url="{% url 'FolderListAPI' %}"
+                        data-method="GET"
+                        data-keyResp="folder_list"
+                        name="folder"
+                >
+                </select>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory">
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/kms/doc-type/js/config.js' %}"></script>
+{% endblock %}

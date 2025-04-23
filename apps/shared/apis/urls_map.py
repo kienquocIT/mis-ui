@@ -911,3 +911,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GROUP_ORDER_PRODUCT_LIST = StringUrl('group-order/product/list')
     GROUP_ORDER_LIST = StringUrl('group-order/list')
     GROUP_ORDER_DETAIL = StringUrl('group-order/detail')
+
+    #  KMS
+    KMS_DOC_APPROVAL_CONFIG_LIST = StringUrl('kms/doc-approval/doc-type-list')
+    KMS_DOC_APPROVAL_CONFIG_DETAIL = StringUrl('kms/doc-approval/doc-type-detail/{pk}')

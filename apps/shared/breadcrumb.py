@@ -488,6 +488,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Group Order
     GROUP_ORDER_PAGE = BreadcrumbChildren(_('Group order'), 'GroupOrderList')
 
+    # KMS
+    KMS_DOC_TYPE_LIST = BreadcrumbChildren(_('Document type'), 'DocumentTypeConfigList')
+
+
 class BreadcrumbView:
     """menu vertical item view"""
 
@@ -1315,3 +1319,11 @@ class BreadcrumbView:
     GROUP_ORDER_CREATE_PAGE = GROUP_ORDER_LIST + [BreadcrumbItem.BASTION_CREATE]
     GROUP_ORDER_DETAIL_PAGE = GROUP_ORDER_LIST + [BreadcrumbItem.BASTION_DETAIL]
     GROUP_ORDER_UPDATE_PAGE = GROUP_ORDER_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    KMS_DOC_TYPE_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.KMS_DOC_TYPE_LIST
+    ]
+    KMS_DOC_TYPE_CREATE_PAGE = KMS_DOC_TYPE_LIST + [BreadcrumbItem.BASTION_CREATE]
+    KMS_DOC_TYPE_DETAIL_PAGE = KMS_DOC_TYPE_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    KMS_DOC_TYPE_UPDATE_PAGE = KMS_DOC_TYPE_LIST + [BreadcrumbItem.BASTION_UPDATE]

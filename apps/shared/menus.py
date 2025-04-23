@@ -180,6 +180,16 @@ class MenusCoreConfigurations:
                 name='Meeting', code='id_menu_master_data_meeting_schedule', view_name='MeetingScheduleMasterdataList',
                 icon='<i class="fas fa-chalkboard-teacher"></i>',
             ),
+            MenuCommon(
+                name='Project config', code='menu_project_config',
+                view_name='ProjectConfig',
+                icon='<i class="fas fa-brands fa-r-project"></i>',
+            ),
+            MenuCommon(
+                name='KMS Document type', code='menu_document_type_config',
+                view_name='DocumentTypeConfigList',
+                icon='<i class="fa-regular fa-file"></i>'
+            )
         ]
     )
     TRANSITION_DATA_CONFIG = MenuCommon(
@@ -248,11 +258,6 @@ class MenusCoreConfigurations:
                 name='Invoice form config', code='menu_invoice_sign',
                 view_name='InvoiceSignList',
                 icon='<i class="fas fa-signature"></i>',
-            ),
-            MenuCommon(
-                name='Project config', code='menu_project_config',
-                view_name='ProjectConfig',
-                icon='<i class="fas fa-brands fa-r-project"></i>',
             ),
             MenuCommon(
                 name='Bidding Result Config', code='menu_bidding_result_config', view_name='BiddingResultConfigList',

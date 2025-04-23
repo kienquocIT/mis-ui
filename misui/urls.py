@@ -59,6 +59,7 @@ urlpatterns = \
         path('site-config/', include('apps.web_builder.urls.config')),
         path("jsi18n/<str:packages>", JavaScriptCatalogCustomize.as_view(), name="javascript-catalog"),
         path('firebase-messaging-sw.js', showFirebaseJS, name="show_firebase_js"),
+        path('kms/', include('apps.kms.urls')),
     ]
 
 urlpatterns += static('django-admin-media/', document_root=settings.MEDIA_ROOT)

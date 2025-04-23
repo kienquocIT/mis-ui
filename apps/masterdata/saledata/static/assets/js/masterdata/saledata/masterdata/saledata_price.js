@@ -703,7 +703,14 @@ $(document).ready(function () {
             $add_teams.find('[name="no_of_days"]').val(data.no_of_days)
             $add_teams.find('[name="after"]').val(after).trigger('change')
             $add_teams.modal('show')
-        } else if (isAction === 'delete') $(table_elm).DataTable().rows(elm).remove().draw();
+        }
+        else if (isAction === 'delete'){
+            if (data?.unit_type?.value === '2') term_type_list.splice(term_type_list.indexOf(2),1)
+            $(table_elm).DataTable().rows(elm).remove().draw();
+            const dataList = $(table_elm).DataTable().data().toArray()
+            if (dataList.length === 0)
+                term_type_list = []
+        }
     }
 
     function termsDataTable() {
@@ -913,10 +920,11 @@ $(document).ready(function () {
     })
     // close btn
     $('.btn-terms-close').click(() => {
-            $('#section-create-payment-terms').removeClass('show active')
-            $('#section-payment-terms').addClass('show active')
-            $('.payment-terms-tabs').addClass('hidden')
-        });
+        $('#section-create-payment-terms').removeClass('show active')
+        $('#section-payment-terms').addClass('show active')
+        $('.payment-terms-tabs').addClass('hidden')
+        term_type_list = []
+    });
 
     // hide btn when click another tab
     $('a[href="#section-payment-terms"]').on('hide.bs.tab', () => $('.payment-terms-tabs').addClass('hidden'))

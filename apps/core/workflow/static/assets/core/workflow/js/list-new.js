@@ -69,7 +69,7 @@ $(document).ready(function () {
                 width: "10%",
                 class: 'text-center',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-soft-${data === 0 ? error_map[1] : error_map[0]}">${data}</span>`;
+                    return `<span>${data}</span>`;
                 }
             }, {
                 data: 'workflow_currently',
@@ -236,16 +236,10 @@ $(document).ready(function () {
                                 return dateApplied;
                             }
                         }, {
-                            title: $transFact.attr('data-active'),
-                            data: 'is_active',
-                            render: (data, type, row, meta) => {
-                                if (data === true) return `<span class="badge-status"><span class="badge badge-info badge-indicator"></span><span class="badge-label">Working</span></span>`;
-                                return `<span class="badge-status"><span class="badge badge-secondary badge-indicator"></span><span class="badge-label">Deactivate</span></span>`;
-                            }
-                        }, {
                             title: $transFact.attr('data-wait-complete'), // data: 'is_active',
+                            class: 'text-center',
                             render: (data, type, row, meta) => {
-                                return `<span class="badge badge-soft-warning">0</span>`;
+                                return `<span>0</span>`;
                             }
                         }, {
                             title: $transFact.attr('data-action'),

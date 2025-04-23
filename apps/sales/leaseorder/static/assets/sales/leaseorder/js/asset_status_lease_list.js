@@ -66,14 +66,20 @@ $(function () {
                         targets: 7,
                         width: '5%',
                         render: (data, type, row) => {
-                            return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_order_data']?.['product_lease_start_date'])}</span>`;
+                            if (row?.['lease_order_data']?.['product_lease_start_date']) {
+                               return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_order_data']?.['product_lease_start_date'])}</span>`;
+                            }
+                            return ``;
                         }
                     },
                     {
                         targets: 8,
                         width: '5%',
                         render: (data, type, row) => {
-                            return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_order_data']?.['product_lease_end_date'])}</span>`;
+                            if (row?.['lease_order_data']?.['product_lease_end_date']) {
+                                return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_order_data']?.['product_lease_end_date'])}</span>`;
+                            }
+                            return ``;
                         }
                     },
                     {
@@ -120,6 +126,14 @@ $(function () {
 
         function dtbHDCustom() {
             let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
             let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
             let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
             headerToolbar$.prepend(textFilter$);

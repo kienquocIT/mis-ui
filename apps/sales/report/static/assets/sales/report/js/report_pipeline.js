@@ -14,6 +14,7 @@ $(function () {
         let dataQuarter = JSON.parse($('#filter_quarter').text());
         let dataMonth = JSON.parse($('#filter_month').text());
         let eleTrans = $('#app-trans-factory');
+        let $urlFact = $('#app-url-factory');
 
         function loadDbl(data) {
             $table.DataTableDefault({
@@ -26,11 +27,7 @@ $(function () {
                         targets: 0,
                         width: '6%',
                         render: (data, type, row) => {
-                            if (row?.['type_group_by'] === 0) {
-                                return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
-                            } else {
-                                return `<span class="badge badge-indigo badge-outline">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span>`;
-                            }
+                            return `<b>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</b>`;
                         }
                     },
                     {
@@ -38,10 +35,10 @@ $(function () {
                         width: '6%',
                         render: (data, type, row) => {
                             if (row?.['employee_inherit']?.['full_name']) {
+                                let link = $urlFact.attr('data-emp-detail').format_url_with_uuid(row?.['employee_inherit']?.['id']);
                                 let target = `.cl-emp-${row?.['employee_inherit']?.['id'].replace(/-/g, "")}`;
-                                return `<div class="d-flex">
-                                        <span class="badge badge-primary mr-2">${row?.['employee_inherit']?.['code'] ? row?.['employee_inherit']?.['code'] : ''}</span>
-                                        <span class="badge badge-primary badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span>
+                                return `<div class="d-flex align-items-center">
+                                        <a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</a>
                                         <small><button 
                                             type="button" 
                                             class="btn btn-icon btn-xs group-emp-parent" 
@@ -62,9 +59,12 @@ $(function () {
                         targets: 2,
                         width: '6%',
                         render: (data, type, row) => {
+                            let link = $urlFact.attr('data-opp-detail').format_url_with_uuid(row?.['opportunity']?.['id']);
                             if (row?.['opportunity']?.['code'] && row?.['employee_inherit_id']) {
                                 let dataGr = 'cl-emp-' + row?.['employee_inherit_id'].replace(/-/g, "");
-                                return `<div class="group-emp-child" data-group-target="${dataGr}"><span class="badge badge-secondary mr-1">${row?.['opportunity']?.['code'] ? row?.['opportunity']?.['code'] : ''}</span><span>${row?.['opportunity']?.['title'] ? row?.['opportunity']?.['title'] : ''}</span></div>`;
+                                return `<div class="group-emp-child" data-group-target="${dataGr}">
+                                            <a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['opportunity']?.['title'] ? row?.['opportunity']?.['title'] : ''}</a>
+                                        </div>`;
                             }
                             return `<p></p>`;
 
@@ -199,8 +199,6 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
-                    // add css to Dtb
-                    loadCssToDtb('table_report_pipeline_list');
                     // setup groupChild to groupParent
                     for (let eleGroupChild of $table[0].querySelectorAll('.group-emp-child')) {
                         let classCl = eleGroupChild.getAttribute('data-group-target');
@@ -211,9 +209,40 @@ $(function () {
                     $table.on('click', '.group-emp-parent', function () {
                         $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
                     });
+
+                    dtbHDCustom();
                 },
             });
         }
+
+        function dtbHDCustom() {
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
+            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+            headerToolbar$.prepend(textFilter$);
+
+            if (textFilter$.length > 0) {
+                textFilter$.css('display', 'flex');
+                // Check if the button already exists before appending
+                if (!$('#btn-open-filter').length) {
+                    let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                        <span><span class="icon"><i class="fas fa-filter"></i></span><span>${eleTrans.attr('data-filter')}</span></span>
+                                    </button>`);
+                    textFilter$.append(
+                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                    );
+                }
+            }
+        }
+
         loadDbl();
 
         function loadCssToDtb(tableID) {

@@ -231,6 +231,14 @@ $(function () {
         function dtbHDCustom() {
             let $table = tableIndicator;
             let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
             let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
             let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
             headerToolbar$.prepend(textFilter$);
@@ -298,112 +306,11 @@ $(function () {
         // BEGIN FORMULA
 
         $formulaCanvas.on('mouseenter', '.param-item', function () {
-            let dataEle = this.querySelector('.data-show');
-            if (dataEle) {
-                if ($(dataEle).val()) {
-                    let data = JSON.parse($(dataEle).val());
-                    let dataStr = JSON.stringify(data);
-                    let htmlBase = `<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
-                                        <div class="row">
-                                            <h5>${data?.['title_i18n'] ? data?.['title_i18n'] : ''}</h5>
-                                            <p>${data?.['remark'] ? data?.['remark'] : ''}</p>
-                                        </div>
-                                        <div class="row area-property-md hidden">
-                                            <div class="form-group">
-                                                <select class="form-select box-property-md"></select>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <b>${eleTrans.attr('data-syntax')}</b>
-                                            <p>${data?.['syntax_show'] ? data?.['syntax_show'] : ''}</p>
-                                        </div>
-                                        <div class="row">
-                                            <b>${eleTrans.attr('data-example')}</b>
-                                            <p>${data?.['example'] ? data?.['example'] : ''}</p>
-                                        </div>
-                                    </div>`;
-
-                    let tabEle = this.closest('.tab-pane');
-                    if (tabEle) {
-                        if (tabEle.id === "tab_formula_indicator") {
-                            $indicatorRemark.empty();
-                            $indicatorRemark.append(htmlBase);
-                        }
-                        if (tabEle.id === "tab_formula_property") {
-                            $propertyRemark.empty();
-                            $propertyRemark.append(htmlBase);
-                            if (data?.['type'] === 5) {
-                                let url = "";
-                                let keyResp = "";
-                                if (appMapMDUrls?.[data?.['content_type']]) {
-                                    if (appMapMDUrls[data?.['content_type']]?.['url']) {
-                                        url = appMapMDUrls[data?.['content_type']]?.['url'];
-                                    }
-                                    if (appMapMDUrls[data?.['content_type']]?.['keyResp']) {
-                                        keyResp = appMapMDUrls[data?.['content_type']]?.['keyResp'];
-                                    }
-                                }
-                                let areaBoxMDEle = $propertyRemark[0].querySelector('.area-property-md');
-                                let boxMDEle = $propertyRemark[0].querySelector('.box-property-md');
-                                if (areaBoxMDEle && boxMDEle) {
-                                    $(boxMDEle).attr('data-url', url);
-                                    $(boxMDEle).attr('data-method', 'GET');
-                                    $(boxMDEle).attr('data-keyResp', keyResp);
-                                    $(boxMDEle).attr('data-show', dataStr);
-                                    $(boxMDEle).attr('disabled', 'true');
-                                    loadInitS2($(boxMDEle), [], {}, $propertyRemark, true);
-
-                                    $(areaBoxMDEle).removeClass('hidden');
-                                }
-                            }
-                        }
-                        if (tabEle.id === "tab_formula_function") {
-                            $functionRemark.empty();
-                            $functionRemark.append(htmlBase);
-                        }
-                    }
-                }
-            }
-            return true;
+            mouseenterParam(this);
         });
 
         $formulaCanvas.on('click', '.param-item', function () {
-            let dataEle = this.querySelector('.data-show');
-            if (dataEle) {
-                if ($(dataEle).val()) {
-                    let data = JSON.parse($(dataEle).val());
-                    let tabEle = this.closest('.tab-pane');
-                    if (tabEle) {
-                        if (tabEle.id === "tab_formula_indicator") {
-                            // show editor
-                            $formulaEditor.val($formulaEditor.val() + data.syntax);
-                            // on blur editor to validate formula
-                            $formulaEditor.blur();
-                        }
-                        if (tabEle.id === "tab_formula_property") {
-                            if (data?.['type'] === 5) {
-                                let boxMDEle = $propertyRemark[0].querySelector('.box-property-md');
-                                if (boxMDEle) {
-                                    boxMDEle.removeAttribute('disabled');
-                                }
-                            } else {
-                                // show editor
-                                $formulaEditor.val($formulaEditor.val() + data.syntax);
-                                $formulaEditor.focus();
-                                showValidate();
-                            }
-                        }
-                        if (tabEle.id === "tab_formula_function") {
-                            // show editor
-                            $formulaEditor.val($formulaEditor.val() + data.syntax);
-                            $formulaEditor.focus();
-                            showValidate();
-                        }
-                    }
-                }
-            }
-            return true;
+            clickParam(this);
         });
 
         $formulaCanvas.on('change', '.box-property-md', function () {
@@ -560,6 +467,115 @@ $(function () {
                     }
                 }
             )
+            return true;
+        }
+
+        function mouseenterParam(ele) {
+            let dataEle = ele.querySelector('.data-show');
+            if (dataEle) {
+                if ($(dataEle).val()) {
+                    let data = JSON.parse($(dataEle).val());
+                    let dataStr = JSON.stringify(data);
+                    let htmlBase = `<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-350p position-relative overflow-y-scroll">
+                                        <div class="row">
+                                            <h5>${data?.['title_i18n'] ? data?.['title_i18n'] : ''}</h5>
+                                            <p>${data?.['remark'] ? data?.['remark'] : ''}</p>
+                                        </div>
+                                        <div class="row area-property-md hidden">
+                                            <div class="form-group">
+                                                <select class="form-select box-property-md"></select>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <b>${eleTrans.attr('data-syntax')}</b>
+                                            <p>${data?.['syntax_show'] ? data?.['syntax_show'] : ''}</p>
+                                        </div>
+                                        <div class="row">
+                                            <b>${eleTrans.attr('data-example')}</b>
+                                            <p>${data?.['example'] ? data?.['example'] : ''}</p>
+                                        </div>
+                                    </div>`;
+
+                    let tabEle = ele.closest('.tab-pane');
+                    if (tabEle) {
+                        if (tabEle.id === "tab_formula_indicator") {
+                            $indicatorRemark.empty();
+                            $indicatorRemark.append(htmlBase);
+                        }
+                        if (tabEle.id === "tab_formula_property") {
+                            $propertyRemark.empty();
+                            $propertyRemark.append(htmlBase);
+                            if (data?.['type'] === 5) {
+                                let url = "";
+                                let keyResp = "";
+                                if (appMapMDUrls?.[data?.['content_type']]) {
+                                    if (appMapMDUrls[data?.['content_type']]?.['url']) {
+                                        url = appMapMDUrls[data?.['content_type']]?.['url'];
+                                    }
+                                    if (appMapMDUrls[data?.['content_type']]?.['keyResp']) {
+                                        keyResp = appMapMDUrls[data?.['content_type']]?.['keyResp'];
+                                    }
+                                }
+                                let areaBoxMDEle = $propertyRemark[0].querySelector('.area-property-md');
+                                let boxMDEle = $propertyRemark[0].querySelector('.box-property-md');
+                                if (areaBoxMDEle && boxMDEle) {
+                                    $(boxMDEle).attr('data-url', url);
+                                    $(boxMDEle).attr('data-method', 'GET');
+                                    $(boxMDEle).attr('data-keyResp', keyResp);
+                                    $(boxMDEle).attr('data-show', dataStr);
+                                    $(boxMDEle).attr('disabled', 'true');
+                                    loadInitS2($(boxMDEle), [], {}, $propertyRemark, true);
+
+                                    $(areaBoxMDEle).removeClass('hidden');
+                                }
+                            }
+                        }
+                        if (tabEle.id === "tab_formula_function") {
+                            $functionRemark.empty();
+                            $functionRemark.append(htmlBase);
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        function clickParam(ele) {
+            let dataEle = ele.querySelector('.data-show');
+            if (dataEle) {
+                if ($(dataEle).val()) {
+                    let data = JSON.parse($(dataEle).val());
+                    let tabEle = ele.closest('.tab-pane');
+                    if (tabEle) {
+                        if (tabEle.id === "tab_formula_indicator") {
+                            // show editor
+                            $formulaEditor.val($formulaEditor.val() + data.syntax);
+                            // on blur editor to validate formula
+                            $formulaEditor.blur();
+                        }
+                        if (tabEle.id === "tab_formula_property") {
+                            if (data?.['type'] === 5) {
+                                let boxMDEle = $propertyRemark[0].querySelector('.box-property-md');
+                                if (boxMDEle) {
+                                    boxMDEle.removeAttribute('disabled');
+                                }
+                            } else {
+                                // show editor
+                                $formulaEditor.val($formulaEditor.val() + data.syntax);
+                                $formulaEditor.focus();
+                                showValidate();
+                            }
+                        }
+                        if (tabEle.id === "tab_formula_function") {
+                            // show editor
+                            $formulaEditor.val($formulaEditor.val() + data.syntax);
+                            $formulaEditor.focus();
+                            showValidate();
+                        }
+                    }
+                }
+            }
             return true;
         }
 

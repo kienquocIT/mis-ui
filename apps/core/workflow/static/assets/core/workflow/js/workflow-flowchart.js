@@ -65,9 +65,8 @@ class FlowChartLoadDataHandle {
 
         let data_cond = [];
         let $eleAssociate = $('#node-associate');
-        let associate_temp = $eleAssociate.val();
-        if (associate_temp) {
-            let associate_data_json = JSON.parse(associate_temp);
+        if ($eleAssociate.val()) {
+            let associate_data_json = JSON.parse($eleAssociate.val());
             if (associate_data_json?.[targetID]) {
                 data_cond = associate_data_json?.[targetID];
             }
@@ -119,11 +118,11 @@ class FlowChartLoadDataHandle {
                                             <textarea class="form-control left-param left-param-${order}-${orderChild}" rows="2" readonly></textarea>
                                             <button
                                                 type="button"
-                                                class="btn btn-icon btn-cond"
+                                                class="btn btn-icon btn-rounded btn-soft-light btn-sm btn-cond"
                                                 data-bs-toggle="offcanvas"
                                                 data-bs-target="#formulaCanvas"
                                                 data-cls-target="left-param-${order}-${orderChild}"
-                                            ><i class="fas fa-ellipsis-h"></i>
+                                            ><i class="fas fa-edit"></i>
                                             </button>      
                                         </div>
                                     </div>
@@ -135,11 +134,11 @@ class FlowChartLoadDataHandle {
                                             <textarea class="form-control right-param right-param-${order}-${orderChild}" rows="2" readonly></textarea>
                                             <button
                                                 type="button"
-                                                class="btn btn-icon btn-cond"
+                                                class="btn btn-icon btn-rounded btn-soft-light btn-sm btn-cond"
                                                 data-bs-toggle="offcanvas"
                                                 data-bs-target="#formulaCanvas"
                                                 data-cls-target="right-param-${order}-${orderChild}"
-                                            ><i class="fas fa-ellipsis-h"></i>
+                                            ><i class="fas fa-edit"></i>
                                             </button>      
                                         </div>
                                     </div>
@@ -456,7 +455,147 @@ class JSPlumbsHandle {
     clsManage = new NodeHandler(this.nodeData, this.associationData); // class to check for connection the validation
     _commitNodeList = {};
     _ASSOCIATION = [];
+    static $flowChart = $('#flowchart_workflow');
     static $trans = $('#node-trans-factory');
+
+    static instance = jsPlumb.getInstance({
+        ConnectionOverlays: [
+            ["Arrow", {location: 1, id: "arrow", length: 12, width: 12, height: 13, foldback: 1}],
+        ],
+        Container: "flowchart_workflow",
+    });
+
+    static initDragFromNodeBox(ele) {
+        let clsSys = '';
+        let bg = '';
+        let color = 'text-white';
+        let clsModal = "modal";
+        let disabled = "";
+        let endPointsHTML = `<div class="drag-handle jsplumb-handle"></div>
+                            <div class="drop-target jsplumb-handle"></div>`;
+        if (ele.classList.contains('control-system')) {
+            clsSys = 'clone-system';
+            bg = 'bg-white';
+            color = '';
+        }
+        if ($(ele).attr("data-code") === "initial") {
+            endPointsHTML = `<div class="drag-handle jsplumb-handle"></div>`;
+        }
+        if ($(ele).attr("data-code") === "approved") {
+            disabled = "disabled";
+        }
+        if ($(ele).attr("data-code") === "completed") {
+            disabled = "disabled";
+            endPointsHTML = `<div class="drop-target jsplumb-handle"></div>`;
+        }
+        return `<div class="btn-group dropdown">
+                    <div class="clone ${clsSys} ${bg}" data-drag="${$(ele).attr('data-drag')}" title="${$(ele).find('.drag-title').text()}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
+                        <p class="drag-title ${color}">${$(ele).find('.drag-title').text()}</p>
+                        ${endPointsHTML}
+                    </div>
+                    <div class="dropdown-menu dropdown-bordered w-160p">
+                        <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
+                    </div>
+                </div>`;
+    };
+
+    static handleNodeDrop(ui, that_cls, top_coord = null, left_coord = null) {
+        // when user drag to space clone and disable main node
+        let clone = $(ui.helper).clone(true);
+        let numID = ui.draggable.attr('data-drag');
+        let is_id = 'control-' + numID;
+        clone.find('.clone').attr("id", is_id);
+        if (top_coord && left_coord) {
+            clone.css({top: top_coord, left: left_coord, position: 'absolute'});
+        }
+        clone.appendTo(JSPlumbsHandle.$flowChart[0]);
+        let $this_elm = ui.draggable;
+        if ($this_elm.hasClass("ui-draggable")) {
+            $this_elm.draggable("disable");
+        }
+        JSPlumbsHandle.instance.draggable(is_id);
+        let sys_code = "";
+        // check default system node
+        for (let idx in DEFAULT_NODE_LIST) {
+            let item = DEFAULT_NODE_LIST[idx];
+            if (item.order === parseInt(ui.draggable.attr('data-drag'))) {
+                if (item.hasOwnProperty('code_node_system')) {
+                    if (item?.['code_node_system'] !== null) {
+                        sys_code = item.code_node_system.toLowerCase();
+                    }
+                }
+                break;
+            }
+        }
+        JSPlumbsHandle.makeSourceTarget(is_id, sys_code);
+        // add drop node to commit node list
+        let temp = that_cls.getCommitNode;
+        temp[numID] = DEFAULT_NODE_LIST[numID];
+        that_cls.setCommitNodeList = temp;
+    };
+
+    static makeSourceTarget(is_id, sys_code) {
+        if (sys_code !== 'completed') {
+            JSPlumbsHandle.instance.makeSource(document.getElementById(is_id), {
+                filter: ".drag-handle",
+                endpoint: ["Dot", {radius: 4}],
+                // anchor: ["Bottom", "BottomRight", "BottomLeft"],
+                anchor: "BottomCenter",
+                isSource: true,
+                connectorOverlays: [
+                    ["Label",
+                        {
+                            label: '',
+                            location: 0.5,
+                            cssClass: "cssAssociateLabel",
+                            events: {
+                                click: function (labelOverlay) {
+                                    FlowChartLoadDataHandle.clickConnection(labelOverlay)
+                                }
+                            },
+                        },
+                    ]
+                ],
+                maxConnections: -1,
+                connectionsDetachable: true,
+                endpointStyle: {fill: "#374986", opacity: ".8"},
+                HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
+                connectionType: "pink-connection",
+                connector: ["Flowchart", {cornerRadius: 5}],
+            });
+        }
+        if (sys_code !== 'initial') {
+            JSPlumbsHandle.instance.makeTarget(document.getElementById(is_id), {
+                filter: ".drop-target",
+                endpoint: ["Rectangle", {width: 9, height: 9}],
+                // anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
+                anchor: "TopCenter",
+                isTarget: true,
+                connectorOverlays: [
+                    ["Label",
+                        {
+                            label: '',
+                            location: 0.5,
+                            cssClass: "cssAssociateLabel",
+                            events: {
+                                click: function (labelOverlay) {
+                                    FlowChartLoadDataHandle.clickConnection(labelOverlay)
+                                }
+                            },
+                        },
+                    ]
+                ],
+                maxConnections: -1,
+                connectionsDetachable: true,
+                endpointStyle: {fill: "#374986", opacity: ".8"},
+                HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
+                connectionType: "pink-connection",
+                connector: ["Flowchart", {cornerRadius: 5}],
+            });
+        }
+    };
 
     set setNodeList(strData) {
         let temp = {};
@@ -502,7 +641,6 @@ class JSPlumbsHandle {
     }
 
     htmlDragRender(target_elm) {
-
         let strHTMLDragNode = '';
         if (Object.keys(DEFAULT_NODE_LIST).length > 0) {
             for (let val in DEFAULT_NODE_LIST) {
@@ -522,7 +660,7 @@ class JSPlumbsHandle {
                     }
                 }
                 strHTMLDragNode += `<div class="btn-group dropdown">
-                                        <div class="control ${clsSys} ${bg}" id="drag-${item?.['order']}" data-drag="${item?.['order']}" title="${item?.['title']}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
+                                        <div class="control ${clsSys} ${bg}" id="drag-${item?.['order']}" data-code="${item?.['code']}" data-drag="${item?.['order']}" title="${item?.['title']}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
                                             <p class="drag-title ${color}" contentEditable="true" title="${item?.['remark']}">${item?.['title']}</p>
                                         </div>
                                         <div class="dropdown-menu dropdown-bordered w-160p">
@@ -537,7 +675,7 @@ class JSPlumbsHandle {
         else if (target_elm) target_elm.html(strHTMLDragNode)
     };
 
-    renderToFlowchart() {
+    renderClones() {
         let assocList = $('#node-associate').val();
         if (assocList){
             assocList = JSON.parse(assocList)
@@ -555,18 +693,17 @@ class JSPlumbsHandle {
             top_coord = 0,
             left_coord = 0;
         // loop in DEFAULT_NODE_LIST and render to chart
-        let HTML_temp = '';
         let assoc = this.convertAssociateToOrder();
         for (let val in DEFAULT_NODE_LIST) {
             let item = DEFAULT_NODE_LIST[val];
-            const coordinates = item.coordinates
+            let coordinates = item?.['coordinates']
             if (coordinates)
                 // check if node has coordinates
                 if (coordinates.hasOwnProperty("top") && coordinates.hasOwnProperty("left")){
-                    top_coord = coordinates.top
-                    left_coord = coordinates.left;
+                    top_coord = coordinates?.['top']
+                    left_coord = coordinates?.['left'];
                 }
-            if (assoc.includes(item.order)){
+            if (assoc.includes(item?.['order'])){
 
                 // check if node coord larger than wrap workflow node
                 if ((top_coord + 90) > wrap_h) {
@@ -578,53 +715,87 @@ class JSPlumbsHandle {
                     wrap_w = wrap_w + 300
                     $wrapWF.css("width", wrap_w);
                 }
-                let clsSys = '';
-                let bg = '';
-                let color = 'text-white';
-                let clsModal = "modal";
-                let disabled = "";
-                if (item?.['is_system'] === true) {
-                    clsSys = 'clone-system';
-                    bg = 'bg-white';
-                    color = '';
+                let $nodeDragBoxEle = $('#node_dragbox');
+                let controlEle = $nodeDragBoxEle[0].querySelector(`.control[data-drag="${val}"]`);
+                if (controlEle) {
+                    // simulate the drag helper
+                    const $helper = $(JSPlumbsHandle.initDragFromNodeBox(controlEle));
+                    const $draggable = $(controlEle);
 
-                    if (["approved", "completed"].includes(item?.['code'])) {
-                        clsModal = "";
-                        disabled = "disabled";
-                    }
+                    // simulate the UI object
+                    const ui = {
+                        helper: $helper,
+                        draggable: $draggable
+                    };
+
+                    // now trigger the drop handling manually
+                    JSPlumbsHandle.handleNodeDrop(ui, this, top_coord, left_coord);
                 }
-                HTML_temp += `<div class="btn-group dropdown">
-                                    <div class="clone ${clsSys} ${bg}" data-drag="${val}" title="${item?.['title']}" id="control-${val}" style="left:${left_coord}px;top:${top_coord}px" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ${disabled}>
-                                        <p class="drag-title ${color}">${item?.['title']}</p>
-                                    </div>
-                                    <div class="dropdown-menu dropdown-bordered w-160p">
-                                        <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
-                                    </div>
-                                </div>`;
-
                 // get and set commit code to list in case detail page
                 let NodeListTemp = this.getCommitNode
-                NodeListTemp[item.order] = item
+                NodeListTemp[item?.['order']] = item
                 this.setCommitNodeList = NodeListTemp
             } // end loop default node list
         }
-        $wrapWF.html(HTML_temp)
+    }
+
+    renderAssociation() {
+        for (let assoc in this._ASSOCIATION) {
+            assoc = this._ASSOCIATION[assoc];
+            JSPlumbsHandle.instance.connect({
+                source: 'control-' + assoc?.['node_in'],
+                target: 'control-' + assoc?.['node_out'],
+                overlays: [
+                    ["Label",
+                        {
+                            label: '',
+                            location: 0.5,
+                            cssClass: "cssAssociateLabel",
+                            events: {
+                                click: function (labelOverlay) {
+                                    FlowChartLoadDataHandle.clickConnection(labelOverlay)
+                                }
+                            },
+                        },
+                    ]
+                ],
+                anchors: ["Bottom", "Top"],
+                endpoint: ["Dot", {radius: 4}],
+                endpointStyle: {fill: "#374986", opacity: ".8"},
+                paintStyle: {stroke: "#6f6f6f", strokeWidth: 1.5},
+                hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
+                connectionType: "pink-connection",
+                connector: ["Flowchart", {cornerRadius: 5}],
+            });
+            jsPlumb.select({source: 'control-' + assoc.node_in}).addOverlay(
+                ["Label",
+                    {
+                        label: 'aLabel',
+                        location: 0.5,
+                        cssClass: "cssAssociateLabel",
+                        events: {
+                            click: function (labelOverlay) {
+                                FlowChartLoadDataHandle.clickConnection(labelOverlay)
+                            }
+                        },
+                    },
+                ]
+            );
+        }
     }
 
     initJSPlumbs() {
-        const instance = jsPlumb.getInstance({
-            ConnectionOverlays: [
-                ["Arrow", {location: 1, id: "arrow", length: 12, width: 12, height: 13, foldback: 1}],
-            ],
-            Container: "flowchart_workflow",
-        });
+        // const instance = jsPlumb.getInstance({
+        //     ConnectionOverlays: [
+        //         ["Arrow", {location: 1, id: "arrow", length: 12, width: 12, height: 13, foldback: 1}],
+        //     ],
+        //     Container: "flowchart_workflow",
+        // });
         let that_cls = this; // save this - using for callback instance (because inside callback this was overridden)
 
-        instance.bind("ready", function () {
+        JSPlumbsHandle.instance.bind("ready", function () {
             // declare style connection type
-            instance.registerConnectionTypes({
+            JSPlumbsHandle.instance.registerConnectionTypes({
                 "pink-connection": {
                     paintStyle: {stroke: "#6f6f6f", strokeWidth: 1.5},
                     hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4}
@@ -633,236 +804,19 @@ class JSPlumbsHandle {
             // init drag node
             $('#node_dragbox .control').draggable({
                 helper: function () {
-                    let clsSys = '';
-                    let bg = '';
-                    let color = 'text-white';
-                    let clsModal = "modal";
-                    if (this.classList.contains('control-system')) {
-                        clsSys = 'clone-system';
-                        bg = 'bg-white';
-                        color = '';
-                    }
-                    return `<div class="btn-group dropdown">
-                                <div class="clone ${clsSys} ${bg}" data-drag="${$(this).attr('data-drag')}" title="${$(this).find('.drag-title').text()}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <p class="drag-title ${color}">${$(this).find('.drag-title').text()}</p>
-                                </div>
-                                <div class="dropdown-menu dropdown-bordered w-160p">
-                                    <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
-                                </div>
-                            </div>`;
+                    return JSPlumbsHandle.initDragFromNodeBox(this);
                 },
                 appendTo: "#flowchart_workflow",
             });
             // init drop node
             $('#flowchart_workflow').droppable({
                 drop: function (event, ui) {
-                    // when user drag to space clone and disable main node
-                    const clone = $(ui.helper).clone(true);
-                    const numID = ui.draggable.attr('data-drag')
-                    let is_id = 'control-' + numID
-                    // clone.attr("id", is_id)
-                    clone.find('.clone').attr("id", is_id);
-                    clone.appendTo(this);
-                    let $this_elm = ui.draggable;
-                    $this_elm.draggable("disable");
-                    // instance.draggable(is_id, {containment: true})
-                    instance.draggable(is_id);
-                    let sys_code = "";
-                    // check default system node
-                    for (let idx in DEFAULT_NODE_LIST) {
-                        let item = DEFAULT_NODE_LIST[idx]
-                        if (item.order === parseInt(ui.draggable.attr('data-drag'))) {
-                            if (item.hasOwnProperty('code_node_system')) {
-                                if (item?.['code_node_system'] !== null) {
-                                    sys_code = item.code_node_system.toLowerCase();
-                                }
-                            }
-                            break;
-                        }
-                    }
-                    if (sys_code !== 'completed')
-                        instance.addEndpoint(is_id, {
-                            endpoint: ["Dot", {radius: 4}],
-                            anchor: ["Bottom", "BottomRight", "BottomLeft"],
-                            isSource: true,
-                            connectorOverlays: [
-                                ["Label",
-                                    {
-                                        label: '',
-                                        location: 0.5,
-                                        cssClass: "cssAssociateLabel",
-                                        events: {
-                                            click: function (labelOverlay) {
-                                                FlowChartLoadDataHandle.clickConnection(labelOverlay)
-                                            }
-                                        },
-                                    },
-                                ]
-                            ],
-                            maxConnections: -1,
-                            connectionsDetachable: true,
-                            endpointStyle: {fill: "#374986", opacity: ".8"},
-                            HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
-                            connectionType: "pink-connection",
-                            connector: ["Flowchart", {cornerRadius: 10}],
-                        });
-                    //
-                    if (sys_code !== 'initial')
-                        instance.addEndpoint(is_id, {
-                            endpoint: ["Rectangle", {width: 9, height: 9}],
-                            anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
-                            isTarget: true,
-                            connectorOverlays: [
-                                ["Label",
-                                    {
-                                        label: '',
-                                        location: 0.5,
-                                        cssClass: "cssAssociateLabel",
-                                        events: {
-                                            click: function (labelOverlay) {
-                                                FlowChartLoadDataHandle.clickConnection(labelOverlay)
-                                            }
-                                        },
-                                    },
-                                ]
-                            ],
-                            maxConnections: -1,
-                            connectionsDetachable: true,
-                            endpointStyle: {fill: "#374986", opacity: ".8"},
-                            HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
-                            connectionType: "pink-connection",
-                            connector: ["Flowchart", {cornerRadius: 10}],
-                        });
-
-                    // add drop node to commit node list
-
-                    let temp = that_cls.getCommitNode
-                    temp[numID] = DEFAULT_NODE_LIST[numID]
-                    that_cls.setCommitNodeList = temp
+                    JSPlumbsHandle.handleNodeDrop(ui, that_cls);
                 }
-
             });
 
-            // check if workflow detail or edit page show flowchart
-            let $form = $('#form-create_workflow');
-            if (['get', 'put'].includes($form.attr('data-method').toLowerCase())) {
-                instance.doWhileSuspended(function () {
-                    $('#flowchart_workflow .clone').each(function () {
-                        let is_id = $(this).attr('id')
-                        // instance.draggable(is_id, {containment: true})
-                        instance.draggable(is_id);
-
-                        let sys_code = DEFAULT_NODE_LIST[$(this).data('drag')].code_node_system
-                        if (sys_code !== 'completed')
-                            instance.addEndpoint(is_id, {
-                                endpoint: ["Dot", {radius: 4}],
-                                anchor: ["Bottom", "BottomRight", "BottomLeft"],
-                                isSource: true,
-                                connectorOverlays: [
-                                    ["Label",
-                                        {
-                                            label: '',
-                                            location: 0.5,
-                                            cssClass: "cssAssociateLabel",
-                                            events: {
-                                                click: function (labelOverlay) {
-                                                    FlowChartLoadDataHandle.clickConnection(labelOverlay)
-                                                }
-                                            },
-                                        },
-                                    ]
-                                ],
-                                maxConnections: -1,
-                                connectionsDetachable: true,
-                                endpointStyle: {fill: "#374986", opacity: ".8"},
-                                HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
-                                connectionType: "pink-connection",
-                                connector: ["Flowchart", {cornerRadius: 10}],
-                            });
-                        //
-                        if (sys_code !== 'initial')
-                            instance.addEndpoint(is_id, {
-                                endpoint: ["Rectangle", {width: 9, height: 9}],
-                                anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],
-                                // anchor: "Perimeter",
-                                isTarget: true,
-                                connectorOverlays: [
-                                    ["Label",
-                                        {
-                                            label: '',
-                                            location: 0.5,
-                                            cssClass: "cssAssociateLabel",
-                                            events: {
-                                                click: function (labelOverlay) {
-                                                    FlowChartLoadDataHandle.clickConnection(labelOverlay)
-                                                }
-                                            },
-                                        },
-                                    ]
-                                ],
-                                maxConnections: -1,
-                                connectionsDetachable: true,
-                                endpointStyle: {fill: "#374986", opacity: ".8"},
-                                HoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 4},
-                                connectionType: "pink-connection",
-                                connector: ["Flowchart", {cornerRadius: 10}],
-                            });
-
-                        let numID = $('#node_dragbox').find(`[data-drag="${$(this).data('drag')}"]`)
-
-                        // disable node drag in left side
-                        numID.draggable("disable");
-                    })
-                }) // end do while suspended
-
-                for (let assoc in that_cls._ASSOCIATION) {
-                    assoc = that_cls._ASSOCIATION[assoc]
-                    instance.connect({
-                        source: 'control-' + assoc.node_in,
-                        target: 'control-' + assoc.node_out,
-                        overlays: [
-                            ["Label",
-                                {
-                                    label: '',
-                                    location: 0.5,
-                                    cssClass: "cssAssociateLabel",
-                                    events: {
-                                        click: function (labelOverlay) {
-                                            FlowChartLoadDataHandle.clickConnection(labelOverlay)
-                                        }
-                                    },
-                                },
-                            ]
-                        ],
-                        anchors: ["Bottom", "Top"],
-                        endpoint: ["Dot", {radius: 4}],
-                        endpointStyle: {fill: "#374986", opacity: ".8"},
-                        paintStyle: {stroke: "#6f6f6f", strokeWidth: 1.5},
-                        hoverPaintStyle: {stroke: "#efa6b6", strokeWidth: 4},
-                        connectionType: "pink-connection",
-                        connector: ["Flowchart", {cornerRadius: 10}],
-                    });
-                    jsPlumb.select({source: 'control-' + assoc.node_in}).addOverlay(
-                        ["Label",
-                            {
-                                label: 'aLabel',
-                                location: 0.5,
-                                cssClass: "cssAssociateLabel",
-                                events: {
-                                    click: function (labelOverlay) {
-                                        FlowChartLoadDataHandle.clickConnection(labelOverlay)
-                                    }
-                                },
-                            },
-                        ]
-                    );
-                }
-            }
-
             // append context menu for R-Click
-            instance.bind("contextmenu", function (component, event) {
+            JSPlumbsHandle.instance.bind("contextmenu", function (component, event) {
                 if (component.hasClass("jtk-connector")) {
                     event.preventDefault();
                     window.selectedConnection = component;
@@ -877,18 +831,31 @@ class JSPlumbsHandle {
                         cancelButtonText: $.fn.transEle.attr('data-cancel'),
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            instance.deleteConnection(window.selectedConnection);
+                            JSPlumbsHandle.instance.deleteConnection(window.selectedConnection);
                         }
                     })
                 }
             })
 
-            // update association data when connect 2 nodes, LHPHUC
-            instance.bind("connection", function (connection) {
+            JSPlumbsHandle.instance.bind('beforeDrop', function (info) {
+                // Check rule connection two node.
+                // Allow: return true
+                // Deny: return false
+                let node_in = info.connection.source.dataset.drag;
+                let node_out = info.connection.target.dataset.drag;
+                // return checkConnection(node_in, node_out, true);
+                return that_cls.clsManage.addConnection(node_in, node_out, true);
+            });
+
+            // update association data when connect 2 nodes
+            JSPlumbsHandle.instance.bind("connection", function (connection) {
                 // add value connection to global variable.
                 // change condition value by key: {nodeIN}_{nodeOut}
                 let elm_focus = $('#node-associate');
-                let before_data = elm_focus.val();
+                let current_data = {};
+                if (elm_focus.val()) {
+                    current_data = JSON.parse(elm_focus.val());
+                }
                 let end_result = {
                     'node_in': '',
                     'node_out': '',
@@ -905,32 +872,16 @@ class JSPlumbsHandle {
                     key = node_in + "_" + node_out;
                 }
                 if (key) {
-                    if (before_data) {
-                        before_data = JSON.parse(before_data);
-                        before_data[key] = end_result;
-                        end_result = before_data
-                    } else {
-                        let temp = {}
-                        temp[key] = end_result;
-                        end_result = temp
+                    if (!current_data.hasOwnProperty(key)) {
+                        current_data[key] = end_result;
                     }
-                    FlowJsP.setAssociateList = end_result;
-                    elm_focus.val(JSON.stringify(end_result));
+                    FlowJsP.setAssociateList = current_data;
+                    elm_focus.val(JSON.stringify(current_data));
                 }
             })
 
-            instance.bind('beforeDrop', function (info) {
-                // Check rule connection two node.
-                // Allow: return true
-                // Deny: return false
-                let node_in = info.connection.source.dataset.drag;
-                let node_out = info.connection.target.dataset.drag;
-                // return checkConnection(node_in, node_out, true);
-                return that_cls.clsManage.addConnection(node_in, node_out, true);
-            });
-
-            // update association data when disconnect 2 nodes, LHPHUC
-            instance.bind("connectionDetached", function (connection) {
+            // update association data when disconnect 2 nodes
+            JSPlumbsHandle.instance.bind("connectionDetached", function (connection) {
                 // remove value connection to global variable.
                 // change condition value by key: {nodeIN}_{nodeOut}
                 let key = "";
@@ -952,7 +903,7 @@ class JSPlumbsHandle {
                 }
             });
 
-            instance.bind("beforeDetach", function (conn) {
+            JSPlumbsHandle.instance.bind("beforeDetach", function (conn) {
                 return that_cls.clsManage.removeConnection(
                     conn.source.dataset.drag,
                     conn.target.dataset.drag
@@ -967,15 +918,15 @@ class JSPlumbsHandle {
         this.setNodeList = NodeSubmitHandle.setupDataFlowChart();
         this.setNodeState = this.nodeData;
         let $form = $('#form-create_workflow');
-        if (['GET', 'PUT'].includes($form.attr('data-method'))){
+        if (['get', 'put'].includes($form.attr('data-method').toLowerCase())){
             // detail and update page
             if (!has_edited){
                 $('#node_dragbox').empty();
-                //
-                if (nodeChanged) $('#flowchart_workflow').empty();
-                if (!nodeChanged) this.renderToFlowchart();
+                $('#flowchart_workflow').empty();
                 this.htmlDragRender();
                 this.initJSPlumbs();
+                this.renderClones();
+                this.renderAssociation();
                 has_edited = true
             }
 
@@ -996,11 +947,6 @@ class JSPlumbsHandle {
         this.clsManage.setNodeState = nodeData;
     }
 
-    set setAssociation(transData) {
-        // load association config in here (case load exist config)
-        this.associationData = transData;
-        this.clsManage.setAssociationList = transData;
-    }
 }
 
 // # left=INIT, right=COMPLETE, middle=APPROVED, null="NO CONNECTION TO SYSTEM"
@@ -1095,11 +1041,6 @@ class NodeHandler {
                 }
             } else this.nodeState[key] = null;
         });
-    }
-
-    set setAssociationList(associationData) {
-        this.associationList = associationData;
-        this.allNodeInOut = this.parseInOut(this.associationList);
     }
 
     getAllNodeOfGroup(node_idx_from, all_data) {
@@ -1303,8 +1244,22 @@ class NodeHandler {
                 msgFailed = "Create connection is failure";
                 break;
         }
-
-        // Check node collab
+        // Check same node
+        if (node_input === node_output) {
+            state = false;
+            msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-4');
+        }
+        // Check connected before
+        let elm_focus = $('#node-associate');
+        if (elm_focus.val()) {
+            let current_data = JSON.parse(elm_focus.val());
+            let key = node_input + "_" + node_output;
+            if (current_data.hasOwnProperty(key)) {
+                state = false;
+                msgFailed = JSPlumbsHandle.$trans.attr('data-validate-association-2');
+            }
+        }
+        // Check node collab type
         let dataNodeIn = FlowJsP.nodeData[node_input];
         let dataNodeOut = FlowJsP.nodeData[node_output];
         if (dataNodeOut?.['collaborators']?.['option'] === 1) {

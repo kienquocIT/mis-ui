@@ -306,7 +306,7 @@ function loadFunctionNumberTable(option='detail', table_detail_data = []) {
     $('#function_number_table').DataTableDefault({
         rowIdx: true,
         scrollX: '100vw',
-        scrollY: '40vh',
+        scrollY: '30vh',
         scrollCollapse: true,
         paging: false,
         data: table_detail_data,
@@ -317,49 +317,41 @@ function loadFunctionNumberTable(option='detail', table_detail_data = []) {
                     return ``;
                 }
             }, {
-                data: 'function',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    return `<span class="text-primary"><b>${FunctionNumberTableData[row.function].function}</b></span>`;
+                    return `<span class="text-primary"><b>${FunctionNumberTableData[row?.['function']]?.['function']}</b></span>`;
                 }
             }, {
-                data: '',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    let disabled = '';
-                    if (option === 'detail') {
-                        disabled = 'disabled';
-                    }
                     let system = trans_script_ele.attr('data-trans-numbering0');
                     let user_defined = trans_script_ele.attr('data-trans-numbering1');
                     if (row?.['numbering_by']) {
-                        return `<select ${disabled} class="form-select numbering-by-selection">
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select numbering-by-selection">
                             <option value="0">${system}</option>
                             <option value="1" selected>${user_defined}</option>
                         </select>`;
                     } else {
-                        return `<select ${disabled} class="form-select numbering-by-selection">
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select numbering-by-selection">
                             <option value="0" selected>${system}</option>
                             <option value="1">${user_defined}</option>
                         </select>`;
                     }
                 }
             }, {
-                data: '',
                 className: 'wrap-text',
                 render: (data, type, row) => {
-                    if (row.schema) {
-                        return `<span data-schema="${row.schema}" data-first-number="${row.first_number}" data-last-number="${row.last_number}" data-reset-frequency="${row.reset_frequency}" data-min-number-char="${row.min_number_char}" class="schema-show text-primary">${row.schema_text}</span>`;
+                    if (row?.['schema']) {
+                        return `<span data-schema="${row?.['schema']}" data-first-number="${row?.['first_number']}" data-last-number="${row?.['last_number']}" data-reset-frequency="${row?.['reset_frequency']}" data-min-number-char="${row?.['min_number_char']}" class="schema-show text-primary">${row?.['schema_text']}</span>`;
                     } else {
                         return `<span class="schema-show text-primary"></span>`;
                     }
                 }
             }, {
-                data: '',
-                className: 'wrap-text text-center',
+                className: 'wrap-text text-right',
                 render: (data, type, row) => {
                     if (option !== 'detail') {
-                        if (row.schema) {
+                        if (row?.['schema']) {
                             return `<span class="text-primary schema-custom" data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
                         } else {
                             return `<span class="text-primary schema-custom" hidden data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
@@ -385,15 +377,18 @@ function LoadCountry(ele, data) {
     })
 }
 
-function LoadCurrency(data) {
+function LoadCurrency(data, data_url=null) {
     $('#idxCurrencyDefault').initSelect2({
         ajax: {
-            url: company_config.attr('data-url-currency-list'),
+            url: company_config.attr('data-url-currency-list') || $('#idxCurrencyDefault').attr('data-url'),
             method: 'GET',
+        },
+        callbackDataResp(resp, keyResp) {
+            return resp.data[keyResp]
         },
         data: (data ? data : null),
         keyResp: 'currency_list',
-        keyId: 'code',
+        keyId: 'id',
         keyText: 'title',
     })
 }
@@ -543,6 +538,7 @@ function LoadDetailCompany(frm, option) {
         $.fn.initMaskMoney2();
 
         if (data1['config']) {
+            company_config.attr('data-config-id', data1['config']?.['id'])
             if (!data1['config']?.['definition_inventory_valuation']) {
                 $('#perpetual-selection').prop('checked', true);
             } else {
@@ -565,7 +561,7 @@ function LoadDetailCompany(frm, option) {
             }
 
             $('#idxLanguage').val(data1['config']['language']).trigger('change.select2');
-            LoadCurrency(data1['config']['currency'])
+            LoadCurrency(data1['config']?.['master_data_currency'])
             $('#idxCurrencyMaskPrefix').val(data1['config']['currency_rule'].prefix);
             $('#idxCurrencyMaskSuffix').val(data1['config']['currency_rule'].suffix);
             $('#idxCurrencyMaskThousand').val(data1['config']['currency_rule'].thousands);

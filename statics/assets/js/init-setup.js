@@ -273,7 +273,7 @@ class MaskMoney2 {
 
     static blurInputMoney($eleSelected) {
         DocumentControl.getCompanyCurrencyConfig().then((configData) => {
-            $($eleSelected).val(new MaskMoney2(configData).applyConfig($($eleSelected).attr('value')));
+            $($eleSelected).val(new MaskMoney2(configData).applyConfig($($eleSelected).attr('data-other-abbreviation'), $($eleSelected).attr('value')));
         });
     }
 
@@ -285,11 +285,11 @@ class MaskMoney2 {
         this.configData = configData;
     }
 
-    applyConfig(strAttrValue) {
+    applyConfig(other_abbreviation, strAttrValue) {
         let strDataParsed = parseFloat(strAttrValue);
         if (strAttrValue !== null && Number.isFinite(strDataParsed)) {
-            strAttrValue = strDataParsed.toString();
-            // strAttrValue = (strDataParsed >= 0 ? strDataParsed : strDataParsed * (-1)).toString();
+            // strAttrValue = strDataParsed.toString();
+            strAttrValue = (strDataParsed >= 0 ? strDataParsed : strDataParsed * (-1)).toString();
 
             // apply mask-money config
             let prefix = this.configData?.['prefix'];
@@ -297,6 +297,16 @@ class MaskMoney2 {
             let decimal = this.configData?.['decimal'];
             let thousand = this.configData?.['thousands'];
             let precision = parseInt(this.configData?.['precision']);
+
+            if (other_abbreviation) {
+                if (prefix) {
+                    prefix = prefix.replace(prefix.trim(), other_abbreviation)
+                }
+                if (suffix) {
+                    suffix = suffix.replace(suffix.trim(), other_abbreviation)
+                }
+            }
+
             let parsedFloatData = parseFloat(MaskMoney2._beforeParseFloatAndLimit(strAttrValue));
             if (Number.isInteger(precision)) parsedFloatData = parseFloat(parsedFloatData.toFixed(precision));
             if (Number.isFinite(parsedFloatData)) {
@@ -312,8 +322,8 @@ class MaskMoney2 {
                         result = rs.reverse().join("") + (decimal ? decimal : ".") + arrData[1];
                     } else result = rs.reverse().join("");
                 }
-                return (prefix ? prefix : "") + result + (suffix ? suffix : "");
-                // return strDataParsed >= 0 ? (prefix ? prefix : "") + result + (suffix ? suffix : "") :  '(' + (prefix ? prefix : "") + result + (suffix ? suffix : "") + ')';
+                // return (prefix ? prefix : "") + result + (suffix ? suffix : "");
+                return strDataParsed >= 0 ? (prefix ? prefix : "") + result + (suffix ? suffix : "") :  '(' + (prefix ? prefix : "") + result + (suffix ? suffix : "") + ')';
             }
         }
     }
@@ -322,10 +332,10 @@ class MaskMoney2 {
         // inputOrDisplay choice in ['input', 'display']
         switch (inputOrDisplay) {
             case 'input':
-                $($ele).val(this.applyConfig($($ele).attr('value')));
+                $($ele).val(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('value')));
                 break
             case 'display':
-                $($ele).text(this.applyConfig($($ele).attr('data-init-money')));
+                $($ele).text(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('data-init-money')));
                 break
             default:
                 if ($.fn.isDebug() === true) throw Error('strData must be required!')
@@ -3233,6 +3243,14 @@ class WFRTControl {
         return [];
     }
 
+    static getZoneHiddenKeyRelatedData() {
+        let itemEle = $('#idxZonesHiddenKeyRelatedData');
+        if (itemEle && itemEle.length > 0) {
+            return JSON.parse(itemEle.text());
+        }
+        return [];
+    }
+
     static setRuntimeDoc(docData) {
         if (typeof docData === 'object' && docData !== null) {
             let $RuntimeDoc = $('#idxRuntimeDoc');
@@ -3275,12 +3293,15 @@ class WFRTControl {
 
     static setZoneHiddenData(zonesHiddenData) {
         let body_fields = [];
+        let body_fields_related = [];
         if (zonesHiddenData && Array.isArray(zonesHiddenData)) {
             zonesHiddenData.map((item) => {
                 body_fields.push(item.code);
+                body_fields_related = body_fields_related.concat(item?.['code_related']);
             });
             let $hiddenData = $('#idxZonesHiddenData');
             let $hiddenKey = $('#idxZonesHiddenKeyData');
+            let $hiddenRelate = $('#idxZonesHiddenKeyRelatedData');
             if ($hiddenData && $hiddenData.length > 0) {
                 $hiddenData.empty().html(`${JSON.stringify(zonesHiddenData)}`);
             } else {
@@ -3290,6 +3311,11 @@ class WFRTControl {
                 $hiddenKey.empty().html(`${JSON.stringify(body_fields)}`);
             } else {
                 $('html').append(`<script class="hidden" id="idxZonesHiddenKeyData">${JSON.stringify(body_fields)}</script>`);
+            }
+            if ($hiddenRelate && $hiddenRelate.length > 0) {
+                $hiddenRelate.empty().html(`${JSON.stringify(body_fields_related)}`);
+            } else {
+                $('html').append(`<script class="hidden" id="idxZonesHiddenKeyRelatedData">${JSON.stringify(body_fields_related)}</script>`);
             }
         }
     }

@@ -443,6 +443,7 @@ $(function () {
                     LeaseOrderLoadDataHandle.loadShowDepreciation(btnDepreciationEle);
                     LeaseOrderLoadDataHandle.loadSaveDepreciation();
                 }
+                LeaseOrderStoreDataHandle.storeDtbData(2);
             }
         });
 
@@ -998,27 +999,10 @@ $(function () {
             let _form = new SetupFormSubmit(LeaseOrderLoadDataHandle.$form);
             // Load again indicator when Submit
             LeaseOrderIndicatorHandle.loadIndicator();
+            LeaseOrderLoadDataHandle.loadDataTableCost();
             let result = LeaseOrderSubmitHandle.setupDataSubmit(_form);
             if (result === false) {
                 return false;
-            }
-            let keyHidden = WFRTControl.getZoneHiddenKeyData();
-            if (keyHidden) {
-                if (keyHidden.length > 0) {
-                    // special case: loadCost if products is not in hidden zones
-                    if (!keyHidden.includes('lease_products_data')) {
-                        LeaseOrderStoreDataHandle.storeDtbData(1);
-                        LeaseOrderStoreDataHandle.storeDtbData(2);
-                        LeaseOrderLoadDataHandle.loadDataTableCost();
-                        LeaseOrderSubmitHandle.setupDataSubmit(_form);
-                        LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
-                    }
-                } else {
-                    LeaseOrderStoreDataHandle.storeDtbData(1);
-                    LeaseOrderStoreDataHandle.storeDtbData(2);
-                    LeaseOrderLoadDataHandle.loadDataTableCost();
-                    LeaseOrderSubmitHandle.setupDataSubmit(_form);
-                }
             }
             let submitFields = [
                 // process

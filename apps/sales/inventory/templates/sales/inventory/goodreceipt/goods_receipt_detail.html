@@ -1,4 +1,4 @@
-{% extends 'base_v2.html' %}
+{% extends 'base.html' %}
 {% load static i18n %}
 {% block cssHeader %}
     <link href="{% static 'assets/sales/inventory/css/goodreceipt/goods_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
@@ -460,7 +460,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
-                    <button type="button" class="btn btn-primary" id="btn-confirm-add-product" data-bs-dismiss="offcanvas">{% trans 'Save' %}</button>
+                    <button type="button" class="btn btn-primary" id="btn-confirm-add-product" data-bs-dismiss="offcanvas" hidden>{% trans 'Save' %}</button>
                 </div>
             </div>
 

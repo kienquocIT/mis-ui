@@ -24,7 +24,7 @@ $(document).ready(function () {
                 useDataServer: true,
                 rowIdx: true,
                 scrollX: '100vw',
-                scrollY: '35vh',
+                scrollY: '32vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
@@ -82,7 +82,7 @@ $(document).ready(function () {
                         'render': (data, type, row) => {
                             return `<span class="badge-status">
                                         <span class="badge badge-primary badge-indicator"></span>
-                                        <span class="badge-label">${row?.['current_lead_stage']?.['title']}</span>
+                                        <span class="badge-label">${row?.['current_lead_stage_data']?.['title']}</span>
                                     </span>`;
                         }
                     },

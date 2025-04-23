@@ -139,7 +139,7 @@ class MenusCoreConfigurations:
                 icon='<i class="fas bi bi-calculator"></i>',
             ),
             MenuCommon(
-                name='Posting periods', code='id_menu_master_data_periods_config', view_name='PeriodsConfigList',
+                name='Posting period', code='id_menu_master_data_periods_config', view_name='PeriodsConfigList',
                 icon='<i class="fas far fa-calendar-alt"></i>',
             ),
             MenuCommon(

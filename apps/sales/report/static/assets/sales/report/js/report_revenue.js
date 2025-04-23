@@ -45,7 +45,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let link = $urlFact.attr('data-opp-detail').format_url_with_uuid(row?.['opportunity']?.['id']);
                             return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['opportunity']?.['title'] ? row?.['opportunity']?.['title'] : ''}</a>`;
@@ -53,23 +53,33 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
-                            let code = row?.['quotation']?.['code'] ? row?.['quotation']?.['code'] : '';
-                            if (row?.['sale_order']?.['code']) {
-                                code = row?.['sale_order']?.['code'];
-                            }
-                            let link = $urlFact.data('quotation-detail').format_url_with_uuid(row?.['quotation']?.['id']);
-                            let title = row?.['quotation']?.['title'] ? row?.['quotation']?.['title'] : '';
+                            let text = "";
                             if (row?.['sale_order']?.['title']) {
-                                title = row?.['sale_order']?.['title'];
-                                link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order']?.['id']);
+                                text = $transFact.attr('data-filter-so');
+                            }
+                            if (row?.['lease_order']?.['title']) {
+                                text = $transFact.attr('data-filter-lo');
+                            }
+                            return `<span>${text}</span>`;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        width: '10%',
+                        render: (data, type, row) => {
+                            let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order']?.['id']);
+                            let title = row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : '';
+                            if (row?.['lease_order']?.['id'] && row?.['lease_order']?.['title']) {
+                                link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order']?.['id']);
+                                title = row?.['lease_order']?.['title'] ? row?.['lease_order']?.['title'] : '';
                             }
                             return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
                         }
                     },
                     {
-                        targets: 3,
+                        targets: 4,
                         width: '5%',
                         render: (data, type, row) => {
                             if (row?.['date_approved']) {
@@ -80,28 +90,28 @@ $(function () {
                         }
                     },
                     {
-                        targets: 4,
+                        targets: 5,
                         width: '15%',
                         render: (data, type, row) => {
                             return `<p>${row?.['customer']?.['title'] ? row?.['customer']?.['title'] : ''}</p>`;
                         }
                     },
                     {
-                        targets: 5,
+                        targets: 6,
                         width: '13%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
-                        targets: 6,
+                        targets: 7,
                         width: '13%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
-                        targets: 7,
+                        targets: 8,
                         width: '13%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
@@ -120,6 +130,14 @@ $(function () {
 
         function dtbHDCustom() {
             let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
             let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
             let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
             headerToolbar$.prepend(textFilter$);
@@ -136,7 +154,7 @@ $(function () {
                     );
                 }
             }
-        };
+        }
 
         function loadCssToDtb(tableID) {
             let tableIDWrapper = tableID + '_wrapper';

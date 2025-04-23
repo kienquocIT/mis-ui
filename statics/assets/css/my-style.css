@@ -193,6 +193,12 @@
 .menu-child-icon i {
     /*font-size: 0.6em;*/
     filter: contrast(70%);
+    width: 20px;      /* set desired icon width */
+    height: 20px;     /* set desired icon height */
+    display: flex;    /* helps center SVG inside */
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;   /* prevents icon from shrinking */
 }
 
 .icon-info {

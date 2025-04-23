@@ -236,11 +236,27 @@ function loadTabTodo() {
                     }
                 },
             ],
+            drawCallback: function () {
+                dtbMyTaskHDCustom();
+            },
         }).on('draw.dt', function () {
             tbl.find('tbody').find('tr').each(function () {
                 $(this).after('<tr class="table-row-gap"><td></td></tr>');
             });
         });
+    }
+}
+
+function dtbMyTaskHDCustom() {
+    let $table = $("#tbl_my_task");
+    let wrapper$ = $table.closest('.dataTables_wrapper');
+    let $theadEle = wrapper$.find('thead');
+    if ($theadEle.length > 0) {
+        for (let thEle of $theadEle[0].querySelectorAll('th')) {
+            if (!$(thEle).hasClass('border-right')) {
+                $(thEle).addClass('border-right');
+            }
+        }
     }
 }
 
@@ -318,11 +334,27 @@ function loadTabFollowing() {
                     }
                 },
             ],
+            drawCallback: function () {
+                dtbFollowingHDCustom();
+            },
         }).on('draw.dt', function () {
             tbl.find('tbody').find('tr').each(function () {
                 $(this).after('<tr class="table-row-gap"><td></td></tr>');
             });
         });
+    }
+}
+
+function dtbFollowingHDCustom() {
+    let $table = $('#tbl_following_data');
+    let wrapper$ = $table.closest('.dataTables_wrapper');
+    let $theadEle = wrapper$.find('thead');
+    if ($theadEle.length > 0) {
+        for (let thEle of $theadEle[0].querySelectorAll('th')) {
+            if (!$(thEle).hasClass('border-right')) {
+                $(thEle).addClass('border-right');
+            }
+        }
     }
 }
 
@@ -419,11 +451,27 @@ function loadTabPined() {
                     }
                 },
             ],
+            drawCallback: function () {
+                dtbPinedHDCustom();
+            },
         }).on('draw.dt', function () {
             tbl_pined.find('tbody').find('tr').each(function () {
                 $(this).after('<tr class="table-row-gap"><td></td></tr>');
             });
         });
+    }
+}
+
+function dtbPinedHDCustom() {
+    let $table = tbl_pined;
+    let wrapper$ = $table.closest('.dataTables_wrapper');
+    let $theadEle = wrapper$.find('thead');
+    if ($theadEle.length > 0) {
+        for (let thEle of $theadEle[0].querySelectorAll('th')) {
+            if (!$(thEle).hasClass('border-right')) {
+                $(thEle).addClass('border-right');
+            }
+        }
     }
 }
 

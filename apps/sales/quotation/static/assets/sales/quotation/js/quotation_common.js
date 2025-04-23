@@ -2318,6 +2318,8 @@ class QuotationLoadDataHandle {
         // Set form novalidate
         QuotationLoadDataHandle.$form[0].setAttribute('novalidate', 'novalidate');
         QuotationLoadDataHandle.loadCheckDataCopy();
+        // Reinit dtb payment
+        QuotationLoadDataHandle.loadReInitDataTablePayment();
         // set again WF runtime
         QuotationLoadDataHandle.loadSetWFRuntimeZone();
         return true;
@@ -3250,8 +3252,8 @@ class QuotationDataTableHandle {
                 }
             },
             drawCallback: function () {
+                QuotationDataTableHandle.dtbProductHDCustom();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    QuotationDataTableHandle.dtbProductHDCustom();
                     // set again WF runtime
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
@@ -3494,6 +3496,9 @@ class QuotationDataTableHandle {
                 // re calculate
                 QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableCost, row);
             },
+            drawCallback: function () {
+                QuotationDataTableHandle.dtbCostHDCustom();
+            },
         });
     };
 
@@ -3706,8 +3711,8 @@ class QuotationDataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
+                QuotationDataTableHandle.dtbExpenseHDCustom();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    QuotationDataTableHandle.dtbExpenseHDCustom();
                     // set again WF runtime
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
@@ -4362,8 +4367,8 @@ class QuotationDataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
+                QuotationDataTableHandle.dtbPaymentHDCustom();
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    QuotationDataTableHandle.dtbPaymentHDCustom();
                     // set again WF runtime
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
@@ -4555,9 +4560,7 @@ class QuotationDataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
-                if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    QuotationDataTableHandle.dtbInvoiceHDCustom();
-                }
+                QuotationDataTableHandle.dtbInvoiceHDCustom();
             },
         });
     };
@@ -4901,6 +4904,14 @@ class QuotationDataTableHandle {
     static dtbSProductHDCustom() {
         let $table = $('#table-select-product');
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -4926,6 +4937,14 @@ class QuotationDataTableHandle {
     static dtbProductHDCustom() {
         let $table = QuotationDataTableHandle.$tableProduct;
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -4938,7 +4957,11 @@ class QuotationDataTableHandle {
                 if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                     dataZone = "sale_order_products_data";
                 }
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
+                let hidden = "";
+                if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -4970,9 +4993,30 @@ class QuotationDataTableHandle {
         }
     };
 
+    static dtbCostHDCustom() {
+        let $table = QuotationDataTableHandle.$tableCost;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
     static dtbExpenseHDCustom() {
         let $table = QuotationDataTableHandle.$tableExpense;
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -4985,7 +5029,11 @@ class QuotationDataTableHandle {
                 if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                     dataZone = "sale_order_expenses_data";
                 }
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}">
+                let hidden = "";
+                if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="${dataZone}" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -5011,6 +5059,14 @@ class QuotationDataTableHandle {
     static dtbPaymentHDCustom() {
         let $table = QuotationDataTableHandle.$tablePayment;
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -5027,6 +5083,10 @@ class QuotationDataTableHandle {
                 }
                 if (!$termMD.val()) {
                     hiddenAdd = "";
+                }
+                if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hiddenLoad = "hidden";
+                    hiddenAdd = "hidden";
                 }
                 let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
                                     <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-detail')}</span></span>
@@ -5053,6 +5113,14 @@ class QuotationDataTableHandle {
     static dtbInvoiceHDCustom() {
         let $table = QuotationDataTableHandle.$tableInvoice;
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -5061,7 +5129,11 @@ class QuotationDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-invoice').length) {
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" data-zone="sale_order_payment_stage">
+                let hidden = "";
+                if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" data-zone="sale_order_payment_stage" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${QuotationLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -5078,6 +5150,14 @@ class QuotationDataTableHandle {
 
     static dtbIndicatorHDCustom($table) {
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -5660,17 +5740,12 @@ class indicatorHandle {
                 dataDetail = JSON.parse(eleDetail.val());
             }
         }
-        // check zone before calculate
+        // Replace zones hidden with data in detail
         let keyHidden = WFRTControl.getZoneHiddenKeyData();
         if (keyHidden) {
             if (keyHidden.length > 0) {
-                // special case: tab cost depend on tab detail
-                if (!keyHidden.includes('quotation_products_data') && !keyHidden.includes('sale_order_products_data')) {
-                    QuotationLoadDataHandle.loadDataTableCost();
-                    QuotationSubmitHandle.setupDataSubmit(_form, 1);
-                    data_form = _form.dataForm;
-                    QuotationLoadDataHandle.loadSetWFRuntimeZone();
-                }
+                let keyHiddenRelated = WFRTControl.getZoneHiddenKeyRelatedData();
+                keyHidden = keyHidden.concat(keyHiddenRelated);
                 // set data detail to zones hidden
                 if (data_form && dataDetail) {
                     for (let key of keyHidden) {

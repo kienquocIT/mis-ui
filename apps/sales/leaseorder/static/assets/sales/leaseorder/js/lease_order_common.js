@@ -3956,9 +3956,7 @@ class LeaseOrderDataTableHandle {
                 }
             },
             drawCallback: function () {
-                if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    LeaseOrderDataTableHandle.dtbProductHDCustom();
-                }
+                LeaseOrderDataTableHandle.dtbProductHDCustom();
             },
         });
     };
@@ -4260,6 +4258,9 @@ class LeaseOrderDataTableHandle {
                     $(depreciationLeaseDataEle).val(JSON.stringify(data?.['depreciation_lease_data'] ? data?.['depreciation_lease_data'] : []));
                 }
             },
+            drawCallback: function () {
+                LeaseOrderDataTableHandle.dtbCostHDCustom();
+            },
         });
     };
 
@@ -4449,9 +4450,7 @@ class LeaseOrderDataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
-                if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    LeaseOrderDataTableHandle.dtbExpenseHDCustom();
-                }
+                LeaseOrderDataTableHandle.dtbExpenseHDCustom();
             },
         });
     };
@@ -5552,8 +5551,8 @@ class LeaseOrderDataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
+                LeaseOrderDataTableHandle.dtbPaymentHDCustom();
                 if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    LeaseOrderDataTableHandle.dtbPaymentHDCustom();
                     // set again WF runtime
                     LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
                 }
@@ -5745,9 +5744,7 @@ class LeaseOrderDataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
-                if (['post', 'put'].includes(LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    LeaseOrderDataTableHandle.dtbInvoiceHDCustom();
-                }
+                LeaseOrderDataTableHandle.dtbInvoiceHDCustom();
             },
         });
     };
@@ -5992,6 +5989,14 @@ class LeaseOrderDataTableHandle {
     static dtbProductHDCustom() {
         let $table = LeaseOrderDataTableHandle.$tableProduct;
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -6000,7 +6005,11 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-product-quotation-create').length && !$('#btn-add-product-group-quotation').length && !$('#btn-check-promotion').length && !$('#btn-add-shipping').length) {
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_products_data">
+                let hidden = "";
+                if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_products_data" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -6029,9 +6038,30 @@ class LeaseOrderDataTableHandle {
         }
     };
 
+    static dtbCostHDCustom() {
+        let $table = LeaseOrderDataTableHandle.$tableCost;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
     static dtbExpenseHDCustom() {
         let $table = LeaseOrderDataTableHandle.$tableExpense;
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -6040,8 +6070,12 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-expense-quotation-create').length && !$('#btn-add-labor-quotation-create').length) {
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_expenses_data">
-                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span><span class="icon"><i class="fas fa-angle-down fs-8 text-light"></i></span></span>
+                let hidden = "";
+                if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_expenses_data" ${hidden}>
+                                    <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
                                     <a class="dropdown-item" href="#" id="btn-add-expense-quotation-create"><i class="dropdown-icon fas fa-hand-holding-usd"></i><span class="mt-2">${LeaseOrderLoadDataHandle.transEle.attr('data-add-expense')}</span></a>
@@ -6066,6 +6100,14 @@ class LeaseOrderDataTableHandle {
     static dtbIndicatorHDCustom() {
         let $table = $('#datable-quotation-create-indicator');
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -6094,6 +6136,14 @@ class LeaseOrderDataTableHandle {
     static dtbPaymentHDCustom() {
         let $table = LeaseOrderDataTableHandle.$tablePayment;
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -6110,6 +6160,10 @@ class LeaseOrderDataTableHandle {
                 }
                 if (!$termMD.val()) {
                     hiddenAdd = "";
+                }
+                if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hiddenLoad = "hidden";
+                    hiddenAdd = "hidden";
                 }
                 let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
                                     <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-detail')}</span></span>
@@ -6136,6 +6190,14 @@ class LeaseOrderDataTableHandle {
     static dtbInvoiceHDCustom() {
         let $table = LeaseOrderDataTableHandle.$tableInvoice;
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -6144,7 +6206,11 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-invoice').length) {
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" data-zone="sale_order_payment_stage">
+                let hidden = "";
+                if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" data-zone="sale_order_payment_stage" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -6678,17 +6744,12 @@ class LeaseOrderIndicatorHandle {
                 dataDetail = JSON.parse(eleDetail.val());
             }
         }
-        // check zone before calculate
+        // Replace zones hidden with data in detail
         let keyHidden = WFRTControl.getZoneHiddenKeyData();
         if (keyHidden) {
             if (keyHidden.length > 0) {
-                // special case: tab cost depend on tab detail
-                if (!keyHidden.includes('lease_products_data')) {
-                    LeaseOrderLoadDataHandle.loadDataTableCost();
-                    LeaseOrderSubmitHandle.setupDataSubmit(_form, 1);
-                    data_form = _form.dataForm;
-                    LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
-                }
+                let keyHiddenRelated = WFRTControl.getZoneHiddenKeyRelatedData();
+                keyHidden = keyHidden.concat(keyHiddenRelated);
                 // set data detail to zones hidden
                 if (data_form && dataDetail) {
                     for (let key of keyHidden) {

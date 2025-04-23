@@ -13,7 +13,7 @@
     {% get_or_default idx "bastionFieldTheDocument" as idx %}
 
     <div
-            class="accordion accordion-card accordion-soft accordion-icon my-3"
+            class="accordion accordion-simple accordion-icon my-3"
             id="{{idx}}"
 
             data-current-feature="{{ data.list_from_app }}"
@@ -63,7 +63,7 @@
                         id="btnBastionField"
                 >
                     <div class="d-flex align-items-center">
-                        <i class="fa-regular fa-star mr-2 {% if opp_required == True or prj_required == True or inherit_required == True or process_required == True %} text-danger {% endif %}"></i>
+                        <i class="fas fa-star mr-2 fs-5 {% if opp_required == True or prj_required == True or inherit_required == True or process_required == True %} text-yellow {% endif %}"></i>
                         {% for item in list_priority_app %}
                             {% if item == 'opp' %}
                                 {% if has_opp == True and opp_hidden != True %}

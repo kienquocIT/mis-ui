@@ -127,6 +127,14 @@ $(function () {
 
         function dtbHDCustom() {
             let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
             let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
             let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
             headerToolbar$.prepend(textFilter$);
@@ -143,7 +151,7 @@ $(function () {
                     );
                 }
             }
-        };
+        }
 
         function loadCssToDtb(tableID) {
             let tableIDWrapper = tableID + '_wrapper';

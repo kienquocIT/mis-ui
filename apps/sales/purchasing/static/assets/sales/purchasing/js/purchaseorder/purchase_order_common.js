@@ -2235,6 +2235,7 @@ class PODataTableHandle {
             drawCallback: function () {
                 // add css to dataTables_scrollBody
                 POLoadDataHandle.loadCssToDTScrollBody();
+                PODataTableHandle.dtbProductRequestHDCustom();
             },
         });
     };
@@ -2377,9 +2378,7 @@ class PODataTableHandle {
             drawCallback: function () {
                 // add css to dataTables_scrollBody
                 POLoadDataHandle.loadCssToDTScrollBody();
-                if (['post', 'put'].includes(POLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    PODataTableHandle.dtbProductHDCustom();
-                }
+                PODataTableHandle.dtbProductHDCustom();
             },
         });
     };
@@ -2639,9 +2638,7 @@ class PODataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
-                if (['post', 'put'].includes(POLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    PODataTableHandle.dtbPaymentHDCustom();
-                }
+                PODataTableHandle.dtbPaymentHDCustom();
             },
         });
     };
@@ -2810,9 +2807,7 @@ class PODataTableHandle {
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
-                if (['post', 'put'].includes(POLoadDataHandle.$form.attr('data-method').toLowerCase())) {
-                    PODataTableHandle.dtbInvoiceHDCustom();
-                }
+                PODataTableHandle.dtbInvoiceHDCustom();
             },
         });
     };
@@ -2968,6 +2963,14 @@ class PODataTableHandle {
     static dtbProductHDCustom() {
         let $table = PODataTableHandle.$tablePOByAdd;
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -2976,7 +2979,11 @@ class PODataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-product-purchase-order').length && !$('#btn-add-shipping-purchase-order').length) {
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown">
+                let hidden = "";
+                if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${POLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -3002,9 +3009,30 @@ class PODataTableHandle {
         }
     };
 
+    static dtbProductRequestHDCustom() {
+        let $table = PODataTableHandle.$tablePOByRequest;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
     static dtbPaymentHDCustom() {
         let $table = PODataTableHandle.$tablePayment;
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -3013,7 +3041,11 @@ class PODataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-payment-stage').length) {
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-payment-stage" data-zone="sale_order_payment_stage">
+                let hidden = "";
+                if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-payment-stage" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${POLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -3031,6 +3063,14 @@ class PODataTableHandle {
     static dtbInvoiceHDCustom() {
         let $table = PODataTableHandle.$tableInvoice;
         let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
         let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
         let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
         headerToolbar$.prepend(textFilter$);
@@ -3039,7 +3079,11 @@ class PODataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-invoice').length) {
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" data-zone="sale_order_payment_stage">
+                let hidden = "";
+                if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                    hidden = "hidden";
+                }
+                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${POLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(

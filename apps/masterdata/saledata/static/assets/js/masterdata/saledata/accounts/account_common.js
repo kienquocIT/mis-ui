@@ -145,7 +145,7 @@ class AccountPageFunction {
             useDataServer: true,
             rowIdx: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '70vh',
             scrollCollapse: true,
             ajax: {

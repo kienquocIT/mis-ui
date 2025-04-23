@@ -1,10 +1,16 @@
 {% load i18n %}
 
-<div class="row mt-5" id="tabs">
+<div class="row" id="tabs">
     <div class="col-12">
         <ul class="nav nav-tabs nav-icon nav-light">
             <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="tab" href="#tab_config">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-circle-info"></i></span></span>
+                    <span class="nav-link-text">{% trans 'Company information' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_config">
                     <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-gear-wide-connected"></i></span></span>
                     <span class="nav-link-text">{% trans 'Company setting' %}</span>
                 </a>
@@ -24,7 +30,112 @@
         </ul>
     </div>
     <div class="tab-content">
-        <div class="tab-pane fade show active" id="tab_config">
+        <div class="tab-pane fade show active" id="tab_general">
+            <form id="frm-detail-company" data-url-detail="{% url "CompanyDetailAPI" '0' %}" data-url-redirect="{% url "CompanyDetail" '0' %}" data-method="PUT">
+                {% csrf_token %}
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-3 col-lg-3">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="company_logo" class="form-label">{% trans 'Logo' %}</label>
+                                            <div class="w-100 d-flex justify-content-center align-items-center overflow-hidden">
+                                                <input id="company_logo"
+                                                       class="form-control"
+                                                       type="file"
+                                                       data-url="{% url 'CompanyLogoUpload' pk=pk %}"
+                                                       data-method="PUT"
+                                                       data-max-file-size="3M"
+                                                       data-allowed-file-extensions="jpeg jpg png gif"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="company_icon" class="form-label">{% trans 'Icon' %}</label>
+                                            <div class="w-100 d-flex justify-content-center align-items-center overflow-hidden">
+                                                <input id="company_icon"
+                                                       class="form-control"
+                                                       type="file"
+                                                       data-url="{% url 'CompanyLogoUpload' pk=pk %}"
+                                                       data-method="PUT"
+                                                       data-max-file-size="100K"
+                                                       data-allowed-file-extensions="jpeg jpg png gif"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-9 col-lg-9">
+                                <div class="row">
+                                    <div class="col-12 col-md-3 col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label required" for="code">{% trans 'Company code' %}</label>
+                                            <input type="text" class="form-control" id="code" oninput="this.value=this.value.toUpperCase()" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-9 col-lg-9">
+                                        <div class="form-group">
+                                            <label class="form-label required" for="title">{% trans 'Company name' %}</label>
+                                            <input type="text" class="form-control" id="title" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-3 col-lg-3">
+                                        <div class="form-group">
+                                            <label class="form-label" for="fax">{% trans 'Fax' %}</label>
+                                            <input type="text" class="form-control" id="fax">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-9 col-lg-9">
+                                        <div class="form-group">
+                                            <label class="form-label required" for="address">{% trans 'Address' %}</label>
+                                            <textarea data-bs-toggle="modal"
+                                                   data-bs-target="#modal-company-address"
+                                                   class="form-control text-primary"
+                                                   readonly
+                                                   placeholder="{% trans 'Click to edit' %}"
+                                                   id="address"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="card border">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="form-label required" for="representative_fullname">{% trans 'Fullname' %}</label>
+                                            <input type="text" class="form-control" id="representative_fullname" required/>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="form-label required" for="phone">{% trans 'Phone number' %}</label>
+                                            <input type="text" class="form-control" id="phone" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="form-label required" for="email">{% trans 'Email' %}</label>
+                                            <input type="text" class="form-control" id="email" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h5><span class="badge badge-primary position-top-center-overflow">{% trans 'Company representative' %}</span></h5>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane fade" id="tab_config">
             <form id="tblCompanyConfig" data-url="{% url 'CompanyConfigDetailAPI' %}" data-method="PUT">
                 {% csrf_token %}
                 <div class="row" id="company-config" data-url-detail="{% url 'CompanyConfigDetailAPI' %}" data-url-currency-list="{% url 'CurrencyListAPI' %}">

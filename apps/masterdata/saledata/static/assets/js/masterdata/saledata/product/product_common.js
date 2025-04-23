@@ -291,7 +291,7 @@ class ProductPageFunction {
         pageElements.$table_price_list.DataTableDefault({
             styleDom: 'hide-foot',
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '35vh',
             scrollCollapse: true,
             useDataServer: true,

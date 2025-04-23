@@ -325,7 +325,7 @@ function loadSerialTable(data, serial_selected=[]) {
         rowIdx: true,
         paging: false,
         scrollY: '40vh',
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         data: data,
         columns: IS_DETAIL_PAGE ? [

@@ -8,7 +8,7 @@ $(document).ready(function () {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '70vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
@@ -170,7 +170,7 @@ $(document).ready(function () {
                 dtb.DataTable().clear().destroy()
                 dtb.DataTableDefault({
                     dom: 't',
-                    scrollX: '100vw',
+                    scrollX: true,
                     paging: false,
                     scrollCollapse: true,
                     reloadCurrency: true,

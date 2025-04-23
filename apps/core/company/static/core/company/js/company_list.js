@@ -31,7 +31,7 @@ $(function () {
                 data: 'logo',
                 render: (data, type, row, meta) => {
                     if (data){
-                        return `<img src="${data}" style="width: 100px;"/>`
+                        return `<img src="${data}" style="width: 60px; height: 60px;"/>`
                     }
                     return ``;
                 }

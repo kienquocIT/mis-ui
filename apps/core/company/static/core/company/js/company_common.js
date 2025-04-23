@@ -305,8 +305,8 @@ function loadFunctionNumberTable(option='detail', table_detail_data = []) {
     });
     $('#function_number_table').DataTableDefault({
         rowIdx: true,
-        scrollX: '100vw',
-        scrollY: '30vh',
+        scrollX: true,
+        scrollY: '65vh',
         scrollCollapse: true,
         paging: false,
         data: table_detail_data,
@@ -521,13 +521,13 @@ function LoadDetailCompany(frm, option) {
         else {
             if (data0.logo) {
                 $(`
-                    <img src="${data0.logo}" style="width: 90%; max-height: 100px; object-fit: contain;"/>
+                    <img src="${data0.logo}" class="w-100"/>
                 `).insertAfter(eleInputLogo);
             }
             eleInputLogo.attr('disabled', 'disabled').remove();
             if (data0.icon) {
                 $(`
-                    <img src="${data0.icon}" style="width: 90%; max-height: 100px; object-fit: contain;"/>
+                    <img src="${data0.icon}" class="w-100"/>
                 `).insertAfter(eleInputIcon);
             }
             eleInputIcon.attr('disabled', 'disabled').remove();

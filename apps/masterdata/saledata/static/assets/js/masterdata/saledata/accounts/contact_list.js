@@ -3,7 +3,7 @@ $(document).ready(function () {
     let baseUrlDetail = tbl.attr('data-url-detail');
     tbl.DataTableDefault({
         rowIdx: true,
-        scrollX: '100vw',
+        scrollX: true,
         scrollY: '70vh',
         scrollCollapse: true,
         useDataServer: true,

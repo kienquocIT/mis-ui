@@ -69,7 +69,7 @@ $(document).ready(function () {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '70vh',
                 scrollCollapse: true,
                 reloadCurrency: true,

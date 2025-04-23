@@ -56,7 +56,7 @@ $(document).ready(function() {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '70vh',
                 scrollCollapse: true,
                 ajax: {

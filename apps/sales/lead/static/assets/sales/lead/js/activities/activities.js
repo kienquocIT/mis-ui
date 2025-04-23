@@ -84,7 +84,7 @@ class LeadActivitiesHandler{
         this.$activitiesTable.DataTableDefault({
             useDataServer: true,
             scrollY: '50vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             ajax: {
                 url: this.$urlScript.data('activity-list-url'),

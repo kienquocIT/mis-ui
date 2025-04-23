@@ -86,7 +86,7 @@ class OpportunityBOMLoadTab {
         table_select_bom_copy.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '60vh',
             scrollCollapse: true,
             reloadCurrency: true,
@@ -149,7 +149,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -321,7 +321,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: [],
             columns: [
@@ -425,7 +425,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '65vh',
             scrollCollapse: true,
             ajax: {
@@ -543,7 +543,7 @@ class OpportunityBOMLoadTab {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '50vh',
                 scrollCollapse: true,
                 ajax: {
@@ -641,7 +641,7 @@ class OpportunityBOMLoadTab {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '50vh',
                 scrollCollapse: true,
                 data: [],
@@ -707,7 +707,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: [],
             columns: [
@@ -779,7 +779,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '65vh',
             scrollCollapse: true,
             ajax: {

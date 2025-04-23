@@ -483,7 +483,7 @@ function loadTableSelectDetailProduct(datasource=[]) {
         reloadCurrency: true,
         paging: false,
         scrollY: '35vh',
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         data: datasource,
         columns: [
@@ -615,7 +615,7 @@ function loadTableSelectProductSerial(datasource=[]) {
         reloadCurrency: true,
         paging: false,
         scrollY: '60vh',
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         data: datasource,
         columns: [
@@ -702,7 +702,7 @@ function loadTableSelectProductLOT(datasource=[]) {
         reloadCurrency: true,
         paging: false,
         scrollY: '60vh',
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         data: datasource,
         columns: [

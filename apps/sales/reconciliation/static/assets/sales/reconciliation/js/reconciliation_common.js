@@ -149,7 +149,7 @@ class ReconLoadPage {
             styleDom: 'hide-foot',
             reloadCurrency: true,
             rowIdx: true,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '50vh',
             scrollCollapse: true,
             paging: false,

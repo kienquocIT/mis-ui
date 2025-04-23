@@ -172,7 +172,7 @@ function loadTabTodo() {
         tbl.DataTableDefault({
             pageLength: 5,
             rowIdx: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             ajax: {
                 url: frm.dataUrl,

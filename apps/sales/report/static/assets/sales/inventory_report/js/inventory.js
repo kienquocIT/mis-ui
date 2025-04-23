@@ -420,7 +420,7 @@ $(document).ready(function () {
             data: data_list,
             rowIdx: true,
             ordering: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '65vh',
             scrollCollapse: true,
             columns: [
@@ -489,7 +489,7 @@ $(document).ready(function () {
             data: data_list,
             rowIdx: true,
             ordering: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '65vh',
             scrollCollapse: true,
             columns: [

@@ -76,7 +76,7 @@ class PriceListAction {
             reloadCurrency: true,
             data: data,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '55vh',
             scrollCollapse: true,
             columns: columns,

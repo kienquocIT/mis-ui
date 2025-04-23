@@ -73,7 +73,7 @@ class UsualLoadPageFunction {
             rowIdx: true,
             reloadCurrency: true,
             scrollY: '50vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             ajax: {
                 url: data_url || element.attr('data-url'),
@@ -260,7 +260,7 @@ class UsualLoadPageFunction {
             rowIdx: true,
             reloadCurrency: true,
             scrollY: '50vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             ajax: {
                 url: data_url || element.attr('data-url'),
@@ -351,7 +351,7 @@ class UsualLoadPageFunction {
             rowIdx: true,
             reloadCurrency: true,
             scrollY: '50vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             ajax: {
                 url: data_url || element.attr('data-url'),

@@ -59,7 +59,7 @@ $(document).ready(function () {
                     rowIdx: true,
                     reloadCurrency: true,
                     paging: false,
-                    scrollX: '100vw',
+                    scrollX: true,
                     scrollY: '18vw',
                     scrollCollapse: true,
                     data: account_determination_data_list[product_type_mapped_id],

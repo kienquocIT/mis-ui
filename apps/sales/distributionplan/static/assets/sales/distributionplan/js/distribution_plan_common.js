@@ -44,7 +44,7 @@ function loadFixedCostsTable(data_list=[], option='create') {
         reloadCurrency: true,
         paging: false,
         scrollY: '35vh',
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         data: data_list,
         columns: [
@@ -90,7 +90,7 @@ function loadVariableCostsTable(data_list=[], option='create') {
         reloadCurrency: true,
         paging: false,
         scrollY: '35vh',
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         data: data_list,
         columns: [

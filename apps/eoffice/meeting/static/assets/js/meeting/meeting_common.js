@@ -127,7 +127,7 @@ function loadInternalParticipantsTable() {
         useDataServer: true,
         rowIdx: true,
         paging: false,
-        scrollX: '100vw',
+        scrollX: true,
         scrollY: '40vh',
         scrollCollapse: true,
         ajax: {
@@ -274,7 +274,7 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
         useDataServer: true,
         rowIdx: true,
         paging: false,
-        scrollX: '100vw',
+        scrollX: true,
         scrollY: '40vh',
         scrollCollapse: true,
         ajax: {

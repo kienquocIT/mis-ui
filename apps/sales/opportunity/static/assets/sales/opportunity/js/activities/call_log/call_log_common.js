@@ -13,7 +13,7 @@ function loadOpportunityCallLogList() {
         let frm = new SetupFormSubmit(dtb);
         dtb.DataTableDefault({
             rowIdx: true,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '75vh',
             scrollCollapse: true,
             useDataServer: true,

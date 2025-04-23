@@ -28,7 +28,7 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '75vh',
                 scrollCollapse: true,
                 useDataServer: true,

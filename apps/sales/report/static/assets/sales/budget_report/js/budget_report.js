@@ -314,7 +314,7 @@ $(document).ready(function () {
             rowIdx: true,
             paging: false,
             scrollY: '70vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             reloadCurrency: true,
             data: data_list,

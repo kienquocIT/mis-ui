@@ -115,7 +115,7 @@ class BOMLoadTab {
         table_select_bom_copy.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '60vh',
             scrollCollapse: true,
             reloadCurrency: true,
@@ -178,7 +178,7 @@ class BOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -350,7 +350,7 @@ class BOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: [],
             columns: [
@@ -415,7 +415,7 @@ class BOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -530,7 +530,7 @@ class BOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '65vh',
             scrollCollapse: true,
             ajax: {

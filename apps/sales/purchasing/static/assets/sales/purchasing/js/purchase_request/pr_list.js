@@ -8,7 +8,7 @@ $(document).ready(function () {
             let $table = $('#datatable-purchase-request')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
-                scrollX: '100vw',
+                scrollX: true,
                 scrollCollapse: true,
                 useDataServer: true,
                 rowIdx: true,

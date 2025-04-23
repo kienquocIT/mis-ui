@@ -172,7 +172,7 @@ function LoadLineDetailTable(ele, product_datas=[], disabled='') {
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         data: product_datas,
         columns: [
@@ -263,7 +263,7 @@ function LoadLineDetailTableAddRow(ele, product_datas=[], disabled='') {
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         data: product_datas,
         columns: [
@@ -362,7 +362,7 @@ function LoadSaleOrderTable(is_all_so=false) {
         useDataServer: true,
         rowIdx: true,
         scrollY: '25vh',
-        scrollX: '100vw',
+        scrollX: true,
         ajax: {
             url: tableSaleOrder.attr('data-url'),
             data: data_param,
@@ -416,7 +416,7 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
             rowIdx: true,
             paging: false,
             scrollY: '30vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: [],
             columns: [
@@ -466,7 +466,7 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
             rowIdx: true,
             paging: false,
             scrollY: '30h',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             ajax: {
                 url: tableSaleOrderProduct.attr('data-url').replace('/0', `/${sale_order_id}`),
@@ -548,7 +548,7 @@ function LoadDistributionTable() {
         useDataServer: true,
         rowIdx: true,
         scrollY: '25vh',
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         ajax: {
             url: tableDistribution.attr('data-url'),
@@ -599,7 +599,7 @@ function LoadDistributionProductTable(distribution_id=null) {
             rowIdx: true,
             paging: false,
             scrollY: '30vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: [],
             columns: [
@@ -648,7 +648,7 @@ function LoadDistributionProductTable(distribution_id=null) {
             rowIdx: true,
             paging: false,
             scrollY: '30vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             ajax: {
                 url: tableDistributionProduct.attr('data-url').replace('/0', `/${distribution_id}`),

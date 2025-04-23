@@ -7,7 +7,7 @@ $(document).ready(function () {
                 useDataServer: true,
                 reloadCurrency: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '75vh',
                 scrollCollapse: true,
                 ajax: {

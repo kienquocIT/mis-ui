@@ -118,11 +118,11 @@ class FlowChartLoadDataHandle {
                                             <textarea class="form-control left-param left-param-${order}-${orderChild}" rows="2" readonly></textarea>
                                             <button
                                                 type="button"
-                                                class="btn btn-icon btn-cond"
+                                                class="btn btn-icon btn-rounded btn-soft-light btn-sm btn-cond"
                                                 data-bs-toggle="offcanvas"
                                                 data-bs-target="#formulaCanvas"
                                                 data-cls-target="left-param-${order}-${orderChild}"
-                                            ><i class="fas fa-ellipsis-h"></i>
+                                            ><i class="fas fa-edit"></i>
                                             </button>      
                                         </div>
                                     </div>
@@ -134,11 +134,11 @@ class FlowChartLoadDataHandle {
                                             <textarea class="form-control right-param right-param-${order}-${orderChild}" rows="2" readonly></textarea>
                                             <button
                                                 type="button"
-                                                class="btn btn-icon btn-cond"
+                                                class="btn btn-icon btn-rounded btn-soft-light btn-sm btn-cond"
                                                 data-bs-toggle="offcanvas"
                                                 data-bs-target="#formulaCanvas"
                                                 data-cls-target="right-param-${order}-${orderChild}"
-                                            ><i class="fas fa-ellipsis-h"></i>
+                                            ><i class="fas fa-edit"></i>
                                             </button>      
                                         </div>
                                     </div>

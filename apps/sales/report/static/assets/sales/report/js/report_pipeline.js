@@ -226,19 +226,18 @@ $(function () {
                 }
             }
             let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-            headerToolbar$.prepend(textFilter$);
-
-            if (textFilter$.length > 0) {
-                textFilter$.css('display', 'flex');
-                // Check if the button already exists before appending
+            if (headerToolbar$.length > 0) {
                 if (!$('#btn-open-filter').length) {
-                    let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
-                                        <span><span class="icon"><i class="fas fa-filter"></i></span><span>${eleTrans.attr('data-filter')}</span></span>
-                                    </button>`);
-                    textFilter$.append(
-                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
-                    );
+                    let $group = $(`<div class="btn-filter">
+                                        <div class="d-flex justify-content-end align-items-center">
+                                            <div class="btn-group dropdown ml-1" data-bs-toggle="tooltip" title="${eleTrans.attr('data-filter')}">
+                                                <button type="button" class="btn btn-light ml-1" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                                    <span><span class="icon"><i class="fas fa-filter"></i></span></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>`);
+                    headerToolbar$.append($group);
                 }
             }
         }
@@ -822,7 +821,6 @@ $(function () {
         });
 
         $('#btn-apply-filter').on('click', function () {
-            // this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             let listViewBy = [];
             let listDate = [];

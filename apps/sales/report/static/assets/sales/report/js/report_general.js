@@ -20,28 +20,21 @@ $(function () {
                 columns: [  // (1500p)
                     {
                         targets: 0,
-                        width: '2%',
+                        width: '10%',
                         render: (data, type, row) => {
-                            if (row?.['type_group_by'] === 0) {
-                                return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
-                            } else {
-                                return `<div class="row"><span class="badge badge-indigo badge-outline">${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</span></div>`;
-                            }
+                            return `<p>${row?.['group']?.['title'] ? row?.['group']?.['title'] : ''}</p>`;
                         }
                     },
                     {
                         targets: 1,
-                        width: '3%',
+                        width: '10%',
                         render: (data, type, row) => {
-                            return `<div class="d-flex">
-                                        <span class="badge badge-primary mr-2">${row?.['employee_inherit']?.['code'] ? row?.['employee_inherit']?.['code'] : ''}</span>
-                                        <span class="badge badge-primary badge-outline">${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span>
-                                    </div>`;
+                            return `<span>${row?.['employee_inherit']?.['full_name'] ? row?.['employee_inherit']?.['full_name'] : ''}</span>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '6%',
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><span class="mask-money table-row-revenue-plan" data-init-money="${parseFloat(row?.['revenue_plan'])}"></span></b>`;
@@ -51,7 +44,7 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '6%',
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span></b>`;
@@ -61,7 +54,7 @@ $(function () {
                     },
                     {
                         targets: 4,
-                        width: '3%',
+                        width: '5%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><p>${parseFloat(row?.['revenue_ratio'])} %</p></b>`;
@@ -71,7 +64,7 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '6%',
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><span class="mask-money table-row-profit-plan" data-init-money="${parseFloat(row?.['gross_profit_plan'])}"></span></b>`;
@@ -81,7 +74,7 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '6%',
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><span class="mask-money table-row-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span></b>`;
@@ -91,7 +84,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '3%',
+                        width: '5%',
                         render: (data, type, row) => {
                             if (row?.['type_group_by'] === 1) {  // type is group
                                 return `<b><p>${parseFloat(row?.['gross_profit_ratio'])} %</p></b>`;
@@ -104,10 +97,38 @@ $(function () {
                     // mask money
                     $.fn.initMaskMoney2();
                     // add css to Dtb
-                    loadCssToDtb('table_report_general_list');
+                    dtbHDCustom();
                 },
             });
         }
+
+        function dtbHDCustom() {
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
+            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+            if (headerToolbar$.length > 0) {
+                if (!$('#btn-open-filter').length) {
+                    let $group = $(`<div class="btn-filter">
+                                        <div class="d-flex justify-content-end align-items-center">
+                                            <div class="btn-group dropdown ml-1" data-bs-toggle="tooltip" title="${eleTrans.attr('data-filter')}">
+                                                <button type="button" class="btn btn-light ml-1" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                                    <span><span class="icon"><i class="fas fa-filter"></i></span></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>`);
+                    headerToolbar$.append($group);
+                }
+            }
+        }
+
         loadDbl();
 
         function loadCssToDtb(tableID) {
@@ -388,7 +409,7 @@ $(function () {
                             let currentYear = new Date().getFullYear();
                             boxYear.val(currentYear).trigger('change');
                             boxDetail.val('p-1').trigger('change');
-                            $('#btn-apply-vb').click();
+                            $('#btn-apply-filter').click();
                         }
                     }
                 }
@@ -678,27 +699,15 @@ $(function () {
             boxDetail.val('p-1').trigger('change');
         });
 
-        $('#btn-apply-vb, #btn-apply-date').on('click', function () {
-            this.closest('.dropdown-menu').classList.remove('show');
+        $('#btn-apply-filter').on('click', function () {
             let dataParams = {};
             dataParams['is_initial'] = false;
-            let listViewBy = [];
-            let listDate = [];
             if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
-                let listTxt = getListTxtMultiSelect2(boxGroup);
-                for (let txt of listTxt) {
-                    listViewBy.push(txt);
-                }
             }
             if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
-                let listTxt = getListTxtMultiSelect2(boxEmployee);
-                for (let txt of listTxt) {
-                    listViewBy.push(txt);
-                }
             }
-            loadFilter(listViewBy, $('#card-filter-vb'));
             let year = boxYear.val();
             let detail = boxDetail.val();
             if (year && detail) {
@@ -725,15 +734,6 @@ $(function () {
                         dataParams['date_approved__lte'] = endDate;
                     }
                 }
-                let yearSelected = SelectDDControl.get_data_from_idx(boxYear, boxYear.val());
-                if (yearSelected) {
-                    listDate.push(yearSelected?.['title']);
-                }
-                let detailSelected = SelectDDControl.get_data_from_idx(boxDetail, boxDetail.val());
-                if (detailSelected) {
-                    listDate.push(detailSelected?.['title']);
-                }
-                loadFilter(listDate, $('#card-filter-date'));
             }
             $.fn.callAjax2({
                     'url': $table.attr('data-url'),

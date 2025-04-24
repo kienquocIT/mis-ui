@@ -369,7 +369,6 @@ $(function () {
         });
 
         $('#btn-apply-filter').on('click', function () {
-            // this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             let listViewBy = [];
             let listDate = [];

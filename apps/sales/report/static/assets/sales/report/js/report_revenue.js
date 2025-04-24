@@ -384,7 +384,6 @@ $(function () {
         });
 
         $('#btn-apply-filter').on('click', function () {
-            // this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
             dataParams['is_initial'] = false;
             let listViewBy = [];

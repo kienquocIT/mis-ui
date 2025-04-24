@@ -34,15 +34,6 @@
             data-trans-numbering1="{% trans 'User defined' %}"
             data-trans-default="{% trans 'Default' %}"
     ></script>
-
-    <form id="frm-detail-company"
-          data-url-detail="{% url "CompanyDetailAPI" '0' %}"
-          data-url-redirect="{% url "CompanyList" %}"
-          data-method="GET"
-    >
-        {% csrf_token %}
-        {% include 'core/company/common/information.html' %}
-    </form>
     {% include 'core/company/common/tabs.html' %}
 {% endblock %}
 {% block jsFooter %}

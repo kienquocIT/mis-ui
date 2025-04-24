@@ -127,7 +127,7 @@ function loadInternalParticipantsTable() {
         useDataServer: true,
         rowIdx: true,
         paging: false,
-        scrollX: '100vw',
+        scrollX: true,
         scrollY: '40vh',
         scrollCollapse: true,
         ajax: {
@@ -143,21 +143,21 @@ function loadInternalParticipantsTable() {
         },
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: () => {
                     return ``;
                 }
             },
             {
                 data: 'full_name',
-                className: 'wrap-text w-25',
+                className: 'w-25',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary mr-1">${row?.['code']}</span><span data-id="${row?.['id']}" data-fullname="${row?.['full_name']}" class="text-primary emp-info">${row?.['full_name']}</span>`;
                 }
             },
             {
                 data: 'group',
-                className: 'wrap-text w-20',
+                className: 'w-20',
                 render: (data, type, row) => {
                     if (row?.['group']?.['title']) {
                         return `<span class="text-secondary">${row?.['group']?.['title']}</span>`;
@@ -167,7 +167,7 @@ function loadInternalParticipantsTable() {
             },
             {
                 data: 'email',
-                className: 'wrap-text w-20',
+                className: 'w-20',
                 render: (data, type, row) => {
                     if (row?.['email']) {
                         return `<span class="text-secondary">${row?.['email']}</span>`;
@@ -176,7 +176,7 @@ function loadInternalParticipantsTable() {
                 }
             },
             {
-                className: 'wrap-text w-10 text-center',
+                className: 'w-10 text-center',
                 render: (data, type, row) => {
                     return row?.['email'] ? `<div class="form-check">
                                 <input type="checkbox" class="form-check-input checkbox_internal_send_notify_email">
@@ -184,13 +184,13 @@ function loadInternalParticipantsTable() {
                 }
             },
             {
-                className: 'wrap-text w-10 text-center',
+                className: 'w-10 text-center',
                 render: (data, type, row) => {
                     return '<span class="send-email-status small"></span>'
                 }
             },
             {
-                className: 'wrap-text w-10 text-center',
+                className: 'w-10 text-center',
                 render: (data, type, row) => {
                     return `<div class="form-check">
                                 <input type="checkbox" class="form-check-input checkbox_internal_employees">
@@ -274,7 +274,7 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
         useDataServer: true,
         rowIdx: true,
         paging: false,
-        scrollX: '100vw',
+        scrollX: true,
         scrollY: '40vh',
         scrollCollapse: true,
         ajax: {
@@ -297,21 +297,21 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
         },
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: () => {
                     return ``;
                 }
             },
             {
                 data: 'full_name',
-                className: 'wrap-text w-25',
+                className: 'w-25',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary mr-1">${row?.['code']}</span><span data-id="${row?.['id']}" data-fullname="${row?.['fullname']}" class="text-primary emp-info">${row?.['fullname']}</span>`;
                 }
             },
             {
                 data: 'job_title',
-                className: 'wrap-text w-20',
+                className: 'w-20',
                 render: (data, type, row) => {
                     if (row?.['job_title']) {
                         return `<span class="text-secondary">${row?.['job_title']}</span>`;
@@ -321,7 +321,7 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
             },
             {
                 data: 'email',
-                className: 'wrap-text w-20',
+                className: 'w-20',
                 render: (data, type, row) => {
                     if (row?.['email']) {
                         return `<span class="text-secondary">${row?.['email']}</span>`;
@@ -330,7 +330,7 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
                 }
             },
             {
-                className: 'wrap-text w-15 text-center',
+                className: 'w-15 text-center',
                 render: (data, type, row) => {
                     return row?.['email'] ? `<div class="form-check">
                                 <input type="checkbox" class="form-check-input checkbox_external_send_notify_email">
@@ -338,13 +338,13 @@ function loadExternalParticipantsTable(contact_mapped_id=[]) {
                 }
             },
             {
-                className: 'wrap-text w-10 text-center',
+                className: 'w-10 text-center',
                 render: (data, type, row) => {
                     return '<span class="send-email-status small"></span>'
                 }
             },
             {
-                className: 'wrap-text w-5 text-center',
+                className: 'w-5 text-center',
                 render: (data, type, row) => {
                     return `<div class="form-check ">
                                 <input type="checkbox" class="form-check-input checkbox_external_contacts">

@@ -1276,3 +1276,24 @@ table.dataTable tr.dtrg-group th {
   width: 1% !important;
 }
 /*end*/
+
+.ellipsis-cell-lg {
+    white-space: nowrap !important;        /* Không cho xuống dòng */
+    overflow: hidden !important;           /* Ẩn phần tràn ra */
+    text-overflow: ellipsis !important;    /* Thêm dấu "..." */
+    max-width: 300px !important;           /* Giới hạn độ rộng nếu cần */
+}
+
+.ellipsis-cell {
+    white-space: nowrap !important;        /* Không cho xuống dòng */
+    overflow: hidden !important;           /* Ẩn phần tràn ra */
+    text-overflow: ellipsis !important;    /* Thêm dấu "..." */
+    max-width: 200px !important;           /* Giới hạn độ rộng nếu cần */
+}
+
+.ellipsis-cell-sm {
+    white-space: nowrap !important;        /* Không cho xuống dòng */
+    overflow: hidden !important;           /* Ẩn phần tràn ra */
+    text-overflow: ellipsis !important;    /* Thêm dấu "..." */
+    max-width: 120px !important;           /* Giới hạn độ rộng nếu cần */
+}

@@ -3586,7 +3586,7 @@ class WFRTControl {
             4: "red-light-4",
         }
         if (status || status === 0) {
-            return `<span class="p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
+            return `<span class="badge w-100 p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
         }
         return ``;
     }
@@ -4335,7 +4335,7 @@ class UtilControl {
             let format = opts?.['format'] || "YYYY-MM-DD HH:mm:ss";
             let outputFormat = opts?.['outputFormat'] || "DD-MM-YYYY HH:mm:ss";
             let callback = opts?.['callback'] || function (data) {
-                return `<span>${data.output}</span> <span class="small text-primary">(${data.relate})</span>`;
+                return `<span>${data.output}</span> <span class="small">(${data.relate})</span>`;
             }
             const objDT = moment(dataStr, format);
             let relateTimeStr = objDT.fromNow();
@@ -4348,7 +4348,7 @@ class UtilControl {
                 'outputFormat': outputFormat,
             });
         }
-        return '_';
+        return '--';
     }
 
     static checkNumber(dataStr) {
@@ -5428,6 +5428,9 @@ class DTBControl {
     get columns() {
         return (this.opts?.['columns'] || []).map(
             (item) => {
+                if (!item?.['data']) {
+                    item['data'] = null
+                }
                 let clsNameTmp = item?.['className'] ? (item?.['className'] + ' wrap-text') : 'wrap-text';
                 return {
                     ...item,

@@ -28,10 +28,14 @@ $(document).ready(function () {
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 rowIdx: true,
-                scrollX: '100vw',
-                scrollY: '75vh',
+                scrollX: true,
+                scrollY: '70vh',
                 scrollCollapse: true,
                 useDataServer: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: 1
+                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -45,68 +49,67 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'w-5',
                         render: () => {
                             return ``;
                         }
                     }, {
                         data: 'title',
-                        className: 'wrap-text w-30',
+                        className: 'w-40',
                         render: (data, type, row) => {
-                            return `<a class="btn-detail" href="${urlEle.data('url-detail').format_url_with_uuid(row?.['id'])}">
-                                        <span><b>${row?.['is_default'] ? '<i class="bi bi-pin-angle-fill mr-1 text-danger"></i>' : ''}${data}</b></span>
-                                    </a>`
+                            let link = urlEle.data('url-detail').format_url_with_uuid(row?.['id'])
+                            return `<a href="${link}" class="${row?.['is_default'] ? 'link-secondary' : 'link-primary'} underline_hover fw-bold">${row?.['title']}</a>`
 
                         }
                     }, {
                         data: 'price_list_type',
-                        className: 'wrap-text text-center w-20',
+                        className: 'w-15',
                         render: (data) => {
                             if (data?.['value'] === 0) {
-                                return `<span class="text-muted">${trans_script.attr('data-trans-for-sale')}</span>`
+                                return `<span>${trans_script.attr('data-trans-for-sale')}</span>`
                             } else if (data?.['value'] === 1) {
-                                return `<span class="text-muted">${trans_script.attr('data-trans-for-purchase')}</span>`
+                                return `<span>${trans_script.attr('data-trans-for-purchase')}</span>`
                             } else if (data?.['value'] === 2) {
-                                return `<span class="text-muted">${trans_script.attr('data-trans-for-expense')}</span>`
+                                return `<span>${trans_script.attr('data-trans-for-expense')}</span>`
                             } else {
                                 return ''
                             }
                         }
                     }, {
-                        className: 'wrap-text text-center w-20',
+                        className: 'w-20',
                         render: (data, type, row) => {
                             let start_time = moment(row?.['valid_time_start'].split(' ')[0]).format('DD/MM/YYYY')
                             let end_time = moment(row?.['valid_time_end'].split(' ')[0]).format('DD/MM/YYYY')
                             if (!row?.['is_default']) {
-                                return `<span class="text-primary">${start_time} - ${end_time}</span>`
+                                return `<span>${start_time} - ${end_time}</span>`
                             }
                             else {
-                                return `<span class="text-primary">${start_time} - ${trans_script.attr('data-trans-now')}</span>`
+                                return `<span>${start_time} - ${trans_script.attr('data-trans-now')}</span>`
                             }
                         }
                     }, {
                         data: 'status',
-                        className: 'wrap-text text-center w-15',
+                        className: 'w-10',
                         render: (data) => {
                             let badge_type = ''
                             let badge_text = ''
                             if (data === 'Valid') {
-                                badge_type = 'badge badge-soft-success w-70'
+                                badge_type = 'text-success'
                                 badge_text = trans_script.attr('data-trans-valid')
                             } else if (data === 'Invalid') {
-                                badge_type = 'badge badge-soft-orange w-70'
+                                badge_type = 'text-orange'
                                 badge_text = trans_script.attr('data-trans-invalid')
                             } else if (data === 'Expired') {
-                                badge_type = 'badge badge-soft-danger w-70'
+                                badge_type = 'text-danger'
                                 badge_text = trans_script.attr('data-trans-expired')
                             } else {
-                                badge_type = 'badge badge-soft-gray w-70'
+                                badge_type = 'text-gray'
                                 badge_text = trans_script.attr('data-trans-undefined')
                             }
                             return `<span class="${badge_type}">${badge_text}</span>`;
                         }
                     }, {
-                        className: 'wrap-text text-right w-10',
+                        className: 'text-right w-10',
                         render: (data, type, row) => {
                             if (!row?.['is_default']) {
                                 return `<a data-method="DELETE" data-id="${row?.['id']}" class="btn btn-icon btn-del btn btn-icon btn-flush-secondary flush-soft-hover btn-rounded del-button delete-price-list-btn">

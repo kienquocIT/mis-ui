@@ -28,22 +28,22 @@ $(function () {
                         },
                         {
                             data: 'code',
-                            className: 'wrap-text w-10',
+                            className: 'w-10',
                             render: (data, type, row) => {
                                 const link = dtb.attr('data-url-detail').replace('0', row.id);
-                                return `<a href="${link}" class="badge badge-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                                return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                             }
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text w-30',
+                            className: 'w-30',
                             render: (data, type, row) => {
                                 return `<span><b>` + row.title + `</b></span>`
                             }
                         },
                         {
                             data: 'purchase_quotation_request',
-                            className: 'wrap-text w-15',
+                            className: 'w-15',
                             render: (data, type, row) => {
                                 if (Object.keys(row.purchase_quotation_request_mapped).length != 0) {
                                     return `<span class="badge badge-secondary mr-1 mb-1 w-80">${row.purchase_quotation_request_mapped.code}</span>`;
@@ -55,21 +55,21 @@ $(function () {
                         },
                         {
                             data: 'supplier_mapped',
-                            className: 'wrap-text w-25',
+                            className: 'w-25',
                             render: (data, type, row) => {
                                 return row.supplier_mapped.name;
                             }
                         },
                         {
                             data: 'expiration_date',
-                            className: 'wrap-text w-10',
+                            className: 'w-10',
                             render: (data, type, row) => {
                                 return moment(row.expiration_date.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY');
                             }
                         },
                         {
                             data: 'status',
-                            className: 'wrap-text w-10',
+                            className: 'w-10',
                             render: () => {
                                 return `<span class="badge badge-soft-success w-80" id="status">Open</span>`
                             }

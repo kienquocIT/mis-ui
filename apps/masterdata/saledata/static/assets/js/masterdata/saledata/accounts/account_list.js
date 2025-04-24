@@ -4,10 +4,13 @@ $(document).ready(function () {
     let urlEmployeeList = tbl.attr('data-url-employee')
     tbl.DataTableDefault({
         rowIdx: true,
-        scrollX: '100vw',
+        scrollX: true,
         scrollY: '70vh',
         scrollCollapse: true,
         useDataServer: true,
+        fixedColumns: {
+            leftColumns: 2
+        },
         ajax: {
             url: tbl.attr('data-url'),
             type: tbl.attr('data-method'),
@@ -68,77 +71,63 @@ $(document).ready(function () {
         ],
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 'render': () => {
                     return ``;
                 },
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-5',
                 data: 'name',
                 render: (data, type, row) => {
                     const link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
-                    return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`
+                    return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'ellipsis-cell-lg w-15',
                 data: 'name',
                 render: (data, type, row) => {
-                    let urlEditPage = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
-                    return `<a href="${urlEditPage}"><span><b>` + row?.['name'] + `</b></span></a>`
+                    let link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
+                    return `<a href="${link}" class="link-primary underline_hover" title="${row?.['name']}">${row?.['name']}</a>`
                 },
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 data: 'account_type',
                 render: (data, type, row) => {
-                    let clsBadgeCurrent = -1;
-                    let list_class_badge = ['badge-soft-danger', 'badge-soft-blue', 'badge-soft-primary', 'badge-soft-secondary']
-                    return (row?.['account_type'] || []).map(
-                        (item) => {
-                            clsBadgeCurrent += 1;
-                            return `<span class="badge w-100 ${list_class_badge[clsBadgeCurrent]} mb-1">${item}</span><br>`;
-                        }
-                    ).join("");
+                    return (row?.['account_type'] || []).map((item) => {return `<span>${item}</span>`;}).join(", ");
                 },
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 data: 'owner',
                 render: (data, type, row) => {
                     if (row?.['owner']?.['fullname']) {
-                        return `<span class="text-blue">` + row?.['owner']?.['fullname'] + `</span><br>`
+                        return `<span>${row?.['owner']?.['fullname']}</span>`
                     }
                     return ``;
                 },
+            }, {
+                className: 'w-20',
+                data: 'phone',
+                render: (data, type, row) => {
+                    return `<p>${row?.['phone'] ? 'Phone: ' + row?.['phone'] : ''}</p><p><a class="text-blue" target="_blank" href="${row?.['website'] ? row['website'] : '#'}">${row?.['website'] ? 'Website: ' + row['website'] : ''}</a></p>`;
+                },
             },
             {
-                className: 'wrap-text w-10',
+                className: 'text-center w-10',
                 data: '',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span>`;
                 },
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-20',
                 data: 'revenue_information',
                 render: (data, type, row) => {
-                    return `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0}"></span>`;
-                },
-            },
-            {
-                className: 'wrap-text w-10',
-                data: 'revenue_information',
-                render: (data, type, row) => {
-                    return `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_average'] ? row?.['revenue_information']?.['revenue_average'] : 0}"></span>`;
-                },
-            },
-            {
-                className: 'wrap-text w-10',
-                data: 'phone',
-                render: (data, type, row) => {
-                    return `<span>${row?.['phone'] ? 'Phone: ' + row?.['phone'] : ''}</span><br><a class="text-blue" target="_blank" href="${row?.['website'] ? row['website'] : '#'}">${row?.['website'] ? 'Website: ' + row['website'] : ''}</a>`;
+                    return row?.['revenue_information']?.['revenue_ytd'] > 0 ? `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0}"></span>
+                            <br>(<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_average'] ? row?.['revenue_information']?.['revenue_average'] : 0}"></span>)` : '';
                 },
             }
         ],

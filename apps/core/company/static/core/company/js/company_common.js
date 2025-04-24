@@ -305,24 +305,21 @@ function loadFunctionNumberTable(option='detail', table_detail_data = []) {
     });
     $('#function_number_table').DataTableDefault({
         rowIdx: true,
-        scrollX: '100vw',
-        scrollY: '30vh',
+        scrollX: true,
+        scrollY: '65vh',
         scrollCollapse: true,
         paging: false,
         data: table_detail_data,
         columns: [
             {
-                className: 'wrap-text',
                 render: () => {
                     return ``;
                 }
             }, {
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<span class="text-primary"><b>${FunctionNumberTableData[row?.['function']]?.['function']}</b></span>`;
                 }
             }, {
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let system = trans_script_ele.attr('data-trans-numbering0');
                     let user_defined = trans_script_ele.attr('data-trans-numbering1');
@@ -339,7 +336,6 @@ function loadFunctionNumberTable(option='detail', table_detail_data = []) {
                     }
                 }
             }, {
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     if (row?.['schema']) {
                         return `<span data-schema="${row?.['schema']}" data-first-number="${row?.['first_number']}" data-last-number="${row?.['last_number']}" data-reset-frequency="${row?.['reset_frequency']}" data-min-number-char="${row?.['min_number_char']}" class="schema-show text-primary">${row?.['schema_text']}</span>`;
@@ -348,7 +344,7 @@ function loadFunctionNumberTable(option='detail', table_detail_data = []) {
                     }
                 }
             }, {
-                className: 'wrap-text text-right',
+                className: 'text-right',
                 render: (data, type, row) => {
                     if (option !== 'detail') {
                         if (row?.['schema']) {
@@ -521,13 +517,13 @@ function LoadDetailCompany(frm, option) {
         else {
             if (data0.logo) {
                 $(`
-                    <img src="${data0.logo}" style="width: 90%; max-height: 100px; object-fit: contain;"/>
+                    <img src="${data0.logo}" class="w-100"/>
                 `).insertAfter(eleInputLogo);
             }
             eleInputLogo.attr('disabled', 'disabled').remove();
             if (data0.icon) {
                 $(`
-                    <img src="${data0.icon}" style="width: 90%; max-height: 100px; object-fit: contain;"/>
+                    <img src="${data0.icon}" class="w-100"/>
                 `).insertAfter(eleInputIcon);
             }
             eleInputIcon.attr('disabled', 'disabled').remove();

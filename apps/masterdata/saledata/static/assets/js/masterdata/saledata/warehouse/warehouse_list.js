@@ -43,46 +43,46 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return ''
                     },
                 }, {
                     data: 'code',
-                    className: 'wrap-text w-15',
+                    className: 'w-10',
                     render: (data, type, row) => {
                         const link = urlEle.attr('data-url-detail').replace('0', row.id);
-                        return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                        return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                     },
                 }, {
                     data: 'title',
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         const link = urlEle.attr('data-url-detail').replace('0', row.id);
                         return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`
                     },
                 }, {
                     data: 'remarks',
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data) => {
-                        return `<p class="wrap-text">${data}</p>`;
+                        return `<p class="">${data}</p>`;
                     },
                 }, {
                     data: 'is_dropship',
-                    className: 'text-center wrap-text w-10',
+                    className: 'text-center w-10',
                     render: (data) => {
                         return data ? `<i class="text-primary bi bi-check-square-fill"></i>` : '';
                     },
                 }, {
                     data: 'is_active',
-                    className: 'text-center wrap-text w-10',
+                    className: 'text-center w-10',
                     render: (data) => {
                         return `<div class="form-check form-switch mb-1"><input type="checkbox" class="form-check-input" ${(data === true ? "checked" : "")} disabled></div>`
                     },
                 },
                 // {
                 //     data: 'id',
-                //     className: 'text-right wrap-text w-5',
+                //     className: 'text-right w-5',
                 //     render: () => {
                 //         return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-remove-row" ><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
                 //     }

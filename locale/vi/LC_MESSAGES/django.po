@@ -10304,8 +10304,12 @@ msgid "Reality"
 msgstr "Thực tế"
 
 #
-msgid "View my revenue plan this period"
-msgstr "Xem kế hoạch doanh thu của tôi kỳ này"
+msgid "View my revenue plan this year"
+msgstr "Xem KHDT của tôi năm nay"
+
+#
+msgid "My revenue plan this year"
+msgstr "KHDT của tôi năm nay"
 
 #
 msgid "Period revenue / profit"
@@ -11702,3 +11706,19 @@ msgstr "Tên hợp đồng"
 #
 msgid "Contract code"
 msgstr "Mã hợp đồng"
+
+#
+msgid "Free input"
+msgstr "Nhập liệu tự do"
+
+#
+msgid "Turn on/off free input ?"
+msgstr "Bật/tắt nhập liệu tự do ?"
+
+#
+msgid "Free input is on"
+msgstr "Nhập liệu tự do được bật"
+
+#
+msgid "Users are responsible for calculations when entering data"
+msgstr "Người dùng tự chịu trách nhiệm cho việc tính toán khi nhập liệu"

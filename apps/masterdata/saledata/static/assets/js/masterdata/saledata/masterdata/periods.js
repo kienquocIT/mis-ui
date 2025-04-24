@@ -114,21 +114,18 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text',
-                        render: () => {
+                            render: () => {
                             return '';
                         }
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text',
                         render: (data, type, row) => {
                             return `<span class="badge badge-primary">${row?.['code']}</span>`
                         }
                     },
                     {
                         data: 'subs',
-                        className: 'wrap-text',
                         render: (data, type, row) => {
                             return `<a href="#" data-period-id="${row?.['id']}" data-state="hidden" class="expand-sub-rows text-secondary">
                                         <script>${JSON.stringify(row?.['subs'])}</script>
@@ -139,7 +136,6 @@ $(document).ready(function () {
                     },
                     {
                         data: 'period_name',
-                        className: 'wrap-text',
                         render: (data, type, row) => {
                             let html = ''
                             if (Object.keys(row?.['current_sub']).length > 0) {
@@ -149,19 +145,19 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'wrap-text text-center',
+                        className: 'text-center',
                         render: (data, type, row) => {
                             return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${moment(row?.['subs'][0]?.['start_date']).format('DD/MM/YYYY')}</span>`
                         }
                     },
                     {
-                        className: 'wrap-text text-center',
+                        className: 'text-center',
                         render: (data, type, row) => {
                             return `<i class="far fa-calendar-alt"></i> <span class="text-secondary">${moment(row?.['end_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
                         }
                     },
                     {
-                        className: 'wrap-text text-center',
+                        className: 'text-center',
                         render: (data, type, row) => {
                             let btn_delete = `<button data-id="${row?.['id']}"
                                     class="btn btn-icon btn-rounded btn-flush-danger delete-periods" type="button">

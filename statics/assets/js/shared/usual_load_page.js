@@ -73,7 +73,7 @@ class UsualLoadPageFunction {
             rowIdx: true,
             reloadCurrency: true,
             scrollY: '50vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             ajax: {
                 url: data_url || element.attr('data-url'),
@@ -89,13 +89,13 @@ class UsualLoadPageFunction {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     'render': () => {
                         return ``;
                     }
                 },
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
                                     <input type="radio" name="employee-selected-radio" class="form-check-input" data-employee='${JSON.stringify(row)}'/>
@@ -103,13 +103,13 @@ class UsualLoadPageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text w-70',
+                    className: 'w-70',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-primary mr-2">${row?.['code'] || ''}</span><span>${row?.['full_name'] || ''}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return (row?.['group'] || {})?.['title']|| ''
                     }
@@ -260,7 +260,7 @@ class UsualLoadPageFunction {
             rowIdx: true,
             reloadCurrency: true,
             scrollY: '50vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             ajax: {
                 url: data_url || element.attr('data-url'),
@@ -276,13 +276,13 @@ class UsualLoadPageFunction {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     'render': () => {
                         return ``;
                     }
                 },
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
                                     <input type="radio" name="customer-selected-radio" class="form-check-input" data-customer='${JSON.stringify(row)}'/>
@@ -290,13 +290,13 @@ class UsualLoadPageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text w-70',
+                    className: 'w-70',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-primary mr-2">${row?.['code'] || ''}</span><span>${row?.['name'] || ''}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return row?.['tax_code'] || ''
                     }
@@ -351,7 +351,7 @@ class UsualLoadPageFunction {
             rowIdx: true,
             reloadCurrency: true,
             scrollY: '50vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             ajax: {
                 url: data_url || element.attr('data-url'),
@@ -367,13 +367,13 @@ class UsualLoadPageFunction {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     'render': () => {
                         return ``;
                     }
                 },
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
                                     <input type="radio" name="supplier-selected-radio" class="form-check-input" data-supplier='${JSON.stringify(row)}'/>
@@ -381,13 +381,13 @@ class UsualLoadPageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text w-70',
+                    className: 'w-70',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-primary mr-2">${row?.['code'] || ''}</span><span>${row?.['name'] || ''}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return row?.['tax_code'] || ''
                     }

@@ -129,15 +129,15 @@ function loadPQR(data) {
             table_body.html(``);
             for (let i = 0; i < product_list_get.length; i++) {
                 table_body.append(`<tr>
-                        <td class="number text-center wrap-text w-5">${i+1}</td>
-                        <td class="wrap-text w-15"><select class="select2 form-select product-select-box" disabled data-method="GET"></select></td>
-                        <td class="wrap-text w-10"><span class="product-description">${product_list_get[i].product.description}</span></td>
-                        <td class="wrap-text w-10"><select class="select2 form-select product-uom-select-box" data-method="GET"></select></td>
-                        <td class="wrap-text w-10"><input type="number" min="1" class="form-control product-quantity" value="${product_list_get[i].quantity}"></td>
-                        <td class="wrap-text w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value="${product_list_get[i].unit_price}"></td>
-                        <td class="wrap-text w-15"><select class="select2 form-select product-tax-select-box" data-method="GET"></select></td>
-                        <td class="wrap-text w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${product_list_get[i].subtotal_price}"></span></td>
-                        <td class="wrap-text w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
+                        <td class="number text-center w-5">${i+1}</td>
+                        <td class="w-15"><select class="select2 form-select product-select-box" disabled data-method="GET"></select></td>
+                        <td class="w-10"><span class="product-description">${product_list_get[i].product.description}</span></td>
+                        <td class="w-10"><select class="select2 form-select product-uom-select-box" data-method="GET"></select></td>
+                        <td class="w-10"><input type="number" min="1" class="form-control product-quantity" value="${product_list_get[i].quantity}"></td>
+                        <td class="w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value="${product_list_get[i].unit_price}"></td>
+                        <td class="w-15"><select class="select2 form-select product-tax-select-box" data-method="GET"></select></td>
+                        <td class="w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${product_list_get[i].subtotal_price}"></span></td>
+                        <td class="w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
                     </tr>`);
                 loadProductList(tableLineDetail.find('tbody tr:last').find('.product-select-box'), {'id': product_list_get[i].product.id, 'title': product_list_get[i].product.title})
                 loadProductUomList(tableLineDetail.find('tbody tr:last').find('.product-uom-select-box'), {'id': product_list_get[i].product.uom.id, 'title': product_list_get[i].product.uom.title}, product_list_get[i].product.uom_group.id)
@@ -183,15 +183,15 @@ function loadPQR(data) {
             table_body.html(``);
             for (let i = 0; i < product_list_get.length; i++) {
                 table_body.append(`<tr>
-                        <td class="number text-center wrap-text w-5">${i+1}</td>
-                        <td class="wrap-text w-15"><select class="select2 form-select product-select-box" disabled data-method="GET"></select></td>
-                        <td class="wrap-text w-10"><span class="product-description">${product_list_get[i].product.description}</span></td>
-                        <td class="wrap-text w-10"><select class="select2 form-select product-uom-select-box" data-method="GET"></select></td>
-                        <td class="wrap-text w-10"><input type="number" min="1" class="form-control product-quantity" value="${product_list_get[i].quantity}"></td>
-                        <td class="wrap-text w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value="${product_list_get[i].unit_price}"></td>
-                        <td class="wrap-text w-15"><select class="select2 form-select product-tax-select-box" data-method="GET"></select></td>
-                        <td class="wrap-text w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${product_list_get[i].subtotal_price}"></span></td>
-                        <td class="wrap-text w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
+                        <td class="number text-center w-5">${i+1}</td>
+                        <td class="w-15"><select class="select2 form-select product-select-box" disabled data-method="GET"></select></td>
+                        <td class="w-10"><span class="product-description">${product_list_get[i].product.description}</span></td>
+                        <td class="w-10"><select class="select2 form-select product-uom-select-box" data-method="GET"></select></td>
+                        <td class="w-10"><input type="number" min="1" class="form-control product-quantity" value="${product_list_get[i].quantity}"></td>
+                        <td class="w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value="${product_list_get[i].unit_price}"></td>
+                        <td class="w-15"><select class="select2 form-select product-tax-select-box" data-method="GET"></select></td>
+                        <td class="w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${product_list_get[i].subtotal_price}"></span></td>
+                        <td class="w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
                     </tr>`);
                 loadProductList(tableLineDetail.find('tbody tr:last').find('.product-select-box'), {'id': product_list_get[i].product.id, 'title': product_list_get[i].product.title})
                 loadProductUomList(tableLineDetail.find('tbody tr:last').find('.product-uom-select-box'), {'id': product_list_get[i].product.uom.id, 'title': product_list_get[i].product.uom.title}, product_list_get[i].product.uom_group.id)
@@ -305,15 +305,15 @@ function calculate_price(table_tr) {
 
 $(document).on("click", '#new-product-btn', function () {
     tableLineDetail.find('tbody').append(`<tr>
-            <td class="number text-center wrap-text w-5"></td>
-            <td class="wrap-text w-15"><select class="select2 form-select product-select-box" data-method="GET"></select></td>
-            <td class="wrap-text w-10"><span class="product-description"></span></td>
-            <td class="wrap-text w-10"><select class="select2 form-select product-uom-select-box" data-method="GET"></select></td>
-            <td class="wrap-text w-10"><input type="number" min="1" class="form-control product-quantity"></td>
-            <td class="wrap-text w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money"></td>
-            <td class="wrap-text w-15"><select class="select2 form-select product-tax-select-box" data-method="GET"></select></td>
-            <td class="wrap-text w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money=""></span></td>
-            <td class="wrap-text w-5"><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
+            <td class="number text-center w-5"></td>
+            <td class="w-15"><select class="select2 form-select product-select-box" data-method="GET"></select></td>
+            <td class="w-10"><span class="product-description"></span></td>
+            <td class="w-10"><select class="select2 form-select product-uom-select-box" data-method="GET"></select></td>
+            <td class="w-10"><input type="number" min="1" class="form-control product-quantity"></td>
+            <td class="w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money"></td>
+            <td class="w-15"><select class="select2 form-select product-tax-select-box" data-method="GET"></select></td>
+            <td class="w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money=""></span></td>
+            <td class="w-5"><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
         </tr>`);
     count_row(tableLineDetail.find('tbody'));
     loadProductList(tableLineDetail.find('tbody tr:last').find('.product-select-box'), null)
@@ -394,15 +394,15 @@ function LoadDetailPQ(for_update=false) {
             for (let i = 0; i < data_detail?.['products_mapped'].length; i++) {
                 let item = data_detail?.['products_mapped'][i];
                 table_body.append(`<tr id="row-${i}" class="row-number">
-                        <td class="number text-center wrap-text w-5">${i+1}</td>
-                        <td class="wrap-text w-15"><select class="select2 form-select product-select-box" disabled data-method="GET"></select></td>
-                        <td class="wrap-text w-10"><span class="product-description">${item.product.description}</span></td>
-                        <td class="wrap-text w-10"><select class="select2 form-select product-uom-select-box" data-method="GET"></select></td>
-                        <td class="wrap-text w-10"><input type="number" min="1" class="form-control product-quantity" value="${item.quantity}"></td>
-                        <td class="wrap-text w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value="${item.unit_price}"></td>
-                        <td class="wrap-text w-15"><select class="select2 form-select product-tax-select-box" data-method="GET"></select></td>
-                        <td class="wrap-text w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${item.subtotal_price}"></span></td>
-                        <td class="wrap-text w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
+                        <td class="number text-center w-5">${i+1}</td>
+                        <td class="w-15"><select class="select2 form-select product-select-box" disabled data-method="GET"></select></td>
+                        <td class="w-10"><span class="product-description">${item.product.description}</span></td>
+                        <td class="w-10"><select class="select2 form-select product-uom-select-box" data-method="GET"></select></td>
+                        <td class="w-10"><input type="number" min="1" class="form-control product-quantity" value="${item.quantity}"></td>
+                        <td class="w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value="${item.unit_price}"></td>
+                        <td class="w-15"><select class="select2 form-select product-tax-select-box" data-method="GET"></select></td>
+                        <td class="w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${item.subtotal_price}"></span></td>
+                        <td class="w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
                     </tr>`);
                 loadProductList(tableLineDetail.find('tbody tr:last').find('.product-select-box'), {'id': item.product.id, 'title': item.product.title})
                 loadProductUomList(tableLineDetail.find('tbody tr:last').find('.product-uom-select-box'), {'id': item.product.uom.id, 'title': item.product.uom.title}, item.product.uom_group.id)

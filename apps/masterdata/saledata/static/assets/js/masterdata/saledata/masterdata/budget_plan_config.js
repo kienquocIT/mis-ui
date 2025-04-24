@@ -54,7 +54,6 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: '',
                         render: (data, type, row) => {
                             let html = ''
                             if (row?.['can_view_company'] || row?.['can_lock_plan']) {
@@ -78,7 +77,6 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: '',
                         render: (data, type, row) => {
                             let html = ''
                             if (row?.['can_view_company'] || row?.['can_lock_plan']) {

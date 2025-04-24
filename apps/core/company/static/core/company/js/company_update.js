@@ -12,7 +12,7 @@ $(document).ready(function () {
     const pk = $.fn.getPkDetail()
 
     new CompanyHandle().load();
-    LoadDetailCompany($('#frm-update-company'), 'update');
+    LoadDetailCompany($('#frm-detail-company'), 'update');
 
     let logoFiles = null;
     let eleLogo = $('#company_logo');
@@ -56,7 +56,7 @@ $(document).ready(function () {
         toastr.warning(customHtml);
     }
 
-    $("#frm-update-company").submit(function (event) {
+    $("#frm-detail-company").submit(function (event) {
         event.preventDefault();
         let frmConfig = new SetupFormSubmit($('#tblCompanyConfig'));
         let configState = false;

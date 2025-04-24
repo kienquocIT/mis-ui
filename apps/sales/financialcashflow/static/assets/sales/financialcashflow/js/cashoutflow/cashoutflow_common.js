@@ -49,13 +49,13 @@ class COFPageVariables {
     constructor() {
         this.selected_payment_stage_table_cfg = [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: () => {
                     return ``
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
                     return row?.['is_ap_invoice'] ? `<div class="form-check">
                         <input type="checkbox"
@@ -68,43 +68,43 @@ class COFPageVariables {
                 }
             },
             {
-                className: 'wrap-text w-20',
+                className: 'w-20',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${row?.['remark']}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return row?.['is_ap_invoice'] ? `<span class="text-muted no-invoice">${row?.['invoice'] ? row?.['invoice'] : ''}</span>` : '--';
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return row?.['is_ap_invoice'] ? `<span class="mask-money detail-invoice-value" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>` : '--';
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return `<span class="mask-money" data-init-money="${row?.['recon_total'] ? row?.['recon_total'] : 0}"></span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return row?.['is_ap_invoice'] ? `<span class="mask-money detail_balance_value" data-init-money="${row?.['recon_balance']}"></span>` : '--';
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return row?.['is_ap_invoice'] ? `<input disabled readonly class="form-control text-right mask-money detail_payment_value" value="0">` : '--';
                 }
             },
             {
-                className: 'wrap-text text-right w-10',
+                className: 'text-right w-10',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${moment(row?.['due_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`;
                 }
@@ -112,13 +112,13 @@ class COFPageVariables {
         ]
         this.advance_to_supplier_table_cfg = [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: () => {
                     return ``
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
                     return `<div class="form-check">
                     <input type="checkbox"
@@ -131,37 +131,37 @@ class COFPageVariables {
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary">${row?.['purchase_order']?.['code']}</span>`
                 }
             },
             {
-                className: 'wrap-text w-20',
+                className: 'w-20',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${row?.['remark']}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${moment(row?.['due_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return `<span class="mask-money value_total_advance" data-init-money="${row?.['value_total']}"></span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return `<span class="mask-money recon_balance_value_advance" data-init-money="${row?.['value_balance']}"></span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: () => {
                     return `<input ${pageVariables.is_detail_page ? 'disabled readonly': ''} class="form-control text-right mask-money cash_out_value_advance" value="0"">`;
                 }
@@ -169,13 +169,13 @@ class COFPageVariables {
         ]
         this.ap_invoice_table_cfg = [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: () => {
                     return ``
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
                     return `<div class="form-check">
                                 <input type="checkbox"
@@ -188,37 +188,37 @@ class COFPageVariables {
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary">${row?.['code'] ? row?.['code'] : ''}</span>`
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${row?.['document_type'] ? row?.['document_type'] : ''}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `${row?.['document_date'] ? moment(row?.['document_date'].split(' '), 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}`;
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return `<span class="mask-money" data-init-money="${row?.['recon_total'] || 0}"></span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return `<span class="mask-money recon_balance_value" data-init-money="${row?.['recon_balance']}"></span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-20',
+                className: 'text-right w-20',
                 render: (data, type, row) => {
                     let payment_term_data = JSON.stringify(row?.['payment_term_data'] ? row?.['payment_term_data'] : [])
                     return `<div class="input-group">
@@ -230,7 +230,7 @@ class COFPageVariables {
                 }
             },
             {
-                className: 'wrap-text text-right w-10',
+                className: 'text-right w-10',
                 render: () => {
                     return `<div class="input-group">
                                 <span class="input-affix-wrapper">
@@ -268,7 +268,7 @@ class COFPageFunction {
                 reloadCurrency: true,
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '30vh',
                 scrollCollapse: true,
                 paging: false,
@@ -302,7 +302,7 @@ class COFPageFunction {
                 dom: 't',
                 reloadCurrency: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '30vh',
                 scrollCollapse: true,
                 paging: false,
@@ -327,7 +327,7 @@ class COFPageFunction {
                 useDataServer: true,
                 reloadCurrency: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '40vh',
                 scrollCollapse: true,
                 paging: false,
@@ -373,7 +373,7 @@ class COFPageFunction {
                 dom: 't',
                 reloadCurrency: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '40vh',
                 scrollCollapse: true,
                 paging: false,
@@ -390,7 +390,7 @@ class COFPageFunction {
                 dom: 't',
                 reloadCurrency: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '40vh',
                 scrollCollapse: true,
                 paging: false,
@@ -416,7 +416,7 @@ class COFPageFunction {
                 dom: 't',
                 reloadCurrency: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '40vh',
                 scrollCollapse: true,
                 paging: false,

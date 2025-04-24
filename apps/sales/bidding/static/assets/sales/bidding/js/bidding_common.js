@@ -753,11 +753,7 @@ class BiddingDataTableHandle {
                     targets: 1,
                     width: '40%',
                     render: (data, type, row) => {
-                        let date = '';
-                        if (row?.['date_created']) {
-                            date = moment(row?.['date_created']).format('DD/MM/YYYY')
-                        }
-                        return `<span class="table-row-date">${date}</span>`;
+                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                     }
                 }
             ],

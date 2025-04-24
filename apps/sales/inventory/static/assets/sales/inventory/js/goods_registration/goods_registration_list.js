@@ -27,25 +27,25 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'w-5',
                         render: () => {
                             return ``;
                         }
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text w-15',
+                        className: 'w-15',
                         render: (data, type, row) => {
                             if (row.id) {
                                 const link = dtb.attr('data-url-detail').replace('0', row.id);
-                                return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                                return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                             }
                             return `--`
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text w-30',
+                        className: 'w-30',
                         render: (data, type, row) => {
                             if (row.id) {
                                 const link = dtb.attr('data-url-detail').replace('0', row.id);
@@ -65,7 +65,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'sale_order',
-                        className: 'wrap-text w-20',
+                        className: 'w-20',
                         render: (data, type, row) => {
                             if (row?.['sale_order']) {
                                 return `<span class="badge badge-secondary">${row?.['sale_order']?.['code']}</span>&nbsp;</span><span>${row?.['sale_order']?.['title']}</span>`
@@ -75,17 +75,17 @@ $(document).ready(function () {
                     },
                     {
                         data: 'sale_person',
-                        className: 'wrap-text w-15',
+                        className: 'w-15',
                         render: (data, type, row) => {
                             if (row?.['sale_order']) {
-                                return `<span class="text-blue">${row?.['sale_order']?.['sale_person']?.['fullname']}</span>`
+                                return `<span>${row?.['sale_order']?.['sale_person']?.['fullname']}</span>`
                             }
                             return `--`
                         }
                     },
                     {
                         data: 'date_created',
-                        className: 'wrap-text w-15',
+                        className: 'w-15',
                         render: (data, type, row) => {
                             if (row.date_created) {
                                 return `${moment(row.date_created.split(' ')[0]).format('DD/MM/YYYY')}`

@@ -37,13 +37,13 @@ $(function () {
                 }
             },{
                 data: 'code',
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row, meta) => {
                     return `<span class="w-80 badge badge-primary" href="/company/detail/` + row.id + `">${data}</span>`
                 }
             }, {
                 data: 'title',
-                className: 'wrap-text w-35',
+                className: 'w-35',
                 'render': (data, type, row, meta) => {
                     if (data) {
                         return `<div class="media align-items-center">

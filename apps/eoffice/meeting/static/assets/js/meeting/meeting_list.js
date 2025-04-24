@@ -21,14 +21,14 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'w-5',
                         'render': () => {
                             return ``;
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text w-35',
+                        className: 'w-35',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}"><span class="text-primary"><b>${row?.['title']}</b></span></a> ${$x.fn.buttonLinkBlank(link)}`;
@@ -36,7 +36,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'meeting_type',
-                        className: 'wrap-text w-10 text-center',
+                        className: 'w-10 text-center',
                         render: (data, type, row) => {
                             if (!row?.['meeting_type']) {
                                 return `<span class="text-muted"><i class="fas fa-video"></i></span>`
@@ -48,21 +48,21 @@ $(document).ready(function () {
                     },
                     {
                         data: 'room_info',
-                        className: 'wrap-text w-20 text-center',
+                        className: 'w-20 text-center',
                         render: (data, type, row) => {
                             return `${row?.['room_info']?.['title'] || '--'}`
                         }
                     },
                     {
                         data: 'date_occur',
-                        className: 'wrap-text w-15',
+                        className: 'w-15',
                         render: (data, type, row) => {
                             return moment(row?.['date_occur'], 'YYYY-MM-DD hh:mm A').format('DD/MM/YYYY hh:mm A')
                         }
                     },
                     {
                         data: 'meeting_duration',
-                        className: 'wrap-text w-15 text-right',
+                        className: 'w-15 text-right',
                         render: (data, type, row) => {
                             let hour = parseInt(row?.['meeting_duration']/60)
                             let min = parseInt(row?.['meeting_duration']%60)
@@ -81,7 +81,7 @@ $(document).ready(function () {
                     },
                     // {
                     //     data: 'system_status',
-                    //     className: 'wrap-text w-10 text-center',
+                    //     className: 'w-10 text-center',
                     //     render: (row) => {
                     //         const status_data = [
                     //             {txt: "Draft", cls: "soft-light"},

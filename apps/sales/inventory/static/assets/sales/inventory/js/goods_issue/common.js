@@ -53,27 +53,27 @@ class GISLoadPage {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return ``
                     }
                 }, {
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `<span class="badge badge-primary w-80">${row?.['code']}</span>`
                     }
                 }, {
-                    className: 'wrap-text w-35',
+                    className: 'w-35',
                     render: (data, type, row) => {
                         return `<span data-id="${row?.['id']}" class="ia-title text-primary">${row?.['title']}</span>`
                     }
                 }, {
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
-                        return `${moment(row?.['date_created'].split(' ')[0]).format('DD/MM/YYYY')}`
+                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                     }
                 }, {
-                    className: 'wrap-text text-right w-20',
+                    className: 'text-right w-20',
                     render: (data, type, row) => {
                         return `<div class="form-check">
                             <input ${row?.['id'] === selected_ia ? 'checked' : ''} type="radio" name="ia-group" class="ia-selected form-check-input">
@@ -96,27 +96,27 @@ class GISLoadPage {
             data: dataList,
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return ``
                     }
                 }, {
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-primary">${row?.['app']}</span> <span class="badge badge-primary">${row?.['code']}</span>`
                     }
                 }, {
-                    className: 'wrap-text w-35',
+                    className: 'w-35',
                     render: (data, type, row) => {
                         return `<span data-id="${row?.['id']}" data-type="${row?.['type']}" class="powo-title text-primary">${row?.['title']}</span>`
                     }
                 }, {
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
-                        return `${moment(row?.['date_created'].split(' ')[0]).format('DD/MM/YYYY')}`
+                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                     }
                 }, {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         return `<div class="form-check">
                             <input ${row?.['id'] === selected_powo ? 'checked' : ''} type="radio" name="powo-group" class="powo-selected form-check-input">
@@ -139,52 +139,48 @@ class GISLoadTab {
             data: data_list,
             columns: [
                 {
-                    className: 'wrap-text',
-                    render: () => {
+                        render: () => {
                         return ``;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<span data-bs-toggle="tooltip" title="${row?.['product_mapped']?.['description']}">
                                     <span class="badge badge-soft-primary">${row?.['product_mapped']?.['code'] ? row?.['product_mapped']?.['code'] : ''}</span> ${row?.['product_mapped']?.['title'] ? row?.['product_mapped']?.['title'] : ''}
                                 </span>`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<span class="badge badge-soft-blue">${row?.['warehouse_mapped']?.['code'] ? row?.['warehouse_mapped']?.['code'] : ''}</span> ${row?.['warehouse_mapped']?.['title'] ? row?.['warehouse_mapped']?.['title'] : ''}`;
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `${row?.['uom_mapped']?.['title']}`;
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span class="sum-quantity">${row?.['sum_quantity'] ? row?.['sum_quantity'] : 0}</span>`;
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span class="before-quantity">${row?.['before_quantity'] ? row?.['before_quantity'] : 0}</span>`;
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span class="remain-quantity">${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}</span>`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<div class="input-group">
                                     <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}">
                                     <button ${(row?.['product_mapped']?.['general_traceability_method'] === 0 && IS_DONE_GIS || row?.['issued_quantity'] === 0 && IS_DONE_GIS) ? 'disabled' : ''}
@@ -227,52 +223,48 @@ class GISLoadTab {
             data: data_list,
             columns: [
                 {
-                    className: 'wrap-text',
-                    render: () => {
+                        render: () => {
                         return ``;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<span data-bs-toggle="tooltip" title="${row?.['product_mapped']?.['description']}">
                                     <span class="badge badge-soft-primary">${row?.['product_mapped']?.['code'] ? row?.['product_mapped']?.['code'] : ''}</span> ${row?.['product_mapped']?.['title'] ? row?.['product_mapped']?.['title'] : ''}
                                 </span>`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 selected-warehouse"></select>`;
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `${row?.['uom_mapped']?.['title']}`;
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span class="sum-quantity">${row?.['sum_quantity'] ? row?.['sum_quantity'] : 0}</span>`;
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span class="before-quantity">${row?.['before_quantity'] ? row?.['before_quantity'] : 0}</span>`;
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span class="remain-quantity">${row?.['remain_quantity'] ? row?.['remain_quantity'] : 0}</span>`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<div class="input-group">
                                     <input readonly disabled class="form-control selected-quantity" type="number" value="${row?.['issued_quantity'] ? row?.['issued_quantity'] : 0}">
                                     <button ${(row?.['product_mapped']?.['general_traceability_method'] === 0 && IS_DONE_GIS || row?.['issued_quantity'] === 0 && IS_DONE_GIS) ? 'disabled' : ''}
@@ -322,38 +314,32 @@ class GISLoadTab {
             data: data_list,
             columns: [
                 {
-                    className: 'wrap-text',
-                    render: () => {
+                        render: () => {
                         return ``;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `${row?.['lot_number']}`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<span class="limit-quantity">${row?.['quantity_import'] ? row?.['quantity_import'] : 0}</span>`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `${row?.['expire_date'] ? moment(row?.['expire_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY') : '--'}`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `${row?.['manufacture_date'] ? moment(row?.['manufacture_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY') : '--'}`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         let lot_selected_quantity = 0
                         for (let i = 0; i < selected_list.length; i++) {
                             if (selected_list[i]?.['lot_id'] === row?.['id']) {
@@ -388,49 +374,42 @@ class GISLoadTab {
             data: data_list,
             columns: [
                 {
-                    className: 'wrap-text',
-                    render: () => {
+                        render: () => {
                         return ``;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `${row?.['vendor_serial_number']}`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `${row?.['serial_number']}`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `${row?.['expire_date'] ? moment(row?.['expire_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY') : '--'}`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `${row?.['manufacture_date'] ? moment(row?.['manufacture_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY') : '--'}`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `${row?.['warranty_start'] ? moment(row?.['warranty_start'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY') : '--'}`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `${row?.['warranty_end'] ? moment(row?.['warranty_end'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY') : '--'}`;
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         let is_checked = selected_list.includes(row?.['id'])
                         return `<div class="form-check">

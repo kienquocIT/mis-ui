@@ -137,14 +137,14 @@ function LoadPurchaseRequestTable() {
         columns: [
             {
                 data: '',
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<input id="${row.id}" type="checkbox" class="form-check-purchase-request">`;
                 }
             },
             {
                 data: 'code',
-                className: 'wrap-text w-30',
+                className: 'w-30',
                 render: (data, type, row) => {
                     if (last_purchase_request_code !== row.code) {
                     last_purchase_request_code = row.code;
@@ -156,7 +156,7 @@ function LoadPurchaseRequestTable() {
             },
             {
                 data: 'title',
-                className: 'wrap-text- w-60',
+                className: '- w-60',
                 render: (data, type, row) => {
                     return row.title;
                 }
@@ -187,21 +187,21 @@ function LoadPurchaseRequestProductsTable() {
         columns: [
             {
                 data: '',
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<input id="${row.id}" data-des="${row.description}" data-title="${row.title}" data-uom-group-id="${row.uom_group.id}" data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" data-tax-title="${row.tax.title}" data-pr-code="${row?.['purchase_request_code']}" type="checkbox" class="form-check-purchase-request-products">`;
                 }
             },
             {
                 data: 'title',
-                className: 'wrap-text w-30',
+                className: 'w-30',
                 render: (data, type, row) => {
                     return row.title;
                 }
             },
             {
                 data: 'purchase_request_code',
-                className: 'wrap-text w-20 text-center',
+                className: 'w-20 text-center',
                 render: (data, type, row) => {
                     if (last_purchase_request_code !== row?.['purchase_request_code']) {
                         last_purchase_request_code = row?.['purchase_request_code'];
@@ -212,14 +212,14 @@ function LoadPurchaseRequestProductsTable() {
             },
             {
                 data: 'uom',
-                className: 'wrap-text w-20 text-center',
+                className: 'w-20 text-center',
                 render: (data, type, row) => {
                     return row.uom.title;
                 }
             },
             {
                 data: 'quantity',
-                className: 'wrap-text w-20 text-center',
+                className: 'w-20 text-center',
                 render: (data, type, row) => {
                     return row.quantity;
                 }
@@ -288,21 +288,21 @@ function LoadPurchaseRequestProductsTableForMerge(product_id_list=[]) {
         columns: [
             {
                 data: '',
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<input checked id="${row.id}" data-des="${row.description}" data-title="${row.title}" data-uom-group-id="${row.uom_group.id}" data-uom-id="${row.uom.id}" data-uom-title="${row.uom.title}" data-quantity="${row.quantity}" data-pr-unit-price="${row.product_unit_price}" data-tax-id="${row.tax.id}" data-tax-value="${row.tax.value}" data-tax-code="${row.tax.code}" data-tax-title="${row.tax.title}" type="checkbox" class="form-check-purchase-request-products-for-merge">`;
                 }
             },
             {
                 data: 'title',
-                className: 'wrap-text w-30',
+                className: 'w-30',
                 render: (data, type, row) => {
                     return row.title;
                 }
             },
             {
                 data: 'purchase_request_code_list',
-                className: 'wrap-text w-20 text-center',
+                className: 'w-20 text-center',
                 render: (data, type, row) => {
                     let html = ``;
                     for (let i = 0; i < row.purchase_request_code_list.length; i++) {
@@ -319,14 +319,14 @@ function LoadPurchaseRequestProductsTableForMerge(product_id_list=[]) {
             },
             {
                 data: 'uom',
-                className: 'wrap-text w-20 text-center',
+                className: 'w-20 text-center',
                 render: (data, type, row) => {
                     return row.uom.title;
                 }
             },
             {
                 data: 'quantity',
-                className: 'wrap-text w-20 text-center',
+                className: 'w-20 text-center',
                 render: (data, type, row) => {
                     return row.quantity;
                 }
@@ -464,15 +464,15 @@ function LoadDetailPQR(for_update=false) {
                     for (let i = 0; i < data_detail?.['products_mapped'].length; i++) {
                         let item = data_detail?.['products_mapped'][i];
                         PQRProductsSelectedTable.find('tbody').append(`<tr>
-                                <td class="number text-center wrap-text w-5">${item.index}</td>
-                                <td class="wrap-text w-15"><select class="form-select select2 product-select-box" data-method="GET"></select></td>
-                                <td class="wrap-text w-10"><span class="product-description">${item.product.description}</span></td>
-                                <td class="wrap-text w-10"><select class="form-select product-uom-select-box" data-method="GET"></select></td>
-                                <td class="wrap-text w-10"><input type="number" min="1" class="form-control product-quantity" value="${item.quantity}"></td>
-                                <td class="wrap-text w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value="${item.unit_price}"></td>
-                                <td class="wrap-text w-15"><select class="form-select product-tax-select-box" data-method="GET"></select></td>
-                                <td class="wrap-text w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${item.subtotal_price}"></span></td>
-                                <td class="wrap-text w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
+                                <td class="number text-center w-5">${item.index}</td>
+                                <td class="w-15"><select class="form-select select2 product-select-box" data-method="GET"></select></td>
+                                <td class="w-10"><span class="product-description">${item.product.description}</span></td>
+                                <td class="w-10"><select class="form-select product-uom-select-box" data-method="GET"></select></td>
+                                <td class="w-10"><input type="number" min="1" class="form-control product-quantity" value="${item.quantity}"></td>
+                                <td class="w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value="${item.unit_price}"></td>
+                                <td class="w-15"><select class="form-select product-tax-select-box" data-method="GET"></select></td>
+                                <td class="w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${item.subtotal_price}"></span></td>
+                                <td class="w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
                             </tr>`);
                         count_row(PQRProductsSelectedTable.find('tbody'));
                         loadProductList(PQRProductsSelectedTable.find('tbody tr:last').find('.product-select-box'), {'id': item.product.id, 'title': item.product.title})
@@ -500,15 +500,15 @@ function LoadDetailPQR(for_update=false) {
                     for (let i = 0; i < data_detail?.['products_mapped'].length; i++) {
                         let item = data_detail?.['products_mapped'][i];
                         PQRProductsSelectedTable.find('tbody').append(`<tr>
-                                <td class="number text-center wrap-text w-5">${item.index}</td>
-                                <td class="wrap-text w-15"><select disabled class="form-select select2 product-select-box" data-method="GET"></select></td>
-                                <td class="wrap-text w-10"><span class="product-description">${item.product.description}</span></td>
-                                <td class="wrap-text w-10"><select class="form-select product-uom-select-box" data-method="GET"></select></td>
-                                <td class="wrap-text w-10"><input type="number" min="1" class="form-control product-quantity" value="${item.quantity}"></td>
-                                <td class="wrap-text w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value="${item.unit_price}"></td>
-                                <td class="wrap-text w-15"><select class="form-select product-tax-select-box" data-method="GET"></select></td>
-                                <td class="wrap-text w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${item.subtotal_price}"></span></td>
-                                <td class="wrap-text w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
+                                <td class="number text-center w-5">${item.index}</td>
+                                <td class="w-15"><select disabled class="form-select select2 product-select-box" data-method="GET"></select></td>
+                                <td class="w-10"><span class="product-description">${item.product.description}</span></td>
+                                <td class="w-10"><select class="form-select product-uom-select-box" data-method="GET"></select></td>
+                                <td class="w-10"><input type="number" min="1" class="form-control product-quantity" value="${item.quantity}"></td>
+                                <td class="w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value="${item.unit_price}"></td>
+                                <td class="w-15"><select class="form-select product-tax-select-box" data-method="GET"></select></td>
+                                <td class="w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${item.subtotal_price}"></span></td>
+                                <td class="w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
                             </tr>`);
                         count_row(PQRProductsSelectedTable.find('tbody'));
                         loadProductList(PQRProductsSelectedTable.find('tbody tr:last').find('.product-select-box'), {'id': item.product.id, 'title': item.product.title})
@@ -628,15 +628,15 @@ $(document).on("click", '#btn_create_new_purchase_quotation_request', function (
     for (let i = 0; i < purchase_request_products_selected_data.length; i++) {
         let item = purchase_request_products_selected_data[i];
         PQRProductsSelectedTable.find('tbody').append(`<tr>
-                <td class="number text-center wrap-text w-5"></td>
-                <td class="wrap-text w-15"><select disabled class="form-select select2 product-select-box" data-method="GET"></select></td>
-                <td class="wrap-text w-10"><span class="product-description">${item.product_des}</span></td>
-                <td class="wrap-text w-10"><select class="form-select product-uom-select-box" data-method="GET"></select></td>
-                <td class="wrap-text w-10"><input type="number" min="1" class="form-control product-quantity" value="${item.quantity}"></td>
-                <td class="wrap-text w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value="${item.pr_unit_price}"></td>
-                <td class="wrap-text w-15"><select class="form-select product-tax-select-box" data-method="GET"></select></td>
-                <td class="wrap-text w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${item.pr_subtotal_price}"></span></td>
-                <td class="wrap-text w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
+                <td class="number text-center w-5"></td>
+                <td class="w-15"><select disabled class="form-select select2 product-select-box" data-method="GET"></select></td>
+                <td class="w-10"><span class="product-description">${item.product_des}</span></td>
+                <td class="w-10"><select class="form-select product-uom-select-box" data-method="GET"></select></td>
+                <td class="w-10"><input type="number" min="1" class="form-control product-quantity" value="${item.quantity}"></td>
+                <td class="w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value="${item.pr_unit_price}"></td>
+                <td class="w-15"><select class="form-select product-tax-select-box" data-method="GET"></select></td>
+                <td class="w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money="${item.pr_subtotal_price}"></span></td>
+                <td class="w-5"><button class="disabled btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
             </tr>`);
         count_row(PQRProductsSelectedTable.find('tbody'));
         loadProductList(PQRProductsSelectedTable.find('tbody tr:last').find('.product-select-box'), {'id': item.product_id, 'title': item.product_title})
@@ -647,15 +647,15 @@ $(document).on("click", '#btn_create_new_purchase_quotation_request', function (
 
 $(document).on("click", '#new-product-btn', function () {
     PQRProductsSelectedTable.find('tbody').append(`<tr>
-            <td class="number text-center wrap-text w-5"></td>
-            <td class="wrap-text w-15"><select class="form-select select2 product-select-box" data-method="GET"></select></td>
-            <td class="wrap-text w-10"><span class="product-description"></span></td>
-            <td class="wrap-text w-10"><select class="form-select product-uom-select-box" data-method="GET"></select></td>
-            <td class="wrap-text w-10"><input type="number" min="1" class="form-control product-quantity"></td>
-            <td class="wrap-text w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value=""></td>
-            <td class="wrap-text w-15"><select class="form-select product-tax-select-box" data-method="GET"></select></td>
-            <td class="wrap-text w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money=""></span></td>
-            <td class="wrap-text w-5"><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
+            <td class="number text-center w-5"></td>
+            <td class="w-15"><select class="form-select select2 product-select-box" data-method="GET"></select></td>
+            <td class="w-10"><span class="product-description"></span></td>
+            <td class="w-10"><select class="form-select product-uom-select-box" data-method="GET"></select></td>
+            <td class="w-10"><input type="number" min="1" class="form-control product-quantity"></td>
+            <td class="w-15"><input type="text" data-return-type="number" class="form-control pr-unit-price-input mask-money" value=""></td>
+            <td class="w-15"><select class="form-select product-tax-select-box" data-method="GET"></select></td>
+            <td class="w-15"><span class="pr-subtotal-price-input mask-money text-primary" data-init-money=""></span></td>
+            <td class="w-5"><button class="btn-del-line-detail btn text-danger btn-link btn-animated" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button></td>
         </tr>`);
     count_row(PQRProductsSelectedTable.find('tbody'));
     loadProductList(PQRProductsSelectedTable.find('tbody tr:last').find('.product-select-box'), null)

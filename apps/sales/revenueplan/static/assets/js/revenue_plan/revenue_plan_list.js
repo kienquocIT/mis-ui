@@ -1,5 +1,6 @@
 $(document).ready(function () {
     const transEle = $('#trans-script')
+    const urlEle = $('#url-script')
 
     function loadRevenuePlanList() {
         if (!$.fn.DataTable.isDataTable('#table-revenue-plan-list')) {
@@ -12,6 +13,10 @@ $(document).ready(function () {
                 scrollY: '70vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: 1
+                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -25,60 +30,55 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'w-5',
                         render: () => {
                             return ``;
                         }
                     },
                     {
-                        data: 'code',
-                        className: 'wrap-text w-10',
+                        className: 'w-5',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`;
+                            return `<a href="${link}" class="link-primary underline_hover">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        data: 'title',
-                        className: 'wrap-text w-40',
+                        className: 'ellipsis-cell-lg w-40',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}"><span class="text-primary fw-bold" data-id="${row?.['id']}" data-title="${row?.['title']}" data-code="${row?.['code']}">${row?.['title']}</span></a>`
+                            let btn_view_plan = `<button data-bs-toggle="modal" data-bs-target="#modal-my-plan" type="button" id="view-my-revenue-plan" class="btn btn-gradient-primary btn-xs ml-2" data-method="GET" data-url="${urlEle.attr('data-url-view-plan')}">${transEle.attr('data-trans-btn-view-plan')}</button>`
+                            return `<a href="${link}" class="link-primary underline_hover fw-bold" title="${row?.['title']}">${row?.['title']}</a>${row?.['status'] === 'Opening' ? btn_view_plan : ''}`
                         }
                     },
                     {
-                        data: 'period',
-                        className: 'wrap-text w-10',
+                        className: 'w-10',
                         render: (data, type, row) => {
                             return `<span>${row?.['period_mapped']?.['title']}</span>`
                         }
                     },
                     {
-                        data: 'employee_created',
-                        className: 'wrap-text w-15',
+                        className: 'w-15',
                         render: (data, type, row) => {
-                            return `<span class="text-blue">${row?.['employee_created']?.['full_name']}</span>`
+                            return `<span>${row?.['employee_created']?.['full_name']}</span>`
                         }
                     },
                     {
-                        data: 'date_created',
-                        className: 'wrap-text w-10',
+                        className: 'w-15',
                         render: (data, type, row) => {
-                            return `<span>${moment(row?.['date_created'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
-                        data: 'status',
-                        className: 'wrap-text w-10',
+                        className: 'text-center w-10',
                         render: (data, type, row) => {
                             if (row?.['status'] === 'Opening') {
-                                return `<span class="w-100 badge badge-soft-success">${transEle.attr('data-trans-opening')}</span>`
+                                return `<span class="text-success">${transEle.attr('data-trans-opening')}</span>`
                             }
                             else if (row?.['status'] === 'Waiting') {
-                                return `<span class="w-100 badge badge-soft-warning">${transEle.attr('data-trans-waiting')}</span>`
+                                return `<span class="text-orange">${transEle.attr('data-trans-waiting')}</span>`
                             }
                             else {
-                                return `<span class="w-100 badge badge-secondary">${transEle.attr('data-trans-closed')}</span>`
+                                return `<span class="text-secondary">${transEle.attr('data-trans-closed')}</span>`
                             }
                         }
                     }
@@ -99,7 +99,7 @@ $(document).ready(function () {
         }
     }
 
-    $('#view-my-revenue-plan').on('click', function () {
+    $(document).on('click', '#view-my-revenue-plan', function () {
         let dataParam = {'myself': true}
         let employee_revenue_plan = $.fn.callAjax2({
             url: $(this).attr('data-url'),
@@ -177,170 +177,164 @@ $(document).ready(function () {
                     data: data_list,
                     columns: [
                         {
-                            className: 'wrap-text text-right',
-                            render: (data, type, row)  => {
-                                return `<span class="text-blue">${row?.['employee_full_name']}</span>`
-                            }
-                        },
-                        {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <label class="text-primary">${transEle.attr('data-trans-revenue')}</label><br>
-                                    <label class="profit-type-span text-secondary">${row?.['profit_target_type']}</label>
+                                    <span class="mb-1 text-right mask-money text-primary">${transEle.attr('data-trans-revenue')}</span><br>
+                                    <span class="text-right mask-money text-secondary">${row?.['profit_target_type']}</span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['m1_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['m1_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['m1_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['m1_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['m2_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['m2_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['m2_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['m2_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['m3_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['m3_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['m3_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['m3_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['q1_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['q1_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['q1_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['q1_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['m4_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['m4_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['m4_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['m4_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['m5_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['m5_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['m5_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['m5_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['m6_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['m6_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['m6_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['m6_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['q2_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['q2_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['q2_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['q2_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['m7_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['m7_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['m7_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['m7_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['m8_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['m8_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['m8_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['m8_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['m9_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['m9_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['m9_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['m9_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['q3_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['q3_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['q3_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['q3_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['m10_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['m10_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['m10_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['m10_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['m11_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['m11_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['m11_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['m11_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['m12_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['m12_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['m12_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['m12_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['q4_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['q4_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['q4_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['q4_profit']}"></span>
                                 `
                             }
                         },
                         {
-                            className: 'wrap-text text-right',
+                            className: 'text-right',
                             render: (data, type, row)  => {
                                 return `
-                                    <input readonly disabled class="mb-1 text-right mask-money form-control text-primary" value="${row?.['year_revenue']}">
-                                    <input readonly disabled class="text-right mask-money form-control text-secondary" value="${row?.['year_profit']}">
+                                    <span class="mb-1 text-right mask-money text-primary" data-init-money="${row?.['year_revenue']}"></span><br>
+                                    <span class="text-right mask-money text-secondary" data-init-money="${row?.['year_profit']}"></span>
                                 `
                             }
                         }

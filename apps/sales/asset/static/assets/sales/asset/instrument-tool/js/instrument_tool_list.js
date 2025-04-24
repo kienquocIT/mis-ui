@@ -98,8 +98,7 @@ $(document).ready(function () {
                     targets: 9,
                     width: '8%',
                     render: (data, type, row) => {
-                        const date =row?.['date_created'] ? moment(row?.['date_created'].split(' ')[0], 'YYYY-MM-DD').format('DD-MM-YYYY') : ''
-                        return `<div>${date}</div>`
+                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                     }
                 },
                 {

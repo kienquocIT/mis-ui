@@ -229,7 +229,7 @@ function loadTabTodo() {
                         return $x.fn.displayRelativeTime(data);
                     }
                 }, {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     data: 'stage__runtime',
                     render: (data, type, row) => {
                         return renderActions(data?.['doc_pined_id'], data?.['id'], data?.['doc_id']);

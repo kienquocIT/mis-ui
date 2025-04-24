@@ -20,22 +20,22 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'w-5',
                         render: () => {
                             return ``;
                         }
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text w-10',
+                        className: 'w-10',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}" class="badge badge-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}" class="link-primary underline_hover">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text w-30',
+                        className: 'w-30',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}"><span class="text-primary fw-bold">${row.title}</span></a>`
@@ -43,7 +43,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'warehouses',
-                        className: 'wrap-text w-30',
+                        className: 'w-30',
                         render: (data, type, row) => {
                             let html = ``;
                             for (let i = 0; i < row?.['warehouses'].length; i++) {
@@ -54,14 +54,14 @@ $(document).ready(function () {
                     },
                     {
                         data: 'date_created',
-                        className: 'wrap-text w-15',
+                        className: 'w-15',
                         render: (data, type, row) => {
                             return `${moment(row.date_created.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY')}`
                         }
                     },
                     {
                         data: 'state_detail',
-                        className: 'wrap-text text-center w-10',
+                        className: 'text-center w-10',
                         render: (data, type, row) => {
                             return `<span class="text-muted">${data}</span>`
                         }

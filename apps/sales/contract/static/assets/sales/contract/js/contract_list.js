@@ -36,7 +36,7 @@ $(function () {
                         render: (data, type, row) => {
                             let link = urlsEle.data('link-detail').format_url_with_uuid(row?.['id']);
                             if (row?.['code']) {
-                                return `<a href="${link}" class="link-primary underline_hover"><span>${row?.['code']}</span></a>`;
+                                return `<a href="${link}" class="link-primary underline_hover">${row?.['code'] || '--'}</a>`;
                             }
                             return `<a href="${link}" class="link-primary underline_hover">--</a>`;
                         }

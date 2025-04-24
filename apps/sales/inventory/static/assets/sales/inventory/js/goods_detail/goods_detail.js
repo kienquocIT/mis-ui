@@ -97,35 +97,34 @@ $(document).ready(function () {
             columns: [
                 {
                     data: '',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                            render: (data, type, row) => {
                         return ``;
                     }
                 },
                 {
                     data: 'product_data',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-secondary">${data?.['code']}</span><br><span class="text-muted">${data?.['title']}</span>`;
                     }
                 },
                 {
                     data: 'goods_receipt_data',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-blue gr-code">${data?.['code']}</span>`;
                     }
                 },
                 {
                     data: 'purchase_request_data',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-primary pr-code">${data?.['code'] ? data?.['code'] : ''}</span>`;
                     }
                 },
                 {
                     data: 'goods_receipt_data',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         if (data?.['date_approved']) {
                             return `<span>${moment(data?.['date_approved'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
@@ -135,28 +134,28 @@ $(document).ready(function () {
                 },
                 {
                     data: 'goods_receipt_data',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         return `<span class="text-muted">${data?.['pic']?.['fullname']}</span>`;
                     }
                 },
                 {
                     data: 'warehouse_data',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-secondary">${data?.['code']}</span><br><span class="text-muted">${data?.['title']}</span>`;
                     }
                 },
                 {
                     data: 'receipt_quantity',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         return `${data}`;
                     }
                 },
                 {
                     data: '',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         if (row?.['product_data']?.['general_traceability_method'] === 1) {
                             return `<i class="text-blue fas fa-bookmark"></i>&nbsp;<span class="text-blue fw-bold">${row?.['lot_data']?.['lot_number']}</span>`;
@@ -237,14 +236,14 @@ $(document).ready(function () {
             columns: [
                 {
                     data: '',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         return ``;
                     }
                 },
                 {
                     data: 'vendor_serial_number',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         let disabled_readonly = ''
                         if (row?.['id']) {
@@ -258,7 +257,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'serial_number',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         let disabled_readonly = ''
                         if (row?.['id']) {
@@ -269,7 +268,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'expire_date',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         let disabled_readonly = ''
                         if (row?.['id']) {
@@ -280,7 +279,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'manufacture_date',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         let disabled_readonly = ''
                         if (row?.['id']) {
@@ -291,7 +290,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'warranty_start',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         let disabled_readonly = ''
                         if (row?.['id']) {
@@ -302,7 +301,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'warranty_end',
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         let disabled_readonly = ''
                         if (row?.['id']) {
@@ -313,7 +312,7 @@ $(document).ready(function () {
                 },
                 {
                     data: '',
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         if (row?.['id'] && !row?.['is_delete']) {
                             return `<button type="button" class="btn-edit btn btn-icon btn-flush-primary flush-hover btn-xs">

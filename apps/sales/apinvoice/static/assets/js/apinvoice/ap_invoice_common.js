@@ -70,13 +70,13 @@ class APInvoicePageFunction {
         },
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: () => {
                     return ``;
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: ' w-5',
                 render: (data, type, row) => {
                     return `<div class="form-check">
                                 <input type="radio"
@@ -88,14 +88,14 @@ class APInvoicePageFunction {
             },
             {
                 data: 'code',
-                className: 'wrap-text w-70',
+                className: ' w-70',
                 render: (data, type, row) => {
                     return `<span class="badge badge-soft-primary mr-2">${row?.['code']}</span><span>${row?.['name']}</span>`
                 }
             },
             {
                 data: 'tax_code',
-                className: 'wrap-text w-20',
+                className: 'w-20',
                 render: (data, type, row) => {
                     return row?.['tax_code']
                 }
@@ -150,25 +150,25 @@ class APInvoicePageFunction {
             },
             columns: [
                 {
-                    className: 'wrap-text w-10',
+                    className: 'w-10',
                     'render': () => {
                         return ``;
                     }
                 },
                 {
-                    className: 'wrap-text w-50',
+                    className: 'w-50',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-primary mr-1">${row?.['code']}</span><span class="text-primary">${row?.['title']}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `${moment(row?.['date_received'], 'YYYY-MM-DD').format('DD/MM/YYYY')}`
                     }
                 },
                 {
-                    className: 'wrap-text w-20 text-center',
+                    className: 'w-20 text-center',
                     render: (data, type, row) => {
                         return `${row?.['already'] ? `<i class="fas fa-check-circle text-success mr-1"></i>` + $.fn.gettext('Invoiced') : ''}
                                 <div class="form-check" ${row?.['already'] ? 'hidden' : ''}>
@@ -199,31 +199,29 @@ class APInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<span class="badge badge-soft-secondary">${(row?.['product_data'] || {})?.['code'] || ''}</span>&nbsp;${(row?.['product_data'] || {})?.['title'] || ''}`
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<span class="badge badge-soft-primary">${(row?.['product_uom_data'] || {})?.['title'] || ''}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span>${row?.['gr_quantity'] || 0}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span>${row?.['gr_quantity_before'] || 0}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span class="text-primary">${row?.['product_quantity'] || 0}</span>`
                     }
@@ -250,7 +248,7 @@ class APInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: () => {
                         return `<button type='button' ${from_po} class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row">
                                     <span class="icon"><i class="fas fa-trash"></i></span>
@@ -258,8 +256,7 @@ class APInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         let product_data = row?.['product_data'] || {}
                         return `<div class="input-group">
                                 <span class="input-affix-wrapper">
@@ -270,34 +267,29 @@ class APInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         let product_uom_data = row?.['product_uom_data'] || {}
                         return `<select ${from_po} data-product-uom='${JSON.stringify(product_uom_data)}' class="form-select select-2 uom-select"></select>`
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         let product_quantity = row?.['product_quantity'] || 0
                         return `<input type="number" ${from_po} value="${product_quantity}" class="form-control product_quantity text-right">`
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<input ${from_po} class="product_unit_price mask-money form-control text-right" value="${row?.['product_unit_price'] || 0}">`
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<span class="product_subtotal_price mask-money" data-init-money="${row?.['product_subtotal'] || 0}"></span>`
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         let product_tax_data = row?.['product_tax_data'] || {}
                         return `<select ${from_po}
                                         data-tax='${JSON.stringify(product_tax_data)}'
@@ -306,14 +298,13 @@ class APInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return `<span class="product_subtotal_price_final mask-money" data-init-money="${row?.['product_subtotal_final'] || 0}"></span>`
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<textarea rows="1" class="form-control note">${row?.['note'] || ''}</textarea>`
                     }
                 },

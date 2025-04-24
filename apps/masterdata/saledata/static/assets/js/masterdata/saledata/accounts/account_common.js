@@ -196,7 +196,7 @@ class AccountPageFunction {
                 {
                     className: 'w-25',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue mr-1">${row?.['owner']?.['code'] ? row?.['owner']?.['code'] : ''}</span><span class="text-blue">${row?.['owner']?.['fullname'] ? row?.['owner']?.['fullname'] : ''}</span>`
+                        return `<span class="badge badge-outline badge-light mr-1">${row?.['owner']?.['code'] ? row?.['owner']?.['code'] : ''}</span><span>${row?.['owner']?.['fullname'] ? row?.['owner']?.['fullname'] : ''}</span>`
                     }
                 },
                 {

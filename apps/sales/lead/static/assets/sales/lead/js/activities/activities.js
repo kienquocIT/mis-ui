@@ -105,13 +105,13 @@ class LeadActivitiesHandler{
             rowIdx: true,
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: (data, type, row, meta) => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         const activityType = {
                             2: 'call',
@@ -122,7 +122,7 @@ class LeadActivitiesHandler{
                     }
                 },
                 {
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         // log type for call: 2
                         // log type for email: 3
@@ -149,20 +149,20 @@ class LeadActivitiesHandler{
                     }
                 },
                 {
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `<p class="table-row-application mt-2">${row?.['doc_data']?.['employee_created']}</p>`;
                     }
                 },
                 {
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         let date = $x.fn.reformatData(row?.['date_created'], $x.cls.datetime.defaultFormatDate, 'DD-MM-YYYY');
                         return `<p class="table-row-application mt-2">${date}</p>`;
                     }
                 },
                 {
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         const dateMapping = {
                             2: 'call_date',

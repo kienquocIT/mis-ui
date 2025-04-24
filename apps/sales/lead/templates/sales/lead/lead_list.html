@@ -20,10 +20,10 @@
 {% endblock %}
 {% block pageContent %}
     <script hidden id="direct-btn-group-url"
-        data-url-list-api="{% url 'LeadListAPI' %}"
-        data-url-create="{% url 'LeadCreate' %}"
-        data-url-detail="{% url 'LeadDetail' '0' %}"
-        data-key-return="lead_list"
+            data-url-list-api="{% url 'LeadListAPI' %}"
+            data-url-create="{% url 'LeadCreate' %}"
+            data-url-detail="{% url 'LeadDetail' '0' %}"
+            data-key-return="lead_list"
     ></script>
     <div class="border rounded p-2">
         <div class="row">
@@ -54,12 +54,12 @@
                 <tr>
                     <th style="min-width: 30px"></th>
                     <th style="min-width: 80px">{% trans 'Code' %}</th>
-                    <th style="min-width: 200px">{% trans 'Name' %}</th>
+                    <th style="min-width: 250px">{% trans 'Name' %}</th>
                     <th style="min-width: 100px">{% trans 'Source' %}</th>
-                    <th style="min-width: 159px">{% trans 'Contact name' %}</th>
-                    <th style="min-width: 100px">{% trans 'Date created' %}</th>
+                    <th style="min-width: 150px">{% trans 'Contact name' %}</th>
+                    <th style="min-width: 150px">{% trans 'Date created' %}</th>
                     <th style="min-width: 150px">{% trans 'Stage' %}</th>
-                    <th style="min-width: 100px">{% trans 'Status' %}</th>
+                    <th style="min-width: 120px">{% trans 'Status' %}</th>
                 </tr>
                 </thead>
             </table>

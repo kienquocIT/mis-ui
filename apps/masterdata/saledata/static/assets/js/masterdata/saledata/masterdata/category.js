@@ -52,14 +52,14 @@ $(document).ready(function () {
                 case 'section_fixed_asset_classification_group':
                     return [
                         {
-                            className: 'wrap-text w-5',
+                            className: 'w-5',
                             render: (data, type, row, meta) => {
                                 return '';
                             }
                         },
                         {
                             data: 'code',
-                            className: 'wrap-text w-10',
+                            className: 'w-10',
                             render: (data, type, row) => {
                                 if (row.is_default) {
                                     return `<span class="badge badge-secondary">${row.code}</span>`
@@ -70,7 +70,7 @@ $(document).ready(function () {
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text w-75',
+                            className: 'w-75',
                             render: (data, type, row, meta) => {
                                 if (!row?.['is_default']) {
                                     return `<span class="text-primary"><b>${data}</b></span>`
@@ -79,7 +79,7 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            className: 'wrap-text text-right w-10',
+                            className: 'text-right w-10',
                             render: (data, type, row, meta) => {
                                 if (!row?.['is_default']) {
                                     return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
@@ -100,14 +100,14 @@ $(document).ready(function () {
                 case 'section_fixed_asset_classification':
                     return [
                         {
-                            className: 'wrap-text w-5',
+                            className: 'w-5',
                             render: (data, type, row, meta) => {
                                 return '';
                             }
                         },
                         {
                             data: 'code',
-                            className: 'wrap-text w-10',
+                            className: 'w-10',
                             render: (data, type, row) => {
                                 if (row.is_default) {
                                     return `<span class="badge badge-secondary">${row.code}</span>`
@@ -118,7 +118,7 @@ $(document).ready(function () {
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text w-55',
+                            className: 'w-55',
                             render: (data, type, row, meta) => {
                                 if (!row?.['is_default']) {
                                     return `<span class="text-primary"><b>${data}</b></span>`
@@ -128,7 +128,7 @@ $(document).ready(function () {
                         },
                         {
                             data: 'group',
-                            className: 'wrap-text w-30',
+                            className: 'w-30',
                             render: (data, type, row, meta) => {
                                 if (!row?.['is_default']) {
                                     return `<span class="text-primary"><b>${data?.['title']}</b></span>`
@@ -137,7 +137,7 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            className: 'wrap-text text-right w-10',
+                            className: 'text-right w-10',
                             render: (data, type, row, meta) => {
                                 if (!row?.['is_default']) {
                                     return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
@@ -158,14 +158,14 @@ $(document).ready(function () {
                 case 'section_tool_classification':
                     return [
                         {
-                            className: 'wrap-text w-5',
+                            className: 'w-5',
                             render: (data, type, row, meta) => {
                                 return '';
                             }
                         },
                         {
                             data: 'code',
-                            className: 'wrap-text w-10',
+                            className: 'w-10',
                             render: (data, type, row) => {
                                 console.log(row.is_default);
                                 if (row.is_default) {
@@ -177,7 +177,7 @@ $(document).ready(function () {
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text w-55',
+                            className: 'w-55',
                             render: (data, type, row, meta) => {
                                 if (!row?.['is_default']) {
                                     return `<span class="text-primary"><b>${data}</b></span>`
@@ -186,7 +186,7 @@ $(document).ready(function () {
                             }
                         },
                         {
-                            className: 'wrap-text text-right w-10',
+                            className: 'text-right w-10',
                             render: (data, type, row, meta) => {
                                 if (!row?.['is_default']) {
                                     return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover ${btnUpdate}"

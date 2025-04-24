@@ -34,7 +34,7 @@ $(function () {
                         width: '10%',
                         render: (data, type, row) => {
                             let link = $('#goods-receipt-link').data('link-detail').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover"><span>${row?.['code']}</span></a>`;
+                            return `<a href="${link}" class="link-primary underline_hover">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {

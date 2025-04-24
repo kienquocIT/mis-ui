@@ -2,7 +2,7 @@ $(document).ready(function() {
     const $default_account_determination_table = $('#default-account-determination-table')
     const columns_cfg = [
         {
-            className: 'wrap-text w-5',
+            className: 'w-5',
             'render': () => {
                 return ``;
             }
@@ -14,25 +14,25 @@ $(document).ready(function() {
             }
         },
         {
-            className: 'wrap-text w-30',
+            className: 'w-30',
             'render': (data, type, row) => {
                 return `<h6 class="text-muted fw-bold">${row?.['title']}</h6><h6 class="small text-primary fw-bold">${row?.['foreign_title']}</h6>`;
             }
         },
         {
-            className: 'wrap-text w-20',
+            className: 'w-20',
             'render': (data, type, row) => {
                 return `<select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="form-select select2 selected-accounts"></select>`;
             }
         },
         {
-            className: 'wrap-text w-35',
+            className: 'w-35',
             'render': (data, type, row) => {
                 return `<div class="selected-accounts-des"></div>`;
             }
         },
         {
-            className: 'wrap-text text-right w-10',
+            className: 'text-right w-10',
             'render': (data, type, row) => {
                 let change_btn = `<a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-xs btn-change-account">
                    <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i class="fa-solid fa-pen-to-square"></i></span></span>

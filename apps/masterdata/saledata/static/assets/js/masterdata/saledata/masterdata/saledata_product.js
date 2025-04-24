@@ -3,37 +3,36 @@ $(document).ready(function () {
     const $product_type_account_determination_table = $('#product-type-account-determination-table')
     const columns_cfg = [
         {
-            className: 'wrap-text w-5',
+            className: 'w-5',
             'render': () => {
                 return ``;
             }
         },
         {
-            className: 'wrap-text',
             'render': (data, type, row) => {
                 return `<span class="text-muted">${row?.['account_determination_type_convert']}</span>`;
             }
         },
         {
-            className: 'wrap-text w-30',
+            className: 'w-30',
             'render': (data, type, row) => {
                 return `<h6 class="text-muted fw-bold">${row?.['title']}</h6><h6 class="small text-primary fw-bold">${row?.['foreign_title']}</h6>`;
             }
         },
         {
-            className: 'wrap-text w-20',
+            className: 'w-20',
             'render': (data, type, row) => {
                 return `<select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="form-select select2 selected-accounts"></select>`;
             }
         },
         {
-            className: 'wrap-text w-35',
+            className: 'w-35',
             'render': (data, type, row) => {
                 return `<div class="selected-accounts-des"></div>`;
             }
         },
         {
-            className: 'wrap-text text-right w-10',
+            className: 'text-right w-10',
             'render': (data, type, row) => {
                 let change_btn = `<a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-xs btn-change-account">
                    <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i class="fa-solid fa-pen-to-square"></i></span></span>
@@ -257,14 +256,14 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return '';
                     }
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
                             return `<span class="badge badge-light w-70">${row?.['code']}</span>`
@@ -275,7 +274,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-25',
+                    className: 'w-25',
                     render: (data, type, row) => {
                         if (!row?.['is_default']) {
                             return `${data}`
@@ -285,12 +284,12 @@ $(document).ready(function () {
                 },
                 {
                     data: 'description',
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data) => {
                         return `<span class="initial-wrap">${data}</span>`
                     }
                 }, {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-product-type"
                            data-id="${row?.['id']}"
@@ -340,14 +339,14 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return '';
                     }
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
                             return `<span class="badge badge-light w-70">${row?.['code']}</span>`
@@ -358,7 +357,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         if (!row?.['is_default']) {
                             return `${data}`
@@ -368,13 +367,13 @@ $(document).ready(function () {
                 },
                 {
                     data: 'description',
-                    className: 'wrap-text w-35',
+                    className: 'w-35',
                     render: (data) => {
                         return `<span class="initial-wrap">${data}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-product-category"
                            data-id="${row?.['id']}"
@@ -424,14 +423,14 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return '';
                     }
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
                             return `<span class="badge badge-light w-70">${row?.['code']}</span>`
@@ -442,7 +441,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         if (!row?.['is_default']) {
                             return `${data}`
@@ -452,13 +451,13 @@ $(document).ready(function () {
                 },
                 {
                     data: 'description',
-                    className: 'wrap-text w-35',
+                    className: 'w-35',
                     render: (data) => {
                         return `<span class="initial-wrap">${data}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-manufacturer"
                            data-id="${row?.['id']}"
@@ -508,14 +507,14 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return '';
                     }
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
                             return `<span class="code-span badge badge-light w-70">${row?.['code']}</span>`
@@ -526,7 +525,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-45',
+                    className: 'w-45',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
                             return `<span class="title-span"><b>${data}</b></span>`
@@ -537,7 +536,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'referenced_unit',
-                    className: 'wrap-text w-25',
+                    className: 'w-25',
                     render: (data, type, row) => {
                         if (row?.['referenced_unit']?.['id']) {
                             return `<span class="badge badge-soft-success w-30 mr-1">${row?.['referenced_unit']?.['code']}</span>${row?.['referenced_unit']?.['title']}`
@@ -546,7 +545,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-uom-group"
                            data-id="${row?.['id']}"
@@ -656,14 +655,14 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return '';
                     }
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
                             return `<span class="badge badge-light w-70">${data}</span>`
@@ -673,7 +672,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
                             return `<b>${data}</b>`
@@ -683,14 +682,13 @@ $(document).ready(function () {
                 },
                 {
                     data: 'group',
-                    className: 'wrap-text ',
-                    render: (data) => {
+                        render: (data) => {
                         return `${data?.['title']}`
                     }
                 },
                 {
                     data: 'is_referenced_unit',
-                    className: 'wrap-text w-40 text-center',
+                    className: 'w-40 text-center',
                     render: (data, type, row) => {
                         if (row.group.hasOwnProperty('is_referenced_unit')) {
                             if (row.group.is_referenced_unit === true) {
@@ -703,7 +701,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-uom"
                                 data-id="${row?.['id']}"

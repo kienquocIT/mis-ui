@@ -26,19 +26,19 @@ $(document).ready(function () {
             columnDefs: [],
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text w-90',
+                    className: 'w-90',
                     render: (data, type, row) => {
                         return `<i class="fa-regular fa-hand-point-right mr-2"></i><span class="text-muted">${row.title}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text w-5 text-right',
+                    className: 'w-5 text-right',
                     render: (data, type, row) => {
                         return `<a class="btn btn-icon btn-del-factor" data-id="${row.id}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
                     }
@@ -233,25 +233,25 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<span class="text-primary fw-bold">${row.indicator}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text w-50',
+                    className: 'w-50',
                     render: (data, type, row) => {
                         return `<span class="fst-italic">${row.description}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <input type="number" step="0.1" class="form-control input-win-rate" data-id="${row.id}" value="${row.win_rate}">
@@ -260,13 +260,13 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-10',
+                    className: 'text-center w-10',
                     render: (data, type, row) => {
                         return `<a class="btn btn-icon btn-detail-stage" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#modalStageCondition"><span class="btn-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-sitemap"></i></span></span></a>`
                     }
                 },
                 {
-                    className: 'wrap-text text-right w-5',
+                    className: 'text-right w-5',
                     render: (data, type, row) => {
                         if (!row?.['is_default']) {
                             return `<a class="btn btn-icon btn-del-stage" data-id="${row.id}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`

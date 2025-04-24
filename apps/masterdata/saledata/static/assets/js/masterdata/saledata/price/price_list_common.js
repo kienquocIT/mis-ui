@@ -3,31 +3,31 @@ let [priceSelectEle, currencySelectEle, canDeleteCheckBoxEle, autoUpdateCheckBox
 
 let columns = [
     {
-        className: 'wrap-text w-5',
+        className: 'w-5',
         render: () => {
             return '';
         }
     }, {
         data: 'code',
-        className: 'wrap-text w-10',
+        className: 'w-10',
         render: (data, type, row, meta) => {
             return `<span class="badge badge-outline badge-soft-primary span-product w-100" data-auto-update="${row.is_auto_update}" data-id="${row.id}">${row.code}</span>`
         }
     }, {
         data: 'title',
-        className: 'wrap-text w-55',
+        className: 'w-55',
         render: (data, type, row, meta) => {
             return `<span class="text-muted fw-bold">${row.title}</span>`
         }
     }, {
         data: 'uom_group',
-        className: 'wrap-text w-15',
+        className: 'w-15',
         render: (data, type, row, meta) => {
             return `<span class="text-primary span-uom-group" data-id="${row.uom_group.id}">${row.uom_group.title}</span>`
         }
     }, {
         data: 'uom',
-        className: 'wrap-text w-15',
+        className: 'w-15',
         render: (data, type, row, meta) => {
             return `<span class="text-blue span-uom" data-id="${row.uom.id}">${row.uom.title}</span>`
         }
@@ -42,7 +42,7 @@ class PriceListAction {
             columns.push(
                 {
                     data: 'price',
-                    className: 'wrap-text min-w-250p',
+                    className: 'min-w-250p',
                     render: (data, type, row, meta) => {
                         let price_get = row.price.filter(function (item) {
                             return item.id === value.id

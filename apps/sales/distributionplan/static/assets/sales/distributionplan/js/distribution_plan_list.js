@@ -25,43 +25,41 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'wrap-text w-10',
+                        className: 'w-15',
                         'render': (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
-                            return `<a href="${link}"><span class="badge badge-primary w-70">${row.code}</span></a> ${$x.fn.buttonLinkBlank(link)}`;
+                            return `<a href="${link}" class="link-primary underline_hover">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-40',
+                        className: 'w-35',
                         'render': (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row.id);
                             return `<a href="${link}"><b>${row?.['title']}</b></a>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-15 text-center',
+                        className: 'w-15 text-center',
                         'render': (data, type, row) => {
                             return `<span class="text-muted">${moment(row?.['start_date'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-10 text-center',
+                        className: 'w-10 text-center',
                         'render': (data, type, row) => {
                             return `<span class="text-muted">${row?.['no_of_month']}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-15 text-center',
+                        className: 'w-15 text-center',
                         'render': (data, type, row) => {
                             return `<span class="${row?.['is_expired'] ? 'text-danger' : 'text-primary'}">${moment(row?.['end_date'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-10 text-center',
+                        className: 'text-center w-10',
                         'render': (data, type, row) => {
-                            let approved_trans = ['Draft', 'Created', 'Added', 'Finish', 'Cancel']
-                            let text_color = ['secondary', 'primary', 'blue', 'success', 'danger']
-                            return `<span class="w-100 badge badge-soft-${text_color[row?.['system_status']]}">${approved_trans[row?.['system_status']]}</span>`
+                            return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                         }
                     },
                 ],

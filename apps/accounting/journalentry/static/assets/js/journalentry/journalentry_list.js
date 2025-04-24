@@ -23,26 +23,26 @@ $(document).ready(function() {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'w-5',
                         'render': () => {
                             return ``;
                         }
                     },
                     {
-                        className: 'wrap-text w-10',
+                        className: 'w-5',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`;
+                            return `<a href="${link}" class="link-primary underline_hover">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-30',
+                        className: 'w-30',
                         render: (data, type, row) => {
                             return `<span class="text-muted">${row?.['original_transaction']}</span>`
                         }
                     },
                     {
-                        className: 'wrap-text w-30',
+                        className: 'w-30',
                         render: (data, type, row) => {
                             if (row?.['je_transaction_data']?.['code']) {
                                 return `<span class="badge badge-light">${row?.['je_transaction_data']?.['code']}</span>`
@@ -53,13 +53,13 @@ $(document).ready(function() {
                         }
                     },
                     {
-                        className: 'wrap-text w-15',
+                        className: 'w-15',
                         render: (data, type, row) => {
-                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY',});
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
-                        className: 'wrap-text w-10',
+                        className: 'w-10',
                         render: (data, type, row) => {
                             let text = [$.fn.gettext('Create manually'), $.fn.gettext('Create automatically')][Number(row?.['system_auto_create'])]
                             let color = ['primary', 'blue'][Number(row?.['system_auto_create'])]

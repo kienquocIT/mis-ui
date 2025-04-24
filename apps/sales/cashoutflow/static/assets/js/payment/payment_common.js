@@ -247,26 +247,27 @@ class PaymentAction {
         return result;
     }
     static ChangeRowPrice(tr) {
-        let unit_price = tr.find('.expense-unit-price-input')
-        let quantity = tr.find('.expense_quantity');
-        let subtotal = tr.find('.expense-subtotal-price');
-        let subtotal_after_tax = tr.find('.expense-subtotal-price-after-tax');
-        let tax_rate = 0;
-        if (tr.find('.expense-tax-select-box').val()) {
-            let tax_selected = SelectDDControl.get_data_from_idx(tr.find('.expense-tax-select-box'), tr.find('.expense-tax-select-box').val())
-            tax_rate = tax_selected?.['rate'] ? parseFloat(tax_selected?.['rate']) : 0;
-        }
-        if (unit_price.attr('value') && quantity.val()) {
-            let subtotal_value = parseFloat(unit_price.attr('value')) * parseFloat(quantity.val())
-            let tax_value = subtotal_value * tax_rate / 100
-            let subtotal_after_tax_value = subtotal_value + tax_value
-            subtotal.attr('value', subtotal_value.toFixed(0));
-            subtotal_after_tax.attr('value', subtotal_after_tax_value.toFixed(0));
-        }
-        else {
-            unit_price.attr('value', 0);
-            subtotal.attr('value', 0);
-            subtotal_after_tax.attr('value', 0);
+        if (!$('#free-input').prop('checked')) {
+            let unit_price = tr.find('.expense-unit-price-input')
+            let quantity = tr.find('.expense_quantity');
+            let subtotal = tr.find('.expense-subtotal-price');
+            let subtotal_after_tax = tr.find('.expense-subtotal-price-after-tax');
+            let tax_rate = 0;
+            if (tr.find('.expense-tax-select-box').val()) {
+                let tax_selected = SelectDDControl.get_data_from_idx(tr.find('.expense-tax-select-box'), tr.find('.expense-tax-select-box').val())
+                tax_rate = tax_selected?.['rate'] ? parseFloat(tax_selected?.['rate']) : 0;
+            }
+            if (unit_price.attr('value') && quantity.val()) {
+                let subtotal_value = parseFloat(unit_price.attr('value')) * parseFloat(quantity.val())
+                let tax_value = subtotal_value * tax_rate / 100
+                let subtotal_after_tax_value = subtotal_value + tax_value
+                subtotal.attr('value', subtotal_value.toFixed(0));
+                subtotal_after_tax.attr('value', subtotal_after_tax_value.toFixed(0));
+            } else {
+                unit_price.attr('value', 0);
+                subtotal.attr('value', 0);
+                subtotal_after_tax.attr('value', 0);
+            }
         }
         PaymentAction.CheckAndOpenExpandRow(tr)
         PaymentAction.CalculateTotalPrice();
@@ -274,14 +275,25 @@ class PaymentAction {
     }
     static CalculateTotalPrice() {
         let sum_subtotal = 0
-        $('.expense-subtotal-price').each(function () {
-            sum_subtotal += $(this).attr('value') ? parseFloat($(this).attr('value')) : 0
-        });
+        let sum_tax = 0;
         let sum_subtotal_price_after_tax = 0;
-        $('.expense-subtotal-price-after-tax').each(function () {
-            sum_subtotal_price_after_tax += $(this).attr('value') ? parseFloat($(this).attr('value')) : 0
-        });
-        let sum_tax = sum_subtotal_price_after_tax - sum_subtotal;
+
+        tableLineDetail.find('tbody tr').each(function (index, ele) {
+            let tr = $(ele)
+            let subtotal = tr.find('.expense-subtotal-price')
+            let subtotal_after_tax = tr.find('.expense-subtotal-price-after-tax')
+            let tax_rate = 0;
+            if (tr.find('.expense-tax-select-box').val()) {
+                let tax_selected = SelectDDControl.get_data_from_idx(tr.find('.expense-tax-select-box'), tr.find('.expense-tax-select-box').val())
+                tax_rate = tax_selected?.['rate'] ? parseFloat(tax_selected?.['rate']) : 0;
+            }
+            if (subtotal.attr('value') && subtotal_after_tax.attr('value')) {
+                sum_subtotal += parseFloat(subtotal.attr('value'))
+                sum_tax += parseFloat(subtotal.attr('value')) * tax_rate / 100
+                sum_subtotal_price_after_tax += parseFloat(subtotal_after_tax.attr('value'))
+            }
+        })
+
         $('#pretax-value').attr('value', sum_subtotal.toFixed(0));
         $('#taxes-value').attr('value', sum_tax.toFixed(0));
         $('#total-value').attr('value', sum_subtotal_price_after_tax.toFixed(0));
@@ -495,12 +507,12 @@ class PaymentLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input class="form-control expense-subtotal-price mask-money" readonly disabled value="${row?.['expense_subtotal_price'] ? row?.['expense_subtotal_price'] : '0'}">`;
+                        return `<input class="form-control expense-subtotal-price mask-money" ${$('#free-input').prop('checked') ? '' : 'readonly disabled'} value="${row?.['expense_subtotal_price'] ? row?.['expense_subtotal_price'] : '0'}">`;
                     }
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input class="form-control expense-subtotal-price-after-tax mask-money" readonly disabled value="${row?.['expense_after_tax_price'] ? row?.['expense_after_tax_price'] : '0'}">`;
+                        return `<input class="form-control expense-subtotal-price-after-tax mask-money" ${$('#free-input').prop('checked') ? '' : 'readonly disabled'} value="${row?.['expense_after_tax_price'] ? row?.['expense_after_tax_price'] : '0'}">`;
                     }
                 },
                 {
@@ -661,36 +673,31 @@ class PaymentLoadTab {
             columns: [
                 {
                     data: 'code',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<span class="badge badge-outline badge-soft-danger">` + row.code + `</span>`;
                     }
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<span>` + row.title + `</span>`;
                     }
                 },
                 {
                     data: 'to_payment',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<span class="text-primary mask-money" data-init-money="${row?.['to_payment']}"></span>`
                     }
                 },
                 {
                     data: 'return_value',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<span class="text-primary mask-money" data-init-money="` + row.return_value + `"></span>`
                     }
                 },
                 {
                     data: 'remain_value',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         return `<span class="text-primary mask-money" data-init-money="` + row.remain_value + `"></span>`
                     }
                 },
@@ -1972,6 +1979,7 @@ class PaymentHandle {
         frm.dataForm['employee_payment_id'] = employeeEle.val()
         frm.dataForm['method'] = parseInt($('#payment-method').val())
 
+        frm.dataForm['free_input'] = $('#free-input').prop('checked')
         let payment_item_list = [];
         if (tableLineDetail.find('tr').length > 0) {
             let row_count = tableLineDetail.find('tr').length / 2;
@@ -2181,6 +2189,8 @@ class PaymentHandle {
 
                     $('#title').val(data?.['title']);
 
+                    $('#free-input').prop('checked', data?.['free_input'])
+
                     $('#created_date_id').val(moment(data.date_created.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
 
                     PaymentLoadPage.LoadCreator(data?.['employee_created'])
@@ -2313,6 +2323,53 @@ $(document).on("change", '.expense-tax-select-box', function () {
 
 $(document).on("change", '.expense_quantity', function () {
     PaymentAction.ChangeRowPrice($(this).closest('tr'));
+})
+
+$(document).on("change", '.expense-subtotal-price', function () {
+    PaymentAction.CheckAndOpenExpandRow($(this).closest('tr'))
+    PaymentAction.CalculateTotalPrice();
+    $.fn.initMaskMoney2();
+})
+
+$(document).on("change", '.expense-subtotal-price-after-tax', function () {
+    PaymentAction.CheckAndOpenExpandRow($(this).closest('tr'))
+    PaymentAction.CalculateTotalPrice();
+    $.fn.initMaskMoney2();
+})
+
+$(document).on("change", '#free-input', function () {
+    let current_stage = $(this).prop('checked')
+    Swal.fire({
+        html: `<span>${script_trans.attr('data-trans-free-input-turn-on-off')}</span>`,
+        customClass: {
+            confirmButton: 'btn btn-outline-secondary text-primary',
+            cancelButton: 'btn btn-outline-secondary text-gray',
+            container: 'swal2-has-bg'
+        },
+        showCancelButton: true,
+        buttonsStyling: false,
+    }).then((result) => {
+        if (result.value) {
+            if (current_stage === true) {
+                Swal.fire({
+                    html: `<div class="d-flex align-items-center">
+                                <i class="ri-checkbox-line me-2 fs-3 text-success"></i>
+                                <h5 class="text-success mb-0">${script_trans.attr('data-trans-free-input-is-on')}</h5>
+                            </div>
+                            <p class="mt-2 small text-start">${script_trans.attr('data-trans-free-input-responsible')}</p>`,
+                    customClass: {
+                        confirmButton: 'btn btn-primary',
+                        actions: 'w-100',
+                    },
+                    buttonsStyling: false,
+                })
+            }
+            PaymentLoadTab.DrawLineDetailTable()
+        }
+        else {
+            $(this).prop('checked', !current_stage)
+        }
+    })
 })
 
 $(document).on("change", '.expense-uom-input', function () {

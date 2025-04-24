@@ -71,37 +71,36 @@ class ProductPageVariables {
         // account determination tab
         this.columns_cfg = [
             {
-                className: 'wrap-text w-5',
+                className: ' w-5',
                 'render': () => {
                     return ``;
                 }
             },
             {
-                className: 'wrap-text',
                 'render': (data, type, row) => {
                     return `<span class="text-muted">${row?.['account_determination_type_convert']}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-30',
+                className: ' w-30',
                 'render': (data, type, row) => {
                     return `<h6 class="text-muted fw-bold">${row?.['title']}</h6><h6 class="small text-primary fw-bold">${row?.['foreign_title']}</h6>`;
                 }
             },
             {
-                className: 'wrap-text w-20',
+                className: 'w-20',
                 'render': (data, type, row) => {
                     return `<select disabled data-account-mapped='${JSON.stringify(row?.['account_mapped'])}' class="form-select select2 selected-accounts"></select>`;
                 }
             },
             {
-                className: 'wrap-text w-35',
+                className: 'w-35',
                 'render': () => {
                     return `<div class="selected-accounts-des"></div>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-10',
+                className: 'text-right w-10',
                 'render': (data, type, row) => {
                     let change_btn = `<a class="btn btn-icon btn-flush-primary btn-rounded flush-soft-hover btn-xs btn-change-account">
                        <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i class="fa-solid fa-pen-to-square"></i></span></span>
@@ -354,32 +353,32 @@ class ProductPageFunction {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     'render': () => {
                         return ``;
                     }
                 }, {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check"><input ${disabled_all_input} ${row.hidden} class="select_price_list form-check-input" type="checkbox" data-id="${row.id}" ${row.checked} ${row.disabled}><label class="form-check-label" for="select_price_list"></label></div>`
                     }
                 }, {
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         return `<label class="${row.required} form-label text-primary fw-bold">${row.title}</label>`
                     }
                 }, {
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<span>${row?.['valid_time_start']}</span>`
                     }
                 }, {
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<span>${row?.['valid_time_end']}</span>`
                     }
                 }, {
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         return `<input ${disabled_all_input} value="${row.price_value}" data-is-default="${row.is_default}" ${row.disabled_input} data-source="${row?.['price_list_mapped']}" data-auto-update="${row.auto_update}" data-factor="${row.factor}" data-id="${row.id}" data-return-type="number" type="text" class="form-control text-primary mask-money input_price_list">`
                     }
@@ -432,28 +431,28 @@ class ProductPageFunction {
             columns: [
                 {
                     data: 'code',
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-blue badge-outline table-row-code" data-id="${row.warehouse.id}">${row.warehouse.code}</span>`;
                     }
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text text-center w-35',
+                    className: 'text-center w-35',
                     render: (data, type, row) => {
                         return `<span class="text-secondary"><b>${row.warehouse.title}</b></span>`
                     }
                 },
                 {
                     data: '',
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return `<span class="fw-bold">${row?.['stock_amount']}</span>`;
                     }
                 },
                 {
                     data: '',
-                    className: 'wrap-text text-center w-35',
+                    className: 'text-center w-35',
                     render: (data, type, row) => {
                         return `<span class="mask-money text-primary" data-init-money="${row?.['cost']}"></span>`;
                     }
@@ -532,7 +531,7 @@ class ProductPageFunction {
             columns: [
                 {
                     data: 'sum_stock',
-                    className: 'wrap-text text-center w-20',
+                    className: 'text-center w-20',
                     render: (data, type, row) => {
                         let sum_stock = row?.['sum_stock'] ? row?.['sum_stock'] : 0
                         return `<span class="fw-bold ${sum_stock > 0 ? 'text-primary' : 'text-danger'}">${sum_stock}</span>`
@@ -540,7 +539,7 @@ class ProductPageFunction {
                 },
                 {
                     data: 'sum_wait_for_delivery',
-                    className: 'wrap-text text-center w-20',
+                    className: 'text-center w-20',
                     render: (data, type, row) => {
                         let sum_wait_for_delivery = row?.['sum_wait_for_delivery'] ? row?.['sum_wait_for_delivery'] : 0
                         return `<span class="fw-bold ${sum_wait_for_delivery > 0 ? 'text-primary' : 'text-danger'}">${sum_wait_for_delivery}</span>`
@@ -548,7 +547,7 @@ class ProductPageFunction {
                 },
                 {
                     data: 'sum_wait_for_receipt',
-                    className: 'wrap-text text-center w-20',
+                    className: 'text-center w-20',
                     render: (data, type, row) => {
                         let sum_wait_for_receipt = row?.['sum_wait_for_receipt'] ? row?.['sum_wait_for_receipt'] : 0
                         return `<span class="fw-bold ${sum_wait_for_receipt > 0 ? 'text-primary' : 'text-danger'}">${sum_wait_for_receipt}</span>`
@@ -556,7 +555,7 @@ class ProductPageFunction {
                 },
                 {
                     data: 'production_amount',
-                    className: 'wrap-text text-center w-20',
+                    className: 'text-center w-20',
                     render: (data, type, row) => {
                         let production_amount = row?.['sum_production'] ? row?.['sum_production'] : 0
                         return `<span class="fw-bold ${production_amount > 0 ? 'text-primary' : 'text-danger'}">${production_amount}</span>`
@@ -564,7 +563,7 @@ class ProductPageFunction {
                 },
                 {
                     data: 'sum_available_value',
-                    className: 'wrap-text text-center w-20',
+                    className: 'text-center w-20',
                     render: (data, type, row) => {
                         let sum_available_value = row?.['sum_available_value'] ? row?.['sum_available_value'] : 0
                         return `<span class="fw-bold ${sum_available_value > 0 ? 'text-primary' : 'text-danger'}">${sum_available_value}</span>`
@@ -1476,22 +1475,21 @@ class ProductHandler {
                         columns: [
                          {
                             data: '',
-                            className: 'wrap-text text-center w-5',
+                            className: 'text-center w-5',
                             render: (data, type, row) => {
                                 return row.index;
                             }
                         },
                          {
                             data: '',
-                            className: 'wrap-text w-40',
+                            className: 'w-40',
                             render: (data, type, row) => {
                                 return row.html;
                             }
                         },
                          {
                             data: '',
-                            className: 'wrap-text',
-                            render: (data, type, row) => {
+                                render: (data, type, row) => {
                                 return `<button type="button" data-bs-toggle="modal" data-bs-target="#modal-variant-item-des" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs add-variant-item-des"><span class="icon"><i class="fas fa-ellipsis-v"></i></span></button>
                                  <span hidden class="variant-name-span">${row.variant_name}</span>
                                  <span hidden class="variant-des-span">${row.variant_des}</span>`
@@ -1499,21 +1497,21 @@ class ProductHandler {
                         },
                          {
                             data: '',
-                            className: 'wrap-text w-20',
+                            className: 'w-20',
                             render: (data, type, row) => {
                                 return `<input class="form-control SKU-input" ${readonly} value="${row.variant_SKU}">`;
                             }
                         },
                          {
                             data: '',
-                            className: 'wrap-text w-25',
+                            className: 'w-25',
                             render: (data, type, row) => {
                                 return `<input data-return-type="number" type="text" ${readonly} class="form-control mask-money extra-price-input" value="${row.variant_extra_price}">`;
                             }
                         },
                          {
                             data: '',
-                            className: 'wrap-text text-center w-10',
+                            className: 'text-center w-10',
                             render: (data, type, row) => {
                                 return `<div class="form-check form-switch">
                                      <input ${row.is_activate} type="checkbox" ${disabled} class="form-check-input variant-active">

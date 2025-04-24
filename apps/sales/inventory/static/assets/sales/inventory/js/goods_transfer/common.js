@@ -60,47 +60,38 @@ function loadDefaultTableLineDetail() {
         data: [],
         columns: [
             {
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return ``;
                 }
             }, {
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return ``;
                 }
             }, {
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return ``;
                 }
             }, {
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return ``;
                 }
             }, {
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return ``;
                 }
             }, {
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return ``;
                 }
             }, {
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return ``;
                 }
             }, {
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return ``;
                 }
             }, {
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return ``;
                 }
@@ -331,14 +322,12 @@ function loadSerialTable(data, serial_selected=[]) {
         columns: IS_DETAIL_PAGE ? [
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return ``;
                 }
             },
             {
                 data: 'vendor_serial_number',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let disabled_readonly = ''
                     if (row?.['id']) {
@@ -352,7 +341,6 @@ function loadSerialTable(data, serial_selected=[]) {
             },
             {
                 data: 'serial_number',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let disabled_readonly = ''
                     if (row?.['id']) {
@@ -363,7 +351,6 @@ function loadSerialTable(data, serial_selected=[]) {
             },
             {
                 data: 'expire_date',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let disabled_readonly = ''
                     if (row?.['id']) {
@@ -374,7 +361,6 @@ function loadSerialTable(data, serial_selected=[]) {
             },
             {
                 data: 'manufacture_date',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let disabled_readonly = ''
                     if (row?.['id']) {
@@ -385,7 +371,6 @@ function loadSerialTable(data, serial_selected=[]) {
             },
             {
                 data: 'warranty_start',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let disabled_readonly = ''
                     if (row?.['id']) {
@@ -396,7 +381,6 @@ function loadSerialTable(data, serial_selected=[]) {
             },
             {
                 data: 'warranty_end',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let disabled_readonly = ''
                     if (row?.['id']) {
@@ -407,7 +391,7 @@ function loadSerialTable(data, serial_selected=[]) {
             },
             {
                 data: '',
-                className: 'wrap-text text-center',
+                className: 'text-center',
                 render: (data, type, row) => {
                     let checked = ''
                     if (serial_selected.includes(row?.['id'])) {
@@ -422,14 +406,12 @@ function loadSerialTable(data, serial_selected=[]) {
         ] : [
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return ``;
                 }
             },
             {
                 data: 'vendor_serial_number',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let disabled_readonly = ''
                     if (row?.['id']) {
@@ -443,7 +425,6 @@ function loadSerialTable(data, serial_selected=[]) {
             },
             {
                 data: 'serial_number',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let disabled_readonly = ''
                     if (row?.['id']) {
@@ -454,7 +435,6 @@ function loadSerialTable(data, serial_selected=[]) {
             },
             {
                 data: 'expire_date',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let disabled_readonly = ''
                     if (row?.['id']) {
@@ -465,7 +445,6 @@ function loadSerialTable(data, serial_selected=[]) {
             },
             {
                 data: 'manufacture_date',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let disabled_readonly = ''
                     if (row?.['id']) {
@@ -476,7 +455,6 @@ function loadSerialTable(data, serial_selected=[]) {
             },
             {
                 data: 'warranty_start',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let disabled_readonly = ''
                     if (row?.['id']) {
@@ -487,7 +465,6 @@ function loadSerialTable(data, serial_selected=[]) {
             },
             {
                 data: 'warranty_end',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let disabled_readonly = ''
                     if (row?.['id']) {
@@ -498,7 +475,7 @@ function loadSerialTable(data, serial_selected=[]) {
             },
             {
                 data: '',
-                className: 'wrap-text text-center',
+                className: 'text-center',
                 render: (data, type, row) => {
                     let checked = ''
                     if (serial_selected.includes(row?.['id'])) {
@@ -543,42 +520,37 @@ function loadLotTable(data, lot_selected=[]) {
         columns: IS_DETAIL_PAGE ? [
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return ``;
                 }
             },
             {
                 data: 'lot_number',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<input disabled readonly data-raw="${data ? data : ''}" data-lot-id="${row?.['id']}" class="form-control lot_number" value="${data ? data : ''}">`;
                 }
             },
             {
                 data: 'quantity_import',
-                className: `wrap-text`,
+                className: ``,
                 render: (data, type, row) => {
                     return `<span class="quantity_import">${data ? data : 0}</span>`;
                 }
             },
             {
                 data: 'expire_date',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<input disabled readonly data-raw="${data ? moment(data.split(' ')[0]).format('DD/MM/YYYY') : ''}" class="date-input form-control expire_date" value="${data ? moment(data.split(' ')[0]).format('DD/MM/YYYY') : ''}">`;
                 }
             },
             {
                 data: 'manufacture_date',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<input disabled readonly data-raw="${data ? moment(data.split(' ')[0]).format('DD/MM/YYYY') : ''}" class="date-input form-control manufacture_date" value="${data ? moment(data.split(' ')[0]).format('DD/MM/YYYY') : ''}">`;
                 }
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     // [{lot_id: ..., quantity: ...}]
                     let quantity_got = 0
@@ -594,42 +566,37 @@ function loadLotTable(data, lot_selected=[]) {
         ] : [
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return ``;
                 }
             },
             {
                 data: 'lot_number',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<input disabled readonly data-raw="${data ? data : ''}" data-lot-id="${row?.['id']}" class="form-control lot_number" value="${data ? data : ''}">`;
                 }
             },
             {
                 data: 'quantity_import',
-                className: `wrap-text`,
+                className: ``,
                 render: (data, type, row) => {
                     return `<span class="quantity_import">${data ? data : 0}</span>`;
                 }
             },
             {
                 data: 'expire_date',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<input disabled readonly data-raw="${data ? moment(data.split(' ')[0]).format('DD/MM/YYYY') : ''}" class="date-input form-control expire_date" value="${data ? moment(data.split(' ')[0]).format('DD/MM/YYYY') : ''}">`;
                 }
             },
             {
                 data: 'manufacture_date',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<input disabled readonly data-raw="${data ? moment(data.split(' ')[0]).format('DD/MM/YYYY') : ''}" class="date-input form-control manufacture_date" value="${data ? moment(data.split(' ')[0]).format('DD/MM/YYYY') : ''}">`;
                 }
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     // [{lot_id: ..., quantity: ...}]
                     let quantity_got = 0

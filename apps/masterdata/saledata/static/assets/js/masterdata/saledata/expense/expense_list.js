@@ -29,8 +29,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
+                            render: (data, type, row) => {
                             return `<a href="{0}"><span class="badge badge-soft-primary">{1}</span></a>{2}`.format_by_idx(
                                 frm.getUrlDetail(row.id), data, $x.fn.buttonLinkBlank(urlDetail.format_url_with_uuid(row.id))
                             )
@@ -38,8 +37,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'title',
-                        className: 'wrap-text',
-                        render: (data) => {
+                            render: (data) => {
                             return `<span>{0}</span></a>`.format_by_idx(
                                 data
                             )
@@ -47,8 +45,7 @@ $(document).ready(function () {
                     },
                     {
                         data: 'expense_item',
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
+                            render: (data, type, row) => {
                             return `<span>${row?.['expense_item']?.['title'] ? row?.['expense_item']?.['title'] : ''}</span>`;
                         }
                     },

@@ -64,21 +64,19 @@ function loadTableSelectDelivery() {
             },
             {
                 data: 'code',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<span data-id="${row.id}" class="badge badge-primary delivery-code-span">${row.code}</span>`
                 }
             },
             {
                 data: 'date',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `${moment(row.date.split('T')[0], 'YYYY-MM-DD').format('DD/MM/YYYY')}`
                 }
             },
             {
                 data: '',
-                className: 'wrap-text text-right',
+                className: 'text-right',
                 render: (data, type, row) => {
                     let details = JSON.stringify(row?.['details'])
                     return `<div class="form-check">
@@ -351,28 +349,24 @@ function loadTableLineDetail(data_source=[], detail='create') {
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<span class="badge badge-secondary">${row?.['product_code']}</span>&nbsp;${row?.['product_title']}`
                 }
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `${row?.['uom_title']}`
                 }
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary">${row?.['delivery_code']}</span>`
                 }
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     if (row?.['type'] === 1) {
                         let html = ``
@@ -386,7 +380,6 @@ function loadTableLineDetail(data_source=[], detail='create') {
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     if (row?.['type'] === 2) {
                         let html = ``
@@ -402,7 +395,6 @@ function loadTableLineDetail(data_source=[], detail='create') {
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     if (row?.['type'] === 1) {
                         let html = ``
@@ -425,7 +417,6 @@ function loadTableLineDetail(data_source=[], detail='create') {
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     if (row?.['type'] === 1) {
                         let html = ``
@@ -448,7 +439,6 @@ function loadTableLineDetail(data_source=[], detail='create') {
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<select class="form-select select2 return-to-wh" data-delivery-item-id="${row?.['data_delivery_item_id']}" data-url="${scriptUrlEle.attr('data-url-warehouse') + '?interact=1'}" data-method="GET"></select>`
                 }
@@ -494,14 +484,12 @@ function loadTableSelectDetailProduct(datasource=[]) {
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<span class="badge badge-secondary badge-sm">${row?.['product_data']?.['code']}</span><br>${row?.['product_data']?.['title']}`
                 }
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let product_row = []
                     if (row?.['product_general_traceability_method'] === 1) {
@@ -546,7 +534,6 @@ function loadTableSelectDetailProduct(datasource=[]) {
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     if ([1, 2].includes(row?.['product_general_traceability_method'])) {
                         return `<input value="0" disabled readonly class="form-control return-number-input" type="number" min="0">`
@@ -560,7 +547,6 @@ function loadTableSelectDetailProduct(datasource=[]) {
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     if ([1, 2].includes(row?.['product_general_traceability_method'])) {
                         return `<input value="0" disabled readonly class="form-control re-delivery-number-input" type="number" min="0">`
@@ -570,7 +556,7 @@ function loadTableSelectDetailProduct(datasource=[]) {
             },
             {
                 data: '',
-                className: 'wrap-text text-right',
+                className: 'text-right',
                 render: (data, type, row) => {
                     let product_delivery_data = ''
                     if (row?.['product_general_traceability_method'] === 1) {
@@ -626,7 +612,6 @@ function loadTableSelectProductSerial(datasource=[]) {
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let delivery_item_id = null
                     tableDetailProductEle.find('.selected-product').each(function () {
@@ -652,14 +637,13 @@ function loadTableSelectProductSerial(datasource=[]) {
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `${row?.['serial_number']}`
                 }
             },
             {
                 data: '',
-                className: 'wrap-text text-right',
+                className: 'text-right',
                 render: (data, type, row) => {
                     if (row?.['is_returned'] === true) {
                         return `<span class="badge badge-sm badge-soft-secondary">${scriptTransEle.attr('data-trans-has-returned')}</span>`
@@ -672,7 +656,7 @@ function loadTableSelectProductSerial(datasource=[]) {
             },
             {
                 data: '',
-                className: 'wrap-text text-right',
+                className: 'text-right',
                 render: (data, type, row) => {
                     if (row?.['is_returned'] === true) {
                         return ``
@@ -713,7 +697,6 @@ function loadTableSelectProductLOT(datasource=[]) {
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     let delivery_item_id = null
                     tableDetailProductEle.find('.selected-product').each(function () {
@@ -739,21 +722,18 @@ function loadTableSelectProductLOT(datasource=[]) {
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     return `<span class="data-remain-span">${row?.['quantity_delivery'] - row?.['returned_quantity']}</span>`
                 }
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: () => {
                     return `<input type="number" class="form-control return-lot-input" value="0">`
                 }
             },
             {
                 data: '',
-                className: 'wrap-text',
                 render: () => {
                     return `<input type="number" class="form-control redelivery-lot-input" value="0">`
                 }

@@ -44,7 +44,7 @@ function InitAdvancePaymentTable(data_param={}) {
                 className: 'w-10',
                 render: (data, type, row) => {
                     const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                    return `<a href="${link}" class="link-primary underline_hover">${row?.['code'] || '--'}</a>`;
+                    return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                 }
             },
             {
@@ -70,7 +70,7 @@ function InitAdvancePaymentTable(data_param={}) {
                                     </a>`;
                     }
                     const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                    return `<a href="${link}" class="link-primary underline_hover fw-bold" title="${row?.['title']}">${row?.['title']}</a>${return_btn}`
+                    return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>${return_btn}`
                 }
             },
             {

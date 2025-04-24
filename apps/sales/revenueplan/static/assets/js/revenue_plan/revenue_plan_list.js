@@ -39,7 +39,7 @@ $(document).ready(function () {
                         className: 'w-5',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover">${row?.['code'] || '--'}</a>`;
+                            return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
@@ -47,7 +47,7 @@ $(document).ready(function () {
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             let btn_view_plan = `<button data-bs-toggle="modal" data-bs-target="#modal-my-plan" type="button" id="view-my-revenue-plan" class="btn btn-gradient-primary btn-xs ml-2" data-method="GET" data-url="${urlEle.attr('data-url-view-plan')}">${transEle.attr('data-trans-btn-view-plan')}</button>`
-                            return `<a href="${link}" class="link-primary underline_hover fw-bold" title="${row?.['title']}">${row?.['title']}</a>${row?.['status'] === 'Opening' ? btn_view_plan : ''}`
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>${row?.['status'] === 'Opening' ? btn_view_plan : ''}`
                         }
                     },
                     {

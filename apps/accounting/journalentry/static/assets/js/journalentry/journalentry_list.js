@@ -32,7 +32,7 @@ $(document).ready(function() {
                         className: 'w-5',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover">${row?.['code'] || '--'}</a>`;
+                            return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {

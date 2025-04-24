@@ -81,7 +81,7 @@ $(document).ready(function () {
                 data: 'name',
                 render: (data, type, row) => {
                     const link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
-                    return `<a href="${link}" class="link-primary underline_hover">${row?.['code'] || '--'}</a>`;
+                    return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                 }
             },
             {
@@ -89,7 +89,7 @@ $(document).ready(function () {
                 data: 'name',
                 render: (data, type, row) => {
                     let link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
-                    return `<a href="${link}" class="link-primary underline_hover fw-bold" title="${row?.['name']}">${row?.['name']}</a>`
+                    return `<a href="${link}" class="link-primary underline_hover" title="${row?.['name']}">${row?.['name']}</a>`
                 },
             },
             {

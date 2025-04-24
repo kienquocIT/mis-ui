@@ -1873,7 +1873,7 @@ class InitDataTables {
                         className: 'w-10',
                         render: (data, type, row) => {
                             const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}" class="link-primary underline_hover">${row?.['code'] || '--'}</a>`;
+                            return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
@@ -1881,7 +1881,7 @@ class InitDataTables {
                         className: 'ellipsis-cell-lg w-20',
                         render: (data, type, row) => {
                             const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}" class="link-primary underline_hover fw-bold" title="${row?.['title']}">${row?.['title']}</a>`
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {

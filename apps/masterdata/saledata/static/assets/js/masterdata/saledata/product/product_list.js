@@ -35,14 +35,14 @@ $(document).ready(function () {
                 className: 'ellipsis-cell-sm w-10',
                 render: (data, type, row) => {
                     const link = url_detail.replace(0, row?.['id']);
-                    return `<a href="${link}" class="link-primary underline_hover" title="${row?.['code']}">${row?.['code'] || '--'}</a>`;
+                    return `<a href="${link}" class="link-primary underline_hover fw-bold" title="${row?.['code']}">${row?.['code'] || '--'}</a>`;
                 }
             }, {
                 data: 'title',
                 className: 'ellipsis-cell-lg w-25',
                 render: (data, type, row) => {
                     const link = url_detail.replace(0, row?.['id']);
-                    return `<a href="${link}" class="link-primary underline_hover fw-bold" title="${row?.['title']}">${row?.['title']}</a>`
+                    return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                 }
             }, {
                 data: 'general_product_types_mapped',

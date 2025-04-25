@@ -1836,7 +1836,7 @@ class LoadConfigAndLoadStage {
 
 class InitDataTables {
     static loadDtbOpportunityList() {
-        if (!$.fn.DataTable.isDataTable('#table_opportunity_list-purchase-request')) {
+        if (!$.fn.DataTable.isDataTable('#table_opportunity_list')) {
             let $table = $('#table_opportunity_list')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
@@ -1847,7 +1847,7 @@ class InitDataTables {
                 scrollCollapse: true,
                 fixedColumns: {
                     leftColumns: 2,
-                    rightColumns: 1
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
                 },
                 ajax: {
                     url: frm.dataUrl,
@@ -1870,10 +1870,10 @@ class InitDataTables {
                     },
                     {
                         targets: 1,
-                        className: 'w-10',
+                        className: 'ellipsis-cell-xs w-10',
                         render: (data, type, row) => {
                             const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                            return `<a href="${link}" class="link-primary underline_hover fw-bold" title="${row?.['code']}">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {

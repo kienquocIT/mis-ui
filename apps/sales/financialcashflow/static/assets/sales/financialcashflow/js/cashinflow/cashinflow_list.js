@@ -29,7 +29,6 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'code',
                         className: 'w-10',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
@@ -37,22 +36,19 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'title',
-                        className: 'w-25',
+                        className: 'ellipsis-cell-lg w-25',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}"><span class="text-primary"><b>${row?.['title']}</b></span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        data: 'customer_data',
-                        className: 'w-20',
+                        className: 'ellipsis-cell-lg w-20',
                         render: (data, type, row) => {
                             return `<span class="text-muted">${row?.['customer_data']?.['name']}</span>`
                         }
                     },
                     {
-                        data: 'total_value',
                         className: 'w-15',
                         render: (data, type, row) => {
                             return `<span class="text-muted mask-money" data-init-money="${row?.['total_value'] ? row?.['total_value'] : '0'}"></span>`
@@ -65,7 +61,6 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'status',
                         className: 'text-center w-10',
                         render: (data, type, row) => {
                             return WFRTControl.displayRuntimeStatus(row?.['system_status']);

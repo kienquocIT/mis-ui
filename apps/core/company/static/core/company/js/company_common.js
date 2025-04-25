@@ -109,10 +109,10 @@ const schema_item_preview = [
     fullYear.toString(),
     currentDate.toLocaleString('default', {month: 'short'}),
     currentDate.toLocaleString('default', {month: 'long'}),
-    monthOfYear.toString(),
-    weekOfYear.toString(),
-    dayOfYear.toString(),
-    dayOfMonth.toString(),
+    monthOfYear.toString().padStart(2, '0'),
+    weekOfYear.toString().padStart(2, '0'),
+    dayOfYear.toString().padStart(3, '0'),
+    dayOfMonth.toString().padStart(2, '0'),
     dayOfWeek.toString()
 ]
 

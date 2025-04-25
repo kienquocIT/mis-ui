@@ -12,7 +12,7 @@ $(document).ready(function () {
                 reloadCurrency: true,
                 fixedColumns: {
                     leftColumns: 2,
-                    rightColumns: 1
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
                 },
                 ajax: {
                     url: frm.dataUrl,
@@ -49,12 +49,7 @@ $(document).ready(function () {
                     {
                         className: 'w-10',
                         render: (data, type, row) => {
-                            if (row?.['sale_order_mapped_data']?.['id']) {
-                                return `<span>${row?.['sale_order_mapped_data']?.['code']}</span>`
-                            }
-                            else {
-                                return ``
-                            }
+                            return `<span>${row?.['sale_order_mapped_data']?.['code']}</span>`
                         }
                     },
                     {

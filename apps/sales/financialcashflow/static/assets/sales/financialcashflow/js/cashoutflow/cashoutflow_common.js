@@ -519,7 +519,7 @@ class COFHandler {
         frm.dataForm['description'] = pageElements.$description.val()
 
         if (pageElements.$cof_type.val() === '0') {
-            frm.dataForm['supplier'] = pageElements.$supplier_name.attr('data-id') || null
+            frm.dataForm['supplier_id'] = pageElements.$supplier_name.attr('data-id') || null
             let cash_out_advance_for_supplier_data = []
             let cash_out_ap_invoice_data = []
 
@@ -557,7 +557,7 @@ class COFHandler {
             frm.dataForm['cash_out_ap_invoice_data'] = cash_out_ap_invoice_data
         }
         else if (pageElements.$cof_type.val() === '1') {
-            frm.dataForm['advance_for_employee_value'] = pageElements.$advance_for_employee_value.val()
+            frm.dataForm['advance_for_employee_value'] = pageElements.$advance_for_employee_value.attr('value')
         }
         else if (pageElements.$cof_type.val() === '2') {
 

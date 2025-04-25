@@ -29,7 +29,7 @@ $(document).ready(function () {
                 reloadCurrency: true,
                 fixedColumns: {
                     leftColumns: 2,
-                    rightColumns: 1
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
                 },
                 ajax: {
                     url: frm.dataUrl,

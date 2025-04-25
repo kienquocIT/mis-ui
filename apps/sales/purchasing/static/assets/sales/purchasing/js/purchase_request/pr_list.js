@@ -8,10 +8,16 @@ $(document).ready(function () {
             let $table = $('#datatable-purchase-request')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
-                scrollX: true,
-                scrollCollapse: true,
                 useDataServer: true,
                 rowIdx: true,
+                scrollX: true,
+                scrollY: '70vh',
+                scrollCollapse: true,
+                reloadCurrency: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -25,26 +31,27 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        render: (data, type, row) => {
+                        className: 'w-5',
+                        render: () => {
                             return ``;
                         }
                     },
                     {
-                        data: 'code',
+                        className: 'w-5',
                         render: (data, type, row) => {
                             let link = url_detail.format_url_with_uuid(row.id)+`?type=${row?.['request_for']}`;
                             return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        data: 'title',
+                        className: 'ellipsis-cell-lg w-30',
                         render: (data, type, row) => {
-                            let urlDetail = url_detail.format_url_with_uuid(row.id)+`?type=${row?.['request_for']}`;
-                            return `<a href="${urlDetail}"><span class="text-primary fw-bold">${data}</span></a>`
+                            let link = url_detail.format_url_with_uuid(row.id)+`?type=${row?.['request_for']}`;
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        data: 'request_for_string',
+                        className: 'w-15',
                         render: (data, type, row) => {
                             let doc_code = ''
                             if (row?.['request_for'] === 0) {
@@ -53,38 +60,36 @@ $(document).ready(function () {
                             else if (row?.['request_for'] === 3) {
                                 doc_code = row?.['distribution_plan']?.['code'];
                             }
-                            return `<span class="fst-italic small">${data}&nbsp;<span class="fw-bold">${doc_code}</span></span>`
+                            return `<span>${row?.['request_for_string']}&nbsp;<span class="fw-bold">${doc_code}</span></span>`
                         }
                     },
                     {
-                        data: 'supplier',
-                        render: (data) => {
-                            return `<p class="text-muted">${data.title}</p>`
-                        }
-                    },
-                    {
-                        data: 'delivered_date',
-                        render: (data) => {
-                            return moment(data.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY');
-                        }
-                    },
-                    {
-                        data: 'system_status',
-                        className: 'text-center',
+                        className: 'ellipsis-cell-lg w-15',
                         render: (data, type, row) => {
-                            return WFRTControl.displayRuntimeStatus(row?.['system_status']);
+                            return `<p class="text-muted">${row?.['supplier']?.['title']}</p>`
                         }
                     },
                     {
-                        data: 'purchase_status_string',
-                        className: 'text-center',
+                        className: 'w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['delivered_date'], {'outputFormat': 'DD/MM/YYYY'});
+                        }
+                    },
+                    {
+                        className: 'w-10',
                         render: (data, type, row) => {
                             let status_data = {
-                                0: "badge-outline badge badge-secondary",
-                                1: "badge-outline badge badge-warning",
-                                2: "badge-outline badge badge-success",
+                                0: "text-blue",
+                                1: "text-orange",
+                                2: "text-success",
                             }
-                            return `<span class="${status_data[row?.['purchase_status']]}">${data}</span>`;
+                            return `<span class="${status_data[row?.['purchase_status']]}">${row?.['purchase_status_string']}</span>`;
+                        }
+                    },
+                    {
+                        className: 'text-center w-10',
+                        render: (data, type, row) => {
+                            return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                         }
                     },
                 ],

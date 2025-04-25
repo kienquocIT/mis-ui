@@ -48,61 +48,61 @@ const pageVariables = new APInvoicePageVariables()
  */
 class APInvoicePageFunction {
     static LoadSupplierTable() {
-    pageElements.$table_select_supplier.DataTable().clear().destroy()
-    pageElements.$table_select_supplier.DataTableDefault({
-        useDataServer: true,
-        rowIdx: true,
-        reloadCurrency: true,
-        scrollY: '50vh',
-        scrollX: true,
-        scrollCollapse: true,
-        paging: false,
-        ajax: {
-            url: pageElements.$table_select_supplier.attr('data-url'),
-            type: 'GET',
-            dataSrc: function (resp) {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('supplier_list')) {
-                    return data?.['supplier_list'];
-                }
-                return [];
+        pageElements.$table_select_supplier.DataTable().clear().destroy()
+        pageElements.$table_select_supplier.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            reloadCurrency: true,
+            scrollY: '50vh',
+            scrollX: true,
+            scrollCollapse: true,
+            paging: false,
+            ajax: {
+                url: pageElements.$table_select_supplier.attr('data-url') + '?full_info=true',,
+                type: 'GET',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('supplier_list')) {
+                        return data?.['supplier_list'];
+                    }
+                    return [];
+                },
             },
-        },
-        columns: [
-            {
-                className: 'w-5',
-                render: () => {
-                    return ``;
-                }
-            },
-            {
-                className: ' w-5',
-                render: (data, type, row) => {
-                    return `<div class="form-check">
-                                <input type="radio"
-                                name="supplier-selected-radio"
-                                class="form-check-input"
-                                data-supplier='${JSON.stringify(row)}'/>
-                            </div>`
-                }
-            },
-            {
-                data: 'code',
-                className: ' w-70',
-                render: (data, type, row) => {
-                    return `<span class="badge badge-soft-primary mr-2">${row?.['code']}</span><span>${row?.['name']}</span>`
-                }
-            },
-            {
-                data: 'tax_code',
-                className: 'w-20',
-                render: (data, type, row) => {
-                    return row?.['tax_code']
-                }
-            },
-        ],
-    })
-}
+            columns: [
+                {
+                    className: 'w-5',
+                    render: () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: ' w-5',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                                    <input type="radio"
+                                    name="supplier-selected-radio"
+                                    class="form-check-input"
+                                    data-supplier='${JSON.stringify(row)}'/>
+                                </div>`
+                    }
+                },
+                {
+                    data: 'code',
+                    className: ' w-70',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-soft-primary mr-2">${row?.['code']}</span><span>${row?.['name']}</span>`
+                    }
+                },
+                {
+                    data: 'tax_code',
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        return row?.['tax_code']
+                    }
+                },
+            ],
+        })
+    }
     static LoadPurchaseOrder(data) {
         pageElements.$purchase_order.initSelect2({
             allowClear: true,
@@ -729,6 +729,9 @@ class APInvoiceEventHandler {
                     }
                     else {
                         merged_data_product[productId]['product_quantity'] += entry?.['product_quantity']
+                        merged_data_product[productId]['product_subtotal'] += entry?.['product_subtotal']
+                        merged_data_product[productId]['product_tax_value'] += entry?.['product_tax_value']
+                        merged_data_product[productId]['product_subtotal_final'] += entry?.['product_subtotal_final']
                     }
                 }
             });

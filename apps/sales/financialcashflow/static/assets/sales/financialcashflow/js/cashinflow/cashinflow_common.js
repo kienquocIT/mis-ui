@@ -602,12 +602,12 @@ class CIFHandler {
                     data = data['cash_inflow_detail'];
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    // console.log(data)
+                    console.log(data)
 
                     pageElements.$title.val(data?.['title'])
                     pageElements.$posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     pageElements.$document_date.val(moment(data?.['document_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
-                    CIFPageFunction.LoadCustomer(pageElements.$customer, data?.['customer_data'])
+                    CIFPageFunction.LoadCustomer(data?.['customer_data'])
                     pageElements.$description.val(data?.['description'])
 
                     pageElements.$purchase_advance_value.attr('value', data?.['purchase_advance_value'] ? data?.['purchase_advance_value'] : 0)

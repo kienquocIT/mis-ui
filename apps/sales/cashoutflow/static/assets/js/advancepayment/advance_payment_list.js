@@ -10,7 +10,7 @@ function InitAdvancePaymentTable(data_param={}) {
         scrollCollapse: true,
         fixedColumns: {
             leftColumns: 2,
-            rightColumns: 1
+            rightColumns: window.innerWidth <= 768 ? 0 : 1
         },
         ajax: {
             data: data_param,

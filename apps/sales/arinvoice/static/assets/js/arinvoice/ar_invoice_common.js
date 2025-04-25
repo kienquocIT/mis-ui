@@ -68,7 +68,7 @@ class ARInvoicePageFunction {
             scrollX: true,
             scrollCollapse: true,
             ajax: {
-                url: pageElements.$table_select_customer.attr('data-url'),
+                url: pageElements.$table_select_customer.attr('data-url') + '?full_info=true',
                 type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
@@ -932,6 +932,7 @@ class ARInvoiceEventHandler {
             $('input[name="customer-selected-radio"]').each(async function () {
                 if ($(this).prop('checked')) {
                     selected_obj = $(this).attr('data-customer') ? JSON.parse($(this).attr('data-customer')) : {}
+                    console.log(selected_obj)
                     pageElements.$customer_name.val(selected_obj?.['name']).attr('data-id', selected_obj?.['id']).prop('readonly', true).prop('disabled', true)
                     pageElements.$customer_code.val(selected_obj?.['code'])
                     pageElements.$tax_code.val(selected_obj?.['tax_code'])
@@ -1123,6 +1124,10 @@ class ARInvoiceEventHandler {
                     }
                     else {
                         merged_data_product[productId]['product_quantity'] += entry?.['product_quantity']
+                        merged_data_product[productId]['product_subtotal'] += entry?.['product_subtotal']
+                        merged_data_product[productId]['product_tax_value'] += entry?.['product_tax_value']
+                        merged_data_product[productId]['product_discount_value'] += entry?.['product_discount_value']
+                        merged_data_product[productId]['product_subtotal_final'] += entry?.['product_subtotal_final']
                     }
                 }
             });

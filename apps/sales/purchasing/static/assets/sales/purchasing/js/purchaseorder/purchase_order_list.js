@@ -1,14 +1,20 @@
 
 $(function () {
     $(document).ready(function () {
-
-        let transEle = $('#app-trans-factory');
-
         function loadDbl() {
             let $table = $('#table_purchase_order_list')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 useDataServer: true,
+                rowIdx: true,
+                scrollX: true,
+                scrollY: '70vh',
+                scrollCollapse: true,
+                reloadCurrency: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 2
+                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -20,88 +26,52 @@ $(function () {
                         throw Error('Call data raise errors.')
                     },
                 },
-                pageLength:50,
                 columns: [
                     {
-                        targets: 0,
-                        width: '1%',
-                        render: (data, type, row, meta) => {
-                            return `<span class="table-row-order">${(meta.row + 1)}</span>`
+                        className: 'w-5',
+                        'render': () => {
+                            return ``;
                         }
                     },
                     {
-                        targets: 1,
-                        width: '10%',
+                        className: 'w-5',
                         render: (data, type, row) => {
                             let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        targets: 2,
-                        width: '25%',
+                        className: 'ellipsis-cell-lg w-25',
                         render: (data, type, row) => {
                             const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        targets: 3,
-                        width: '25%',
+                        className: 'ellipsis-cell-lg w-25',
                         render: (data, type, row) => {
-                            let ele = `<p></p>`;
-                            if (Object.keys(row?.['supplier']).length !== 0) {
-                                ele = `<p>${row?.['supplier']?.['name']}</p>`;
-                            }
-                            return ele;
+                            return `<span>${(row?.['supplier'] || {})?.['name'] || ''}</span>`;
                         }
                     },
                     {
-                        targets: 4,
-                        width: '10%',
+                        className: 'w-15',
                         render: (data, type, row) => {
-                            if (row?.['delivered_date']) {
-                                return `<p>${moment(row?.['delivered_date']).format('DD/MM/YYYY')}</p>`;
-                            }
-                            return `<p>--</p>`;
+                            return $x.fn.displayRelativeTime(row?.['delivered_date'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
-                        targets: 5,
-                        width: '10%',
+                        className: 'w-10 text-center',
                         render: (data, type, row) => {
                             return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                         }
                     },
                     {
-                        targets: 6,
-                        width: '10%',
+                        className: 'w-15 text-center',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#gr_status').text())
-                            let hidden = "hidden";
-                            if (row?.['receipt_status'] === 3) {
-                                hidden = "";
-                            }
+                            let hidden = row?.['receipt_status'] === 3 ? '' : 'hidden';
                             return `<span>${sttTxt[row?.['receipt_status']][1]}</span><i class="far fa-check-circle text-success ml-2" ${hidden}></i>`;
                         }
-                    },
-                    {
-                        targets: 7,
-                        className: 'action-center',
-                        width: '5%',
-                        render: (data, type, row) => {
-                            let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            let disabled = '';
-                            if ([2, 3, 4].includes(row?.['system_status'])) {
-                                disabled = 'disabled';
-                            }
-                            return `<div class="dropdown">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
-                                    <div role="menu" class="dropdown-menu">
-                                        <a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit text-primary"></i><span>${transEle.attr('data-edit')}</span></a>
-                                    </div>
-                                </div>`;
-                        },
                     }
                 ],
                 drawCallback: function () {},

@@ -3586,7 +3586,7 @@ class WFRTControl {
             4: "red-light-4",
         }
         if (status || status === 0) {
-            return `<span class="badge w-100 p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
+            return `<span class="badge p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
         }
         return ``;
     }

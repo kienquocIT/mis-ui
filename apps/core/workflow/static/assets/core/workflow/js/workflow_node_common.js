@@ -1106,7 +1106,7 @@ class NodeStoreHandle {
                 }
             }
             if (NodeLoadDataHandle.dataNode.length !== initLength) {
-                FlowJsP.init();
+                FlowJsP.init(true);
             }
         }
         return true;

@@ -116,12 +116,9 @@ class JEHandle {
                     data = data['journal_entry_detail'];
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    if (data?.['system_auto_create'])
-
                     $ori_trans.val(data?.['original_transaction']).trigger('change')
                     $transaction_code.val(data?.['je_transaction_data']?.['code'])
                     $transaction_name.val(data?.['je_transaction_data']?.['title'])
-                    $type.val([$.fn.gettext('Create manually'), $.fn.gettext('Create automatically')][Number(data?.['system_auto_create'])])
                     $je_posting_date.val(moment(data?.['je_posting_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $je_doc_date.val(moment(data?.['je_document_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
 

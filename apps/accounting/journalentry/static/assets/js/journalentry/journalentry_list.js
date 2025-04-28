@@ -10,6 +10,10 @@ $(document).ready(function() {
                 scrollY: '70vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -29,27 +33,22 @@ $(document).ready(function() {
                         }
                     },
                     {
-                        className: 'w-5',
+                        className: 'w-30',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        className: 'w-30',
+                        className: 'w-15',
                         render: (data, type, row) => {
-                            return `<span class="text-muted">${row?.['original_transaction']}</span>`
+                            return `<span>${row?.['original_transaction']}</span>`
                         }
                     },
                     {
-                        className: 'w-30',
+                        className: 'w-15',
                         render: (data, type, row) => {
-                            if (row?.['je_transaction_data']?.['code']) {
-                                return `<span class="badge badge-light">${row?.['je_transaction_data']?.['code']}</span>`
-                            }
-                            else {
-                                return ``
-                            }
+                            return `<span>${(row?.['je_transaction_data'] || {})?.['code'] || ''}</span>`
                         }
                     },
                     {
@@ -59,11 +58,11 @@ $(document).ready(function() {
                         }
                     },
                     {
-                        className: 'w-10',
+                        className: 'text-center w-15',
                         render: (data, type, row) => {
                             let text = [$.fn.gettext('Create manually'), $.fn.gettext('Create automatically')][Number(row?.['system_auto_create'])]
-                            let color = ['primary', 'blue'][Number(row?.['system_auto_create'])]
-                            return `<span class="badge badge-outline badge-soft-${color}">${text}</span>`
+                            let color = ['text-primary', 'text-blue'][Number(row?.['system_auto_create'])]
+                            return `<span class="${color}">${text}</span>`
                         }
                     },
                 ]

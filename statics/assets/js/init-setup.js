@@ -6348,6 +6348,12 @@ class DocumentControl {
                         `<span class="badge p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-status-cr="" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
                     ).removeClass('hidden');
                 }
+                if (detailData?.['system_auto_create']) {
+                    $breadcrumbCode.append(`<span class="badge-status ml-1">
+                                                <span class="badge badge-blue badge-indicator"></span>
+                                                <span class="small text-blue">${$.fn.gettext('Create automatically')}</span>
+                                            </span>`)
+                }
             }
         }
     }

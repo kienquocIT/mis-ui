@@ -790,6 +790,16 @@ class NodeLoadDataHandle {
         // FlowJsP.init();
     };
 
+    // delete
+    static loadDeleteNode(target) {
+        NodeLoadDataHandle.dataNode = NodeLoadDataHandle.dataNode.filter(data => data.order !== target);
+        $('#node_dragbox').empty();
+        $('#flowchart_workflow').empty();
+        FlowJsP.htmlDragRender();
+        FlowJsP.initJSPlumbs();
+        has_edited = true;
+    };
+
 }
 
 // DataTable

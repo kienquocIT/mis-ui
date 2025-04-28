@@ -176,8 +176,7 @@ $(function () {
             if (this.closest('.btn-group')) {
                 if (this.closest('.btn-group').querySelector('.control')) {
                     let target = parseInt(this.closest('.btn-group').querySelector('.control').getAttribute('data-drag'));
-                    NodeLoadDataHandle.dataNode = NodeLoadDataHandle.dataNode.filter(data => data.order !== target);
-                    FlowJsP.init(true);
+                    NodeLoadDataHandle.loadDeleteNode(target);
                 }
             }
         });
@@ -186,8 +185,7 @@ $(function () {
             if (this.closest('.btn-group')) {
                 if (this.closest('.btn-group').querySelector('.clone')) {
                     let target = parseInt(this.closest('.btn-group').querySelector('.clone').getAttribute('data-drag'));
-                    NodeLoadDataHandle.dataNode = NodeLoadDataHandle.dataNode.filter(data => data.order !== target);
-                    FlowJsP.init(true);
+                    NodeLoadDataHandle.loadDeleteNode(target);
                 }
             }
         });

@@ -917,12 +917,12 @@ class JSPlumbsHandle {
         });
     };
 
-    init(isClear = false) {
+    init() {
         // get node list from func node
         this.setNodeList = NodeSubmitHandle.setupDataFlowChart();
         this.setNodeState = this.nodeData;
         let $form = $('#form-create_workflow');
-        if (['get', 'put'].includes($form.attr('data-method').toLowerCase())){
+        if (['get', 'put'].includes($form.attr('data-method').toLowerCase())) {
             // detail and update page
             if (!has_edited) {
                 $('#node_dragbox').empty();
@@ -931,13 +931,6 @@ class JSPlumbsHandle {
                 this.initJSPlumbs();
                 this.renderClones();
                 this.renderAssociation();
-                has_edited = true;
-            }
-            if (isClear === true) {
-                $('#node_dragbox').empty();
-                $('#flowchart_workflow').empty();
-                this.htmlDragRender();
-                this.initJSPlumbs();
                 has_edited = true;
             }
         } else {

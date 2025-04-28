@@ -676,13 +676,17 @@ class JSPlumbsHandle {
     };
 
     renderClones() {
-        let assocList = $('#node-associate').val();
-        if (assocList){
-            assocList = JSON.parse(assocList)
-            let _assoc_object = {}
-            for(let a of assocList){
-                let key = a.node_in.order + '_' + a.node_out.order
-                _assoc_object[key] = {node_in: a.node_in.order, node_out: a.node_out.order, condition: a.condition}
+        let assocEle = $('#node-associate').val();
+        if (assocEle){
+            let assocData = JSON.parse(assocEle);
+            let _assoc_object = {};
+            if (Array.isArray(assocData)) {
+                for (let a of assocData) {
+                    let key = a.node_in.order + '_' + a.node_out.order
+                    _assoc_object[key] = {node_in: a.node_in.order, node_out: a.node_out.order, condition: a.condition}
+                }
+            } else {
+                _assoc_object = assocData;
             }
             this.setAssociateList = _assoc_object
             $('#node-associate').val(JSON.stringify(_assoc_object));
@@ -913,31 +917,37 @@ class JSPlumbsHandle {
         });
     };
 
-    init() {
+    init(isClear = false) {
         // get node list from func node
         this.setNodeList = NodeSubmitHandle.setupDataFlowChart();
         this.setNodeState = this.nodeData;
         let $form = $('#form-create_workflow');
         if (['get', 'put'].includes($form.attr('data-method').toLowerCase())){
             // detail and update page
-            if (!has_edited){
+            if (!has_edited) {
                 $('#node_dragbox').empty();
                 $('#flowchart_workflow').empty();
                 this.htmlDragRender();
                 this.initJSPlumbs();
                 this.renderClones();
                 this.renderAssociation();
-                has_edited = true
+                has_edited = true;
             }
-
-        }else{
-            // create page
-            if (!has_edited){
+            if (isClear === true) {
                 $('#node_dragbox').empty();
                 $('#flowchart_workflow').empty();
                 this.htmlDragRender();
                 this.initJSPlumbs();
-                has_edited = true
+                has_edited = true;
+            }
+        } else {
+            // create page
+            if (!has_edited) {
+                $('#node_dragbox').empty();
+                $('#flowchart_workflow').empty();
+                this.htmlDragRender();
+                this.initJSPlumbs();
+                has_edited = true;
             }
         }
         extendDropSpace();

@@ -1266,29 +1266,39 @@ class NodeFormulaHandle {
     static $btnSaveFormula = $('#btn-save-formula');
 
     static appMapMDUrls = {
+        "hr.employee": {
+            "url": NodeLoadDataHandle.$urlsEle.attr('data-md-employee'),
+            "keyResp": "employee_list",
+            "keyText": "full_name",
+        },
+        "saledata.account": {
+            "url": NodeLoadDataHandle.$urlsEle.attr('data-md-account'),
+            "keyResp": "account_list",
+            "keyText": "name",
+        },
         "saledata.product": {
             "url": NodeLoadDataHandle.$urlsEle.attr('data-md-product'),
-            "keyResp": "product_sale_list"
+            "keyResp": "product_sale_list",
         },
         "saledata.producttype": {
             "url": NodeLoadDataHandle.$urlsEle.attr('data-md-product-type'),
-            "keyResp": "product_type_list"
+            "keyResp": "product_type_list",
         },
         "saledata.productcategory": {
             "url": NodeLoadDataHandle.$urlsEle.attr('data-md-product-category'),
-            "keyResp": "product_category_list"
+            "keyResp": "product_category_list",
         },
         "saledata.expense": {
             "url": NodeLoadDataHandle.$urlsEle.attr('data-md-expense'),
-            "keyResp": "expense_list"
+            "keyResp": "expense_list",
         },
         "saledata.expenseitem": {
             "url": NodeLoadDataHandle.$urlsEle.attr('data-md-expense-item'),
-            "keyResp": "expense_item_list"
+            "keyResp": "expense_item_list",
         },
         "base.city": {
             "url": NodeLoadDataHandle.$urlsEle.attr('data-md-city'),
-            "keyResp": "cities"
+            "keyResp": "cities",
         },
     }
 
@@ -1419,12 +1429,16 @@ class NodeFormulaHandle {
                         if (data?.['type'] === 5) {
                             let url = "";
                             let keyResp = "";
+                            let keyText = "";
                             if (NodeFormulaHandle.appMapMDUrls?.[data?.['content_type']]) {
                                 if (NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['url']) {
                                     url = NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['url'];
                                 }
                                 if (NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['keyResp']) {
                                     keyResp = NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['keyResp'];
+                                }
+                                if (NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['keyText']) {
+                                    keyText = NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['keyText'];
                                 }
                             }
                             let areaBoxMDEle = NodeFormulaHandle.$propertyRemark[0].querySelector('.area-property-md');
@@ -1433,6 +1447,9 @@ class NodeFormulaHandle {
                                 $(boxMDEle).attr('data-url', url);
                                 $(boxMDEle).attr('data-method', 'GET');
                                 $(boxMDEle).attr('data-keyResp', keyResp);
+                                if (keyText) {
+                                    $(boxMDEle).attr('data-keyText', keyText);
+                                }
                                 $(boxMDEle).attr('data-show', dataStr);
                                 $(boxMDEle).attr('disabled', 'true');
                                 loadInitS2($(boxMDEle), [], {}, NodeFormulaHandle.$propertyRemark, true);

@@ -16,20 +16,21 @@ $(document).ready(function(){
             },
             {
                 data: 'title',
-                render: (row) => {
-                    return row
+                render: (row, index, data) => {
+                    const url = $tb.attr('data-url-detail').format_url_with_uuid(data.id)
+                    return row ? `<a href="${url}" target="blank">${row}</a>` : '--'
                 }
             },
             {
-                data: 'numbering',
+                data: 'id',
                 render: (row) => {
-                    return row
+                    return '--'
                 }
             },
             {
                 data: 'folder',
                 render: (row) => {
-                    return row
+                    return 'title' in row ? row?.title : '--'
                 }
             },
             {
@@ -46,7 +47,7 @@ $(document).ready(function(){
             $('.actions-btn a', row).off().on('click', function (e) {
                 e.stopPropagation();
                 let crf = $('[name="csrfmiddlewaretoken"]').val()
-                let url = $tb.attr('data-url-detail').format_url_with_uuid(data.id)
+                let url = $('#url-factory').attr('data-delete').format_url_with_uuid(data.id)
                 DataTableAction.delete(url, crf, row)
             })
         },

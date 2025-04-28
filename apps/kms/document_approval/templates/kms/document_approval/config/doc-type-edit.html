@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block title %}
-    {% trans 'Document Type create' %}
+    {% trans 'Document Type edit' %}
 {% endblock %}
 {% block cssHeader %}
 {% endblock %}
@@ -18,8 +18,9 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form class="form_main" id="form_doc_type" data-method="POST" data-url="{% url 'DocumentTypeConfigCreateAPI' %}"
+    <form class="form_main" id="form_doc_type" data-method="PUT" data-url="{% url 'DocumentTypeConfigDetailAPI' data.pk %}"
           data-url-redirect="{% url 'DocumentTypeConfigList' %}">
+        <input type="hidden" id="id" name="id">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-12 col-lg-6 form-group">
@@ -58,4 +59,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/kms/doc-type/common.js' %}"></script>
+    <script src="{% static 'assets/js/kms/doc-type/edit.js' %}"></script>
 {% endblock %}

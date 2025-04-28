@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block title %}
-    {% trans 'Document Type list' %}
+    {% trans 'Content group list' %}
 {% endblock %}
 {% block cssHeader %}
 {% endblock %}
 
 {% block pageAction %}
-    <a href="{% url 'DocumentTypeConfigCreate' %}">
+    <a href="{% url 'ContentGroupCreate' %}">
         <button class="btn btn-outline-primary">
             <span>
                 <span>{% trans 'Add' %}</span>
@@ -21,14 +21,12 @@
 
 {% block pageContent %}
     <div class="row">
-        <table class="table nowrap w-100" data-method="get" data-url="{% url 'DocumentTypeConfigListAPI' %}"
-        data-url-detail="{% url 'DocumentTypeConfigDetail' 1%}" id="tbl_document_type">
+        <table class="table nowrap w-100" data-method="get" data-url="{% url 'ContentGroupListAPI' %}"
+        data-url-detail="{% url 'ContentGroupDetail' 1%}" id="tbl_content_group">
             <thead>
             <tr>
                 <td>{% trans 'Code' %}</td>
                 <td>{% trans 'Name' %}</td>
-                <td>{% trans 'Numbering' %}</td>
-                <td>{% trans 'Folder' %}</td>
                 <td></td>
             </tr>
             </thead>
@@ -37,9 +35,9 @@
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"
-           data-delete="{% url 'DocumentTypeConfigDetailAPI' pk=1%}"
+           data-delete="{% url 'ContentGroupDetailAPI' pk=1 %}"
     >
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/js/kms/doc-type/list.js' %}"></script>
+    <script src="{% static 'assets/js/kms/content-group/list.js' %}"></script>
 {% endblock %}

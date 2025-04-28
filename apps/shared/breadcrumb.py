@@ -490,6 +490,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # KMS
     KMS_DOC_TYPE_LIST = BreadcrumbChildren(_('Document type'), 'DocumentTypeConfigList')
+    KMS_CONTENT_GROUP_LIST = BreadcrumbChildren(_('Content group'), 'ContentGroupList')
 
 
 class BreadcrumbView:
@@ -1327,3 +1328,11 @@ class BreadcrumbView:
     KMS_DOC_TYPE_CREATE_PAGE = KMS_DOC_TYPE_LIST + [BreadcrumbItem.BASTION_CREATE]
     KMS_DOC_TYPE_DETAIL_PAGE = KMS_DOC_TYPE_LIST + [BreadcrumbItem.BASTION_DETAIL]
     KMS_DOC_TYPE_UPDATE_PAGE = KMS_DOC_TYPE_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    KMS_CONTENT_GROUP_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.KMS_CONTENT_GROUP_LIST
+    ]
+    KMS_CONTENT_GROUP_CREATE_PAGE = KMS_CONTENT_GROUP_LIST + [BreadcrumbItem.BASTION_CREATE]
+    KMS_CONTENT_GROUP_DETAIL_PAGE = KMS_CONTENT_GROUP_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    KMS_CONTENT_GROUP_UPDATE_PAGE = KMS_CONTENT_GROUP_LIST + [BreadcrumbItem.BASTION_UPDATE]

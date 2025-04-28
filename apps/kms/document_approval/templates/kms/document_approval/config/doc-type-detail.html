@@ -1,34 +1,35 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block title %}
-    {% trans 'Document Type create' %}
+    {% trans 'Document Type detail' %}
 {% endblock %}
 {% block cssHeader %}
 {% endblock %}
 
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form_doc_type">
+    <a href="{% url 'DocumentTypeConfigEdit' data.pk %}">
+        <button class="btn btn-outline-primary">
         <span>
-            <span>{% trans 'Save' %}</span>
+            <span>{% trans 'Edit' %}</span>
             <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
+                <i class="fa-regular fa-pen-to-square"></i>
             </span>
         </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 
 {% block pageContent %}
-    <form class="form_main" id="form_doc_type" data-method="POST" data-url="{% url 'DocumentTypeConfigCreateAPI' %}"
-          data-url-redirect="{% url 'DocumentTypeConfigList' %}">
+    <form class="form_main" id="form_doc_type" data-method="POST" data-url="{% url 'DocumentTypeConfigDetailAPI' data.pk%}">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-12 col-lg-6 form-group">
                 <label class="form-label required" for="txt_code">{% trans 'Code' %}</label>
-                <input type="text" class="form-control" name="code" id="txt_code" required>
+                <input type="text" class="form-control" name="code" id="txt_code" required readonly>
             </div>
             <div class="col-md-12 col-lg-6 form-group">
                 <label class="form-label required" for="txt_title">{% trans 'Title' %}</label>
-                <input type="text" class="form-control" name="title" id="txt_title" required>
+                <input readonly type="text" class="form-control" name="title" id="txt_title" required>
             </div>
             <div class="col-md-12 col-lg-6 form-group">
                 <label for="select-box-numbering" class="form-label">{% trans 'Numbering' %}</label>
@@ -36,7 +37,7 @@
                         data-url=""
                         data-method="GET"
                         data-keyResp=""
-                        name="numbering"
+                        name="numbering" disabled
                 >
                 </select>
             </div>
@@ -46,16 +47,13 @@
                         data-url="{% url 'FolderListAPI' %}"
                         data-method="GET"
                         data-keyResp="folder_list"
-                        name="folder"
+                        name="folder" disabled
                 >
                 </select>
             </div>
         </div>
     </form>
 {% endblock %}
-{% block dataHiddenGroup %}
-    <input type="text" id="url-factory">
-{% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/js/kms/doc-type/common.js' %}"></script>
+    <script src="{% static 'assets/js/kms/doc-type/detail.js' %}"></script>
 {% endblock %}

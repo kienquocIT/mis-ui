@@ -189,6 +189,11 @@ class MenusCoreConfigurations:
                 name='KMS Document type', code='menu_document_type_config',
                 view_name='DocumentTypeConfigList',
                 icon='<i class="fa-regular fa-file"></i>'
+            ),
+            MenuCommon(
+                name='KMS Content group', code='menu_content_group_config',
+                view_name='ContentGroupList',
+                icon='<i class="fa-regular fa-copy"></i>'
             )
         ]
     )

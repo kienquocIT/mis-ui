@@ -58,7 +58,7 @@ class APInvoicePageFunction {
             scrollCollapse: true,
             paging: false,
             ajax: {
-                url: pageElements.$table_select_supplier.attr('data-url') + '?full_info=true',,
+                url: pageElements.$table_select_supplier.attr('data-url') + '?full_info=true',
                 type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);

@@ -543,17 +543,6 @@ class JSPlumbsHandle {
         if (!element) {
             return false;
         }
-
-
-        // const endpoints = JSPlumbsHandle.instance.getEndpoints(element) || [];
-        // endpoints.forEach(endpoint => {
-        //     JSPlumbsHandle.instance.deleteEndpoint(endpoint, true, true);
-        // });
-        //
-        // JSPlumbsHandle.instance.unmakeSource(element);
-        // JSPlumbsHandle.instance.unmakeTarget(element);
-
-
         if (sys_code !== 'completed') {
             JSPlumbsHandle.instance.makeSource(element, {
                 filter: ".drag-handle",
@@ -817,6 +806,7 @@ class JSPlumbsHandle {
         //     Container: "flowchart_workflow",
         // });
         let that_cls = this; // save this - using for callback instance (because inside callback this was overridden)
+        JSPlumbsHandle.instance.deleteEveryEndpoint();
 
         JSPlumbsHandle.instance.bind("ready", function () {
             // declare style connection type

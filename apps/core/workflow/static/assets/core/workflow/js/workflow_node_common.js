@@ -152,29 +152,29 @@ class NodeLoadDataHandle {
     };
 
     static loadInit() {
-        NodeLoadDataHandle.loadInitEmpData();
+        // NodeLoadDataHandle.loadInitEmpData();
         NodeFormulaHandle.loadPropertyMD();
         NodeFormulaHandle.loadFunctionMD();
     };
 
-    static loadInitEmpData() {
-        $.fn.callAjax2({
-                'url': NodeLoadDataHandle.$initEmp.attr('data-url'),
-                'method': "GET",
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
-                        NodeLoadDataHandle.$initEmp.val(JSON.stringify(data?.['employee_list']));
-                    }
-                }
-            }
-        )
-        return true;
-    };
+    // static loadInitEmpData() {
+    //     $.fn.callAjax2({
+    //             'url': NodeLoadDataHandle.$initEmp.attr('data-url'),
+    //             'method': "GET",
+    //             'isDropdown': true,
+    //         }
+    //     ).then(
+    //         (resp) => {
+    //             let data = $.fn.switcherResp(resp);
+    //             if (data) {
+    //                 if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
+    //                     NodeLoadDataHandle.$initEmp.val(JSON.stringify(data?.['employee_list']));
+    //                 }
+    //             }
+    //         }
+    //     )
+    //     return true;
+    // };
 
     static loadModalNode() {
         NodeLoadDataHandle.loadDDAction();
@@ -184,7 +184,7 @@ class NodeLoadDataHandle {
 
         NodeDataTableHandle.dataTableCollabOutFormEmployee();
         NodeDataTableHandle.$tableOFEmp.DataTable().clear().draw();
-        NodeDataTableHandle.$tableOFEmp.DataTable().rows.add(JSON.parse(NodeLoadDataHandle.$initEmp.val())).draw();
+        NodeDataTableHandle.$tableOFEmp.DataTable().rows.add([]).draw();
         NodeDataTableHandle.dataTableCollabInWFEmployee();
         NodeDataTableHandle.dataTableCollabInWFExitCon();
         let nodeActionRaw = $('#wf_action').text();
@@ -401,7 +401,7 @@ class NodeLoadDataHandle {
         let $canvas = $('#inWFCanvas');
         NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFOpt, NodeLoadDataHandle.dataInWFOption, {}, $canvas);
         NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFPos, NodeLoadDataHandle.dataInWFPosition, {}, $canvas);
-        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFEmp, JSON.parse(NodeLoadDataHandle.$initEmp.val()), {}, $canvas);
+        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFEmp, [], {}, $canvas);
         return true;
     };
 
@@ -807,16 +807,33 @@ class NodeDataTableHandle {
 
     static dataTableCollabOutFormEmployee(data) {
         NodeDataTableHandle.$tableOFEmp.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            pageLength: 8,
+            ajax: {
+                url: NodeLoadDataHandle.$initEmp.attr('data-url'),
+                type: "GET",
+                data: {
+                    "ordering": 'code'
+                },
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('employee_list')) return data.employee_list;
+                    }
+                    return [];
+                }
+            },
             columns: [
                 {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         let checked = '';
-                        if (row?.['is_checked']) {
-                            checked = 'checked';
+                        for (let eleShow of NodeLoadDataHandle.$modalNode[0].querySelectorAll('.out-form-emp-show')) {
+                            if (eleShow.getAttribute('data-id')) {
+                                if (eleShow.getAttribute('data-id') === row?.['id']) {
+                                    checked = "checked";
+                                    break;
+                                }
+                            }
                         }
                         return `<div class="form-check form-check-lg">
                                         <input

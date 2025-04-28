@@ -537,8 +537,12 @@ class JSPlumbsHandle {
     };
 
     static makeSourceTarget(is_id, sys_code) {
+        const element = document.getElementById(is_id);
+        if (!element) {
+            return false;
+        }
         if (sys_code !== 'completed') {
-            JSPlumbsHandle.instance.makeSource(document.getElementById(is_id), {
+            JSPlumbsHandle.instance.makeSource(element, {
                 filter: ".drag-handle",
                 endpoint: ["Dot", {radius: 4}],
                 // anchor: ["Bottom", "BottomRight", "BottomLeft"],
@@ -567,7 +571,7 @@ class JSPlumbsHandle {
             });
         }
         if (sys_code !== 'initial') {
-            JSPlumbsHandle.instance.makeTarget(document.getElementById(is_id), {
+            JSPlumbsHandle.instance.makeTarget(element, {
                 filter: ".drop-target",
                 endpoint: ["Rectangle", {width: 9, height: 9}],
                 // anchor: ["Top", "Right", "TopRight", "TopLeft", "Left"],

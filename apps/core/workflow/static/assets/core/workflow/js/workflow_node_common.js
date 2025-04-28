@@ -152,29 +152,9 @@ class NodeLoadDataHandle {
     };
 
     static loadInit() {
-        // NodeLoadDataHandle.loadInitEmpData();
         NodeFormulaHandle.loadPropertyMD();
         NodeFormulaHandle.loadFunctionMD();
     };
-
-    // static loadInitEmpData() {
-    //     $.fn.callAjax2({
-    //             'url': NodeLoadDataHandle.$initEmp.attr('data-url'),
-    //             'method': "GET",
-    //             'isDropdown': true,
-    //         }
-    //     ).then(
-    //         (resp) => {
-    //             let data = $.fn.switcherResp(resp);
-    //             if (data) {
-    //                 if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
-    //                     NodeLoadDataHandle.$initEmp.val(JSON.stringify(data?.['employee_list']));
-    //                 }
-    //             }
-    //         }
-    //     )
-    //     return true;
-    // };
 
     static loadModalNode() {
         NodeLoadDataHandle.loadDDAction();
@@ -182,9 +162,6 @@ class NodeLoadDataHandle {
         NodeLoadDataHandle.loadZone();
         NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxSource, NodeLoadDataHandle.dataSource);
 
-        NodeDataTableHandle.dataTableCollabOutFormEmployee();
-        NodeDataTableHandle.$tableOFEmp.DataTable().clear().draw();
-        NodeDataTableHandle.$tableOFEmp.DataTable().rows.add([]).draw();
         NodeDataTableHandle.dataTableCollabInWFEmployee();
         NodeDataTableHandle.dataTableCollabInWFExitCon();
         let nodeActionRaw = $('#wf_action').text();
@@ -303,23 +280,8 @@ class NodeLoadDataHandle {
                         if (data?.['option_collaborator'] === 1) {
                             if (data?.['collab_out_form']?.['employee_list']) {
                                 if (data?.['collab_out_form']?.['employee_list'].length > 0) {
-                                    NodeDataTableHandle.$tableOFEmp.DataTable().rows().every(function () {
-                                        let row = this.node();
-                                        let checkEle = row.querySelector('.table-row-checkbox');
-                                        if (checkEle) {
-                                            checkEle.checked = false;
-                                            if (checkEle.getAttribute('data-row')) {
-                                                let dataRow = JSON.parse(checkEle.getAttribute('data-row'));
-                                                if (data?.['collab_out_form']?.['employee_list'].includes(dataRow?.['id'])) {
-                                                    checkEle.checked = true;
-                                                }
-                                            }
-                                        }
-                                    });
-                                    let btnSaveOFEmpEle = NodeLoadDataHandle.$modalNode[0].querySelector('.btn-save-out-form-employee');
-                                    if (btnSaveOFEmpEle) {
-                                        $(btnSaveOFEmpEle).trigger('click');
-                                    }
+                                    NodeDataTableHandle.$tableOFEmp.DataTable().destroy();
+                                    NodeDataTableHandle.dataTableCollabOutFormEmployee(data?.['collab_out_form']?.['employee_list']);
                                 }
                             }
                             if (data?.['collab_out_form']?.['is_edit_all_zone']) {
@@ -805,7 +767,7 @@ class NodeDataTableHandle {
     static $tableInWF = $('#table-in-workflow');
     static $tableInWFExitCon = $('#table-in-workflow-exit-condition');
 
-    static dataTableCollabOutFormEmployee(data) {
+    static dataTableCollabOutFormEmployee(dataStore) {
         NodeDataTableHandle.$tableOFEmp.not('.dataTable').DataTableDefault({
             ajax: {
                 url: NodeLoadDataHandle.$initEmp.attr('data-url'),
@@ -832,6 +794,13 @@ class NodeDataTableHandle {
                                 if (eleShow.getAttribute('data-id') === row?.['id']) {
                                     checked = "checked";
                                     break;
+                                }
+                            }
+                        }
+                        if (dataStore) {
+                            if (Array.isArray(dataStore)) {
+                                if (dataStore.includes(row?.['id'])) {
+                                    checked = "checked";
                                 }
                             }
                         }
@@ -880,6 +849,7 @@ class NodeDataTableHandle {
             ],
             drawCallback: function () {
                 NodeLoadDataHandle.loadEventCheckbox(NodeDataTableHandle.$tableOFEmp);
+                NodeLoadDataHandle.loadOFEmpShow();
             },
         });
     };

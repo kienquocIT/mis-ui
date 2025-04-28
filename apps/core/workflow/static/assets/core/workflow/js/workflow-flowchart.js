@@ -471,6 +471,7 @@ class JSPlumbsHandle {
         let color = 'text-white';
         let clsModal = "modal";
         let disabled = "";
+        let hidden = "";
         let endPointsHTML = `<div class="drag-handle jsplumb-handle"></div>
                             <div class="drop-target jsplumb-handle"></div>`;
         if (ele.classList.contains('control-system')) {
@@ -480,6 +481,7 @@ class JSPlumbsHandle {
         }
         if ($(ele).attr("data-code") === "initial") {
             endPointsHTML = `<div class="drag-handle jsplumb-handle"></div>`;
+            hidden = "hidden";
         }
         if ($(ele).attr("data-code") === "approved") {
             disabled = "disabled";
@@ -496,7 +498,7 @@ class JSPlumbsHandle {
                     <div class="dropdown-menu dropdown-bordered w-160p">
                         <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
+                        <a class="dropdown-item del-node ${hidden}"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
                     </div>
                 </div>`;
     };
@@ -541,6 +543,17 @@ class JSPlumbsHandle {
         if (!element) {
             return false;
         }
+
+
+        // const endpoints = JSPlumbsHandle.instance.getEndpoints(element) || [];
+        // endpoints.forEach(endpoint => {
+        //     JSPlumbsHandle.instance.deleteEndpoint(endpoint, true, true);
+        // });
+        //
+        // JSPlumbsHandle.instance.unmakeSource(element);
+        // JSPlumbsHandle.instance.unmakeTarget(element);
+
+
         if (sys_code !== 'completed') {
             JSPlumbsHandle.instance.makeSource(element, {
                 filter: ".drag-handle",
@@ -654,10 +667,14 @@ class JSPlumbsHandle {
                 let color = 'text-white';
                 let clsModal = "modal";
                 let disabled = "";
+                let hidden = "";
                 if (item?.['is_system'] === true) {
                     clsSys = 'control-system';
                     bg = 'bg-white';
                     color = '';
+                    if (["initial"].includes(item?.['code'])) {
+                        hidden = "hidden";
+                    }
                     if (["approved", "completed"].includes(item?.['code'])) {
                         clsModal = "";
                         disabled = "disabled";
@@ -670,7 +687,7 @@ class JSPlumbsHandle {
                                         <div class="dropdown-menu dropdown-bordered w-160p">
                                             <a class="dropdown-item config-node" data-bs-toggle="${clsModal}" data-bs-target="#nodeModal"><i class="dropdown-icon fas fa-cog"></i><span>${JSPlumbsHandle.$trans.attr('data-config')}</span></a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item del-node"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
+                                            <a class="dropdown-item del-node ${hidden}"><i class="dropdown-icon fas fa-trash-alt"></i><span>${JSPlumbsHandle.$trans.attr('data-delete')}</span></a>
                                         </div>
                                     </div>`;
             }
@@ -921,31 +938,23 @@ class JSPlumbsHandle {
         });
     };
 
-    init() {
+    init(isClear = false) {
         // get node list from func node
         this.setNodeList = NodeSubmitHandle.setupDataFlowChart();
         this.setNodeState = this.nodeData;
         let $form = $('#form-create_workflow');
-        if (['get', 'put'].includes($form.attr('data-method').toLowerCase())) {
+
+        $('#node_dragbox').empty();
+        $('#flowchart_workflow').empty();
+        this.htmlDragRender();
+        this.initJSPlumbs();
+        if (['get', 'put'].includes($form.attr('data-method').toLowerCase()) && isClear === false) {
             // detail and update page
-            if (!has_edited) {
-                $('#node_dragbox').empty();
-                $('#flowchart_workflow').empty();
-                this.htmlDragRender();
-                this.initJSPlumbs();
-                this.renderClones();
-                this.renderAssociation();
-                has_edited = true;
-            }
-        } else {
-            // create page
-            if (!has_edited) {
-                $('#node_dragbox').empty();
-                $('#flowchart_workflow').empty();
-                this.htmlDragRender();
-                this.initJSPlumbs();
-                has_edited = true;
-            }
+            this.renderClones();
+            this.renderAssociation();
+        }
+        if (!has_edited) {
+            has_edited = true;
         }
         extendDropSpace();
     }

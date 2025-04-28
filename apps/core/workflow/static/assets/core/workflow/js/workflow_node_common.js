@@ -793,15 +793,8 @@ class NodeLoadDataHandle {
     // delete
     static loadDeleteNode(target) {
         NodeLoadDataHandle.dataNode = NodeLoadDataHandle.dataNode.filter(data => data.order !== target);
-
-        FlowJsP.setNodeList = NodeSubmitHandle.setupDataFlowChart();
-        FlowJsP.setNodeState = FlowJsP.nodeData;
-        $('#node_dragbox').empty();
-        $('#flowchart_workflow').empty();
+        FlowJsP.init(true);
         $('#node-associate').val("");
-        FlowJsP.htmlDragRender();
-        FlowJsP.initJSPlumbs();
-        has_edited = true;
     };
 
 }

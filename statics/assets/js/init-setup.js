@@ -5180,6 +5180,17 @@ class DTBControl {
         return result;
     }
 
+    static addCommonAction(urls, data) {
+        let link = urls?.['data-edit'].format_url_with_uuid(data?.['id']);
+        return `<div class="dropdown">
+                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                    <div role="menu" class="dropdown-menu">
+                        <a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit"></i><span>${$.fn.transEle.attr('data-edit')}</span></a>
+                        <a class="dropdown-item btn-delete" href="#" data-id="${data?.['id']}"><i class="dropdown-icon far fa-trash-alt"></i><span>${$.fn.transEle.attr('data-delete')}</span></a>
+                    </div>
+                </div>`;
+    }
+
     get reloadCurrency() {
         let reloadCurrency = this.opts?.['reloadCurrency'];
         return $.fn.isBoolean(reloadCurrency) ? reloadCurrency : false;

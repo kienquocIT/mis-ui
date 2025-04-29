@@ -1,6 +1,7 @@
 /*Blog Init*/
 $(function () {
     let tb = $('#datable_group_list');
+    let $urlEle = $('#app-url-factory');
     tb.DataTableDefault({
         useDataServer: true,
         ajax: {
@@ -67,38 +68,39 @@ $(function () {
                         return ""
                     }
                 }
-            },
-            // {
-                // 'className': 'action-center',
-                // 'render': (data, type, row) => {
-                    // let urlDetail = "/hr/group/" + row.id
-                    // let urlList = "/hr/group"
-                    // let urlUpdate = "/hr/group/update/" + row.id
-                    // let bt2 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit" href="${urlUpdate}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span></a>`;
-                    // let bt3 = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover del-button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Delete" href="" id="btn-delete-group-data" data-url="${urlDetail}" data-method="DELETE" data-url-redirect="${urlList}"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`;
-                    // return ``;
-                // }
-            // },
+            }, {
+                className: 'action-center',
+                render: (data, type, row) => {
+                    return DTBControl.addCommonAction({"data-edit": $urlEle.attr('data-edit')}, row);
+                },
+            }
         ],
     });
 
-    $(document).on('click', '#btn-delete-group-data', function (e) {
-        let url = $(this).attr('data-url');
-        let urlMethod = $(this).attr('data-method');
-        let urlRedirect = $(this).attr('data-url-redirect');
-        let csr = $("input[name=csrfmiddlewaretoken]").val();
-        $.fn.callAjax(url, urlMethod, {}, csr)
-            .then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        $.fn.redirectUrl(urlRedirect, 1000);
-                    }
-                },
-                (errs) => {
-                    console.log(errs)
+    tb.on('click', '.btn-delete', function (e) {
+        WindowControl.showLoading();
+        $.fn.callAjax2(
+            {
+                'url': $urlEle.attr('data-detail-api').format_url_with_uuid($(this).attr('data-id')),
+                'method': 'DELETE',
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                    $.fn.notifyB({description: data.message}, 'success');
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 2000);
                 }
-            )
+            }, (err) => {
+                setTimeout(() => {
+                    WindowControl.hideLoading();
+                }, 1000)
+                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+            }
+        )
     });
+
 });
 

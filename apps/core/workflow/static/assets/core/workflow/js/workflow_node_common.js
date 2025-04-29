@@ -152,6 +152,7 @@ class NodeLoadDataHandle {
     };
 
     static loadInit() {
+        NodeDataTableHandle.dataTableCollabOutFormEmployee();
         NodeFormulaHandle.loadPropertyMD();
         NodeFormulaHandle.loadFunctionMD();
     };

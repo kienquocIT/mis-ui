@@ -152,28 +152,9 @@ class NodeLoadDataHandle {
     };
 
     static loadInit() {
-        NodeLoadDataHandle.loadInitEmpData();
+        NodeDataTableHandle.dataTableCollabOutFormEmployee();
         NodeFormulaHandle.loadPropertyMD();
         NodeFormulaHandle.loadFunctionMD();
-    };
-
-    static loadInitEmpData() {
-        $.fn.callAjax2({
-                'url': NodeLoadDataHandle.$initEmp.attr('data-url'),
-                'method': "GET",
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
-                        NodeLoadDataHandle.$initEmp.val(JSON.stringify(data?.['employee_list']));
-                    }
-                }
-            }
-        )
-        return true;
     };
 
     static loadModalNode() {
@@ -182,9 +163,6 @@ class NodeLoadDataHandle {
         NodeLoadDataHandle.loadZone();
         NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxSource, NodeLoadDataHandle.dataSource);
 
-        NodeDataTableHandle.dataTableCollabOutFormEmployee();
-        NodeDataTableHandle.$tableOFEmp.DataTable().clear().draw();
-        NodeDataTableHandle.$tableOFEmp.DataTable().rows.add(JSON.parse(NodeLoadDataHandle.$initEmp.val())).draw();
         NodeDataTableHandle.dataTableCollabInWFEmployee();
         NodeDataTableHandle.dataTableCollabInWFExitCon();
         let nodeActionRaw = $('#wf_action').text();
@@ -303,23 +281,8 @@ class NodeLoadDataHandle {
                         if (data?.['option_collaborator'] === 1) {
                             if (data?.['collab_out_form']?.['employee_list']) {
                                 if (data?.['collab_out_form']?.['employee_list'].length > 0) {
-                                    NodeDataTableHandle.$tableOFEmp.DataTable().rows().every(function () {
-                                        let row = this.node();
-                                        let checkEle = row.querySelector('.table-row-checkbox');
-                                        if (checkEle) {
-                                            checkEle.checked = false;
-                                            if (checkEle.getAttribute('data-row')) {
-                                                let dataRow = JSON.parse(checkEle.getAttribute('data-row'));
-                                                if (data?.['collab_out_form']?.['employee_list'].includes(dataRow?.['id'])) {
-                                                    checkEle.checked = true;
-                                                }
-                                            }
-                                        }
-                                    });
-                                    let btnSaveOFEmpEle = NodeLoadDataHandle.$modalNode[0].querySelector('.btn-save-out-form-employee');
-                                    if (btnSaveOFEmpEle) {
-                                        $(btnSaveOFEmpEle).trigger('click');
-                                    }
+                                    NodeDataTableHandle.$tableOFEmp.DataTable().destroy();
+                                    NodeDataTableHandle.dataTableCollabOutFormEmployee(data?.['collab_out_form']?.['employee_list']);
                                 }
                             }
                             if (data?.['collab_out_form']?.['is_edit_all_zone']) {
@@ -401,7 +364,7 @@ class NodeLoadDataHandle {
         let $canvas = $('#inWFCanvas');
         NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFOpt, NodeLoadDataHandle.dataInWFOption, {}, $canvas);
         NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFPos, NodeLoadDataHandle.dataInWFPosition, {}, $canvas);
-        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFEmp, JSON.parse(NodeLoadDataHandle.$initEmp.val()), {}, $canvas);
+        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFEmp, [], {}, $canvas);
         return true;
     };
 
@@ -790,6 +753,13 @@ class NodeLoadDataHandle {
         // FlowJsP.init();
     };
 
+    // delete
+    static loadDeleteNode(target) {
+        NodeLoadDataHandle.dataNode = NodeLoadDataHandle.dataNode.filter(data => data.order !== target);
+        FlowJsP.init(true);
+        $('#node-associate').val("");
+    };
+
 }
 
 // DataTable
@@ -798,18 +768,42 @@ class NodeDataTableHandle {
     static $tableInWF = $('#table-in-workflow');
     static $tableInWFExitCon = $('#table-in-workflow-exit-condition');
 
-    static dataTableCollabOutFormEmployee(data) {
+    static dataTableCollabOutFormEmployee(dataStore) {
         NodeDataTableHandle.$tableOFEmp.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            pageLength: 8,
+            ajax: {
+                url: NodeLoadDataHandle.$initEmp.attr('data-url'),
+                type: "GET",
+                data: {
+                    "ordering": 'code'
+                },
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('employee_list')) return data.employee_list;
+                    }
+                    return [];
+                }
+            },
             columns: [
                 {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         let checked = '';
-                        if (row?.['is_checked']) {
-                            checked = 'checked';
+                        for (let eleShow of NodeLoadDataHandle.$modalNode[0].querySelectorAll('.out-form-emp-show')) {
+                            if (eleShow.getAttribute('data-id')) {
+                                if (eleShow.getAttribute('data-id') === row?.['id']) {
+                                    checked = "checked";
+                                    break;
+                                }
+                            }
+                        }
+                        if (dataStore) {
+                            if (Array.isArray(dataStore)) {
+                                if (dataStore.includes(row?.['id'])) {
+                                    checked = "checked";
+                                }
+                            }
                         }
                         return `<div class="form-check form-check-lg">
                                         <input
@@ -856,6 +850,7 @@ class NodeDataTableHandle {
             ],
             drawCallback: function () {
                 NodeLoadDataHandle.loadEventCheckbox(NodeDataTableHandle.$tableOFEmp);
+                NodeLoadDataHandle.loadOFEmpShow();
             },
         });
     };
@@ -1099,7 +1094,7 @@ class NodeStoreHandle {
                 }
             }
             if (NodeLoadDataHandle.dataNode.length !== initLength) {
-                FlowJsP.init();
+                FlowJsP.init(true);
             }
         }
         return true;
@@ -1266,29 +1261,39 @@ class NodeFormulaHandle {
     static $btnSaveFormula = $('#btn-save-formula');
 
     static appMapMDUrls = {
+        "hr.employee": {
+            "url": NodeLoadDataHandle.$urlsEle.attr('data-md-employee'),
+            "keyResp": "employee_list",
+            "keyText": "full_name",
+        },
+        "saledata.account": {
+            "url": NodeLoadDataHandle.$urlsEle.attr('data-md-account'),
+            "keyResp": "account_list",
+            "keyText": "name",
+        },
         "saledata.product": {
             "url": NodeLoadDataHandle.$urlsEle.attr('data-md-product'),
-            "keyResp": "product_sale_list"
+            "keyResp": "product_sale_list",
         },
         "saledata.producttype": {
             "url": NodeLoadDataHandle.$urlsEle.attr('data-md-product-type'),
-            "keyResp": "product_type_list"
+            "keyResp": "product_type_list",
         },
         "saledata.productcategory": {
             "url": NodeLoadDataHandle.$urlsEle.attr('data-md-product-category'),
-            "keyResp": "product_category_list"
+            "keyResp": "product_category_list",
         },
         "saledata.expense": {
             "url": NodeLoadDataHandle.$urlsEle.attr('data-md-expense'),
-            "keyResp": "expense_list"
+            "keyResp": "expense_list",
         },
         "saledata.expenseitem": {
             "url": NodeLoadDataHandle.$urlsEle.attr('data-md-expense-item'),
-            "keyResp": "expense_item_list"
+            "keyResp": "expense_item_list",
         },
         "base.city": {
             "url": NodeLoadDataHandle.$urlsEle.attr('data-md-city'),
-            "keyResp": "cities"
+            "keyResp": "cities",
         },
     }
 
@@ -1419,12 +1424,16 @@ class NodeFormulaHandle {
                         if (data?.['type'] === 5) {
                             let url = "";
                             let keyResp = "";
+                            let keyText = "";
                             if (NodeFormulaHandle.appMapMDUrls?.[data?.['content_type']]) {
                                 if (NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['url']) {
                                     url = NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['url'];
                                 }
                                 if (NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['keyResp']) {
                                     keyResp = NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['keyResp'];
+                                }
+                                if (NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['keyText']) {
+                                    keyText = NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['keyText'];
                                 }
                             }
                             let areaBoxMDEle = NodeFormulaHandle.$propertyRemark[0].querySelector('.area-property-md');
@@ -1433,6 +1442,9 @@ class NodeFormulaHandle {
                                 $(boxMDEle).attr('data-url', url);
                                 $(boxMDEle).attr('data-method', 'GET');
                                 $(boxMDEle).attr('data-keyResp', keyResp);
+                                if (keyText) {
+                                    $(boxMDEle).attr('data-keyText', keyText);
+                                }
                                 $(boxMDEle).attr('data-show', dataStr);
                                 $(boxMDEle).attr('disabled', 'true');
                                 loadInitS2($(boxMDEle), [], {}, NodeFormulaHandle.$propertyRemark, true);

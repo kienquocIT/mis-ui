@@ -72,6 +72,24 @@ $(function () {
                             let hidden = row?.['receipt_status'] === 3 ? '' : 'hidden';
                             return `<span>${sttTxt[row?.['receipt_status']][1]}</span><i class="far fa-check-circle text-success ml-2" ${hidden}></i>`;
                         }
+                    },
+                    {
+                        targets: 7,
+                        className: 'action-center',
+                        width: '5%',
+                        render: (data, type, row) => {
+                            let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            let disabled = '';
+                            if ([2, 3, 4].includes(row?.['system_status'])) {
+                                disabled = 'disabled';
+                            }
+                            return `<div class="dropdown">
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                                    <div role="menu" class="dropdown-menu">
+                                        <a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit"></i><span>${transEle.attr('data-edit')}</span></a>
+                                    </div>
+                                </div>`;
+                        },
                     }
                 ],
                 drawCallback: function () {},

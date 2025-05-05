@@ -48,7 +48,7 @@ function InitAdvancePaymentTable(data_param={}) {
                 }
             },
             {
-                className: 'ellipsis-cell-md w-15',
+                className: 'ellipsis-cell-lg w-15',
                 render: (data, type, row) => {
                     let return_btn = ''
                     if (row?.['system_status'] === 3 && !row?.['opportunity']?.['is_closed'] && parseFloat(row?.['remain_value'] ? row?.['remain_value'] : 0) !== 0) {

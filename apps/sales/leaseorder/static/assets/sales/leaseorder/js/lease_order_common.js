@@ -4091,7 +4091,7 @@ class LeaseOrderDataTableHandle {
                         let dataZone = "lease_costs_data";
                         return `<div class="row">
                                         <div class="input-group">
-                                            <input type="text" class="form-control table-row-quantity-time text-black valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" data-zone="${dataZone}" required readonly>
+                                            <input type="text" class="form-control table-row-quantity-time text-black valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" required readonly>
                                             <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
                                         </div>
                                         <div hidden>

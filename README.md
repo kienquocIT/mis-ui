@@ -444,6 +444,7 @@ def view(...)
 
 3/ views.py:
     Thêm 'form_id' vào data render page update
+    Thêm 'input_mapping_properties' vào data render page update
     VD:
         class QuotationUpdate(View):
             @mask_view(
@@ -456,6 +457,7 @@ def view(...)
               ctx = {
                   'data': {'doc_id': pk},
                   'form_id': 'frm_quotation_create',
+                  'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
               }
               return ctx, status.HTTP_200_OK
 

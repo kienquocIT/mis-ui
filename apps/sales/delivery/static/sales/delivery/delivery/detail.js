@@ -1067,6 +1067,9 @@ $(async function () {
                         },
                     },
                 ],
+                drawCallback: function () {
+                    prodTable.dtbProductNewHDCustom();
+                },
             });
         };
 
@@ -1204,6 +1207,7 @@ $(async function () {
                     prodTable.setupCollapse();
                     prodTable.loadEventRadio($tablePW);
                     prodTable.loadEventPW();
+                    prodTable.dtbPWHDCustom();
                 },
             })
         };
@@ -1265,6 +1269,9 @@ $(async function () {
                         }
                     },
                 ],
+                drawCallback: function () {
+                    prodTable.dtbLotHDCustom();
+                },
             });
         };
 
@@ -1372,8 +1379,61 @@ $(async function () {
                     for (let checkAll of $scrollSerial[0].querySelectorAll('.table-row-checkbox-all')) {
                         checkAll.checked = false;
                     }
+                    prodTable.dtbSerialHDCustom();
                 },
             });
+        };
+
+        dtbProductNewHDCustom() {
+            let $table = $tableProductNew;
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
+        };
+
+        dtbPWHDCustom() {
+            let $table = $tablePW;
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
+        };
+
+        dtbLotHDCustom() {
+            let $table = $tableLot;
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
+        };
+
+        dtbSerialHDCustom() {
+            let $table = $tableSerial;
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
         };
 
         // dtb header custom

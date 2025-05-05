@@ -11718,3 +11718,7 @@ msgstr "Nhập liệu tự do được bật"
 #
 msgid "Users are responsible for calculations when entering data"
 msgstr "Người dùng tự chịu trách nhiệm cho việc tính toán khi nhập liệu"
+
+#
+msgid "Goods"
+msgstr "Hàng hóa"

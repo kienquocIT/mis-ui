@@ -8,5 +8,6 @@ class HRMsg:  # pylint: disable=too-few-public-methods
     GROUP_LEVEL_UPDATE = _('Group level update successfully')
     GROUP_CREATE = _('Group create successfully')
     GROUP_UPDATE = _('Group update successfully')
+    GROUP_DELETE = _('Group delete successfully')
     EMPLOYEE_CREATE = _('Employee create successfully')
     EMPLOYEE_UPDATE = _('Employee update successfully')

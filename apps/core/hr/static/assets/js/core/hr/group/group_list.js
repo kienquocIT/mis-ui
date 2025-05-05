@@ -91,6 +91,7 @@ $(function () {
                     $.fn.notifyB({description: data.message}, 'success');
                     setTimeout(() => {
                         WindowControl.hideLoading();
+                        window.location.reload();
                     }, 2000);
                 }
             }, (err) => {

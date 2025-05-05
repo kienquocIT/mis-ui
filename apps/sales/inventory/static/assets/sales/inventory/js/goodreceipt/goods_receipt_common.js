@@ -1521,6 +1521,7 @@ class GRDataTableHandle {
             ],
             drawCallback: function () {
                 GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePOProduct);
+                GRDataTableHandle.dtbPOProductHDCustom();
             },
         });
     };
@@ -1601,6 +1602,7 @@ class GRDataTableHandle {
             ],
             drawCallback: function () {
                 GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePR);
+                GRDataTableHandle.dtbPRHDCustom();
             },
         });
     };
@@ -1694,6 +1696,7 @@ class GRDataTableHandle {
             ],
             drawCallback: function () {
                 GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tableWH);
+                GRDataTableHandle.dtbWHHDCustom();
             },
         });
     };
@@ -2061,6 +2064,45 @@ class GRDataTableHandle {
                 textFilter$.append(
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                 );
+            }
+        }
+    };
+
+    static dtbPOProductHDCustom() {
+        let $table = GRDataTableHandle.tablePOProduct;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
+    static dtbPRHDCustom() {
+        let $table = GRDataTableHandle.tablePR;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
+    static dtbWHHDCustom() {
+        let $table = GRDataTableHandle.tableWH;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
             }
         }
     };

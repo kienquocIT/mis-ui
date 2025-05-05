@@ -1,20 +1,14 @@
 
 $(function () {
     $(document).ready(function () {
+
+        let transEle = $('#app-trans-factory');
+
         function loadDbl() {
             let $table = $('#table_purchase_order_list')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 useDataServer: true,
-                rowIdx: true,
-                scrollX: true,
-                scrollY: '70vh',
-                scrollCollapse: true,
-                reloadCurrency: true,
-                fixedColumns: {
-                    leftColumns: 2,
-                    rightColumns: window.innerWidth <= 768 ? 0 : 2
-                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -26,50 +20,68 @@ $(function () {
                         throw Error('Call data raise errors.')
                     },
                 },
+                pageLength:50,
                 columns: [
                     {
-                        className: 'w-5',
-                        'render': () => {
-                            return ``;
+                        targets: 0,
+                        width: '1%',
+                        render: (data, type, row, meta) => {
+                            return `<span class="table-row-order">${(meta.row + 1)}</span>`
                         }
                     },
                     {
-                        className: 'ellipsis-cell-xs w-5',
+                        targets: 1,
+                        width: '10%',
                         render: (data, type, row) => {
                             let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                            return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-25',
+                        targets: 2,
+                        width: '25%',
                         render: (data, type, row) => {
                             const link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
+                            return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-25',
+                        targets: 3,
+                        width: '25%',
                         render: (data, type, row) => {
-                            return `<span>${(row?.['supplier'] || {})?.['name'] || ''}</span>`;
+                            let ele = `<p></p>`;
+                            if (Object.keys(row?.['supplier']).length !== 0) {
+                                ele = `<p>${row?.['supplier']?.['name']}</p>`;
+                            }
+                            return ele;
                         }
                     },
                     {
-                        className: 'w-15',
+                        targets: 4,
+                        width: '10%',
                         render: (data, type, row) => {
-                            return $x.fn.displayRelativeTime(row?.['delivered_date'], {'outputFormat': 'DD/MM/YYYY'});
+                            if (row?.['delivered_date']) {
+                                return `<p>${moment(row?.['delivered_date']).format('DD/MM/YYYY')}</p>`;
+                            }
+                            return `<p>--</p>`;
                         }
                     },
                     {
-                        className: 'w-10 text-center',
+                        targets: 5,
+                        width: '10%',
                         render: (data, type, row) => {
                             return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                         }
                     },
                     {
-                        className: 'w-15 text-center',
+                        targets: 6,
+                        width: '10%',
                         render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#gr_status').text())
-                            let hidden = row?.['receipt_status'] === 3 ? '' : 'hidden';
+                            let hidden = "hidden";
+                            if (row?.['receipt_status'] === 3) {
+                                hidden = "";
+                            }
                             return `<span>${sttTxt[row?.['receipt_status']][1]}</span><i class="far fa-check-circle text-success ml-2" ${hidden}></i>`;
                         }
                     },

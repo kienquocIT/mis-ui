@@ -502,6 +502,9 @@ class GroupDetailAPI(APIView):
     def delete(self, request, pk, *args, **kwargs):
         url = ApiURL.GROUP_DETAIL_PK.fill_key(pk=pk)
         resp = ServerAPI(request=request, user=request.user, url=url).delete(request.data)
+        if resp.state:
+            resp.result['message'] = HRMsg.GROUP_DELETE
+            return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
 

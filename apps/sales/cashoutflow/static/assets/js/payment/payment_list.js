@@ -56,12 +56,6 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'w-10',
-                        render: (data, type, row) => {
-                            return `<span>${row?.['employee_inherit']?.['full_name']}</span>`;
-                        }
-                    },
-                    {
                         className: 'ellipsis-cell-xs w-15',
                         render: (data, type, row) => {
                             return `<span title="${row?.['sale_code'] || '--'}">${row?.['sale_code'] || '--'}</span>`
@@ -70,13 +64,19 @@ $(document).ready(function () {
                     {
                         className: 'w-10',
                         render: (data, type, row) => {
-                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                            return `<span class="mask-money text-primary" data-init-money="${row?.['payment_value']}"></span>`
                         }
                     },
                     {
-                        className: 'w-10',
+                        className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
-                            return `<span class="mask-money text-primary" data-init-money="${row?.['payment_value']}"></span>`
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_inherit']);
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {

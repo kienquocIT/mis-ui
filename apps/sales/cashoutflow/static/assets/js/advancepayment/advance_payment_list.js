@@ -95,18 +95,6 @@ function InitAdvancePaymentTable(data_param={}) {
             {
                 className: 'w-10',
                 render: (data, type, row) => {
-                    return `<span>${row?.['employee_inherit']?.['full_name']}</span>`
-                }
-            },
-            {
-                className: 'w-10',
-                render: (data, type, row) => {
-                    return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
-                }
-            },
-            {
-                className: 'w-10',
-                render: (data, type, row) => {
                     return `
                         <span class="mask-money text-primary" data-init-money="${row?.['advance_value']}"></span><br>
                         <span class="text-decoration-underline">${dtb.attr('data-type-translate-to-payment')}:</span> <span class="mask-money" data-init-money="${row?.['to_payment']}"></span>
@@ -127,6 +115,18 @@ function InitAdvancePaymentTable(data_param={}) {
                         <span class="mask-money text-primary" data-init-money="${row?.['return_value']}"></span><br>
                         <span class="text-decoration-underline">${dtb.attr('data-type-translate-remain-ap')}:</span> <span class="mask-money" data-init-money="${row?.['remain_value']}"></span>
                     `
+                }
+            },
+            {
+                className: 'ellipsis-cell-sm w-10',
+                render: (data, type, row) => {
+                    return WFRTControl.displayEmployeeWithGroup(row?.['employee_inherit']);
+                }
+            },
+            {
+                className: 'ellipsis-cell-sm w-10',
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                 }
             },
             {

@@ -41,14 +41,14 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'w-25',
+                        className: 'w-20',
                         'render': (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="text-primary"><b>${row?.['title']}</b></a>`;
                         }
                     },
                     {
-                        className: 'w-20',
+                        className: 'w-15',
                         'render': (data, type, row) => {
                             if (row?.['bom_type'] === 0) {
                                 return `<span class="fst-italic">${trans_script.attr('data-trans-for-production')} ${row?.['for_outsourcing'] ? `<span class="text-primary">(${trans_script.attr('data-trans-outsourcing')})</span>` : ''}</span>`;
@@ -66,15 +66,27 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'w-15',
+                        className: 'w-10',
                         'render': (data, type, row) => {
                             return `<span>${parseFloat(row?.['sum_time'].toFixed(2))} (h)</span>`;
                         }
                     },
                     {
-                        className: 'w-15',
+                        className: 'w-10',
                         'render': (data, type, row) => {
                             return `<span class="mask-money" data-init-money="${row?.['sum_price']}"></span>`;
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {

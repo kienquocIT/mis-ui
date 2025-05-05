@@ -37,7 +37,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-35',
+                        className: 'ellipsis-cell-lg w-25',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
@@ -55,16 +55,23 @@ $(document).ready(function () {
                             return `<span title="${row?.['advance_payment']?.['sale_code'] || '--'}">${row?.['advance_payment']?.['sale_code'] || '--'}</span>`
                         }
                     },
-                    {
-                        className: 'w-10',
-                        render: (data, type, row) => {
-                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
-                        }
-                    },
+
                     {
                         className: 'w-10',
                         render: (data, type, row) => {
                             return `<span class="mask-money text-primary" data-init-money="${row?.['return_total']}"></span>`
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_inherit']);
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {

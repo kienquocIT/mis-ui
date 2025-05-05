@@ -52,42 +52,33 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-10',
+                        className: 'w-10',
                         'render': (data, type, row) => {
-                            if (row?.['bom_type'] === 0) {
-                                return `<span>${trans_script.attr('data-trans-for-production')} ${row?.['for_outsourcing'] ? `<span class="text-primary">(${trans_script.attr('data-trans-outsourcing')})</span>` : ''}</span>`;
-                            }
-                            else if (row?.['bom_type'] === 1) {
-                                return `<span>${trans_script.attr('data-trans-for-service')}</span>`;
-                            }
-                            else if (row?.['bom_type'] === 2) {
-                                return `<span>${trans_script.attr('data-trans-for-sale')}</span>`;
-                            }
-                            else if (row?.['bom_type'] === 3) {
-                                return `<span>${trans_script.attr('data-trans-for-internal-expense')}</span>`;
-                            }
-                            else if (row?.['bom_type'] === 4) {
-                                return `<span>${trans_script.attr('data-trans-for-opp')}</span>`;
-                            }
-                            return ''
+                            return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity']?.['id'])}">${row?.['opportunity']?.['code'] || '--'}</a></span>`
                         }
                     },
                     {
                         className: 'w-10',
                         'render': (data, type, row) => {
-                            return `<span><a class="link-muted underline_hover" target="_blank" href="${dtb.attr('data-url-opp-detail').replace('0', row?.['opportunity']?.['id'])}">${row?.['opportunity']?.['code']}</a></span>`
-                        }
-                    },
-                    {
-                        className: 'w-15',
-                        'render': (data, type, row) => {
                             return `<span>${parseFloat(row?.['sum_time'].toFixed(2))} (h)</span>`;
                         }
                     },
                     {
-                        className: 'w-15',
+                        className: 'w-10',
                         'render': (data, type, row) => {
                             return `<span class="mask-money" data-init-money="${row?.['sum_price']}"></span>`;
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {

@@ -995,6 +995,7 @@ $(async function () {
                         width: '30%',
                         render: (data, type, row) => {
                             let targetData = row?.['product_data'];
+                            let hidden = "";
                             if (row?.['offset_data']?.['id']) {
                                 targetData = row?.['offset_data'];
                             }
@@ -1003,6 +1004,7 @@ $(async function () {
                             }
                             if (row?.['asset_data']?.['id']) {
                                 targetData = row?.['asset_data'];
+                                hidden = "hidden";
                             }
                             let checked = '';
                             if (!$scrollProduct[0].querySelector('.table-row-checkbox:checked')) {
@@ -1015,6 +1017,7 @@ $(async function () {
                                                 class="form-check-input table-row-checkbox"
                                                 id="new-product-${targetData?.['id'].replace(/-/g, "")}"
                                                 ${checked}
+                                                ${hidden}
                                             >
                                             <label class="form-check-label" for="new-product-${targetData?.['id'].replace(/-/g, "")}">${targetData?.['title'] ? targetData?.['title'] : ''}</label>
                                         </div>

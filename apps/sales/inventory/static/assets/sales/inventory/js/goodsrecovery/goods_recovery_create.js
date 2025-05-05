@@ -46,6 +46,10 @@ $(function () {
             if (RecoveryLoadDataHandle.$boxLeaseOrder.val()) {
                 let data = SelectDDControl.get_data_from_idx(RecoveryLoadDataHandle.$boxLeaseOrder, RecoveryLoadDataHandle.$boxLeaseOrder.val());
                 if (data) {
+                    if (data?.['customer']?.['id']) {
+                        data['customer']['name'] = data?.['customer']?.['title'] ? data?.['customer']?.['title'] : "";
+                        RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxCustomer, [data?.['customer']]);
+                    }
                     WindowControl.showLoading();
                     $.fn.callAjax2({
                             'url': RecoveryLoadDataHandle.urlEle.attr('data-delivery'),

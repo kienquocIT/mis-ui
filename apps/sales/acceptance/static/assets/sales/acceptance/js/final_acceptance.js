@@ -52,7 +52,7 @@ $(function () {
                 columns: [
                     {
                         targets: 0,
-                        width: '10%',
+                        width: '12%',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                             if (row?.['acceptance_affect_by'] === 1) {
@@ -68,7 +68,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '10%',
+                        width: '8%',
                         render: (data, type, row) => {
                             let faAffectBy = row?.['acceptance_affect_by'];
                             let app = '';
@@ -86,7 +86,7 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '10%',
+                        width: '8%',
                         render: (data, type, row) => {
                             let faAffectBy = row?.['acceptance_affect_by'];
                             let code = '';
@@ -245,6 +245,14 @@ $(function () {
                 let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
                 if (headerToolbar) {
                     headerToolbar.classList.add('hidden');
+                }
+                let $theadEle = $(tableWrapper).find('thead');
+                if ($theadEle.length > 0) {
+                    for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                        if (!$(thEle).hasClass('border-right')) {
+                            $(thEle).addClass('border-right');
+                        }
+                    }
                 }
             }
         }
@@ -617,18 +625,6 @@ $(function () {
             return true;
         }
 
-        function loadDataBySO() {
-            if ($boxSO.val()) {
-                let data = SelectDDControl.get_data_from_idx($boxSO, $boxSO.val());
-                if (data) {
-                    $boxLO.attr('readonly', 'true');
-                }
-            } else {
-                $boxLO.removeAttr('readonly');
-            }
-            return true;
-        }
-
         function filterFieldList(field_list, data_json) {
             for (let key in data_json) {
                 if (!field_list.includes(key)) delete data_json[key]
@@ -671,11 +667,12 @@ $(function () {
         });
 
         $boxSO.on('change', function () {
-            loadDataBySO();
+            loadInitS2($boxLO, [], {'is_minimal': true}, null, true);
             loadFinalAcceptance();
         });
 
         $boxLO.on('change', function () {
+            loadInitS2($boxSO, [], {'is_minimal': true}, null, true);
             loadFinalAcceptance();
         });
 

@@ -544,6 +544,7 @@ $(function () {
         LeaseOrderLoadDataHandle.$btnSaveDepreciation.on('click', function () {
             LeaseOrderLoadDataHandle.loadSaveDepreciation();
             LeaseOrderCalculateCaseHandle.calculateAllRowsTableCost();
+            LeaseOrderStoreDataHandle.storeDtbData(2);
         });
 
         $('#btn-collapse').click(function () {

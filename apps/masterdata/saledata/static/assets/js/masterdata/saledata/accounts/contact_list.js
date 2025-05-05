@@ -27,37 +27,42 @@ $(document).ready(function () {
                 }
             },
             {
-                className: 'w-5',
+                className: 'ellipsis-cell-xs w-5',
                 render: (data, type, row) => {
                     const link = baseUrlDetail.replace(0, row?.['id']);
-                    return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                    return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                 },
             },
             {
-                className: 'w-25',
+                className: 'w-30',
                 render: (data, type, row) => {
                     let link = baseUrlDetail.replace("0", row?.['id']);
                     return `<a href="${link}" class="link-primary underline_hover" title="${row?.['fullname']}">${row?.['fullname']}</a>`
                 }
             }, {
-                className: 'w-15',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${row?.['job_title']}</span>`
                 }
             }, {
-                className: 'ellipsis-cell-lg w-15',
+                className: 'ellipsis-cell-lg w-20',
                 'render': (data, type, row) => {
                     return `<span class="text-muted">${row?.['account_name']?.['name'] ? row['account_name']['name'] : ''}</span>`
                 }
             }, {
-                className: 'w-20',
+                className: 'ellipsis-cell-sm w-15',
                 'render': (data, type, row) => {
-                    return `<p>${row?.['mobile'] ? 'Mobile: ' + row?.['mobile'] : ''}</p><p>${row?.['phone'] ? 'Phone: ' + row?.['phone'] : ''}</p><p>${row?.['email'] ? 'Email: ' + row?.['email'] : ''}</p>`;
+                    return WFRTControl.displayEmployeeWithGroup(row?.['owner'], 'fullname');
                 }
             }, {
-                className: 'w-15',
+                className: 'ellipsis-cell-sm w-15',
                 'render': (data, type, row) => {
-                    return `<span>${row?.['owner']?.['fullname'] ? row?.['owner']?.['fullname'] : ''}</span>`
+                    return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
+                }
+            }, {
+                className: 'ellipsis-cell-sm w-15',
+                'render': (data, type, row) => {
+                    return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                 }
             }
         ],

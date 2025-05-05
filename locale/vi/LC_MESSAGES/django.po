@@ -5369,10 +5369,6 @@ msgid "Function"
 msgstr "Chức năng"
 
 #
-msgid "Numbering by"
-msgstr "Kiểu đánh số"
-
-#
 msgid "Add Schema"
 msgstr "Thêm công thức"
 
@@ -5398,7 +5394,7 @@ msgstr "Cấu hình công ty"
 
 #
 msgid "Function number"
-msgstr "Cấu hình đánh số chức năng"
+msgstr "Cấu hình sinh mã chức năng"
 
 #
 msgid "Company name"

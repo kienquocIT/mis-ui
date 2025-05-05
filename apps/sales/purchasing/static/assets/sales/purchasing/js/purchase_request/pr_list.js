@@ -37,10 +37,10 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'w-5',
+                        className: 'ellipsis-cell-xs w-5',
                         render: (data, type, row) => {
                             let link = url_detail.format_url_with_uuid(row.id)+`?type=${row?.['request_for']}`;
-                            return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                            return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {

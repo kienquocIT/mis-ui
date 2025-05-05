@@ -41,14 +41,14 @@ function InitAdvancePaymentTable(data_param={}) {
                 }
             },
             {
-                className: 'w-10',
+                className: 'ellipsis-cell-xs w-10',
                 render: (data, type, row) => {
                     const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                    return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                    return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                 }
             },
             {
-                className: 'ellipsis-cell w-15',
+                className: 'ellipsis-cell-md w-15',
                 render: (data, type, row) => {
                     let return_btn = ''
                     if (row?.['system_status'] === 3 && !row?.['opportunity']?.['is_closed'] && parseFloat(row?.['remain_value'] ? row?.['remain_value'] : 0) !== 0) {
@@ -87,18 +87,9 @@ function InitAdvancePaymentTable(data_param={}) {
                 }
             },
             {
-                className: 'w-5',
+                className: 'ellipsis-cell-xs w-5',
                 render: (data, type, row) => {
-                    if (row?.['opportunity']?.['id']) {
-                        return `${row?.['sale_code'] ? row?.['sale_code'] : ''}`
-                    }
-                    else if (row?.['quotation_mapped']?.['id']) {
-                        return `${row?.['sale_code'] ? row?.['sale_code'] : ''}`
-                    }
-                    else if (row?.['sale_order_mapped']?.['id']) {
-                        return `${row?.['sale_code'] ? row?.['sale_code'] : ''}`
-                    }
-                    return '--'
+                    return `<span title="${row?.['sale_code'] || '--'}">${row?.['sale_code'] || '--'}</span>`
                 }
             },
             {

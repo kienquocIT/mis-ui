@@ -1284,7 +1284,7 @@ table.dataTable tr.dtrg-group th {
     max-width: 300px !important;           /* Giới hạn độ rộng nếu cần */
 }
 
-.ellipsis-cell {
+.ellipsis-cell-md {
     white-space: nowrap !important;        /* Không cho xuống dòng */
     overflow: hidden !important;           /* Ẩn phần tràn ra */
     text-overflow: ellipsis !important;    /* Thêm dấu "..." */
@@ -1295,12 +1295,12 @@ table.dataTable tr.dtrg-group th {
     white-space: nowrap !important;        /* Không cho xuống dòng */
     overflow: hidden !important;           /* Ẩn phần tràn ra */
     text-overflow: ellipsis !important;    /* Thêm dấu "..." */
-    max-width: 120px !important;           /* Giới hạn độ rộng nếu cần */
+    max-width: 150px !important;           /* Giới hạn độ rộng nếu cần */
 }
 
 .ellipsis-cell-xs {
     white-space: nowrap !important;        /* Không cho xuống dòng */
     overflow: hidden !important;           /* Ẩn phần tràn ra */
     text-overflow: ellipsis !important;    /* Thêm dấu "..." */
-    max-width: 80px !important;           /* Giới hạn độ rộng nếu cần */
+    max-width: 100px !important;           /* Giới hạn độ rộng nếu cần */
 }

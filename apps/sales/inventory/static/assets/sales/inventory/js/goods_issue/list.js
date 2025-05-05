@@ -26,11 +26,11 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'w-10',
+                        className: 'ellipsis-cell-xs w-10',
                         data: 'code',
                         render: (data, type, row) => {
                             let link = $table.data('url-detail').format_url_with_uuid(row.id);
-                            return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                            return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {

@@ -85,7 +85,7 @@ $(function () {
                             let link = "";
                             if (row?.['id'] && row?.['code']) {
                                 link = $urls.data('link-detail').format_url_with_uuid(row?.['id']);
-                                return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                                return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                             }
                             return `<a href="${link}" class="link-primary underline_hover">--</a>`;
                         }

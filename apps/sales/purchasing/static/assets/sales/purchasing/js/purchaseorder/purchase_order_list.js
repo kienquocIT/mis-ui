@@ -34,10 +34,10 @@ $(function () {
                         }
                     },
                     {
-                        className: 'w-5',
+                        className: 'ellipsis-cell-xs w-5',
                         render: (data, type, row) => {
                             let link = $('#purchase-order-link').data('link-update').format_url_with_uuid(row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                            return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {

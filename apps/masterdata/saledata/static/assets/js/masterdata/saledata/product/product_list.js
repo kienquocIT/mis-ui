@@ -32,7 +32,7 @@ $(document).ready(function () {
                 }
             }, {
                 data: 'code',
-                className: 'ellipsis-cell-sm w-10',
+                className: 'ellipsis-cell-xs w-10',
                 render: (data, type, row) => {
                     const link = url_detail.replace(0, row?.['id']);
                     return `<a href="${link}" class="link-primary underline_hover fw-bold" title="${row?.['code']}">${row?.['code'] || '--'}</a>`;

@@ -36,10 +36,10 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'w-5',
+                        className: 'ellipsis-cell-xs w-5',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                            return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
@@ -57,13 +57,13 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'w-15',
+                        className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
-                            return `<span>${row?.['employee_created']?.['full_name']}</span>`
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
                     },
                     {
-                        className: 'w-15',
+                        className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
                             return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }

@@ -77,16 +77,14 @@ $(document).ready(function () {
                 },
             },
             {
-                className: 'w-5',
-                data: 'name',
+                className: 'ellipsis-cell-xs w-5',
                 render: (data, type, row) => {
                     const link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
-                    return `<a href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                    return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                 }
             },
             {
-                className: 'ellipsis-cell-lg w-15',
-                data: 'name',
+                className: 'ellipsis-cell-lg w-20',
                 render: (data, type, row) => {
                     let link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
                     return `<a href="${link}" class="link-primary underline_hover" title="${row?.['name']}">${row?.['name']}</a>`
@@ -94,41 +92,54 @@ $(document).ready(function () {
             },
             {
                 className: 'w-10',
-                data: 'account_type',
                 render: (data, type, row) => {
-                    return (row?.['account_type'] || []).map((item) => {return `<span>${item}</span>`;}).join(", ");
+                    let account_type_list = ``
+                    for (let i = 0; i < (row?.['account_type'] || []).length; i++) {
+                        account_type_list += `<li><a class="dropdown-item" href="#">${row?.['account_type'][i]}</a></li>`
+                    }
+                    return `<div class="dropdown">
+                                <a href="#" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots"></i>
+                                </a>
+                                <ul class="dropdown-menu">${account_type_list}</ul>
+                            </div>`
                 },
             },
             {
                 className: 'w-10',
-                data: 'owner',
                 render: (data, type, row) => {
-                    if (row?.['owner']?.['fullname']) {
-                        return `<span>${row?.['owner']?.['fullname']}</span>`
-                    }
-                    return ``;
-                },
-            }, {
-                className: 'w-20',
-                data: 'phone',
-                render: (data, type, row) => {
-                    return `<p>${row?.['phone'] ? 'Phone: ' + row?.['phone'] : ''}</p><p><a class="text-blue" target="_blank" href="${row?.['website'] ? row['website'] : '#'}">${row?.['website'] ? 'Website: ' + row['website'] : ''}</a></p>`;
+                    return `<span class="text-muted">${row?.['revenue_information']?.['order_number'] || 0}</span>`;
                 },
             },
             {
-                className: 'text-center w-10',
-                data: '',
+                className: 'w-10',
                 render: (data, type, row) => {
-                    return `<span class="text-muted">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span>`;
+                    return `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] || 0}"></span>`;
                 },
             },
             {
-                className: 'w-20',
-                data: 'revenue_information',
+                className: 'w-10',
                 render: (data, type, row) => {
-                    return row?.['revenue_information']?.['revenue_ytd'] > 0 ? `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0}"></span>
-                            <br>(<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_average'] ? row?.['revenue_information']?.['revenue_average'] : 0}"></span>)` : '';
+                    return `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_average'] || 0}"></span>`;
                 },
+            },
+            {
+                className: 'ellipsis-cell-sm w-15',
+                render: (data, type, row) => {
+                    return WFRTControl.displayEmployeeWithGroup(row?.['owner'], 'fullname');
+                }
+            },
+            {
+                className: 'ellipsis-cell-sm w-15',
+                render: (data, type, row) => {
+                    return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
+                }
+            },
+            {
+                className: 'ellipsis-cell-sm w-15',
+                'render': (data, type, row) => {
+                    return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                }
             }
         ],
         drawCallback: function () {

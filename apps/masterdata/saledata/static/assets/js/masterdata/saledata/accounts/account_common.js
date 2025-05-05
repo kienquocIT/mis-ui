@@ -73,6 +73,7 @@ const pageElements = new AccountPageElements()
 class AccountPageVariables {
     constructor() {
         this.current_owner = {}
+        this.current_contact_mapped = []
     }
 }
 const pageVariables = new AccountPageVariables()
@@ -867,7 +868,8 @@ class AccountHandler {
                     $('#revenue-ytd').attr('data-init-money', account_detail?.['revenue_information']?.['revenue_ytd'])
                     $('#no-order').text(account_detail?.['revenue_information']?.['order_number'])
                     $('#revenue-avg').attr('data-init-money', account_detail?.['revenue_information']?.['revenue_average'])
-                    AccountPageFunction.LoadTableContactMapped(account_detail?.['contact_mapped'] || {}, option);
+                    AccountPageFunction.LoadTableContactMapped(account_detail?.['contact_mapped'] || [], option);
+                    pageVariables.current_contact_mapped = account_detail?.['contact_mapped']
                     AccountPageFunction.LoadTableShippingAddress(account_detail?.['shipping_address'] || [], option);
                     AccountPageFunction.LoadTableBillingAddress(account_detail?.['billing_address'] || [], option);
 
@@ -992,6 +994,8 @@ class AccountEventHandler {
                 }
             })
 
+            contact_selected = pageVariables.current_contact_mapped.concat(contact_selected)
+            console.log(contact_selected)
             if (pageElements.$individual.prop('checked')) {
                 if (contact_selected.length !== 1) {
                     $.fn.notifyB({description: "You can not select more than ONE contact for Individual account."}, 'failure');

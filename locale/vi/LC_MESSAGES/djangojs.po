@@ -408,3 +408,7 @@ msgstr "giá trị"
 #
 msgid "Invoiced"
 msgstr "Đã lập hóa đơn"
+
+#
+msgid "No group"
+msgstr "Không có phòng ban"

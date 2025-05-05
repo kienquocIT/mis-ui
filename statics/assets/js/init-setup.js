@@ -3591,6 +3591,12 @@ class WFRTControl {
         return ``;
     }
 
+    static displayEmployeeWithGroup(obj_employee, field_fullname='full_name') {
+        if (Object.keys(obj_employee).length > 0 && field_fullname) {
+            return `<span title="${obj_employee?.['group']?.['title'] || $.fn.gettext('No group')}">${obj_employee?.[field_fullname] || ''}</span>`;
+        }
+        return ``;
+    }
 }
 
 class WFAssociateControl {
@@ -8794,7 +8800,7 @@ class DiagramControl {
             let urlDiagram = globeDiagramList;
             if ($btnLog && $btnLog.length > 0) {
                 let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
-                                <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
+                                <div class="offcanvas offcanvas-end w-90" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
                                     <div class="modal-header">
                                         <h5><b>Diagram</b></h5>
                                         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">

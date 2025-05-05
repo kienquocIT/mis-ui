@@ -1893,14 +1893,20 @@ class InitDataTables {
                     },
                     {
                         targets: 4,
-                        className: 'w-15',
+                        className: 'w-10',
                         render: (data, type, row) => {
                             return `<span>${row?.['sale_person']?.['full_name']}</span>`
                         }
                     },
                     {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                        }
+                    },
+                    {
                         targets: 5,
-                        className: 'w-20',
+                        className: 'w-15',
                         data: "open_date",
                         render: (data, type, row) => {
                             return $x.fn.displayRelativeTime(row?.['close_date'], {'outputFormat': 'DD/MM/YYYY'});

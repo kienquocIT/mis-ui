@@ -10484,8 +10484,12 @@ msgid "AP Invoice Detail"
 msgstr "Thông tin hoá đơn mua hàng"
 
 #
-msgid "Total Value After Tax"
+msgid "Total Value"
 msgstr "Tổng giá trị"
+
+#
+msgid "Total Value After Tax"
+msgstr "Tổng giá trị sau thuế"
 
 #
 msgid "Prior FA Increase"

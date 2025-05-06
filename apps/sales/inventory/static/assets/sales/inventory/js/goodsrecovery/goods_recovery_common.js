@@ -252,10 +252,10 @@ class RecoveryLoadDataHandle {
         let dataJSON = {};
         let clonedData = JSON.parse(JSON.stringify(dataTool));
         for (let cloned of clonedData) {
-            if (dataJSON.hasOwnProperty(cloned?.['id'])) {
-                dataJSON[cloned?.['id']]['quantity_recovery'] += cloned?.['quantity_recovery'];
+            if (dataJSON.hasOwnProperty(cloned?.['tool_id'])) {
+                dataJSON[cloned?.['tool_id']]['quantity_recovery'] += cloned?.['quantity_recovery'];
             } else {
-                dataJSON[cloned?.['id']] = cloned;
+                dataJSON[cloned?.['tool_id']] = cloned;
             }
         }
         for (let key in dataJSON) {
@@ -818,7 +818,7 @@ class RecoveryDataTableHandle {
                     render: (data, type, row) => {
                         let value = 0;
                         if (row?.['tool_data']?.['id']) {
-                            value = row?.['tool_data']?.['unit_price'] ? row?.['tool_data']?.['unit_price'] : 0;
+                            value = row?.['tool_data']?.['origin_cost'] ? row?.['tool_data']?.['origin_cost'] : 0;
                         }
                         if (row?.['asset_data']?.['id']) {
                             value = row?.['asset_data']?.['origin_cost'] ? row?.['asset_data']?.['origin_cost'] : 0;

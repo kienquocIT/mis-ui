@@ -5,6 +5,10 @@ $(function () {
         let $table = $('#table_asset_status_lease_list');
         let $urlFact = $('#app-urls-factory');
         let $transFact = $('#app-trans-factory');
+        let dataAssetType = {
+            'Fixed asset': $transFact.attr('data-fixed-asset'),
+            'Tool': $transFact.attr('data-tool'),
+        };
 
         function loadDbl(data) {
             $table.DataTableDefault({
@@ -29,9 +33,12 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '3%',
+                        width: '5%',
                         render: (data, type, row) => {
-                            return `<span>${row?.['asset_type'] ? row?.['asset_type'] : ''}</span>`;
+                            if (row?.['asset_type']) {
+                                return `<span>${dataAssetType[row?.['asset_type']]}</span>`;
+                            }
+                            return ``;
                         }
                     },
                     {

@@ -4850,6 +4850,7 @@ class LeaseOrderDataTableHandle {
             ],
             drawCallback: function () {
                 LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableSProduct);
+                LeaseOrderDataTableHandle.dtbSelectProductHDCustom();
             },
         });
     };
@@ -4942,6 +4943,7 @@ class LeaseOrderDataTableHandle {
             ],
             drawCallback: function () {
                 LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderDataTableHandle.$tableSOffset);
+                LeaseOrderDataTableHandle.dtbSelectOffsetHDCustom();
             },
         });
     };
@@ -5160,6 +5162,7 @@ class LeaseOrderDataTableHandle {
             drawCallback: function () {
                 $.fn.initMaskMoney2();
                 LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableSAsset);
+                LeaseOrderDataTableHandle.dtbSelectAssetHDCustom();
             },
         });
     };
@@ -6251,8 +6254,47 @@ class LeaseOrderDataTableHandle {
         }
     };
 
+    static dtbSelectProductHDCustom() {
+        let $table = LeaseOrderDataTableHandle.$tableSProduct;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
+    static dtbSelectOffsetHDCustom() {
+        let $table = LeaseOrderDataTableHandle.$tableSOffset;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
     static dtbSelectToolHDCustom() {
         let $table = LeaseOrderDataTableHandle.$tableSTool;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
+    static dtbSelectAssetHDCustom() {
+        let $table = LeaseOrderDataTableHandle.$tableSAsset;
         let wrapper$ = $table.closest('.dataTables_wrapper');
         let $theadEle = wrapper$.find('thead');
         if ($theadEle.length > 0) {

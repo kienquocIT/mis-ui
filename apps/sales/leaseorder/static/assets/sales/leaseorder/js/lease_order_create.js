@@ -240,15 +240,29 @@ $(function () {
         });
 
         LeaseOrderDataTableHandle.$tableSTool.on('change', '.table-row-quantity', function () {
-            let row = this.closest('tr');
-            if (row) {
-                let checkELe = row.querySelector('.table-row-checkbox');
-                if (checkELe) {
-                    if ($(this).val() > 0) {
-                        checkELe.checked = true;
+            if ($(this).val()) {
+                let lease = parseFloat($(this).val());
+                let row = this.closest('tr');
+                if (row) {
+                    let availableEle = row.querySelector('.table-row-available');
+                    if (availableEle) {
+                        if (availableEle.innerHTML) {
+                            let available = parseFloat(availableEle.innerHTML);
+                            if (lease > available) {
+                                $(this).val(0);
+                                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-exceed-quantity')}, 'failure');
+                                return false;
+                            }
+                        }
                     }
-                    if ($(this).val() <= 0) {
-                        checkELe.checked = false;
+                    let checkELe = row.querySelector('.table-row-checkbox');
+                    if (checkELe) {
+                        if ($(this).val() > 0) {
+                            checkELe.checked = true;
+                        }
+                        if ($(this).val() <= 0) {
+                            checkELe.checked = false;
+                        }
                     }
                 }
             }

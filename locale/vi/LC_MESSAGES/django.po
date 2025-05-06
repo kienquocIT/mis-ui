@@ -11738,3 +11738,7 @@ msgstr "Mã công cụ"
 #
 msgid "Offset item"
 msgstr "Đối ứng"
+
+#
+msgid "Depreciation from"
+msgstr "Khấu hao từ"

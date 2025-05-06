@@ -2039,7 +2039,9 @@ class LeaseOrderLoadDataHandle {
                             "product_quantity": 1,
                             "product_quantity_time": data?.['product_quantity_time'],
                             "product_cost_price": assetData?.['asset_data']?.['origin_cost'],
+                            "product_depreciation_method": assetData?.['asset_data']?.['depreciation_method'],
                             "product_depreciation_time": assetData?.['asset_data']?.['depreciation_time'],
+                            "product_depreciation_adjustment": assetData?.['asset_data']?.['adjustment_factor'],
                             "product_depreciation_start_date": assetData?.['asset_data']?.['depreciation_start_date'],
                             "product_depreciation_end_date": assetData?.['asset_data']?.['depreciation_end_date'],
                         }
@@ -2175,7 +2177,9 @@ class LeaseOrderLoadDataHandle {
                             "product_quantity": 1,
                             "product_quantity_time": dataRow?.['product_quantity_time'],
                             "product_cost_price": assetData?.['asset_data']?.['origin_cost'],
+                            "product_depreciation_method": assetData?.['asset_data']?.['depreciation_method'],
                             "product_depreciation_time": assetData?.['asset_data']?.['depreciation_time'],
+                            "product_depreciation_adjustment": assetData?.['asset_data']?.['adjustment_factor'],
                             "product_depreciation_start_date": assetData?.['asset_data']?.['depreciation_start_date'],
                             "product_depreciation_end_date": assetData?.['asset_data']?.['depreciation_end_date'],
                         }
@@ -2425,6 +2429,7 @@ class LeaseOrderLoadDataHandle {
 
     // DEPRECIATION
     static loadShowDepreciation(ele) {
+        // assetType: 1: product, 2: tool, 3: asset
         let row = ele.closest('tr');
         if (row) {
             let assetType = "";
@@ -2483,6 +2488,9 @@ class LeaseOrderLoadDataHandle {
             if (depreciationAdjustEle && $adjustEle.length > 0) {
                 if ($(depreciationAdjustEle).val()) {
                     $adjustEle.val(parseFloat($(depreciationAdjustEle).val()));
+                }
+                if (["2", "3"].includes(assetType)) {
+                    $adjustEle.attr('readonly', true);
                 }
             }
             let depreciationTimeEle = row.querySelector('.table-row-depreciation-time');
@@ -5024,6 +5032,16 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 7,
                     render: (data, type, row) => {
+                        let available = row?.['quantity'] - row?.['quantity_leased'];
+                        if (available <= 0) {
+                            available = 0;
+                        }
+                        return `<span class="table-row-available">${available}</span>`;
+                    }
+                },
+                {
+                    targets: 8,
+                    render: (data, type, row) => {
                         let value = 0;
                         let targetEle = LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${LeaseOrderLoadDataHandle.$btnSaveSelectTool.attr('data-product-id')}"]`);
                         if (targetEle) {
@@ -5050,6 +5068,7 @@ class LeaseOrderDataTableHandle {
             drawCallback: function () {
                 $.fn.initMaskMoney2();
                 LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableSTool);
+                LeaseOrderDataTableHandle.dtbSelectToolHDCustom();
             },
         });
     };
@@ -6228,6 +6247,19 @@ class LeaseOrderDataTableHandle {
                     LeaseOrderStoreDataHandle.storeDtbData(5);
                     LeaseOrderLoadDataHandle.loadAddInvoice();
                 });
+            }
+        }
+    };
+
+    static dtbSelectToolHDCustom() {
+        let $table = LeaseOrderDataTableHandle.$tableSTool;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
             }
         }
     };

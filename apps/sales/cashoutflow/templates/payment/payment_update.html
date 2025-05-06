@@ -36,7 +36,6 @@
         data-url-detail="{% url 'PaymentDetail' '0' %}"
         data-key-return="payment_list"
     ></script>
-    {% include 'printer/print.html' %}
     <script id="script-trans"
             data-trans-payment-value="{% trans 'Payment value' %}"
             data-trans-converted-from-ap="{% trans 'Converted from AP' %}"
@@ -128,6 +127,9 @@
             </div>
         </div>
     </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'printer/print.html' %}
 {% endblock %}
 {% block jsFooter %}
     <!-- Daterangepicker JS -->

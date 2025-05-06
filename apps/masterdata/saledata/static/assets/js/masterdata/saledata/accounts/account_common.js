@@ -995,7 +995,6 @@ class AccountEventHandler {
             })
 
             contact_selected = pageVariables.current_contact_mapped.concat(contact_selected)
-            console.log(contact_selected)
             if (pageElements.$individual.prop('checked')) {
                 if (contact_selected.length !== 1) {
                     $.fn.notifyB({description: "You can not select more than ONE contact for Individual account."}, 'failure');
@@ -1087,9 +1086,9 @@ class AccountEventHandler {
                 let full_address = '';
                 if (shipping_city && shipping_district && shipping_address_detail) {
                     if (shipping_ward) {
-                        full_address = `${shipping_address_detail}, ${shipping_district}, ${shipping_district}`
+                        full_address = `${shipping_address_detail}, ${shipping_ward}, ${shipping_district}, ${shipping_city}`
                     } else {
-                        full_address = `${shipping_address_detail}, ${shipping_ward}, ${shipping_district}, ${shipping_district}`
+                        full_address = `${shipping_address_detail}, ${shipping_district}, ${shipping_city}`
                     }
                     pageElements.$modal_shipping_address.modal('hide');
                     pageElements.$shipping_address_detail.val('');

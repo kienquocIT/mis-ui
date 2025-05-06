@@ -8,6 +8,7 @@ $(document).ready(function () {
         scrollY: '70vh',
         scrollCollapse: true,
         useDataServer: true,
+        reloadCurrency: true,
         fixedColumns: {
             leftColumns: 2
         },
@@ -20,55 +21,55 @@ $(document).ready(function () {
             },
         },
         fullToolbar: true,
-        cusFilter: [
-            {
-                keyParam: "has_manager_custom",
-                placeholder: msgData.attr('data-msg-by-group'),
-                allowClear: true,
-                keyText: "text",
-                data: [
-                    {
-                        'id': 'all',
-                        'text': msgData.attr('data-msg-of-all'),
-                    },
-                    {
-                        'id': 'same',
-                        'text': msgData.attr('data-msg-of-group'),
-                    },
-                    {
-                        'id': 'staff',
-                        'text': msgData.attr('data-msg-of-staff'),
-                    },
-                    {
-                        'id': 'me',
-                        'text': msgData.attr('data-msg-of-me'),
-                        selected: true,
-                    },
-                ],
-            },
-            {
-                dataUrl: urlEmployeeList,
-                keyResp: 'employee_list',
-                keyText: 'full_name',
-                keyParam: "manager__contains",
-                placeholder: msgData.attr('data-msg-filter-manager'),
-                multiple: true,
-            },
-        ],
-        cusTool: [
-            {
-                'code': 'draft',
-                eClick: function (){
-                    console.log($(this));
-                },
-            },
-            {
-                'code': 'export',
-                eClick: function (){
-                    console.log($(this));
-                },
-            },
-        ],
+        // cusFilter: [
+        //     {
+        //         keyParam: "has_manager_custom",
+        //         placeholder: msgData.attr('data-msg-by-group'),
+        //         allowClear: true,
+        //         keyText: "text",
+        //         data: [
+        //             {
+        //                 'id': 'all',
+        //                 'text': msgData.attr('data-msg-of-all'),
+        //             },
+        //             {
+        //                 'id': 'same',
+        //                 'text': msgData.attr('data-msg-of-group'),
+        //             },
+        //             {
+        //                 'id': 'staff',
+        //                 'text': msgData.attr('data-msg-of-staff'),
+        //             },
+        //             {
+        //                 'id': 'me',
+        //                 'text': msgData.attr('data-msg-of-me'),
+        //                 selected: true,
+        //             },
+        //         ],
+        //     },
+        //     {
+        //         dataUrl: urlEmployeeList,
+        //         keyResp: 'employee_list',
+        //         keyText: 'full_name',
+        //         keyParam: "manager__contains",
+        //         placeholder: msgData.attr('data-msg-filter-manager'),
+        //         multiple: true,
+        //     },
+        // ],
+        // cusTool: [
+        //     {
+        //         'code': 'draft',
+        //         eClick: function (){
+        //             console.log($(this));
+        //         },
+        //     },
+        //     {
+        //         'code': 'export',
+        //         eClick: function (){
+        //             console.log($(this));
+        //         },
+        //     },
+        // ],
         columns: [
             {
                 className: 'w-5',
@@ -84,25 +85,20 @@ $(document).ready(function () {
                 }
             },
             {
-                className: 'ellipsis-cell-lg w-20',
+                className: 'ellipsis-cell-lg w-15',
                 render: (data, type, row) => {
                     let link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
                     return `<a href="${link}" class="link-primary underline_hover" title="${row?.['name']}">${row?.['name']}</a>`
                 },
             },
             {
-                className: 'w-10',
+                className: 'w-5',
                 render: (data, type, row) => {
                     let account_type_list = ``
                     for (let i = 0; i < (row?.['account_type'] || []).length; i++) {
-                        account_type_list += `<li><a class="dropdown-item" href="#">${row?.['account_type'][i]}</a></li>`
+                        account_type_list += `<span class="badge badge-soft-primary">${row?.['account_type'][i]}</span><br>`
                     }
-                    return `<div class="dropdown">
-                                <a href="#" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-three-dots"></i>
-                                </a>
-                                <ul class="dropdown-menu">${account_type_list}</ul>
-                            </div>`
+                    return `${account_type_list}`
                 },
             },
             {
@@ -124,29 +120,39 @@ $(document).ready(function () {
                 },
             },
             {
-                className: 'ellipsis-cell-sm w-15',
+                className: 'ellipsis-cell-sm w-10',
                 render: (data, type, row) => {
                     return WFRTControl.displayEmployeeWithGroup(row?.['owner'], 'fullname');
                 }
             },
             {
-                className: 'ellipsis-cell-sm w-15',
+                className: 'w-10',
+                render: (data, type, row) => {
+                    let account_manager_list = ``
+                    for (let i = 0; i < (row?.['manager'] || []).length; i++) {
+                        account_manager_list += `<span class="badge badge-light">${row?.['manager'][i]?.['full_name']}</span><br>`
+                    }
+                    return `<a href="#" class="small account-manager-space-btn"><i class="bi bi-caret-down-fill"></i></a> <div class="hidden account-manager-space">${account_manager_list}</div>`
+                },
+            },
+            {
+                className: 'ellipsis-cell-sm w-10',
                 render: (data, type, row) => {
                     return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                 }
             },
             {
-                className: 'ellipsis-cell-sm w-15',
+                className: 'ellipsis-cell-sm w-10',
                 'render': (data, type, row) => {
                     return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                 }
             }
         ],
-        drawCallback: function () {
-            // mask money
-            $.fn.initMaskMoney2();
-        },
     });
+
+    $(document).on("click", '.account-manager-space-btn', function () {
+        $(this).closest('tr').find('.account-manager-space').toggleClass('hidden')
+    })
 
     $("#tab-select-table a").on("click", function () {
         let section = $(this).attr('data-collapse')

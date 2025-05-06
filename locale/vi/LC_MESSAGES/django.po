@@ -11722,3 +11722,19 @@ msgstr "Người dùng tự chịu trách nhiệm cho việc tính toán khi nh�
 #
 msgid "Goods"
 msgstr "Hàng hóa"
+
+#
+msgid "Lease"
+msgstr "Cho thuê"
+
+#
+msgid "Tool name"
+msgstr "Tên công cụ"
+
+#
+msgid "Tool code"
+msgstr "Mã công cụ"
+
+#
+msgid "Offset item"
+msgstr "Đối ứng"

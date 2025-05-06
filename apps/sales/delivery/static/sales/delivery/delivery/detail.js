@@ -1001,6 +1001,7 @@ $(async function () {
                             }
                             if (row?.['tool_data']?.['id']) {
                                 targetData = row?.['tool_data'];
+                                hidden = "hidden";
                             }
                             if (row?.['asset_data']?.['id']) {
                                 targetData = row?.['asset_data'];

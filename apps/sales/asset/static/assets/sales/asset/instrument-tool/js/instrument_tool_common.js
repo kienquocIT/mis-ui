@@ -57,6 +57,7 @@ class ToolCommonHandler{
         this.changeDepreciationStartDateEventBinding()
         this.changeTimeUnitEventBinding()
         this.loadDepreciationEventBinding()
+        this.changeUnitPriceAndQuantityEventBinding()
     }
 
     loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -592,6 +593,17 @@ class ToolCommonHandler{
             if (isValid){
                 this.initDepreciationDatable()
             }
+        })
+    }
+
+    changeUnitPriceAndQuantityEventBinding() {
+        $(document).on('change', '#unit-price, #quantity', (e)=>{
+            const unitPrice = Number(this.$unitPriceInput.attr('value')) || 0
+            const quantity = this.$quantityInput.val() || 0
+
+            const totalValue = unitPrice * quantity
+
+            this.$totalValueInput.attr('value', totalValue).focus({preventScroll: true}).blur()
         })
     }
 

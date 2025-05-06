@@ -10484,7 +10484,7 @@ msgid "AP Invoice Detail"
 msgstr "Thông tin hoá đơn mua hàng"
 
 #
-msgid "Total Value"
+msgid "Total Value After Tax"
 msgstr "Tổng giá trị"
 
 #
@@ -11738,3 +11738,7 @@ msgstr "Mã công cụ"
 #
 msgid "Offset item"
 msgstr "Đối ứng"
+
+#
+msgid "Document No."
+msgstr "Số hoá đơn"

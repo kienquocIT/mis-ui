@@ -130,9 +130,9 @@ $(document).ready(function () {
                 render: (data, type, row) => {
                     let account_manager_list = ``
                     for (let i = 0; i < (row?.['manager'] || []).length; i++) {
-                        account_manager_list += `<span class="badge badge-light">${row?.['manager'][i]?.['full_name']}</span><br>`
+                        account_manager_list += `<span>${row?.['manager'][i]?.['full_name']}</span><br>`
                     }
-                    return `<a href="#" class="small account-manager-space-btn"><i class="bi bi-caret-down-fill"></i></a> <div class="hidden account-manager-space">${account_manager_list}</div>`
+                    return `${account_manager_list}`
                 },
             },
             {
@@ -149,10 +149,6 @@ $(document).ready(function () {
             }
         ],
     });
-
-    $(document).on("click", '.account-manager-space-btn', function () {
-        $(this).closest('tr').find('.account-manager-space').toggleClass('hidden')
-    })
 
     $("#tab-select-table a").on("click", function () {
         let section = $(this).attr('data-collapse')

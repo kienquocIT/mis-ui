@@ -331,7 +331,7 @@ $add_new_config_app.on('click', function () {
 function LoadApplicationList(ele, data) {
     ele.initSelect2({
         ajax: {
-            url: company_config.attr('data-url-all-app'),
+            url: company_config.attr('data-url-all-app') + '?only_app=true',
             method: 'GET',
         },
         data: (data ? data : null),

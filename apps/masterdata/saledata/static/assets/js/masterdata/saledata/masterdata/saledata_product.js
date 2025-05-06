@@ -288,7 +288,8 @@ $(document).ready(function () {
                     render: (data) => {
                         return `<span class="initial-wrap">${data}</span>`
                     }
-                }, {
+                },
+                {
                     className: 'text-right w-10',
                     render: (data, type, row) => {
                         let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-product-type"
@@ -394,10 +395,7 @@ $(document).ready(function () {
                                 </span>
                             </span>
                         </a>`
-                        if (!row?.['is_default']) {
-                            return `${edit_btn}${delete_btn}`
-                        }
-                        return ``
+                        return `${edit_btn}${delete_btn}`
                     }
                 }
             ],
@@ -478,10 +476,7 @@ $(document).ready(function () {
                                 </span>
                             </span>
                         </a>`
-                        if (!row?.['is_default']) {
-                            return `${edit_btn}${delete_btn}`
-                        }
-                        return ``
+                        return `${edit_btn}${delete_btn}`
                     }
                 }
             ],
@@ -571,7 +566,7 @@ $(document).ready(function () {
                         if (!row?.['is_default']) {
                             return `${edit_btn}${delete_btn}`
                         }
-                        return ``
+                        return `${edit_btn}`
                     }
                 }
             ],
@@ -725,7 +720,7 @@ $(document).ready(function () {
                         if (!row?.['is_default']) {
                             return `${edit_btn}${delete_btn}`
                         }
-                        return ``
+                        return `${edit_btn}`
                     }
                 }
             ],

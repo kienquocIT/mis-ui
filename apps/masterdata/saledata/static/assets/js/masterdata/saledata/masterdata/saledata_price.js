@@ -154,25 +154,21 @@ $(document).ready(function () {
                 {
                     className: 'text-right w-15',
                     render: (data, type, row, meta) => {
-                        if (row?.['is_default']) {
-                            return ``
-                        } else {
-                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-tax-category"
-                                       data-id="${row?.['id']}"
-                                       data-code="${row?.['code']}"
-                                       data-title="${row?.['title']}"
-                                       data-description="${row?.['description']}"
-                                       data-bs-toggle="modal"
-                                       data-bs-target="#modal-update-tax-category"
-                                       data-bs-placement="top" title="" 
-                                       data-bs-original-title="Edit">
-                                       <span class="btn-icon-wrap">
-                                           <span class="feather-icon text-primary">
-                                               <i data-feather="edit"></i>
-                                           </span>
+                        return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-tax-category"
+                                   data-id="${row?.['id']}"
+                                   data-code="${row?.['code']}"
+                                   data-title="${row?.['title']}"
+                                   data-description="${row?.['description']}"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#modal-update-tax-category"
+                                   data-bs-placement="top" title="" 
+                                   data-bs-original-title="Edit">
+                                   <span class="btn-icon-wrap">
+                                       <span class="feather-icon text-primary">
+                                           <i data-feather="edit"></i>
                                        </span>
-                                    </a>`
-                        }
+                                   </span>
+                                </a>`
                     }
                 }
             ],
@@ -610,44 +606,45 @@ $(document).ready(function () {
             autoWidth: false,
             columns: [
                 {
-                    defaultContent: '',
-                    width: '10%',
-                },
-                {
-                    render: (row, type, data) => {
-                        let url = $('#url-factory').attr('data-detail').format_url_with_uuid(data.id);
-                        return `<p><a href="#" data-href="${url}" 
-                            class="text-primary text-decoration-underline row-title">${data.title}</a></p>`
-                    },
-                    width: '40%',
-                },
-                {
-                    data: 'code',
                     render: (data, type, row) => {
-                        return data;
+                        return ``
                     },
-                    width: '20%',
+                    width: '5%',
                 },
                 {
-                    render: (row, type, data) => {
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
+                    },
+                    width: '15%',
+                },
+                {
+                    render: (data, type, row) => {
+                        let url = $('#url-factory').attr('data-detail').format_url_with_uuid(row?.['id']);
+                        return `<a href="#" data-href="${url}" class="text-primary row-title">${row?.['title']}</a>`
+                    },
+                    width: '50%',
+                },
+                {
+                    render: (data, type, row) => {
                         let DATA_APPLY_FOR = {
                             0: 'Sale',
                             1: 'Purchase'
                         }
-                        return `<p>${DATA_APPLY_FOR[data.apply_for]}</p>`
+                        return `<span class="badge badge-soft-blue">${DATA_APPLY_FOR[row?.['apply_for']]}</span>`
                     },
                     width: '20%',
                 },
                 {
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return `<div class="actions-btn">
-                                <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
-                                   title="Delete"
-                                   href="#"
-                                   data-id="${row.id}"
-                                   data-action="delete">
-                                   <span class="icon-wrap">
-                                   <i class="fa-regular fa-trash-can"></i></span></a>
+                                <a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover delete-btn" title="Delete" href="#" data-id="${row?.['id']}" data-action="delete">
+                                   <span class="btn-icon-wrap">
+                                        <span class="feather-icon text-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </span>
+                                    </span>
+                                   </a>
                             </div>`;
                     },
                     width: '10%',

@@ -23,7 +23,6 @@
         data-url-detail="{% url 'GoodsReturnDetail' '0' %}"
         data-key-return="goods_return_list"
     ></script>
-    {% include 'printer/print.html' %}
     {% include 'sales/inventory/goods_return/common/common_scripts.html' %}
     <form id="frm_goods_return_update"
           data-method="PUT"
@@ -35,6 +34,9 @@
         {% include 'sales/inventory/goods_return/common/tabs.html' %}
     </form>
     {% include 'sales/inventory/goods_return/common/modals.html' %}
+{% endblock %}
+{% block modalData %}
+    {% include 'printer/print.html' %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

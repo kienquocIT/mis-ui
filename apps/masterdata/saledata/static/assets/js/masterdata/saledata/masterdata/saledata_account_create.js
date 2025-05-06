@@ -54,8 +54,7 @@ $(document).ready(function () {
                 {
                     className: 'text-right w-10',
                     render: (data, type, row) => {
-                        if (!row?.['is_default']) {
-                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-account-type"
+                        return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-account-type"
                                         data-id="${row?.['id']}"
                                         data-code="${row?.['code']}"
                                         data-title="${row?.['title']}"
@@ -70,8 +69,6 @@ $(document).ready(function () {
                                     </span>
                                 </span>
                             </a>`
-                        }
-                        return ``
                     }
                 }
             ],

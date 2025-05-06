@@ -10764,10 +10764,6 @@ msgid "Zoom account config"
 msgstr "Cấu hình tài khoản Zoom"
 
 #
-msgid "Add new meeting room"
-msgstr "Thêm phòng họp"
-
-#
 msgid "See instruction here"
 msgstr "Xem hướng dẫn tại đây"
 
@@ -11750,3 +11746,15 @@ msgstr "Khấu hao từ"
 #
 msgid "Document No."
 msgstr "Số hoá đơn"
+
+#
+msgid "Meeting config"
+msgstr "Cấu hình cuộc họp"
+
+#
+msgid "Add new meeting room"
+msgstr "Thêm phòng họp"
+
+#
+msgid "Update meeting room"
+msgstr "Cập nhập phòng họp"

@@ -109,18 +109,18 @@ $(function () {
                 {'id': 2, 'title': 'Serial number'},
             ];
             let $modal = $(this);
-            QuotationLoadDataHandle.loadInitS2($boxPType, [], {'is_default': true}, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPCategory, [], {}, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPUomGr, [], {}, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPUom, [], {}, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPTax, [], {}, $modal);
-            QuotationLoadDataHandle.loadInitS2($boxPMethod, dataMethod, {}, $modal);
+            FormElementControl.loadInitS2($boxPType, [], {'is_default': true}, $modal);
+            FormElementControl.loadInitS2($boxPCategory, [], {}, $modal);
+            FormElementControl.loadInitS2($boxPUomGr, [], {}, $modal);
+            FormElementControl.loadInitS2($boxPUom, [], {}, $modal);
+            FormElementControl.loadInitS2($boxPTax, [], {}, $modal);
+            FormElementControl.loadInitS2($boxPMethod, dataMethod, {}, $modal);
         });
 
         $('#add-product-uom-group').on('change', function () {
             let $boxPUom = $('#add-product-uom');
             let $modal = $('#addQuickProduct');
-            QuotationLoadDataHandle.loadInitS2($boxPUom, [], {'group': $(this).val()}, $modal);
+            FormElementControl.loadInitS2($boxPUom, [], {'group': $(this).val()}, $modal);
         });
 
         $('#btn-save-quick-product').on('click', function () {
@@ -601,16 +601,16 @@ $(function () {
             if (promotionParse?.['is_discount'] === true) { // DISCOUNT
                 if (promotionParse?.['row_apply_index'] !== null) { // on product
                     let newRow = QuotationDataTableHandle.$tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                    FormElementControl.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                    FormElementControl.loadInitS2($(newRow.querySelector('.table-row-tax')));
                     let afterRow = QuotationDataTableHandle.$tableProduct.DataTable().row(promotionParse?.['row_apply_index']).node();
                     $(newRow).detach().insertAfter(afterRow);
                     QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableProduct, newRow);
                     QuotationLoadDataHandle.loadRowDisabled(newRow);
                 } else { // on whole order
                     let newRow = QuotationDataTableHandle.$tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                    FormElementControl.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                    FormElementControl.loadInitS2($(newRow.querySelector('.table-row-tax')));
                     QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableProduct, newRow);
                     if (promotionParse.hasOwnProperty('discount_rate_on_order')) {
                         if (promotionParse.discount_rate_on_order !== null) {
@@ -628,8 +628,8 @@ $(function () {
                     let newRow = QuotationDataTableHandle.$tableProduct.DataTable().row.add(dataAdd).draw().node();
                     let afterRow = QuotationDataTableHandle.$tableProduct.DataTable().row(promotionParse?.['row_apply_index']).node();
                     $(newRow).detach().insertAfter(afterRow);
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-                    QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                    FormElementControl.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                    FormElementControl.loadInitS2($(newRow.querySelector('.table-row-tax')));
                     QuotationLoadDataHandle.loadRowDisabled(newRow);
                 } else { // on whole order
                     let newRow = QuotationDataTableHandle.$tableProduct.DataTable().row.add(dataAdd).draw().node();
@@ -674,8 +674,8 @@ $(function () {
                     "shipping_data": dataShipping,
                 };
                 let newRow = QuotationDataTableHandle.$tableProduct.DataTable().row.add(dataAdd).draw().node();
-                QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-                QuotationLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                FormElementControl.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                FormElementControl.loadInitS2($(newRow.querySelector('.table-row-tax')));
                 // Re Calculate after add shipping (pretax, discount, total)
                 shippingHandle.calculateShipping(shippingPrice);
                 // Load disabled

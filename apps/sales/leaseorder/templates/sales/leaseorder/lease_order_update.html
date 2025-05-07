@@ -1070,9 +1070,88 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-2 col-lg-2">
-                            <div class="form-group" id="product_convert_into_area" hidden>
-                                <label class="form-label" for="product_convert_into">{% trans 'Product will convert into' %}</label>
-                                <select class="form-select product-convert-into" id="product_convert_into" data-zone="lease_costs_data"></select>
+                            <div class="d-flex align-items-center">
+                                <div class="form-group" id="product_convert_into_area" hidden>
+                                    <label class="form-label" for="product_convert_into">{% trans 'Goods will convert into' %}</label>
+                                    <select class="form-select product-convert-into" id="product_convert_into" data-zone="lease_costs_data"></select>
+                                </div>
+                                <div class="dropdown mt-3">
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg btn-config-asset-tool" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="fas fa-ellipsis-h"></i></span></button>
+                                    <div role="menu" class="dropdown-menu w-300p" id="dropdown-menu-config-asset-tool">
+                                        <div class="row config-tool-area hidden">
+                                            <div class="form-group">
+                                                <label class="form-label" for="tool_type_id">{% trans 'Classification' %}</label>
+                                                <select
+                                                        class="form-select"
+                                                        id="tool_type_id"
+                                                        data-url="{% url "ToolClassificationMasterDataListAPI" %}"
+                                                        data-method="GET"
+                                                        name="tool_type_id"
+                                                        data-keyResp="tool_classification_list"
+                                                ></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label" for="tool_group_manage_id">{% trans 'Group manage' %}</label>
+                                                <select
+                                                        class="form-select"
+                                                        id="tool_group_manage_id"
+                                                        data-url="{% url "GroupListAPI" %}"
+                                                        data-method="GET"
+                                                        name="tool_group_manage_id"
+                                                        data-keyResp="group_list"
+                                                ></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label" for="tool_group_using_id">{% trans 'Group using' %}</label>
+                                                <select
+                                                        class="form-select"
+                                                        id="tool_group_using_id"
+                                                        data-url="{% url "GroupListAPI" %}"
+                                                        data-method="GET"
+                                                        name="tool_group_using_id"
+                                                        data-keyResp="group_list"
+                                                        multiple
+                                                ></select>
+                                            </div>
+                                        </div>
+                                        <div class="row config-asset-area hidden">
+                                            <div class="form-group">
+                                                <label class="form-label" for="asset_type_id">{% trans 'Classification' %}</label>
+                                                <select
+                                                        class="form-select"
+                                                        id="asset_type_id"
+                                                        data-url="{% url "FixedAssetClassificationMasterDataListAPI" %}"
+                                                        data-method="GET"
+                                                        name="asset_type_id"
+                                                        data-keyResp="classification_list"
+                                                ></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label" for="asset_group_manage_id">{% trans 'Group manage' %}</label>
+                                                <select
+                                                        class="form-select"
+                                                        id="asset_group_manage_id"
+                                                        data-url="{% url "GroupListAPI" %}"
+                                                        data-method="GET"
+                                                        name="asset_group_manage_id"
+                                                        data-keyResp="group_list"
+                                                ></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label" for="asset_group_using_id">{% trans 'Group using' %}</label>
+                                                <select
+                                                        class="form-select"
+                                                        id="asset_group_using_id"
+                                                        data-url="{% url "GroupListAPI" %}"
+                                                        data-method="GET"
+                                                        name="asset_group_using_id"
+                                                        data-keyResp="group_list"
+                                                        multiple
+                                                ></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

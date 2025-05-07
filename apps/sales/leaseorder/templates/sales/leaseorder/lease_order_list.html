@@ -55,7 +55,8 @@
             data-status-delivered="{% trans 'Delivered' %}"
     >
     <input type="hidden" id="app-url-factory"
-           data-link-update="{% url 'LeaseOrderDetail' 1 %}"
+           data-link-detail="{% url 'LeaseOrderDetail' 1 %}"
+           data-link-update="{% url 'LeaseOrderUpdate' 1 %}"
            data-link-list="{% url 'LeaseOrderList' %}"
            data-create-delivery="{% url 'LeaseOrderDetailDeliveryAPI' 1 %}"
            data-delivery="{% url 'OrderDeliveryList' %}" data-picking="{% url 'OrderPickingList' %}"

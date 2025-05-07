@@ -58,6 +58,13 @@ $(document).ready(function () {
                 },
                 {
                     targets: 5,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<div>${row?.['quantity']}</div>`
+                    }
+                },
+                {
+                    targets: 6,
                     width: '5%',
                     render: (data, type, row) => {
                         const statusMap = {
@@ -68,14 +75,14 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 7,
                     width: '8%',
                     render: (data, type, row) => {
                         return `<div class="w-100 badge badge-soft-success badge-outline mb-1">${row?.['manage_department']?.['title']}</div>`
                     }
                 },
                 {
-                    targets: 7,
+                    targets: 8,
                     width: '8%',
                     render: (data, type, row) => {
                         const useDepartments = row?.['use_department']
@@ -87,7 +94,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    targets: 8,
+                    targets: 9,
                     width: '8%',
                     render: (data, type, row) => {
                         const customerName = row?.['use_customer']?.['name'] ? row?.['use_customer']?.['name'] : 'no data'
@@ -95,14 +102,14 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    targets: 9,
+                    targets: 10,
                     width: '8%',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                     }
                 },
                 {
-                    targets: 10,
+                    targets: 11,
                     width: '8%',
                     render: (data, type, row) => {
                         const depreciationTimeUnitMap = {
@@ -113,14 +120,14 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    targets: 11,
+                    targets: 12,
                     width: '8%',
                     render: (data, type, row) => {
                         return `<div>${row?.['write_off_quantity']}</div>`
                     }
                 },
                 {
-                    targets: 12,
+                    targets: 13,
                     width: '8%',
                     render: (data, type, row) => {
                         let sttTxt = JSON.parse($('#stt_sys').text())

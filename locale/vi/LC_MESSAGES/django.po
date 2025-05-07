@@ -10488,6 +10488,10 @@ msgid "Total Value"
 msgstr "Tổng giá trị"
 
 #
+msgid "Total Value After Tax"
+msgstr "Tổng giá trị sau thuế"
+
+#
 msgid "Prior FA Increase"
 msgstr "Tăng tài sản trước đó"
 
@@ -11734,6 +11738,14 @@ msgstr "Mã công cụ"
 #
 msgid "Offset item"
 msgstr "Đối ứng"
+
+#
+msgid "Depreciation from"
+msgstr "Khấu hao từ"
+
+#
+msgid "Document No."
+msgstr "Số hoá đơn"
 
 #
 msgid "Meeting config"

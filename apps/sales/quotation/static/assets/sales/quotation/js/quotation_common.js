@@ -4090,7 +4090,7 @@ class QuotationDataTableHandle {
                     targets: 1,
                     width: '8%',
                     render: () => {
-                        return `<select class="form-select table-row-installment"></select>`;
+                        return `<select class="form-select table-row-installment" readonly></select>`;
                     }
                 },
                 {

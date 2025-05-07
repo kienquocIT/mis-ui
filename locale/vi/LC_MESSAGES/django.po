@@ -10488,6 +10488,10 @@ msgid "Total Value"
 msgstr "Tổng giá trị"
 
 #
+msgid "Total Value After Tax"
+msgstr "Tổng giá trị sau thuế"
+
+#
 msgid "Prior FA Increase"
 msgstr "Tăng tài sản trước đó"
 
@@ -10758,10 +10762,6 @@ msgstr "Tạo phòng họp"
 #
 msgid "Zoom account config"
 msgstr "Cấu hình tài khoản Zoom"
-
-#
-msgid "Add new meeting room"
-msgstr "Thêm phòng họp"
 
 #
 msgid "See instruction here"
@@ -11742,3 +11742,19 @@ msgstr "Đối ứng"
 #
 msgid "Depreciation from"
 msgstr "Khấu hao từ"
+
+#
+msgid "Document No."
+msgstr "Số hoá đơn"
+
+#
+msgid "Meeting config"
+msgstr "Cấu hình cuộc họp"
+
+#
+msgid "Add new meeting room"
+msgstr "Thêm phòng họp"
+
+#
+msgid "Update meeting room"
+msgstr "Cập nhập phòng họp"

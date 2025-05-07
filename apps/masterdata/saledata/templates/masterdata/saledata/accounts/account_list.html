@@ -33,20 +33,23 @@
 
     <div class="row">
         <div class="col-12">
-            <table id="datatable_account_list" class="table nowrap w-100"
-                   data-url="{% url "AccountListAPI" %}" data-method="GET"
-                   data-url-employee="{% url 'EmployeeListAPI' %}"
+            <table id="datatable_account_list"
+                   class="table nowrap w-100"
+                   data-url="{% url "AccountListAPI" %}"
+                   data-method="GET"
+{#                   data-url-employee="{% url 'EmployeeListAPI' %}"#}
             >
                 <thead>
                     <tr>
                         <th style="min-width: 30px"></th>
                         <th style="min-width: 100px">{% trans "Code" %}</th>
                         <th style="min-width: 300px">{% trans "Name" %}</th>
-                        <th style="min-width: 80px">{% trans "Type" %}</th>
+                        <th style="min-width: 80px">{% trans "Account Type" %}</th>
                         <th style="min-width: 80px">{% trans "Number of order" %}</th>
                         <th style="min-width: 120px">{% trans "Revenue ytd" %}</th>
                         <th style="min-width: 120px">{% trans "Revenue average" %}</th>
                         <th style="min-width: 150px">{% trans "Account Owner" %}</th>
+                        <th style="min-width: 150px">{% trans "Account Manager" %}</th>
                         <th style="min-width: 150px">{% trans "Employee created" %}</th>
                         <th style="min-width: 150px">{% trans "Date created" %}</th>
                     </tr>
@@ -57,5 +60,6 @@
     </div>
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/jszip/dist/jszip.min.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/accounts/account_list.js' %}"></script>
 {% endblock %}

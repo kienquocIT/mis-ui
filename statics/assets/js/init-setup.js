@@ -5001,6 +5001,7 @@ class DTBControl {
                         let currentVal = $(this).prop('checked');
                         dtb.DataTable().column(idx).visible(currentVal);
                     }
+                    $.fn.initMaskMoney2();
                 }
             ).on(
                 'change', 'input.check-all',
@@ -5009,6 +5010,7 @@ class DTBControl {
                     $(this).closest('.dropdown-menu').find('input.custom-visible-item-dtb').each(function () {
                         $(this).prop('checked', currentVal).trigger('change');
                     });
+                    $.fn.initMaskMoney2();
                 }
             );
             wrapperEle.on('change', 'select.custom-filter-manual-dtb', function () {

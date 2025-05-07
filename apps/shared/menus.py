@@ -667,16 +667,22 @@ class MenuEOffice:
     )
 
 
-class MenuDMS:
+class MenuKMS:
     WORK_SPACE = MenuCommon(
         name='Work space', code='menu_dms_work_space', view_name='', icon='<i class="fas fa-laptop-house"></i>',
         child=[
+            # MenuCommon(
+            #     name='File',
+            #     code='menu_folder_list',
+            #     view_name='FolderList',
+            #     icon='<i class="fas fa-file"></i>',
+            # ),
             MenuCommon(
-                name='File',
-                code='menu_folder_list',
-                view_name='FolderList',
-                icon='<i class="fas fa-file"></i>',
-            )
+                name='Document approval',
+                code='menu_document_approval',
+                view_name='KMSDocumentApprovalList',
+                icon='<i class="fa-solid fa-file-circle-check"></i>',
+            ),
         ],
     )
     MY_SPACE = MenuCommon(
@@ -982,8 +988,8 @@ class SpaceItem:
             'kms',
             icon='<i class="fas far fa-folder-open"></i>',
             menus=[
-                MenuDMS.WORK_SPACE,
-                MenuDMS.MY_SPACE,
+                MenuKMS.WORK_SPACE,
+                # MenuKMS.MY_SPACE,
             ],
         ),
         'e-office': SpaceCommon(
@@ -1147,7 +1153,7 @@ class SpaceGroup:
     SPACE = SpaceCommon(
         'Space', 'space', child=[
             SpaceItem.mapping['crm'],
-            # SpaceItem.mapping['kms'],
+            SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
             SpaceItem.mapping['financials'],
             SpaceItem.mapping['forms'],

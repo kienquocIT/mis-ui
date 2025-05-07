@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Document approval list' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'KMSDocumentApprovalCreate' %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <table class="table nowrap w-100" data-method="get" data-url="{% url 'KMSDocumentApprovalListAPI' %}"
+        data-url-detail="{% url 'KMSDocumentApprovalDetail' 1%}" id="tbl_document_approval">
+            <thead>
+            <tr>
+                <td>{% trans 'Code' %}</td>
+                <td>{% trans 'Name' %}</td>
+            </tr>
+            </thead>
+        </table>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory">
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/kms/doc-approval/list.js' %}"></script>
+{% endblock %}

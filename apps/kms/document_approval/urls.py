@@ -3,7 +3,9 @@ from django.urls import path
 from .views import DocumentTypeConfigList, DocumentTypeConfigListAPI, \
     DocumentTypeConfigCreate, DocumentTypeConfigCreateAPI, DocumentTypeConfigDetail, DocumentTypeConfigDetailAPI, \
     DocumentTypeConfigEdit, ContentGroupList, ContentGroupListAPI, ContentGroupCreate, ContentGroupCreateAPI, \
-    ContentGroupDetailAPI, ContentGroupEdit, ContentGroupDetail
+    ContentGroupDetailAPI, ContentGroupEdit, ContentGroupDetail, KMSDocumentApprovalList, KMSDocumentApprovalListAPI, \
+    KMSDocumentApprovalCreate, KMSDocumentApprovalCreateAPI, KMSDocumentApprovalDetail, KMSDocumentApprovalDetailAPI, \
+    KMSDocumentApprovalEdit
 
 urlpatterns = [
     path('config/document-type/list', DocumentTypeConfigList.as_view(), name='DocumentTypeConfigList'),
@@ -24,4 +26,20 @@ urlpatterns = [
     path('config/content-group/detail/<str:pk>', ContentGroupDetail.as_view(), name='ContentGroupDetail'),
     path('config/content-group/detail-api/<str:pk>', ContentGroupDetailAPI.as_view(), name='ContentGroupDetailAPI'),
     path('config/content-group/edit/<str:pk>', ContentGroupEdit.as_view(), name='ContentGroupEdit'),
+
+    # document approval
+    path('document-approval/list', KMSDocumentApprovalList.as_view(), name='KMSDocumentApprovalList'),
+    path('document-approval/list-api', KMSDocumentApprovalListAPI.as_view(), name='KMSDocumentApprovalListAPI'),
+    path('document-approval/create', KMSDocumentApprovalCreate.as_view(), name='KMSDocumentApprovalCreate'),
+    path('document-approval/create-api', KMSDocumentApprovalCreateAPI.as_view(), name='KMSDocumentApprovalCreateAPI'),
+    path('document-approval/detail/<str:pk>', KMSDocumentApprovalDetail.as_view(), name='KMSDocumentApprovalDetail'),
+    path(
+        'document-approval/detail-api/<str:pk>', KMSDocumentApprovalDetailAPI.as_view(),
+        name='KMSDocumentApprovalDetailAPI'
+    ),
+    path('document-approval/edit/<str:pk>', KMSDocumentApprovalEdit.as_view(), name='KMSDocumentApprovalEdit'),
+    path(
+        'document-approval/edit-api/<str:pk>', KMSDocumentApprovalDetailAPI.as_view(),
+        name='KMSDocumentApprovalEditAPI'
+    ),
 ]

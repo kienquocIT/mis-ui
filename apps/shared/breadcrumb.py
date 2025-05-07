@@ -491,6 +491,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # KMS
     KMS_DOC_TYPE_LIST = BreadcrumbChildren(_('Document type'), 'DocumentTypeConfigList')
     KMS_CONTENT_GROUP_LIST = BreadcrumbChildren(_('Content group'), 'ContentGroupList')
+    KMS_DOCUMENT_APPROVAL_LIST = BreadcrumbChildren(_('Document approval'), 'KMSDocumentApprovalList')
 
 
 class BreadcrumbView:
@@ -1336,3 +1337,12 @@ class BreadcrumbView:
     KMS_CONTENT_GROUP_CREATE_PAGE = KMS_CONTENT_GROUP_LIST + [BreadcrumbItem.BASTION_CREATE]
     KMS_CONTENT_GROUP_DETAIL_PAGE = KMS_CONTENT_GROUP_LIST + [BreadcrumbItem.BASTION_DETAIL]
     KMS_CONTENT_GROUP_UPDATE_PAGE = KMS_CONTENT_GROUP_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    KMS_DOCUMENT_APPROVAL_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.KMS_DOCUMENT_APPROVAL_LIST
+    ]
+    KMS_DOCUMENT_APPROVAL_CREATE_PAGE = KMS_DOCUMENT_APPROVAL_LIST + [BreadcrumbItem.BASTION_CREATE]
+    KMS_DOCUMENT_APPROVAL_DETAIL_PAGE = KMS_DOCUMENT_APPROVAL_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    KMS_DOCUMENT_APPROVAL_UPDATE_PAGE = KMS_DOCUMENT_APPROVAL_LIST + [BreadcrumbItem.BASTION_UPDATE]
+

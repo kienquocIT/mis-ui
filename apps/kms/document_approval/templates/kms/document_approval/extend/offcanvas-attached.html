@@ -1,0 +1,78 @@
+{% load i18n %}
+<div class="offcanvas offcanvas-end w-35" tabindex="-1" id="offcanvas-add-attached"
+         aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header row">
+            <div class="col-md-12"><h5 id="offcanvasRightLabel">{% trans 'Attached documents' %}</h5></div>
+            <div class="col-12">
+                <button id="btn-save" type="submit" class="btn btn-primary float-right"
+                        data-bs-dismiss="offcanvas" form="form_attached">{% trans 'Save' %}</button>
+            </div>
+        </div>
+        <div class="offcanvas-body">
+            <form data-method="post" id="form_attached" method="post">
+                <div class="row">
+                <div class="col-md-12 col-xs-6 form-group">
+                    <label class="form-label" for="txt_title">{% trans 'Desciption' %}</label>
+                    <input type="text" class="form-control" name="title" id="txt_title">
+                </div>
+                <div class="col-md-12 col-xs-6 form-group">
+                    <label class="form-label" for="select-box-doc_type">{% trans 'Document type' %}</label>
+                    <select class="form-select" id="select-box-doc_type"
+                            data-url="{% url 'DocumentTypeConfigListAPI' %}"
+                            name="document_type"
+                            data-keyResp="document_type_list"
+                    ></select>
+                </div>
+                <div class="col-md-12 form-group">
+                    <label class="form-label" for="select-box-content_group">{% trans 'Content group' %}</label>
+                    <select class="form-select" id="select-box-content_group"
+                            data-url="{% url 'ContentGroupListAPI' %}"
+                            name="content_group"
+                            data-keyResp="content_group_list"
+                    ></select>
+                </div>
+                <div class="col-md-12 form-group">
+                    <label class="form-label" for="kms_security_level">{% trans 'Security level' %}</label>
+                    <select class="form-select" id="kms_security_level" name="security_lv"
+                            data-keyResp="kms_doc_approval_list">
+                        {% for item in data.lst_lv %}
+                            <option value="{{ item.0 }}">{{ item.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-12 form-group">
+                    <label class="form-label" for="kms_group">{% trans 'Published place' %}</label>
+                    <select class="form-select" id="kms_group" name="published_place"
+                            data-keyResp="group_list" data-url="{% url 'GroupListAPI' %}">
+                    </select>
+                </div>
+                <div class="col-md-12 form-group">
+                    <label class="form-label" for="kms_effective_date">{% trans 'Effective date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input class="form-control pl-2" id="kms_effective_date" type="text" name="effective_date"/>
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                    </div>
+                </div>
+                <div class="col-md-12 form-group">
+                    <label class="form-label" for="kms_expired_date">{% trans 'Expired date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input class="form-control pl-2" id="kms_expired_date" type="text" name="expired_date"/>
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                    </div>
+                </div>
+                <div class="col-md-12 form-group">
+                    <label class="form-label" for="kms_folder">{% trans 'Folder' %}</label>
+                    <select class="form-select" id="kms_folder" name="folder" data-allowClear="true"
+                            data-keyResp="folder_list" data-url="{% url 'FolderListAPI' %}">
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <label for="#" class="mb-2">{% trans 'Attached files' %}</label>
+                    <div id="attachment" class="{{ addClass }}">
+                        {% include 'extends/files/all.html' %}
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>

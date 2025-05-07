@@ -1,8 +1,49 @@
 $(document).ready(function () {
-    let msgData = $("#account-update-page");
-    let tbl = $('#datatable_account_list');
-    let urlEmployeeList = tbl.attr('data-url-employee')
-    tbl.DataTableDefault({
+    const msgData = $("#account-update-page");
+    const tbl = $('#datatable_account_list');
+    // let urlEmployeeList = tbl.attr('data-url-employee')
+    const childRowIndexes = [3, 4, 5, 6, 8]
+    const table = tbl.DataTableDefault({
+        buttons: [
+            {
+                extend: 'excel',
+                text: `<i class="fas fa-file-excel me-1"></i>${$.fn.gettext('Export to Excel')}`,
+                className: 'btn btn-sm rounded-pill',
+                exportOptions: {
+                    columns: ':visible',
+                    format: {
+                        body: function (data, row, column, node) {
+                            const $el = $('<div>').html(data)
+                            const text = $el.text().trim()
+                            return text || ($(data).hasClass('mask-money') ? $(data).attr('data-init-money') : '')
+                        }
+                    }
+                }
+            }
+        ],
+        // responsive: {
+        //     details: {
+        //         type: 'inline',
+        //         target: 'td.dt-control',
+        //         renderer: function (api, rowIdx, columns) {
+        //             const data = columns
+        //                 .filter(col => col.hidden)
+        //                 .map(col => `
+        //                     <tr data-dt-row="${col.rowIndex}" data-dt-column="${col.columnIndex}">
+        //                         <td>${col.title}:</td><td>${col.data}</td>
+        //                     </tr>`
+        //                 ).join('');
+        //             return `<table class="table">${data}</table>` || false;
+        //         }
+        //     }
+        // },
+        columnDefs: [
+            {
+                targets: childRowIndexes,
+                visible: false
+            }
+        ],
+        visibleButton: true,
         rowIdx: true,
         scrollX: true,
         scrollY: '70vh',
@@ -20,7 +61,7 @@ $(document).ready(function () {
                 if (data && data.hasOwnProperty('account_list')) return data['account_list'];
             },
         },
-        fullToolbar: true,
+        // fullToolbar: true,
         // cusFilter: [
         //     {
         //         keyParam: "has_manager_custom",
@@ -72,9 +113,9 @@ $(document).ready(function () {
         // ],
         columns: [
             {
-                className: 'w-5',
-                'render': () => {
-                    return ``;
+                className: 'w-5 dt-control',
+                render: function () {
+                    return '';
                 },
             },
             {
@@ -94,11 +135,9 @@ $(document).ready(function () {
             {
                 className: 'w-5',
                 render: (data, type, row) => {
-                    let account_type_list = ``
-                    for (let i = 0; i < (row?.['account_type'] || []).length; i++) {
-                        account_type_list += `<span class="badge badge-soft-primary">${row?.['account_type'][i]}</span><br>`
-                    }
-                    return `${account_type_list}`
+                    return (row?.['account_type'] || []).map(type =>
+                        `<span>${type || ''}</span>`
+                    ).join(', ')
                 },
             },
             {
@@ -128,11 +167,9 @@ $(document).ready(function () {
             {
                 className: 'w-10',
                 render: (data, type, row) => {
-                    let account_manager_list = ``
-                    for (let i = 0; i < (row?.['manager'] || []).length; i++) {
-                        account_manager_list += `<span>${row?.['manager'][i]?.['full_name']}</span><br>`
-                    }
-                    return `${account_manager_list}`
+                    return (row?.['manager'] || []).map(type =>
+                        `<span>${type?.['full_name'] || ''}</span>`
+                    ).join(', ')
                 },
             },
             {
@@ -143,17 +180,54 @@ $(document).ready(function () {
             },
             {
                 className: 'ellipsis-cell-sm w-10',
-                'render': (data, type, row) => {
+                render: (data, type, row) => {
                     return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                 }
             }
         ],
+        initComplete: function () {
+            tbl.find('tbody tr .dt-control').each(function (index, ele) {
+                $(ele).prepend('<i class="fa-solid fa-circle-plus text-blue mr-1"></i>')
+            })
+        }
     });
 
-    $("#tab-select-table a").on("click", function () {
-        let section = $(this).attr('data-collapse')
-        $(".account-list").hide()
-        let id_tag = `#` + section
-        $(id_tag).show();
+    tbl.on('click', 'tbody td.dt-control', function () {
+        let tr = $(this).closest('tr')
+        let tdi = tr.find("i.fa-solid")
+        let row = table.row(tr)
+
+        if (row.child.isShown()) {
+            row.child.hide()
+            tr.removeClass('shown')
+            tdi.first().removeClass('fa-circle-minus text-danger')
+            tdi.first().addClass('fa-circle-plus text-blue')
+        }
+        else {
+            const columns = table.columns().header()
+            const tableData = Array.from(columns)
+                .map((col, idx) => {
+                    if (table.column(idx).visible()) return '' // chỉ render cột bị ẩn
+
+                    const columnTitle = $(col).text();
+                    const cellText = $(row.cell(tr, idx).node()).html() || ''
+
+                    return `
+                        <tr>
+                            <td>${columnTitle}</td>
+                            <td>${cellText}</td>
+                        </tr>
+                    `;
+                })
+                .filter(row => row)
+                .join('')
+
+
+            row.child(`${tableData}`).show()
+            tr.addClass('shown')
+            tdi.first().removeClass('fa-circle-plus text-blue')
+            tdi.first().addClass('fa-circle-minus text-danger')
+        }
+        $.fn.initMaskMoney2();
     });
 });

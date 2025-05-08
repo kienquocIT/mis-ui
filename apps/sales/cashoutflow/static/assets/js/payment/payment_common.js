@@ -477,7 +477,7 @@ class PaymentLoadTab {
                 },
                 {
                     'render': () => {
-                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-type-select-box"></select>`;
+                        return `<select required ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-type-select-box"></select>`;
                     }
                 },
                 {
@@ -2049,11 +2049,6 @@ class PaymentHandle {
         frm.dataForm['payment_item_list'] = payment_item_list
 
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
-
-        let paymentVal = $('#total-value').valCurrency();
-        if (paymentVal) {
-            frm.dataForm['payment_value'] = parseFloat(paymentVal);
-        }
 
         // console.log(frm)
         return frm

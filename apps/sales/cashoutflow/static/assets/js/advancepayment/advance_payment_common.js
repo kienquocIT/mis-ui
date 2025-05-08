@@ -206,7 +206,7 @@ class APLoadTab {
                 },
                 {
                     'render': () => {
-                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-type-select-box"></select>`;
+                        return `<select required ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-type-select-box"></select>`;
                     }
                 },
                 {
@@ -1697,11 +1697,6 @@ class APHandle {
         frm.dataForm['ap_item_list'] = ap_item_list
 
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
-
-        let advanceVal = $('#total-value').valCurrency();
-        if (advanceVal) {
-            frm.dataForm['advance_value'] = parseFloat(advanceVal);
-        }
 
         // console.log(frm)
         return frm

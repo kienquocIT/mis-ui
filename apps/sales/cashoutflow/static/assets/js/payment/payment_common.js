@@ -477,7 +477,7 @@ class PaymentLoadTab {
                 },
                 {
                     'render': () => {
-                        return `<select required ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-type-select-box"></select>`;
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-type-select-box"></select>`;
                     }
                 },
                 {

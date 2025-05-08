@@ -3786,25 +3786,27 @@ class WFAssociateControl {
     static calculateParam(dataForm, param) {
         let result_json = {};
         let parse_formula = "";
-        for (let item of param) {
-            if (typeof item === 'object' && item !== null) {
-                if (item.hasOwnProperty('is_property')) {
-                    if (dataForm.hasOwnProperty(item?.['code'])) {
-                        parse_formula += dataForm[item?.['code']];
-                    }
-                } else if (item.hasOwnProperty('param_type')) {
-                    if (item?.['param_type'] === 2) { // FUNCTION
-                        if (item?.['code'] === 'max' || item?.['code'] === 'min') {
-                            let functionData = WFAssociateControl.functionMaxMin(item, dataForm, result_json);
-                            parse_formula += functionData;
-                        } else if (item?.['code'] === 'sumItemIf') {
-                            let functionData = WFAssociateControl.functionSumItemIf(item, dataForm);
-                            parse_formula += functionData;
+        if (Array.isArray(param)) {
+            for (let item of param) {
+                if (typeof item === 'object' && item !== null) {
+                    if (item.hasOwnProperty('is_property')) {
+                        if (dataForm.hasOwnProperty(item?.['code'])) {
+                            parse_formula += dataForm[item?.['code']];
+                        }
+                    } else if (item.hasOwnProperty('param_type')) {
+                        if (item?.['param_type'] === 2) { // FUNCTION
+                            if (item?.['code'] === 'max' || item?.['code'] === 'min') {
+                                let functionData = WFAssociateControl.functionMaxMin(item, dataForm, result_json);
+                                parse_formula += functionData;
+                            } else if (item?.['code'] === 'sumItemIf') {
+                                let functionData = WFAssociateControl.functionSumItemIf(item, dataForm);
+                                parse_formula += functionData;
+                            }
                         }
                     }
+                } else if (typeof item === 'string') {
+                    parse_formula += item;
                 }
-            } else if (typeof item === 'string') {
-                parse_formula += item;
             }
         }
         // format

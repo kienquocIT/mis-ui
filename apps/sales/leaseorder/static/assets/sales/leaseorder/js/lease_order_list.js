@@ -194,6 +194,9 @@ $(function () {
                         if (targetCodeEle) {
                             targetCodeEle.innerHTML = data?.['code'] ? data?.['code'] : '';
                         }
+                        if (data?.['lease_from']) {
+                            $deliveryEstimatedDateEle.val(moment(data?.['lease_from'], "YYYY-MM-DD").format("DD/MM/YYYY"));
+                        }
                     })
                 },
                 drawCallback: function () {

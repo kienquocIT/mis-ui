@@ -164,6 +164,50 @@
 </div>
 
 <script>
+    $(document).ready(function () {
+        const ele$ = $('#modalSearchMenu');
+        const inp$ = ele$.find(':input');
+        const data$ = ele$.find('.data-list');
+        const dataFavorite$ = ele$.find('.data-favorite');
+
+        let menusData = {};
+
+        class MenuFavorite {
+            static menusFavoriteData = [];
+
+            static getFavorite() {
+                if (localStorage) {
+                    MenuFavorite.menusFavoriteData = JSON.parse(
+                        localStorage.getItem('menu_favorite') ?? `[]`
+                    );
+                }
+                return MenuFavorite.menusFavoriteData;
+            }
+
+            static hasInFavorite(item) {
+                return MenuFavorite.menusFavoriteData.filter(itemChild => itemChild.url === item.url).length > 0;
+            }
+
+            static setFavorite(item) {
+                if (localStorage) {
+                    const exist = MenuFavorite.menusFavoriteData.filter(itemChild => itemChild.url === item.url);
+                    if (exist.length === 0) {
+                        MenuFavorite.menusFavoriteData.push(item);
+                        localStorage.setItem('menu_favorite', JSON.stringify(MenuFavorite.menusFavoriteData));
+                    }
+                }
+            }
+
+            static removeFavorite(item) {
+                if (localStorage) {
+                    MenuFavorite.menusFavoriteData = MenuFavorite.menusFavoriteData.filter(itemChild => itemChild.url !== item.url);
+                    localStorage.setItem('menu_favorite', JSON.stringify(MenuFavorite.menusFavoriteData));
+                }
+            }
+
+            static render(searchTxt){
+                const eleNew$ = renderChild(
+                    searchTxt && searchTxt != "" ? MenuFavorite.menusFavoriteData.filter(
                         item => item.name.toLowerCase().indexOf(searchTxt) !== -1 || item.name_i18n.toLowerCase().indexOf(searchTxt) !== -1
                     ) : MenuFavorite.menusFavoriteData
                 );

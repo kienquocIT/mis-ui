@@ -205,13 +205,13 @@ class APLoadTab {
                     }
                 },
                 {
-                    'render': (data, type, row) => {
-                        return `<input required ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-name-input" value="${row?.['expense_description'] ? row?.['expense_description'] : ''}">`
+                    'render': () => {
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-type-select-box"></select>`;
                     }
                 },
                 {
-                    'render': () => {
-                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-type-select-box"></select>`;
+                    'render': (data, type, row) => {
+                        return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-des-input">${row?.['expense_description'] ? row?.['expense_description'] : ''}</textarea>`
                     }
                 },
                 {
@@ -1667,7 +1667,7 @@ class APHandle {
         let ap_item_list = []
         tableLineDetail.find('tbody tr').each(function () {
             let row = $(this);
-            let expense_description = row.find('.expense-name-input').val();
+            let expense_description = row.find('.expense-des-input').val();
             let expense_type = row.find('.expense-type-select-box').val();
             let expense_uom_name = row.find('.expense-uom-input').val();
             let expense_quantity = row.find('.expense_quantity').val();

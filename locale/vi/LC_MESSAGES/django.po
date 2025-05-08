@@ -2612,16 +2612,20 @@ msgid "Account create"
 msgstr "Tạo tài khoản"
 
 #
-msgid "Master Data Contact"
-msgstr "Dữ liệu liên hệ dùng chung"
+msgid "Master data name"
+msgstr "Tên master data"
 
 #
-msgid "Master Data Account"
-msgstr "Dữ liệu tài khoản dùng chung"
+msgid "Master data contact"
+msgstr "Master data liên hệ"
 
 #
-msgid "Master Data Product"
-msgstr "Dữ liệu sản phẩm dùng chung"
+msgid "Master data account"
+msgstr "Master data tài khoản"
+
+#
+msgid "Master data product"
+msgstr "Master data sản phẩm"
 
 #
 msgid "Product list"
@@ -3185,7 +3189,7 @@ msgstr "Đơn hàng"
 
 #
 msgid "Master data config"
-msgstr "Cấu hình dữ liệu chính"
+msgstr "Cấu hình master data"
 
 #
 msgid "Items"
@@ -5369,6 +5373,10 @@ msgid "Function"
 msgstr "Chức năng"
 
 #
+msgid "Application name"
+msgstr "Tên chức năng"
+
+#
 msgid "Add Schema"
 msgstr "Thêm công thức"
 
@@ -5393,8 +5401,8 @@ msgid "Company setting"
 msgstr "Cấu hình công ty"
 
 #
-msgid "Function number"
-msgstr "Cấu hình sinh mã chức năng"
+msgid "Auto Code Generator"
+msgstr "Cấu hình sinh mã tự động"
 
 #
 msgid "Company name"
@@ -9414,7 +9422,7 @@ msgstr "Tiền tệ"
 
 #
 msgid "Master data price"
-msgstr "Dữ liệu tiền tệ dùng chung"
+msgstr "Master data tiền tệ"
 
 #
 msgid "Node configuration"
@@ -10580,12 +10588,12 @@ msgid "Tool Number"
 msgstr "Mã công cụ"
 
 #
-msgid "Master Data Document"
-msgstr "Dữ liệu tài liệu dùng chung"
+msgid "Master data document"
+msgstr "Master data tài liệu"
 
 #
-msgid "Master Data Asset"
-msgstr "Dữ liệu tài sản dùng chung"
+msgid "Master data asset"
+msgstr "Master data tài sản"
 
 #
 msgid "Liabilities"
@@ -11272,16 +11280,16 @@ msgid "Periods config"
 msgstr "Cấu hình Kỳ kế toán"
 
 #
-msgid "Master Data Categories"
-msgstr "Dữ liệu Phân loại dùng chung"
+msgid "Master data categories"
+msgstr "Master data phân loại"
 
 #
 msgid "Categories"
 msgstr "Phân loại"
 
 #
-msgid "Master Data Bank"
-msgstr "Dữ liệu Ngân hàng dùng chung"
+msgid "Master data bank"
+msgstr "Master data ngân hàng"
 
 #
 msgid "Recon account"

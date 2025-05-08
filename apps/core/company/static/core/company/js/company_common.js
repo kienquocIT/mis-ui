@@ -1,7 +1,7 @@
 const companyCityEle = $('#company-address-city')
 const companyDistrictEle = $('#company-address-district')
 const companyWardEle = $('#company-address-ward')
-const trans_script_ele = $('#trans-script')
+
 const company_config = $('#company-config')
 const $idxCurrencyDefault = $('#idxCurrencyDefault')
 const $cost_per_warehouse = $('#cost-per-warehouse')
@@ -267,14 +267,16 @@ $('#save-changes-modal-function-number').on('click', function () {
     }
 })
 
-const $function_number_table = $('#function_number_table')
+const $app_function_number_table = $('#app_function_number_table')
 const $add_new_config_app = $('#add-new-config-app')
+const $masterdata_function_number_table = $('#masterdata_function_number_table')
+const $add_new_config_masterdata = $('#add-new-config-masterdata')
 
 function loadFunctionNumberTable(option='detail', table_detail_data=[]) {
     table_detail_data.sort(function (a, b) {
         return a.function - b.function;
     });
-    $function_number_table.DataTableDefault({
+    $app_function_number_table.DataTableDefault({
         styleDom: 'hide-foot',
         rowIdx: true,
         scrollX: true,
@@ -312,7 +314,7 @@ function loadFunctionNumberTable(option='detail', table_detail_data=[]) {
             }
         ],
         initComplete: function () {
-            $function_number_table.find('tbody tr').each(function (index, ele) {
+            $app_function_number_table.find('tbody tr').each(function (index, ele) {
                 LoadApplicationList($(ele).find('.app-select'), {
                     'code': table_detail_data[index]?.['app_code'],
                     'title': table_detail_data[index]?.['app_title'],
@@ -323,8 +325,8 @@ function loadFunctionNumberTable(option='detail', table_detail_data=[]) {
 }
 
 $add_new_config_app.on('click', function () {
-    UsualLoadPageFunction.AddTableRow($function_number_table)
-    let row_added = $function_number_table.find('tbody tr:last-child')
+    UsualLoadPageFunction.AddTableRow($app_function_number_table)
+    let row_added = $app_function_number_table.find('tbody tr:last-child')
     LoadApplicationList(row_added.find('.app-select'))
 })
 
@@ -391,7 +393,7 @@ class CompanyHandle {
         frm.dataForm['fax'] = $('#fax').val();
 
         frm.dataForm['company_function_number_data'] = []
-        $('#function_number_table tbody tr').each(function () {
+        $('#app_function_number_table tbody tr').each(function () {
             let schema_text = $(this).find('.schema-show').text()
             let schema = $(this).find('.schema-show').attr('data-schema');
             let first_number = $(this).find('.schema-show').attr('data-first-number');

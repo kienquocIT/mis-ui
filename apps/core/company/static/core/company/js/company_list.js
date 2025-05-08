@@ -6,6 +6,13 @@ $(function () {
     dtb.DataTableDefault({
         rowIdx: true,
         useDataServer: true,
+        scrollX: true,
+        scrollY: '70vh',
+        scrollCollapse: true,
+        reloadCurrency: true,
+        fixedColumns: {
+            leftColumns: 3
+        },
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
@@ -27,67 +34,43 @@ $(function () {
                     return '';
                 },
             }, {
-                className: 'w-10',
-                data: 'logo',
-                render: (data, type, row, meta) => {
-                    if (data){
-                        return `<img src="${data}" style="width: 60px; height: 60px;"/>`
-                    }
-                    return ``;
-                }
-            },{
-                data: 'code',
-                className: 'w-10',
-                render: (data, type, row, meta) => {
-                    return `<span class="w-80 badge badge-primary" href="/company/detail/` + row.id + `">${data}</span>`
+                className: 'ellipsis-cell-md w-15',
+                render: (data, type, row) => {
+                    const link = `/company/detail/${row?.['id']}`
+                    return `<div class="avatar avatar-rounded"><img class="avatar-img mr-2" alt="" src="${row?.['logo']}"/><a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a></div>`;
                 }
             }, {
-                data: 'title',
-                className: 'w-35',
-                'render': (data, type, row, meta) => {
-                    if (data) {
-                        return `<div class="media align-items-center">
-                                    <div class="media-body">
-                                        <a href="/company/detail/` + row.id + `">
-                                            <span class="d-block"><b>` + row.title + `</b></span>
-                                        </a>
-                                    </div>
-                                </div>`;
-                    } else {
-                        return ''
-                    }
+                className: 'ellipsis-cell-lg w-45',
+                'render': (data, type, row) => {
+                    const link = `/company/detail/${row?.['id']}`
+                    return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                 }
 
             }, {
-                className: 'w-15',
-                data: 'date_created',
-                render: (data, type, row, meta) => {
-                    return $x.fn.displayRelativeTime(data);
+                className: 'ellipsis-cell-sm w-15',
+                render: (data, type, row) => {
+                    return `<div class="representative_fullname"><span>${row?.['representative_fullname'] || $('input[name=default_representative_name]').val()}</span></div>`;
                 }
             }, {
-                className: 'w-15',
-                data: 'representative_fullname',
-                render: (data, type, row, meta) => {
-                    if (data) {
-                        return `<div class="representative_fullname"><span class="fw-bold text-blue">` + data + `</span></div>`;
-                    } else {
-                        return `<div class="representative_fullname"><span class="fw-bold text-blue">` + $('input[name=default_representative_name]').val() + `</span></div>`;
-                    }
-                }
-            }, {
-                className: 'action-center w-10',
-                visible: false,
-                render: (data, type, row, meta) => {
-                    let btnOpenWebsite = `
-                        <a href="${generate_ui_url(row?.['sub_domain'] || '')}" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btnRedirectToWebsite">
-                            <span class="btn-icon-wrap">
-                                <span class="feather-icon"><i data-feather="external-link"></i></span>
-                            </span>
-                        </a>
-                    `;
-                    return `<div>${btnOpenWebsite}</div>`;
+                className: 'ellipsis-cell-sm w-15',
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                 }
             },
+            // {
+            //     className: 'text-center w-10',
+            //     visible: false,
+            //     render: (data, type, row) => {
+            //         let btnOpenWebsite = `
+            //             <a href="${generate_ui_url(row?.['sub_domain'] || '')}" class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btnRedirectToWebsite">
+            //                 <span class="btn-icon-wrap">
+            //                     <span class="feather-icon"><i data-feather="external-link"></i></span>
+            //                 </span>
+            //             </a>
+            //         `;
+            //         return `<div>${btnOpenWebsite}</div>`;
+            //     }
+            // },
         ],
     });
 

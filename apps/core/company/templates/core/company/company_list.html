@@ -17,22 +17,20 @@
     <input
             name="default_representative_name" value="{{ request.user.first_name }} {{ request.user.last_name }}" hidden
     />
-    <table
-            id="datable_company_list" class="table nowrap w-100 mb-5"
-            data-url="{% url "CompanyListAPI" %}"
-            data-url-redirect="/"
-            data-method="GET"
-            data-ui-domain="{{ data.ui_domain }}"
+    <table id="datable_company_list"
+           class="table nowrap w-100 mb-5"
+           data-url="{% url "CompanyListAPI" %}"
+           data-method="GET"
+           data-ui-domain="{{ data.ui_domain }}"
     >
         <thead>
         <tr>
-            <th></th>
-            <th>{% trans 'Logo' %}</th>
-            <th>{% trans 'Company code' %}</th>
-            <th>{% trans 'Company Name' %}</th>
-            <th>{% trans 'Created Date' %}</th>
-            <th>{% trans 'Representative' %}</th>
-            <th>{% trans 'Action' %}</th>
+            <th style="min-width: 30px"></th>
+            <th style="min-width: 200px">{% trans 'Company code' %}</th>
+            <th style="min-width: 300px">{% trans 'Company Name' %}</th>
+            <th style="min-width: 150px">{% trans 'Representative' %}</th>
+            <th style="min-width: 150px">{% trans 'Created Date' %}</th>
+{#            <th style="min-width: 80px"></th>#}
         </tr>
         </thead>
         <tbody></tbody>

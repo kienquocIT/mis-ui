@@ -482,7 +482,7 @@ class PaymentLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control des-input">${row?.['expense_description'] ? row?.['expense_description'] : ''}</textarea>`;
+                        return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-des-input">${row?.['expense_description'] ? row?.['expense_description'] : ''}</textarea>`;
                     }
                 },
                 {
@@ -941,7 +941,7 @@ class PaymentLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -1155,7 +1155,7 @@ class PaymentLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -1290,7 +1290,7 @@ class PaymentLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -1503,7 +1503,7 @@ class PaymentLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -1716,7 +1716,7 @@ class PaymentLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -1987,7 +1987,7 @@ class PaymentHandle {
                 let expense_detail_value = 0;
                 let row_id = '#row-' + i.toString();
                 let expense_type = tableLineDetail.find(row_id + ' .expense-type-select-box').val();
-                let des_input = tableLineDetail.find(row_id + ' .des-input').val();
+                let expense_description = tableLineDetail.find(row_id + ' .expense-des-input').val();
                 let expense_uom_name = tableLineDetail.find(row_id + ' .expense-uom-input').val();
                 let expense_quantity = tableLineDetail.find(row_id + ' .expense_quantity').val();
                 let expense_tax = tableLineDetail.find(row_id + ' .expense-tax-select-box option:selected').attr('value');
@@ -2024,7 +2024,7 @@ class PaymentHandle {
                     expense_detail_value = expense_detail_value + sum_value;
                     payment_item_list.push({
                         'expense_type_id': expense_type,
-                        'expense_description': des_input,
+                        'expense_description': expense_description,
                         'expense_uom_name': expense_uom_name,
                         'expense_quantity': expense_quantity,
                         'expense_unit_price': expense_unit_price,
@@ -2049,11 +2049,6 @@ class PaymentHandle {
         frm.dataForm['payment_item_list'] = payment_item_list
 
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
-
-        let paymentVal = $('#total-value').valCurrency();
-        if (paymentVal) {
-            frm.dataForm['payment_value'] = parseFloat(paymentVal);
-        }
 
         // console.log(frm)
         return frm
@@ -2477,7 +2472,7 @@ $("#next-btn").on('click', function () {
                                     total_remain_value += expense_item.remain_total - PaymentAction.FindValueConvertedById(expense_item.id, selected_converted_value);
                                     product_table.find('tbody').append(`<tr>
                                         <td class="text-center"><input data-ap-title="${ap_item_detail?.['title']}" data-id="${expense_item.id}" class="product-selected" type="checkbox" ${disabled}></td>
-                                        <td>${expense_item.expense_name}</td>
+                                        <td>${expense_item.expense_description}</td>
                                         <td>${expense_item.expense_type.title}</td>
                                         <td>${expense_item.expense_quantity}</td>
                                         <td><span class="text-primary mask-money" data-init-money="${expense_item.expense_unit_price}"></span></td>

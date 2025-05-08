@@ -57,25 +57,19 @@ function loadEmailBccList(contact_list) {
     });
 }
 
-function extractTextWithSpaces(htmlString) {
-    const tempContainer = document.createElement("div");
-    tempContainer.innerHTML = htmlString.replace(/<br\s*\/?>/g, "\n");
-    const textNodes = Array.from(tempContainer.childNodes)
-        .map(node => node.textContent.trim())
-        .filter(text => text);
-    return textNodes.join(" ").substring(0, 60) + '...';
-}
-
 function loadOpportunityEmailList() {
     let dtb = table_opportunity_email_list;
     dtb.DataTable().clear().destroy()
     let frm = new SetupFormSubmit(dtb);
     dtb.DataTableDefault({
         rowIdx: true,
-        scrollX: '100vw',
-        scrollY: '75vh',
+        scrollX: true,
+        scrollY: '70vh',
         scrollCollapse: true,
         useDataServer: true,
+        fixedColumns: {
+            leftColumns: 2
+        },
         ajax: {
             url: frm.dataUrl,
             type: frm.dataMethod,
@@ -91,56 +85,47 @@ function loadOpportunityEmailList() {
         },
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 'render': () => {
                     return ``;
                 }
             },
             {
-                data: 'subject',
-                className: 'wrap-text w-35',
+                className: 'w-35',
                 render: (data, type, row) => {
-                    return `<a class="text-primary fw-bold detail-email-button" href="" data-bs-toggle="offcanvas" data-id="${row?.['id']}"
-                                data-bs-target="#offcanvas-detail-send-email"><span>${row?.['subject']}</span>
-                            </a>` + `<div class="fst-italic">
-                                ${extractTextWithSpaces(row?.['content'])}
-                            </div>`
+                    return `<a href="#" class="link-primary underline_hover fw-bold detail-email-button" title="${row?.['subject']}" data-bs-toggle="offcanvas" data-id="${row?.['id']}" data-bs-target="#offcanvas-detail-send-email">${row?.['subject']}</a>`
 
                 }
             },
             {
-                data: 'opportunity',
-                className: 'wrap-text text-center w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `${row?.['opportunity']?.['code']}`
                 }
             },
             {
-                data: 'employee_inherit',
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span class="text-blue">${row?.['employee_inherit']?.['full_name']}</span>`
+                    return `<span>${row?.['employee_inherit']?.['full_name']}</span>`
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     if (!row?.['just_log']) {
                         if (row?.['send_success']) {
-                            return `<span class="text-success">${trans_script.attr('data-sent')}</span>`
+                            return `<span class="badge text-dark bg-success-light-2">${trans_script.attr('data-sent')}</span>`
                         } else {
-                            return `<span class="text-danger">${trans_script.attr('data-err')}</span>`
+                            return `<span class="badge text-dark bg-danger-light-3">${trans_script.attr('data-err')}</span>`
                         }
                     }
                     return ``
                 }
             },
             {
-                className: 'wrap-text text-center w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
-                    return $x.fn.displayRelativeTime(row?.['date_created'], {
-                        'outputFormat': 'DD/MM/YYYY',
-                    });
+                    return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                 }
             },
         ],

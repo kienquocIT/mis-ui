@@ -1,13 +1,58 @@
 $(document).ready(function () {
-    let msgData = $("#account-update-page");
-    let tbl = $('#datatable_account_list');
-    let urlEmployeeList = tbl.attr('data-url-employee')
-    tbl.DataTableDefault({
+    const msgData = $("#account-update-page");
+    const tbl = $('#datatable_account_list');
+    // let urlEmployeeList = tbl.attr('data-url-employee')
+    const childRowIndexes = [3, 4, 5, 6, 8]
+    const table = tbl.DataTableDefault({
+        buttons: [
+            {
+                extend: 'excel',
+                text: `<i class="fas fa-file-excel me-1"></i>${$.fn.gettext('Export to Excel')}`,
+                className: 'btn btn-sm rounded-pill',
+                exportOptions: {
+                    columns: ':visible',
+                    format: {
+                        body: function (data, row, column, node) {
+                            const $el = $('<div>').html(data)
+                            const text = $el.text().trim()
+                            return text || ($(data).hasClass('mask-money') ? $(data).attr('data-init-money') : '')
+                        }
+                    }
+                }
+            }
+        ],
+        // responsive: {
+        //     details: {
+        //         type: 'inline',
+        //         target: 'td.dt-control',
+        //         renderer: function (api, rowIdx, columns) {
+        //             const data = columns
+        //                 .filter(col => col.hidden)
+        //                 .map(col => `
+        //                     <tr data-dt-row="${col.rowIndex}" data-dt-column="${col.columnIndex}">
+        //                         <td>${col.title}:</td><td>${col.data}</td>
+        //                     </tr>`
+        //                 ).join('');
+        //             return `<table class="table">${data}</table>` || false;
+        //         }
+        //     }
+        // },
+        columnDefs: [
+            {
+                targets: childRowIndexes,
+                visible: false
+            }
+        ],
+        visibleButton: true,
         rowIdx: true,
-        scrollX: '100vw',
+        scrollX: true,
         scrollY: '70vh',
         scrollCollapse: true,
         useDataServer: true,
+        reloadCurrency: true,
+        fixedColumns: {
+            leftColumns: 2
+        },
         ajax: {
             url: tbl.attr('data-url'),
             type: tbl.attr('data-method'),
@@ -16,142 +61,173 @@ $(document).ready(function () {
                 if (data && data.hasOwnProperty('account_list')) return data['account_list'];
             },
         },
-        fullToolbar: true,
-        cusFilter: [
-            {
-                keyParam: "has_manager_custom",
-                placeholder: msgData.attr('data-msg-by-group'),
-                allowClear: true,
-                keyText: "text",
-                data: [
-                    {
-                        'id': 'all',
-                        'text': msgData.attr('data-msg-of-all'),
-                    },
-                    {
-                        'id': 'same',
-                        'text': msgData.attr('data-msg-of-group'),
-                    },
-                    {
-                        'id': 'staff',
-                        'text': msgData.attr('data-msg-of-staff'),
-                    },
-                    {
-                        'id': 'me',
-                        'text': msgData.attr('data-msg-of-me'),
-                        selected: true,
-                    },
-                ],
-            },
-            {
-                dataUrl: urlEmployeeList,
-                keyResp: 'employee_list',
-                keyText: 'full_name',
-                keyParam: "manager__contains",
-                placeholder: msgData.attr('data-msg-filter-manager'),
-                multiple: true,
-            },
-        ],
-        cusTool: [
-            {
-                'code': 'draft',
-                eClick: function (){
-                    console.log($(this));
-                },
-            },
-            {
-                'code': 'export',
-                eClick: function (){
-                    console.log($(this));
-                },
-            },
-        ],
+        // fullToolbar: true,
+        // cusFilter: [
+        //     {
+        //         keyParam: "has_manager_custom",
+        //         placeholder: msgData.attr('data-msg-by-group'),
+        //         allowClear: true,
+        //         keyText: "text",
+        //         data: [
+        //             {
+        //                 'id': 'all',
+        //                 'text': msgData.attr('data-msg-of-all'),
+        //             },
+        //             {
+        //                 'id': 'same',
+        //                 'text': msgData.attr('data-msg-of-group'),
+        //             },
+        //             {
+        //                 'id': 'staff',
+        //                 'text': msgData.attr('data-msg-of-staff'),
+        //             },
+        //             {
+        //                 'id': 'me',
+        //                 'text': msgData.attr('data-msg-of-me'),
+        //                 selected: true,
+        //             },
+        //         ],
+        //     },
+        //     {
+        //         dataUrl: urlEmployeeList,
+        //         keyResp: 'employee_list',
+        //         keyText: 'full_name',
+        //         keyParam: "manager__contains",
+        //         placeholder: msgData.attr('data-msg-filter-manager'),
+        //         multiple: true,
+        //     },
+        // ],
+        // cusTool: [
+        //     {
+        //         'code': 'draft',
+        //         eClick: function (){
+        //             console.log($(this));
+        //         },
+        //     },
+        //     {
+        //         'code': 'export',
+        //         eClick: function (){
+        //             console.log($(this));
+        //         },
+        //     },
+        // ],
         columns: [
             {
-                className: 'wrap-text w-5',
-                'render': () => {
-                    return ``;
+                className: 'w-5 dt-control',
+                render: function () {
+                    return '';
                 },
             },
             {
-                className: 'wrap-text w-10',
-                data: 'name',
+                className: 'ellipsis-cell-xs w-5',
                 render: (data, type, row) => {
                     const link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
-                    return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`
+                    return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                 }
             },
             {
-                className: 'wrap-text w-15',
-                data: 'name',
+                className: 'ellipsis-cell-lg w-15',
                 render: (data, type, row) => {
-                    let urlEditPage = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
-                    return `<a href="${urlEditPage}"><span><b>` + row?.['name'] + `</b></span></a>`
+                    let link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
+                    return `<a href="${link}" class="link-primary underline_hover" title="${row?.['name']}">${row?.['name']}</a>`
                 },
             },
             {
-                className: 'wrap-text w-10',
-                data: 'account_type',
+                className: 'w-5',
                 render: (data, type, row) => {
-                    let clsBadgeCurrent = -1;
-                    let list_class_badge = ['badge-soft-danger', 'badge-soft-blue', 'badge-soft-primary', 'badge-soft-secondary']
-                    return (row?.['account_type'] || []).map(
-                        (item) => {
-                            clsBadgeCurrent += 1;
-                            return `<span class="badge w-100 ${list_class_badge[clsBadgeCurrent]} mb-1">${item}</span><br>`;
-                        }
-                    ).join("");
+                    return (row?.['account_type'] || []).map(type =>
+                        `<span>${type || ''}</span>`
+                    ).join(', ')
                 },
             },
             {
-                className: 'wrap-text w-10',
-                data: 'owner',
+                className: 'w-10',
                 render: (data, type, row) => {
-                    if (row?.['owner']?.['fullname']) {
-                        return `<span class="text-blue">` + row?.['owner']?.['fullname'] + `</span><br>`
-                    }
-                    return ``;
+                    return `<span class="text-muted">${row?.['revenue_information']?.['order_number'] || 0}</span>`;
                 },
             },
             {
-                className: 'wrap-text w-10',
-                data: '',
+                className: 'w-10',
                 render: (data, type, row) => {
-                    return `<span class="text-muted">${row?.['revenue_information']?.['order_number'] ? row?.['revenue_information']?.['order_number'] : 0}</span>`;
+                    return `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] || 0}"></span>`;
                 },
             },
             {
-                className: 'wrap-text w-10',
-                data: 'revenue_information',
+                className: 'w-10',
                 render: (data, type, row) => {
-                    return `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_ytd'] ? row?.['revenue_information']?.['revenue_ytd'] : 0}"></span>`;
+                    return `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_average'] || 0}"></span>`;
                 },
             },
             {
-                className: 'wrap-text w-10',
-                data: 'revenue_information',
+                className: 'ellipsis-cell-sm w-10',
                 render: (data, type, row) => {
-                    return `<span class="mask-money text-muted" data-init-money="${row?.['revenue_information']?.['revenue_average'] ? row?.['revenue_information']?.['revenue_average'] : 0}"></span>`;
+                    return WFRTControl.displayEmployeeWithGroup(row?.['owner'], 'fullname');
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return (row?.['manager'] || []).map(type =>
+                        `<span>${type?.['full_name'] || ''}</span>`
+                    ).join(', ')
                 },
             },
             {
-                className: 'wrap-text w-10',
-                data: 'phone',
+                className: 'ellipsis-cell-sm w-10',
                 render: (data, type, row) => {
-                    return `<span>${row?.['phone'] ? 'Phone: ' + row?.['phone'] : ''}</span><br><a class="text-blue" target="_blank" href="${row?.['website'] ? row['website'] : '#'}">${row?.['website'] ? 'Website: ' + row['website'] : ''}</a>`;
-                },
+                    return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
+                }
+            },
+            {
+                className: 'ellipsis-cell-sm w-10',
+                render: (data, type, row) => {
+                    return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                }
             }
         ],
-        drawCallback: function () {
-            // mask money
-            $.fn.initMaskMoney2();
-        },
+        initComplete: function () {
+            tbl.find('tbody tr .dt-control').each(function (index, ele) {
+                $(ele).prepend('<i class="fa-solid fa-circle-plus text-blue mr-1"></i>')
+            })
+        }
     });
 
-    $("#tab-select-table a").on("click", function () {
-        let section = $(this).attr('data-collapse')
-        $(".account-list").hide()
-        let id_tag = `#` + section
-        $(id_tag).show();
+    tbl.on('click', 'tbody td.dt-control', function () {
+        let tr = $(this).closest('tr')
+        let tdi = tr.find("i.fa-solid")
+        let row = table.row(tr)
+
+        if (row.child.isShown()) {
+            row.child.hide()
+            tr.removeClass('shown')
+            tdi.first().removeClass('fa-circle-minus text-danger')
+            tdi.first().addClass('fa-circle-plus text-blue')
+        }
+        else {
+            const columns = table.columns().header()
+            const tableData = Array.from(columns)
+                .map((col, idx) => {
+                    if (table.column(idx).visible()) return '' // chỉ render cột bị ẩn
+
+                    const columnTitle = $(col).text();
+                    const cellText = $(row.cell(tr, idx).node()).html() || ''
+
+                    return `
+                        <tr>
+                            <td>${columnTitle}</td>
+                            <td>${cellText}</td>
+                        </tr>
+                    `;
+                })
+                .filter(row => row)
+                .join('')
+
+
+            row.child(`${tableData}`).show()
+            tr.addClass('shown')
+            tdi.first().removeClass('fa-circle-plus text-blue')
+            tdi.first().addClass('fa-circle-minus text-danger')
+        }
+        $.fn.initMaskMoney2();
     });
 });

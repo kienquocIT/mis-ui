@@ -6,8 +6,8 @@ $(document).ready(function () {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vw',
-                scrollY: '75vh',
+                scrollX: true,
+                scrollY: '70vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
@@ -23,74 +23,47 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'w-5',
                         'render': () => {
                             return ``;
                         }
                     },
                     {
-                        data: 'code',
-                        className: 'wrap-text w-10',
+                        className: 'ellipsis-cell-xs w-10',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`;
+                            return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        data: 'title',
-                        className: 'wrap-text w-25',
+                        className: 'ellipsis-cell-lg w-25',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}"><span class="text-primary"><b>${row?.['title']}</b></span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        data: 'customer_data',
-                        className: 'wrap-text w-20',
+                        className: 'ellipsis-cell-lg w-20',
                         render: (data, type, row) => {
-                            return `<span class="text-muted">${row?.['supplier_data']?.['name']}</span>`
+                            return `<span>${row?.['supplier_data']?.['name']}</span>`
                         }
                     },
                     {
-                        data: 'total_value',
-                        className: 'wrap-text w-15',
+                        className: 'w-15',
                         render: (data, type, row) => {
                             return `<span class="text-muted mask-money" data-init-money="${row?.['total_value'] ? row?.['total_value'] : '0'}"></span>`
                         }
                     },
                     {
-                        className: 'wrap-text w-15',
+                        className: 'w-15',
                         render: (data, type, row) => {
-                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY',});
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
-                        data: 'status',
-                        className: 'wrap-text w-10',
+                        className: 'text-center w-10',
                         render: (data, type, row) => {
-                            let approved_trans = ``
-                            let text_color = ``
-                            if (row?.['system_status'] === 0) {
-                                approved_trans = 'Draft'
-                                text_color = 'badge-soft-secondary'
-                            }
-                            else if (row?.['system_status'] === 1) {
-                                approved_trans = 'Created'
-                                text_color = 'badge-soft-primary'
-                            }
-                            else if (row?.['system_status'] === 2) {
-                                approved_trans = 'Added'
-                                text_color = 'badge-soft-blue'
-                            }
-                            else if (row?.['system_status'] === 3) {
-                                approved_trans = 'Finish'
-                                text_color = 'badge-soft-success'
-                            }
-                            else if (row?.['system_status'] === 4) {
-                                approved_trans = 'Cancel'
-                                text_color = 'badge-soft-danger'
-                            }
-                            return `<span class="w-100 badge ${text_color}">` + approved_trans + `</span>`
+                            return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                         }
                     }
                 ],

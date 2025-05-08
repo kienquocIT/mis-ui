@@ -6,10 +6,14 @@ $(document).ready(function() {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '70vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -23,47 +27,42 @@ $(document).ready(function() {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'w-5',
                         'render': () => {
                             return ``;
                         }
                     },
                     {
-                        className: 'wrap-text w-10',
+                        className: 'ellipsis-cell-xs w-30',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`;
+                            return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-30',
+                        className: 'w-15',
                         render: (data, type, row) => {
-                            return `<span class="text-muted">${row?.['original_transaction']}</span>`
+                            return `<span>${row?.['original_transaction']}</span>`
                         }
                     },
                     {
-                        className: 'wrap-text w-30',
+                        className: 'w-15',
                         render: (data, type, row) => {
-                            if (row?.['je_transaction_data']?.['code']) {
-                                return `<span class="badge badge-light">${row?.['je_transaction_data']?.['code']}</span>`
-                            }
-                            else {
-                                return ``
-                            }
+                            return `<span>${(row?.['je_transaction_data'] || {})?.['code'] || ''}</span>`
                         }
                     },
                     {
-                        className: 'wrap-text w-15',
+                        className: 'w-15',
                         render: (data, type, row) => {
-                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY',});
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
-                        className: 'wrap-text w-10',
+                        className: 'text-center w-15',
                         render: (data, type, row) => {
                             let text = [$.fn.gettext('Create manually'), $.fn.gettext('Create automatically')][Number(row?.['system_auto_create'])]
-                            let color = ['primary', 'blue'][Number(row?.['system_auto_create'])]
-                            return `<span class="badge badge-outline badge-soft-${color}">${text}</span>`
+                            let color = ['text-primary', 'text-blue'][Number(row?.['system_auto_create'])]
+                            return `<span class="${color}">${text}</span>`
                         }
                     },
                 ]

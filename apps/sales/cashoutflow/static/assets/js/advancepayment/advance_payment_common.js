@@ -195,7 +195,7 @@ class APLoadTab {
             reloadCurrency: true,
             paging: false,
             scrollY: '30vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: data,
             columns: [
@@ -272,7 +272,7 @@ class APLoadTab {
             reloadCurrency: true,
             paging: false,
             scrollY: '30vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: data_list,
             columns: [

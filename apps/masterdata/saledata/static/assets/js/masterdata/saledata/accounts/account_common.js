@@ -73,6 +73,7 @@ const pageElements = new AccountPageElements()
 class AccountPageVariables {
     constructor() {
         this.current_owner = {}
+        this.current_contact_mapped = []
     }
 }
 const pageVariables = new AccountPageVariables()
@@ -145,7 +146,7 @@ class AccountPageFunction {
             useDataServer: true,
             rowIdx: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '70vh',
             scrollCollapse: true,
             ajax: {
@@ -196,7 +197,7 @@ class AccountPageFunction {
                 {
                     className: 'w-25',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue mr-1">${row?.['owner']?.['code'] ? row?.['owner']?.['code'] : ''}</span><span class="text-blue">${row?.['owner']?.['fullname'] ? row?.['owner']?.['fullname'] : ''}</span>`
+                        return `<span class="badge badge-outline badge-light mr-1">${row?.['owner']?.['code'] ? row?.['owner']?.['code'] : ''}</span><span>${row?.['owner']?.['fullname'] ? row?.['owner']?.['fullname'] : ''}</span>`
                     }
                 },
                 {
@@ -867,7 +868,8 @@ class AccountHandler {
                     $('#revenue-ytd').attr('data-init-money', account_detail?.['revenue_information']?.['revenue_ytd'])
                     $('#no-order').text(account_detail?.['revenue_information']?.['order_number'])
                     $('#revenue-avg').attr('data-init-money', account_detail?.['revenue_information']?.['revenue_average'])
-                    AccountPageFunction.LoadTableContactMapped(account_detail?.['contact_mapped'] || {}, option);
+                    AccountPageFunction.LoadTableContactMapped(account_detail?.['contact_mapped'] || [], option);
+                    pageVariables.current_contact_mapped = account_detail?.['contact_mapped']
                     AccountPageFunction.LoadTableShippingAddress(account_detail?.['shipping_address'] || [], option);
                     AccountPageFunction.LoadTableBillingAddress(account_detail?.['billing_address'] || [], option);
 
@@ -992,6 +994,7 @@ class AccountEventHandler {
                 }
             })
 
+            contact_selected = pageVariables.current_contact_mapped.concat(contact_selected)
             if (pageElements.$individual.prop('checked')) {
                 if (contact_selected.length !== 1) {
                     $.fn.notifyB({description: "You can not select more than ONE contact for Individual account."}, 'failure');
@@ -1083,9 +1086,9 @@ class AccountEventHandler {
                 let full_address = '';
                 if (shipping_city && shipping_district && shipping_address_detail) {
                     if (shipping_ward) {
-                        full_address = `${shipping_address_detail}, ${shipping_district}, ${shipping_district}`
+                        full_address = `${shipping_address_detail}, ${shipping_ward}, ${shipping_district}, ${shipping_city}`
                     } else {
-                        full_address = `${shipping_address_detail}, ${shipping_ward}, ${shipping_district}, ${shipping_district}`
+                        full_address = `${shipping_address_detail}, ${shipping_district}, ${shipping_city}`
                     }
                     pageElements.$modal_shipping_address.modal('hide');
                     pageElements.$shipping_address_detail.val('');

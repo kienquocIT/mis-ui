@@ -46,7 +46,6 @@
         data-url-detail="{% url 'GoodsTransferDetail' '0' %}"
         data-key-return="goods_transfer_list"
     ></script>
-    {% include 'printer/print.html' %}
     {{ data.company_current_data | json_script:"company_current_data" }}
     <script id="trans-script"
             data-trans-product-list="{% trans 'Select product' %}"
@@ -72,6 +71,9 @@
         {% include 'sales/inventory/goods_transfer/common/tabs.html' %}
     </form>
     {% include 'sales/inventory/goods_transfer/common/modals.html' %}
+{% endblock %}
+{% block modalData %}
+    {% include 'printer/print.html' %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

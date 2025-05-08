@@ -64,15 +64,8 @@ $(document).ready(function () {
             },
             {
                 data: 'system_status',
-                render: (row, type, data) => {
-                    const status_data = [
-                        {txt: "Draft", cls: "soft-light"},
-                        {txt: "Created", cls: "soft-primary"},
-                        {txt: "Added", cls: "soft-info"},
-                        {txt: "Finish", cls: "soft-success"},
-                        {txt: "Cancel", cls: "soft-danger"},
-                    ]
-                    return `<span class="badge badge-${status_data[row]['cls']}">${status_data[row]['txt']}</span>`;
+                render: (data, type, row) => {
+                    return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                 }
             },
         ]

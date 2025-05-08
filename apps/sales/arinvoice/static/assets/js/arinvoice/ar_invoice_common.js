@@ -65,10 +65,10 @@ class ARInvoicePageFunction {
             rowIdx: true,
             reloadCurrency: true,
             scrollY: '50vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             ajax: {
-                url: pageElements.$table_select_customer.attr('data-url'),
+                url: pageElements.$table_select_customer.attr('data-url') + '?full_info=true',
                 type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
@@ -80,13 +80,13 @@ class ARInvoicePageFunction {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     'render': () => {
                         return ``;
                     }
                 },
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
                                     <input type="radio"
@@ -98,14 +98,14 @@ class ARInvoicePageFunction {
                 },
                 {
                     data: 'name',
-                    className: 'wrap-text w-70',
+                    className: 'w-70',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-primary mr-2">${row?.['code']}</span><span>${row?.['name']}</span>`
                     }
                 },
                 {
                     data: 'tax_code',
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return row?.['tax_code']
                     }
@@ -155,7 +155,7 @@ class ARInvoicePageFunction {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '30vh',
             scrollCollapse: true,
             ajax: {
@@ -172,25 +172,25 @@ class ARInvoicePageFunction {
             },
             columns: [
                 {
-                    className: 'wrap-text w-10',
+                    className: 'w-10',
                     'render': () => {
                         return ``;
                     }
                 },
                 {
-                    className: 'wrap-text w-40',
+                    className: 'w-40',
                     render: (data, type, row) => {
                         return `<span class="badge badge-primary">${row?.['code']}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text w-25',
+                    className: 'w-25',
                     render: (data, type, row) => {
                         return `${moment(row?.['actual_delivery_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}`
                     }
                 },
                 {
-                    className: 'wrap-text w-25 text-center',
+                    className: 'w-25 text-center',
                     render: (data, type, row) => {
                         return `${row?.['already'] ? `<i class="fas fa-check-circle text-success mr-1"></i>` + $.fn.gettext('Invoiced') : ''}
                                 <div class="form-check" ${row?.['already'] ? 'hidden' : ''}>
@@ -209,7 +209,7 @@ class ARInvoicePageFunction {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '30vh',
             scrollCollapse: true,
             data: datasource,
@@ -220,31 +220,29 @@ class ARInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-secondary">${(row?.['product_data'] || {})?.['code'] || ''}</span>&nbsp;${(row?.['product_data'] || {})?.['title'] || ''}`
                     }
                 },
                 {
-                    className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-primary">${(row?.['product_uom_data'] || {})?.['title'] || ''}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span>${row?.['delivery_quantity'] || 0}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span>${row?.['delivered_quantity_before'] || 0}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         return `<span class="text-primary">${row?.['product_quantity'] || 0}</span>`
                     }
@@ -260,7 +258,7 @@ class ARInvoicePageFunction {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '30vh',
             scrollCollapse: true,
             data: datasource,
@@ -271,7 +269,7 @@ class ARInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: () => {
                         return `<button type='button' ${from_delivery} class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row">
                                     <span class="icon"><i class="fas fa-trash"></i></span>
@@ -279,7 +277,6 @@ class ARInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text',
                     render: (data, type, row) => {
                         let product_data = row?.['product_data'] || {}
                         return `<div class="input-group">
@@ -291,39 +288,37 @@ class ARInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text',
                     render: (data, type, row) => {
                         let product_uom_data = row?.['product_uom_data'] || {}
                         return `<select ${from_delivery} data-product-uom='${JSON.stringify(product_uom_data)}' class="form-select select-2 uom-select"></select>`
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         let product_quantity = row?.['product_quantity'] || 0
                         return `<input type="number" ${from_delivery} value="${product_quantity}" class="form-control product_quantity recalculate-field text-right">`
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return `<input ${from_delivery} class="form-control product_unit_price mask-money recalculate-field text-right" value="${row?.['product_unit_price'] || 0}">`
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return `<span class="product_subtotal_price mask-money" data-init-money="${row?.['product_subtotal'] || 0}"></span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return `<input ${from_delivery} class="form-control product_discount_value mask-money recalculate-field text-danger text-right" value="${row?.['product_discount_value'] || 0}">`
                     }
                 },
                 {
-                    className: 'wrap-text',
                     render: (data, type, row) => {
                         let product_tax_data = row?.['product_tax_data'] || {}
                         return `<select ${from_delivery}
@@ -333,13 +328,12 @@ class ARInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return `<span class="product_subtotal_price_final mask-money" data-init-money="${row?.['product_subtotal_final'] || 0}"></span>`
                     }
                 },
                 {
-                    className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<textarea rows="1" class="form-control note">${row?.['note'] || ''}</textarea>`
                     }
@@ -392,19 +386,19 @@ class ARInvoicePageFunction {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '30vh',
             scrollCollapse: true,
             data: datasource,
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     'render': () => {
                         return ``;
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-5',
+                    className: 'text-center w-5',
                     render: () => {
                         return `<button type='button' class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row">
                                     <span class="icon"><i class="fas fa-trash"></i></span>
@@ -412,21 +406,21 @@ class ARInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text w-40',
+                    className: 'w-40',
                     render: (data, type, row) => {
                         let ar_product_des = row?.['ar_product_des'] || ''
                         return `<textarea rows="1" class="ar_product_des form-control">${ar_product_des}</textarea>`
                     }
                 },
                 {
-                    className: 'wrap-text text-right w-20',
+                    className: 'text-right w-20',
                     render: (data, type, row) => {
                         let product_subtotal = row?.['product_subtotal'] || 0
                         return `<input class="recalculate-field product_subtotal_price mask-money form-control text-right" value="${product_subtotal}">`
                     }
                 },
                 {
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<select class="recalculate-field form-select select2 product_taxes"
                                         data-tax='${JSON.stringify(row?.['product_tax_data'] || {})}'
@@ -435,13 +429,12 @@ class ARInvoicePageFunction {
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return `<span class="product_subtotal_price_final mask-money" data-init-money="${row?.['product_subtotal_final'] || 0}"></span>`
                     }
                 },
                 {
-                    className: 'wrap-text',
                     render: (data, type, row) => {
                         return `<textarea rows="1" class="form-control note">${row?.['note'] || ''}</textarea>`
                     }
@@ -480,48 +473,48 @@ class ARInvoicePageFunction {
             reloadCurrency: true,
             useDataServer: false,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '50vh',
             scrollCollapse: true,
             data: datasource,
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return ``
                     }
                 }, {
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `${(row?.['term_data'] || {})?.['title'] || ''}`
                     }
                 }, {
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `${row?.['remark'] || ''}`
                     }
                 }, {
-                    className: 'wrap-text w-10',
+                    className: 'w-10',
                     render: (data, type, row) => {
                         return `${row?.['date']? moment(row?.['date'].split(' '), 'YYYY-MM-DDD').format('DD/MM/YYYY') : '-'}`
                     }
                 }, {
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `${row?.['ratio'] ? row?.['ratio'] : '-'}%`
                     }
                 }, {
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<span class="mask-money" data-init-money="${row?.['value_before_tax'] || 0}"></span>`
                     }
                 }, {
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<span class="mask-money" data-init-money="${row?.['value_total'] || 0}"></span>`
                     }
                 }, {
-                    className: 'wrap-text w-10',
+                    className: 'w-10',
                     render: (data, type, row) => {
                         return `${['due_date'] ? moment(row?.['due_date'].split(' '), 'YYYY-MM-DDD').format('DD/MM/YYYY') : ''}`
                     }
@@ -939,6 +932,7 @@ class ARInvoiceEventHandler {
             $('input[name="customer-selected-radio"]').each(async function () {
                 if ($(this).prop('checked')) {
                     selected_obj = $(this).attr('data-customer') ? JSON.parse($(this).attr('data-customer')) : {}
+                    console.log(selected_obj)
                     pageElements.$customer_name.val(selected_obj?.['name']).attr('data-id', selected_obj?.['id']).prop('readonly', true).prop('disabled', true)
                     pageElements.$customer_code.val(selected_obj?.['code'])
                     pageElements.$tax_code.val(selected_obj?.['tax_code'])
@@ -1130,6 +1124,10 @@ class ARInvoiceEventHandler {
                     }
                     else {
                         merged_data_product[productId]['product_quantity'] += entry?.['product_quantity']
+                        merged_data_product[productId]['product_subtotal'] += entry?.['product_subtotal']
+                        merged_data_product[productId]['product_tax_value'] += entry?.['product_tax_value']
+                        merged_data_product[productId]['product_discount_value'] += entry?.['product_discount_value']
+                        merged_data_product[productId]['product_subtotal_final'] += entry?.['product_subtotal_final']
                     }
                 }
             });

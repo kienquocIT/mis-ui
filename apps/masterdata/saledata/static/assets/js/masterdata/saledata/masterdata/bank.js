@@ -42,13 +42,13 @@ function RenderBankTable() {
         },
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 'render': () => {
                     return ``;
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 'render': (data, type, row) => {
                     if (row?.['vietqr_json_data']?.['logo']) {
                         return `<image style="height: 45px" src="${row?.['vietqr_json_data']?.['logo']}">`
@@ -57,25 +57,25 @@ function RenderBankTable() {
                 }
             },
             {
-                className: 'wrap-text w-35',
+                className: 'w-35',
                 'render': (data, type, row) => {
                     return `<span class="fw-bold text-primary">${row?.['bank_name']}</span><br><span class="text-muted small">${row?.['bank_foreign_name']}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 'render': (data, type, row) => {
                     return `<span class="fw-bold text-primary">${row?.['bank_abbreviation']}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-30',
+                className: 'w-30',
                 'render': (data, type, row) => {
                     return `<span>${row?.['head_office_address']}</span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-10',
+                className: 'text-right w-10',
                 'render': (data, type, row) => {
                     return `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete-bank" data-id="${row?.['id']}">
                             <span class="btn-icon-wrap">
@@ -109,31 +109,31 @@ function RenderBankAccountTable() {
         },
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 'render': () => {
                     return ``;
                 }
             },
             {
-                className: 'wrap-text w-25',
+                className: 'w-25',
                 'render': (data, type, row) => {
                     return `<span class="text-muted">${row?.['bank_account_number']}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-25',
+                className: 'w-25',
                 'render': (data, type, row) => {
                     return `<span class="text-muted">${row?.['bank_account_owner']}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-35',
+                className: 'w-35',
                 'render': (data, type, row) => {
                     return `<span class="text-primary fw-bold">${row?.['bank_mapped_data']?.['bank_name']}</span><br><span class="text-muted small">${row?.['brand_name'] ? row?.['brand_address'] : ''} </span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-10',
+                className: 'text-right w-10',
                 'render': (data, type, row) => {
                     return `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete-bank-account" data-id="${row?.['id']}">
                             <span class="btn-icon-wrap">

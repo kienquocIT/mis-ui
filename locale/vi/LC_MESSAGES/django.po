@@ -5369,10 +5369,6 @@ msgid "Function"
 msgstr "Chức năng"
 
 #
-msgid "Numbering by"
-msgstr "Kiểu đánh số"
-
-#
 msgid "Add Schema"
 msgstr "Thêm công thức"
 
@@ -5398,7 +5394,7 @@ msgstr "Cấu hình công ty"
 
 #
 msgid "Function number"
-msgstr "Cấu hình đánh số chức năng"
+msgstr "Cấu hình sinh mã chức năng"
 
 #
 msgid "Company name"
@@ -10304,8 +10300,12 @@ msgid "Reality"
 msgstr "Thực tế"
 
 #
-msgid "View my revenue plan this period"
-msgstr "Xem kế hoạch doanh thu của tôi kỳ này"
+msgid "View my revenue plan this year"
+msgstr "Xem KHDT của tôi năm nay"
+
+#
+msgid "My revenue plan this year"
+msgstr "KHDT của tôi năm nay"
 
 #
 msgid "Period revenue / profit"
@@ -10486,6 +10486,10 @@ msgstr "Thông tin hoá đơn mua hàng"
 #
 msgid "Total Value"
 msgstr "Tổng giá trị"
+
+#
+msgid "Total Value After Tax"
+msgstr "Tổng giá trị sau thuế"
 
 #
 msgid "Prior FA Increase"
@@ -10758,10 +10762,6 @@ msgstr "Tạo phòng họp"
 #
 msgid "Zoom account config"
 msgstr "Cấu hình tài khoản Zoom"
-
-#
-msgid "Add new meeting room"
-msgstr "Thêm phòng họp"
 
 #
 msgid "See instruction here"
@@ -11702,3 +11702,59 @@ msgstr "Tên hợp đồng"
 #
 msgid "Contract code"
 msgstr "Mã hợp đồng"
+
+#
+msgid "Free input"
+msgstr "Nhập liệu tự do"
+
+#
+msgid "Turn on/off free input ?"
+msgstr "Bật/tắt nhập liệu tự do ?"
+
+#
+msgid "Free input is on"
+msgstr "Nhập liệu tự do được bật"
+
+#
+msgid "Users are responsible for calculations when entering data"
+msgstr "Người dùng tự chịu trách nhiệm cho việc tính toán khi nhập liệu"
+
+#
+msgid "Goods"
+msgstr "Hàng hóa"
+
+#
+msgid "Lease"
+msgstr "Cho thuê"
+
+#
+msgid "Tool name"
+msgstr "Tên công cụ"
+
+#
+msgid "Tool code"
+msgstr "Mã công cụ"
+
+#
+msgid "Offset item"
+msgstr "Đối ứng"
+
+#
+msgid "Depreciation from"
+msgstr "Khấu hao từ"
+
+#
+msgid "Document No."
+msgstr "Số hoá đơn"
+
+#
+msgid "Meeting config"
+msgstr "Cấu hình cuộc họp"
+
+#
+msgid "Add new meeting room"
+msgstr "Thêm phòng họp"
+
+#
+msgid "Update meeting room"
+msgstr "Cập nhập phòng họp"

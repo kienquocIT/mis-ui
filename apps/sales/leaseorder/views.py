@@ -165,10 +165,9 @@ class LeaseOrderUpdate(View):
         menu_active='menu_lease_order_list',
     )
     def get(self, request, pk, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.SALE_ORDER_SALE_ORDER
         return {
                    'data': {'doc_id': pk},
-                   'input_mapping_properties': input_mapping_properties,
+                   'input_mapping_properties': InputMappingProperties.LEASE_ORDER_LEASE_ORDER,
                    'form_id': 'frm_lease_create',
                    'list_from_app': 'leaseorder.leaseorder.edit',
                    'payment_term_stage': PAYMENT_TERM_STAGE,

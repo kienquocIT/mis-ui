@@ -144,7 +144,7 @@
                     <div id="node_dragbox" class="bg-grey-light-5">
                         <p class="text-center pt-3">{% trans 'No content available' %}</p>
                     </div>
-                    <div class="wrap-flowchart_wf">
+                    <div class="wrap-flowchart_wf bg-grey-light-5">
                         <div id="flowchart_workflow" class="bg-grey-light-5"></div>
                     </div>
                     <div class="wrap-btn_extend">
@@ -440,7 +440,7 @@
                                                     <select
                                                         class="form-control"
                                                         id="box-in-workflow-employee"
-                                                        data-url=""
+                                                        data-url="{% url "EmployeeListAPI" %}"
                                                         data-method="GET"
                                                         data-keyResp="employee_list"
                                                         data-keyText="full_name"

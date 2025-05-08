@@ -1,7 +1,56 @@
 {% load i18n %}
 
+<!-- Off canvas Add Contact-->
+<div class="offcanvas offcanvas-end w-65" tabindex="-1" id="offcanvas_SelectContact" aria-labelledby="offcanvasTopLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">{% trans "Select Contacts" %}</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row">
+            <div class="col-12">
+                <table id="add-contact-table" class="table nowrap w-100"
+                       data-url="{% url "ContactListNotMapAccountAPI" %}"
+                       data-method="GET">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Job title" %}</th>
+                            <th>{% trans "Mobile" %}</th>
+                            <th>{% trans "Email" %}</th>
+                            <th>{% trans "Contact owner" %}</th>
+                            <th>
+                                <div class="form-check form-switch" data-bs-target="tooltip" title="{% trans 'All' %}">
+                                    <input type="checkbox" class="form-check-input" id="check-select-all">
+                                    <label class="form-check-label" for="check-select-all"></label>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <span hidden id="select-contact-table-noti" class="small text-muted">{% trans 'You can only select ONE contact for Individual account.' %}</span>
+            </div>
+            <div class="text-left col-6 mt-3">
+                <button type="button" class="btn btn-sm btn-light" id="new-contact-shortcut"
+                        data-bs-toggle="modal" data-bs-target="#modal-add-new-contact"
+                        aria-label="Close">{% trans "New Contact Shortcut" %}&nbsp;
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                </button>
+            </div>
+            <div class="text-right col-6 mt-3">
+                <button type="button" class="btn btn-sm btn-success" id="add-contact-btn">{% trans "Select" %}&nbsp;
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Off canvas Add Contact-->
+
 <!-- Modal Shipping Address -->
-<div class="modal fade" id="modal-shipping-address" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+<div class="modal fade" id="modal-shipping-address" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -67,9 +116,7 @@
 <!-- End Modal Shipping Address-->
 
 <!-- Modal billing Address -->
-<div class="modal fade" id="modal-billing-address" tabindex="-1" role="dialog"
-     aria-labelledby="exampleModalCenter"
-     aria-hidden="true">
+<div class="modal fade" id="modal-billing-address" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -137,58 +184,8 @@
 </div>
 <!-- End Modal Billing Address-->
 
-<!-- Off canvas Add Contact-->
-<div class="offcanvas offcanvas-end w-70" tabindex="-1" id="offcanvas_SelectContact" aria-labelledby="offcanvasTopLabel">
-    <div class="offcanvas-header">
-        <h5 id="offcanvasRightLabel">{% trans "Select Contacts" %}</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <div class="row">
-            <div class="col-12">
-                <table id="add-contact-table" class="table nowrap w-100"
-                       data-url="{% url "ContactListNotMapAccountAPI" %}"
-                       data-method="GET">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>{% trans "Name" %}</th>
-                            <th>{% trans "Job title" %}</th>
-                            <th>{% trans "Mobile" %}</th>
-                            <th>{% trans "Email" %}</th>
-                            <th>{% trans "Contact owner" %}</th>
-                            <th>
-                                <div class="form-check form-switch" data-bs-target="tooltip" title="{% trans 'All' %}">
-                                    <input type="checkbox" class="form-check-input" id="check-select-all">
-                                    <label class="form-check-label" for="check-select-all"></label>
-                                </div>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <span hidden id="select-contact-table-noti" class="small text-muted">{% trans 'You can only select ONE contact for Individual account.' %}</span>
-            </div>
-            <div class="text-left col-6 mt-3">
-                <button type="button" class="btn btn-sm btn-light" id="new-contact-shortcut"
-                        data-bs-toggle="modal" data-bs-target="#modal-add-new-contact"
-                        aria-label="Close">{% trans "New Contact Shortcut" %}&nbsp;
-                    <i class="bi bi-journal-bookmark-fill"></i>
-                </button>
-            </div>
-            <div class="text-right col-6 mt-3">
-                <button type="button" class="btn btn-sm btn-success" id="add-contact-btn">{% trans "Select" %}&nbsp;
-                    <i class="bi bi-arrow-right"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Off canvas Add Contact-->
-
 <!-- Modal Add new Contact -->
-<div class="modal fade" id="modal-add-new-contact" tabindex="-1" role="dialog"
-     aria-labelledby="exampleModalCenter" aria-hidden="true">
+<div class="modal fade" id="modal-add-new-contact" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -264,7 +261,7 @@
 <!-- End modal Add new Contact -->
 
 <!-- Modal Bank Account -->
-<div class="modal fade" id="modal-bank-account-information" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+<div class="modal fade" id="modal-bank-account-information" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -329,7 +326,7 @@
 <!-- End Modal Bank Account -->
 
 <!-- Modal Credit Card -->
-<div class="modal fade" id="modal-credit-card-information" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+<div class="modal fade" id="modal-credit-card-information" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -391,7 +388,7 @@
 </div>
 <!-- End Modal Credit Card -->
 
-<div class="modal fade" id="modal-view-tax-code-info" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal-view-tax-code-info" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">

@@ -43,12 +43,21 @@
             <th>{% trans 'Group code' %}</th>
             <th>{% trans 'Upper group' %}</th>
             <th>{% trans 'Manager' %}</th>
-{#            <th>{% trans 'Actions' %}</th>#}
+            <th></th>
         </tr>
         </thead>
         <tbody>
         </tbody>
     </table>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+            type="text" id="app-url-factory"
+            data-detail="{% url 'GroupDetail' 1 %}"
+            data-detail-api="{% url 'GroupDetailAPI' 1 %}"
+            data-edit="{% url 'GroupUpdate' 1 %}"
+    >
 {% endblock %}
 
 {% block jsFooter %}

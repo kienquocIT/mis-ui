@@ -20,19 +20,19 @@
                     <div class="col-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <label class="form-label" for="cash_value">{% trans "Cash value" %}</label>
-                            <input name="cash_value" class="form-control mask-money" value="0" id="cash_value">
+                            <input class="form-control mask-money" value="0" id="cash_value">
                         </div>
                     </div>
                     <div class="col-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <label class="form-label" for="bank_value">{% trans "Bank value" %}</label>
-                            <input name="bank_value" class="form-control mask-money" value="0" id="bank_value">
+                            <input class="form-control mask-money" value="0" id="bank_value">
                         </div>
                     </div>
                     <div class="col-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <label class="form-label" for="company_bank_account">{% trans "Select company bank account" %}</label>
-                            <select name="company_bank_account" class="form-select" id="company_bank_account" data-method=GET data-url="{% url 'BankAccountMasterDataListAPI' %}"></select>
+                            <select class="form-select" id="company_bank_account" data-method=GET data-url="{% url 'BankAccountMasterDataListAPI' %}"></select>
                         </div>
                     </div>
                 </div>

@@ -5,7 +5,7 @@ const columns =
     [
         {
             data: 'code',
-            className: 'wrap-text w-15',
+            className: 'w-15',
             render: (data, type, row, meta) => {
                 return `<a href="#" class="btn-detail" data-id="{0}" data-bs-toggle="modal" data-bs-target="#modalDetail"><span class="badge badge-soft-primary">{1}</span></a>`.format_by_idx(
                     row.id, data
@@ -14,7 +14,7 @@ const columns =
         },
         {
             data: 'is_parent',
-            className: 'wrap-text w-5',
+            className: 'w-5',
             render: (data, type, row, meta) => {
                 if (data)
                     return `<button class="btn-collapse-expense-child btn btn-icon btn-rounded mr-1" data-id="${row.id}"><span class="icon"><i class="icon-collapse-expense-child fas fa-caret-right text-secondary"></i></span></button>`;
@@ -24,7 +24,7 @@ const columns =
         },
         {
             data: 'title',
-            className: 'wrap-text w-30',
+            className: 'w-30',
             render: (data, type, row, meta) => {
                 return `<span>{0}</span></a>`.format_by_idx(
                     data
@@ -33,7 +33,7 @@ const columns =
         },
         {
             data: 'description',
-            className: 'wrap-text w-40',
+            className: 'w-40',
             render: (data, type, row, meta) => {
                 return `<span>{0}</span></a>`.format_by_idx(
                     data,
@@ -42,7 +42,7 @@ const columns =
         },
         {
             data: 'is_active',
-            className: 'wrap-text w-10',
+            className: 'w-10',
             render: (data, type, row, meta) => {
                 if (data)
                     return `<div class="form-check form-switch"><input type="checkbox" class="form-check-input" checked name="is_active"></div>`

@@ -135,21 +135,21 @@ function loadStockQuantityDataTable(gre_item_id) {
                 paging: false,
                 columns: [
                     {
-                        className: 'wrap-text w-15',
+                        className: 'w-15',
                         render: (data, type, row) => {
                             let color = row?.['stock_type'] === 1 ? 'primary' : 'danger'
                             return `<span class="small">${row?.['trans_title'] ? row?.['trans_title'] : ''} <span class="text-${color}">${row?.['trans_code']}</span></span>`;
                         }
                     },
                     {
-                        className: 'wrap-text text-center',
+                        className: 'text-center',
                         render: (data, type, row) => {
                             let color = row?.['stock_type'] === 1 ? 'primary' : 'danger'
                             return `<span class="badge badge-soft-${color}">${row?.['warehouse']?.['code']}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text text-center',
+                        className: 'text-center',
                         render: (data, type, row) => {
                             if (row?.['lot_mapped']?.['lot_number']) {
                                 return `<span class="text-blue fw-bold small"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['lot_mapped']?.['lot_number']}</span>`;
@@ -158,19 +158,19 @@ function loadStockQuantityDataTable(gre_item_id) {
                         }
                     },
                     {
-                        className: 'wrap-text text-right',
+                        className: 'text-right',
                         render: (data, type, row) => {
                             return `${current_stock}`;
                         }
                     },
                     {
-                        className: 'wrap-text text-right',
+                        className: 'text-right',
                         render: (data, type, row) => {
                             return `<span class="mask-money" data-init-money="${current_stock_value}"></span>`;
                         }
                     },
                     {
-                        className: 'wrap-text text-right',
+                        className: 'text-right',
                         render: (data, type, row) => {
                             if (row?.['stock_type'] === 1) {
                                 current_stock += row?.['quantity']
@@ -180,7 +180,7 @@ function loadStockQuantityDataTable(gre_item_id) {
                         }
                     },
                     {
-                        className: 'wrap-text text-right',
+                        className: 'text-right',
                         render: (data, type, row) => {
                             if (row?.['stock_type'] === 1) {
                                 current_stock_value += row?.['value']
@@ -190,7 +190,7 @@ function loadStockQuantityDataTable(gre_item_id) {
                         }
                     },
                     {
-                        className: 'wrap-text text-right',
+                        className: 'text-right',
                         render: (data, type, row) => {
                             if (row?.['stock_type'] === -1) {
                                 current_stock -= row?.['quantity']
@@ -200,7 +200,7 @@ function loadStockQuantityDataTable(gre_item_id) {
                         }
                     },
                     {
-                        className: 'wrap-text text-right',
+                        className: 'text-right',
                         render: (data, type, row) => {
                             if (row?.['stock_type'] === -1) {
                                 current_stock_value -= row?.['value']
@@ -210,13 +210,13 @@ function loadStockQuantityDataTable(gre_item_id) {
                         }
                     },
                     {
-                        className: 'wrap-text text-right',
+                        className: 'text-right',
                         render: (data, type, row) => {
                             return `${current_stock}`;
                         }
                     },
                     {
-                        className: 'wrap-text text-right',
+                        className: 'text-right',
                         render: (data, type, row) => {
                             return `<span class="mask-money" data-init-money="${current_stock_value}"></span>`;
                         }
@@ -359,7 +359,7 @@ function loadStockQuantityOtherDataTableBorrow() {
                 data: data_table,
                 columns: [
                     {
-                        className: 'wrap-text w-20 text-center',
+                        className: 'w-20 text-center',
                         render: (data, type, row) => {
                             return row?.['sale_order']?.['code'] ? `
                                 <span class="text-primary fw-bold"><i class="bi bi-clipboard-check"></i>&nbsp;${row?.['sale_order']?.['code']}</span>
@@ -368,25 +368,25 @@ function loadStockQuantityOtherDataTableBorrow() {
                         }
                     },
                     {
-                        className: 'wrap-text w-10 text-center',
+                        className: 'w-10 text-center',
                         render: (data, type, row) => {
                             return `<span>${row?.['borrow_uom']?.['title']}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-20 text-center',
+                        className: 'w-20 text-center',
                         render: (data, type, row) => {
                             return `<span>${row?.['quantity']}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-20 text-center',
+                        className: 'w-20 text-center',
                         render: (data, type, row) => {
                             return `<span>${row?.['quantity'] - row?.['available']}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-20 text-center',
+                        className: 'w-20 text-center',
                         render: (data, type, row) => {
                             return `<input type="number" min="0" readonly
                                            class="form-control text-center so-available-input"
@@ -395,7 +395,7 @@ function loadStockQuantityOtherDataTableBorrow() {
                         }
                     },
                     {
-                        className: 'wrap-text w-10 text-center',
+                        className: 'w-10 text-center',
                         render: (data, type, row) => {
                             return `
                                 <button type="button" class="btn btn-soft-danger btn-xs so-available-change">${script_trans.attr('data-trans-change')}</button>

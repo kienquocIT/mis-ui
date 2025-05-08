@@ -3586,11 +3586,17 @@ class WFRTControl {
             4: "red-light-4",
         }
         if (status || status === 0) {
-            return `<span class="p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
+            return `<span class="badge p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
         }
         return ``;
     }
 
+    static displayEmployeeWithGroup(obj_employee, field_fullname='full_name') {
+        if (Object.keys(obj_employee).length > 0 && field_fullname) {
+            return `<span title="${obj_employee?.['group']?.['title'] || $.fn.gettext('No group')}">${obj_employee?.[field_fullname] || ''}</span>`;
+        }
+        return ``;
+    }
 }
 
 class WFAssociateControl {
@@ -4335,7 +4341,7 @@ class UtilControl {
             let format = opts?.['format'] || "YYYY-MM-DD HH:mm:ss";
             let outputFormat = opts?.['outputFormat'] || "DD-MM-YYYY HH:mm:ss";
             let callback = opts?.['callback'] || function (data) {
-                return `<span>${data.output}</span> <span class="small text-primary">(${data.relate})</span>`;
+                return `<span>${data.output}</span> <span class="small">(${data.relate})</span>`;
             }
             const objDT = moment(dataStr, format);
             let relateTimeStr = objDT.fromNow();
@@ -4348,7 +4354,7 @@ class UtilControl {
                 'outputFormat': outputFormat,
             });
         }
-        return '_';
+        return '--';
     }
 
     static checkNumber(dataStr) {
@@ -4995,6 +5001,7 @@ class DTBControl {
                         let currentVal = $(this).prop('checked');
                         dtb.DataTable().column(idx).visible(currentVal);
                     }
+                    $.fn.initMaskMoney2();
                 }
             ).on(
                 'change', 'input.check-all',
@@ -5003,6 +5010,7 @@ class DTBControl {
                     $(this).closest('.dropdown-menu').find('input.custom-visible-item-dtb').each(function () {
                         $(this).prop('checked', currentVal).trigger('change');
                     });
+                    $.fn.initMaskMoney2();
                 }
             );
             wrapperEle.on('change', 'select.custom-filter-manual-dtb', function () {
@@ -5178,6 +5186,17 @@ class DTBControl {
             )
         }
         return result;
+    }
+
+    static addCommonAction(urls, data) {
+        let link = urls?.['data-edit'].format_url_with_uuid(data?.['id']);
+        return `<div class="dropdown">
+                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                    <div role="menu" class="dropdown-menu">
+                        <a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit"></i><span>${$.fn.transEle.attr('data-edit')}</span></a>
+                        <a class="dropdown-item btn-delete" href="#" data-id="${data?.['id']}"><i class="dropdown-icon far fa-trash-alt"></i><span>${$.fn.transEle.attr('data-delete')}</span></a>
+                    </div>
+                </div>`;
     }
 
     get reloadCurrency() {
@@ -5428,6 +5447,9 @@ class DTBControl {
     get columns() {
         return (this.opts?.['columns'] || []).map(
             (item) => {
+                if (!item?.['data']) {
+                    item['data'] = null
+                }
                 let clsNameTmp = item?.['className'] ? (item?.['className'] + ' wrap-text') : 'wrap-text';
                 return {
                     ...item,
@@ -6338,12 +6360,18 @@ class DocumentControl {
                 }
                 if (window.location.href.includes('/update/') && dataStatus === 3) {
                     $breadcrumbCode.append(
-                        `<span class="p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-blue-light-4" id="systemStatus" data-status="${dataStatus}" data-status-cr="${dataStatus + 2}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
+                        `<span class="badge p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-blue-light-4" id="systemStatus" data-status="${dataStatus}" data-status-cr="${dataStatus + 2}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
                     ).removeClass('hidden');
                 } else {
                     $breadcrumbCode.append(
-                        `<span class="p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-status-cr="" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
+                        `<span class="badge p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-status-cr="" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
                     ).removeClass('hidden');
+                }
+                if (detailData?.['system_auto_create']) {
+                    $breadcrumbCode.append(`<span class="badge-status ml-1">
+                                                <span class="badge badge-blue badge-indicator"></span>
+                                                <span class="small text-blue">${$.fn.gettext('Create automatically')}</span>
+                                            </span>`)
                 }
             }
         }
@@ -8774,7 +8802,7 @@ class DiagramControl {
             let urlDiagram = globeDiagramList;
             if ($btnLog && $btnLog.length > 0) {
                 let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
-                                <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
+                                <div class="offcanvas offcanvas-end w-90" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
                                     <div class="modal-header">
                                         <h5><b>Diagram</b></h5>
                                         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">

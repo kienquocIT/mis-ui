@@ -1078,6 +1078,15 @@ class SpaceItem:
                 MenusCompanySystem.PROCESS,
             ],
         ),
+        'partner-center': SpaceCommon(
+            'Partner Center',
+            'partner-center',
+            icon='<i class="fas fa-solid fa-user-tag"></i>',
+            menus=[
+                MenusPartnerCenter.HOME,
+                MenusPartnerCenter.LISTS,
+            ],
+        ),
         'company-system': SpaceCommon(
             'Company',
             'company-system',
@@ -1101,15 +1110,6 @@ class SpaceItem:
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,
                 MenusCoreConfigurations.TRANSITION_DATA_CONFIG,
                 MenusCoreConfigurations.TEMPLATES_DATA_CONFIG,
-            ],
-        ),
-        'partner-center': SpaceCommon(
-            'Partner Center',
-            'partner-center',
-            icon='<i class="fas fa-solid fa-user-tag"></i>',
-            menus=[
-                MenusPartnerCenter.HOME,
-                MenusPartnerCenter.LISTS,
             ],
         ),
     }

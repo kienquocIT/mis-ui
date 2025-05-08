@@ -13,10 +13,13 @@ function loadOpportunityMeetingList() {
         let frm = new SetupFormSubmit(dtb);
         dtb.DataTableDefault({
             rowIdx: true,
-            scrollX: '100vw',
-            scrollY: '75vh',
+            scrollX: true,
+            scrollY: '70vh',
             scrollCollapse: true,
             useDataServer: true,
+            fixedColumns: {
+                leftColumns: 2
+            },
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
@@ -31,45 +34,34 @@ function loadOpportunityMeetingList() {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return ``;
                     }
                 },
                 {
-                    data: 'subject',
-                    className: 'wrap-text w-50',
+                    className: 'w-50',
                     render: (data, type, row) => {
-                        let status = ''
-                        if (row?.['is_cancelled']) {
-                            status = `<span class="badge badge-sm badge-soft-danger">${meeting_trans_script.attr('data-trans-activity-cancelled')}</i>`
-                        }
-                        return `<a class="text-primary fw-bold offcanvas-meeting-button" href="" data-bs-toggle="offcanvas" data-id="${row?.['id']}" data-bs-target="#offcanvas-meeting-detail">
-                                    <span class="mr-1">${row?.['subject']}</span>${status}
-                                </a>`
+                        let status = row?.['is_cancelled'] ? `<span class="badge badge-sm badge-soft-danger">${meeting_trans_script.attr('data-trans-activity-cancelled')}</i>` : ''
+                        return `<a href="#" class="link-primary underline_hover fw-bold offcanvas-meeting-button" title="${row?.['subject']}" data-bs-toggle="offcanvas" data-id="${row?.['id']}" data-bs-target="#offcanvas-meeting-detail">${row?.['subject']}</a>${status}`
                     }
                 },
                 {
-                    data: 'opportunity',
-                    className: 'wrap-text text-center w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `${row?.['opportunity']?.['code']}`
                     }
                 },
                 {
-                    data: 'employee_inherit',
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
-                        return `<span class="text-blue">${row?.['employee_inherit']?.['full_name']}</span>`
+                        return `<span>${row?.['employee_inherit']?.['full_name']}</span>`
                     }
                 },
                 {
-                    data: 'meeting_date',
-                    className: 'wrap-text text-center w-15',
-                    render: (data) => {
-                        return $x.fn.displayRelativeTime(data, {
-                            'outputFormat': 'DD/MM/YYYY',
-                        });
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return $x.fn.displayRelativeTime(row?.['meeting_date'], {'outputFormat': 'DD/MM/YYYY'});
                     }
                 },
             ],

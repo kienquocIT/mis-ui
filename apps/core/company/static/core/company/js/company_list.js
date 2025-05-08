@@ -31,19 +31,19 @@ $(function () {
                 data: 'logo',
                 render: (data, type, row, meta) => {
                     if (data){
-                        return `<img src="${data}" style="width: 100px;"/>`
+                        return `<img src="${data}" style="width: 60px; height: 60px;"/>`
                     }
                     return ``;
                 }
             },{
                 data: 'code',
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row, meta) => {
                     return `<span class="w-80 badge badge-primary" href="/company/detail/` + row.id + `">${data}</span>`
                 }
             }, {
                 data: 'title',
-                className: 'wrap-text w-35',
+                className: 'w-35',
                 'render': (data, type, row, meta) => {
                     if (data) {
                         return `<div class="media align-items-center">

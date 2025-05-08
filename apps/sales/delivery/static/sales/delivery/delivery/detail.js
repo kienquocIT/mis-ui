@@ -995,14 +995,17 @@ $(async function () {
                         width: '30%',
                         render: (data, type, row) => {
                             let targetData = row?.['product_data'];
+                            let hidden = "";
                             if (row?.['offset_data']?.['id']) {
                                 targetData = row?.['offset_data'];
                             }
                             if (row?.['tool_data']?.['id']) {
                                 targetData = row?.['tool_data'];
+                                hidden = "hidden";
                             }
                             if (row?.['asset_data']?.['id']) {
                                 targetData = row?.['asset_data'];
+                                hidden = "hidden";
                             }
                             let checked = '';
                             if (!$scrollProduct[0].querySelector('.table-row-checkbox:checked')) {
@@ -1015,6 +1018,7 @@ $(async function () {
                                                 class="form-check-input table-row-checkbox"
                                                 id="new-product-${targetData?.['id'].replace(/-/g, "")}"
                                                 ${checked}
+                                                ${hidden}
                                             >
                                             <label class="form-check-label" for="new-product-${targetData?.['id'].replace(/-/g, "")}">${targetData?.['title'] ? targetData?.['title'] : ''}</label>
                                         </div>
@@ -1064,6 +1068,9 @@ $(async function () {
                         },
                     },
                 ],
+                drawCallback: function () {
+                    prodTable.dtbProductNewHDCustom();
+                },
             });
         };
 
@@ -1201,6 +1208,7 @@ $(async function () {
                     prodTable.setupCollapse();
                     prodTable.loadEventRadio($tablePW);
                     prodTable.loadEventPW();
+                    prodTable.dtbPWHDCustom();
                 },
             })
         };
@@ -1262,6 +1270,9 @@ $(async function () {
                         }
                     },
                 ],
+                drawCallback: function () {
+                    prodTable.dtbLotHDCustom();
+                },
             });
         };
 
@@ -1369,8 +1380,61 @@ $(async function () {
                     for (let checkAll of $scrollSerial[0].querySelectorAll('.table-row-checkbox-all')) {
                         checkAll.checked = false;
                     }
+                    prodTable.dtbSerialHDCustom();
                 },
             });
+        };
+
+        dtbProductNewHDCustom() {
+            let $table = $tableProductNew;
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
+        };
+
+        dtbPWHDCustom() {
+            let $table = $tablePW;
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
+        };
+
+        dtbLotHDCustom() {
+            let $table = $tableLot;
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
+        };
+
+        dtbSerialHDCustom() {
+            let $table = $tableSerial;
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
         };
 
         // dtb header custom

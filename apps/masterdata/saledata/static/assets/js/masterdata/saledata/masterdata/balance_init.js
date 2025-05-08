@@ -34,14 +34,12 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
+                            render: (data, type, row) => {
                             return ``;
                         }
                     },
                     {
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
+                            render: (data, type, row) => {
                             return `<span data-item-id="${row?.['product']?.['id']}"
                                           class="badge badge-soft-primary balance-item">
                                         ${row?.['product']?.['code']}
@@ -52,31 +50,27 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
+                            render: (data, type, row) => {
                             return `<span class="text-muted uom-title">${row?.['uom']?.['title']}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
+                            render: (data, type, row) => {
                             return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-blue balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
+                            render: (data, type, row) => {
                             return `<span class="balance-quantity">${row?.['quantity']}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text',
-                        render: (data, type, row) => {
+                            render: (data, type, row) => {
                             return `<span class="balance-value mask-money" data-init-money="${row?.['value']}"></span>`;
                         }
                     },
                     {
-                        className: 'wrap-text text-right',
+                        className: 'text-right',
                         render: (data, type, row) => {
                             return `<a href="#" class="text-secondary clear-balance-init"><i class="bi bi-x-lg"></i></a>`;
                         }

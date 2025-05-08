@@ -3,6 +3,10 @@ const companyDistrictEle = $('#company-address-district')
 const companyWardEle = $('#company-address-ward')
 const trans_script_ele = $('#trans-script')
 const company_config = $('#company-config')
+const $idxCurrencyDefault = $('#idxCurrencyDefault')
+const $cost_per_warehouse = $('#cost-per-warehouse')
+const $cost_per_lot = $('#cost-per-lot')
+const $cost_per_prj = $('#cost-per-prj')
 let VND_currency = {}
 const VND_currency_text = $('#VND_currency').text()
 if (VND_currency_text) {
@@ -109,44 +113,11 @@ const schema_item_preview = [
     fullYear.toString(),
     currentDate.toLocaleString('default', {month: 'short'}),
     currentDate.toLocaleString('default', {month: 'long'}),
-    monthOfYear.toString(),
-    weekOfYear.toString(),
-    dayOfYear.toString(),
-    dayOfMonth.toString(),
+    monthOfYear.toString().padStart(2, '0'),
+    weekOfYear.toString().padStart(2, '0'),
+    dayOfYear.toString().padStart(3, '0'),
+    dayOfMonth.toString().padStart(2, '0'),
     dayOfWeek.toString()
-]
-
-const FunctionNumberTableData = [
-    {
-        'function': trans_script_ele.attr('data-trans-opp')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-quo')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-so')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-picking')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-delivery')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-task')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-ap')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-payment')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-rp')
-    },
-    {
-        'function': trans_script_ele.attr('data-trans-pr')
-    }
 ]
 
 min_num_char_checkbox_ele.on('change', function () {
@@ -184,7 +155,7 @@ function Preview() {
             if (schema_item_list_value.includes(raw_schema_item_list[i])) {
                 let format_value = schema_item_list_value.indexOf(raw_schema_item_list[i]);
                 if (format_value === 0) {
-                    let min_char_number = parseInt(min_num_char_ele.val()) ? min_num_char_ele.val() : 0;
+                    let min_char_number = min_num_char_ele.val() ? parseInt(min_num_char_ele.val()) : 0;
                     code_1 = code_1.replace(raw_schema_item_list[i], last_number_ele.val().padStart(min_char_number, '0'));
                     code_2 = code_2.replace(raw_schema_item_list[i], (parseInt(last_number_ele.val()) + 1).toString().padStart(min_char_number, '0'));
                 } else {
@@ -232,14 +203,11 @@ $(document).on("click", '.schema-custom', function () {
     Preview()
 })
 
-$(document).on("click", '.numbering-by-selection', function () {
-    current_schema_row = $(this).closest('tr');
-    if ($(this).val() === '0') {
-        current_schema_row.find('.schema-custom').prop('hidden', true);
-        current_schema_row.find('.schema-show').text('');
-    } else {
-        current_schema_row.find('.schema-custom').prop('hidden', false);
-    }
+$(document).on("click", '.delete-schema', function () {
+    UsualLoadPageFunction.DeleteTableRow(
+        $(this).closest('table'),
+        parseInt($(this).closest('tr').find('td:first-child').text())
+    )
 })
 
 function formatInputSchema() {
@@ -299,68 +267,77 @@ $('#save-changes-modal-function-number').on('click', function () {
     }
 })
 
-function loadFunctionNumberTable(option='detail', table_detail_data = []) {
+const $function_number_table = $('#function_number_table')
+const $add_new_config_app = $('#add-new-config-app')
+
+function loadFunctionNumberTable(option='detail', table_detail_data=[]) {
     table_detail_data.sort(function (a, b) {
         return a.function - b.function;
     });
-    $('#function_number_table').DataTableDefault({
+    $function_number_table.DataTableDefault({
+        styleDom: 'hide-foot',
         rowIdx: true,
-        scrollX: '100vw',
-        scrollY: '30vh',
+        scrollX: true,
+        scrollY: '55vh',
         scrollCollapse: true,
         paging: false,
         data: table_detail_data,
         columns: [
             {
-                className: 'wrap-text',
                 render: () => {
                     return ``;
                 }
             }, {
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    return `<span class="text-primary"><b>${FunctionNumberTableData[row?.['function']]?.['function']}</b></span>`;
+                render: () => {
+                    return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 app-select"></select>`;
                 }
             }, {
-                className: 'wrap-text',
-                render: (data, type, row) => {
-                    let system = trans_script_ele.attr('data-trans-numbering0');
-                    let user_defined = trans_script_ele.attr('data-trans-numbering1');
-                    if (row?.['numbering_by']) {
-                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select numbering-by-selection">
-                            <option value="0">${system}</option>
-                            <option value="1" selected>${user_defined}</option>
-                        </select>`;
-                    } else {
-                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select numbering-by-selection">
-                            <option value="0" selected>${system}</option>
-                            <option value="1">${user_defined}</option>
-                        </select>`;
-                    }
-                }
-            }, {
-                className: 'wrap-text',
                 render: (data, type, row) => {
                     if (row?.['schema']) {
-                        return `<span data-schema="${row?.['schema']}" data-first-number="${row?.['first_number']}" data-last-number="${row?.['last_number']}" data-reset-frequency="${row?.['reset_frequency']}" data-min-number-char="${row?.['min_number_char']}" class="schema-show text-primary">${row?.['schema_text']}</span>`;
-                    } else {
-                        return `<span class="schema-show text-primary"></span>`;
+                        return `<span data-schema="${row?.['schema']}" data-first-number="${row?.['first_number']}" data-last-number="${row?.['last_number']}" data-reset-frequency="${row?.['reset_frequency']}" data-min-number-char="${row?.['min_number_char']}" class="schema-show">${row?.['schema_text']}</span>`;
                     }
+                    return `<span class="schema-show"></span>`;
                 }
             }, {
-                className: 'wrap-text text-right',
-                render: (data, type, row) => {
+                className: 'text-center',
+                render: () => {
                     if (option !== 'detail') {
-                        if (row?.['schema']) {
-                            return `<span class="text-primary schema-custom" data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
-                        } else {
-                            return `<span class="text-primary schema-custom" hidden data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></span>`;
-                        }
+                        return `
+                                <a class="schema-custom" href="#" data-bs-toggle="modal" data-bs-target="#modal-function-number"><i class="far fa-edit"></i></a>
+                                <a class="delete-schema text-danger ml-1" href="#"><i class="bi bi-x-square"></i></a>
+                        `;
                     }
-                    return ``;
+                    return ''
                 }
             }
         ],
+        initComplete: function () {
+            $function_number_table.find('tbody tr').each(function (index, ele) {
+                LoadApplicationList($(ele).find('.app-select'), {
+                    'code': table_detail_data[index]?.['app_code'],
+                    'title': table_detail_data[index]?.['app_title'],
+                })
+            })
+        }
+    })
+}
+
+$add_new_config_app.on('click', function () {
+    UsualLoadPageFunction.AddTableRow($function_number_table)
+    let row_added = $function_number_table.find('tbody tr:last-child')
+    LoadApplicationList(row_added.find('.app-select'))
+})
+
+function LoadApplicationList(ele, data) {
+    ele.initSelect2({
+        ajax: {
+            url: company_config.attr('data-url-all-app') + '?only_app=true',
+            method: 'GET',
+        },
+        data: (data ? data : null),
+        keyResp: 'tenant_application_list',
+        keyId: 'code',
+        keyText: 'title',
     })
 }
 
@@ -377,10 +354,10 @@ function LoadCountry(ele, data) {
     })
 }
 
-function LoadCurrency(data, data_url=null) {
-    $('#idxCurrencyDefault').initSelect2({
+function LoadCurrency(data) {
+    $idxCurrencyDefault.initSelect2({
         ajax: {
-            url: company_config.attr('data-url-currency-list') || $('#idxCurrencyDefault').attr('data-url'),
+            url: company_config.attr('data-url-currency-list') || $idxCurrencyDefault.attr('data-url'),
             method: 'GET',
         },
         callbackDataResp(resp, keyResp) {
@@ -414,7 +391,7 @@ class CompanyHandle {
         frm.dataForm['fax'] = $('#fax').val();
 
         frm.dataForm['company_function_number_data'] = []
-        $('#function_number_table tbody tr').each(function (index) {
+        $('#function_number_table tbody tr').each(function () {
             let schema_text = $(this).find('.schema-show').text()
             let schema = $(this).find('.schema-show').attr('data-schema');
             let first_number = $(this).find('.schema-show').attr('data-first-number');
@@ -424,17 +401,18 @@ class CompanyHandle {
             if (min_number_char === 'null') {
                 min_number_char = null
             }
+            let app_selected = SelectDDControl.get_data_from_idx($(this).find('.app-select'), $(this).find('.app-select').val())
 
             if (schema_text && schema && first_number && last_number && reset_frequency) {
                 frm.dataForm['company_function_number_data'].push({
-                    'function': index,
-                    'numbering_by': $(this).find('.numbering-by-selection').val(),
                     'schema_text': schema_text,
                     'schema': schema,
                     'first_number': first_number,
                     'last_number': last_number,
                     'reset_frequency': reset_frequency,
-                    'min_number_char': min_number_char ? min_number_char : null
+                    'min_number_char': min_number_char ? min_number_char : null,
+                    'app_code': app_selected?.['code'],
+                    'app_title': app_selected?.['title']
                 })
             }
         })
@@ -463,9 +441,10 @@ function Disable(option) {
         $('.blog-body .form-select').prop('disabled', true).css({color: 'black'});
         $('.blog-body .select2').prop('disabled', true);
         $('.blog-body input').prop('disabled', true);
-        $('#cost-per-warehouse').prop('disabled', true);
-        $('#cost-per-lot').prop('disabled', true);
-        $('#cost-per-prj').prop('disabled', true);
+        $cost_per_warehouse.prop('disabled', true);
+        $cost_per_lot.prop('disabled', true);
+        $cost_per_prj.prop('disabled', true);
+        $add_new_config_app.prop('disabled', true);
     }
 }
 
@@ -479,8 +458,8 @@ function LoadDetailCompany(frm, option) {
             'url': company_config.attr('data-url-detail'),
             'data': {'company_id': pk},
             'method': 'GET',
-        })
-    ]).then(([result0, result1, result2]) => {
+        }),
+    ]).then(([result0, result1]) => {
         let data0 = $.fn.switcherResp(result0); // detail data
         let data1 = $.fn.switcherResp(result1); // config
 
@@ -500,8 +479,8 @@ function LoadDetailCompany(frm, option) {
         const eleInputLogo = $('#company_logo');
         const eleInputIcon = $('#company_icon');
         if (option === 'update') {
-            if (data0.logo) {
-                eleInputLogo.attr('data-default-file', data0.logo);
+            if (data0?.['logo']) {
+                eleInputLogo.attr('data-default-file', data0?.['logo']);
             }
             eleInputLogo.dropify({
                 messages: {
@@ -509,8 +488,8 @@ function LoadDetailCompany(frm, option) {
                 }
             });
 
-            if (data0.icon){
-                eleInputIcon.attr('data-default-file', data0.icon);
+            if (data0?.['icon']){
+                eleInputIcon.attr('data-default-file', data0?.['icon']);
             }
             eleInputIcon.dropify({
                 messages: {
@@ -519,15 +498,15 @@ function LoadDetailCompany(frm, option) {
             })
         }
         else {
-            if (data0.logo) {
+            if (data0?.['logo']) {
                 $(`
-                    <img src="${data0.logo}" style="width: 90%; max-height: 100px; object-fit: contain;"/>
+                    <img alt="" src="${data0?.['logo']}" class="w-100"/>
                 `).insertAfter(eleInputLogo);
             }
             eleInputLogo.attr('disabled', 'disabled').remove();
-            if (data0.icon) {
+            if (data0?.['icon']) {
                 $(`
-                    <img src="${data0.icon}" style="width: 90%; max-height: 100px; object-fit: contain;"/>
+                    <img alt="" src="${data0?.['icon']}" class="w-100"/>
                 `).insertAfter(eleInputIcon);
             }
             eleInputIcon.attr('disabled', 'disabled').remove();
@@ -548,16 +527,16 @@ function LoadDetailCompany(frm, option) {
             $('#default-inventory-value-method').val(data1['config']?.['default_inventory_value_method']);
 
             if (data1['config']?.['cost_per_warehouse']) {
-                $('#cost-per-warehouse').prop('checked', true);
-                $('#cost-per-warehouse').trigger('change')
+                $cost_per_warehouse.prop('checked', true);
+                $cost_per_warehouse.trigger('change')
             }
             if (data1['config']?.['cost_per_lot']) {
-                $('#cost-per-lot').prop('checked', true);
-                $('#cost-per-lot').trigger('change')
+                $cost_per_lot.prop('checked', true);
+                $cost_per_lot.trigger('change')
             }
             if (data1['config']?.['cost_per_project']) {
-                $('#cost-per-prj').prop('checked', true);
-                $('#cost-per-prj').trigger('change')
+                $cost_per_prj.prop('checked', true);
+                $cost_per_prj.trigger('change')
             }
 
             $('#idxLanguage').val(data1['config']['language']).trigger('change.select2');
@@ -595,37 +574,37 @@ $("tbody").on("click", "#del-company-button", function (event) {
     }
 });
 
-$('#cost-per-warehouse').on('change', function () {
+$cost_per_warehouse.on('change', function () {
     if ($(this).prop('checked')) {
-        $('#cost-per-lot').prop('disabled', false)
-        $('#cost-per-prj').prop('disabled', true)
+        $cost_per_lot.prop('disabled', false)
+        $cost_per_prj.prop('disabled', true)
     }
     else {
-        if (!$('#cost-per-lot').prop('checked')) {
-            $('#cost-per-prj').prop('disabled', false)
+        if (!$cost_per_lot.prop('checked')) {
+            $cost_per_prj.prop('disabled', false)
         }
     }
 })
 
-$('#cost-per-lot').on('change', function () {
+$cost_per_lot.on('change', function () {
     if ($(this).prop('checked')) {
-        $('#cost-per-warehouse').prop('disabled', false)
-        $('#cost-per-prj').prop('disabled', true)
+        $cost_per_warehouse.prop('disabled', false)
+        $cost_per_prj.prop('disabled', true)
     }
     else {
-        if (!$('#cost-per-warehouse').prop('checked')) {
-            $('#cost-per-prj').prop('disabled', false)
+        if (!$cost_per_warehouse.prop('checked')) {
+            $cost_per_prj.prop('disabled', false)
         }
     }
 })
 
-$('#cost-per-prj').on('change', function () {
+$cost_per_prj.on('change', function () {
     if ($(this).prop('checked')) {
-        $('#cost-per-warehouse').prop('disabled', true)
-        $('#cost-per-lot').prop('disabled', true)
+        $cost_per_warehouse.prop('disabled', true)
+        $cost_per_lot.prop('disabled', true)
     }
     else {
-        $('#cost-per-warehouse').prop('disabled', false)
-        $('#cost-per-lot').prop('disabled', false)
+        $cost_per_warehouse.prop('disabled', false)
+        $cost_per_lot.prop('disabled', false)
     }
 })

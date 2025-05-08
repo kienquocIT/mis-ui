@@ -11,134 +11,97 @@
 {% block pageContent %}
     {% csrf_token %}
 
-    <div class="row">
-        <div class="col-12 col-md-2 col-lg-2">
-            <div class="card">
-                <div class="card-header card-header-action bg-grey-light-5 h-40p">
-                    <span class="badge badge-secondary badge-outline badge-sm">
-                        <span>
-                            <span class="icon"><span class="feather-icon"><i class="fas fa-filter"></i></span></span>
-                            {% trans 'Filter' %}
-                        </span>
-                    </span>
-                    <div class="card-action-wrap">
+    <table
+            id="table_report_general_list"
+            class="table nowrap min-w-1366p w-100 mb-5"
+            data-url="{% url 'ReportGeneralListAPI' %}"
+            data-method="get"
+    >
+        <thead>
+        <tr class="bg-light">
+            <th>{% trans 'Group' %}</th>
+            <th>{% trans 'Employee' %}</th>
+            <th>{% trans 'Revenue plan' %}</th>
+            <th>{% trans 'Revenue' %}</th>
+            <th>{% trans 'Ratio' %}</th>
+            <th>{% trans 'Gross profit plan' %}</th>
+            <th>{% trans 'Gross profit' %}</th>
+            <th>{% trans 'Ratio' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div class="modal-canvas-area">
+
+        <div class="offcanvas offcanvas-end w-40" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
+            <div class="modal-header">
+                <h5><b>{% trans 'Filter' %}</b></h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label mt-2" for="box-report-general-group">{% trans 'Group' %}</label>
+                        <select
+                                class="form-select"
+                                id="box-report-general-group"
+                                data-url="{% url "GroupListAPI" %}"
+                                data-method="GET"
+                                data-link-detail="{% url "GroupDetail" 1 %}"
+                                name="group"
+                                data-keyResp="group_list"
+                                multiple
+                        ></select>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="card">
-                        <div class="row">
-                            <div class="col-12 col-md-9 col-lg-9">
-                                <div class="card-body">
-                                    <div><small class="card-text text-light">{% trans 'View by' %}</small></div>
-                                    <div id="card-filter-vb"></div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
-                                <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
-                                    <div class="dropdown-menu w-300p">
-                                        <div class="form-group">
-                                            <label class="form-label mt-2" for="box-report-general-group">{% trans 'Group' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="box-report-general-group"
-                                                    data-url="{% url "GroupListAPI" %}"
-                                                    data-method="GET"
-                                                    data-link-detail="{% url "GroupDetail" 1 %}"
-                                                    name="group"
-                                                    data-keyResp="group_list"
-                                                    multiple
-                                            ></select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label mt-2" for="box-report-general-employee">{% trans 'Employee' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="box-report-general-employee"
-                                                    data-url="{% url "EmployeeListAPI" %}"
-                                                    data-method="GET"
-                                                    name="employee"
-                                                    data-keyResp="employee_list"
-                                                    data-keyText="full_name"
-                                                    multiple
-                                            ></select>
-                                        </div>
-                                        <div class="d-flex justify-content-end mt-2">
-                                            <button type="button" class="btn btn-secondary btn-sm mr-2" id="btn-cancel-vb">{% trans 'Cancel' %}</button>
-                                            <button type="button" class="btn btn-primary btn-sm" id="btn-apply-vb">{% trans 'Apply' %}</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label mt-2" for="box-report-general-employee">{% trans 'Employee' %}</label>
+                        <select
+                                class="form-select"
+                                id="box-report-general-employee"
+                                data-url="{% url "EmployeeListAPI" %}"
+                                data-method="GET"
+                                name="employee"
+                                data-keyResp="employee_list"
+                                data-keyText="full_name"
+                                multiple
+                        ></select>
                     </div>
-                    <div class="card">
-                        <div class="row">
-                            <div class="col-12 col-md-9 col-lg-9">
-                                <div class="card-body">
-                                    <div><small class="card-text text-light">{% trans 'Date' %}</small></div>
-                                    <div id="card-filter-date"></div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center">
-                                <div class="btn-group dropend">
-                                    <button type="button" class="btn btn-icon btn-rounded flush-soft-hover btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon"><i class="fas fa-caret-right"></i></span></button>
-                                    <div class="dropdown-menu w-300p">
-                                        <div class="form-group">
-                                            <label class="form-label mt-2" for="box-report-general-year">{% trans 'Year' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="box-report-general-year"
-                                                    data-url=""
-                                                    data-method="GET"
-                                                    name="year"
-                                            ></select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label mt-2" for="box-report-general-detail">{% trans 'Detail' %}</label>
-                                            <select
-                                                    class="form-select"
-                                                    id="box-report-general-detail"
-                                                    data-url=""
-                                                    data-method="GET"
-                                                    name="month"
-                                            ></select>
-                                        </div>
-                                        <div class="d-flex justify-content-end mt-2">
-                                            <button type="button" class="btn btn-secondary btn-sm mr-2" id="btn-cancel-date">{% trans 'Cancel' %}</button>
-                                            <button type="button" class="btn btn-primary btn-sm" id="btn-apply-date">{% trans 'Apply' %}</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label mt-2" for="box-report-general-year">{% trans 'Year' %}</label>
+                        <select
+                                class="form-select"
+                                id="box-report-general-year"
+                                data-url=""
+                                data-method="GET"
+                                name="year"
+                        ></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label mt-2" for="box-report-general-detail">{% trans 'Detail' %}</label>
+                        <select
+                                class="form-select"
+                                id="box-report-general-detail"
+                                data-url=""
+                                data-method="GET"
+                                name="month"
+                        ></select>
                     </div>
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas" data-zone="lease_costs_data">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-primary" id="btn-apply-filter" data-bs-dismiss="offcanvas">{% trans 'Apply' %}</button>
+            </div>
         </div>
-        <div class="col-12 col-md-10 col-lg-10">
-            <table
-                    id="table_report_general_list"
-                    class="table nowrap min-w-1366p w-100 mb-5"
-                    data-url="{% url 'ReportGeneralListAPI' %}"
-                    data-method="get"
-            >
-                <thead>
-                <tr class="bg-light">
-                    <th>{% trans 'Group' %}</th>
-                    <th>{% trans 'Employee' %}</th>
-                    <th>{% trans 'Revenue plan' %}</th>
-                    <th>{% trans 'Revenue' %}</th>
-                    <th>{% trans 'Ratio' %}</th>
-                    <th>{% trans 'Gross profit plan' %}</th>
-                    <th>{% trans 'Gross profit' %}</th>
-                    <th>{% trans 'Ratio' %}</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
+
     </div>
 
 {% endblock %}

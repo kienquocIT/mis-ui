@@ -8,12 +8,12 @@ $(document).ready(function () {
         'Not a target'
     ]
     const STATUS_LIST_STYLE = {
-        'Prospect': 'badge badge-outline badge-soft-warning',
-        'Open - not contacted': 'badge badge-outline badge-soft-success',
-        'Working': 'badge badge-outline badge-soft-primary',
-        'Opportunity created': 'badge badge-outline badge-soft-blue',
-        'Disqualified': 'badge badge-outline badge-secondary',
-        'Not a target': 'badge badge-outline badge-secondary'
+        'Prospect': 'text-warning',
+        'Open - not contacted': 'text-success',
+        'Working': 'text-primary',
+        'Opportunity created': 'text-blue',
+        'Disqualified': 'text-secondary',
+        'Not a target': 'text-secondary'
     }
 
     function loadLeadList() {
@@ -23,10 +23,14 @@ $(document).ready(function () {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '32vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -40,56 +44,53 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'w-5',
                         'render': () => {
                             return ``;
                         }
                     },
                     {
-                        className: 'wrap-text w-10',
+                        className: 'ellipsis-cell-xs w-5',
                         'render': (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`;
+                            return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-20',
+                        className: 'ellipsis-cell-lg w-20',
                         'render': (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}"><b>${row?.['title']}</b></a>`;
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        className: 'wrap-text w-10',
+                        className: 'w-10',
                         'render': (data, type, row) => {
-                            return `<span class="badge badge-sm badge-blue">${row?.['source']}</span>`;
+                            return `<span class="small text-blue">${row?.['source'] || '--'}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-15',
+                        className: 'w-15',
                         'render': (data, type, row) => {
-                            return `${row?.['contact_name']}`;
+                            return `<span>${row?.['current_lead_stage_data']?.['title'] || '--'}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text w-10',
+                        className: 'ellipsis-cell-sm w-15',
                         'render': (data, type, row) => {
-                            return `${moment(row?.['date_created'].split(' ')[0]).format('DD/MM/YYYY')}`;
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
                     },
                     {
-                        className: 'wrap-text w-15',
+                        className: 'ellipsis-cell-sm w-15',
                         'render': (data, type, row) => {
-                            return `<span class="badge-status">
-                                        <span class="badge badge-primary badge-indicator"></span>
-                                        <span class="badge-label">${row?.['current_lead_stage_data']?.['title']}</span>
-                                    </span>`;
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
-                        className: 'wrap-text text-center w-15',
+                        className: 'ellipsis-cell-xs w-15',
                         'render': (data, type, row) => {
-                            return `<span class="${STATUS_LIST_STYLE[row?.['lead_status']]}">${row?.['lead_status']}</span>`;
+                            return `<span title="${row?.['lead_status']}" class="${STATUS_LIST_STYLE[row?.['lead_status']]}">${row?.['lead_status']}</span>`;
                         }
                     },
                 ],

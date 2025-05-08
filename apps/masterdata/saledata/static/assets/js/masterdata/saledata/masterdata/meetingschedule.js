@@ -20,46 +20,47 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'w-5',
                         render: () => {
                             return '';
                         }
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text w-10',
+                        className: 'w-15',
                         render: (data, type, row, meta) => {
                             return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
                         }
                     },
                     {
                         data: 'name',
-                        className: 'wrap-text w-20',
+                        className: 'w-20',
                         render: (data, type, row, meta) => {
                             return `<span class="text-muted">${row?.['title']}</span>`
                         }
                     },
                     {
                         data: 'description',
-                        className: 'wrap-text w-30',
+                        className: 'w-30',
                         render: (data, type, row, meta) => {
                             return `<span class="text-muted">${row?.['description']}</span>`
                         }
                     },
                     {
                         data: 'location',
-                        className: 'wrap-text w-30',
+                        className: 'w-25',
                         render: (data, type, row, meta) => {
                             return `<span class="text-primary"><i class="bi bi-geo-alt-fill"></i> ${row?.['location']}</span>`
                         }
                     },
                     {
-                        className: 'wrap-text w-5 text-center',
+                        className: 'w-5 text-center',
                         render: (data, type, row, meta) => {
-                            return `<button data-id="${row?.['id']}" data-title="${row?.['title']}" data-code="${row?.['code']}" data-location="${row?.['location']}" data-des="${row?.['description']}"
-                                            class="btn btn-icon btn-rounded btn-flush-primary edit-meeting-room" type="button" data-bs-toggle="modal" data-bs-target="#updateMeetingRoomModal">
-                                        <span class="icon"><i class="bi bi-pencil-square"></i></span>
-                                    </button>`
+                            return `<a data-id="${row?.['id']}" data-title="${row?.['title']}" data-code="${row?.['code']}" data-location="${row?.['location']}" data-des="${row?.['description']}"
+                                   data-bs-toggle="modal" data-bs-target="#updateMeetingRoomModal"
+                                   class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-meeting-room">
+                                   <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                               </a>`
                         }
                     }
                 ],

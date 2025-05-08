@@ -176,8 +176,7 @@ $(function () {
             if (this.closest('.btn-group')) {
                 if (this.closest('.btn-group').querySelector('.control')) {
                     let target = parseInt(this.closest('.btn-group').querySelector('.control').getAttribute('data-drag'));
-                    NodeLoadDataHandle.dataNode = NodeLoadDataHandle.dataNode.filter(data => data.order !== target);
-                    FlowJsP.init();
+                    NodeLoadDataHandle.loadDeleteNode(target);
                 }
             }
         });
@@ -186,8 +185,7 @@ $(function () {
             if (this.closest('.btn-group')) {
                 if (this.closest('.btn-group').querySelector('.clone')) {
                     let target = parseInt(this.closest('.btn-group').querySelector('.clone').getAttribute('data-drag'));
-                    NodeLoadDataHandle.dataNode = NodeLoadDataHandle.dataNode.filter(data => data.order !== target);
-                    FlowJsP.init();
+                    NodeLoadDataHandle.loadDeleteNode(target);
                 }
             }
         });
@@ -284,102 +282,11 @@ $(function () {
         });
 
         NodeFormulaHandle.$formulaCanvas.on('mouseenter', '.param-item', function () {
-            let dataEle = this.querySelector('.data-show');
-            if (dataEle) {
-                if ($(dataEle).val()) {
-                    let data = JSON.parse($(dataEle).val());
-                    let dataStr = JSON.stringify(data);
-                    let htmlBase = `<div data-bs-spy="scroll" data-bs-target="#scrollspy_demo_h" data-bs-smooth-scroll="true" class="h-380p position-relative overflow-y-scroll">
-                                        <div class="row">
-                                            <h5>${data?.['title_i18n'] ? data?.['title_i18n'] : ''}</h5>
-                                            <p>${data?.['remark'] ? data?.['remark'] : ''}</p>
-                                        </div>
-                                        <div class="row area-property-md hidden">
-                                            <div class="form-group">
-                                                <select class="form-select box-property-md"></select>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <b>${NodeLoadDataHandle.transEle.attr('data-syntax')}</b>
-                                            <p>${data?.['syntax_show'] ? data?.['syntax_show'] : ''}</p>
-                                        </div>
-                                        <div class="row">
-                                            <b>${NodeLoadDataHandle.transEle.attr('data-example')}</b>
-                                            <p>${data?.['example'] ? data?.['example'] : ''}</p>
-                                        </div>
-                                    </div>`;
-
-                    let tabEle = this.closest('.tab-pane');
-                    if (tabEle) {
-                        if (tabEle.id === "tab_formula_property") {
-                            NodeFormulaHandle.$propertyRemark.empty();
-                            NodeFormulaHandle.$propertyRemark.append(htmlBase);
-                            if (data?.['type'] === 5) {
-                                let url = "";
-                                let keyResp = "";
-                                if (NodeFormulaHandle.appMapMDUrls?.[data?.['content_type']]) {
-                                    if (NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['url']) {
-                                        url = NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['url'];
-                                    }
-                                    if (NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['keyResp']) {
-                                        keyResp = NodeFormulaHandle.appMapMDUrls[data?.['content_type']]?.['keyResp'];
-                                    }
-                                }
-                                let areaBoxMDEle = NodeFormulaHandle.$propertyRemark[0].querySelector('.area-property-md');
-                                let boxMDEle = NodeFormulaHandle.$propertyRemark[0].querySelector('.box-property-md');
-                                if (areaBoxMDEle && boxMDEle) {
-                                    $(boxMDEle).attr('data-url', url);
-                                    $(boxMDEle).attr('data-method', 'GET');
-                                    $(boxMDEle).attr('data-keyResp', keyResp);
-                                    $(boxMDEle).attr('data-show', dataStr);
-                                    $(boxMDEle).attr('disabled', 'true');
-                                    loadInitS2($(boxMDEle), [], {}, NodeFormulaHandle.$propertyRemark, true);
-
-                                    $(areaBoxMDEle).removeClass('hidden');
-                                }
-                            }
-                        }
-                        if (tabEle.id === "tab_formula_function") {
-                            NodeFormulaHandle.$functionRemark.empty();
-                            NodeFormulaHandle.$functionRemark.append(htmlBase);
-                        }
-                    }
-                }
-            }
-            return true;
+            NodeFormulaHandle.mouseenterParam(this);
         });
 
         NodeFormulaHandle.$formulaCanvas.on('click', '.param-item', function () {
-            let dataEle = this.querySelector('.data-show');
-            if (dataEle) {
-                if ($(dataEle).val()) {
-                    let data = JSON.parse($(dataEle).val());
-                    let tabEle = this.closest('.tab-pane');
-                    if (tabEle) {
-                        if (tabEle.id === "tab_formula_property") {
-                            if (data?.['type'] === 5) {
-                                let boxMDEle = NodeFormulaHandle.$propertyRemark[0].querySelector('.box-property-md');
-                                if (boxMDEle) {
-                                    boxMDEle.removeAttribute('disabled');
-                                }
-                            } else {
-                                // show editor
-                                NodeFormulaHandle.$formulaEditor.val(NodeFormulaHandle.$formulaEditor.val() + data.syntax);
-                                NodeFormulaHandle.$formulaEditor.focus();
-                                NodeFormulaHandle.showValidate();
-                            }
-                        }
-                        if (tabEle.id === "tab_formula_function") {
-                            // show editor
-                            NodeFormulaHandle.$formulaEditor.val(NodeFormulaHandle.$formulaEditor.val() + data.syntax);
-                            NodeFormulaHandle.$formulaEditor.focus();
-                            NodeFormulaHandle.showValidate();
-                        }
-                    }
-                }
-            }
-            return true;
+            NodeFormulaHandle.clickParam(this);
         });
 
         NodeFormulaHandle.$formulaCanvas.on('change', '.box-property-md', function () {
@@ -388,8 +295,18 @@ $(function () {
                 let dataShow = JSON.parse(dataShowRaw);
                 let dataSelected = SelectDDControl.get_data_from_idx($(this), $(this).val());
                 if (dataSelected) {
+                    let text = "";
+                    if (dataSelected?.['title']) {
+                        text = dataSelected?.['title'];
+                    }
+                    if (dataSelected?.['full_name']) {
+                        text = dataSelected?.['full_name'];
+                    }
+                    if (dataSelected?.['name']) {
+                        text = dataSelected?.['name'];
+                    }
                     // show editor
-                    NodeFormulaHandle.$formulaEditor.val(`${NodeFormulaHandle.$formulaEditor.val() + dataShow?.['syntax']}=="${dataSelected?.['title']}"`);
+                    NodeFormulaHandle.$formulaEditor.val(`${NodeFormulaHandle.$formulaEditor.val() + dataShow?.['syntax']}=="${text}"`);
                     // on blur editor to validate formula
                     NodeFormulaHandle.$formulaEditor.blur();
                 }

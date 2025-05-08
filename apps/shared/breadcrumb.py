@@ -660,8 +660,8 @@ class BreadcrumbView:
     ]
 
     MEETING_CONFIG_PAGE = [
-                              BreadcrumbItem.MEETING_CONFIG_PAGE
-                          ],
+        BreadcrumbItem.MEETING_CONFIG_PAGE
+    ]
 
     CONTACT_MASTER_DATA_LIST_PAGE = [
         BreadcrumbItem.CONTACT_MASTER_DATA_LIST_PAGE

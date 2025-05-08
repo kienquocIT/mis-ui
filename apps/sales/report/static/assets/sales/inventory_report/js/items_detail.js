@@ -65,8 +65,7 @@ $(document).ready(function () {
             data: data_list,
             columns: [
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         if (row?.['row_type'] === 'prd') {
                             let html = `
                                 <a tabindex="0" href="#"
@@ -103,8 +102,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                        render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
                             return `<label class="text-center text-secondary">${row?.['ob_label']}</label>`
                         }
@@ -122,7 +120,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'log') {
                             return `<span class="text-${row?.['text_color']}">${row?.['quantity']}</span>`
@@ -131,7 +129,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'log') {
                             return `<span class="text-${row?.['text_color']} mask-money" data-init-money="${row?.['cost']}"></span>`
@@ -140,7 +138,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'log') {
                             return `<span class="text-${row?.['text_color']} mask-money" data-init-money="${row?.['value']}"></span>`
@@ -149,7 +147,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
                             return `<span class="text-secondary">${row?.['opening_balance_quantity']}</span>`
@@ -167,7 +165,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
                             return `<span class="text-secondary mask-money" data-init-money="${row?.['opening_balance_cost']}"></span>`
@@ -185,7 +183,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
                             return `<span class="text-secondary mask-money" data-init-money="${row?.['opening_balance_value']}"></span>`

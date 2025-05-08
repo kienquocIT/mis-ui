@@ -13,7 +13,7 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button hidden id="save-company" class="btn btn-outline-primary" type="submit" form="frm-update-company">
+    <button hidden id="save-company" class="btn btn-outline-primary" type="submit" form="frm-detail-company">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -25,33 +25,13 @@
 {% block pageContent %}
     {{ data.data.current_period | json_script:"current_period" }}
     <script id="trans-script"
-            data-trans-opp="{% trans 'Opportunity' %}"
-            data-trans-quo="{% trans 'Quotation' %}"
-            data-trans-so="{% trans 'Sale Order' %}"
-            data-trans-picking="{% trans 'Picking' %}"
-            data-trans-delivery="{% trans 'Delivery' %}"
-            data-trans-task="{% trans 'Task' %}"
-            data-trans-ap="{% trans 'Advance Payment' %}"
-            data-trans-payment="{% trans 'Payment' %}"
-            data-trans-rp="{% trans 'Return Advance' %}"
-            data-trans-pr="{% trans 'Purchase Request' %}"
             data-trans-numbering0="{% trans 'System' %}"
             data-trans-numbering1="{% trans 'User defined' %}"
             data-trans-alert-toastr-1="{% trans 'Company system settings need a Posting period to match.' %}"
             data-trans-alert-toastr-2="{% trans 'You need to create current Posting period for this company before update config.' %}"
             data-trans-alert-toastr-3="{% trans 'Contact the admin to create a new Posting period.' %}"
-            data-trans-default="{% trans 'Default' %}"
+            data-trans-default="{% trans 'Default' %} = 0"
     ></script>
-
-    <form id="frm-update-company"
-          data-url-detail="{% url "CompanyDetailAPI" '0' %}"
-          data-url-redirect="{% url "CompanyDetail" '0' %}"
-          data-method="PUT"
-    >
-        {% csrf_token %}
-        {% include 'core/company/common/information.html' %}
-    </form>
-
     {% include 'core/company/common/tabs.html' %}
 {% endblock %}
 {% block modalData %}
@@ -244,6 +224,7 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'builder/dist/js/toastr.min.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'core/company/js/company_common.js' %}"></script>
     <script src="{% static 'core/company/js/company_update.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/masterdata/periods.js' %}"></script>

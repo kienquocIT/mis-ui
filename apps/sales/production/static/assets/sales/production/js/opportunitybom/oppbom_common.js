@@ -86,7 +86,7 @@ class OpportunityBOMLoadTab {
         table_select_bom_copy.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '60vh',
             scrollCollapse: true,
             reloadCurrency: true,
@@ -149,7 +149,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -321,7 +321,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: [],
             columns: [
@@ -425,7 +425,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '65vh',
             scrollCollapse: true,
             ajax: {
@@ -463,37 +463,37 @@ class OpportunityBOMLoadTab {
                     }
                 },
                 {
-                    className: '',
+
                     'render': (data, type, row) => {
                         return `<span class="badge badge-light w-100">${row?.['code']}</span>`;
                     }
                 },
                 {
-                    className: '',
+
                     'render': (data, type, row) => {
                         return `<span class="text-muted">${row?.['title']}</span>`;
                     }
                 },
                 {
-                    className: '',
+
                     'render': (data, type, row) => {
                         return `<input disabled type="number" value="0" class="form-control material-quantity">`;
                     }
                 },
                 {
-                    className: '',
+
                     'render': (data, type, row) => {
                         return `<select disabled data-group-id="${row?.['general_uom_group']}" class="form-select select2 material-uom"></select>`;
                     }
                 },
                 {
-                    className: '',
+
                     'render': (data, type, row) => {
                         return `<input disabled readonly value="${row?.['standard_price']}" class="form-control mask-money material-unit-price">`;
                     }
                 },
                 {
-                    className: '',
+
                     'render': (data, type, row) => {
                         return `<input disabled readonly value="0" class="form-control mask-money material-subtotal-price">`;
                     }
@@ -507,7 +507,7 @@ class OpportunityBOMLoadTab {
                     }
                 },
                 {
-                    className: '',
+
                     'render': (data, type, row) => {
                         return `<textarea disabled class="form-control material-note small"></textarea>`;
                     }
@@ -543,7 +543,7 @@ class OpportunityBOMLoadTab {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '50vh',
                 scrollCollapse: true,
                 ajax: {
@@ -576,25 +576,21 @@ class OpportunityBOMLoadTab {
                         }
                     },
                     {
-                        className: '',
                         'render': (data, type, row) => {
                             return `<span class="badge badge-light w-100">${row?.['code']}</span>`;
                         }
                     },
                     {
-                        className: '',
                         'render': (data, type, row) => {
                             return `${row?.['title']}`;
                         }
                     },
                     {
-                        className: '',
                         'render': (data, type, row) => {
                             return `<input disabled type="number" value="0" class="form-control replacement-quantity">`;
                         }
                     },
                     {
-                        className: '',
                         'render': (data, type, row) => {
                             return `<select disabled data-group-id="${row?.['general_uom_group']}" class="form-select select2 replacement-uom"></select>`;
                         }
@@ -608,7 +604,6 @@ class OpportunityBOMLoadTab {
                         }
                     },
                     {
-                        className: '',
                         'render': (data, type, row) => {
                             return `<textarea disabled class="form-control replacement-note"></textarea>`;
                         }
@@ -641,7 +636,7 @@ class OpportunityBOMLoadTab {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '50vh',
                 scrollCollapse: true,
                 data: [],
@@ -659,37 +654,31 @@ class OpportunityBOMLoadTab {
                         }
                     },
                     {
-                        className: '',
                         'render': (data, type, row) => {
                             return ``;
                         }
                     },
                     {
-                        className: '',
                         'render': (data, type, row) => {
                             return ``;
                         }
                     },
                     {
-                        className: '',
                         'render': (data, type, row) => {
                             return ``;
                         }
                     },
                     {
-                        className: '',
                         'render': (data, type, row) => {
                             return ``;
                         }
                     },
                     {
-                        className: '',
                         'render': () => {
                             return ``;
                         }
                     },
                     {
-                        className: '',
                         'render': (data, type, row) => {
                             return `<textarea disabled class="form-control replacement-note"></textarea>`;
                         }
@@ -707,7 +696,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: [],
             columns: [
@@ -779,7 +768,7 @@ class OpportunityBOMLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '65vh',
             scrollCollapse: true,
             ajax: {
@@ -816,31 +805,31 @@ class OpportunityBOMLoadTab {
                     }
                 },
                 {
-                    className: '',
+
                     'render': (data, type, row) => {
                         return `<span class="badge badge-light w-100">${row?.['code']}</span>`;
                     }
                 },
                 {
-                    className: '',
+
                     'render': (data, type, row) => {
                         return `<span class="text-muted">${row?.['title']}</span>`;
                     }
                 },
                 {
-                    className: '',
+
                     'render': (data, type, row) => {
                         return `<input disabled type="number" value="0" class="form-control tool-quantity">`;
                     }
                 },
                 {
-                    className: '',
+
                     'render': (data, type, row) => {
                         return `<select disabled data-group-id="${row?.['general_uom_group']}" class="form-select select2 tool-uom"></select>`;
                     }
                 },
                 {
-                    className: '',
+
                     'render': (data, type, row) => {
                         return `<textarea disabled class="form-control tool-note small"></textarea>`;
                     }

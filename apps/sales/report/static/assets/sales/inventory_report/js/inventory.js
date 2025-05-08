@@ -117,7 +117,7 @@ $(document).ready(function () {
             data: data_list,
             columns: [
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         if (row?.['sale_order_code']) {
                             if (!sale_order_code_list.includes(`${row?.['warehouse_code']}-so-code-${row?.['sale_order_code']}`)) {
@@ -129,7 +129,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
                             if (row?.['warehouse_title']) {
@@ -157,7 +157,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'product_row') {
                             return `<span class="text-secondary">${row?.['uom_title'] ? row?.['uom_title'] : '--'}</span>`
@@ -166,7 +166,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
                             return `<span class="small">${row?.['date'] ? row?.['date'] : ''}</span>`
@@ -175,7 +175,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-center',
+                    className: 'text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
                             if (row?.['lot_number']) {
@@ -186,7 +186,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text',
+
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
                             if (row?.['expired_date']) {
@@ -197,7 +197,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
                             return `<div class="row">
@@ -215,7 +215,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
                             return `<div class="row">
@@ -236,7 +236,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
                             return `<div class="row">
@@ -257,7 +257,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-right',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
                             return `<div class="row">
@@ -420,30 +420,30 @@ $(document).ready(function () {
             data: data_list,
             rowIdx: true,
             ordering: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '65vh',
             scrollCollapse: true,
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text w-55',
+                    className: 'w-55',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-secondary">${row?.['product']?.['code']}</span><span class="ml-1 prd-title text-muted fw-bold">${row?.['product']?.['title']}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `<span class="text-muted">${row?.['stock_amount']}</span><span class="ml-1 text-muted">${row?.['product']?.['uom']?.['title']}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text w-20 text-right',
+                    className: 'w-20 text-right',
                     render: (data, type, row) => {
                         if (row?.['product']?.['general_traceability_method'] === 0) {
                             return '-'
@@ -489,18 +489,18 @@ $(document).ready(function () {
             data: data_list,
             rowIdx: true,
             ordering: false,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '65vh',
             scrollCollapse: true,
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text w-45',
+                    className: 'w-45',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'lot_row') {
                             return `<span class="text-muted">${row?.['lot_number']}</span>`
@@ -512,7 +512,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text w-45',
+                    className: 'w-45',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'lot_row') {
                             return `<span class="text-muted">${row?.['quantity_import']}</span>`
@@ -523,7 +523,7 @@ $(document).ready(function () {
                         return ''
                     },
                 }, {
-                    className: 'wrap-text w-5 text-right',
+                    className: 'w-5 text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'lot_row') {
                             return `<a href="#" class="scan_qr"><span class="text-blue fw-bold qr-code-lot-info"

@@ -29,25 +29,21 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text',
                         render: (data, type, row) => {
                             return ``;
                         }
                     },
                     {
-                        className: 'wrap-text',
                         render: (data, type, row) => {
                             return `<span class="badge badge-primary">${row?.['employee']?.['code']}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text',
                         render: (data, type, row) => {
                             return `<span class="text-primary">${row?.['employee']?.['fullname']}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text',
                         render: (data, type, row) => {
                             let html = ``
                             for (const item of row?.['warehouse_list']) {
@@ -57,7 +53,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'wrap-text text-center',
+                        className: 'text-center',
                         render: (data, type, row) => {
                             return `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover delete-btn" title="Delete" href="#" data-id="${row?.['id']}" data-action="delete">
                                         <span class="icon-wrap">

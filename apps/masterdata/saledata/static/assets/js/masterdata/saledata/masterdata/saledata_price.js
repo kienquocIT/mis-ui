@@ -53,14 +53,14 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return '';
                     }
                 },
                 {
                     data: 'abbreviation',
-                    className: 'wrap-text w-25',
+                    className: 'w-25',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
                             return `<span class="badge badge-light w-70">${data}</span>`
@@ -71,7 +71,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-35',
+                    className: 'w-35',
                     render: (data, type, row) => {
                         if (!row?.['is_default']) {
                             return `${data}`
@@ -81,7 +81,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'rate',
-                    className: 'wrap-text w-35',
+                    className: 'w-35',
                     render: (data, type, row) => {
                         if (data) {
                             if (row?.['is_primary']) {
@@ -117,14 +117,14 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return '';
                     }
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-10',
+                    className: 'w-10',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
                             return `<span class="badge badge-light w-70">${row?.['code']}</span>`
@@ -135,7 +135,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-35',
+                    className: 'w-35',
                     render: (data, type, row, meta) => {
                         if (row?.['is_default']) {
                             return `<b>${data}</b>`
@@ -146,33 +146,29 @@ $(document).ready(function () {
                 },
                 {
                     data: 'description',
-                    className: 'wrap-text w-35',
+                    className: 'w-35',
                     render: (data) => {
                         return `${data}`
                     }
                 },
                 {
-                    className: 'wrap-text text-right w-15',
+                    className: 'text-right w-15',
                     render: (data, type, row, meta) => {
-                        if (row?.['is_default']) {
-                            return ``
-                        } else {
-                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-tax-category"
-                                       data-id="${row?.['id']}"
-                                       data-code="${row?.['code']}"
-                                       data-title="${row?.['title']}"
-                                       data-description="${row?.['description']}"
-                                       data-bs-toggle="modal"
-                                       data-bs-target="#modal-update-tax-category"
-                                       data-bs-placement="top" title="" 
-                                       data-bs-original-title="Edit">
-                                       <span class="btn-icon-wrap">
-                                           <span class="feather-icon text-primary">
-                                               <i data-feather="edit"></i>
-                                           </span>
+                        return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-tax-category"
+                                   data-id="${row?.['id']}"
+                                   data-code="${row?.['code']}"
+                                   data-title="${row?.['title']}"
+                                   data-description="${row?.['description']}"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#modal-update-tax-category"
+                                   data-bs-placement="top" title="" 
+                                   data-bs-original-title="Edit">
+                                   <span class="btn-icon-wrap">
+                                       <span class="feather-icon text-primary">
+                                           <i data-feather="edit"></i>
                                        </span>
-                                    </a>`
-                        }
+                                   </span>
+                                </a>`
                     }
                 }
             ],
@@ -198,14 +194,14 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return '';
                     }
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-10',
+                    className: 'w-10',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
                             return `<span class="badge badge-light w-80">${row?.['code']}</span>`
@@ -216,14 +212,14 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-25',
+                    className: 'w-25',
                     render: (data) => {
                         return `${data}`
                     }
                 },
                 {
                     data: 'tax_type',
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data) => {
                         if (data === 0) {
                             return 'Sale'
@@ -236,7 +232,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'category',
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         if (row.category) {
                             return `<span class="badge badge-soft-primary">${data?.['title']}</span>`
@@ -247,7 +243,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'rate',
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data) => {
                         if (data >= 0) {
                             return `<span class="badge badge-soft-pink" >${data}%</span>`
@@ -257,7 +253,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-tax"
                                    data-id="${row?.['id']}"
@@ -610,44 +606,45 @@ $(document).ready(function () {
             autoWidth: false,
             columns: [
                 {
-                    defaultContent: '',
-                    width: '10%',
-                },
-                {
-                    render: (row, type, data) => {
-                        let url = $('#url-factory').attr('data-detail').format_url_with_uuid(data.id);
-                        return `<p><a href="#" data-href="${url}" 
-                            class="text-primary text-decoration-underline row-title">${data.title}</a></p>`
-                    },
-                    width: '40%',
-                },
-                {
-                    data: 'code',
                     render: (data, type, row) => {
-                        return data;
+                        return ``
                     },
-                    width: '20%',
+                    width: '5%',
                 },
                 {
-                    render: (row, type, data) => {
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-primary w-70">${row?.['code']}</span>`
+                    },
+                    width: '15%',
+                },
+                {
+                    render: (data, type, row) => {
+                        let url = $('#url-factory').attr('data-detail').format_url_with_uuid(row?.['id']);
+                        return `<a href="#" data-href="${url}" class="text-primary row-title">${row?.['title']}</a>`
+                    },
+                    width: '50%',
+                },
+                {
+                    render: (data, type, row) => {
                         let DATA_APPLY_FOR = {
                             0: 'Sale',
                             1: 'Purchase'
                         }
-                        return `<p>${DATA_APPLY_FOR[data.apply_for]}</p>`
+                        return `<span class="badge badge-soft-blue">${DATA_APPLY_FOR[row?.['apply_for']]}</span>`
                     },
                     width: '20%',
                 },
                 {
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return `<div class="actions-btn">
-                                <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
-                                   title="Delete"
-                                   href="#"
-                                   data-id="${row.id}"
-                                   data-action="delete">
-                                   <span class="icon-wrap">
-                                   <i class="fa-regular fa-trash-can"></i></span></a>
+                                <a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover delete-btn" title="Delete" href="#" data-id="${row?.['id']}" data-action="delete">
+                                   <span class="btn-icon-wrap">
+                                        <span class="feather-icon text-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </span>
+                                    </span>
+                                   </a>
                             </div>`;
                     },
                     width: '10%',

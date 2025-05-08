@@ -10,6 +10,7 @@ $(function () {
 
         // Load inits
         LeaseOrderLoadDataHandle.loadCustomCss();
+        LeaseOrderLoadDataHandle.loadInitConfigLease();
         LeaseOrderLoadDataHandle.loadInitInherit();
         LeaseOrderLoadDataHandle.loadInitCustomer();
         LeaseOrderLoadDataHandle.loadBoxQuotationCustomer();

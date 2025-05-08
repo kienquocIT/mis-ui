@@ -486,7 +486,7 @@ class LeaseOrderLoadDataHandle {
             $.fn.callAjax2({
                     'url': LeaseOrderLoadDataHandle.urlEle.attr('data-md-tool'),
                     'method': 'GET',
-                    'data': {"status": 0},
+                    // 'data': {"status": 0},
                     'isDropdown': true,
                 }
             ).then(

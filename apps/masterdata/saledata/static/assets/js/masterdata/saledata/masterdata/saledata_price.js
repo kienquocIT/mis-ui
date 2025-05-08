@@ -1017,10 +1017,12 @@ $(document).ready(function () {
         let formID = $('[name="payment_terms_id"]').val()
         let _form = new SetupFormSubmit($termForm);
         let tableTerms = $('#table_terms').DataTable().data().toArray();
-        for (let item of tableTerms) {
+        for (let idx in tableTerms) {
+            let item = tableTerms[idx]
             item.unit_type = item.unit_type.hasOwnProperty('value') ? item.unit_type.value : item.unit_type
             item.day_type = item.day_type.hasOwnProperty('value') ? item.day_type.value : item.day_type
             item.after = item.after.hasOwnProperty('value') ? item.after.value : item.after
+            item.order = parseInt(idx) + 1
         }
         if (!_form.dataForm['title']) {
             $.fn.notifyB({description: "Title is required"}, 'failure');

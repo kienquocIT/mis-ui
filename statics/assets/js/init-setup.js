@@ -3786,25 +3786,27 @@ class WFAssociateControl {
     static calculateParam(dataForm, param) {
         let result_json = {};
         let parse_formula = "";
-        for (let item of param) {
-            if (typeof item === 'object' && item !== null) {
-                if (item.hasOwnProperty('is_property')) {
-                    if (dataForm.hasOwnProperty(item?.['code'])) {
-                        parse_formula += dataForm[item?.['code']];
-                    }
-                } else if (item.hasOwnProperty('param_type')) {
-                    if (item?.['param_type'] === 2) { // FUNCTION
-                        if (item?.['code'] === 'max' || item?.['code'] === 'min') {
-                            let functionData = WFAssociateControl.functionMaxMin(item, dataForm, result_json);
-                            parse_formula += functionData;
-                        } else if (item?.['code'] === 'sumItemIf') {
-                            let functionData = WFAssociateControl.functionSumItemIf(item, dataForm);
-                            parse_formula += functionData;
+        if (Array.isArray(param)) {
+            for (let item of param) {
+                if (typeof item === 'object' && item !== null) {
+                    if (item.hasOwnProperty('is_property')) {
+                        if (dataForm.hasOwnProperty(item?.['code'])) {
+                            parse_formula += dataForm[item?.['code']];
+                        }
+                    } else if (item.hasOwnProperty('param_type')) {
+                        if (item?.['param_type'] === 2) { // FUNCTION
+                            if (item?.['code'] === 'max' || item?.['code'] === 'min') {
+                                let functionData = WFAssociateControl.functionMaxMin(item, dataForm, result_json);
+                                parse_formula += functionData;
+                            } else if (item?.['code'] === 'sumItemIf') {
+                                let functionData = WFAssociateControl.functionSumItemIf(item, dataForm);
+                                parse_formula += functionData;
+                            }
                         }
                     }
+                } else if (typeof item === 'string') {
+                    parse_formula += item;
                 }
-            } else if (typeof item === 'string') {
-                parse_formula += item;
             }
         }
         // format
@@ -8961,6 +8963,38 @@ class DataProcessorControl {
             if (a[key] > b[key]) return isDescending ? -1 : 1; // Flip comparison for descending
             return 0; // a and b are equal
         });
+    }
+}
+
+class FormElementControl {
+
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = ``;
+                let res2 = ``;
+                if (customRes?.['res1']) {
+                    res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`;
+                }
+                if (customRes?.['res2']) {
+                    res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`;
+                }
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
+        $ele.initSelect2(opts);
+        return true;
     }
 }
 

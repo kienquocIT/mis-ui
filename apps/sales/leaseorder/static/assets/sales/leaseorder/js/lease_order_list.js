@@ -4,6 +4,29 @@ $(function () {
 
         let transEle = $('#trans-factory');
         let urlsEle = $('#app-url-factory');
+        let $modalDeliveryInfoEle = $('#deliveryInfoModalCenter');
+        let $deliveryEstimatedDateEle = $('#estimated_delivery_date');
+        let $deliveryRemarkEle = $('#remarks');
+        let $btnDelivery = $('#btn-delivery');
+
+        // date picker
+        $('.date-picker').each(function () {
+            $(this).daterangepicker({
+                singleDatePicker: true,
+                timepicker: false,
+                showDropdowns: false,
+                minYear: 2023,
+                locale: {
+                    format: 'DD/MM/YYYY',
+                },
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                autoApply: true,
+                autoUpdateInput: false,
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY')).trigger('change');
+            });
+            $(this).val('').trigger('change');
+        });
 
         function loadDbl() {
             let $table = $('#table_lease_order_list')
@@ -158,39 +181,19 @@ $(function () {
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
                                         <a class="dropdown-item ${disabledEdit} border-bottom mb-2" href="${link}"><i class="dropdown-icon far fa-edit"></i><span>${transEle.attr('data-edit')}</span></a>
-                                        <a class="dropdown-item ${disabledDeli}" href="#" id="create_delivery"><i class="dropdown-icon fas fa-truck"></i><span>${transEle.attr('data-delivery')}</span></a>
+                                        <a class="dropdown-item delivery-info ${disabledDeli}" href="#" data-bs-toggle="modal" data-bs-target="#deliveryInfoModalCenter"><i class="dropdown-icon fas fa-truck"></i><span>${transEle.attr('data-delivery')}</span></a>
                                     </div>
                                 </div>`;
                         },
                     }
                 ],
                 rowCallback: (row, data) => {
-                    $('#create_delivery', row).off().on('click', function () {
-                        WindowControl.showLoading();
-                        const url = urlsEle.attr('data-create-delivery').replace('1', data.id);
-                        $.fn.callAjax2({
-                            url: url,
-                            method: 'POST',
-                            data: {},
-                            urlRedirect: null,
-                        }).then(
-                            (resp) => {
-                                let data = $.fn.switcherResp(resp);
-                                if (data?.['status'] === 200) {
-                                    const config = data?.config
-                                    let url_redirect = urlsEle.attr('data-delivery')
-                                    if (config?.is_picking && !data?.['is_not_picking'])
-                                        url_redirect = urlsEle.attr('data-picking')
-                                    setTimeout(() => {
-                                        window.location.href = url_redirect
-                                    }, 1000);
-                                }
-                            },
-                            (errs) => {
-                                WindowControl.hideLoading();
-                                $.fn.notifyB({description: errs.data.errors}, 'failure');
-                            }
-                        )
+                    $(row).on('click', '.delivery-info', function () {
+                        $btnDelivery.attr('data-id', data?.['id']);
+                        let targetCodeEle = $modalDeliveryInfoEle[0].querySelector('.target-code');
+                        if (targetCodeEle) {
+                            targetCodeEle.innerHTML = data?.['code'] ? data?.['code'] : '';
+                        }
                     })
                 },
                 drawCallback: function () {
@@ -228,6 +231,43 @@ $(function () {
         }
 
         loadDbl();
+
+        $btnDelivery.on('click', function () {
+            if (!$deliveryEstimatedDateEle.val()) {
+                $.fn.notifyB({description: transEle.attr('data-required-delivery-date')}, 'failure');
+                return false;
+            }
+
+            let dataDelivery = {};
+            dataDelivery['estimated_delivery_date'] = moment($deliveryEstimatedDateEle.val(), "DD/MM/YYYY").format("YYYY-MM-DD HH:mm:ss");
+            dataDelivery['remarks'] = $deliveryRemarkEle.val();
+
+            WindowControl.showLoading();
+            const url = urlsEle.attr('data-create-delivery').replace('1', $(this).attr('data-id'));
+            $.fn.callAjax2({
+                url: url,
+                method: 'POST',
+                data: dataDelivery,
+                urlRedirect: null,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data?.['status'] === 200) {
+                        const config = data?.config
+                        let url_redirect = urlsEle.attr('data-delivery')
+                        if (config?.is_picking && !data?.['is_not_picking'])
+                            url_redirect = urlsEle.attr('data-picking')
+                        setTimeout(() => {
+                            window.location.href = url_redirect
+                        }, 1000);
+                    }
+                },
+                (errs) => {
+                    WindowControl.hideLoading();
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        });
 
     });
 });

@@ -11758,3 +11758,11 @@ msgstr "Thêm phòng họp"
 #
 msgid "Update meeting room"
 msgstr "Cập nhập phòng họp"
+
+#
+msgid "Delivery information"
+msgstr "Thông tin giao hàng"
+
+#
+msgid "Estimated delivery date is required"
+msgstr "Ngày giao dự kiến là bắt buộc"

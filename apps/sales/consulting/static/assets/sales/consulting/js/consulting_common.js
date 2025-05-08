@@ -591,7 +591,7 @@ class ConsultingHandler{
     /**
      * @param {any} tableSelector The table selector
      * @param {[object]} data The initial data.
-     * @desc Init document Master data for table master data document
+     * @desc Init document master data for table master data document
      */
     initTableMasterDataDoc(tableSelector, data=[]){
         let checkedMasterDoc = data ? data.filter(item => item.isManual === false) : []

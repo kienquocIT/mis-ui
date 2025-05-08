@@ -941,7 +941,7 @@ class PaymentLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -1155,7 +1155,7 @@ class PaymentLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -1290,7 +1290,7 @@ class PaymentLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -1503,7 +1503,7 @@ class PaymentLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -1716,7 +1716,7 @@ class PaymentLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -2477,7 +2477,7 @@ $("#next-btn").on('click', function () {
                                     total_remain_value += expense_item.remain_total - PaymentAction.FindValueConvertedById(expense_item.id, selected_converted_value);
                                     product_table.find('tbody').append(`<tr>
                                         <td class="text-center"><input data-ap-title="${ap_item_detail?.['title']}" data-id="${expense_item.id}" class="product-selected" type="checkbox" ${disabled}></td>
-                                        <td>${expense_item.expense_name}</td>
+                                        <td>${expense_item.expense_description}</td>
                                         <td>${expense_item.expense_type.title}</td>
                                         <td>${expense_item.expense_quantity}</td>
                                         <td><span class="text-primary mask-money" data-init-money="${expense_item.expense_unit_price}"></span></td>

@@ -206,7 +206,7 @@ class APLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input required ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-name-input" value="${row?.['expense_name'] ? row?.['expense_name'] : ''}">`
+                        return `<input required ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-name-input" value="${row?.['expense_description'] ? row?.['expense_description'] : ''}">`
                     }
                 },
                 {
@@ -487,7 +487,7 @@ class APLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -701,7 +701,7 @@ class APLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -836,7 +836,7 @@ class APLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -1049,7 +1049,7 @@ class APLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -1262,7 +1262,7 @@ class APLoadTab {
                             unplanned_ap_merged[typeId] = $.extend(true, {}, element);
                         } else {
                             unplanned_ap_merged[typeId].expense_after_tax_price += element.expense_after_tax_price;
-                            unplanned_ap_merged[typeId].expense_name = null;
+                            unplanned_ap_merged[typeId].expense_description = null;
                             unplanned_ap_merged[typeId].expense_quantity += element.expense_quantity;
                             unplanned_ap_merged[typeId].expense_subtotal_price += element.expense_subtotal_price;
                             unplanned_ap_merged[typeId].expense_tax = null;
@@ -1667,7 +1667,7 @@ class APHandle {
         let ap_item_list = []
         tableLineDetail.find('tbody tr').each(function () {
             let row = $(this);
-            let expense_name = row.find('.expense-name-input').val();
+            let expense_description = row.find('.expense-name-input').val();
             let expense_type = row.find('.expense-type-select-box').val();
             let expense_uom_name = row.find('.expense-uom-input').val();
             let expense_quantity = row.find('.expense_quantity').val();
@@ -1682,7 +1682,7 @@ class APHandle {
             }
             if (!isNaN(expense_subtotal_price) && !isNaN(expense_after_tax_price)) {
                 ap_item_list.push({
-                    'expense_name': expense_name,
+                    'expense_description': expense_description,
                     'expense_type_id': expense_type,
                     'expense_uom_name': expense_uom_name,
                     'expense_quantity': expense_quantity,

@@ -410,7 +410,7 @@ class SelectDDControl {
         } catch (e) {
         }
 
-        return 10;
+        return 100;
     }
 
     get maximumSelectionLength() {

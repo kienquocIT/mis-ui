@@ -2,6 +2,7 @@
 {% load static i18n %}
 {% block title %}{% trans 'Lease order list' %}{% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 {% block pageAction %}
@@ -41,6 +42,50 @@
         <tbody>
         </tbody>
     </table>
+
+    <div class="modal-canvas-area">
+
+        <div
+                class="modal fade" id="deliveryInfoModalCenter" tabindex="-1"
+                role="dialog" aria-labelledby="deliveryInfoModalCenter"
+                aria-hidden="true" data-zone="title"
+        >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b>{% trans 'Delivery information' %}</b></h5>
+                        <button
+                                type="button"
+                                class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                data-bs-dismiss="modal"
+                        ><span class="icon"><i class="far fa-window-close"></i></span></button>
+                    </div>
+                    <div class="modal-body">
+                        <b class="target-code text-primary"></b>
+                        <div class="form-group">
+                            <label class="form-label required" for="estimated_delivery_date">{% trans 'Estimated delivery date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" id="estimated_delivery_date"
+                                       class="form-control date-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="remarks">{% trans 'Note' %}</label>
+                            <textarea class="form-control" rows="4" id="remarks" name="remarks"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="button" class="btn btn-primary" id="btn-delivery">{% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 {% endblock %}
 
 {% block dataHiddenGroup %}
@@ -53,9 +98,11 @@
             data-status-delivering="{% trans 'Delivering' %}"
             data-status-partially="{% trans 'Partially delivered' %}"
             data-status-delivered="{% trans 'Delivered' %}"
+            data-required-delivery-date="{% trans 'Estimated delivery date is required' %}"
     >
     <input type="hidden" id="app-url-factory"
-           data-link-update="{% url 'LeaseOrderDetail' 1 %}"
+           data-link-detail="{% url 'LeaseOrderDetail' 1 %}"
+           data-link-update="{% url 'LeaseOrderUpdate' 1 %}"
            data-link-list="{% url 'LeaseOrderList' %}"
            data-create-delivery="{% url 'LeaseOrderDetailDeliveryAPI' 1 %}"
            data-delivery="{% url 'OrderDeliveryList' %}" data-picking="{% url 'OrderPickingList' %}"
@@ -65,6 +112,8 @@
 {% endblock %}
 
 {% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+
     <script src="{% static 'assets/sales/leaseorder/js/lease_order_list.js' %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
 {% endblock %}

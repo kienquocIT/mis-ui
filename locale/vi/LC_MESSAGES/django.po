@@ -11424,8 +11424,8 @@ msgid "Adjustment method"
 msgstr "Phương pháp hệ số"
 
 #
-msgid "Product will convert into"
-msgstr "Sản phẩm chuyển đổi thành"
+msgid "Goods will convert into"
+msgstr "Hàng hóa chuyển đổi thành"
 
 #
 msgid "When leased product converted into fixed asset"
@@ -11766,3 +11766,11 @@ msgstr "Thêm phòng họp"
 #
 msgid "Update meeting room"
 msgstr "Cập nhập phòng họp"
+
+#
+msgid "Delivery information"
+msgstr "Thông tin giao hàng"
+
+#
+msgid "Estimated delivery date is required"
+msgstr "Ngày giao dự kiến là bắt buộc"

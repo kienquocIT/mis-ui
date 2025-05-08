@@ -42,6 +42,7 @@ $(document).ready(function () {
         [],
         opt
     );
+    window.new_gantt_init = new_gantt
 
     // get data
     $.fn.callAjax2({

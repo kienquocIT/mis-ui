@@ -158,7 +158,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#tab_code_masterdata">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_code_master_data">
                                 <span class="nav-link-text">{% trans 'Master data' %}</span>
                             </a>
                         </li>
@@ -173,30 +173,30 @@
                                                 <th class="w-5" style="min-width: 30px"></th>
                                                 <th class="w-20" style="min-width: 200px">{% trans 'Application name' %}</th>
                                                 <th class="w-70" style="min-width: 400px">{% trans 'Schema' %}</th>
-                                                <th class="w-5" style="min-width: 30px"></th>
+                                                <th class="w-5" style="min-width: 50px"></th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
                                     </table>
-                                    <button id="add-new-config-app" class="btn btn-primary btn-sm mt-2" type="button">{% trans 'Add new config' %}</button>
+                                    <button id="add-new-app" class="btn btn-primary btn-sm mt-2" type="button">{% trans 'Add new config' %}</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="tab_code_masterdata">
+                        <div class="tab-pane fade" id="tab_code_master_data">
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table table-bordered nowrap w-100" id="masterdata_function_number_table">
-                                        <thead class="bg-secondary-light-5">
+                                    <table class="table table-bordered nowrap w-100" id="master_data_function_number_table">
+                                        <thead class="bg-primary-light-5">
                                             <tr>
                                                 <th class="w-5" style="min-width: 30px"></th>
                                                 <th class="w-20" style="min-width: 200px">{% trans 'Master data name' %}</th>
                                                 <th class="w-70" style="min-width: 400px">{% trans 'Schema' %}</th>
-                                                <th class="w-5" style="min-width: 30px"></th>
+                                                <th class="w-5" style="min-width: 50px"></th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
                                     </table>
-                                    <button id="add-new-config-masterdata" class="btn btn-primary btn-sm mt-2" type="button">{% trans 'Add new config' %}</button>
+                                    <button id="add-new-master-data" class="btn btn-primary btn-sm mt-2" type="button">{% trans 'Add new config' %}</button>
                                 </div>
                             </div>
                         </div>

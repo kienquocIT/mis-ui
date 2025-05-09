@@ -16,8 +16,6 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    {{ data.data.VND_currency | json_script:"VND_currency" }}
-
     <script id="trans-script"
             data-trans-opp="{% trans 'Opportunity' %}"
             data-trans-quo="{% trans 'Quotation' %}"

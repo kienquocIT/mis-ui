@@ -1,9 +1,13 @@
 $(document).ready(function () {
-    new CompanyHandle().load();
+    CompanyEventHandler.InitPageEven()
+    CompanyPageFunction.loadCompanyCities()
+    CompanyPageFunction.loadCompanyDistrict()
+    CompanyPageFunction.loadCompanyWard()
+    CompanyPageFunction.loadCurrency()
 
     $("#frm-add-company").submit(function (event) {
         event.preventDefault();
-        let combinesData = new CompanyHandle().combinesData($(this), false);
+        let combinesData = CompanyHandler.CombinesData($(this), false);
         if (combinesData) {
             WindowControl.showLoading({'loadingTitleAction': 'CREATE'});
             $.fn.callAjax2(combinesData)

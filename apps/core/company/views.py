@@ -35,14 +35,7 @@ class CompanyCreate(View):
         menu_active='menu_company_create'
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.BASE_CURRENCY).get()
-        vnd_currency = {}
-        for item in resp.result:
-            if item['code'] == 'VND':
-                vnd_currency = item
-        return {
-                   'data': {'VND_currency': vnd_currency}
-               }, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class CompanyDetail(View):
@@ -73,7 +66,6 @@ class CompanyUpdate(View):
     )
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(request=request, user=request.user, url=ApiURL.PERIODS_CONFIG_LIST).get()
-        print(resp.result)
         return {
             'data': {
                 'current_period': resp.result

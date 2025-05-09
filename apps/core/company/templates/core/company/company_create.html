@@ -38,30 +38,33 @@
           data-url-redirect="{% url "CompanyList" %}"
           data-method="POST">
         {% csrf_token %}
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
+        <div class="row">
+            <div class="col-12 col-md-8 col-lg-8">
+                <div class="card border">
+                    <div class="card-header">
+                        <span class="text-primary fw-bold">{% trans 'Company information' %}</span>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
-                            <div class="col-12 col-md-3 col-lg-3">
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label class="form-label required" for="code">{% trans 'Company code' %}</label>
                                     <input type="text" class="form-control" id="code" oninput=" this.value=this.value.toUpperCase()" placeholder="MIS001" required/>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-9 col-lg-9">
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label class="form-label required" for="title">{% trans 'Company name' %}</label>
                                     <input type="text" class="form-control" id="title" placeholder="MT Solution" required/>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-3 col-lg-3">
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label class="form-label" for="fax">{% trans 'Fax' %}</label>
                                     <input type="text" class="form-control" id="fax"/>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-9 col-lg-9">
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label class="form-label required" for="address">{% trans 'Address' %}</label>
                                     <textarea data-bs-toggle="modal"
@@ -87,23 +90,23 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="row mt-5">
-            <div class="col-12 col-md-3 col-lg-3">
+            <div class="col-12 col-md-4 col-lg-4">
                 <div class="card border">
+                    <div class="card-header">
+                        <span class="text-primary fw-bold">{% trans 'Company representative' %}</span>
+                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label class="form-label required" for="representative_fullname">{% trans 'Representator fullname' %}</label>
+                                    <label class="form-label required" for="representative_fullname">{% trans 'Fullname' %}</label>
                                     <input type="text" class="form-control" id="representative_fullname" placeholder="Nguyen Van A" required/>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="form-label required" for="phone">{% trans 'Phone number' %}</label>
-                                    <input type="text" class="form-control" id="phone" placeholder="+84987654321" required/>
+                                    <input type="text" class="form-control" id="phone" placeholder="0123456789" required/>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -114,7 +117,6 @@
                             </div>
                         </div>
                     </div>
-                    <h5><span class="badge badge-primary position-top-center-overflow">{% trans 'Company representative' %}</span></h5>
                 </div>
             </div>
         </div>

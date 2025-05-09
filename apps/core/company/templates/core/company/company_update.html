@@ -8,6 +8,11 @@
         .custom-toastr {
             min-width: 30vw !important;
         }
+        .dropify-wrapper {
+            width: 100%;
+            max-width: 100%;
+            height: 120px;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -32,6 +37,7 @@
             data-trans-alert-toastr-3="{% trans 'Contact the admin to create a new Posting period.' %}"
             data-trans-default="{% trans 'Default' %} = 0"
     ></script>
+    {% include 'core/company/common/information.html' %}
     {% include 'core/company/common/tabs.html' %}
 {% endblock %}
 {% block modalData %}

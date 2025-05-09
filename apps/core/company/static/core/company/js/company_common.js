@@ -318,14 +318,14 @@ class CompanyHandler {
             }
             let app_selected = SelectDDControl.get_data_from_idx($(this).find('.app-select'), $(this).find('.app-select').val())
 
-            if (schema_text && schema && first_number && last_number && reset_frequency) {
+            if (schema_text && schema && last_number && reset_frequency) {
                 function_number.push({
                     'schema_text': schema_text,
                     'schema': schema,
-                    'first_number': first_number,
+                    'first_number': first_number || null,
                     'last_number': last_number,
                     'reset_frequency': reset_frequency,
-                    'min_number_char': min_number_char ? min_number_char : null,
+                    'min_number_char': min_number_char || null,
                     'app_type': 0,
                     'app_code': app_selected?.['code'],
                     'app_title': app_selected?.['title']
@@ -344,14 +344,14 @@ class CompanyHandler {
             }
             let app_selected = SelectDDControl.get_data_from_idx($(this).find('.master-data-select'), $(this).find('.master-data-select').val())
 
-            if (schema_text && schema && first_number && last_number && reset_frequency) {
+            if (schema_text && schema && last_number && reset_frequency) {
                 function_number.push({
                     'schema_text': schema_text,
                     'schema': schema,
-                    'first_number': first_number,
+                    'first_number': first_number || null,
                     'last_number': last_number,
                     'reset_frequency': reset_frequency,
-                    'min_number_char': min_number_char ? min_number_char : null,
+                    'min_number_char': min_number_char || null,
                     'app_type': 1,
                     'app_code': app_selected?.['code'],
                     'app_title': app_selected?.['title']
@@ -587,6 +587,15 @@ class CompanyEventHandler {
                 pageElements.$min_num_char_checkbox_ele.prop('checked', false);
             }
             CompanyPageFunction.preview_next_code()
+
+            if ($(this).closest('table').attr('id') === 'master_data_function_number_table') {
+                pageElements.$reset_frequency_ele.val(4).prop('disabled', true)
+                pageElements.$first_number_ele.val('').prop('disabled', true)
+            }
+            else {
+                pageElements.$reset_frequency_ele.val(4).prop('disabled', false)
+                pageElements.$first_number_ele.val('').prop('disabled', true)
+            }
         })
         $(document).on("click", '.delete-schema', function () {
             UsualLoadPageFunction.DeleteTableRow(
@@ -614,7 +623,7 @@ class CompanyEventHandler {
                 if (min_number_char < 2 && pageElements.$min_num_char_checkbox_ele.prop('checked')) {
                     $.fn.notifyB({'description': 'Minimum char number must be > 2.'}, 'warning');
                 } else {
-                    if (schema && first_number && last_number && reset_frequency) {
+                    if (schema && last_number && reset_frequency) {
                         let schema_show_ele = pageVariables.current_schema_row.find('.schema-show');
                         schema_show_ele.text(schema);
                         schema_show_ele.attr('data-schema', CompanyPageFunction.formatSubmitSchema(schema));

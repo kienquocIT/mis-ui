@@ -6,6 +6,9 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/kms/doc-approval/recipient-css.css' %}" rel="stylesheet" type="text/css"/>
+
+    <link href="{% static 'assets/css/kms/doc-approval/common.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 {% block pageAction %}
@@ -44,14 +47,14 @@
                 </button>
             </div>
 
-            <div class="col-md-12 form-group">
+            <div class="col-md-12 form-group mt-4">
                 <label class="form-label" for="add-product-remark">{% trans 'Description' %}</label>
                 <textarea name="remark" class="form-control" id="txtarea_remark" rows="2"></textarea>
             </div>
 
-            <div class="col-md-12 content_recipient">
-                <h5 class="h5"><span>{% trans 'Internal Recipient' %}</span></h5>
-                <table class="table w-100" id="table_internal_recipient"></table>
+            <div class="col-md-12 content_recipient mt-2">
+                <label class="form-label mt-2" for="table_internal_recipient">{% trans 'Internal Recipient' %}</label>
+                <table class="table nowrap table-advance w-100" id="table_internal_recipient"></table>
                 <button class="btn btn-outline-primary" type="button" id="add_new_recipient" data-bs-toggle="modal"
                         data-bs-target="#modal-recipient">
                     <span>
@@ -80,4 +83,6 @@
     <script>
         new $x.cls.file($('#attachment')).init({'name': 'attachment'});
     </script>
+    <script src="{% static 'assets/js/kms/doc-approval/recipient-js.js' %}"></script>
+
 {% endblock %}

@@ -564,6 +564,15 @@ class CompanyEventHandler {
         pageElements.$last_number_ele.on('input', function () {
             CompanyPageFunction.preview_next_code()
         })
+        pageElements.$reset_frequency_ele.on('change', function () {
+            pageElements.$first_number_ele.val('').prop('disabled', $(this).val() === '4')
+            if ($(this).val() === '4') {
+                pageElements.$first_number_ele.closest('.form-group').find('label').removeClass('required')
+            }
+            else {
+                pageElements.$first_number_ele.closest('.form-group').find('label').addClass('required')
+            }
+        })
         $(document).on("click", '.schema-custom', function () {
             pageVariables.current_schema_row = $(this).closest('tr');
             let schema_show_ele = pageVariables.current_schema_row.find('.schema-show');
@@ -593,8 +602,8 @@ class CompanyEventHandler {
                 pageElements.$first_number_ele.val('').prop('disabled', true)
             }
             else {
-                pageElements.$reset_frequency_ele.val(4).prop('disabled', false)
-                pageElements.$first_number_ele.val('').prop('disabled', true)
+                pageElements.$reset_frequency_ele.prop('disabled', false)
+                pageElements.$first_number_ele.prop('disabled', false)
             }
         })
         $(document).on("click", '.delete-schema', function () {

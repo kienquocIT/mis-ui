@@ -5373,10 +5373,6 @@ msgid "Function"
 msgstr "Chức năng"
 
 #
-msgid "Application name"
-msgstr "Tên chức năng"
-
-#
 msgid "Add Schema"
 msgstr "Thêm công thức"
 

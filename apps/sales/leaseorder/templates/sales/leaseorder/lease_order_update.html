@@ -1407,6 +1407,12 @@
             data-url="{% url "AccountForSaleListAPI" %}"
             data-method="GET"
     >
+    <input
+            type="text"
+            id="data-config-lease-order"
+            data-url="{% url "LeaseOrderConfigDetailAPI" %}"
+            data-method="GET"
+    >
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}
     {{ data.payment_date_type|json_script:'payment_date_type' }}
     {{ data.employee_current|json_script:'employee_current' }}

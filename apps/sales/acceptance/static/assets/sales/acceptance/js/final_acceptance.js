@@ -606,7 +606,7 @@ $(function () {
         function loadInitInherit() {
         let dataStr = $('#employee_current').text();
         if (dataStr) {
-            loadInitS2($boxEmployee, [JSON.parse(dataStr)]);
+            FormElementControl.loadInitS2($boxEmployee, [JSON.parse(dataStr)]);
         }
         return true;
     }
@@ -620,8 +620,8 @@ $(function () {
             if ($boxOpp.val()) {
                 params['opportunity_id'] = $boxOpp.val();
             }
-            loadInitS2($boxSO, [], params, null, true);
-            loadInitS2($boxLO, [], params, null, true);
+            FormElementControl.loadInitS2($boxSO, [], params, null, true);
+            FormElementControl.loadInitS2($boxLO, [], params, null, true);
             return true;
         }
 
@@ -635,8 +635,8 @@ $(function () {
         function loadInit() {
             loadCustomCss();
             loadInitInherit();
-            loadInitS2($boxSO, [], {'is_minimal': true}, null, true);
-            loadInitS2($boxLO, [], {'is_minimal': true}, null, true);
+            FormElementControl.loadInitS2($boxSO, [], {'is_minimal': true}, null, true);
+            FormElementControl.loadInitS2($boxLO, [], {'is_minimal': true}, null, true);
             loadDbl();
         }
 
@@ -667,12 +667,12 @@ $(function () {
         });
 
         $boxSO.on('change', function () {
-            loadInitS2($boxLO, [], {'is_minimal': true}, null, true);
+            FormElementControl.loadInitS2($boxLO, [], {'is_minimal': true}, null, true);
             loadFinalAcceptance();
         });
 
         $boxLO.on('change', function () {
-            loadInitS2($boxSO, [], {'is_minimal': true}, null, true);
+            FormElementControl.loadInitS2($boxSO, [], {'is_minimal': true}, null, true);
             loadFinalAcceptance();
         });
 

@@ -33,6 +33,8 @@ class WorkOrderList(View):
         template='sales/production/workorder/work_order_list.html',
         menu_active='menu_work_order_list',
         breadcrumb='WORK_ORDER_LIST_PAGE',
+        icon_cls='fas fa-pencil-ruler',
+        icon_bg='bg-smoke',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS, 'stt_cp': CLOSE_OPEN_STATUS}, status.HTTP_200_OK
@@ -44,6 +46,8 @@ class WorkOrderCreate(View):
         template='sales/production/workorder/work_order_create.html',
         menu_active='',
         breadcrumb='WORK_ORDER_CREATE_PAGE',
+        icon_cls='fas fa-pencil-ruler',
+        icon_bg='bg-smoke',
     )
     def get(self, request, *args, **kwargs):
         ctx = {
@@ -82,6 +86,8 @@ class WorkOrderDetail(View):
         template='sales/production/workorder/work_order_detail.html',
         menu_active='menu_work_order_list',
         breadcrumb='WORK_ORDER_DETAIL_PAGE',
+        icon_cls='fas fa-pencil-ruler',
+        icon_bg='bg-smoke',
     )
     def get(self, request, pk, *args, **kwargs):
         return {
@@ -95,6 +101,8 @@ class WorkOrderUpdate(View):
         template='sales/production/workorder/work_order_update.html',
         menu_active='menu_work_order_list',
         breadcrumb='WORK_ORDER_UPDATE_PAGE',
+        icon_cls='fas fa-pencil-ruler',
+        icon_bg='bg-smoke',
     )
     def get(self, request, pk, *args, **kwargs):
         ctx = {

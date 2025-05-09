@@ -501,11 +501,11 @@ function LoadDetailCompany(frm, option) {
         }
         else {
             if (data0?.['logo']) {
-                $(`<img alt="" src="${data0?.['logo']}" class="img-fluid rounded" style="max-height: 120px"/>`).insertAfter(eleInputLogo);
+                $(`<img alt="" src="${data0?.['logo']}" class="img-fluid" style="max-height: 100px">`).insertAfter(eleInputLogo);
             }
             eleInputLogo.attr('disabled', 'disabled').remove();
             if (data0?.['icon']) {
-                $(`<img alt="" src="${data0?.['icon']}" class="img-fluid rounded" style="max-height: 120px"/>`).insertAfter(eleInputIcon);
+                $(`<img alt="" src="${data0?.['icon']}" class="img-fluid" style="max-height: 100px"/>`).insertAfter(eleInputIcon);
             }
             eleInputIcon.attr('disabled', 'disabled').remove();
         }

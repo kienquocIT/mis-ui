@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="row mt-5 mb-5">
+<div class="row mt-3 mb-5">
     <div class="col-12">
         <ul class="nav nav-tabs nav-icon nav-light">
             <li class="nav-item">
@@ -10,15 +10,15 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_function_number">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-arrow-up-1-9"></i></span></span>
-                    <span class="nav-link-text">{% trans 'Auto Code Generator' %}</span>
-                </a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_inventory_management">
                     <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-warehouse"></i></span></span>
                     <span class="nav-link-text">{% trans 'Inventory management' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_function_number">
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-arrow-up-1-9"></i></span></span>
+                    <span class="nav-link-text">{% trans 'Auto Code Generator' %}</span>
                 </a>
             </li>
         </ul>
@@ -98,6 +98,56 @@
                 </div>
             </form>
         </div>
+        <div class="tab-pane fade" id="tab_inventory_management">
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <span class="text-danger">{% trans "If there are any transactions (e.g. goods receipt, delivery, etc.), the data below can't be edited during this fiscal year." %}</span>
+                </div>
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="form-group">
+                        <label class="form-label required" for="default-inventory-value-method">{% trans 'Default inventory value method' %}</label>
+                        <select type="text" id="default-inventory-value-method" class="form-select" required>
+                            <option value="0">{% trans 'FIFO' %}</option>
+                            <option value="1">{% trans 'Weighted average' %}</option>
+{#                            <option value="2" disabled>{% trans 'Specific identification method' %}</option>#}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label required" for="definition-inventory-valuation">{% trans 'Definition of inventory valuation' %}</label>
+                                <div class="d-flex">
+                                    <div class="form-check">
+                                        <input type="radio" id="perpetual-selection" name="definition-inventory-valuation" class="form-check-input" checked>
+                                        <label class="form-check-label" for="perpetual-selection">{% trans 'Perpetual inventory' %}</label>
+                                    </div>
+                                    <div class="ml-5 form-check">
+                                        <input disabled type="radio" id="periodic-selection" name="definition-inventory-valuation" class="form-check-input">
+                                        <label class="form-check-label" for="periodic-selection">{% trans 'Periodic inventory' %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                                <div class="form-check">
+                                    <input type="checkbox" id="cost-per-warehouse" class="form-check-input">
+                                    <label class="form-check-label" for="cost-per-warehouse">{% trans 'Cost per warehouse management' %}</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" id="cost-per-lot" class="form-check-input">
+                                    <label class="form-check-label" for="cost-per-lot">{% trans 'Cost per Lot/batch' %}</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" id="cost-per-prj" class="form-check-input">
+                                    <label class="form-check-label" for="cost-per-prj">{% trans 'Cost per project (sale order in Opp)' %}</label>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="tab-pane fade" id="tab_function_number">
             <div class="row">
                 <div class="col-12">
@@ -150,56 +200,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="tab_inventory_management">
-            <div class="row">
-                <div class="col-12 mb-3">
-                    <span class="text-danger">{% trans "If there are any transactions (e.g. goods receipt, delivery, etc.), the data below can't be edited during this fiscal year." %}</span>
-                </div>
-                <div class="col-12 col-md-3 col-lg-3">
-                    <div class="form-group">
-                        <label class="form-label required" for="default-inventory-value-method">{% trans 'Default inventory value method' %}</label>
-                        <select type="text" id="default-inventory-value-method" class="form-select" required>
-                            <option value="0">{% trans 'FIFO' %}</option>
-                            <option value="1">{% trans 'Weighted average' %}</option>
-{#                            <option value="2" disabled>{% trans 'Specific identification method' %}</option>#}
-                        </select>
-                    </div>
-                </div>
-                <div class="col-12 col-md-3 col-lg-3">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label required" for="definition-inventory-valuation">{% trans 'Definition of inventory valuation' %}</label>
-                                <div class="d-flex">
-                                    <div class="form-check">
-                                        <input type="radio" id="perpetual-selection" name="definition-inventory-valuation" class="form-check-input" checked>
-                                        <label class="form-check-label" for="perpetual-selection">{% trans 'Perpetual inventory' %}</label>
-                                    </div>
-                                    <div class="ml-5 form-check">
-                                        <input disabled type="radio" id="periodic-selection" name="definition-inventory-valuation" class="form-check-input">
-                                        <label class="form-check-label" for="periodic-selection">{% trans 'Periodic inventory' %}</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                                <div class="form-check">
-                                    <input type="checkbox" id="cost-per-warehouse" class="form-check-input">
-                                    <label class="form-check-label" for="cost-per-warehouse">{% trans 'Cost per warehouse management' %}</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" id="cost-per-lot" class="form-check-input">
-                                    <label class="form-check-label" for="cost-per-lot">{% trans 'Cost per Lot/batch' %}</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" id="cost-per-prj" class="form-check-input">
-                                    <label class="form-check-label" for="cost-per-prj">{% trans 'Cost per project (sale order in Opp)' %}</label>
-                                </div>
-                            </div>
                     </div>
                 </div>
             </div>

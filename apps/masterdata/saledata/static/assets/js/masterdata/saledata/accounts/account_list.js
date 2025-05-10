@@ -194,7 +194,7 @@ $(document).ready(function () {
         })
     });
 
-    tbl.on('click', 'tbody td.dt-control .dt-control-btn', function () {
+    tbl.on('click', 'tbody .dt-control-btn', function () {
         let tr = $(this).closest('tr')
         let tdi = tr.find("i.fa-solid")
         let row = table.row(tr)

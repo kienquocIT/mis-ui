@@ -113,7 +113,7 @@ $(document).ready(function () {
         // ],
         columns: [
             {
-                className: 'w-5 dt-control',
+                className: 'w-5',
                 render: function () {
                     return '';
                 },
@@ -122,7 +122,7 @@ $(document).ready(function () {
                 className: 'ellipsis-cell-xs w-5',
                 render: (data, type, row) => {
                     const link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
-                    return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                    return `<i class="fa-solid fa-circle-plus text-blue mr-1 dt-control-btn"></i><a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                 }
             },
             {
@@ -185,14 +185,9 @@ $(document).ready(function () {
                 }
             }
         ],
-        initComplete: function () {
-            tbl.find('tbody tr .dt-control').each(function (index, ele) {
-                $(ele).prepend('<i class="fa-solid fa-circle-plus text-blue mr-1 dt-control-btn"></i>')
-            })
-        }
     });
 
-    tbl.on('click', 'tbody td.dt-control .dt-control-btn', function () {
+    tbl.on('click', 'tbody .dt-control-btn', function () {
         let tr = $(this).closest('tr')
         let tdi = tr.find("i.fa-solid")
         let row = table.row(tr)

@@ -188,10 +188,8 @@ $(document).ready(function () {
         initComplete: function () {
 
         }
-    });
-
-    tbl.on('draw.dt', function () {
-        $(this).find('tbody tr .dt-control').each(function (index, ele) {
+    }).on('draw.dt', function () {
+        $(this).find('tbody .dt-control').each(function (index, ele) {
             $(ele).prepend('<i class="fa-solid fa-circle-plus text-blue mr-1 dt-control-btn"></i>')
         })
     });

@@ -2,13 +2,13 @@ $(document).ready(function () {
     const msgData = $("#account-update-page");
     const tbl = $('#datatable_account_list');
     // let urlEmployeeList = tbl.attr('data-url-employee')
-    const childRowIndexes = [3, 4, 5, 6, 8]
+    const childRowIndexes = [4, 5, 6, 9, 10]
     const table = tbl.DataTableDefault({
         buttons: [
             {
                 extend: 'excel',
                 text: `<i class="fas fa-file-excel me-1"></i>${$.fn.gettext('Export to Excel')}`,
-                className: 'btn btn-sm rounded-pill',
+                className: 'btn btn-xs rounded-pill',
                 exportOptions: {
                     columns: ':visible',
                     format: {
@@ -187,12 +187,12 @@ $(document).ready(function () {
         ],
         initComplete: function () {
             tbl.find('tbody tr .dt-control').each(function (index, ele) {
-                $(ele).prepend('<i class="fa-solid fa-circle-plus text-blue mr-1"></i>')
+                $(ele).prepend('<i class="fa-solid fa-circle-plus text-blue mr-1 dt-control-btn"></i>')
             })
         }
     });
 
-    tbl.on('click', 'tbody td.dt-control', function () {
+    tbl.on('click', 'tbody td.dt-control .dt-control-btn', function () {
         let tr = $(this).closest('tr')
         let tdi = tr.find("i.fa-solid")
         let row = table.row(tr)

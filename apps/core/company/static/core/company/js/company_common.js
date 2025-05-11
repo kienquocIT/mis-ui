@@ -310,6 +310,9 @@ class CompanyHandler {
             let schema_text = $(this).find('.schema-show').text()
             let schema = $(this).find('.schema-show').attr('data-schema');
             let first_number = $(this).find('.schema-show').attr('data-first-number');
+            if (first_number === 'null') {
+                first_number = null
+            }
             let last_number = $(this).find('.schema-show').attr('data-last-number');
             let reset_frequency = $(this).find('.schema-show').attr('data-reset-frequency');
             let min_number_char = $(this).find('.schema-show').attr('data-min-number-char');
@@ -336,6 +339,9 @@ class CompanyHandler {
             let schema_text = $(this).find('.schema-show').text()
             let schema = $(this).find('.schema-show').attr('data-schema');
             let first_number = $(this).find('.schema-show').attr('data-first-number');
+            if (first_number === 'null') {
+                first_number = null
+            }
             let last_number = $(this).find('.schema-show').attr('data-last-number');
             let reset_frequency = $(this).find('.schema-show').attr('data-reset-frequency');
             let min_number_char = $(this).find('.schema-show').attr('data-min-number-char');

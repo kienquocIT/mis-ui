@@ -1,4 +1,9 @@
 $(document).ready(function () {
+    $.fn.InitAutoGenerateCodeField({
+        param_app_code: 'employee',
+        param_ele_code_id: 'employee-code'
+    })
+
     EmployeeLoadPage.loadUserList();
     EmployeeLoadPage.loadGroupList();
     EmployeeLoadPage.loadRoleList();

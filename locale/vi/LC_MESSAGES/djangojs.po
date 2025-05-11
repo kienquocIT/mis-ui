@@ -416,3 +416,7 @@ msgstr "Không có phòng ban"
 #
 msgid "Export to Excel"
 msgstr "Xuất dữ liệu ra Excel"
+
+#
+msgid "Auto-generate mode if blank"
+msgstr "Chế độ tự sinh mã nếu để trống"

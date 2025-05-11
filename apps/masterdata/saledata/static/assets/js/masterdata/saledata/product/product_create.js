@@ -1,4 +1,9 @@
 $(document).ready(async function () {
+    $.fn.InitAutoGenerateCodeField({
+        param_app_code: 'product',
+        param_ele_code_id: 'code'
+    })
+
     await ProductPageFunction.LoadPageDataFirst()
     ProductEventHandler.InitPageEven()
     ProductPageFunction.LoadGeneralProductType()

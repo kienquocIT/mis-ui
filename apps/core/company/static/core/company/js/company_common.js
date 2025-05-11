@@ -436,8 +436,8 @@ class CompanyHandler {
                 eleInputIcon.attr('disabled', 'disabled').remove();
             }
 
-            CompanyPageFunction.LoadAppFunctionNumberTable(option, data0?.['function_number'].filter((item) => {return item?.['app_type'] === 0}))
-            CompanyPageFunction.LoadMasterDataFunctionNumberTable(option, data0?.['function_number'].filter((item) => {return item?.['app_type'] === 1}))
+            CompanyPageFunction.LoadAppFunctionNumberTable(option, data0?.['function_number_data'].filter((item) => {return item?.['app_type'] === 0}))
+            CompanyPageFunction.LoadMasterDataFunctionNumberTable(option, data0?.['function_number_data'].filter((item) => {return item?.['app_type'] === 1}))
 
             $.fn.initMaskMoney2();
 

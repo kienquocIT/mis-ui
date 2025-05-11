@@ -241,6 +241,13 @@ class CompanyConfigDetailAPI(APIView):
         return resp.auto_return()
 
 
+class CompanyFunctionNumberDetailAPI(APIView):
+    @mask_view(login_require=True, is_api=True)
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.COMPANY_FUNCTION_NUMBER).get()
+        return resp.auto_return(key_success='function_number')
+
+
 class AccountingPoliciesConfigDetailAPI(APIView):
     @mask_view(login_require=True, is_api=True)
     def put(self, request, *args, **kwargs):

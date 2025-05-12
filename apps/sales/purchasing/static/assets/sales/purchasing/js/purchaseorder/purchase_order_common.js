@@ -410,6 +410,7 @@ class POLoadDataHandle {
         if (POLoadDataHandle.supplierSelectEle.val()) {
             dataFilter = {'supplier_mapped_id': POLoadDataHandle.supplierSelectEle.val()}
         }
+        WindowControl.showLoading();
         $.fn.callAjax2({
                 'url': frm.dataUrl,
                 'method': frm.dataMethod,
@@ -435,6 +436,7 @@ class POLoadDataHandle {
                             POLoadDataHandle.loadDataShowPurchaseQuotation();
                             POLoadDataHandle.loadAllTablesDisabled();
                         }
+                        WindowControl.hideLoading();
                     }
                 }
             }

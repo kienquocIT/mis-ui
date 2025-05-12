@@ -620,13 +620,12 @@ class ProductPageFunction {
     // component tab
     static LoadComponentTable(option, data_list=[]) {
         pageElements.$component_table.DataTableDefault({
-            styleDom: 'hide-foot',
-            useDataServer: false,
+            dom: 't',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
+            scrollY: '30vh',
             scrollX: true,
-            scrollY: '62vh',
             scrollCollapse: true,
             data: data_list,
             columns: [

@@ -73,7 +73,7 @@ class LeaseOrderList(View):
         menu_active='menu_lease_order_list',
         breadcrumb='LEASE_ORDER_LIST_PAGE',
         icon_cls='fas fa-handshake',
-        icon_bg='bg-gold',
+        icon_bg='bg-green',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS, 'delivery_status': DELIVERY_STATUS}, status.HTTP_200_OK
@@ -86,7 +86,7 @@ class LeaseOrderCreate(View):
         menu_active='menu_lease_order_list',
         breadcrumb='LEASE_ORDER_CREATE_PAGE',
         icon_cls='fas fa-handshake',
-        icon_bg='bg-gold',
+        icon_bg='bg-green',
     )
     def get(self, request, *args, **kwargs):
         employee_current = {}
@@ -145,7 +145,7 @@ class LeaseOrderDetail(View):
         menu_active='menu_lease_order_list',
         breadcrumb='LEASE_ORDER_DETAIL_PAGE',
         icon_cls='fas fa-handshake',
-        icon_bg='bg-gold',
+        icon_bg='bg-green',
     )
     def get(self, request, pk, *args, **kwargs):
         employee_current = {}
@@ -170,7 +170,7 @@ class LeaseOrderUpdate(View):
         breadcrumb='LEASE_ORDER_UPDATE_PAGE',
         menu_active='menu_lease_order_list',
         icon_cls='fas fa-handshake',
-        icon_bg='bg-gold',
+        icon_bg='bg-green',
     )
     def get(self, request, pk, *args, **kwargs):
         return {

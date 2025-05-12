@@ -552,7 +552,7 @@ class MenusInventory:
             ),
             MenuCommon(
                 name='Delivery', code='menu_order_delivery_list', view_name='OrderDeliveryList',
-                icon='<i class="fas fa-truck-pickup"></i>',
+                icon='<i class="fas fa-truck"></i>',
             ),
             MenuCommon(
                 name='Goods receipt',

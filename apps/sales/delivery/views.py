@@ -159,6 +159,8 @@ class OrderDeliveryList(View):
         template='sales/delivery/list.html',
         breadcrumb='ORDER_DELIVERY_LIST_PAGE',
         menu_active='menu_order_delivery_list',
+        icon_cls='fas fa-truck',
+        icon_bg='bg-gold',
     )
     def get(self, request, *args, **kwargs):
         return {

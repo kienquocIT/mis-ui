@@ -6868,6 +6868,24 @@ class DateTimeControl {
             .replace('MM', parts.month)
             .replace('DD', parts.day);
     }
+
+    static initDatePicker(ele) {
+        $(ele).daterangepicker({
+            singleDatePicker: true,
+            timepicker: false,
+            showDropdowns: true,
+            minYear: 1990,
+            locale: {
+                format: 'DD/MM/YYYY',
+            },
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            autoApply: true,
+            autoUpdateInput: false,
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $(ele).val(picker.startDate.format('DD/MM/YYYY')).trigger('change');
+        });
+        $(ele).val('').trigger('change');
+    }
 }
 
 class Beautiful {

@@ -34,6 +34,8 @@ class QuotationList(View):
         template='sales/quotation/quotation_list.html',
         menu_active='menu_quotation_list',
         breadcrumb='QUOTATION_LIST_PAGE',
+        icon_cls='fas fa-file-invoice-dollar',
+        icon_bg='bg-violet',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
@@ -45,6 +47,8 @@ class QuotationCreate(View):
         template='sales/quotation/quotation_create.html',
         menu_active='',
         breadcrumb='QUOTATION_CREATE_PAGE',
+        icon_cls='fas fa-file-invoice-dollar',
+        icon_bg='bg-violet',
     )
     def get(self, request, *args, **kwargs):
         employee_current = {}
@@ -129,6 +133,8 @@ class QuotationDetail(View):
         template='sales/quotation/quotation_detail.html',
         menu_active='menu_quotation_list',
         breadcrumb='QUOTATION_DETAIL_PAGE',
+        icon_cls='fas fa-file-invoice-dollar',
+        icon_bg='bg-violet',
     )
     def get(self, request, pk, *args, **kwargs):
         employee_current = {}
@@ -148,6 +154,8 @@ class QuotationUpdate(View):
         template='sales/quotation/quotation_update.html',
         breadcrumb='QUOTATION_UPDATE_PAGE',
         menu_active='menu_quotation_list',
+        icon_cls='fas fa-file-invoice-dollar',
+        icon_bg='bg-violet',
     )
     def get(self, request, pk, *args, **kwargs):
         ctx = {

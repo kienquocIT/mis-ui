@@ -361,7 +361,7 @@ class MenusCRM:
     )
     SALE_ORDER = MenuCommon(
         name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
-        icon='<i class="fas fa-file-invoice"></i>',
+        icon='<i class="fas fa-shopping-cart"></i>',
     )
     GROUP_ORDER = MenuCommon(
         name='Group order', code='menu_group_order_list', view_name='GroupOrderList',
@@ -403,7 +403,7 @@ class MenusCRM:
     )
     FINAL_ACCEPTANCE = MenuCommon(
         name='Final acceptance', code='menu_final_acceptance_list', view_name='FinalAcceptanceList',
-        icon='<i class="fas fa-file-alt"></i>',
+        icon='<i class="fas fa-calendar-check"></i>',
     )
     CONTRACT_APPROVAL = MenuCommon(
         name='Contract approval', code='menu_contract_approval_list', view_name='ContractApprovalList',
@@ -552,7 +552,7 @@ class MenusInventory:
             ),
             MenuCommon(
                 name='Delivery', code='menu_order_delivery_list', view_name='OrderDeliveryList',
-                icon='<i class="fas fa-truck-pickup"></i>',
+                icon='<i class="fas fa-truck"></i>',
             ),
             MenuCommon(
                 name='Goods receipt',

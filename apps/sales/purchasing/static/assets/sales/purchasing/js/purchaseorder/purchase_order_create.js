@@ -89,11 +89,6 @@ $(function () {
             POLoadDataHandle.loadDataShowPurchaseRequest();
             POLoadDataHandle.loadReDataTbl();
             POLoadDataHandle.loadTableProductByPurchaseRequest();
-            if (elePurchaseRequest[0].innerHTML) {
-                POLoadDataHandle.loadModalPurchaseQuotation();
-            } else {
-                POLoadDataHandle.loadModalPurchaseQuotation(true);
-            }
         });
 
         // Action on click btn remove purchase request

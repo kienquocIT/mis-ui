@@ -523,7 +523,7 @@ class MenusPurchase:
             ),
             MenuCommon(
                 name='Purchase order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
-                icon='<i class="fas fa-file-contract"></i>',
+                icon='<i class="fas fa-shopping-cart"></i>',
             ),
             MenuCommon(
                 name='AP invoice', code='id_menu_ap_invoice', view_name='APInvoiceList',
@@ -558,7 +558,7 @@ class MenusInventory:
                 name='Goods receipt',
                 code='menu_goods_receipt_list',
                 view_name='GoodsReceiptList',
-                icon='<i class="fas fa-file-import"></i>',
+                icon='<i class="fas fa-dolly-flatbed"></i>',
             ),
             MenuCommon(
                 name='Goods registration',

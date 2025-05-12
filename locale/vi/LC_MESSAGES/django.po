@@ -11766,3 +11766,15 @@ msgstr "Thông tin giao hàng"
 #
 msgid "Estimated delivery date is required"
 msgstr "Ngày giao dự kiến là bắt buộc"
+
+#
+msgid "Component description"
+msgstr "Mô tả thành phần"
+
+#
+msgid "Add new component"
+msgstr "Thêm thành phần mới"
+
+#
+msgid "This table is for reference only - used to preload data for 'Product modification'."
+msgstr "Bảng này có tính chất tham khảo - dùng để tải trước dữ liệu trong chúc năng 'Điều chỉnh cấu trúc sản phẩm'."

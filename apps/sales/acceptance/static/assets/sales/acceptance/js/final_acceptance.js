@@ -13,29 +13,6 @@ $(function () {
         let $btnS = $('#btn-save');
         let $eleDataFact = $('#app-data-factory');
 
-        function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
-            let opts = {'allowClear': isClear};
-            $ele.empty();
-            if (data.length > 0) {
-                opts['data'] = data;
-            }
-            if (Object.keys(dataParams).length !== 0) {
-                opts['dataParams'] = dataParams;
-            }
-            if ($modal) {
-                opts['dropdownParent'] = $modal;
-            }
-            if (Object.keys(customRes).length !== 0) {
-                opts['templateResult'] = function (state) {
-                    let res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
-                    let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
-                    return $(`<span>${res1} ${res2}</span>`);
-                }
-            }
-            $ele.initSelect2(opts);
-            return true;
-        }
-
         function loadCustomCss() {
             $('.accordion-item').css({
                 'margin-bottom': 0

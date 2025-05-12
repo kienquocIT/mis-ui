@@ -1361,6 +1361,7 @@ $(function () {
                 info: false,
                 autoWidth: true,
                 scrollX: true,
+                fixedColumns: true,
                 columns: [  // 260, <7740> (2000p)
                     {
                         targets: 0,

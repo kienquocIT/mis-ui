@@ -1839,6 +1839,7 @@ class PODataTableHandle {
                 // add css to Dtb
                 POLoadDataHandle.loadCssToDtb('datable-purchase-request');
                 POLoadDataHandle.loadEventCheckbox($table, true);
+                PODataTableHandle.dtbPurchaseRequestHDCustom();
             },
         });
     };
@@ -1946,6 +1947,7 @@ class PODataTableHandle {
                 // add css to Dtb
                 POLoadDataHandle.loadCssToDtb('datable-purchase-request-product');
                 POLoadDataHandle.loadEventCheckbox($table);
+                PODataTableHandle.dtbPurchaseRequestProductHDCustom();
             },
         });
     };
@@ -2025,6 +2027,7 @@ class PODataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 POLoadDataHandle.loadCssToDtb('datable-purchase-request-product-merge');
+                PODataTableHandle.dtbPurchaseRequestProductMergeHDCustom();
             },
         });
     };
@@ -2966,6 +2969,45 @@ class PODataTableHandle {
     };
 
     // Custom dtb
+    static dtbPurchaseRequestHDCustom() {
+        let $table = $('#datable-purchase-request');
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
+    static dtbPurchaseRequestProductHDCustom() {
+        let $table = $('#datable-purchase-request-product');
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
+    static dtbPurchaseRequestProductMergeHDCustom() {
+        let $table = $('#datable-purchase-request-product-merge');
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
     static dtbProductHDCustom() {
         let $table = PODataTableHandle.$tablePOByAdd;
         let wrapper$ = $table.closest('.dataTables_wrapper');

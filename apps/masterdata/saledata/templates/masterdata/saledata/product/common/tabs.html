@@ -223,15 +223,15 @@
                 </div>
             </div>
             <div class="col-12 col-md-12 col-lg-8 ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
-                <table class="table table-advance nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                <table class="table table-bordered nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
                     <thead>
                         <tr>
-                            <th></th>
-                            <th>{% trans 'Select' %}</th>
-                            <th>{% trans 'Price list' %}</th>
-                            <th>{% trans 'Start' %}</th>
-                            <th>{% trans 'End' %}</th>
-                            <th>{% trans 'Price' %}</th>
+                            <th style="min-width: 50px"></th>
+                            <th style="min-width: 50px">{% trans 'Select' %}</th>
+                            <th style="min-width: 200px">{% trans 'Price list' %}</th>
+                            <th style="min-width: 150px">{% trans 'Start' %}</th>
+                            <th style="min-width: 150px">{% trans 'End' %}</th>
+                            <th style="min-width: 200px">{% trans 'Price' %}</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

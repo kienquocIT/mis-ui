@@ -292,13 +292,12 @@ class ProductPageFunction {
         let disabled_all_input = option === 'detail' ? 'disabled readonly' : ''
         pageElements.$table_price_list.DataTableDefault({
             styleDom: 'hide-foot',
-            paging: false,
-            scrollX: true,
-            scrollY: '65vh',
-            scrollCollapse: true,
-            useDataServer: true,
-            reloadCurrency: true,
             rowIdx: true,
+            reloadCurrency: true,
+            paging: false,
+            scrollY: '65vh',
+            scrollX: true,
+            scrollCollapse: true,
             ajax: {
                 url: pageElements.$table_price_list.attr('data-url'),
                 type: pageElements.$table_price_list.attr('data-method'),
@@ -387,10 +386,6 @@ class ProductPageFunction {
                     }
                 }
             ],
-        }).on('draw.dt', function () {
-            pageElements.$table_price_list.find('tbody').find('tr').each(function () {
-                $(this).after('<tr class="table-row-gap"><td></td></tr>');
-            });
         });
     }
     static LoadPriceForChild(element_id, element_value) {

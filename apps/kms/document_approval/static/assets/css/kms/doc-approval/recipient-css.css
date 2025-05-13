@@ -1,3 +1,34 @@
 .form-check-inline .form-check-input{
     margin-top: 5px;
 }
+.util-btn{
+    display: none;
+}
+#table_group_wrapper .dtb-header-toolbar{
+    display: none!important;
+}
+
+#table_group_wrapper{
+    margin-top: 34px!important;
+}
+
+#table_group_wrapper .dataTables_scrollHead table tr td,
+#table_employee_wrapper .dataTables_scrollHead table tr td{
+    background: #f3f3f3;
+}
+
+.employee-added > div > .chip{
+    margin-right: 7px;
+    margin-bottom: 5px;
+}
+.layout_grid{
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+    grid-gap: 10px;
+}
+.layout_grid label{
+    grid-column: 1 / span 5;
+}
+.layout_grid .form-check:nth-child(5){
+    grid-column: 4 / span 2;
+}

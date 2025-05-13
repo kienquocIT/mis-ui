@@ -11,96 +11,153 @@
                 </div>
                 <div class="modal-body">
                     <form id="recipient_form">
+                        <input type="hidden" name="group_access">
+                        <input type="hidden" name="employee_access">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-check form-check-inline">
                                     <input type="radio" id="radio_employee" class="form-check-input"
-                                           name="switch_user_type" value="employee" checked>
+                                           name="kind" value="employee" checked>
                                     <label title="Employee" for="radio_employee" class="form-check-label">
                                         {% trans 'Employee' %}
                                     </label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input type="radio" id="radio_group" class="form-check-input"
-                                           name="switch_user_type" value="group">
+                                           name="kind" value="group">
                                     <label title="Group" for="radio_group" class="form-check-label">
                                         {% trans 'Group' %}
                                     </label>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-3">
-                                <div class="wrap border">
+                                <div class="w-100 d-flex align-items-start">
                                     <div class="w-30">
-                                        <label for="" class="form-label w-100 bg-grey-light-4 text-center">
-                                            {% trans 'Group' %}</label>
-                                        <table class="table nowrap w-100" id="table_group"
-                                               data-url="{% url 'GroupListAPI' %}"></table>
+                                        <table class="table nowrap w-100 mt-4" id="table_group"
+                                               data-url="{% url 'GroupListAPI' %}">
+                                            <thead>
+                                            <tr>
+                                                <td>{% trans 'Group' %}</td>
+                                            </tr>
+                                            </thead>
+                                        </table>
                                     </div>
                                     <div class="w-70">
                                         <table class="table nowrap w-100" id="table_employee"
                                                data-url="{% url 'EmployeeListAPI' %}">
+                                            <thead>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" id="checkbox_all" class="form-check-input"
+                                                               name="check_all">
+                                                        <label title="Group" for="checkbox_all" class="form-check-label">
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>{% trans 'Code' %}</td>
+                                                <td>{% trans 'Name' %}</td>
+                                                <td>{% trans 'Group' %}</td>
+                                            </tr>
+                                            </thead>
                                         </table>
                                     </div>
                                 </div>
-                                <button class="btn btn-outline-primary mt-2" type="button" id="add_user">
+                                <button class="btn btn-outline-primary mt-2" type="button" id="add_selected">
                                     <span>
                                         <span>{% trans 'Add' %}</span>
                                         <span class="icon">
-                                            <i class="fa-regular fa-plus"></i>
+                                            <i class="fa-regular fa-floppy-disk"></i>
                                         </span>
                                     </span>
                                 </button>
                             </div>
-                            <div class="col-md-12 employee-added">
+                            <div class="col-md-12 employee-added mt-2 mb-2">
+                                <div class="d-flex justify-content-start flex-wrap border min-h-35p w-100 p-2">
 
+                                </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12 mt-4 mb-3">
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" id="radio_review" class="form-check-input" checked>
+                                    <input type="radio" id="radio_review" class="form-check-input" checked
+                                           name="radio_perm_file" value="1">
                                     <label title="Review" for="radio_review" class="form-check-label">
                                         {% trans 'Review' %}
                                     </label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" id="radio_download" class="form-check-input" checked>
-                                    <label title="Download" for="radio_download" class="form-check-label">
-                                        {% trans 'Download' %}
+                                    <input type="radio" id="radio_view" class="form-check-input"
+                                    name="radio_perm_file" value="2">
+                                    <label title="View" for="radio_view" class="form-check-label">
+                                        {% trans 'View' %}
                                     </label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" id="radio_edit_f_attr" class="form-check-input" checked>
-                                    <label title="Edit file attributes" for="radio_edit_f_attr" class="form-check-label">
-                                        {% trans 'Edit file attributes' %}
+                                    <input type="radio" id="radio_edit" class="form-check-input"
+                                    name="radio_perm_file" value="3">
+                                    <label title="Edit" for="radio_edit" class="form-check-label">
+                                        {% trans 'Edit' %}
                                     </label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input type="radio" id="radio_share" class="form-check-input" checked>
-                                    <label title="Share" for="radio_share" class="form-check-label">
-                                        {% trans 'Share' %}
-                                    </label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" id="radio_upload_ver" class="form-check-input" checked>
-                                    <label title="Upload version" for="radio_upload_ver" class="form-check-label">
-                                        {% trans 'Upload version' %}
-                                    </label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" id="radio_duplicate" class="form-check-input" checked>
-                                    <label title="Duplicate" for="radio_duplicate" class="form-check-label">
-                                        {% trans 'Duplicate' %}
-                                    </label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" id="radio_edit_f" class="form-check-input" checked>
-                                    <label title="Edit file" for="radio_edit_f" class="form-check-label">
-                                        {% trans 'Edit file' %}
+                                    <input type="radio" id="radio_custom" class="form-check-input"
+                                    name="radio_perm_file" value="4">
+                                    <label title="Custom" for="radio_custom" class="form-check-label">
+                                        {% trans 'Custom' %}
                                     </label>
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="" class="form-label">{% trans 'Expiration Date' %}</label>
-                                <input type="text" class="form-control" name="expiration_date">
+                                <div class="border w-100 p-2 layout_grid">
+                                    <label class="form-label mt-2 mb-2 w-100 font-weight-bold">{% trans 'File in folder' %}</label>
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" id="checkbox_review" class="form-check-input" checked>
+                                        <label title="Review" for="checkbox_review" class="form-check-label">
+                                            {% trans 'Review' %}
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" id="checkbox_download" class="form-check-input">
+                                        <label title="Download" for="checkbox_download" class="form-check-label">
+                                            {% trans 'Download' %}
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" id="checkbox_edit_f_attr" class="form-check-input">
+                                        <label title="Edit file attributes" for="checkbox_edit_f_attr" class="form-check-label">
+                                            {% trans 'Edit file attributes' %}
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" id="checkbox_share" class="form-check-input">
+                                        <label title="Share" for="checkbox_share" class="form-check-label">
+                                            {% trans 'Share' %}
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" id="checkbox_upload_ver" class="form-check-input">
+                                        <label title="Upload version" for="checkbox_upload_ver" class="form-check-label">
+                                            {% trans 'Upload version' %}
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" id="checkbox_duplicate" class="form-check-input">
+                                        <label title="Duplicate" for="checkbox_duplicate" class="form-check-label">
+                                            {% trans 'Duplicate' %}
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" id="checkbox_edit_f" class="form-check-input">
+                                        <label title="Edit file" for="checkbox_edit_f" class="form-check-label">
+                                            {% trans 'Edit file' %}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                            <div class="col-md-6">
+                                <label for="input_expired" class="form-label">{% trans 'Expiration Date' %}</label>
+                                <input type="text" class="form-control" name="expiration_date" id="input_expired">
                             </div>
                         </div>
                     </form>

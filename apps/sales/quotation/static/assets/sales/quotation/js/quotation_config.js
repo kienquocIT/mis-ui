@@ -19,6 +19,7 @@ $(function () {
         let $functionMD = $('#function_md');
         let $functionRemark = $('#function_remark');
         let $boxAcceptanceAffect = $('#box_acceptance_affect');
+        let $isNegativeSetZero = $('#is_negative_set_zero');
         let $isAcceptanceEditable = $('#acceptance_editable');
         let $formulaValidateTxt = $('#formula_validate_txt');
         let $btnSaveFormula = $('#btn-save-formula');
@@ -349,6 +350,7 @@ $(function () {
                 let targetDataRow = $targetRow.data();
                 $formulaTitle[0].innerHTML = "(" + targetDataRow?.['title'] + ")";
                 $formulaEditor.val(targetDataRow?.['formula_data_show']);
+                $isNegativeSetZero[0].checked = targetDataRow?.['is_negative_set_zero'];
             }
         }
 
@@ -736,9 +738,10 @@ $(function () {
             formula_list_raw = parseItemInList(formula_list_raw);
             data_submit['formula_data'] = parseFormulaRaw(formula_list_raw);
             data_submit['formula_data_show'] = $formulaEditor.val();
+            data_submit['is_negative_set_zero'] = $isNegativeSetZero[0].checked;
             data_submit['acceptance_affect_by'] = parseFloat($boxAcceptanceAffect.val());
             data_submit['is_acceptance_editable'] = $isAcceptanceEditable[0].checked;
-            return true
+            return true;
         }
 
         function parseStringToArray(expression) {

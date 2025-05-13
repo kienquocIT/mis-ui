@@ -143,32 +143,17 @@ $(async function () {
     let $eleSO = $('#inputSaleOrder');
     let $table = $('#dtbPickingProductList');
 
-    // init date picker
+    // date picker
     $('.date-picker').each(function () {
-        $(this).daterangepicker({
-            singleDatePicker: true,
-            timepicker: false,
-            showDropdowns: false,
-            minYear: 2023,
-            locale: {
-                format: 'DD/MM/YYYY',
-            },
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            autoApply: true,
-            autoUpdateInput: false,
-        }).on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('DD/MM/YYYY'));
-        });
-        $(this).val('').trigger('change');
-    })
+        DateTimeControl.initDatePicker(this);
+    });
 
     // call data when page loaded
-    $.fn.callAjax(
-        $('#idxUrlPickingDetail').text(),
-        'GET',
-        {},
-        true,
-    ).then((resp) => {
+    $.fn.callAjax2({
+        url: $('#idxUrlPickingDetail').text(),
+        method: 'GET',
+        isLoading: true,
+    }).then((resp) => {
             let data = $.fn.switcherResp(resp);
             // load sale order
             pickupInit.setPicking = data?.['picking_detail']
@@ -300,6 +285,14 @@ $(async function () {
                 let menuDD = row.querySelector('.dropdown-menu-stock');
                 let areaPick = row.querySelector('.area-pick');
                 if (menuDD && areaPick) {
+                    let detailData = pickupInit.getPicking;
+                    let pickingData = {};
+                    for (let picking of pickupInit.getProdList) {
+                        if (picking?.['product_data']?.['id'] === prod?.['product_data']?.['id']) {
+                            pickingData = picking;
+                            break;
+                        }
+                    }
                     let $menuDD = $(menuDD);
                     let link = '';
                     let dataWH = {};
@@ -387,13 +380,17 @@ $(async function () {
                             if (data?.['is_pw']) {
                                 badgeStock = `<span class="badge badge-primary badge-outline mr-2">${$elmTrans.attr('data-common-wh')}</span>`;
                             }
+                            let disabled = "";
+                            if ($form.attr('data-method').toLowerCase() === 'get' || detailData?.['state'] === 1) {
+                                disabled = 'disabled';
+                            }
                             htmlStock += `<div class="row mb-1 align-items-center">
                                             <div class="col-12 col-md-6 col-lg-6">${badgeStock}</div>
                                             <div class="col-12 col-md-6 col-lg-6"><span class="badge badge-pink badge-outline pw-available" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}">${available}</span></div>
                                         </div>`;
                             htmlPick += `<div class="row mb-1 align-items-center">
                                             <div class="col-12 col-md-6 col-lg-6"><div>${badgeStock}</div></div>
-                                            <div class="col-12 col-md-6 col-lg-6"><input class="form-control so-quantity-pick" type="number" value="0" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}"></div>                                   
+                                            <div class="col-12 col-md-6 col-lg-6"><input class="form-control so-quantity-pick" type="number" value="${pickingData?.['picked_quantity'] ? pickingData?.['picked_quantity'] : 0}" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}" ${disabled}></div>                                   
                                         </div>`;
                         }
                     }
@@ -484,18 +481,19 @@ $(async function () {
                 {
                     width: '20%',
                     render: (row, type, data, meta) => {
+                        let detailData = pickupInit.getPicking;
                         let isDisabled = ''
-                        if (data.picked_quantity === data.remaining_quantity) isDisabled = 'disabled'
-                        if ($form.attr('data-method').toLowerCase() === 'get') {
+                        if (data?.['picked_quantity'] === data?.['remaining_quantity']) isDisabled = 'disabled'
+                        if ($form.attr('data-method').toLowerCase() === 'get' || detailData?.['state'] === 1) {
                             isDisabled = 'disabled';
                         }
                         return `<div class="row area-pick">
                                     <div class="col-xs-12 col-sm-6">
                                         <input class="form-control table-row-quantity-pick" type="number" id="prod_row-${meta.row}" 
-                                        value="${data.picked_quantity}" ${isDisabled}/>
+                                        value="${data?.['picked_quantity']}" ${isDisabled}/>
                                     </div>
                                 </div><input class="form-control table-row-quantity-pick" type="number" id="prod_row-${meta.row}" 
-                                        value="${data.picked_quantity}" hidden>`;
+                                        value="${data?.['picked_quantity']}" hidden>`;
                     }
                 },
             ],
@@ -637,6 +635,7 @@ $(async function () {
         }
 
         //call ajax to update picking
+        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
         $.fn.callAjax2({
             'url': _form.dataUrl, 'method': _form.dataMethod, 'data': pickingData
         })

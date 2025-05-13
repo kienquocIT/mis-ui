@@ -67,16 +67,12 @@ $(document).ready(function () {
                 data: 'state',
                 orderable: true,
                 render: (data, type, row, meta) => {
-                    let templateEle = `<span class="badge badge-warning badge-outline">{0}</span>`;
-                    switch (data) {
-                        case 0:
-                            templateEle = `<span class="badge badge-info badge-outline">{0}</span>`;
-                            break
-                        case 1:
-                            templateEle = `<span class="badge badge-success badge-outline">{0}</span>`;
-                            break
+
+                    let hidden = "hidden";
+                    if (row?.['state'] === 1) {
+                        hidden = "";
                     }
-                    return templateEle.format_by_idx(letStateChoices?.[data]);
+                    return `<span>${letStateChoices[data]}</span><i class="far fa-check-circle text-success ml-2" ${hidden}></i>`;
                 }
             }
         ]

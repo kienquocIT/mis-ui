@@ -3597,6 +3597,16 @@ class WFRTControl {
         }
         return ``;
     }
+
+    static getDataDDSystemStatus() {
+        return [
+            {'id': 0, 'title': $.fn.transEle.attr('data-draft')},
+            {'id': 1, 'title': $.fn.transEle.attr('data-created')},
+            {'id': 2, 'title': $.fn.transEle.attr('data-added')},
+            {'id': 3, 'title': $.fn.transEle.attr('data-approved')},
+            {'id': 4, 'title': $.fn.transEle.attr('data-cancel')},
+        ]
+    }
 }
 
 class WFAssociateControl {

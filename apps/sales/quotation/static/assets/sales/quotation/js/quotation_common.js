@@ -5796,16 +5796,26 @@ class indicatorHandle {
             let value = indicatorHandle.evaluateFormula(parse_formula);
             // rate value
             if (indicator?.['code'] === "IN0001") {
-                revenueValue = value
+                revenueValue = value;
             }
             if (value && revenueValue) {
                 if (revenueValue !== 0) {
                     rateValue = ((value / revenueValue) * 100).toFixed(0);
                 }
             }
+
+            // check if indicator is_negative_set_zero is True
+            if (indicator?.['is_negative_set_zero'] === true) {
+                if (value < 0) {
+                    value = 0;
+                    rateValue = 0;
+                }
+            }
+
             // quotation value
             let quotationValue = 0;
             let differenceValue = value;
+
             // check if sale order then get quotation value
             if (formSubmit[0].classList.contains('sale-order')) {
                 if (formSubmit.attr('data-method') === 'POST') {
@@ -5830,6 +5840,7 @@ class indicatorHandle {
                     }
                 }
             }
+
             // append result
             result_list.push({
                 'indicator': indicator?.['id'],

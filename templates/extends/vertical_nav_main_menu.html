@@ -43,6 +43,7 @@
                                     class="dropdown-menu w-230p border border-primary" data-url="{% url 'SpaceChangeView' %}"
                                     data-url-redirect="{% url 'HomeView' %}" data-method="PUT"
                             >
+                                <div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="h-400p position-relative overflow-y-scroll">
                                 {% csrf_token %}
                                 {% for item in base.space_list %}
                                     {% if item.child|length > 0 %}
@@ -64,6 +65,7 @@
                                         >{{ item.name }}</a>
                                     {% endif %}
                                 {% endfor %}
+                                </div>
                             </div>
                         </div>
             </div>

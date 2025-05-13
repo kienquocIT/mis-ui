@@ -24,6 +24,8 @@ class FinalAcceptanceList(View):
         template='sales/acceptance/final_acceptance_update.html',
         menu_active='menu_final_acceptance_list',
         breadcrumb='FINAL_ACCEPTANCE_LIST_PAGE',
+        icon_cls='fas fa-calendar-check',
+        icon_bg='bg-cyan',
     )
     def get(self, request, *args, **kwargs):
         employee_current = {}

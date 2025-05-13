@@ -253,6 +253,8 @@ def mask_view(**parent_kwargs):
             )
             url_pattern_keys = parent_kwargs.get('url_pattern_keys', [])
             enable_page_content_css = parent_kwargs.get('enable_page_content_css', True)  # auto add page_content.css
+            icon_cls = parent_kwargs.get('icon_cls', None)
+            icon_bg = parent_kwargs.get('icon_bg', None)
 
             # check login with request.user | auto redirect login page when expired
             if login_require:
@@ -391,6 +393,8 @@ def mask_view(**parent_kwargs):
                                     'menu_id_current': parent_kwargs.get('menu_active', None),
                                     'space_code_current': 1,
                                 }
+                                ctx['icon_cls'] = icon_cls
+                                ctx['icon_bg'] = icon_bg
                                 try:
                                     return render(request, cls_check.template_path, ctx)
                                 except Exception as err:

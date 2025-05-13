@@ -39,6 +39,8 @@ class PurchaseOrderList(View):
         template='sales/purchasing/purchaseorder/purchase_order_list.html',
         menu_active='menu_purchase_order_list',
         breadcrumb='PURCHASE_ORDER_LIST_PAGE',
+        icon_cls='fas fa-shopping-cart',
+        icon_bg='bg-brown',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS, 'gr_status': PO_GR_STATUS}, status.HTTP_200_OK
@@ -50,6 +52,8 @@ class PurchaseOrderCreate(View):
         template='sales/purchasing/purchaseorder/purchase_order_create.html',
         menu_active='menu_purchase_order_list',
         breadcrumb='PURCHASE_ORDER_CREATE_PAGE',
+        icon_cls='fas fa-shopping-cart',
+        icon_bg='bg-brown',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -85,6 +89,8 @@ class PurchaseOrderDetail(View):
         template='sales/purchasing/purchaseorder/purchase_order_detail.html',
         menu_active='menu_purchase_order_list',
         breadcrumb='PURCHASE_ORDER_DETAIL_PAGE',
+        icon_cls='fas fa-shopping-cart',
+        icon_bg='bg-brown',
         perm_check=PermCheck(url=ApiURL.PURCHASE_ORDER_DETAIL_PK, method='GET', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
@@ -97,6 +103,8 @@ class PurchaseOrderUpdate(View):
         template='sales/purchasing/purchaseorder/purchase_order_update.html',
         menu_active='menu_purchase_order_list',
         breadcrumb='PURCHASE_ORDER_UPDATE_PAGE',
+        icon_cls='fas fa-shopping-cart',
+        icon_bg='bg-brown',
         perm_check=PermCheck(url=ApiURL.PURCHASE_ORDER_DETAIL_PK, method='PUT', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):

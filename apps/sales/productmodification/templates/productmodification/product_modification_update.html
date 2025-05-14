@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Product modification' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-detail-product-modification">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+    >
+    </script>
+    <form id="form-detail-product-modification"
+        data-method="PUT"
+        data-url-redirect="{% url "ProductModificationDetail" pk=pk %}"
+        data-url="{% url 'ProductModificationDetailAPI' pk=pk %}"
+    >
+        {% csrf_token %}
+        {% include 'productmodification/common/information.html' %}
+        {% include 'productmodification/common/space.html' %}
+    </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'productmodification/common/modals.html' %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static "assets/js/arinvoice/ar_invoice_common.js" %}"></script>
+    <script src="{% static "assets/js/arinvoice/ar_invoice_update.js" %}"></script>
+{% endblock %}

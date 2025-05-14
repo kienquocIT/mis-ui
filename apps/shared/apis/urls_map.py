@@ -319,6 +319,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_SALE_DETAIL = StringUrl('saledata/products-sale')
     PRODUCT_VARIANT_LIST = StringUrl('saledata/products-variants')
 
+    PRODUCT_MODIFICATION_LIST = StringUrl('saledata/product-modifications')
+    PRODUCT_MODIFICATION_DETAIL = StringUrl('saledata/product-modification/{pk}')
+
     # advance payment
     CASHOUTFLOW_QUOTATION_LIST = StringUrl('cashoutflow/quotation-list')
     CASHOUTFLOW_SALE_ORDER_LIST = StringUrl('cashoutflow/sale-order-list')
@@ -893,7 +896,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')
 
-
     # asset/ fixed asset write off
     FIXED_ASSET_WRITE_OFF_LIST = StringUrl('asset/fixed-asset-writeoff/list')
     FIXED_ASSET_WRITE_OFF_DETAIL = StringUrl('asset/fixed-asset-writeoff/detail')
@@ -912,3 +914,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GROUP_ORDER_PRODUCT_LIST = StringUrl('group-order/product/list')
     GROUP_ORDER_LIST = StringUrl('group-order/list')
     GROUP_ORDER_DETAIL = StringUrl('group-order/detail')
+
+    # sales/product modification
+    PRODUCT_COMPONENT_LIST = StringUrl('product-modification/product-component-list')
+    PRODUCT_MODIFIED_LIST = StringUrl('product-modification/product-modified-list')
+    WAREHOUSE_LIST_BY_PRODUCT = StringUrl('product-modification/warehouse-list-by-product')
+    PRODUCT_SERIAL_LIST = StringUrl('product-modification/product-serial-list')

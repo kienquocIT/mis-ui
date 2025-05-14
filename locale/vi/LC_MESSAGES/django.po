@@ -11768,6 +11768,10 @@ msgid "Estimated delivery date is required"
 msgstr "Ngày giao dự kiến là bắt buộc"
 
 #
+msgid "Component name"
+msgstr "Tên thành phần"
+
+#
 msgid "Component description"
 msgstr "Mô tả thành phần"
 
@@ -11777,4 +11781,36 @@ msgstr "Thêm thành phần mới"
 
 #
 msgid "This table is for reference only - used to preload data for 'Product modification'."
-msgstr "Bảng này có tính chất tham khảo - dùng để tải trước dữ liệu trong chúc năng 'Điều chỉnh cấu trúc sản phẩm'."
+msgstr "Bảng này có tính chất tham khảo - dùng để tải trước dữ liệu trong chúc năng 'Tháo - lắp thết bị'."
+
+#
+msgid "Product modification"
+msgstr "Tháo - lắp thết bị"
+
+#
+msgid "Product Modification"
+msgstr "Tháo - lắp thết bị"
+
+#
+msgid "Select modified product"
+msgstr "Chọn sản phẩm tháo - lắp"
+
+#
+msgid "Picking modified product"
+msgstr "Lấy sản phẩm tháo - lắp"
+
+#
+msgid "Current component"
+msgstr "Thành phần hiện tại"
+
+#
+msgid "Insert component"
+msgstr "Thêm thành phần"
+
+#
+msgid "Current quantity"
+msgstr "SL hiện tại"
+
+#
+msgid "have not picking yet"
+msgstr "chưa lấy hàng"

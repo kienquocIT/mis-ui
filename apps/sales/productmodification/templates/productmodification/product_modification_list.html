@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans 'AP Invoice' %}{% endblock %}
+{% block title %}{% trans 'Product modification' %}{% endblock %}
 {% block cssHeader %}
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url "APInvoiceCreate" %}">
+    <a href="{% url "ProductModificationCreate" %}">
         <button class="btn btn-outline-primary" type="button">
             <span>
                 <span>{% trans 'Add' %}</span>
@@ -20,21 +20,27 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
-    >
-    </script>
+    ></script>
+{#    <div class="row">#}
+{#        <div class="col-12">#}
+{#            <button id="reload-invoice-status-btn" type="button" class="btn-sm btn btn-gradient-primary">{% trans 'Reload invoice status' %}</button>#}
+{#        </div>#}
+{#    </div>#}
     <div class="row">
         <div class="col-12">
-            <table id="datatable_ap_invoice_list" class="table nowrap w-100 mb-5" data-method="GET"
-                   data-url="{% url 'APInvoiceListAPI' %}"
-                   data-url-detail="{% url 'APInvoiceDetail' '0' %}"
+            <table id="datatable_product_modification_list"
+                   class="table nowrap w-100 mb-5"
+                   data-method="GET"
+                   data-url-redirect="{% url 'ProductModificationList' %}"
+                   data-url="{% url 'ProductModificationListAPI' %}"
+                   data-url-detail="{% url 'ProductModificationDetail' '0' %}"
             >
                 <thead>
                 <tr>
                     <th style="min-width: 50px"></th>
                     <th style="min-width: 100px">{% trans "Code" %}</th>
                     <th style="min-width: 300px">{% trans "Name" %}</th>
-                    <th style="min-width: 100px">{% trans "Purchase order" %}</th>
-                    <th style="min-width: 300px">{% trans "Supplier" %}</th>
+                    <th style="min-width: 150px">{% trans "Employee created" %}</th>
                     <th style="min-width: 150px">{% trans "Date created" %}</th>
                     <th style="min-width: 80px">{% trans "System status" %}</th>
                 </tr>
@@ -44,5 +50,5 @@
     </div>
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/js/apinvoice/ap_invoice_list.js' %}"></script>
+    <script src="{% static 'assets/js/productmodification/product_modification_list.js' %}"></script>
 {% endblock %}

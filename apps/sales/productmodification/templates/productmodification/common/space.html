@@ -1,0 +1,64 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12 mt-3">
+        <div class="border rounded p-2" style="min-height: 30vh; background-color: #ECFDF5;">
+            <div class="row">
+                <div class="col-12">
+                    <table class="table nowrap w-100" id="table-current-product-modified">
+                        <thead>
+                            <tr>
+                                <th style="min-width: 50px"></th>
+                                <th style="min-width: 200px">{% trans 'Product code' %}</th>
+                                <th style="min-width: 200px">{% trans 'Product name' %}</th>
+                                <th style="min-width: 100px">
+                                    <span id="noti-not-picking" class="text-danger">({% trans 'have not picking yet' %})</span>
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <button id="btn-open-modal-product" class="btn btn-xs btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#select-product-modified-modal">
+                        <span>
+                            <span class="icon">
+                                <span class="feather-icon"><i class="fa-solid fa-circle-check"></i></span>
+                            </span>
+                            <span>{% trans 'Select modified product' %}</span>
+                        </span>
+                    </button>
+                </div>
+                <div class="col-12 mt-5">
+                    <span class="fw-bold text-muted h6">{% trans "Current component" %}</span>
+                    <table class="table nowrap w-100" id="table-product-component">
+                        <thead>
+                            <tr>
+                                <th style="min-width: 50px"></th>
+                                <th style="min-width: 200px">{% trans 'Component name' %}</th>
+                                <th style="min-width: 200px">{% trans 'Component description' %}</th>
+                                <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <button type="button" class="btn btn-xs btn-success" id="insert-component-btn">
+                        <span>
+                            <span class="icon">
+                                <span class="feather-icon">
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                            </span>
+                            <span>{% trans "Insert component" %}</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mt-3">
+        <div class="border rounded p-2" style="min-height: 30vh; background-color: #FEF2F2;">
+            <div class="row">
+                <div class="col-12">
+                    <span class="fw-bold text-muted h6">{% trans "Removed component" %}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

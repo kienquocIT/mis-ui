@@ -224,14 +224,14 @@
             </div>
             <div class="col-12 col-md-12 col-lg-8 ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
                 <table class="table table-bordered nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
-                    <thead>
+                    <thead class="bg-secondary-light-5">
                         <tr>
                             <th style="min-width: 50px"></th>
                             <th style="min-width: 50px">{% trans 'Select' %}</th>
-                            <th style="min-width: 200px">{% trans 'Price list' %}</th>
+                            <th style="min-width: 150px">{% trans 'Price list' %}</th>
                             <th style="min-width: 150px">{% trans 'Start' %}</th>
                             <th style="min-width: 150px">{% trans 'End' %}</th>
-                            <th style="min-width: 200px">{% trans 'Price' %}</th>
+                            <th style="min-width: 150px">{% trans 'Price' %}</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -290,10 +290,10 @@
             <div class="col-12 mt-5">
                 <div class="row">
                     <div class="col-12 col-md-9 col-lg-6">
-                        <span class="text-muted text-decoration-underline">* {% trans 'Product overview' %}</span>
-                        <table id="datatable-warehouse-overview" class="table table-advance nowrap w-100">
+                        <span class="text-muted">{% trans 'Product overview' %}</span>
+                        <table id="datatable-warehouse-overview" class="table table-bordered nowrap w-100">
                             <thead>
-                                <tr>
+                                <tr class="bg-secondary-light-5">
                                     <th>{% trans "Stock" %}</th>
                                     <th>{% trans "Sale order" %}</th>
                                     <th>{% trans "Purchase" %}</th>
@@ -305,12 +305,12 @@
                         </table>
                     </div>
                     <div class="col-12 col-md-9 col-lg-6">
-                        <span class="text-muted text-decoration-underline">* {% trans 'Product warehouse detail' %}</span>
-                        <table id="datatable-warehouse-list" class="table table-advance nowrap w-100"
+                        <span class="text-muted">{% trans 'Product warehouse detail' %}</span>
+                        <table id="datatable-warehouse-list" class="table table-bordered nowrap w-100"
                                data-url="{% url "WareHouseListAPI" %}"
                                data-method="GET">
                             <thead>
-                                <tr>
+                                <tr class="bg-secondary-light-5">
                                     <th>{% trans "WH Code" %}</th>
                                     <th>{% trans "WH Name" %}</th>
                                     <th>{% trans "Stock" %}</th>

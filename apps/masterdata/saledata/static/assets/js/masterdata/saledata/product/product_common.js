@@ -355,12 +355,12 @@ class ProductPageFunction {
             },
             columns: [
                 {
-                    className: 'w-5',
+                    className: 'w-5 text-center',
                     'render': () => {
                         return ``;
                     }
                 }, {
-                    className: 'w-5',
+                    className: 'w-5 text-center',
                     render: (data, type, row) => {
                         return `<div class="form-check"><input ${disabled_all_input} ${row.hidden} class="select_price_list form-check-input" type="checkbox" data-id="${row.id}" ${row.checked} ${row.disabled}><label class="form-check-label" for="select_price_list"></label></div>`
                     }
@@ -514,10 +514,6 @@ class ProductPageFunction {
                     }
                 });
             }
-        }).on('draw.dt', function () {
-            pageElements.$datatable_warehouse_list.find('tbody').find('tr').each(function () {
-                $(this).after('<tr class="table-row-gap"><td></td></tr>');
-            });
         });
     }
     static LoadWareHouseOverViewDetail(data_list=[]) {
@@ -571,10 +567,6 @@ class ProductPageFunction {
                     }
                 },
             ],
-        }).on('draw.dt', function () {
-            pageElements.$datatable_warehouse_overview.find('tbody').find('tr').each(function () {
-                $(this).after('<tr class="table-row-gap"><td colspan="5"></td></tr>');
-            });
         });
     }
     // purchase tab
@@ -1131,8 +1123,10 @@ class ProductHandler {
                     'component_quantity': component_quantity
                 })
             } else {
-                $.fn.notifyB({description: 'Component Table is missing data (Row ' + (index + 1) + ')'}, 'failure');
-                component_create_valid = false;
+                if (!row.find('.dataTables_empty')) {
+                    $.fn.notifyB({description: 'Component Table is missing data (Row ' + (index + 1) + ')'}, 'failure');
+                    component_create_valid = false;
+                }
             }
         })
         if (!component_create_valid) {

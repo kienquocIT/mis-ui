@@ -58,13 +58,7 @@ $(document).ready(function () {
             type: tbl.attr('data-method'),
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
-                if (data && data.hasOwnProperty('account_list')) {
-                    return data['account_list'].sort((a, b) => {
-                        if (a?.['code'] < b?.['code']) return -1;
-                        if (a?.['code'] > b?.['code']) return 1;
-                        return 0;
-                    });
-                }
+                if (data && data.hasOwnProperty('account_list')) return data['account_list'];
             },
         },
         // fullToolbar: true,
@@ -126,6 +120,8 @@ $(document).ready(function () {
             },
             {
                 className: 'ellipsis-cell-xs w-5',
+                orderable: true,
+                data: 'code',
                 render: (data, type, row) => {
                     const link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
                     return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
@@ -133,6 +129,8 @@ $(document).ready(function () {
             },
             {
                 className: 'ellipsis-cell-lg w-15',
+                orderable: true,
+                data: 'name',
                 render: (data, type, row) => {
                     let link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
                     return `<a href="${link}" class="link-primary underline_hover" title="${row?.['name']}">${row?.['name']}</a>`

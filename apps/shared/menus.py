@@ -873,6 +873,12 @@ class MenusFinancials:
                 name='Reconciliation', code='menu_reconciliation', view_name='ReconList',
                 icon='<i class="fas bi bi-ui-checks"></i>',
             ),
+            MenuCommon(
+                name='Payment plan',
+                code='menu_payment_plan_list',
+                view_name='PaymentPlanList',
+                icon='<i class="fas fa-money-check-alt"></i>',
+            ),
         ],
     )
     CASHFLOW = MenuCommon(

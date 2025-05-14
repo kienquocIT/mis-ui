@@ -58,7 +58,13 @@ $(document).ready(function () {
             type: tbl.attr('data-method'),
             dataSrc: function (resp) {
                 let data = $.fn.switcherResp(resp);
-                if (data && data.hasOwnProperty('account_list')) return data['account_list'];
+                if (data && data.hasOwnProperty('account_list')) {
+                    return data['account_list'].sort((a, b) => {
+                        if (a?.['code'] < b?.['code']) return -1;
+                        if (a?.['code'] > b?.['code']) return 1;
+                        return 0;
+                    });
+                }
             },
         },
         // fullToolbar: true,

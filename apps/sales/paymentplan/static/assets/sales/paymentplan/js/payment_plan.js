@@ -35,7 +35,7 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 fixedColumns: {
-                    leftColumns: 6
+                    leftColumns: staticHeaders.length
                 },
                 pageLength: 50,
                 columns: columns ? columns : [

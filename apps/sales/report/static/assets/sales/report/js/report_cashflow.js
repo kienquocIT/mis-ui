@@ -1,6 +1,13 @@
 $(function () {
     $(document).ready(function () {
 
+        /*
+        There are 2 ways to show report:
+        1/ Year: 12 months
+        2/ Month: 5 weeks
+        */
+
+
         let boxGroup = $('#box-report-cashflow-group');
         let boxEmployee = $('#box-report-cashflow-employee');
         let boxSO = $('#box-report-cashflow-so');

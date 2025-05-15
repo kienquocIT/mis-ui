@@ -4,7 +4,8 @@ from apps.sales.saleorder.views import (
     SaleOrderCreate, SaleOrderList, SaleOrderListAPI, SaleOrderDetail,
     SaleOrderDetailAPI, SaleOrderExpenseListAPI, SaleOrderDetailDeliveryAPI, SaleOrderConfigDetail,
     SaleOrderConfigDetailAPI, SaleOrderIndicatorListAPI, SaleOrderIndicatorDetailAPI, SaleOrderIndicatorRestoreAPI,
-    ProductListSaleOrderAPI, SaleOrderUpdate, SaleOrderPurchasingStaffListAPI, SOProductWOListAPI, SORecurrenceListAPI
+    ProductListSaleOrderAPI, SaleOrderUpdate, SaleOrderPurchasingStaffListAPI, SOProductWOListAPI, SORecurrenceListAPI,
+    SaleOrderDDListAPI
 )
 
 urlpatterns = [
@@ -28,4 +29,5 @@ urlpatterns = [
     ),
     path('sale-order-product-wo/list', SOProductWOListAPI.as_view(), name='SOProductWOListAPI'),
     path('sale-order-recurrence/list', SORecurrenceListAPI.as_view(), name='SORecurrenceListAPI'),
+    path('dropdown/api/list', SaleOrderDDListAPI.as_view(), name='SaleOrderDDListAPI'),
 ]

@@ -6856,16 +6856,22 @@ class DateTimeControl {
         const formatMap = {
             'YYYY': 'year',
             'MM': 'month',
-            'DD': 'day'
+            'DD': 'day',
+            'hh': 'hour',
+            'mm': 'minute',
+            'ss': 'second'
         };
 
         const getDateParts = (format, dateStr) => {
-            const formatParts = format.split(/[-/]/);
-            const dateParts = dateStr.split(/[-/]/);
+            const delimiters = /[-/ :]/;
+            const formatParts = format.split(delimiters);
+            const dateParts = dateStr.split(delimiters);
             const result = {};
 
             formatParts.forEach((part, index) => {
-                result[formatMap[part]] = dateParts[index];
+                if (formatMap[part]) {
+                    result[formatMap[part]] = dateParts[index]?.padStart(2, '0') || '00';
+                }
             });
 
             return result;
@@ -6874,9 +6880,12 @@ class DateTimeControl {
         const parts = getDateParts(fromType, dateStr);
 
         return toType
-            .replace('YYYY', parts.year)
-            .replace('MM', parts.month)
-            .replace('DD', parts.day);
+            .replace('YYYY', parts.year || '0000')
+            .replace('MM', parts.month || '00')
+            .replace('DD', parts.day || '00')
+            .replace('hh', parts.hour || '00')
+            .replace('mm', parts.minute || '00')
+            .replace('ss', parts.second || '00');
     }
 
     static initDatePicker(ele) {

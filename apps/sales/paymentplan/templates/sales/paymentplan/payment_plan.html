@@ -11,27 +11,31 @@
 {% block pageContent %}
     {% csrf_token %}
 
-    <div class="row" id="area-year">
-        <table
-                id="table_payment_plan"
-                class="table nowrap min-w-1366p w-100 mb-5"
-                data-url="{% url 'ReportCashflowListAPI' %}"
-                data-method="get"
-        >
-            <thead>
-            <tr class="bg-light header-custom">
-                <th>{% trans 'Document' %}</th>
-                <th>{% trans 'Code' %}</th>
-                <th>{% trans 'Customer' %}</th>
-                <th>{% trans 'Installment' %}</th>
-                <th>{% trans 'Invoice code' %}</th>
-                <th>{% trans 'Balance due' %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+    <div class="btn-group" role="group" aria-label="Button group with nested dropdown" id="btn-group-view">
+        <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-day">Day</button>
+        <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-week">Week</button>
+        <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-month">Month</button>
     </div>
+    <div id="dtb-area"></div>
+{#    <table#}
+{#            id="table_payment_plan"#}
+{#            class="table nowrap min-w-1680p w-100 mb-5"#}
+{#            data-url="{% url 'ReportCashflowListAPI' %}"#}
+{#            data-method="get"#}
+{#    >#}
+{#        <thead>#}
+{#        <tr class="bg-light header-custom">#}
+{#            <th>{% trans 'Document' %}</th>#}
+{#            <th>{% trans 'Code' %}</th>#}
+{#            <th>{% trans 'Customer' %}</th>#}
+{#            <th>{% trans 'Installment' %}</th>#}
+{#            <th>{% trans 'Invoice code' %}</th>#}
+{#            <th>{% trans 'Balance due' %}</th>#}
+{#        </tr>#}
+{#        </thead>#}
+{#        <tbody>#}
+{#        </tbody>#}
+{#    </table>#}
 
     <div class="modal-canvas-area">
 
@@ -132,6 +136,11 @@
         data-ending-balance="{% trans 'Ending balance' %}"
         data-week="{% trans 'Week' %}"
         data-filter="{% trans 'Filter' %}"
+    >
+    <input
+        type="text"
+        id="app-url-factory"
+        data-payment-plan="{% url 'ReportCashflowListAPI' %}"
     >
 
     <input

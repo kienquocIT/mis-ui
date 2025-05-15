@@ -11420,8 +11420,8 @@ msgid "Adjustment method"
 msgstr "Phương pháp hệ số"
 
 #
-msgid "Goods will convert into"
-msgstr "Hàng hóa chuyển đổi thành"
+msgid "Goods convert into"
+msgstr "Hàng hóa chuyển thành"
 
 #
 msgid "When leased product converted into fixed asset"
@@ -11770,3 +11770,7 @@ msgstr "Thông tin giao hàng"
 #
 msgid "Estimated delivery date is required"
 msgstr "Ngày giao dự kiến là bắt buộc"
+
+#
+msgid "Return 0 if value of indicator is negative"
+msgstr "Trả về 0 nếu giá trị chỉ tiêu âm"

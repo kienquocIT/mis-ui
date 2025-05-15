@@ -20,28 +20,28 @@ $(function () {
                 columns: [
                     {
                         targets: 0,
-                        width: '10%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<span></span>`;
                         }
                     },
                     {
                         targets: 1,
-                        width: '10%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<span></span>`;
                         }
                     },
                     {
                         targets: 2,
-                        width: '10%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<span></span>`;
                         }
                     },
                     {
                         targets: 3,
-                        width: '10%',
+                        width: '5%',
                         render: (data, type, row) => {
                             return `<span></span>`;
                         }

@@ -3,8 +3,8 @@ $(function () {
 
         /*
         There are 2 ways to show report:
-        1/ Year: 12 months
-        2/ Month: 5 weeks
+        1/ Year: load data use dtb $('#table_report_cashflow_year_list') => 12 months
+        2/ Month: load data use dtb $('#table_report_cashflow_month_list') => 5 weeks
         */
 
 

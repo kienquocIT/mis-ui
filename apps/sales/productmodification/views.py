@@ -166,3 +166,17 @@ class ProductSerialListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SERIAL_LIST).get(params)
         return resp.auto_return(key_success='product_serial_list')
+
+
+class ComponentInsertedListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        # đều load sản phẩm nên dùng chung URL với product modified
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_MODIFIED_LIST).get(params)
+        return resp.auto_return(key_success='component_inserted_list')

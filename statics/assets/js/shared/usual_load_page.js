@@ -6,9 +6,10 @@ class UsualLoadPageFunction {
      * Định dạng ô nhập ngày
      * @param {HTMLElement} element - element
      * @param {string} [output_format='DD/MM/YYYY'] - định dạng ngày
+     * @param {Boolean} [auto_load=false] - tự động load ngày
      * @returns {void}
      */
-    static LoadDate({element, output_format='DD/MM/YYYY'}) {
+    static LoadDate({element, output_format='DD/MM/YYYY', auto_load=false}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -18,13 +19,14 @@ class UsualLoadPageFunction {
             timePicker: false,
             showDropdowns: true,
             autoApply: true,
-            autoUpdateInput: false,
+            autoUpdateInput: auto_load,
             minYear: parseInt(moment().format('YYYY')),
             locale: {format: output_format},
             maxYear: parseInt(moment().format('YYYY')) + 100,
         }).on('apply.daterangepicker', function (ev, picker) {
             $(this).val(picker.startDate.format('DD/MM/YYYY'));
-        }).val('');
+        })
+
     }
 
     /**

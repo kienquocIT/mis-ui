@@ -35,7 +35,7 @@
 </div>
 
 <div class="modal fade" id="picking-product-modal" tabindex="-1" role="dialog" aria-labelledby="picking-product-modal">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Picking modified product' %}</h5>
@@ -46,7 +46,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12">
-                        <table class="table nowrap w-100" id="table-select-warehouse" data-method="GET" data-serial-list-url="{% url 'ProductSerialListAPI' %}">
+                        <table class="table nowrap w-100" id="table-select-warehouse">
                             <thead>
                                 <tr>
                                     <th style="min-width: 50px"></th>
@@ -58,8 +58,8 @@
                             </thead>
                         </table>
                     </div>
-                    <div class="col-12 mt-3">
-                        <table class="table nowrap w-100" id="table-select-customer">
+                    <div class="col-12 mt-3 table-serial-space" hidden>
+                        <table class="table nowrap w-100" id="table-select-serial">
                             <thead>
                                 <tr>
                                     <th style="min-width: 50px"></th>
@@ -78,7 +78,80 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button type="button" id="accept-picking-product-btn" class="btn btn-primary">{% trans 'Pick' %}</button>
+                <button type="button" id="accept-picking-product-btn" class="btn btn-primary">{% trans 'Select' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-end" style="width: 48%" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="insert-component-offcanvas" aria-labelledby="insert-component-offcanvas">
+    <div class="offcanvas-header">
+        <h5><b>{% trans 'Select inserted component' %}</b></h5>
+        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row">
+            <div class="col-12">
+                <table class="table nowrap w-100" id="table-select-component-inserted" data-method="GET" data-component-inserted-list-url="{% url 'ComponentInsertedListAPI' %}">
+                    <thead>
+                        <tr>
+                            <th style="min-width: 50px"></th>
+                            <th style="min-width: 50px"></th>
+                            <th style="min-width: 400px">{% trans 'Component' %}</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="picking-component-modal" tabindex="-1" role="dialog" aria-labelledby="picking-component-modal">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Picking component' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table nowrap w-100" id="table-select-component-warehouse">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 100px">{% trans 'Warehouse code' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Warehouse name' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Current quantity' %}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="col-12 mt-3 table-serial-space" hidden>
+                        <table class="table nowrap w-100" id="table-select-component-serial">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 100px">{% trans 'Vendor serial no.' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Serial no.' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Expiration date' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Mfr date' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Warranty start' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Warranty end' %}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="accept-picking-component-btn" class="btn btn-primary">{% trans 'Select' %}</button>
             </div>
         </div>
     </div>

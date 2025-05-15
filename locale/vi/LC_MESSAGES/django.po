@@ -11804,6 +11804,10 @@ msgid "Current component"
 msgstr "Thành phần hiện tại"
 
 #
+msgid "Removed component"
+msgstr "Thành phần bị tháo"
+
+#
 msgid "Insert component"
 msgstr "Thêm thành phần"
 
@@ -11812,5 +11816,9 @@ msgid "Current quantity"
 msgstr "SL hiện tại"
 
 #
-msgid "have not picking yet"
-msgstr "chưa lấy hàng"
+msgid "Select inserted component"
+msgstr "Chọn thành phần được thêm vào"
+
+#
+msgid "Picking component"
+msgstr "Lấy thành phần"

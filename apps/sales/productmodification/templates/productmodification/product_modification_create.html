@@ -3,6 +3,7 @@
 {% load static %}
 {% block title %}{% trans 'Product modification' %}{% endblock %}
 {% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -19,6 +20,7 @@
 {% block pageContent %}
     <script id="script-url"
             data-url-warehouse-list-by-product="{% url 'WarehouseListByProductAPI' %}?interact=1"
+            data-url-serial-list-by-warehouse="{% url 'ProductSerialListAPI' %}"
             data-url-product-component-list="{% url 'ProductComponentListAPI' %}"
     >
     </script>
@@ -33,13 +35,14 @@
     >
         {% csrf_token %}
         {% include 'productmodification/common/information.html' %}
-        {% include 'productmodification/common/space.html' %}
+        {% include 'productmodification/common/spaces.html' %}
     </form>
 {% endblock %}
 {% block modalData %}
     {% include 'productmodification/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static "assets/js/productmodification/product_modification_common.js" %}"></script>

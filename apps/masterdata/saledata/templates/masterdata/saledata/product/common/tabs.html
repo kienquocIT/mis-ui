@@ -223,7 +223,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-12 col-lg-8 ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
-                <table class="table table-bordered nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                <table class="table nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
                     <thead class="bg-secondary-light-5">
                         <tr>
                             <th style="min-width: 50px"></th>
@@ -291,7 +291,7 @@
                 <div class="row">
                     <div class="col-12 col-md-9 col-lg-6">
                         <span class="text-muted">{% trans 'Product overview' %}</span>
-                        <table id="datatable-warehouse-overview" class="table table-bordered nowrap w-100">
+                        <table id="datatable-warehouse-overview" class="table nowrap w-100">
                             <thead>
                                 <tr class="bg-secondary-light-5">
                                     <th>{% trans "Stock" %}</th>
@@ -306,7 +306,7 @@
                     </div>
                     <div class="col-12 col-md-9 col-lg-6">
                         <span class="text-muted">{% trans 'Product warehouse detail' %}</span>
-                        <table id="datatable-warehouse-list" class="table table-bordered nowrap w-100"
+                        <table id="datatable-warehouse-list" class="table nowrap w-100"
                                data-url="{% url "WareHouseListAPI" %}"
                                data-method="GET">
                             <thead>
@@ -359,7 +359,7 @@
         <div class="row">
             <div class="col-12">
                 <span class="small">{% trans "This table is for reference only - used to preload data for 'Product modification'." %}</span>
-                <table class="table table-bordered nowrap w-100" id="component-table">
+                <table class="table nowrap w-100" id="component-table">
                     <thead class="bg-secondary-light-5">
                     <tr>
                         <th style="min-width: 50px"></th>
@@ -385,7 +385,7 @@
     <div class="tab-pane fade" id="tab_variants">
         <div class="row">
             <div class="col-12">
-                <table class="table table-bordered nowrap w-100" id="table-variant-attributes">
+                <table class="table nowrap w-100" id="table-variant-attributes">
                     <thead class="bg-secondary-light-5">
                         <tr>
                             <th></th>
@@ -410,7 +410,7 @@
         </div>
         <div class="row" id="table-variant-items-div" hidden>
             <div class="col-12">
-                <table id="table-variant-items" class="table table-bordered  nowrap w-100">
+                <table id="table-variant-items" class="table  nowrap w-100">
                     <thead class="thead-primary">
                         <tr>
                             <th class="w-5"></th>
@@ -445,7 +445,7 @@
         <div class="row" hidden>
             <div class="col-12">
                 {% if pk %}
-                    <table class="table table-bordered nowrap w-100"
+                    <table class="table nowrap w-100"
                            id="product-account-determination-table"
                            data-method="GET"
                            data-trans-change-confirm="{% trans 'Confirm this change?' %}"

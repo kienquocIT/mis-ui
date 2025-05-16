@@ -126,11 +126,27 @@ $(function () {
                 let rate = 70 / Object.keys(dataByDay).length;
                 let width = `${rate}%`;
                 for (let key in dataByDay) {
-                    $theadRow.append(`<th>${key}</th>`);
+                    $theadRow.append(`<th data-idx="${key}">${key}</th>`);
                     columns.push({
                         width: width,
-                        render: (data, type, row) => {
-                            return `<span></span>`;
+                        render: (data, type, row, meta) => {
+
+                            let value = "";
+                            let colIndex = meta.col;
+                            let table = $dtbArea.find('.table_payment_plan').DataTable();
+                            let $thElement = $(table.column(colIndex).header());
+                            if ($thElement.length > 0) {
+                                if ($thElement.attr('data-idx')) {
+                                    let dataIdx = $thElement.attr('data-idx');
+                                    if (row?.['date_approved']) {
+                                        let date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['date_approved']);
+                                        if (date === dataIdx) {
+                                            value = "check";
+                                        }
+                                    }
+                                }
+                            }
+                            return `<span>${value}</span>`;
                         }
                     })
                 }
@@ -502,6 +518,9 @@ $(function () {
                         if (data.hasOwnProperty('payment_plan_list') && Array.isArray(data.payment_plan_list)) {
                             let dataPP = data?.['payment_plan_list'];
                             customDtbByDay();
+
+                            $dtbArea.find('.table_payment_plan').DataTable().clear().draw();
+                            $dtbArea.find('.table_payment_plan').DataTable().rows.add(dataPP).draw();
                             WindowControl.hideLoading();
                         }
                     }

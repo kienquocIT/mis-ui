@@ -15,7 +15,7 @@ from apps.sales.purchasing.views import (
 
     PurchaseQuotationList, PurchaseQuotationListAPI, PurchaseQuotationCreate, PurchaseQuotationDetail,
     PurchaseQuotationDetailAPI, PurchaseQuotationProductListAPI, PurchaseRequestSaleListAPI,
-    PurchaseQuotationSaleListAPI,
+    PurchaseQuotationSaleListAPI, PurchaseOrderDDListAPI,
 )
 
 urlpatterns = [
@@ -41,6 +41,7 @@ urlpatterns = [
     path('purchase-order/detail-api/<str:pk>', PurchaseOrderDetailAPI.as_view(), name='PurchaseOrderDetailAPI'),
     path('purchase-order/update/<str:pk>', PurchaseOrderUpdate.as_view(), name='PurchaseOrderUpdate'),
     path('purchase-order-product-gr/list', PurchaseOrderProductGRListAPI.as_view(), name='PurchaseOrderProductGRListAPI'),
+    path('purchase-order-dropdown/api/list', PurchaseOrderDDListAPI.as_view(), name='PurchaseOrderDDListAPI'),
 
     # purchase quotation request
     path('purchase-quotation-request/lists', PurchaseQuotationRequestList.as_view(), name='PurchaseQuotationRequestList'),

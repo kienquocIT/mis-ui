@@ -639,35 +639,12 @@ $(function () {
 
         // load init
         function initData() {
-            loadInitS2(boxGroup, [], {}, null, true);
-            loadInitS2(boxEmployee, [], {}, null, true);
+            FormElementControl.loadInitS2(boxGroup, [], {}, null, true);
+            FormElementControl.loadInitS2(boxEmployee, [], {}, null, true);
             storeDataFiscalYear();
         }
 
         initData();
-
-        function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
-            let opts = {'allowClear': isClear};
-            $ele.empty();
-            if (data.length > 0) {
-                opts['data'] = data;
-            }
-            if (Object.keys(dataParams).length !== 0) {
-                opts['dataParams'] = dataParams;
-            }
-            if ($modal) {
-                opts['dropdownParent'] = $modal;
-            }
-            if (Object.keys(customRes).length !== 0) {
-                opts['templateResult'] = function (state) {
-                    let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
-                    let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
-                    return $(`<span>${res1} ${res2}</span>`);
-                }
-            }
-            $ele.initSelect2(opts);
-            return true;
-        }
 
         // run datetimepicker
         $('input[type=text].date-picker').daterangepicker({
@@ -691,7 +668,7 @@ $(function () {
 
         // Events
         boxGroup.on('change', function() {
-            loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
+            FormElementControl.loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
         });
 
         boxYear.on('change', function () {

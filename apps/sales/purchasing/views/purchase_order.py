@@ -81,6 +81,18 @@ class PurchaseOrderListAPI(APIView):
         )
 
 
+class PurchaseOrderDDListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_ORDER_DROPDOWN_LIST).get(params)
+        return resp.auto_return(key_success='purchase_order_dd_list')
+
+
 class PurchaseOrderDetail(View):
     permission_classes = [IsAuthenticated]
 

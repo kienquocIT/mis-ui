@@ -10,7 +10,7 @@ from apps.masterdata.saledata.views.accounts import (
     AccountCreate, AccountCreateAPI, AccountsMapEmployeeAPI, ContactUpdate, AccountTypeDetailAPI,
     IndustryDetailAPI, SalutationDetailAPI, InterestDetailAPI, ContactDetail,
     AccountDetail, AccountGroupListAPI, AccountGroupCreateAPI, AccountGroupDetailAPI, AccountForSaleListAPI,
-    CustomerListAPI, SupplierListAPI
+    CustomerListAPI, SupplierListAPI, AccountDDListAPI
 )
 from apps.masterdata.saledata.views.balance_init import BalanceInitList, BalanceInitListAPI, \
     ImportBalanceInitDBAPIViews, BalanceInitializationListImportDBAPI
@@ -149,6 +149,7 @@ urlpatterns = [
 
     path('accounts-map-employees/api', AccountsMapEmployeeAPI.as_view(), name='AccountsMapEmployeeAPI'),
     path('accounts-sale/api', AccountForSaleListAPI.as_view(), name='AccountForSaleListAPI'),
+    path('accounts-dropdown/api', AccountDDListAPI.as_view(), name='AccountDDListAPI'),
 ] + [
     path('masterdata/import', SaleDataImportDataList.as_view(), name='SaleDataImportDataList'),
     path('masterdata/product', ProductMasterDataList.as_view(), name='ProductMasterDataList'),

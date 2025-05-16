@@ -293,10 +293,8 @@ $(function () {
                                 if (period?.['fiscal_year'] === currentYear) {
                                     let {startDate, endDate} = getYearRange(period?.['start_date']);
                                     // set init val date range
-                                    let startDateObj = new Date(startDate);
-                                    let endDateObj = new Date(endDate);
-                                    let formattedStartDate = `${padWithZero(startDateObj.getDate())}/${padWithZero(startDateObj.getMonth() + 1)}/${startDateObj.getFullYear()}`;
-                                    let formattedEndDate = `${padWithZero(endDateObj.getDate())}/${padWithZero(endDateObj.getMonth() + 1)}/${endDateObj.getFullYear()}`;
+                                    let formattedStartDate = DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", startDate);
+                                    let formattedEndDate = DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", endDate);
                                     boxStart.val(formattedStartDate);
                                     boxEnd.val(formattedEndDate);
                                     $.fn.callAjax2({
@@ -403,38 +401,15 @@ $(function () {
 
         // load init
         function initData() {
-            loadInitS2(boxGroup, [], {}, null, true);
-            loadInitS2(boxEmployee, [], {}, null, true);
-            loadInitS2(boxCategory, [], {}, null, true);
-            loadInitS2(boxProduct, [], {}, null, true);
+            FormElementControl.loadInitS2(boxGroup, [], {}, null, true);
+            FormElementControl.loadInitS2(boxEmployee, [], {}, null, true);
+            FormElementControl.loadInitS2(boxCategory, [], {}, null, true);
+            FormElementControl.loadInitS2(boxProduct, [], {}, null, true);
             loadDbl();
             storeLoadInitByDataFiscalYear();
         }
 
         initData();
-
-        function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
-        let opts = {'allowClear': isClear};
-        $ele.empty();
-        if (data.length > 0) {
-            opts['data'] = data;
-        }
-        if (Object.keys(dataParams).length !== 0) {
-            opts['dataParams'] = dataParams;
-        }
-        if ($modal) {
-            opts['dropdownParent'] = $modal;
-        }
-        if (Object.keys(customRes).length !== 0) {
-            opts['templateResult'] = function (state) {
-                let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
-                let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
-                return $(`<span>${res1} ${res2}</span>`);
-            }
-        }
-        $ele.initSelect2(opts);
-        return true;
-    };
 
         // init date picker
         $('.date-picker').each(function () {
@@ -451,11 +426,11 @@ $(function () {
 
         // Events
         boxGroup.on('change', function() {
-            loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
+            FormElementControl.loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
         });
 
         boxCategory.on('change', function() {
-            loadInitS2(boxProduct, [], {'category_id__in': boxCategory.val().join(',')}, null, true);
+            FormElementControl.loadInitS2(boxProduct, [], {'category_id__in': boxCategory.val().join(',')}, null, true);
         });
 
         $('#btn-apply-filter').on('click', function () {
@@ -492,12 +467,12 @@ $(function () {
             }
             loadFilter(listViewBy, $('#card-filter-vb'));
             if (boxStart.val()) {
-                let dateStart = moment(boxStart.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                let dateStart = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxStart.val());
                 dataParams['date_approved__gte'] = formatStartDate(dateStart);
                 listDate.push(boxStart.val());
             }
             if (boxEnd.val()) {
-                let dateEnd = moment(boxEnd.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                let dateEnd = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxEnd.val());
                 dataParams['date_approved__lte'] = formatEndDate(dateEnd);
                 listDate.push(boxEnd.val());
             }

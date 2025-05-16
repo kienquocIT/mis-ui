@@ -129,7 +129,8 @@ INSTALLED_APPS = \
     ] + [
         'apps.sales.financialcashflow',
         'apps.sales.reconciliation',
-        'apps.sales.asset'
+        'apps.sales.asset',
+        'apps.sales.paymentplan',
     ] + [
         'apps.accounting.accountingsettings',
         'apps.accounting.journalentry'

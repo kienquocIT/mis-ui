@@ -32,6 +32,8 @@ class GoodsRecoveryList(View):
         template='sales/inventory/goodsrecovery/goods_recovery_list.html',
         menu_active='menu_goods_recovery_list',
         breadcrumb='GOODS_RECOVERY_LIST_PAGE',
+        icon_cls='fas fa-reply',
+        icon_bg='bg-lime',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
@@ -43,6 +45,8 @@ class GoodsRecoveryCreate(View):
         template='sales/inventory/goodsrecovery/goods_recovery_create.html',
         menu_active='menu_goods_recovery_list',
         breadcrumb='GOODS_RECOVERY_CREATE_PAGE',
+        icon_cls='fas fa-reply',
+        icon_bg='bg-lime',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -78,6 +82,8 @@ class GoodsRecoveryDetail(View):
         template='sales/inventory/goodsrecovery/goods_recovery_detail.html',
         menu_active='menu_goods_recovery_list',
         breadcrumb='GOODS_RECOVERY_DETAIL_PAGE',
+        icon_cls='fas fa-reply',
+        icon_bg='bg-lime',
     )
     def get(self, request, pk, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -89,6 +95,8 @@ class GoodsRecoveryUpdate(View):
         template='sales/inventory/goodsrecovery/goods_recovery_update.html',
         menu_active='menu_goods_recovery_list',
         breadcrumb='GOODS_RECOVERY_UPDATE_PAGE',
+        icon_cls='fas fa-reply',
+        icon_bg='bg-lime',
     )
     def get(self, request, pk, *args, **kwargs):
         return {}, status.HTTP_200_OK

@@ -3586,7 +3586,7 @@ class WFRTControl {
             4: "red-light-4",
         }
         if (status || status === 0) {
-            return `<span class="badge p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
+            return `<span class="badge text-dark-10 fs-8 bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
         }
         return ``;
     }
@@ -3596,6 +3596,16 @@ class WFRTControl {
             return `<span title="${obj_employee?.['group']?.['title'] || $.fn.gettext('No group')}">${obj_employee?.[field_fullname] || ''}</span>`;
         }
         return ``;
+    }
+
+    static getDataDDSystemStatus() {
+        return [
+            {'id': 0, 'title': $.fn.transEle.attr('data-draft')},
+            {'id': 1, 'title': $.fn.transEle.attr('data-created')},
+            {'id': 2, 'title': $.fn.transEle.attr('data-added')},
+            {'id': 3, 'title': $.fn.transEle.attr('data-approved')},
+            {'id': 4, 'title': $.fn.transEle.attr('data-cancel')},
+        ]
     }
 }
 
@@ -6362,11 +6372,11 @@ class DocumentControl {
                 }
                 if (window.location.href.includes('/update/') && dataStatus === 3) {
                     $breadcrumbCode.append(
-                        `<span class="badge p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-blue-light-4" id="systemStatus" data-status="${dataStatus}" data-status-cr="${dataStatus + 2}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
+                        `<span class="badge text-dark-10 fs-8 bg-blue-light-4" id="systemStatus" data-status="${dataStatus}" data-status-cr="${dataStatus + 2}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
                     ).removeClass('hidden');
                 } else {
                     $breadcrumbCode.append(
-                        `<span class="badge p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-status-cr="" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
+                        `<span class="badge text-dark-10 fs-8 bg-${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-status-cr="" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
                     ).removeClass('hidden');
                 }
                 if (detailData?.['system_auto_create']) {
@@ -6846,16 +6856,22 @@ class DateTimeControl {
         const formatMap = {
             'YYYY': 'year',
             'MM': 'month',
-            'DD': 'day'
+            'DD': 'day',
+            'hh': 'hour',
+            'mm': 'minute',
+            'ss': 'second'
         };
 
         const getDateParts = (format, dateStr) => {
-            const formatParts = format.split(/[-/]/);
-            const dateParts = dateStr.split(/[-/]/);
+            const delimiters = /[-/ :]/;
+            const formatParts = format.split(delimiters);
+            const dateParts = dateStr.split(delimiters);
             const result = {};
 
             formatParts.forEach((part, index) => {
-                result[formatMap[part]] = dateParts[index];
+                if (formatMap[part]) {
+                    result[formatMap[part]] = dateParts[index]?.padStart(2, '0') || '00';
+                }
             });
 
             return result;
@@ -6864,9 +6880,30 @@ class DateTimeControl {
         const parts = getDateParts(fromType, dateStr);
 
         return toType
-            .replace('YYYY', parts.year)
-            .replace('MM', parts.month)
-            .replace('DD', parts.day);
+            .replace('YYYY', parts.year || '0000')
+            .replace('MM', parts.month || '00')
+            .replace('DD', parts.day || '00')
+            .replace('hh', parts.hour || '00')
+            .replace('mm', parts.minute || '00')
+            .replace('ss', parts.second || '00');
+    }
+
+    static initDatePicker(ele) {
+        $(ele).daterangepicker({
+            singleDatePicker: true,
+            timepicker: false,
+            showDropdowns: true,
+            minYear: 1990,
+            locale: {
+                format: 'DD/MM/YYYY',
+            },
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            autoApply: true,
+            autoUpdateInput: false,
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $(ele).val(picker.startDate.format('DD/MM/YYYY')).trigger('change');
+        });
+        $(ele).val('').trigger('change');
     }
 }
 

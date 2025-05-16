@@ -13,21 +13,7 @@ $(function () {
 
         // run datetimepicker
         $('.date-picker').each(function () {
-            $(this).daterangepicker({
-                singleDatePicker: true,
-                timepicker: false,
-                showDropdowns: false,
-                minYear: 2023,
-                locale: {
-                    format: 'DD/MM/YYYY',
-                },
-                maxYear: parseInt(moment().format('YYYY'), 10),
-                autoApply: true,
-                autoUpdateInput: false,
-            }).on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
-            });
-            $(this).val('').trigger('change');
+            DateTimeControl.initDatePicker(this);
         });
 
         // file
@@ -64,6 +50,7 @@ $(function () {
         });
 
         GRDataTableHandle.tablePOProduct.on('click', '.table-row-checkbox', function () {
+            GRLoadDataHandle.loadCheckRadioDtb(this);
             GRLoadDataHandle.loadCheckPOProduct(this);
         });
 
@@ -84,6 +71,7 @@ $(function () {
         });
 
         GRDataTableHandle.tablePR.on('click', '.table-row-checkbox', function () {
+            GRLoadDataHandle.loadCheckRadioDtb(this);
             GRLoadDataHandle.loadCheckPR();
         });
 
@@ -109,6 +97,7 @@ $(function () {
         });
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {
+            GRLoadDataHandle.loadCheckRadioDtb(this);
             GRLoadDataHandle.loadCheckWH(this);
         });
 
@@ -183,10 +172,12 @@ $(function () {
 
         GRDataTableHandle.tableLot.on('click', '.del-row', function () {
             deleteRowGR(this.closest('tr'), GRDataTableHandle.tableLot);
+            GRStoreDataHandle.storeDataProduct();
         });
 
         GRDataTableHandle.tableSerial.on('click', '.del-row', function () {
             deleteRowGR(this.closest('tr'), GRDataTableHandle.tableSerial);
+            GRStoreDataHandle.storeDataProduct();
         });
 
         // IA BEGIN

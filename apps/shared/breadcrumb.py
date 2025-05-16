@@ -488,6 +488,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Group Order
     GROUP_ORDER_PAGE = BreadcrumbChildren(_('Group order'), 'GroupOrderList')
 
+    # Payment plan
+    PAYMENT_PLAN_LIST_PAGE = BreadcrumbChildren(_('Payment plan'), 'PaymentPlanList')
+
 class BreadcrumbView:
     """menu vertical item view"""
 
@@ -1315,3 +1318,8 @@ class BreadcrumbView:
     GROUP_ORDER_CREATE_PAGE = GROUP_ORDER_LIST + [BreadcrumbItem.BASTION_CREATE]
     GROUP_ORDER_DETAIL_PAGE = GROUP_ORDER_LIST + [BreadcrumbItem.BASTION_DETAIL]
     GROUP_ORDER_UPDATE_PAGE = GROUP_ORDER_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Payment plan
+    PAYMENT_PLAN_LIST_PAGE = [
+        BreadcrumbItem.PAYMENT_PLAN_LIST_PAGE
+    ]

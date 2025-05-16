@@ -35,10 +35,10 @@
                         <select
                                 class="form-select"
                                 id="sale_order_id"
-                                data-url="{% url "SaleOrderListAPI" %}"
+                                data-url="{% url "SaleOrderDDListAPI" %}"
                                 data-method="GET"
                                 name="sale_order_id"
-                                data-keyResp="sale_order_list"
+                                data-keyResp="sale_order_dd_list"
                                 required
                         ></select>
                     </div>
@@ -49,10 +49,10 @@
                         <select
                                 class="form-select"
                                 id="lease_order_id"
-                                data-url="{% url "LeaseOrderListAPI" %}"
+                                data-url="{% url "LeaseOrderDDListAPI" %}"
                                 data-method="GET"
                                 name="lease_order_id"
-                                data-keyResp="lease_order_list"
+                                data-keyResp="lease_order_dd_list"
                                 required
                         ></select>
                     </div>
@@ -76,7 +76,7 @@
         <div class="row">
             <table
                     id="table_final_acceptance_list"
-                    class="table nowrap min-w-1366p w-100 mb-5"
+                    class="table nowrap min-w-1366p w-100"
                     data-url="{% url 'FinalAcceptanceListAPI' %}"
                     data-method="get"
             >

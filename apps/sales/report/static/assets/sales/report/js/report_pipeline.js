@@ -748,55 +748,17 @@ $(function () {
 
         // load init
         function initData() {
-            loadInitS2(boxGroup, [], {}, null, true);
-            loadInitS2(boxEmployee, [], {}, null, true);
+            FormElementControl.loadInitS2(boxGroup, [], {}, null, true);
+            FormElementControl.loadInitS2(boxEmployee, [], {}, null, true);
             storeDataFiscalYear();
         }
 
         initData();
 
-        function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
-            let opts = {'allowClear': isClear};
-            $ele.empty();
-            if (data.length > 0) {
-                opts['data'] = data;
-            }
-            if (Object.keys(dataParams).length !== 0) {
-                opts['dataParams'] = dataParams;
-            }
-            if ($modal) {
-                opts['dropdownParent'] = $modal;
-            }
-            if (Object.keys(customRes).length !== 0) {
-                opts['templateResult'] = function (state) {
-                    let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
-                    let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
-                    return $(`<span>${res1} ${res2}</span>`);
-                }
-            }
-            $ele.initSelect2(opts);
-            return true;
-        }
-
         // init date picker
         $('.date-picker').each(function () {
-            $(this).daterangepicker({
-                singleDatePicker: true,
-                timepicker: false,
-                showDropdowns: false,
-                minYear: 2023,
-                locale: {
-                    format: 'DD/MM/YYYY',
-                },
-                maxYear: parseInt(moment().format('YYYY'), 10),
-                drops: 'up',
-                autoApply: true,
-                autoUpdateInput: false,
-            }).on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
-            });
-            $(this).val('').trigger('change');
-        })
+            DateTimeControl.initDatePicker(this);
+        });
 
         // mask money
         $.fn.initMaskMoney2();
@@ -808,7 +770,7 @@ $(function () {
 
         // Events
         boxGroup.on('change', function () {
-            loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
+            FormElementControl.loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
         });
 
         $('input[type=radio].check-period').on('click', function () {

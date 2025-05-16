@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Report cashflow' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block pageAction %}{% endblock %}
+
+{% block pageContent %}
+    {% csrf_token %}
+
+    <div class="btn-group" role="group" aria-label="Button group with nested dropdown" id="btn-group-view">
+        <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-day">Day</button>
+        <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-week">Week</button>
+        <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-month">Month</button>
+    </div>
+    <div id="dtb-area"></div>
+{#    <table#}
+{#            id="table_payment_plan"#}
+{#            class="table nowrap min-w-1680p w-100 mb-5"#}
+{#            data-url="{% url 'ReportCashflowListAPI' %}"#}
+{#            data-method="get"#}
+{#    >#}
+{#        <thead>#}
+{#        <tr class="bg-light header-custom">#}
+{#            <th>{% trans 'Document' %}</th>#}
+{#            <th>{% trans 'Code' %}</th>#}
+{#            <th>{% trans 'Customer' %}</th>#}
+{#            <th>{% trans 'Installment' %}</th>#}
+{#            <th>{% trans 'Invoice code' %}</th>#}
+{#            <th>{% trans 'Balance due' %}</th>#}
+{#        </tr>#}
+{#        </thead>#}
+{#        <tbody>#}
+{#        </tbody>#}
+{#    </table>#}
+
+    <div class="modal-canvas-area">
+
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
+            <div class="modal-header">
+                <h5><b>{% trans 'Filter' %}</b></h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label mt-2" for="box-customer">{% trans 'Customer' %}</label>
+                        <select
+                                class="form-select"
+                                id="box-customer"
+                                data-url="{% url "AccountDDListAPI" %}"
+                                data-method="GET"
+                                data-keyResp="account_dd_list"
+                                data-keyText="name"
+                                multiple
+                        ></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label mt-2" for="box-so">{% trans 'Sale order' %}</label>
+                        <select
+                                class="form-select"
+                                id="box-so"
+                                data-url="{% url "SaleOrderDDListAPI" %}"
+                                data-method="GET"
+                                data-keyResp="sale_order_dd_list"
+                                multiple
+                        ></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label mt-2" for="box-po">{% trans 'Purchase order' %}</label>
+                        <select
+                                class="form-select"
+                                id="box-po"
+                                data-url="{% url "PurchaseOrderDDListAPI" %}"
+                                data-method="GET"
+                                data-keyResp="purchase_order_dd_list"
+                                multiple
+                        ></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="date-from">{% trans 'From' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="date_from" id="date-from"
+                                       class="form-control date-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="date-to">{% trans 'To' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="date_from" id="date-to"
+                                       class="form-control date-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-primary" id="btn-apply-filter" data-bs-dismiss="offcanvas">{% trans 'Apply' %}</button>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-estimate="{% trans 'Estimate' %}"
+        data-actual="{% trans 'Actual' %}"
+        data-variance="{% trans 'Variance' %}"
+        data-operation="{% trans 'Operation' %}"
+        data-beginning-balance="{% trans 'Beginning balance' %}"
+        data-cash-sales="{% trans 'Cash sales' %}"
+        data-product-service-costs="{% trans 'Product/service costs' %}"
+        data-net-cash-flow="{% trans 'Net cash flow' %}"
+        data-ending-balance="{% trans 'Ending balance' %}"
+        data-week="{% trans 'Week' %}"
+        data-filter="{% trans 'Filter' %}"
+    >
+    <input
+        type="text"
+        id="app-url-factory"
+        data-payment-plan="{% url 'ReportCashflowListAPI' %}"
+    >
+
+    <input
+            type="text"
+            id="data-fiscal-year"
+            data-url="{% url "PeriodsConfigListAPI" %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-store-year"
+    >
+    <input
+            type="text"
+            id="data-store-month"
+    >
+    {{ data.filter_quarter|json_script:'filter_quarter' }}
+    {{ data.filter_month|json_script:'filter_month' }}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+
+    <script src="{% static 'assets/sales/paymentplan/js/payment_plan.js' %}"></script>
+{% endblock %}

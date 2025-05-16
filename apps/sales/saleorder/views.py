@@ -71,6 +71,8 @@ class SaleOrderList(View):
         template='sales/saleorder/sale_order_list.html',
         menu_active='menu_sale_order_list',
         breadcrumb='SALE_ORDER_LIST_PAGE',
+        icon_cls='fas fa-shopping-cart',
+        icon_bg='bg-brown',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS, 'delivery_status': DELIVERY_STATUS}, status.HTTP_200_OK
@@ -81,6 +83,8 @@ class SaleOrderCreate(View):
         auth_require=True,
         template='sales/saleorder/sale_order_create.html',
         breadcrumb='SALE_ORDER_CREATE_PAGE',
+        icon_cls='fas fa-shopping-cart',
+        icon_bg='bg-brown',
     )
     def get(self, request, *args, **kwargs):
         data_copy_to = request.GET.get('data_copy_to', "")
@@ -132,6 +136,18 @@ class SaleOrderListAPI(APIView):
         )
 
 
+class SaleOrderDDListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_DROPDOWN_LIST).get(params)
+        return resp.auto_return(key_success='sale_order_dd_list')
+
+
 class SaleOrderDetail(View):
     permission_classes = [IsAuthenticated]
 
@@ -140,6 +156,8 @@ class SaleOrderDetail(View):
         template='sales/saleorder/sale_order_detail.html',
         menu_active='menu_sale_order_list',
         breadcrumb='SALE_ORDER_DETAIL_PAGE',
+        icon_cls='fas fa-shopping-cart',
+        icon_bg='bg-brown',
     )
     def get(self, request, pk, *args, **kwargs):
         employee_current = {}
@@ -163,6 +181,8 @@ class SaleOrderUpdate(View):
         template='sales/saleorder/sale_order_update.html',
         breadcrumb='SALE_ORDER_UPDATE_PAGE',
         menu_active='menu_sale_order_list',
+        icon_cls='fas fa-shopping-cart',
+        icon_bg='bg-brown',
     )
     def get(self, request, pk, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.SALE_ORDER_SALE_ORDER

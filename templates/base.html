@@ -171,6 +171,11 @@
                                         <button class="btn mr-1 hidden" id="btn-show-breadcrumb"><i
                                                 class="fa-solid fa-bars"
                                         ></i></button>
+                                        {% if icon_cls %}
+                                            <div class="d-flex align-items-center justify-content-center mr-2 p-1 w-30p h-30p border rounded-2 {{ icon_bg }}">
+                                                <i class="{{ icon_cls }} text-white"></i>
+                                            </div>
+                                        {% endif %}
                                         <div id="breadcrumb-data">
                                             {% include 'extends/breadcrumb.html' %}
                                         </div>

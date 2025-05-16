@@ -44,7 +44,7 @@ $(function () {
                 row.querySelector('.table-row-available').innerHTML = 0;
                 if (this.checked === true) {
                     row.querySelector('.table-row-warehouse').setAttribute('disabled', 'true');
-                    WorkOrderLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), []);
+                    FormElementControl.loadInitS2($(row.querySelector('.table-row-warehouse')), []);
                     WorkOrderLoadDataHandle.loadChangeWH(row, 1);
                 }
                 if (this.checked === false) {

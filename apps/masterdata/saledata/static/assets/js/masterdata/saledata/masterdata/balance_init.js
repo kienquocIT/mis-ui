@@ -83,7 +83,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'w-5 text-right',
+                        className: 'w-5 text-center',
                         render: (data, type, row) => {
                             return `<a href="#" class="text-danger clear-balance-init"><i class="ri-delete-bin-6-line fs-5"></i></a>`;
                         }

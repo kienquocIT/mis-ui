@@ -57,11 +57,7 @@
     ></script>
     <div class="row">
         <div class="col-12">
-            <div class="alert alert-warning alert-wth-icon alert-dismissible fade show" role="alert">
-                <span class="alert-icon-wrap"><i class="fas fa-exclamation-triangle"></i></span>
-                <p>{% trans 'The initial balance will be inserted from the month of starting to use the software.' %} {% trans 'The Opening Balance should be created before these activities take place to avoid reporting errors.' %}</p>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            <span class="text-orange fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> {% trans 'The initial balance will be inserted from the month of starting to use the software.' %} {% trans 'The Opening Balance should be created before these activities take place to avoid reporting errors.' %}</span>
         </div>
     </div>
     <div class="row mt-3">
@@ -78,11 +74,11 @@
                             data-import-db-method="POST"
                             data-import-db-url="{% url 'BalanceInitializationListImportDBAPI' %}"
                     ></script>
-                    <table class="table table-hover nowrap w-100" id="table-balance-item"
+                    <table class="table table-bordered table-hover nowrap w-100" id="table-balance-item"
                            data-method="GET"
                            data-url="{% url 'BalanceInitListAPI' %}"
                     >
-                        <thead>
+                        <thead class="bg-primary-light-5">
                             <th style="min-width: 50px"></th>
                             <th style="min-width: 150px">{% trans 'Product code' %}</th>
                             <th style="min-width: 200px">{% trans 'Product name' %}</th>
@@ -143,7 +139,7 @@
         </div>
     </div>
 
-    <table hidden data-table-id="table-balance-item-import-db" class="nowrap w-100 table mt-1">
+    <table hidden data-table-id="table-balance-item-import-db" class="nowrap w-100 table table-bordered mt-1">
         <thead class="sticky">
             <tr>
                 <th>#</th>

@@ -125,6 +125,8 @@ $(document).ready(function () {
     })
 
     $('.btn-import-datatable-from-excel').on('click', function () {
+        $('#modal-import-datatable-from-excel-warning').modal('show')
+
         $import_db_form.attr('data-method', THIS_IMPORT_SPACE.find('.import-db-form-url').attr('data-import-db-method'))
         $import_db_form.attr('data-url', THIS_IMPORT_SPACE.find('.import-db-form-url').attr('data-import-db-url'))
 

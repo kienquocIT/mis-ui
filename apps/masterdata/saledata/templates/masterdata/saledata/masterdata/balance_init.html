@@ -83,13 +83,14 @@
                            data-url="{% url 'BalanceInitListAPI' %}"
                     >
                         <thead>
-                            <th class="w-5"></th>
-                            <th class="w-25">{% trans 'Product' %}</th>
-                            <th class="w-15">{% trans 'UoM' %}</th>
-                            <th class="w-20">{% trans 'Warehouse' %}</th>
-                            <th class="w-15">{% trans 'Quantity' %}</th>
-                            <th class="w-15">{% trans 'Pretax value' %}</th>
-                            <th class="w-5"></th>
+                            <th style="min-width: 50px"></th>
+                            <th style="min-width: 150px">{% trans 'Product code' %}</th>
+                            <th style="min-width: 200px">{% trans 'Product name' %}</th>
+                            <th style="min-width: 100px">{% trans 'Warehouse code' %}</th>
+                            <th style="min-width: 150px">{% trans 'Warehouse name' %}</th>
+                            <th style="min-width: 150px">{% trans 'Quantity' %} {% trans "According to inventory UOM" %}</th>
+                            <th style="min-width: 200px">{% trans 'Pretax value' %}</th>
+                            <th style="min-width: 50px"></th>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -105,7 +106,6 @@
             </form>
         </div>
     </div>
-
     <div class="row mt-5">
         <div class="col-12" style="overflow: auto; max-height: 30vh;">
             <table id="table-detail-space-lot" hidden class="table nowrap w-30 border">
@@ -135,7 +135,29 @@
             </table>
         </div>
     </div>
+    <div class="row" id="notify-div" hidden>
+        <div class="col-12">
+            <div class="alert bg-yellow-light-4" role="alert">
+                {% trans 'Please set up Software start using time in Periods Setting' %}
+            </div>
+        </div>
+    </div>
 
+    <table hidden data-table-id="table-balance-item-import-db" class="nowrap w-100 table mt-1">
+        <thead class="sticky">
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Product code' %}</th>
+                <th>{% trans 'Warehouse code' %}</th>
+                <th>{% trans 'Quantity' %} - {% trans "According to inventory UOM" %}</th>
+                <th>{% trans 'Pretax value' %}</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+{% endblock %}
+{% block modalData %}
     <div class="modal fade" id="modal-add-balance" tabindex="-1" role="dialog" aria-labelledby="modal-add-balance" aria-hidden="true">
         <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
             <div class="modal-content">
@@ -185,37 +207,6 @@
             </div>
         </div>
     </div>
-    <div class="row" id="notify-div" hidden>
-        <div class="col-12">
-            <div class="alert bg-yellow-light-4" role="alert">
-                {% trans 'Please set up Software start using time in Periods Setting' %}
-            </div>
-        </div>
-    </div>
-
-
-    <table hidden data-table-id="table-balance-item-import-db" class="nowrap w-100 table mt-1">
-        <thead class="sticky">
-            <tr>
-                <th>#</th>
-                <th>{% trans 'Status' %}</th>
-                <th>{% trans 'Product' %}</th>
-                <th>{% trans 'Warehouse' %}</th>
-                <th>
-                    {% trans 'Quantity' %}
-                    <i class="fas fa-info-circle icon-info"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="bottom"
-                       title="{% trans "According to product's inventory UOM" %}">
-                    </i>
-                </th>
-                <th>{% trans 'Pretax value' %}</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-{% endblock %}
-{% block modalData %}
     {% include 'extends/import-datatable/modal-import-db.html' %}
 {% endblock %}
 {% block jsFooter %}

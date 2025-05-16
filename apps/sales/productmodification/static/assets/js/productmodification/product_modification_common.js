@@ -8,7 +8,6 @@ class ProductModificationPageElements {
         this.$trans_url = $('#trans-url')
         this.$title = $('#title')
         this.$created_date = $('#created-date')
-        this.$picking_status = $('#picking-status')
         // modal
         this.$btn_open_modal_product = $('#btn-open-modal-product')
         this.$select_product_modified_modal = $('#select-product-modified-modal')
@@ -25,6 +24,7 @@ class ProductModificationPageElements {
         this.$table_select_component_inserted = $('#table-select-component-inserted')
         this.$table_product_removed_component = $('#table-product-removed-component')
         this.$picking_component_modal = $('#picking-component-modal')
+        this.$accept_picking_component_btn = $('#accept-picking-component-btn')
         this.$table_select_component_warehouse = $('#table-select-component-warehouse')
         this.$table_select_component_serial = $('#table-select-component-serial')
     }
@@ -39,6 +39,7 @@ class ProductModificationPageVariables {
         this.current_product_modified = {}
         this.component_inserted_id_list = new Set()
         this.current_component = {}
+        this.current_component_row = null
     }
 }
 const pageVariables = new ProductModificationPageVariables()
@@ -331,6 +332,7 @@ class ProductModificationPageFunction {
                                     <input class="form-control component-quantity" type="number" min="1" value="${row?.['product_quantity'] || 0}">
                                     ${picking_component_btn}
                                 </div>
+                                <div class="data-component-detail-space"></div>
                             `;
                         }
                         return `<input class="form-control component-quantity" type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
@@ -468,7 +470,7 @@ class ProductModificationPageFunction {
                     render: (data, type, row) => {
                         return `<div class="form-check">
                                     <input type="radio" name="product-warehouse-component-select"
-                                           class="form-check-input product-warehouse-select"
+                                           class="form-check-input product-warehouse-component-select"
                                            data-product-warehouse-id="${row?.['id']}"
                                            data-warehouse-code="${row?.['warehouse_data']?.['code']}"
                                            data-warehouse-title="${row?.['warehouse_data']?.['title']}"
@@ -519,8 +521,8 @@ class ProductModificationPageFunction {
                     className: 'w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
-                                    <input type="radio" name="serial-select"
-                                           class="form-check-input serial-select"
+                                    <input type="radio" name="serial-component-select"
+                                           class="form-check-input serial-component-select"
                                            data-serial-id="${row?.['id']}"
                                            data-sn="${row?.['serial_number']}"
                                     >
@@ -601,6 +603,7 @@ class ProductModificationEventHandler {
             }
         })
         $(document).on("click", '.btn-modal-picking-product', function () {
+            pageElements.$table_select_serial.closest('.table-serial-space').prop('hidden', true)
             let product_id = $(this).attr('data-product-id')
             let warehouse_ajax = $.fn.callAjax2({
                 url: pageElements.$script_url.attr('data-url-warehouse-list-by-product'),
@@ -711,7 +714,6 @@ class ProductModificationEventHandler {
                 )
 
                 pageElements.$picking_product_modal.modal('hide')
-                pageElements.$picking_status.text(pageElements.$picking_status.attr('data-trans-picked')).attr('class', 'text-success')
                 pageElements.$table_current_product_modified.find('tbody .btn-modal-picking-product:eq(0)').attr('data-detail-product', JSON.stringify(detail_product))
                 pageElements.$table_current_product_modified.find('tbody .data-product-detail-space').html(`
                     <span class="small">${$.fn.gettext('Warehouse')}: ${warehouse_data?.['code']} - ${warehouse_data?.['title']}</span>, <span class="small">${$.fn.gettext('Serial number')}: ${serial_data?.['sn']}</span>
@@ -770,6 +772,8 @@ class ProductModificationEventHandler {
             container.scrollTop = container.scrollHeight
         })
         $(document).on('click', '.btn-modal-picking-component', function () {
+            pageElements.$table_select_component_serial.closest('.table-serial-space').prop('hidden', true)
+            pageVariables.current_component_row = $(this).closest('tr')
             pageVariables.current_component = {
                 'id': $(this).attr('data-product-id'),
                 'code': $(this).attr('data-product-code'),
@@ -826,6 +830,48 @@ class ProductModificationEventHandler {
                         ProductModificationPageFunction.LoadTableComponentSerialListByWarehouse(results[0])
                     }
                 )
+            }
+        })
+        pageElements.$accept_picking_component_btn.on('click', function () {
+            let detail_product = {
+                'product_warehouse_id': null,
+                'serial_id': null
+            }
+            let warehouse_data = {}
+            let serial_data = {}
+            let flag = true
+            const $checked_prd_wh = pageElements.$table_select_component_warehouse.find('.product-warehouse-component-select:checked').first()
+            const $checked_serial = pageElements.$table_select_component_serial.find('.serial-component-select:checked').first()
+            if ($checked_prd_wh.length > 0) {
+                detail_product['product_warehouse_id'] = $checked_prd_wh.attr('data-product-warehouse-id')
+                warehouse_data = {
+                    'code': $checked_prd_wh.attr('data-warehouse-code'),
+                    'title': $checked_prd_wh.attr('data-warehouse-title'),
+                }
+            }
+            else {
+                $.fn.notifyB({description: 'Warehouse is not selected'}, 'failure')
+                flag = false
+            }
+            if ($checked_serial.length > 0) {
+                detail_product['serial_id'] = $checked_serial.attr('data-serial-id')
+                serial_data = {
+                    'sn': $checked_serial.attr('data-sn'),
+                }
+            }
+            else {
+                if (pageElements.$table_select_component_serial.find('tbody .dataTables_empty').length === 0) {
+                    $.fn.notifyB({description: 'Please select one serial'}, 'failure')
+                    flag = false
+                }
+            }
+
+            if (flag) {
+                pageElements.$picking_component_modal.modal('hide')
+                pageVariables.current_component_row.find('.btn-modal-picking-component').attr('data-detail-component', JSON.stringify(detail_product))
+                pageVariables.current_component_row.find('.data-component-detail-space').append(`
+                    <span class="small">${$.fn.gettext('Warehouse')}: ${warehouse_data?.['code']} - ${warehouse_data?.['title']}</span>, <span class="small">${$.fn.gettext('Serial number')}: ${serial_data?.['sn']}</span>
+                `)
             }
         })
     }

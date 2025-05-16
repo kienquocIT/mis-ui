@@ -258,6 +258,30 @@ $(function () {
             return result;
         }
 
+        function setupDataViewByMonth(from, to) {
+            const result = {};
+
+            // Parse DD/MM/YYYY to Date
+            const parseDate = (str) => {
+                const [day, month, year] = str.split('/').map(Number);
+                return new Date(year, month - 1, day);
+            };
+
+            let current = parseDate(from);
+            const end = parseDate(to);
+
+            while (current <= end) {
+                const month = current.getMonth() + 1; // getMonth() returns 0-based month
+                if (!result[month]) {
+                    result[month] = {};
+                }
+                current.setMonth(current.getMonth() + 1);
+                current.setDate(1); // Prevent date overflow issues
+            }
+
+            return result;
+        }
+
         function getCurrentMonthInfo() {
             const today = new Date();
             const year = today.getFullYear();

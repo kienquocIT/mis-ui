@@ -128,6 +128,18 @@ class GRLoadDataHandle {
         return true;
     };
 
+    static loadCheckRadioDtb(ele) {
+        let tableEle = ele.closest('table');
+        if (tableEle) {
+            let radios = tableEle.querySelectorAll('.form-check-input[type="radio"]');
+            for (let radioEle of radios) {
+                radioEle.checked = false;
+            }
+            ele.checked = true;
+        }
+        return true;
+    };
+
     static loadDatePicker($ele) {
         $ele.daterangepicker({
             singleDatePicker: true,
@@ -1520,7 +1532,7 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePOProduct);
+                // GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePOProduct);
                 GRDataTableHandle.dtbPOProductHDCustom();
             },
         });
@@ -1601,7 +1613,7 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePR);
+                // GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePR);
                 GRDataTableHandle.dtbPRHDCustom();
             },
         });
@@ -1695,7 +1707,7 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tableWH);
+                // GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tableWH);
                 GRDataTableHandle.dtbWHHDCustom();
             },
         });

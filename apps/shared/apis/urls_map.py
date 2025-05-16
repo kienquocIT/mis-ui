@@ -915,3 +915,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GROUP_ORDER_PRODUCT_LIST = StringUrl('group-order/product/list')
     GROUP_ORDER_LIST = StringUrl('group-order/list')
     GROUP_ORDER_DETAIL = StringUrl('group-order/detail')
+
+    # Payment plan
+    PAYMENT_PLAN_LIST = StringUrl('paymentplan/list')

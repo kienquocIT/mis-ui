@@ -15,6 +15,7 @@ $(function () {
         let $urlFact = $('#app-url-factory');
         let $transFact = $('#app-trans-factory');
         let eleFiscalYear = $('#data-fiscal-year');
+        let dataMonth = JSON.parse($('#filter_month').text());
 
         let htmlDtb = `<table
                                 class="table nowrap min-w-1920p w-100 mb-5 table_payment_plan"
@@ -159,7 +160,7 @@ $(function () {
             const endDate = parseDate(to);
 
             while (currentDate <= endDate) {
-                result[formatDate(currentDate)] = [];
+                result[formatDate(currentDate)] = {};
                 currentDate.setDate(currentDate.getDate() + 1);
             }
 
@@ -256,6 +257,39 @@ $(function () {
             }
 
             return result;
+        }
+
+        function customDtbByMonth() {
+            $dtbArea.empty();
+            $dtbArea.append(htmlDtb);
+            let $table = $dtbArea.find('.table_payment_plan');
+            let $theadRow = $table.find('thead tr');
+            $theadRow.empty(); // Clear all headers first
+            let columns = [];
+            for (let headerText of staticHeaders) {
+                $theadRow.append(`<th>${headerText}</th>`);
+                columns.push({
+                    width: '5%',
+                    render: () => `<span></span>`
+                });
+            }
+            if (boxStart.val() && boxEnd.val()) {
+                let dataByMonth = setupDataViewByMonth(boxStart.val(), boxEnd.val());
+                let rate = 70 / Object.keys(dataByMonth).length;
+                let width = `${rate}%`;
+                for (let key in dataByMonth) {
+                    let text = dataMonth[key - 1][1];
+                    $theadRow.append(`<th>${text}</th>`);
+                    columns.push({
+                        class: 'text-center',
+                        width: width,
+                        render: () => `<span></span>`
+                    });
+                }
+                loadDbl([], columns);
+            }
+
+            return true;
         }
 
         function setupDataViewByMonth(from, to) {
@@ -435,20 +469,29 @@ $(function () {
             customDtbByWeek();
         });
 
-        // $btnMonth.on('click', function () {
-        //     customDtbByMonth();
-        // });
+        $btnMonth.on('click', function () {
+            removeActiveBtn();
+            $btnMonth.addClass('active');
+            customDtbByMonth();
+        });
 
 
         initData();
 
         $('#btn-apply-filter').on('click', function () {
             let dataParams = {};
-            dataParams['is_initial'] = false;
+            if (boxStart.val()) {
+                let dateStart = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxStart.val());
+                dataParams['date_approved__gte'] = dateStart + ' 00:00:00';
+            }
+            if (boxEnd.val()) {
+                let dateEnd = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxEnd.val());
+                dataParams['date_approved__lte'] = dateEnd + ' 23:59:59';
+            }
             WindowControl.showLoading();
             $.fn.callAjax2({
-                    'url': $table.attr('data-url'),
-                    'method': $table.attr('data-method'),
+                    'url': $urlFact.attr('data-payment-plan'),
+                    'method': 'GET',
                     'data': dataParams,
                     isLoading: true,
                 }
@@ -456,9 +499,9 @@ $(function () {
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        if (data.hasOwnProperty('report_revenue_list') && Array.isArray(data.report_revenue_list)) {
-                            $table.DataTable().clear().draw();
-                            $table.DataTable().rows.add(data.report_revenue_list).draw();
+                        if (data.hasOwnProperty('payment_plan_list') && Array.isArray(data.payment_plan_list)) {
+                            let dataPP = data?.['payment_plan_list'];
+                            customDtbByDay();
                             WindowControl.hideLoading();
                         }
                     }

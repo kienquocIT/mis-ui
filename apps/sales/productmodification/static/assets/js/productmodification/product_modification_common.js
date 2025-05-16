@@ -869,7 +869,7 @@ class ProductModificationEventHandler {
             if (flag) {
                 pageElements.$picking_component_modal.modal('hide')
                 pageVariables.current_component_row.find('.btn-modal-picking-component').attr('data-detail-component', JSON.stringify(detail_product))
-                pageVariables.current_component_row.find('.data-component-detail-space').append(`
+                pageVariables.current_component_row.find('.data-component-detail-space').html(`
                     <span class="small">${$.fn.gettext('Warehouse')}: ${warehouse_data?.['code']} - ${warehouse_data?.['title']}</span>, <span class="small">${$.fn.gettext('Serial number')}: ${serial_data?.['sn']}</span>
                 `)
             }

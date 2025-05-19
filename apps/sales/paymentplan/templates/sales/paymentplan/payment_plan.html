@@ -17,25 +17,6 @@
         <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-month">Month</button>
     </div>
     <div id="dtb-area"></div>
-{#    <table#}
-{#            id="table_payment_plan"#}
-{#            class="table nowrap min-w-1680p w-100 mb-5"#}
-{#            data-url="{% url 'ReportCashflowListAPI' %}"#}
-{#            data-method="get"#}
-{#    >#}
-{#        <thead>#}
-{#        <tr class="bg-light header-custom">#}
-{#            <th>{% trans 'Document' %}</th>#}
-{#            <th>{% trans 'Code' %}</th>#}
-{#            <th>{% trans 'Customer' %}</th>#}
-{#            <th>{% trans 'Installment' %}</th>#}
-{#            <th>{% trans 'Invoice code' %}</th>#}
-{#            <th>{% trans 'Balance due' %}</th>#}
-{#        </tr>#}
-{#        </thead>#}
-{#        <tbody>#}
-{#        </tbody>#}
-{#    </table>#}
 
     <div class="modal-canvas-area">
 
@@ -140,7 +121,10 @@
     <input
         type="text"
         id="app-url-factory"
-        data-payment-plan="{% url 'ReportCashflowListAPI' %}"
+        data-payment-plan="{% url 'PaymentPlanListAPI' %}"
+        data-so-detail="{% url 'SaleOrderDetail' 1 %}"
+        data-po-detail="{% url 'PurchaseOrderDetail' 1 %}"
+        data-account-detail="{% url 'AccountDetail' 1 %}"
     >
 
     <input
@@ -157,7 +141,6 @@
             type="text"
             id="data-store-month"
     >
-    {{ data.filter_quarter|json_script:'filter_quarter' }}
     {{ data.filter_month|json_script:'filter_month' }}
 {% endblock %}
 {% block jsFooter %}

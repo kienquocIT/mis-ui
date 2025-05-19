@@ -34,7 +34,7 @@ $(function () {
             2: 'Installment',
             3: 'Invoice planed date',
             4: 'Invoice actual date',
-            5: 'Due date',
+            5: 'Over due',
             6: 'Balance due',
         };
 
@@ -172,20 +172,11 @@ $(function () {
             }
             if (key === "5") {
                 return {
-                    width: '3%',
+                    width: '5%',
                     render: (data, type, row) => {
                         let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
                         let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
-                        let text = dueDate;
-                        let color = "blue";
-                        if (currentDate === dueDate) {
-                            text = "Today";
-                            color = "gold";
-                        }
-                        if (currentDate > dueDate) {
-                            color = "red";
-                        }
-                        return `<b class="text-${color}">${text}</b>`;
+                        return `<span>${daysBetween(currentDate, dueDate)} days</span>`;
                     }
                 }
             }
@@ -476,6 +467,20 @@ $(function () {
 
             return myDate >= fromDate && myDate <= toDate;
         }
+
+        function daysBetween(date1Str, date2Str) {
+            // Parse the "DD/MM/YYYY" format to Date objects
+            const [d1, m1, y1] = date1Str.split('/').map(Number);
+            const [d2, m2, y2] = date2Str.split('/').map(Number);
+
+            const date1 = new Date(y1, m1 - 1, d1);
+            const date2 = new Date(y2, m2 - 1, d2);
+
+            // Calculate the difference in milliseconds and convert to days
+            const diffTime = Math.abs(date1 - date2);
+            return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        }
+
 
 
 

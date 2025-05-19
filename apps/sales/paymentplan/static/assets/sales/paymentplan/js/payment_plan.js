@@ -32,9 +32,10 @@ $(function () {
             0: 'Document',
             1: 'Partner',
             2: 'Installment',
-            3: 'Invoice',
-            4: 'Over due',
-            5: 'Balance due',
+            3: 'Invoice planed date',
+            4: 'Invoice actual date',
+            5: 'Due date',
+            6: 'Balance due',
         };
 
         function loadDbl(data, columns) {
@@ -109,7 +110,7 @@ $(function () {
         function renderCustom(key) {
             if (key === "0") {
                 return {
-                    width: '10%',
+                    width: '8%',
                     render: (data, type, row) => {
                         let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order_data']?.['id']);
                         let title = row?.['sale_order_data']?.['title'] ? row?.['sale_order_data']?.['title'] : '';
@@ -123,7 +124,7 @@ $(function () {
             }
             if (key === "1") {
                 return {
-                    width: '10%',
+                    width: '8%',
                     render: (data, type, row) => {
                         let link = $urlFact.data('account-detail').format_url_with_uuid(row?.['customer_data']?.['id']);
                         let title = row?.['customer_data']?.['name'] ? row?.['customer_data']?.['name'] : '';
@@ -132,6 +133,59 @@ $(function () {
                             title = row?.['supplier_data']?.['title'] ? row?.['supplier_data']?.['title'] : '';
                         }
                         return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
+                    }
+                }
+            }
+            if (key === "2") {
+                return {
+                    width: '5%',
+                    render: (data, type, row) => {
+                        let paymentStageData = row?.['so_payment_stage_data'];
+                        if (row?.['purchase_order_data']?.['id']) {
+                            paymentStageData = row?.['po_payment_stage_data'];
+                        }
+                        return `<span>${paymentStageData?.['term_data']?.['title'] ? paymentStageData?.['term_data']?.['title'] : ''}</span>`;
+                    }
+                }
+            }
+            if (key === "3") {
+                return {
+                    width: '5%',
+                    render: (data, type, row) => {
+                        if (row?.['invoice_planned_date']) {
+                            return `<span>${DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_planned_date'])}</span>`;
+                        }
+                        return `<span></span>`;
+                    }
+                }
+            }
+            if (key === "4") {
+                return {
+                    width: '5%',
+                    render: (data, type, row) => {
+                        if (row?.['invoice_actual_date']) {
+                            return `<span>${DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_actual_date'])}</span>`;
+                        }
+                        return `<span></span>`;
+                    }
+                }
+            }
+            if (key === "5") {
+                return {
+                    width: '3%',
+                    render: (data, type, row) => {
+                        let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
+                        let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
+                        let text = dueDate;
+                        let color = "blue";
+                        if (currentDate === dueDate) {
+                            text = "Today";
+                            color = "gold";
+                        }
+                        if (currentDate > dueDate) {
+                            color = "red";
+                        }
+                        return `<b class="text-${color}">${text}</b>`;
                     }
                 }
             }

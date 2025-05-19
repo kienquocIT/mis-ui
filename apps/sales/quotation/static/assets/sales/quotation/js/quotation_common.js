@@ -4321,7 +4321,7 @@ class QuotationDataTableHandle {
                     }
                 }
                 if (invoiceDataEle) {
-                    $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : []));
+                    $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : {}));
                 }
                 if (valBeforeEle) {
                     if (!$termMD.val() || checkTax?.['check'] === "mixed" && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {

@@ -214,7 +214,6 @@ $(function () {
                                             'url': $table.attr('data-url'),
                                             'method': $table.attr('data-method'),
                                             'data': {
-                                                'is_initial': false,
                                                 'date_approved__gte': startDate,
                                                 'date_approved__lte': endDate,
                                             },
@@ -345,7 +344,6 @@ $(function () {
 
         $('#btn-apply-filter').on('click', function () {
             let dataParams = {};
-            dataParams['is_initial'] = false;
             let listViewBy = [];
             let listDate = [];
             if (boxGroup.val() && boxGroup.val().length > 0) {

@@ -28,7 +28,14 @@ $(function () {
                             <tbody>
                             </tbody>
                         </table>`;
-        let staticHeaders = ['Order', 'Customer', 'Installment', 'Invoice', 'Over due', 'Balance due'];
+        let staticHeaders = {
+            0: 'Document',
+            1: 'Partner',
+            2: 'Installment',
+            3: 'Invoice',
+            4: 'Over due',
+            5: 'Balance due',
+        };
 
         function loadDbl(data, columns) {
             $dtbArea.find('.table_payment_plan').DataTableDefault({
@@ -36,7 +43,7 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 fixedColumns: {
-                    leftColumns: staticHeaders.length
+                    leftColumns: Object.keys(staticHeaders).length
                 },
                 pageLength: 50,
                 columns: columns ? columns : [],
@@ -92,14 +99,48 @@ $(function () {
             let $theadRow = $table.find('thead tr');
             $theadRow.empty(); // Clear all headers first
             let columns = [];
-            for (let headerText of staticHeaders) {
-                $theadRow.append(`<th>${headerText}</th>`);
-                columns.push({
-                    // width: '5%',
-                    render: () => `<span></span>`
-                });
+            for (let key in staticHeaders) {
+                $theadRow.append(`<th>${staticHeaders[key]}</th>`);
+                columns.push(renderCustom(key));
             }
             return {"columns": columns, "$theadRow": $theadRow};
+        }
+
+        function renderCustom(key) {
+            if (key === "0") {
+                return {
+                    width: '10%',
+                    render: (data, type, row) => {
+                        let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order_data']?.['id']);
+                        let title = row?.['sale_order_data']?.['title'] ? row?.['sale_order_data']?.['title'] : '';
+                        if (row?.['purchase_order_data']?.['id'] && row?.['purchase_order_data']?.['title']) {
+                            link = $urlFact.data('po-detail').format_url_with_uuid(row?.['purchase_order_data']?.['id']);
+                            title = row?.['purchase_order_data']?.['title'] ? row?.['purchase_order_data']?.['title'] : '';
+                        }
+                        return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
+                    }
+                }
+            }
+            if (key === "1") {
+                return {
+                    width: '10%',
+                    render: (data, type, row) => {
+                        let link = $urlFact.data('account-detail').format_url_with_uuid(row?.['customer_data']?.['id']);
+                        let title = row?.['customer_data']?.['name'] ? row?.['customer_data']?.['name'] : '';
+                        if (row?.['supplier_data']?.['id'] && row?.['supplier_data']?.['title']) {
+                            link = $urlFact.data('account-detail').format_url_with_uuid(row?.['supplier_data']?.['id']);
+                            title = row?.['supplier_data']?.['title'] ? row?.['supplier_data']?.['title'] : '';
+                        }
+                        return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
+                    }
+                }
+            }
+            return {
+                // width: '5%',
+                render: (data, type, row) => {
+                    return ``;
+                }
+            };
         }
 
         function customDtbByDay() {

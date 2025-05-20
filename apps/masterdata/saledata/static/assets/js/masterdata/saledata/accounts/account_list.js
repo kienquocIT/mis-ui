@@ -2,13 +2,13 @@ $(document).ready(function () {
     const msgData = $("#account-update-page");
     const tbl = $('#datatable_account_list');
     // let urlEmployeeList = tbl.attr('data-url-employee')
-    const childRowIndexes = [3, 4, 5, 6, 8]
+    const childRowIndexes = [4, 5, 6, 9, 10]
     const table = tbl.DataTableDefault({
         buttons: [
             {
                 extend: 'excel',
                 text: `<i class="fas fa-file-excel me-1"></i>${$.fn.gettext('Export to Excel')}`,
-                className: 'btn btn-sm rounded-pill',
+                className: 'btn btn-xs rounded-pill',
                 exportOptions: {
                     columns: ':visible',
                     format: {
@@ -120,6 +120,8 @@ $(document).ready(function () {
             },
             {
                 className: 'ellipsis-cell-xs w-5',
+                orderable: true,
+                data: 'code',
                 render: (data, type, row) => {
                     const link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
                     return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
@@ -127,6 +129,8 @@ $(document).ready(function () {
             },
             {
                 className: 'ellipsis-cell-lg w-15',
+                orderable: true,
+                data: 'name',
                 render: (data, type, row) => {
                     let link = msgData.attr('data-url').format_url_with_uuid(row?.['id']);
                     return `<a href="${link}" class="link-primary underline_hover" title="${row?.['name']}">${row?.['name']}</a>`
@@ -186,13 +190,15 @@ $(document).ready(function () {
             }
         ],
         initComplete: function () {
-            tbl.find('tbody tr .dt-control').each(function (index, ele) {
-                $(ele).prepend('<i class="fa-solid fa-circle-plus text-blue mr-1"></i>')
-            })
+
         }
+    }).on('draw.dt', function () {
+        $(this).find('tbody .dt-control').each(function (index, ele) {
+            $(ele).prepend('<i class="fa-solid fa-circle-plus text-blue mr-1 dt-control-btn"></i>')
+        })
     });
 
-    tbl.on('click', 'tbody td.dt-control', function () {
+    tbl.on('click', 'tbody .dt-control-btn', function () {
         let tr = $(this).closest('tr')
         let tdi = tr.find("i.fa-solid")
         let row = table.row(tr)

@@ -1,4 +1,11 @@
 $(document).ready(function () {
+    const $form_create = $('#form-create-account')
+
+    $.fn.InitAutoGenerateCodeField({
+        param_app_code: 'account',
+        param_ele_code_id: 'inp-code'
+    })
+
     AccountEventHandler.InitPageEven()
 
     UsualLoadPageFunction.LoadAccountType({
@@ -29,7 +36,7 @@ $(document).ready(function () {
     AccountPageFunction.LoadTableBillingAddress()
     AccountPageFunction.LoadTableBankAccount()
 
-    $('#form-create-account').submit(function (event) {
+    $form_create.submit(function (event) {
         event.preventDefault();
         let combinesData = AccountHandler.CombinesData($(this));
         // console.log(combinesData)

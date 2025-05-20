@@ -691,7 +691,44 @@ $.fn.extend({
             });
         }
         return formData;
-    }
+    },
+    /**
+     * Kiểm tra và cảnh báo Sinh mã tự động
+     * @param {Object} param_app_code - app_code
+     * @param {string} param_ele_code_id - field code's id in page (to get iQuery element)
+     * @returns {void}
+     */
+    InitAutoGenerateCodeField({param_app_code, param_ele_code_id}) {
+        let dataParam = {'company_id': $('#company-current-id').attr('data-id')}
+        let function_number_ajax = $.fn.callAjax2({
+            url: '/company/function-number',
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('function_number')) {
+                    return data?.['function_number'];
+                }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
+
+        Promise.all([function_number_ajax]).then(
+            (results) => {
+                let function_number_data = results[0] || []
+                if (function_number_data.filter((item) => {return item?.['app_code'] === param_app_code}).length === 1) {
+                    const code_ele = $(`#${param_ele_code_id}`)
+                    code_ele.addClass('auto-code-field')
+                    code_ele.attr('placeholder', $.fn.gettext('Auto-generate mode if blank'))
+                    code_ele.prop('required', false)
+                    code_ele.closest('.form-group').find('label').removeClass('required')
+                }
+            })
+    },
 });
 
 $(document).ready(function () {

@@ -4,23 +4,11 @@
     <span>
         <a class="navbar-brand" href="/">
             {% if request.user.company_has_icon == True %}
-                <img
-                    class="brand-img img-fluid"
-                    src="{{ request.user.company_icon_uri }}"
-                    style="max-width: 40px; max-height: 40px; object-fit: contain;"
-                />
-                <img
-                    class="brand-img img-fluid"
-                    src="{{ request.user.company_logo_uri }}"
-                    style="max-width: 112px; max-height: 40px;object-fit: contain;margin-left: 1rem;"
-                />
+                <img class="brand-img img-fluid rounded" src="{{ request.user.company_icon_uri }}" style="max-width: 40px; max-height: 40px; object-fit: contain;"/>
+                <img class="brand-img img-fluid rounded" src="{{ request.user.company_logo_uri }}" style="max-width: 112px; max-height: 40px; object-fit: contain;margin-left: 1rem;"/>
             {% else %}
-                <img
-                    class="brand-img img-fluid"
-                    src="{{ request.user.company_logo_uri }}"
-                    style="max-width: 40px; max-height: 40px; object-fit: contain;"
-                />
-                <span class="brand-img img-fluid"></span>
+                <img class="brand-img img-fluid rounded" src="{{ request.user.company_logo_uri }}" style="max-width: 40px; max-height: 40px; object-fit: contain;"/>
+                <span class="brand-img img-fluid rounded"></span>
             {% endif %}
         </a>
         <button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle">

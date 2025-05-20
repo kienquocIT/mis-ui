@@ -5881,10 +5881,6 @@ msgid "Save config"
 msgstr "Lưu cấu hình"
 
 #
-msgid "Representator fullname"
-msgstr "Họ tên người đại diện"
-
-#
 msgid "Select products"
 msgstr "Chọn sản phẩm"
 
@@ -9089,8 +9085,8 @@ msgid "The product does not have opportunity BOM"
 msgstr "Sản phẩm không có định mức nguyên vật liệu dự án"
 
 #
-msgid "According to product's inventory UOM"
-msgstr "Theo đơn vị lưu kho của sản phẩm"
+msgid "According to inventory UOM"
+msgstr "Theo đơn vị lưu kho"
 
 #
 msgid "Import status"
@@ -9861,8 +9857,16 @@ msgid "Data Import Limit"
 msgstr "Giới hạn nhập dữ liệu"
 
 #
-msgid "To ensure system performance and stability, row number is limited to 150 rows. If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears."
-msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 150 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
+msgid "To ensure system performance and stability, row number is limited to"
+msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở"
+
+#
+msgid "rows"
+msgstr "dòng"
+
+#
+msgid "If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears."
+msgstr "Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
 
 #
 msgid "Lease order"

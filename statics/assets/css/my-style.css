@@ -167,7 +167,7 @@
 }
 
 .required::after {
-    content: "(*)";
+    content: "*";
     color: red;
     font-size: 0.8rem;
     padding-left: 5px;
@@ -1303,4 +1303,30 @@ table.dataTable tr.dtrg-group th {
     overflow: hidden !important;           /* Ẩn phần tràn ra */
     text-overflow: ellipsis !important;    /* Thêm dấu "..." */
     max-width: 100px !important;           /* Giới hạn độ rộng nếu cần */
+}
+
+/*decor field auto code*/
+.auto-code-field {
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+@keyframes gradientBorder {
+    0% {
+        border-color: #ff5e5e;
+    }
+    25% {
+        border-color: #e3cc64;
+    }
+    50% {
+        border-color: #4885e1;
+    }
+    75% {
+        border-color: #00ab57;
+    }
+    100% {
+        border-color: #ea8ac3;
+    }
+}
+.auto-code-field {
+    animation: gradientBorder 2s infinite alternate;
 }

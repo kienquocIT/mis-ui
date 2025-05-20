@@ -11,7 +11,7 @@ $(function () {
         scrollCollapse: true,
         reloadCurrency: true,
         fixedColumns: {
-            leftColumns: 3
+            leftColumns: 2
         },
         ajax: {
             url: frm.dataUrl,
@@ -34,13 +34,21 @@ $(function () {
                     return '';
                 },
             }, {
-                className: 'ellipsis-cell-md w-15',
+                className: 'ellipsis-cell-xs w-10',
                 render: (data, type, row) => {
-                    const link = `/company/detail/${row?.['id']}`
-                    return `<div class="avatar avatar-rounded"><img class="avatar-img mr-2" alt="" src="${row?.['logo']}"/><a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a></div>`;
+                    if (row?.['logo']) {
+                        return `<img class="img-fluid rounded mr-2" style="max-width: 60px" alt="" src="${row?.['logo']}"/>`;
+                    }
+                    return `<img class="img-fluid rounded mr-2" style="max-width: 60px" alt="" src=""/>`;
                 }
             }, {
-                className: 'ellipsis-cell-lg w-45',
+                className: 'ellipsis-cell-sm w-10',
+                render: (data, type, row) => {
+                    const link = `/company/detail/${row?.['id']}`
+                    return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
+                }
+            }, {
+                className: 'ellipsis-cell-lg w-40',
                 'render': (data, type, row) => {
                     const link = `/company/detail/${row?.['id']}`
                     return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`

@@ -8,6 +8,11 @@
         .custom-toastr {
             min-width: 30vw !important;
         }
+        .dropify-wrapper {
+            width: 100%;
+            max-width: 100%;
+            max-height: 100px;
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -32,10 +37,11 @@
             data-trans-alert-toastr-3="{% trans 'Contact the admin to create a new Posting period.' %}"
             data-trans-default="{% trans 'Default' %} = 0"
     ></script>
+    {% include 'core/company/common/information.html' %}
     {% include 'core/company/common/tabs.html' %}
 {% endblock %}
 {% block modalData %}
-    <div class="modal fade" id="modal-company-address" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+    <div class="modal fade" id="modal-company-address" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -47,62 +53,38 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="form-group">
-                            <label
-                                    class="label-field form-label required" for="detail-company-address-modal"
-                            >{% trans "Address" %}</label>
-                            <input
-                                    class="form-control" type="text" id="detail-company-address-modal"
-                                    placeholder="Number 20, 22 street, Him Lam residential area"
-                            >
+                            <label class="form-label required" for="detail-company-address-modal">{% trans "Address" %}</label>
+                            <input class="form-control" type="text" id="detail-company-address-modal" placeholder="Number 20, 22 street, Him Lam residential area">
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label
-                                    class="label-field form-label required" for="company-address-city"
-                            >{% trans "Province/City" %}</label>
-                            <select
-                                    class="form-select" id="company-address-city" data-country-id
-                                    data-url="{% url "CityListAPI" %}" data-method="GET"
-                            ></select>
+                            <label class="form-label required" for="company-address-city">{% trans "Province/City" %}</label>
+                            <select class="form-select" id="company-address-city" data-country-id data-url="{% url "CityListAPI" %}" data-method="GET"></select>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label
-                                    class="label-field form-label required" for="company-address-district"
-                            >{% trans "District" %}</label>
-                            <select
-                                    class="form-select" id="company-address-district"
-                                    data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
-                            >
-                            </select>
+                            <label class="form-label required" for="company-address-district">{% trans "District" %}</label>
+                            <select class="form-select" id="company-address-district" data-url="{% url "DistrictAllListAPI" %}" data-method="GET"></select>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label class="label-field form-label" for="company-address-ward">{% trans "Ward" %}</label>
-                            <select
-                                    class="form-select" id="company-address-ward"
-                                    data-url="{% url "WardAllListAPI" %}" data-method="GET"
-                            >
-                            </select>
+                            <label class="form-label" for="company-address-ward">{% trans "Ward" %}</label>
+                            <select class="form-select" id="company-address-ward" data-url="{% url "WardAllListAPI" %}" data-method="GET"></select>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button
-                            type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close"
-                            id="save-changes-modal-company-address"
-                    >
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close" id="save-changes-modal-company-address">
                         {% trans 'Save' %}
                     </button>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="modal-function-number" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+    <div class="modal fade" id="modal-function-number" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -116,25 +98,18 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-12 col-md-12 col-lg-12">
-                                    <label
-                                            class="label-field form-label required" for="schema-item-list"
-                                    >{% trans "Schema" %}</label>
+                                    <label class="form-label required" for="schema-item-list">{% trans "Schema" %}</label>
                                     <div class="row">
                                         <div class="col-10 col-md-10 col-lg-10 text-right">
                                             <input id="schema-item-list" class="form-control">
                                         </div>
                                         <div class="col-2 col-md-2 col-lg-2 text-right">
                                             <div class="btn-group dropdown w-100 h-100">
-                                                <button
-                                                        type="button"
-                                                        class="btn btn-xs btn-soft-primary dropdown-toggle schema"
-                                                        data-bs-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                >
+                                                <button type="button" class="btn btn-xs btn-soft-primary dropdown-toggle schema" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     {% trans 'Add schema item' %}
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    <div style="max-height: 200px; overflow-y: auto;">
+                                                    <div style="max-height: 150px; overflow-y: auto;">
                                                         <a data-value="0" class="schema-item dropdown-item" href="#">Number</a>
                                                         <a data-value="1" class="schema-item dropdown-item" href="#">Short
                                                             year (23)</a>
@@ -164,47 +139,35 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6 col-md-3 col-lg-3">
+                        <div class="col-6 col-md-2 col-lg-2">
                             <div class="form-group">
-                                <label
-                                        class="label-field form-label required" for="first-number"
-                                >{% trans "First number" %}</label>
-                                <input type="number" class="form-control" id="first-number" min="1" step="1">
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3 col-lg-3">
-                            <div class="form-group">
-                                <label
-                                        class="label-field form-label required" for="last-number"
-                                >{% trans "Next number" %}</label>
+                                <label class="form-label required" for="last-number">{% trans "Next number" %}</label>
                                 <input type="number" class="form-control" id="last-number" min="1" step="1">
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-3">
+                        <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
-                                <label
-                                        class="label-field form-label required" for="reset-frequency"
-                                >{% trans "Reset frequency" %}</label>
+                                <label class="form-label required" for="reset-frequency">{% trans "Reset frequency" %}</label>
                                 <select class="form-select" id="reset-frequency">
-                                    <option selected></option>
+                                    <option value="4" selected>{% trans 'Never' %}</option>
                                     <option value="0">{% trans 'Yearly' %}</option>
                                     <option value="1">{% trans 'Monthly' %}</option>
                                     <option value="2">{% trans 'Weekly' %}</option>
                                     <option value="3">{% trans 'Daily' %}</option>
-                                    <option value="4">{% trans 'Never' %}</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-2 col-lg-2">
+                            <div class="form-group">
+                                <label class="form-label" for="first-number">{% trans "First number" %}</label>
+                                <input type="number" class="form-control" id="first-number" min="1" step="1">
                             </div>
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <div class="form-group">
                                 <input id="min_num_char_checkbox" type="checkbox">
-                                <label
-                                        class="label-field form-label" for="min_num_char"
-                                >{% trans "Minimum char number" %}</label>
-                                <input
-                                        id="min_num_char" class="form-control" type="number" step="1" min="2"
-                                        placeholder="{% trans 'Default' %}" disabled
-                                >
+                                <label class="form-label" for="min_num_char">{% trans "Minimum char number" %}</label>
+                                <input id="min_num_char" class="form-control" type="number" step="1" min="2" placeholder="{% trans 'Default' %}" disabled>
                             </div>
                         </div>
                         <div class="col-12 col-md-12 col-lg-12 mt-5">

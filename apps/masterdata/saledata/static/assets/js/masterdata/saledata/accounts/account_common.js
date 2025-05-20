@@ -919,7 +919,6 @@ class AccountEventHandler {
                 $('#invalid-tax').prop('hidden', tax_code_status)
                 $('#valid-tax').prop('hidden', !tax_code_status)
                 pageElements.$name.val(responseData?.['data']?.['name'])
-                pageElements.$code.val(responseData?.['data']?.['shortName'].replace(' ', '_'))
             }
         })
         $('#view-tax-code-info').on('click', async function () {

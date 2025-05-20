@@ -32,8 +32,8 @@ $(function () {
             0: 'Document',
             1: 'Partner',
             2: 'Installment',
-            3: 'Invoice planed date',
-            4: 'Invoice actual date',
+            // 3: 'Invoice planed date',
+            4: 'Invoice',
             5: 'Over due',
             6: 'Balance due',
         };
@@ -48,6 +48,14 @@ $(function () {
                 },
                 pageLength: 50,
                 columns: columns ? columns : [],
+                rowCallback: function (row, data, index) {
+                    if (data?.['is_total_in'] === true) {
+                        $(row).find('td:eq(1)').attr('colspan', 1);
+                    }
+                    if (data?.['is_total_out'] === true) {
+                        $(row).find('td:eq(1)').attr('colspan', 1);
+                    }
+                },
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
@@ -89,13 +97,13 @@ $(function () {
             $dtbArea.append(htmlDtb);
             let $table = $dtbArea.find('.table_payment_plan');
             let minWidth = "min-w-2560p";
-            for (let btn of $btnGroup[0].querySelectorAll('.btn-view')) {
-                if ($(btn).hasClass('active')) {
-                    if (btn === $btnDay[0]) {
-                        minWidth = "min-w-4000p";
-                    }
-                }
-            }
+            // for (let btn of $btnGroup[0].querySelectorAll('.btn-view')) {
+            //     if ($(btn).hasClass('active')) {
+            //         if (btn === $btnDay[0]) {
+            //             minWidth = "min-w-4000p";
+            //         }
+            //     }
+            // }
             $table.addClass(minWidth);
             let $theadRow = $table.find('thead tr');
             $theadRow.empty(); // Clear all headers first
@@ -110,13 +118,13 @@ $(function () {
         function renderCustom(key) {
             if (key === "0") {
                 return {
-                    width: '8%',
+                    width: '5%',
                     render: (data, type, row) => {
                         let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order_data']?.['id']);
-                        let title = row?.['sale_order_data']?.['title'] ? row?.['sale_order_data']?.['title'] : '';
-                        if (row?.['purchase_order_data']?.['id'] && row?.['purchase_order_data']?.['title']) {
+                        let title = row?.['sale_order_data']?.['code'] ? row?.['sale_order_data']?.['code'] : '';
+                        if (row?.['purchase_order_data']?.['id'] && row?.['purchase_order_data']?.['code']) {
                             link = $urlFact.data('po-detail').format_url_with_uuid(row?.['purchase_order_data']?.['id']);
-                            title = row?.['purchase_order_data']?.['title'] ? row?.['purchase_order_data']?.['title'] : '';
+                            title = row?.['purchase_order_data']?.['code'] ? row?.['purchase_order_data']?.['code'] : '';
                         }
                         return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
                     }
@@ -124,13 +132,13 @@ $(function () {
             }
             if (key === "1") {
                 return {
-                    width: '8%',
+                    width: '5%',
                     render: (data, type, row) => {
                         let link = $urlFact.data('account-detail').format_url_with_uuid(row?.['customer_data']?.['id']);
-                        let title = row?.['customer_data']?.['name'] ? row?.['customer_data']?.['name'] : '';
-                        if (row?.['supplier_data']?.['id'] && row?.['supplier_data']?.['title']) {
+                        let title = row?.['customer_data']?.['code'] ? row?.['customer_data']?.['code'] : '';
+                        if (row?.['supplier_data']?.['id'] && row?.['supplier_data']?.['code']) {
                             link = $urlFact.data('account-detail').format_url_with_uuid(row?.['supplier_data']?.['id']);
-                            title = row?.['supplier_data']?.['title'] ? row?.['supplier_data']?.['title'] : '';
+                            title = row?.['supplier_data']?.['code'] ? row?.['supplier_data']?.['code'] : '';
                         }
                         return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
                     }
@@ -140,33 +148,50 @@ $(function () {
                 return {
                     width: '5%',
                     render: (data, type, row) => {
+                        let date = '';
+                        let dateSub = '';
+                        if (row?.['invoice_planned_date']) {
+                            date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_planned_date']);
+                            dateSub = "(Ngày xuất hóa đơn dự kiến)";
+                        }
                         let paymentStageData = row?.['so_payment_stage_data'];
                         if (row?.['purchase_order_data']?.['id']) {
                             paymentStageData = row?.['po_payment_stage_data'];
                         }
-                        return `<span>${paymentStageData?.['term_data']?.['title'] ? paymentStageData?.['term_data']?.['title'] : ''}</span>`;
+                        return `<div><span>${paymentStageData?.['term_data']?.['title'] ? paymentStageData?.['term_data']?.['title'] : ''}</span></div>
+                                <div><span>${date} ${dateSub}</span></div>`;
                     }
                 }
             }
-            if (key === "3") {
-                return {
-                    width: '5%',
-                    render: (data, type, row) => {
-                        if (row?.['invoice_planned_date']) {
-                            return `<span>${DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_planned_date'])}</span>`;
-                        }
-                        return `<span></span>`;
-                    }
-                }
-            }
+            // if (key === "3") {
+            //     return {
+            //         width: '5%',
+            //         render: (data, type, row) => {
+            //             if (row?.['invoice_planned_date']) {
+            //                 return `<span>${DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_planned_date'])}</span>`;
+            //             }
+            //             return `<span></span>`;
+            //         }
+            //     }
+            // }
             if (key === "4") {
                 return {
                     width: '5%',
                     render: (data, type, row) => {
+                        let date = '';
+                        let dateSub = '';
                         if (row?.['invoice_actual_date']) {
-                            return `<span>${DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_actual_date'])}</span>`;
+                            date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_actual_date']);
+                            dateSub = "(Ngày xuất hóa đơn thực tế)";
                         }
-                        return `<span></span>`;
+                        let link = $urlFact.data('ar-invoice-detail').format_url_with_uuid(row?.['ar_invoice_data']?.['id']);
+                        let title = row?.['ar_invoice_data']?.['title'] ? row?.['ar_invoice_data']?.['title'] : '';
+                        if (row?.['ap_invoice_data']?.['id'] && row?.['ap_invoice_data']?.['title']) {
+                            link = $urlFact.data('ap-invoice-detail').format_url_with_uuid(row?.['ap_invoice_data']?.['id']);
+                            title = row?.['ap_invoice_data']?.['title'] ? row?.['ap_invoice_data']?.['title'] : '';
+                        }
+                        return `<div><a href="${link}" class="link-primary underline_hover">${title}</a></div>
+                                <div><span>${date} ${dateSub}</span></div>`;
                     }
                 }
             }
@@ -174,9 +199,30 @@ $(function () {
                 return {
                     width: '5%',
                     render: (data, type, row) => {
-                        let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
-                        let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
-                        return `<span>${daysBetween(currentDate, dueDate)} days</span>`;
+                        if (row?.['due_date']) {
+                            let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
+                            let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
+                            return `<span>${daysBetween(currentDate, dueDate)} days</span>`;
+                        }
+                        return ``;
+                    }
+                }
+            }
+            if (key === "6") {
+                return {
+                    width: '8%',
+                    render: (data, type, row) => {
+                        if (row?.['is_total_in'] === true) {
+                            return `<b>Total cash in</b>`;
+                        }
+                        if (row?.['is_total_out'] === true) {
+                            return `<b>Total cash out</b>`;
+                        }
+                        let balance = row?.['value_balance'];
+                        if (row?.['purchase_order_data']?.['id']) {
+                            balance = -row?.['value_balance'];
+                        }
+                        return `<span class="mask-money" data-init-money="${balance}"></span>`;
                     }
                 }
             }
@@ -213,6 +259,9 @@ $(function () {
                                         let date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['date_approved']);
                                         if (date === dataCheck) {
                                             value = row?.['value_pay'];
+                                            if (row?.['purchase_order_data']?.['id']) {
+                                                value = -row?.['value_pay'];
+                                            }
                                         }
                                     }
                                 }
@@ -278,6 +327,9 @@ $(function () {
                                 let check = isDateInRange(checkRange?.['from'], checkRange?.['to'], date);
                                 if (check) {
                                     value = row?.['value_pay'];
+                                    if (row?.['purchase_order_data']?.['id']) {
+                                        value = -row?.['value_pay'];
+                                    }
                                 }
                             }
 
@@ -374,6 +426,9 @@ $(function () {
                                 let check = isDateInRange(checkRange?.['from'], checkRange?.['to'], date);
                                 if (check) {
                                     value = row?.['value_pay'];
+                                    if (row?.['purchase_order_data']?.['id']) {
+                                        value = -row?.['value_pay'];
+                                    }
                                 }
                             }
 
@@ -659,6 +714,8 @@ $(function () {
 
                             $dtbArea.find('.table_payment_plan').DataTable().clear().draw();
                             $dtbArea.find('.table_payment_plan').DataTable().rows.add(dataPP).draw();
+                            $dtbArea.find('.table_payment_plan').DataTable().row.add({"is_total_in": true}).draw().node();
+                            $dtbArea.find('.table_payment_plan').DataTable().row.add({"is_total_out": true}).draw().node();
                             WindowControl.hideLoading();
                         }
                     }

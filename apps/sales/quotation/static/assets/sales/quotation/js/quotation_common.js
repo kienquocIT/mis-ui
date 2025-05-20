@@ -182,13 +182,28 @@ class QuotationLoadDataHandle {
                 'allowClear': true,
             });
             // load customer
-            if (QuotationLoadDataHandle.customerInitEle.val()) {
-                let initCustomer = JSON.parse(QuotationLoadDataHandle.customerInitEle.val());
-                QuotationLoadDataHandle.customerSelectEle.empty();
-                QuotationLoadDataHandle.customerSelectEle.initSelect2({
-                    data: initCustomer?.[oppData?.['customer']?.['id']],
-                });
-                QuotationLoadDataHandle.customerSelectEle.trigger('change');
+            if (oppData?.['customer']?.['id']) {
+                WindowControl.showLoading();
+                $.fn.callAjax2({
+                        'url': QuotationLoadDataHandle.customerSelectEle.attr('data-url'),
+                        'method': "GET",
+                        'data': {'id': oppData?.['customer']?.['id']},
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
+                                if (data?.['account_sale_list'].length > 0) {
+                                    FormElementControl.loadInitS2(QuotationLoadDataHandle.customerSelectEle, data?.['account_sale_list']);
+                                    QuotationLoadDataHandle.customerSelectEle.trigger('change');
+                                }
+                                WindowControl.hideLoading();
+                            }
+                        }
+                    }
+                )
             }
         } else {
             QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');

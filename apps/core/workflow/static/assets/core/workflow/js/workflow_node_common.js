@@ -886,17 +886,7 @@ class NodeDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        if (row?.['employee']) {
-                            let dataEmp = SelectDDControl.get_data_from_idx(NodeLoadDataHandle.$boxInWFEmp, row?.['employee']);
-                            if (dataEmp) {
-                                if (dataEmp.hasOwnProperty('role') && Array.isArray(dataEmp?.['role'])) {
-                                    let result = [];
-                                    dataEmp?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-light badge-outline mb-1 mr-1">${item?.['title']}</span>`) : null);
-                                    return result.join(" ");
-                                }
-                            }
-                        }
-                        return '';
+                        return '<div class="table-row-role"></div>';
                     }
                 },
                 {
@@ -939,6 +929,40 @@ class NodeDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let titleEle = row.querySelector('.table-row-title');
+                let roleEle = row.querySelector('.table-row-role');
+                if (titleEle && roleEle) {
+                    if (data?.['employee']) {
+                        WindowControl.showLoading();
+                        $.fn.callAjax2({
+                                'url': NodeLoadDataHandle.$boxInWFEmp.attr('data-url'),
+                                'method': "GET",
+                                'data': {'id': data?.['employee']},
+                                'isDropdown': true,
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    if (data.hasOwnProperty('employee_list') && Array.isArray(data.employee_list)) {
+                                        if (data?.['employee_list'].length === 1) {
+                                            let dataEmp = data?.['employee_list'][0];
+                                            titleEle.innerHTML = dataEmp?.['full_name'];
+                                            if (dataEmp.hasOwnProperty('role') && Array.isArray(dataEmp?.['role'])) {
+                                                let result = [];
+                                                dataEmp?.['role'].map(item => item?.['title'] ? result.push(`<span class="badge badge-light badge-outline mb-1 mr-1">${item?.['title']}</span>`) : null);
+                                                roleEle.innerHTML = result.join(" ");
+                                            }
+                                        }
+                                        WindowControl.hideLoading();
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            },
             drawCallback: function () {
                 // load change exit condition default
                 NodeLoadDataHandle.loadExitConDefault();

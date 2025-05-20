@@ -3891,7 +3891,12 @@ class WFAssociateControl {
             let val = WFAssociateControl.findKey(data, leftValueJSON?.['code']);
             if (val) {
                 if (Array.isArray(val)) {
-                    val = val.map(item => item.replace(/\s/g, "").toLowerCase());
+                    // val = val.map(item => item.replace(/\s/g, "").toLowerCase());
+                    val.map(item =>
+                        typeof item === 'string'
+                            ? item.replace(/\s/g, "").toLowerCase()
+                            : item
+                    );
                     let check = val.includes(rightValue);
                     if (check === true) {
                         let valData = WFAssociateControl.findKey(data, lastElement?.['code']);

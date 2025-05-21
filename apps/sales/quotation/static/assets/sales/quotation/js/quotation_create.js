@@ -9,13 +9,12 @@ $(function () {
         let $quotationTabs = $('#quotation-tabs');
 
         // Load inits
-        QuotationLoadDataHandle.loadCustomCss();
         QuotationLoadDataHandle.loadInitInherit();
         QuotationLoadDataHandle.loadInitCustomer();
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
-        QuotationLoadDataHandle.loadBoxQuotationContact();
-        QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-        QuotationLoadDataHandle.loadInitDate();
+        FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle);
+        FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
+        $('#quotation-create-date-created').val(DateTimeControl.getCurrentDate("DMY", "/"));
         // init dataTable
         QuotationDataTableHandle.dataTableSelectProduct();
         QuotationDataTableHandle.dataTableProduct();
@@ -54,14 +53,6 @@ $(function () {
 
         QuotationLoadDataHandle.customerSelectEle.on('change', function () {
             QuotationLoadDataHandle.loadDataByCustomer();
-        });
-
-        QuotationLoadDataHandle.salePersonSelectEle.on('change', function () {
-            QuotationLoadDataHandle.loadDataBySalePerson();
-        });
-
-        QuotationLoadDataHandle.paymentSelectEle.on('click', function () {
-            QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
         });
 
         QuotationLoadDataHandle.paymentSelectEle.on('change', function () {
@@ -389,6 +380,7 @@ $(function () {
                                 QuotationCalculateCaseHandle.commonCalculate(QuotationDataTableHandle.$tableCost, row);
                             }
                         }
+                        QuotationStoreDataHandle.storeDtbData(2);
                     }
                 }
             }

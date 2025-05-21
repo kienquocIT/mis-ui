@@ -962,6 +962,14 @@ select[readonly] {
     min-width: 2560px;
 }
 
+.min-w-3440p {
+    min-width: 3440px;
+}
+
+.min-w-3840p {
+    min-width: 3840px;
+}
+
 .min-w-4000p {
     min-width: 4000px;
 }

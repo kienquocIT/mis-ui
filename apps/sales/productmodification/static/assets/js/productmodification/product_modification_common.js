@@ -291,7 +291,7 @@ class ProductModificationPageFunction {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '50vh',
+            scrollY: '48vh',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -357,7 +357,7 @@ class ProductModificationPageFunction {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '50vh',
+            scrollY: '48vh',
             scrollCollapse: true,
             data: data_list,
             columns: [

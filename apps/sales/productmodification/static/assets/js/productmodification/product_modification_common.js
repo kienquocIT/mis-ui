@@ -149,7 +149,7 @@ class ProductModificationPageFunction {
                                     <span class="icon">
                                         <span class="feather-icon"><i class="fa-solid fa-ellipsis-vertical"></i></span>
                                     </span>
-                                    <span>${pageElements.$trans_url.attr('data-trans-picking')}</span>
+                                    <span>${pageElements.$trans_url.attr('data-trans-select-one')}</span>
                                 </span>
                                 </button>`;
                     }
@@ -291,7 +291,7 @@ class ProductModificationPageFunction {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '48vh',
+            scrollY: '65vh',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -307,7 +307,7 @@ class ProductModificationPageFunction {
                         if (row?.['product_id']) {
                             return `<span class="badge badge-sm badge-primary">${row?.['product_code']}</span><br><span data-row-type="${row?.['type'] || ''}" data-product-id="${row?.['product_id']}" class="fw-bold text-primary component-title">${row?.['product_title']}</span><br><span class="small">${row?.['product_des'] || ''}</span>`;
                         }
-                        return `<span class="fw-bold component-title">${row?.['component_name']}</span><br><span class="small">${row?.['component_des'] || ''}</span>`
+                        return `<span class="fw-bold component-title" data-component-id="${row?.['id']}">${row?.['component_name']}</span><br><span class="small">${row?.['component_des'] || ''}</span>`
                     }
                 },
                 {
@@ -335,14 +335,22 @@ class ProductModificationPageFunction {
                                 <div class="data-component-detail-space"></div>
                             `;
                         }
-                        return `<input class="form-control component-quantity" type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
+                        return `<input class="form-control fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
                     }
                 },
                 {
                     className: 'text-center w-5',
                     render: (data, type, row) => {
                         if (row?.['type'] !== 'new') {
-                            return `<i class="fa-solid fa-angles-right text-danger remove-component-btn"></i>`;
+                            return `<button type="button"
+                                            class="btn-icon btn-rounded flush-soft-hover btn btn-flush-danger remove-component-btn"
+                                            data-component-id="${row?.['id'] || ''}"
+                                            data-component-name="${row?.['component_name'] || ''}"
+                                            data-component-des="${row?.['component_des'] || ''}"
+                                    >
+                                        <span class="icon"><i class="bi bi-arrow-right-circle"></i></span>
+                                    </button>`;
+
                         }
                         return `<i class="fa-solid fa-trash-can text-danger delete-added-component-btn"></i>`;
                     }
@@ -357,7 +365,7 @@ class ProductModificationPageFunction {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '48vh',
+            scrollY: '65vh',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -370,19 +378,26 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-70',
                     render: (data, type, row) => {
-                        return `<span class="fw-bold">${row?.['component_name']}</span><br><span class="small">${row?.['component_des'] || ''}</span>`
+                        return `<span class="fw-bold component-title" data-component-id="${row?.['id']}">${row?.['component_name']}</span><br><span class="small">${row?.['component_des'] || ''}</span>`
                     }
                 },
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return `<span>${row?.['component_quantity']}</span>`;
+                        return `<input class="form-control fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
                     }
                 },
                 {
                     className: 'text-center w-5',
                     render: (data, type, row) => {
-                        return `<i class="fa-solid fa-angles-left text-blue return-btn"></i>`;
+                        return `<button type="button"
+                                        class="btn-icon btn-rounded flush-soft-hover btn btn-flush-primary return-component-btn"
+                                        data-component-id="${row?.['id'] || ''}"
+                                        data-component-name="${row?.['component_name'] || ''}"
+                                        data-component-des="${row?.['component_des'] || ''}"
+                                >
+                                    <span class="icon"><i class="bi bi-arrow-left-circle"></i></span>
+                                </button>`;
                     }
                 },
             ]
@@ -743,7 +758,7 @@ class ProductModificationEventHandler {
                 )
                 let row_added = pageElements.$table_product_current_component.find('tbody tr:last-child')
                 row_added.find('.component-quantity').focus()
-                row_added.addClass('bg-success-light-4')
+                row_added.addClass('bg-primary-light-5')
             } else {
                 pageVariables.component_inserted_id_list.delete(rowId)
                 pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
@@ -872,6 +887,94 @@ class ProductModificationEventHandler {
                 pageVariables.current_component_row.find('.data-component-detail-space').html(`
                     <span class="small">${$.fn.gettext('Warehouse')}: ${warehouse_data?.['code']} - ${warehouse_data?.['title']}</span>, <span class="small">${$.fn.gettext('Serial number')}: ${serial_data?.['sn']}</span>
                 `)
+            }
+        })
+        $(document).on('click', '.remove-component-btn', function () {
+            let component_quantity = parseFloat($(this).closest('tr').find('.component-quantity').val() || 0)
+            let component_id = $(this).attr('data-component-id')
+            let component_name = $(this).attr('data-component-name')
+            let component_des = $(this).attr('data-component-des')
+            if (component_quantity > 0) {
+                let data_removed = {
+                    'id': component_id,
+                    'component_name': component_name,
+                    'component_des': component_des,
+                    'component_quantity': 1
+                }
+
+                let existed_row = null
+                pageElements.$table_product_removed_component.find('tbody tr').each(function (index, ele) {
+                    if ($(ele).find('.component-title').attr('data-component-id') === component_id) {
+                        existed_row = $(ele)
+                        return false
+                    }
+                })
+
+                if (!existed_row) {
+                    // add to removed_table
+                    UsualLoadPageFunction.AddTableRow(
+                        pageElements.$table_product_removed_component,
+                        data_removed
+                    )
+                }
+                else {
+                    // update row in removed_table
+                    let removed_quantity = parseFloat(existed_row.find('.component-quantity').val() || 0)
+                    existed_row.find('.component-quantity').val(removed_quantity + 1)
+                }
+
+                $(this).closest('tr').find('.component-quantity').val(component_quantity - 1)
+                if (component_quantity - 1 === 0) {
+                    // remove row = 0
+                    UsualLoadPageFunction.DeleteTableRow(
+                        pageElements.$table_product_current_component,
+                        parseInt($(this).closest('tr').find('td:first-child').text())
+                    )
+                }
+            }
+        })
+        $(document).on('click', '.return-component-btn', function () {
+            let component_quantity = parseFloat($(this).closest('tr').find('.component-quantity').val() || 0)
+            let component_id = $(this).attr('data-component-id')
+            let component_name = $(this).attr('data-component-name')
+            let component_des = $(this).attr('data-component-des')
+            if (component_quantity > 0) {
+                let data_return = {
+                    'id': component_id,
+                    'component_name': component_name,
+                    'component_des': component_des,
+                    'component_quantity': 1
+                }
+
+                let existed_row = null
+                pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
+                    if ($(ele).find('.component-title').attr('data-component-id') === component_id) {
+                        existed_row = $(ele)
+                        return false
+                    }
+                })
+
+                if (!existed_row) {
+                    // add to current_table
+                    UsualLoadPageFunction.AddTableRow(
+                        pageElements.$table_product_current_component,
+                        data_return
+                    )
+                }
+                else {
+                    // update row in current_table
+                    let removed_quantity = parseFloat(existed_row.find('.component-quantity').val() || 0)
+                    existed_row.find('.component-quantity').val(removed_quantity + 1)
+                }
+
+                $(this).closest('tr').find('.component-quantity').val(component_quantity - 1)
+                if (component_quantity - 1 === 0) {
+                    // remove row = 0
+                    UsualLoadPageFunction.DeleteTableRow(
+                        pageElements.$table_product_removed_component,
+                        parseInt($(this).closest('tr').find('td:first-child').text())
+                    )
+                }
             }
         })
     }

@@ -59,28 +59,38 @@ function LoadSupplier(ele, data) {
         if (selected) {
             let contact_owner = selected?.['owner']
             if (TYPE === '0' || $('#request-for-so').attr('data-type') === '0') {
-                LoadContactOwner(contact_so, contact_owner)
+                contact_so.empty()
+                LoadContactOwner(contact_so, contact_owner, ele.val())
             }
             else if (TYPE === '1' || $('#request-for-sf').attr('data-type') === '1') {
-                LoadContactOwner(contact_sf, contact_owner)
+                contact_sf.empty()
+                LoadContactOwner(contact_sf, contact_owner, ele.val())
             }
             else if (TYPE === '2' || $('#request-for-sf').attr('data-type') === '1') {
-                LoadContactOwner(contact_fa, contact_owner)
+                contact_fa.empty()
+                LoadContactOwner(contact_fa, contact_owner, ele.val())
             }
             else if (TYPE === '3' || $('#request-for-db').attr('data-type') === '3') {
-                LoadContactOwner(contact_db, contact_owner)
+                contact_db.empty()
+                LoadContactOwner(contact_db, contact_owner, ele.val())
             }
         }
     })
 }
 
-function LoadContactOwner(ele, data) {
-    ele.empty()
-    ele.initSelect2({
-        data: (data ? data : null),
-        keyId: 'id',
-        keyText: 'fullname',
-    })
+function LoadContactOwner(ele, data, account_name_id) {
+    if (account_name_id) {
+        ele.initSelect2({
+            ajax: {
+                url: ele.attr('data-url') + `?account_name_id=${account_name_id}`,
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'contact_list',
+            keyId: 'id',
+            keyText: 'fullname',
+        })
+    }
 }
 
 function LoadDeliveryDate(ele) {
@@ -107,7 +117,6 @@ function LoadProductLineDetail(ele, data) {
             method: 'GET',
         },
         callbackDataResp: function (resp, keyResp) {
-            console.log(resp.data[keyResp])
             let result = [];
             for (let i = 0; i < resp.data[keyResp].length; i++) {
                 if (resp.data[keyResp][i]?.['product_choice'].includes(2)) {
@@ -970,7 +979,8 @@ function LoadDetailPR(option) {
                     deliveryDate_so.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $('#pr-status-so').val(data?.['purchase_status'])
                     LoadSupplier(supplier_so, data?.['supplier'])
-                    LoadContactOwner(contact_so, data?.['contact'])
+                    contact_so.empty()
+                    LoadContactOwner(contact_so, data?.['contact'], data?.['supplier']?.['id'])
                     $('#code-so').val(data?.['sale_order']?.['code'])
                     $('#note-so').val(data?.['note'])
 
@@ -1004,7 +1014,8 @@ function LoadDetailPR(option) {
                     deliveryDate_sf.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $('#pr-status-sf').val(data?.['purchase_status'])
                     LoadSupplier(supplier_sf, data?.['supplier'])
-                    LoadContactOwner(contact_sf, data?.['contact'])
+                    contact_sf.empty()
+                    LoadContactOwner(contact_sf, data?.['contact'], data?.['supplier']?.['id'])
                     $('#note-sf').val(data?.['note'])
 
                     let request_product_data = []
@@ -1038,7 +1049,8 @@ function LoadDetailPR(option) {
                     deliveryDate_fa.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $('#pr-status-fa').val(data?.['purchase_status'])
                     LoadSupplier(supplier_fa, data?.['supplier'])
-                    LoadContactOwner(contact_fa, data?.['contact'])
+                    contact_fa.empty()
+                    LoadContactOwner(contact_fa, data?.['contact'], data?.['supplier']?.['id'])
                     $('#note-fa').val(data?.['note'])
 
                     let request_product_data = []
@@ -1072,7 +1084,8 @@ function LoadDetailPR(option) {
                     deliveryDate_db.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $('#pr-status-db').val(data?.['purchase_status'])
                     LoadSupplier(supplier_db, data?.['supplier'])
-                    LoadContactOwner(contact_db, data?.['contact'])
+                    contact_db.empty()
+                    LoadContactOwner(contact_db, data?.['contact'], data?.['supplier']?.['id'])
                     $('#code-db').val(data?.['distribution_plan']?.['code'])
                     $('#note-db').val(data?.['note'])
 

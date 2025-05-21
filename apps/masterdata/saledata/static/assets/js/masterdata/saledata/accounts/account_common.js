@@ -270,10 +270,10 @@ class AccountPageFunction {
                             disabled = 'disabled';
                         }
                         if (row?.['is_account_owner'] || pageVariables.current_owner?.['id'] === row?.['id']) {
-                            return `<span class="form-check"><input ${disabled} checked name="is_account_owner_radio" type="checkbox" data-id="${row?.id}" class="form-check-input is_account_owner"></span>`;
+                            return `<div class="form-check form-switch"><input ${disabled} checked name="is_account_owner_radio" type="checkbox" data-id="${row?.id}" class="form-check-input is_account_owner"></div>`;
                         }
                         else {
-                            return `<span class="form-check"><input ${disabled} name="is_account_owner_radio" type="checkbox" data-id="${row?.id}" class="form-check-input is_account_owner"></span>`;
+                            return `<div class="form-check form-switch"><input ${disabled} name="is_account_owner_radio" type="checkbox" data-id="${row?.id}" class="form-check-input is_account_owner"></div>`;
                         }
                     }
                 },

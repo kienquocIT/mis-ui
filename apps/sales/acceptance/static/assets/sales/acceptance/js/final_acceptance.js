@@ -593,7 +593,7 @@ $(function () {
         }
 
         function loadDataByOpp() {
-            let params = {'is_minimal': true};
+            let params = {};
             if ($boxOpp.val()) {
                 params['opportunity_id'] = $boxOpp.val();
             }
@@ -612,8 +612,8 @@ $(function () {
         function loadInit() {
             loadCustomCss();
             loadInitInherit();
-            FormElementControl.loadInitS2($boxSO, [], {'is_minimal': true}, null, true);
-            FormElementControl.loadInitS2($boxLO, [], {'is_minimal': true}, null, true);
+            FormElementControl.loadInitS2($boxSO, [], {}, null, true);
+            FormElementControl.loadInitS2($boxLO, [], {}, null, true);
             loadDbl();
         }
 
@@ -644,12 +644,12 @@ $(function () {
         });
 
         $boxSO.on('change', function () {
-            FormElementControl.loadInitS2($boxLO, [], {'is_minimal': true}, null, true);
+            FormElementControl.loadInitS2($boxLO, [], {}, null, true);
             loadFinalAcceptance();
         });
 
         $boxLO.on('change', function () {
-            FormElementControl.loadInitS2($boxSO, [], {'is_minimal': true}, null, true);
+            FormElementControl.loadInitS2($boxSO, [], {}, null, true);
             loadFinalAcceptance();
         });
 

@@ -2597,10 +2597,10 @@ class LeaseOrderLoadDataHandle {
             let $convertAreaEle = $('#product_convert_into_area');
             let $convertEle = $('#product_convert_into');
             if (convertEle && $convertAreaEle.length > 0 && $convertEle.length > 0) {
-                $convertAreaEle[0].setAttribute('hidden', 'true');
+                $convertAreaEle.addClass('hidden');
                 FormElementControl.loadInitS2($convertEle, LeaseOrderLoadDataHandle.dataConvertInto);
                 if (assetType === "1") {
-                    $convertAreaEle[0].removeAttribute('hidden');
+                    $convertAreaEle.removeClass('hidden');
                     $convertEle.val("2");
                     if ($(convertEle).val()) {
                         $convertEle.val($(convertEle).val())
@@ -5707,7 +5707,7 @@ class LeaseOrderDataTableHandle {
                     }
                 }
                 if (invoiceDataEle) {
-                    $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : []));
+                    $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : {}));
                 }
                 if (valBeforeEle) {
                     if (!$termMD.val() || checkTax?.['check'] === "mixed" && LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {

@@ -297,6 +297,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ACCOUNT_DETAIL = StringUrl('saledata/account/{pk}')
     ACCOUNTS_MAP_EMPLOYEES = StringUrl('saledata/accounts-map-employees')
     ACCOUNT_SALE_LIST = StringUrl('saledata/accounts-sale')
+    ACCOUNT_DROPDOWN_LIST = StringUrl('saledata/accounts-dropdown')
 
     # masterdata/product
     PRODUCT_TYPE_LIST = StringUrl('saledata/product-types')
@@ -427,6 +428,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_LIST_SALE_ORDER = StringUrl('saleorder/product/list/{pk}')
     SALE_ORDER_PRODUCT_WO_LIST = StringUrl('saleorder/sale-order-product-wo/list')
     SALE_ORDER_RECURRENCE_LIST = StringUrl('saleorder/sale-order-recurrence/list')
+    SALE_ORDER_DROPDOWN_LIST = StringUrl('saleorder/dropdown/list')
 
     # warehouse
     WAREHOUSE_LIST = StringUrl('saledata/warehouses')
@@ -500,6 +502,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_ORDER_SALE_LIST = StringUrl('purchasing/purchase-order/list-sale')
     PURCHASE_REQUEST_SALE_LIST = StringUrl('purchasing/purchase-request/list-sale')
     PURCHASE_QUOTATION_SALE_LIST = StringUrl('purchasing/purchase-quotation/list-sale')
+    PURCHASE_ORDER_DROPDOWN_LIST = StringUrl('purchasing/purchase-order-dropdown/list')
 
     # Purchasing
     PURCHASE_QUOTATION_REQUEST_LIST = StringUrl('purchasing/purchase-quotation-request/list')
@@ -810,6 +813,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LEASE_ORDER_LIST = StringUrl('leaseorder/list')
     LEASE_ORDER_DETAIL = StringUrl('leaseorder')
     LEASE_ORDER_RECURRENCE_LIST = StringUrl('leaseorder/lease-order-recurrence/list')
+    LEASE_ORDER_DROPDOWN_LIST = StringUrl('leaseorder/dropdown/list')
 
     # CONSULTING
     CONSULTING_LIST = StringUrl('consulting/list')
@@ -914,6 +918,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GROUP_ORDER_PRODUCT_LIST = StringUrl('group-order/product/list')
     GROUP_ORDER_LIST = StringUrl('group-order/list')
     GROUP_ORDER_DETAIL = StringUrl('group-order/detail')
+
+    # Payment plan
+    PAYMENT_PLAN_LIST = StringUrl('paymentplan/list')
+
 
     # sales/product modification
     PRODUCT_COMPONENT_LIST = StringUrl('product-modification/product-component-list')

@@ -2611,7 +2611,7 @@ class PODataTableHandle {
                     }
                 }
                 if (invoiceDataEle) {
-                    $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : []));
+                    $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : {}));
                 }
                 if (valBeforeEle) {
                     if (checkTax?.['check'] === "mixed" && POLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {

@@ -182,13 +182,28 @@ class QuotationLoadDataHandle {
                 'allowClear': true,
             });
             // load customer
-            if (QuotationLoadDataHandle.customerInitEle.val()) {
-                let initCustomer = JSON.parse(QuotationLoadDataHandle.customerInitEle.val());
-                QuotationLoadDataHandle.customerSelectEle.empty();
-                QuotationLoadDataHandle.customerSelectEle.initSelect2({
-                    data: initCustomer?.[oppData?.['customer']?.['id']],
-                });
-                QuotationLoadDataHandle.customerSelectEle.trigger('change');
+            if (oppData?.['customer']?.['id']) {
+                WindowControl.showLoading();
+                $.fn.callAjax2({
+                        'url': QuotationLoadDataHandle.customerSelectEle.attr('data-url'),
+                        'method': "GET",
+                        'data': {'id': oppData?.['customer']?.['id']},
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
+                                if (data?.['account_sale_list'].length > 0) {
+                                    FormElementControl.loadInitS2(QuotationLoadDataHandle.customerSelectEle, data?.['account_sale_list']);
+                                    QuotationLoadDataHandle.customerSelectEle.trigger('change');
+                                }
+                                WindowControl.hideLoading();
+                            }
+                        }
+                    }
+                )
             }
         } else {
             QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
@@ -4321,7 +4336,7 @@ class QuotationDataTableHandle {
                     }
                 }
                 if (invoiceDataEle) {
-                    $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : []));
+                    $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : {}));
                 }
                 if (valBeforeEle) {
                     if (!$termMD.val() || checkTax?.['check'] === "mixed" && QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
@@ -5796,16 +5811,26 @@ class indicatorHandle {
             let value = indicatorHandle.evaluateFormula(parse_formula);
             // rate value
             if (indicator?.['code'] === "IN0001") {
-                revenueValue = value
+                revenueValue = value;
             }
             if (value && revenueValue) {
                 if (revenueValue !== 0) {
                     rateValue = ((value / revenueValue) * 100).toFixed(0);
                 }
             }
+
+            // check if indicator is_negative_set_zero is True
+            if (indicator?.['is_negative_set_zero'] === true) {
+                if (value < 0) {
+                    value = 0;
+                    rateValue = 0;
+                }
+            }
+
             // quotation value
             let quotationValue = 0;
             let differenceValue = value;
+
             // check if sale order then get quotation value
             if (formSubmit[0].classList.contains('sale-order')) {
                 if (formSubmit.attr('data-method') === 'POST') {
@@ -5830,6 +5855,7 @@ class indicatorHandle {
                     }
                 }
             }
+
             // append result
             result_list.push({
                 'indicator': indicator?.['id'],

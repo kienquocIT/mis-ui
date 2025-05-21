@@ -11,23 +11,25 @@
 {% block pageContent %}
     {% csrf_token %}
 
-    <div class="d-flex gap-7">
-        <div class="card card-sm">
-            <div class="card-body">
-                <div class="mb-2"><b class="text-primary">{% trans 'Revenue' %}</b></div>
-                <h5><span class="mask-money fw-bold" id="report-product-revenue" data-init-money="0"></span></h5>
+    <div class="d-flex justify-content-center">
+        <div class="d-flex gap-7">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="mb-2"><b class="text-primary">{% trans 'Revenue' %}</b></div>
+                    <h5><span class="mask-money fw-bold" id="report-product-revenue" data-init-money="0"></span></h5>
+                </div>
             </div>
-        </div>
-        <div class="card card-sm">
-            <div class="card-body">
-                <div class="mb-2"><b class="text-primary">{% trans 'Gross profit' %}</b></div>
-                <h5><span class="mask-money fw-bold" id="report-product-gross-profit" data-init-money="0"></span></h5>
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="mb-2"><b class="text-primary">{% trans 'Gross profit' %}</b></div>
+                    <h5><span class="mask-money fw-bold" id="report-product-gross-profit" data-init-money="0"></span></h5>
+                </div>
             </div>
-        </div>
-        <div class="card card-sm">
-            <div class="card-body">
-                <div class="mb-2"><b class="text-primary">{% trans 'Net income' %}</b></div>
-                <h5><span class="mask-money fw-bold" id="report-product-net-income" data-init-money="0"></span></h5>
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="mb-2"><b class="text-primary">{% trans 'Net income' %}</b></div>
+                    <h5><span class="mask-money fw-bold" id="report-product-net-income" data-init-money="0"></span></h5>
+                </div>
             </div>
         </div>
     </div>
@@ -59,7 +61,7 @@
 
     <div class="modal-canvas-area">
 
-        <div class="offcanvas offcanvas-end w-40" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
             <div class="modal-header">
                 <h5><b>{% trans 'Filter' %}</b></h5>
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
@@ -127,25 +129,27 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group">
-                        <label class="form-label" for="report-product-date-from">{% trans 'From' %}</label>
-                        <div class="input-affix-wrapper">
-                            <input type="text" name="date_from" id="report-product-date-from"
-                                   class="form-control date-picker" autocomplete="off">
-                            <div class="input-suffix">
-                                <i class="fas fa-calendar-alt"></i>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="report-product-date-from">{% trans 'From' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="date_from" id="report-product-date-from"
+                                       class="form-control date-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        <label class="form-label" for="report-product-date-to">{% trans 'To' %}</label>
-                        <div class="input-affix-wrapper">
-                            <input type="text" name="date_from" id="report-product-date-to"
-                                   class="form-control date-picker" autocomplete="off">
-                            <div class="input-suffix">
-                                <i class="fas fa-calendar-alt"></i>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="report-product-date-to">{% trans 'To' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="date_from" id="report-product-date-to"
+                                       class="form-control date-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
                             </div>
                         </div>
                     </div>

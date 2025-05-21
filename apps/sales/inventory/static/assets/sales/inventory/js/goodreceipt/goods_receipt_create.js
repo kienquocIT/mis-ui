@@ -50,6 +50,7 @@ $(function () {
         });
 
         GRDataTableHandle.tablePOProduct.on('click', '.table-row-checkbox', function () {
+            GRLoadDataHandle.loadCheckRadioDtb(this);
             GRLoadDataHandle.loadCheckPOProduct(this);
         });
 
@@ -70,6 +71,7 @@ $(function () {
         });
 
         GRDataTableHandle.tablePR.on('click', '.table-row-checkbox', function () {
+            GRLoadDataHandle.loadCheckRadioDtb(this);
             GRLoadDataHandle.loadCheckPR();
         });
 
@@ -95,6 +97,7 @@ $(function () {
         });
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {
+            GRLoadDataHandle.loadCheckRadioDtb(this);
             GRLoadDataHandle.loadCheckWH(this);
         });
 
@@ -169,10 +172,12 @@ $(function () {
 
         GRDataTableHandle.tableLot.on('click', '.del-row', function () {
             deleteRowGR(this.closest('tr'), GRDataTableHandle.tableLot);
+            GRStoreDataHandle.storeDataProduct();
         });
 
         GRDataTableHandle.tableSerial.on('click', '.del-row', function () {
             deleteRowGR(this.closest('tr'), GRDataTableHandle.tableSerial);
+            GRStoreDataHandle.storeDataProduct();
         });
 
         // IA BEGIN

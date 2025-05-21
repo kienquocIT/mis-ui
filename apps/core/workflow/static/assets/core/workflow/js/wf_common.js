@@ -287,7 +287,9 @@ $(document).ready(function () {
 
         // catch if next tab is display config condition
         if (btn_href === '#tab_next_node') {
-            FlowJsP.init()
+            if ($('#flowchart_workflow').is(':empty')) {
+                FlowJsP.init();
+            }
         }
     })
 

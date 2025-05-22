@@ -552,6 +552,17 @@ $(async function () {
         return picking_data;
     }
 
+    $('#inputWareHouse').on('change', function () {
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = $table.DataTable().row(row).index();
+            let $row = $table.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+
+            getStockByProdID(dataRow, row);
+        })
+    });
+
     $table.on('change', '.so-quantity-pick', function () {
         let row = this.closest('tr');
         let total = 0;

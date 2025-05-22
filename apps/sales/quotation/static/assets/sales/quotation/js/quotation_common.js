@@ -2422,7 +2422,6 @@ class QuotationLoadDataHandle {
             if ($(form).attr('data-method').toLowerCase() !== 'get') {
                 QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
                 QuotationLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
-                QuotationLoadDataHandle.contactSelectEle[0].setAttribute('readonly', 'true');
             }
         }
         if (data?.['customer_data']) {

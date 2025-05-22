@@ -177,15 +177,15 @@ class POLoadDataHandle {
                 }
                 // load UOM
                 if (uom && Object.keys(data?.['unit_of_measure']).length !== 0 && Object.keys(data?.['uom_group']).length !== 0) {
-                    POLoadDataHandle.loadInitS2($(uom), [data?.['unit_of_measure']], {'group': data?.['uom_group']?.['id']});
+                    FormElementControl.loadInitS2($(uom), [data?.['unit_of_measure']], {'group': data?.['uom_group']?.['id']});
                 } else {
-                    POLoadDataHandle.loadInitS2($(uom));
+                    FormElementControl.loadInitS2($(uom));
                 }
                 // load TAX
                 if (tax && data?.['tax']) {
-                    POLoadDataHandle.loadInitS2($(tax), [data?.['tax']]);
+                    FormElementControl.loadInitS2($(tax), [data?.['tax']]);
                 } else {
-                    POLoadDataHandle.loadInitS2($(tax));
+                    FormElementControl.loadInitS2($(tax));
                 }
             }
             $.fn.initMaskMoney2();
@@ -630,16 +630,16 @@ class POLoadDataHandle {
         if (dataRowRaw) {
             let dataRow = JSON.parse(dataRowRaw);
             POLoadDataHandle.loadBoxProduct($(row.querySelector('.table-row-item')));
-            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
-            POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')));
+            FormElementControl.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
+            FormElementControl.loadInitS2($(row.querySelector('.table-row-tax')));
             if (dataRow?.['product']?.['id']) {
-                POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product']]);
+                FormElementControl.loadInitS2($(row.querySelector('.table-row-item')), [dataRow?.['product']]);
             }
             if (dataRow?.['uom_order_actual']?.['id']) {
-                POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [dataRow?.['uom_order_actual']], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
+                FormElementControl.loadInitS2($(row.querySelector('.table-row-uom-order-actual')), [dataRow?.['uom_order_actual']], {'group': dataRow?.['uom_order_actual']?.['uom_group']?.['id']});
             }
             if (dataRow?.['tax']?.['id']) {
-                POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
+                FormElementControl.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
             }
         }
     };
@@ -727,7 +727,7 @@ class POLoadDataHandle {
                                             // Price && UOM must follow PQ checked
                                             $(elePrice).attr('value', String(parseFloat(price?.['unit_price'])));
                                             $(eleUOM).empty();
-                                            POLoadDataHandle.loadInitS2($(eleUOM), [price?.['uom']], {'group': price?.['uom']?.['uom_group']?.['id']});
+                                            FormElementControl.loadInitS2($(eleUOM), [price?.['uom']], {'group': price?.['uom']?.['uom_group']?.['id']});
                                             $(eleUOM).change();
                                             $(eleUOM).attr('disabled', 'true');
                                         }
@@ -842,8 +842,8 @@ class POLoadDataHandle {
         if (ele.checked === true) {
             let supplierData = JSON.parse(ele.getAttribute('data-supplier'));
             // load supplier by Purchase Quotation
-            POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [supplierData], {'account_types_mapped__account_type_order': 1}, null, true);
-            POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle, [supplierData?.['owner']], {'account_name_id': supplierData?.['id']});
+            FormElementControl.loadInitS2(POLoadDataHandle.supplierSelectEle, [supplierData], {'account_types_mapped__account_type_order': 1}, null, true);
+            FormElementControl.loadInitS2(POLoadDataHandle.contactSelectEle, [supplierData?.['owner']], {'account_name_id': supplierData?.['id']});
         }
         return true
     };
@@ -1369,7 +1369,7 @@ class POLoadDataHandle {
                         $(dateEle).val(moment(dataRow?.['date']).format('DD/MM/YYYY')).trigger('change');
                         $(invoiceEle).val(dataRow?.['order']);
                         $(invoiceDataEle).val(JSON.stringify(dataRow));
-                        POLoadDataHandle.loadInitS2($(taxEle), [dataRow?.['tax_data']]);
+                        FormElementControl.loadInitS2($(taxEle), [dataRow?.['tax_data']]);
 
                         $(valBeforeEle).trigger('change');
                     }
@@ -1482,8 +1482,8 @@ class POLoadDataHandle {
         POLoadDataHandle.loadAllTablesDisabled();
         POLoadDataHandle.loadTotals(data);
 
-        POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [data?.['supplier_data']], {'account_types_mapped__account_type_order': 1}, null, true);
-        POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle, [data?.['contact_data']]);
+        FormElementControl.loadInitS2(POLoadDataHandle.supplierSelectEle, [data?.['supplier_data']], {'account_types_mapped__account_type_order': 1}, null, true);
+        FormElementControl.loadInitS2(POLoadDataHandle.contactSelectEle, [data?.['contact_data']]);
     };
 
     static loadDataShowPRPQ(data) {
@@ -1751,7 +1751,7 @@ class POLoadDataHandle {
                 if (eleRemark.getAttribute('data-row')) {
                     let dataRow = JSON.parse(eleRemark.getAttribute('data-row'));
                     if (row.querySelector('.table-row-tax')) {
-                        POLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
+                        FormElementControl.loadInitS2($(row.querySelector('.table-row-tax')), [dataRow?.['tax']]);
                     }
                 }
             }
@@ -2626,10 +2626,10 @@ class PODataTableHandle {
                     if (data?.['tax_data']) {
                         dataS2 = [data?.['tax_data']];
                     }
-                    POLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                    FormElementControl.loadInitS2($(taxEle), dataS2);
 
                     if (checkTax?.['check'] === "same" && PODataTableHandle.$tableInvoice.DataTable().rows().count() === 0) {
-                        POLoadDataHandle.loadInitS2($(taxEle), checkTax?.['list_tax']);
+                        FormElementControl.loadInitS2($(taxEle), checkTax?.['list_tax']);
                     }
                     if (checkTax?.['check'] === "mixed") {
                         taxAreaEle.setAttribute('hidden', 'true');
@@ -2791,11 +2791,11 @@ class PODataTableHandle {
                     if (data?.['tax_data']) {
                         dataS2 = [data?.['tax_data']];
                     }
-                    POLoadDataHandle.loadInitS2($(taxEle), dataS2);
+                    FormElementControl.loadInitS2($(taxEle), dataS2);
 
                     if (checkTax?.['check'] === "same") {
                         taxEle.setAttribute('readonly', 'true');
-                        POLoadDataHandle.loadInitS2($(taxEle), checkTax?.['list_tax']);
+                        FormElementControl.loadInitS2($(taxEle), checkTax?.['list_tax']);
                     }
                     if (checkTax?.['check'] === "mixed") {
                         taxAreaEle.setAttribute('hidden', 'true');
@@ -3878,18 +3878,18 @@ class POSubmitHandle {
         _form.dataForm['purchase_order_payment_stage'] = POSubmitHandle.setupDataPaymentStage();
         _form.dataForm['purchase_order_invoice'] = POSubmitHandle.setupDataInvoice();
         // validate payment stage submit
-        if (_form.dataForm?.['purchase_order_payment_stage'] && _form.dataForm?.['total_product']) {
-            if (_form.dataForm?.['purchase_order_payment_stage'].length > 0) {
-                let totalPayment = 0;
-                for (let payment of _form.dataForm['purchase_order_payment_stage']) {
-                    totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
-                }
-                if (totalPayment !== _form.dataForm?.['total_product']) {
-                    $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
-                    return false;
-                }
-            }
-        }
+        // if (_form.dataForm?.['purchase_order_payment_stage'] && _form.dataForm?.['total_product']) {
+        //     if (_form.dataForm?.['purchase_order_payment_stage'].length > 0) {
+        //         let totalPayment = 0;
+        //         for (let payment of _form.dataForm['purchase_order_payment_stage']) {
+        //             totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
+        //         }
+        //         if (totalPayment !== _form.dataForm?.['total_product']) {
+        //             $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+        //             return false;
+        //         }
+        //     }
+        // }
         // attachment
         if (_form.dataForm.hasOwnProperty('attachment')) {
           _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);

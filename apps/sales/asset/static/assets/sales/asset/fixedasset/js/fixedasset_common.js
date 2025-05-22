@@ -764,7 +764,7 @@ class CommonHandler{
         }
         let startDate = this.$depreciationStartDateInput.val().split('-').join('/')
         let endDate = this.$depreciationEndDateInput.val().split('-').join('/')
-        const netBookValue = this.$netBookValueInput.attr('value')
+        const netBookValue = this.$depreciationValueInput.attr('value')
         const adjustmentFactor = depreciationMethod == 1 ? this.$adjustmentFactorSelect.val() : null
         const data = DepreciationControl.callDepreciation({
             method: Number(depreciationMethod),

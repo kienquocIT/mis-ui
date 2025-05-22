@@ -30,22 +30,8 @@ $(function () {
 
         // init date picker
         $('.date-picker').each(function () {
-            $(this).daterangepicker({
-                singleDatePicker: true,
-                timepicker: false,
-                showDropdowns: false,
-                minYear: 2023,
-                locale: {
-                    format: 'DD/MM/YYYY',
-                },
-                maxYear: parseInt(moment().format('YYYY'), 10),
-                autoApply: true,
-                autoUpdateInput: false,
-            }).on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
-            });
-            $(this).val('').trigger('change');
-        })
+            DateTimeControl.initDatePicker(this);
+        });
 
         // file
         if (formSubmit.attr('data-method').toLowerCase() === 'post') {
@@ -103,11 +89,6 @@ $(function () {
             POLoadDataHandle.loadDataShowPurchaseRequest();
             POLoadDataHandle.loadReDataTbl();
             POLoadDataHandle.loadTableProductByPurchaseRequest();
-            if (elePurchaseRequest[0].innerHTML) {
-                POLoadDataHandle.loadModalPurchaseQuotation();
-            } else {
-                POLoadDataHandle.loadModalPurchaseQuotation(true);
-            }
         });
 
         // Action on click btn remove purchase request

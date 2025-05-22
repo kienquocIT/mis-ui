@@ -132,7 +132,7 @@ $(function () {
                         loadInitS2($assetGMEle, [data?.['asset_group_manage_data']]);
                         loadInitS2($assetGSEle, data?.['asset_group_using_data']);
                         loadInitS2($toolTypeEle, [data?.['tool_type_data']]);
-                        loadInitS2($toolGMEle, [data?.['asset_group_manage_data']]);
+                        loadInitS2($toolGMEle, [data?.['tool_group_manage_data']]);
                         loadInitS2($toolGSEle, data?.['tool_group_using_data']);
 
                         WindowControl.hideLoading();

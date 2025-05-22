@@ -1,31 +1,4 @@
 $(document).ready(function () {
-    const trans_script = $('#trans-script')
-    const current_period = $('#current_period').text() ? JSON.parse($('#current_period').text()) : []
-    if (current_period.length === 0) {
-        ShowToastrCreatePeriod();
-        $('#save-company').prop('hidden', true)
-    }
-    else {
-        $('#save-company').prop('hidden', false)
-    }
-
-    const pk = $.fn.getPkDetail()
-
-    new CompanyHandle().load();
-    LoadDetailCompany($('#frm-update-company'), 'update');
-
-    let logoFiles = null;
-    let eleLogo = $('#company_logo');
-    eleLogo.on('change', event => {
-        logoFiles = event.target.files[0];
-    })
-
-    let iconFiles = null;
-    const eleIcon$ = $('#company_icon');
-    eleIcon$.on('change', event => {
-        iconFiles = event.target.files[0];
-    })
-
     function ShowToastrCreatePeriod() {
         const customHtml = `
             <div>
@@ -38,7 +11,6 @@ $(document).ready(function () {
                 </div>
             </div>
         `;
-
         toastr.options = {
             "closeButton": false,  // Disable the default close button
             "positionClass": "toast-top-right",
@@ -52,16 +24,45 @@ $(document).ready(function () {
             "hideMethod": "fadeOut",
             "toastClass": "custom-toastr"
         };
-
         toastr.warning(customHtml);
     }
 
-    $("#frm-update-company").submit(function (event) {
+    const trans_script = $('#trans-script')
+    const $current_period = $('#current_period')
+    const current_period = $current_period.text() ? JSON.parse($current_period.text()) : []
+    if (current_period.length === 0) {
+        ShowToastrCreatePeriod();
+        $('#save-company').prop('hidden', true)
+    }
+    else {
+        $('#save-company').prop('hidden', false)
+    }
+
+    CompanyEventHandler.InitPageEven()
+    CompanyPageFunction.loadCompanyCities()
+    CompanyPageFunction.loadCompanyDistrict()
+    CompanyPageFunction.loadCompanyWard()
+    CompanyPageFunction.loadCurrency()
+    CompanyHandler.LoadDetailCompany($('#frm-detail-company'), 'update');
+
+    let logoFiles = null;
+    let eleLogo = $('#company_logo');
+    eleLogo.on('change', event => {
+        logoFiles = event.target.files[0];
+    })
+
+    let iconFiles = null;
+    const eleIcon$ = $('#company_icon');
+    eleIcon$.on('change', event => {
+        iconFiles = event.target.files[0];
+    })
+
+    $("#frm-detail-company").submit(function (event) {
         event.preventDefault();
         let frmConfig = new SetupFormSubmit($('#tblCompanyConfig'));
         let configState = false;
         let dataBodyConfig = frmConfig.dataForm
-        dataBodyConfig['config_id'] = company_config.attr('data-config-id')
+        dataBodyConfig['config_id'] = pageElements.$company_config.attr('data-config-id')
         dataBodyConfig['currency_rule'] = SetupFormSubmit.groupDataFromPrefix(dataBodyConfig, 'currency_rule__');
         dataBodyConfig['sub_domain'] = $(this).find('input[name="sub_domain"]').val();
         dataBodyConfig['definition_inventory_valuation'] = !$('#perpetual-selection').prop('checked');
@@ -88,7 +89,7 @@ $(document).ready(function () {
             configState = true;
         }
 
-        let combinesData = new CompanyHandle().combinesData($(this), true);
+        let combinesData = CompanyHandler.CombinesData($(this), true);
         if (combinesData && configState) {
             $.fn.callAjax2({
                 ...combinesData,
@@ -137,7 +138,7 @@ $(document).ready(function () {
                                                 if (data){
                                                     $.fn.notifyB({'title': 'Logo:', 'description': $.fn.transEle.attr('data-success')}, 'success')
                                                     setTimeout(() => {
-                                                        window.location.replace($(this).attr('data-url-redirect').format_url_with_uuid(pk));
+                                                        window.location.replace($(this).attr('data-url-redirect').format_url_with_uuid($.fn.getPkDetail()));
                                                         location.reload.bind(location);
                                                     }, 1000);
                                                 }
@@ -146,7 +147,7 @@ $(document).ready(function () {
                                         )
                                     } else {
                                         setTimeout(() => {
-                                            window.location.replace($(this).attr('data-url-redirect').format_url_with_uuid(pk));
+                                            window.location.replace($(this).attr('data-url-redirect').format_url_with_uuid($.fn.getPkDetail()));
                                             location.reload.bind(location);
                                         }, 1000);
                                     }

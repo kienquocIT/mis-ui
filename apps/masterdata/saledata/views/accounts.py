@@ -393,6 +393,18 @@ class AccountListAPI(APIView):
         return resp.auto_return(key_success='account_list')
 
 
+class AccountDDListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_DROPDOWN_LIST).get(params)
+        return resp.auto_return(key_success='account_dd_list')
+
+
 class CustomerListAPI(APIView):
     @mask_view(
         auth_require=True,

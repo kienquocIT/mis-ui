@@ -3587,11 +3587,27 @@ class WFRTControl {
             4: "red-light-4",
         }
         if (status || status === 0) {
-            return `<span class="p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
+            return `<span class="badge text-dark-10 fs-8 bg-${sttBadge[status]}">${sttTxt[status]}</span>`;
         }
         return ``;
     }
 
+    static displayEmployeeWithGroup(obj_employee, field_fullname='full_name') {
+        if (Object.keys(obj_employee).length > 0 && field_fullname) {
+            return `<span title="${obj_employee?.['group']?.['title'] || $.fn.gettext('No group')}">${obj_employee?.[field_fullname] || ''}</span>`;
+        }
+        return ``;
+    }
+
+    static getDataDDSystemStatus() {
+        return [
+            {'id': 0, 'title': $.fn.transEle.attr('data-draft')},
+            {'id': 1, 'title': $.fn.transEle.attr('data-created')},
+            {'id': 2, 'title': $.fn.transEle.attr('data-added')},
+            {'id': 3, 'title': $.fn.transEle.attr('data-approved')},
+            {'id': 4, 'title': $.fn.transEle.attr('data-cancel')},
+        ]
+    }
 }
 
 class WFAssociateControl {
@@ -3781,25 +3797,27 @@ class WFAssociateControl {
     static calculateParam(dataForm, param) {
         let result_json = {};
         let parse_formula = "";
-        for (let item of param) {
-            if (typeof item === 'object' && item !== null) {
-                if (item.hasOwnProperty('is_property')) {
-                    if (dataForm.hasOwnProperty(item?.['code'])) {
-                        parse_formula += dataForm[item?.['code']];
-                    }
-                } else if (item.hasOwnProperty('param_type')) {
-                    if (item?.['param_type'] === 2) { // FUNCTION
-                        if (item?.['code'] === 'max' || item?.['code'] === 'min') {
-                            let functionData = WFAssociateControl.functionMaxMin(item, dataForm, result_json);
-                            parse_formula += functionData;
-                        } else if (item?.['code'] === 'sumItemIf') {
-                            let functionData = WFAssociateControl.functionSumItemIf(item, dataForm);
-                            parse_formula += functionData;
+        if (Array.isArray(param)) {
+            for (let item of param) {
+                if (typeof item === 'object' && item !== null) {
+                    if (item.hasOwnProperty('is_property')) {
+                        if (dataForm.hasOwnProperty(item?.['code'])) {
+                            parse_formula += dataForm[item?.['code']];
+                        }
+                    } else if (item.hasOwnProperty('param_type')) {
+                        if (item?.['param_type'] === 2) { // FUNCTION
+                            if (item?.['code'] === 'max' || item?.['code'] === 'min') {
+                                let functionData = WFAssociateControl.functionMaxMin(item, dataForm, result_json);
+                                parse_formula += functionData;
+                            } else if (item?.['code'] === 'sumItemIf') {
+                                let functionData = WFAssociateControl.functionSumItemIf(item, dataForm);
+                                parse_formula += functionData;
+                            }
                         }
                     }
+                } else if (typeof item === 'string') {
+                    parse_formula += item;
                 }
-            } else if (typeof item === 'string') {
-                parse_formula += item;
             }
         }
         // format
@@ -3874,7 +3892,12 @@ class WFAssociateControl {
             let val = WFAssociateControl.findKey(data, leftValueJSON?.['code']);
             if (val) {
                 if (Array.isArray(val)) {
-                    val = val.map(item => item.replace(/\s/g, "").toLowerCase());
+                    // val = val.map(item => item.replace(/\s/g, "").toLowerCase());
+                    val.map(item =>
+                        typeof item === 'string'
+                            ? item.replace(/\s/g, "").toLowerCase()
+                            : item
+                    );
                     let check = val.includes(rightValue);
                     if (check === true) {
                         let valData = WFAssociateControl.findKey(data, lastElement?.['code']);
@@ -4336,7 +4359,7 @@ class UtilControl {
             let format = opts?.['format'] || "YYYY-MM-DD HH:mm:ss";
             let outputFormat = opts?.['outputFormat'] || "DD-MM-YYYY HH:mm:ss";
             let callback = opts?.['callback'] || function (data) {
-                return `<span>${data.output}</span> <span class="small text-primary">(${data.relate})</span>`;
+                return `<span>${data.output}</span> <span class="small">(${data.relate})</span>`;
             }
             const objDT = moment(dataStr, format);
             let relateTimeStr = objDT.fromNow();
@@ -4349,7 +4372,7 @@ class UtilControl {
                 'outputFormat': outputFormat,
             });
         }
-        return '_';
+        return '--';
     }
 
     static checkNumber(dataStr) {
@@ -4996,6 +5019,7 @@ class DTBControl {
                         let currentVal = $(this).prop('checked');
                         dtb.DataTable().column(idx).visible(currentVal);
                     }
+                    $.fn.initMaskMoney2();
                 }
             ).on(
                 'change', 'input.check-all',
@@ -5004,6 +5028,7 @@ class DTBControl {
                     $(this).closest('.dropdown-menu').find('input.custom-visible-item-dtb').each(function () {
                         $(this).prop('checked', currentVal).trigger('change');
                     });
+                    $.fn.initMaskMoney2();
                 }
             );
             wrapperEle.on('change', 'select.custom-filter-manual-dtb', function () {
@@ -5179,6 +5204,17 @@ class DTBControl {
             )
         }
         return result;
+    }
+
+    static addCommonAction(urls, data) {
+        let link = urls?.['data-edit'].format_url_with_uuid(data?.['id']);
+        return `<div class="dropdown">
+                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                    <div role="menu" class="dropdown-menu">
+                        <a class="dropdown-item" href="${link}"><i class="dropdown-icon far fa-edit"></i><span>${$.fn.transEle.attr('data-edit')}</span></a>
+                        <a class="dropdown-item btn-delete" href="#" data-id="${data?.['id']}"><i class="dropdown-icon far fa-trash-alt"></i><span>${$.fn.transEle.attr('data-delete')}</span></a>
+                    </div>
+                </div>`;
     }
 
     get reloadCurrency() {
@@ -5429,6 +5465,9 @@ class DTBControl {
     get columns() {
         return (this.opts?.['columns'] || []).map(
             (item) => {
+                if (!item?.['data']) {
+                    item['data'] = null
+                }
                 let clsNameTmp = item?.['className'] ? (item?.['className'] + ' wrap-text') : 'wrap-text';
                 return {
                     ...item,
@@ -6339,12 +6378,18 @@ class DocumentControl {
                 }
                 if (window.location.href.includes('/update/') && dataStatus === 3) {
                     $breadcrumbCode.append(
-                        `<span class="p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-blue-light-4" id="systemStatus" data-status="${dataStatus}" data-status-cr="${dataStatus + 2}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
+                        `<span class="badge text-dark-10 fs-8 bg-blue-light-4" id="systemStatus" data-status="${dataStatus}" data-status-cr="${dataStatus + 2}" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${$.fn.transEle.attr('data-change-request')}</span>`
                     ).removeClass('hidden');
                 } else {
                     $breadcrumbCode.append(
-                        `<span class="p-2 text-dark-10 text-center fs-7 rounded-5 h-10p bg-${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-status-cr="" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
+                        `<span class="badge text-dark-10 fs-8 bg-${status_class[system_status]}" id="systemStatus" data-status="${dataStatus}" data-status-cr="" data-inherit="${dataInheritID}" data-is-change="${is_change}" data-doc-root-id="${document_root_id}" data-doc-change-order="${doc_change_order}">${system_status}</span>`
                     ).removeClass('hidden');
+                }
+                if (detailData?.['system_auto_create']) {
+                    $breadcrumbCode.append(`<span class="badge-status ml-1">
+                                                <span class="badge badge-blue badge-indicator"></span>
+                                                <span class="small text-blue">${$.fn.gettext('Create automatically')}</span>
+                                            </span>`)
                 }
             }
         }
@@ -6817,16 +6862,22 @@ class DateTimeControl {
         const formatMap = {
             'YYYY': 'year',
             'MM': 'month',
-            'DD': 'day'
+            'DD': 'day',
+            'hh': 'hour',
+            'mm': 'minute',
+            'ss': 'second'
         };
 
         const getDateParts = (format, dateStr) => {
-            const formatParts = format.split(/[-/]/);
-            const dateParts = dateStr.split(/[-/]/);
+            const delimiters = /[-/ :]/;
+            const formatParts = format.split(delimiters);
+            const dateParts = dateStr.split(delimiters);
             const result = {};
 
             formatParts.forEach((part, index) => {
-                result[formatMap[part]] = dateParts[index];
+                if (formatMap[part]) {
+                    result[formatMap[part]] = dateParts[index]?.padStart(2, '0') || '00';
+                }
             });
 
             return result;
@@ -6835,9 +6886,30 @@ class DateTimeControl {
         const parts = getDateParts(fromType, dateStr);
 
         return toType
-            .replace('YYYY', parts.year)
-            .replace('MM', parts.month)
-            .replace('DD', parts.day);
+            .replace('YYYY', parts.year || '0000')
+            .replace('MM', parts.month || '00')
+            .replace('DD', parts.day || '00')
+            .replace('hh', parts.hour || '00')
+            .replace('mm', parts.minute || '00')
+            .replace('ss', parts.second || '00');
+    }
+
+    static initDatePicker(ele) {
+        $(ele).daterangepicker({
+            singleDatePicker: true,
+            timepicker: false,
+            showDropdowns: true,
+            minYear: 1990,
+            locale: {
+                format: 'DD/MM/YYYY',
+            },
+            maxYear: parseInt(moment().format('YYYY'), 10),
+            autoApply: true,
+            autoUpdateInput: false,
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $(ele).val(picker.startDate.format('DD/MM/YYYY')).trigger('change');
+        });
+        $(ele).val('').trigger('change');
     }
 }
 
@@ -8775,7 +8847,7 @@ class DiagramControl {
             let urlDiagram = globeDiagramList;
             if ($btnLog && $btnLog.length > 0) {
                 let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
-                                <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
+                                <div class="offcanvas offcanvas-end w-90" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
                                     <div class="modal-header">
                                         <h5><b>Diagram</b></h5>
                                         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
@@ -8934,6 +9006,38 @@ class DataProcessorControl {
             if (a[key] > b[key]) return isDescending ? -1 : 1; // Flip comparison for descending
             return 0; // a and b are equal
         });
+    }
+}
+
+class FormElementControl {
+
+    static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
+        let opts = {'allowClear': isClear};
+        $ele.empty();
+        if (data.length > 0) {
+            opts['data'] = data;
+        }
+        if (Object.keys(dataParams).length !== 0) {
+            opts['dataParams'] = dataParams;
+        }
+        if ($modal) {
+            opts['dropdownParent'] = $modal;
+        }
+        if (Object.keys(customRes).length !== 0) {
+            opts['templateResult'] = function (state) {
+                let res1 = ``;
+                let res2 = ``;
+                if (customRes?.['res1']) {
+                    res1 = `<span class="badge badge-soft-light mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`;
+                }
+                if (customRes?.['res2']) {
+                    res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`;
+                }
+                return $(`<span>${res1} ${res2}</span>`);
+            }
+        }
+        $ele.initSelect2(opts);
+        return true;
     }
 }
 

@@ -34,7 +34,6 @@
         data-url-detail="{% url 'AdvancePaymentDetail' '0' %}"
         data-key-return="advance_payment_list"
     ></script>
-    {% include 'printer/print.html' %}
     <script id="script-url"
             data-trans-unplanned="{% trans 'Unplanned expenses' %}"
             data-url-opp-list="{% url "OpportunityListAPI" %}"
@@ -60,6 +59,9 @@
         {% include 'advancepayment/common/information.html' %}
         {% include 'advancepayment/common/tabs.html' %}
     </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'printer/print.html' %}
 {% endblock %}
 {% block jsFooter %}
     <!-- Daterangepicker JS -->

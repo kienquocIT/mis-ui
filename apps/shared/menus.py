@@ -371,7 +371,7 @@ class MenusCRM:
     )
     SALE_ORDER = MenuCommon(
         name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
-        icon='<i class="fas fa-file-invoice"></i>',
+        icon='<i class="fas fa-shopping-cart"></i>',
     )
     GROUP_ORDER = MenuCommon(
         name='Group order', code='menu_group_order_list', view_name='GroupOrderList',
@@ -413,7 +413,7 @@ class MenusCRM:
     )
     FINAL_ACCEPTANCE = MenuCommon(
         name='Final acceptance', code='menu_final_acceptance_list', view_name='FinalAcceptanceList',
-        icon='<i class="fas fa-file-alt"></i>',
+        icon='<i class="fas fa-calendar-check"></i>',
     )
     CONTRACT_APPROVAL = MenuCommon(
         name='Contract approval', code='menu_contract_approval_list', view_name='ContractApprovalList',
@@ -533,7 +533,7 @@ class MenusPurchase:
             ),
             MenuCommon(
                 name='Purchase order', code='menu_purchase_order_list', view_name='PurchaseOrderList',
-                icon='<i class="fas fa-file-contract"></i>',
+                icon='<i class="fas fa-shopping-cart"></i>',
             ),
             MenuCommon(
                 name='AP invoice', code='id_menu_ap_invoice', view_name='APInvoiceList',
@@ -562,13 +562,13 @@ class MenusInventory:
             ),
             MenuCommon(
                 name='Delivery', code='menu_order_delivery_list', view_name='OrderDeliveryList',
-                icon='<i class="fas fa-truck-pickup"></i>',
+                icon='<i class="fas fa-truck"></i>',
             ),
             MenuCommon(
                 name='Goods receipt',
                 code='menu_goods_receipt_list',
                 view_name='GoodsReceiptList',
-                icon='<i class="fas fa-file-import"></i>',
+                icon='<i class="fas fa-dolly-flatbed"></i>',
             ),
             MenuCommon(
                 name='Goods registration',
@@ -889,6 +889,12 @@ class MenusFinancials:
                 name='Reconciliation', code='menu_reconciliation', view_name='ReconList',
                 icon='<i class="fas bi bi-ui-checks"></i>',
             ),
+            MenuCommon(
+                name='Payment plan',
+                code='menu_payment_plan_list',
+                view_name='PaymentPlanList',
+                icon='<i class="fas fa-money-check-alt"></i>',
+            ),
         ],
     )
     CASHFLOW = MenuCommon(
@@ -1094,6 +1100,15 @@ class SpaceItem:
                 MenusCompanySystem.PROCESS,
             ],
         ),
+        'partner-center': SpaceCommon(
+            'Partner Center',
+            'partner-center',
+            icon='<i class="fas fa-solid fa-user-tag"></i>',
+            menus=[
+                MenusPartnerCenter.HOME,
+                MenusPartnerCenter.LISTS,
+            ],
+        ),
         'company-system': SpaceCommon(
             'Company',
             'company-system',
@@ -1117,15 +1132,6 @@ class SpaceItem:
                 MenusCoreConfigurations.MASTER_DATA_CONFIG,
                 MenusCoreConfigurations.TRANSITION_DATA_CONFIG,
                 MenusCoreConfigurations.TEMPLATES_DATA_CONFIG,
-            ],
-        ),
-        'partner-center': SpaceCommon(
-            'Partner Center',
-            'partner-center',
-            icon='<i class="fas fa-solid fa-user-tag"></i>',
-            menus=[
-                MenusPartnerCenter.HOME,
-                MenusPartnerCenter.LISTS,
             ],
         ),
     }

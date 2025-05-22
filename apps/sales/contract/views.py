@@ -34,6 +34,8 @@ class ContractApprovalList(View):
         template='sales/contract/contract_list.html',
         menu_active='menu_contract_approval_list',
         breadcrumb='CONTRACT_LIST_PAGE',
+        icon_cls='fas fa-file-signature',
+        icon_bg='bg-sky',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
@@ -45,6 +47,8 @@ class ContractApprovalCreate(View):
         template='sales/contract/contract_create.html',
         menu_active='menu_contract_approval_list',
         breadcrumb='CONTRACT_CREATE_PAGE',
+        icon_cls='fas fa-file-signature',
+        icon_bg='bg-sky',
     )
     def get(self, request, *args, **kwargs):
         employee_current = {}
@@ -90,6 +94,8 @@ class ContractApprovalDetail(View):
         template='sales/contract/contract_detail.html',
         menu_active='menu_contract_approval_list',
         breadcrumb='CONTRACT_DETAIL_PAGE',
+        icon_cls='fas fa-file-signature',
+        icon_bg='bg-sky',
     )
     def get(self, request, pk, *args, **kwargs):
         return {
@@ -104,6 +110,8 @@ class ContractApprovalUpdate(View):
         template='sales/contract/contract_update.html',
         menu_active='menu_contract_approval_list',
         breadcrumb='CONTRACT_UPDATE_PAGE',
+        icon_cls='fas fa-file-signature',
+        icon_bg='bg-sky',
     )
     def get(self, request, pk, *args, **kwargs):
         employee_current = {}

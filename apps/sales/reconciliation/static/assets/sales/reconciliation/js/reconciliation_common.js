@@ -9,13 +9,13 @@ const $recon_total = $('#recon-total');
 
 const table_recon_cfg = [
     {
-        className: 'wrap-text w-5',
+        className: 'w-5',
         render: () => {
             return ``
         }
     },
     {
-        className: 'wrap-text w-5',
+        className: 'w-5',
         render: (data, type, row) => {
             return `<div class="form-check">
                 <input type="checkbox"
@@ -29,7 +29,7 @@ const table_recon_cfg = [
         }
     },
     {
-        className: 'wrap-text w-15',
+        className: 'w-15',
         render: (data, type, row) => {
             let credit_doc_data = row?.['credit_doc_data'] || {}
             let document_code = ''
@@ -48,7 +48,7 @@ const table_recon_cfg = [
         }
     },
     {
-        className: 'wrap-text w-10',
+        className: 'w-10',
         render: (data, type, row) => {
             let credit_doc_data = row?.['credit_doc_data'] || {}
             let posting_date = ''
@@ -63,7 +63,7 @@ const table_recon_cfg = [
         }
     },
     {
-        className: 'wrap-text text-right w-15',
+        className: 'text-right w-15',
         render: (data, type, row) => {
             let recon_total = row?.['recon_total'] ? row?.['recon_total'] : 0
             let credit_doc_data = row?.['credit_doc_data'] || {}
@@ -74,7 +74,7 @@ const table_recon_cfg = [
         }
     },
     {
-        className: 'wrap-text text-right w-15',
+        className: 'text-right w-15',
         render: (data, type, row) => {
             let recon_balance = row?.['recon_balance'] ? row?.['recon_balance'] : 0
             let credit_doc_data = row?.['credit_doc_data'] || {}
@@ -85,7 +85,7 @@ const table_recon_cfg = [
         }
     },
     {
-        className: 'wrap-text text-right w-15',
+        className: 'text-right w-15',
         render: (data, type, row) => {
             let recon_amount = row?.['recon_amount'] ? row?.['recon_amount'] : 0
             let credit_doc_data = row?.['credit_doc_data'] || {}
@@ -96,13 +96,13 @@ const table_recon_cfg = [
         }
     },
     {
-        className: 'wrap-text w-15',
+        className: 'w-15',
         render: (data, type, row) => {
             return `<textarea disabled ${row?.['id'] ? 'disabled readonly' : ''} rows="1" class="form-control note"></textarea>`;
         }
     },
     {
-        className: 'wrap-text text-center w-5',
+        className: 'text-center w-5',
         render: (data, type, row) => {
             let credit_doc_data = row?.['credit_doc_data'] || {}
             if (Object.keys(credit_doc_data).length > 0) {
@@ -149,7 +149,7 @@ class ReconLoadPage {
             styleDom: 'hide-foot',
             reloadCurrency: true,
             rowIdx: true,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '50vh',
             scrollCollapse: true,
             paging: false,

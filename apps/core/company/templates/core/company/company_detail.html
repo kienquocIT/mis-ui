@@ -20,32 +20,15 @@
 {% endblock %}
 {% block pageContent %}
     <script id="trans-script"
-            data-trans-opp="{% trans 'Opportunity' %}"
-            data-trans-quo="{% trans 'Quotation' %}"
-            data-trans-so="{% trans 'Sale Order' %}"
-            data-trans-picking="{% trans 'Picking' %}"
-            data-trans-delivery="{% trans 'Delivery' %}"
-            data-trans-task="{% trans 'Task' %}"
-            data-trans-ap="{% trans 'Advance Payment' %}"
-            data-trans-payment="{% trans 'Payment' %}"
-            data-trans-rp="{% trans 'Return Advance' %}"
-            data-trans-pr="{% trans 'Purchase Request' %}"
             data-trans-numbering0="{% trans 'System' %}"
             data-trans-numbering1="{% trans 'User defined' %}"
             data-trans-default="{% trans 'Default' %}"
     ></script>
-
-    <form id="frm-detail-company"
-          data-url-detail="{% url "CompanyDetailAPI" '0' %}"
-          data-url-redirect="{% url "CompanyList" %}"
-          data-method="GET"
-    >
-        {% csrf_token %}
-        {% include 'core/company/common/information.html' %}
-    </form>
+    {% include 'core/company/common/information.html' %}
     {% include 'core/company/common/tabs.html' %}
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'core/company/js/company_common.js' %}"></script>
     <script src="{% static 'core/company/js/company_detail.js' %}"></script>
 {% endblock %}

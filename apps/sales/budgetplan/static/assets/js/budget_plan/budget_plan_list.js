@@ -69,17 +69,21 @@ $(document).ready(function () {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '70vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            console.log(resp.data['budget_plan_list'])
+                            // console.log(resp.data['budget_plan_list'])
                             return resp.data['budget_plan_list'] ? resp.data['budget_plan_list'] : [];
                         }
                         return [];
@@ -87,51 +91,45 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'w-5',
                         render: () => {
                             return ``;
                         }
                     },
                     {
-                        data: 'code',
-                        className: 'wrap-text w-10',
+                        className: 'ellipsis-cell-xs w-5',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}"><span class="badge badge-primary w-70">${row?.['code']}</span></a>`;
+                            return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        data: 'title',
-                        className: 'wrap-text w-40',
+                        className: 'ellipsis-cell-lg w-35',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}"><span class="text-primary" data-id="${row?.['id']}" data-title="${row?.['title']}" data-code="${row?.['code']}"><b>${row?.['title']}</b></span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        data: 'period',
-                        className: 'wrap-text w-10',
+                        className: 'w-10',
                         render: (data, type, row) => {
                             return `<span>${row?.['period_mapped']?.['title']}</span>`
                         }
                     },
                     {
-                        data: 'employee_created',
-                        className: 'wrap-text w-15',
+                        className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
-                            return `<span class="text-blue">${row?.['employee_created']?.['full_name']}</span>`
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
                     },
                     {
-                        data: 'date_created',
-                        className: 'wrap-text w-10',
+                        className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
-                            return `<span>${moment(row?.['date_created'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
-                        data: 'is_lock',
-                        className: 'wrap-text w-10',
+                        className: 'text-center w-10',
                         render: (data, type, row) => {
                             return `<span class="${row?.['is_lock'] ? 'text-danger' : 'text-success'}">${row?.['is_lock'] ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-lock-open"></i>'}</span>`
                         }

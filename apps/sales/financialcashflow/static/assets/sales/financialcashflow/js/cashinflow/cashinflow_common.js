@@ -33,13 +33,13 @@ class CIFPageVariables {
     constructor() {
         this.selected_payment_stage_table_cfg = [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: () => {
                     return ``
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
                     return row?.['is_ar_invoice'] ? `<div class="form-check">
                         <input type="checkbox"
@@ -51,49 +51,49 @@ class CIFPageVariables {
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${row?.['term_data']?.['title'] ? row?.['term_data']?.['title'] : ''}</span>`
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${row?.['remark']}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return row?.['is_ar_invoice'] ? `<span class="text-muted no-invoice">${row?.['invoice'] ? row?.['invoice'] : ''}</span>` : '--';
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return row?.['is_ar_invoice'] ? `<span class="mask-money detail-invoice-value" data-init-money="${row?.['value_total'] ? row?.['value_total'] : 0}"></span>` : '--';
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return `<span class="mask-money" data-init-money="${row?.['recon_total'] ? row?.['recon_total'] : 0}"></span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return row?.['is_ar_invoice'] ? `<span class="mask-money detail_balance_value" data-init-money="${row?.['recon_balance']}"></span>` : '--';
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return row?.['is_ar_invoice'] ? `<input disabled readonly class="form-control text-right mask-money detail_payment_value" value="0">` : '--';
                 }
             },
             {
-                className: 'wrap-text text-right w-10',
+                className: 'text-right w-10',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${moment(row?.['due_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`;
                 }
@@ -101,13 +101,13 @@ class CIFPageVariables {
         ]
         this.customer_advance_table_cfg = [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: () => {
                     return ``
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
                     return `<div class="form-check">
                     <input type="checkbox"
@@ -119,43 +119,43 @@ class CIFPageVariables {
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary">${row?.['sale_order']?.['code']}</span>`
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${row?.['term_data']?.['title'] || ''}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${row?.['remark']}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${moment(row?.['due_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return `<span class="mask-money value_total_advance" data-init-money="${row?.['value_total']}"></span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return `<span class="mask-money recon_balance_value_advance" data-init-money="${row?.['value_balance']}"></span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: () => {
                     return `<input class="form-control text-right mask-money cash_in_value_advance" value="0"">`;
                 }
@@ -163,13 +163,13 @@ class CIFPageVariables {
         ]
         this.ar_invoice_table_cfg = [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: () => {
                     return ``
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
                     return `<div class="form-check">
                                 <input type="checkbox"
@@ -181,37 +181,37 @@ class CIFPageVariables {
                 }
             },
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary">${row?.['code'] ? row?.['code'] : ''}</span>`
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<span class="text-muted">${row?.['document_type'] ? row?.['document_type'] : ''}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `${row?.['document_date'] ? moment(row?.['document_date'].split(' '), 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}`;
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return `<span class="mask-money" data-init-money="${row?.['recon_total'] || 0}"></span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-15',
+                className: 'text-right w-15',
                 render: (data, type, row) => {
                     return `<span class="mask-money recon_balance_value" data-init-money="${row?.['recon_balance']}"></span>`;
                 }
             },
             {
-                className: 'wrap-text text-right w-20',
+                className: 'text-right w-20',
                 render: (data, type, row) => {
                     let payment_term_data = JSON.stringify(row?.['payment_term_data'] ? row?.['payment_term_data'] : [])
                     return `<div class="input-group">
@@ -223,7 +223,7 @@ class CIFPageVariables {
                 }
             },
             {
-                className: 'wrap-text text-right w-10',
+                className: 'text-right w-10',
                 render: () => {
                     return `<div class="input-group">
                                 <span class="input-affix-wrapper">
@@ -315,7 +315,7 @@ class CIFPageFunction {
                 reloadCurrency: true,
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '30vh',
                 scrollCollapse: true,
                 paging: false,
@@ -350,7 +350,7 @@ class CIFPageFunction {
                 dom: 't',
                 reloadCurrency: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '30vh',
                 scrollCollapse: true,
                 paging: false,
@@ -375,7 +375,7 @@ class CIFPageFunction {
                 useDataServer: true,
                 reloadCurrency: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '40vh',
                 scrollCollapse: true,
                 paging: false,
@@ -422,7 +422,7 @@ class CIFPageFunction {
                 dom: 't',
                 reloadCurrency: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '40vh',
                 scrollCollapse: true,
                 paging: false,
@@ -439,7 +439,7 @@ class CIFPageFunction {
                 dom: 't',
                 reloadCurrency: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '40vh',
                 scrollCollapse: true,
                 paging: false,
@@ -465,7 +465,7 @@ class CIFPageFunction {
                 dom: 't',
                 reloadCurrency: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '40vh',
                 scrollCollapse: true,
                 paging: false,
@@ -602,12 +602,12 @@ class CIFHandler {
                     data = data['cash_inflow_detail'];
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    // console.log(data)
+                    console.log(data)
 
                     pageElements.$title.val(data?.['title'])
                     pageElements.$posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     pageElements.$document_date.val(moment(data?.['document_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
-                    CIFPageFunction.LoadCustomer(pageElements.$customer, data?.['customer_data'])
+                    CIFPageFunction.LoadCustomer(data?.['customer_data'])
                     pageElements.$description.val(data?.['description'])
 
                     pageElements.$purchase_advance_value.attr('value', data?.['purchase_advance_value'] ? data?.['purchase_advance_value'] : 0)

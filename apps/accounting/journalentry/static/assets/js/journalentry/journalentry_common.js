@@ -24,22 +24,22 @@ class JELoadPage {
             data: datalist,
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return ``;
                     }
                 }, {
-                    className: 'wrap-text w-10',
+                    className: 'w-10',
                     render: (data, type, row) => {
                         return `<span class="text-muted fw-bold">${row?.['account_data']?.['acc_code']}</span>`
                     }
                 }, {
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<h6 class="text-muted">${row?.['account_data']?.['acc_name']}</h6><h6 class="text-primary small">${row?.['account_data']?.['foreign_acc_name']}</h6>`
                     }
                 }, {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         if (!row?.['is_fc'] && row?.['debit'] !== 0) {
                             has_lc_value = true
@@ -48,7 +48,7 @@ class JELoadPage {
                         return ``;
                     }
                 }, {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         if (!row?.['is_fc'] && row?.['credit'] !== 0) {
                             has_lc_value = true
@@ -57,7 +57,7 @@ class JELoadPage {
                         return ``;
                     }
                 }, {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         if (row?.['is_fc'] && row?.['debit'] !== 0) {
                             has_fc_value = true
@@ -66,7 +66,7 @@ class JELoadPage {
                         return ``;
                     }
                 }, {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         if (row?.['is_fc'] && row?.['credit'] !== 0) {
                             has_fc_value = true
@@ -75,7 +75,7 @@ class JELoadPage {
                         return ``;
                     }
                 }, {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         if (row?.['taxable_value'] !== 0) {
                             return `<span class="text-muted mask-money" data-init-money="${row?.['taxable_value']}"></span>`;
@@ -83,9 +83,9 @@ class JELoadPage {
                         return ''
                     }
                 }, {
-                    className: 'wrap-text w-15',
+                    className: 'w-15',
                     render: (data, type, row) => {
-                        return `<span class="text-blue">${row?.['business_partner_data']?.['name'] || ''}</span>`;
+                        return `<span>${row?.['business_partner_data']?.['name'] || ''}</span>`;
                     }
                 }
             ],
@@ -116,12 +116,9 @@ class JEHandle {
                     data = data['journal_entry_detail'];
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    if (data?.['system_auto_create'])
-
                     $ori_trans.val(data?.['original_transaction']).trigger('change')
                     $transaction_code.val(data?.['je_transaction_data']?.['code'])
                     $transaction_name.val(data?.['je_transaction_data']?.['title'])
-                    $type.val([$.fn.gettext('Create manually'), $.fn.gettext('Create automatically')][Number(data?.['system_auto_create'])])
                     $je_posting_date.val(moment(data?.['je_posting_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $je_doc_date.val(moment(data?.['je_document_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
 

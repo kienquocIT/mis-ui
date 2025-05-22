@@ -72,6 +72,8 @@ class LeaseOrderList(View):
         template='sales/leaseorder/lease_order_list.html',
         menu_active='menu_lease_order_list',
         breadcrumb='LEASE_ORDER_LIST_PAGE',
+        icon_cls='fas fa-handshake',
+        icon_bg='bg-green',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS, 'delivery_status': DELIVERY_STATUS}, status.HTTP_200_OK
@@ -83,6 +85,8 @@ class LeaseOrderCreate(View):
         template='sales/leaseorder/lease_order_create.html',
         menu_active='menu_lease_order_list',
         breadcrumb='LEASE_ORDER_CREATE_PAGE',
+        icon_cls='fas fa-handshake',
+        icon_bg='bg-green',
     )
     def get(self, request, *args, **kwargs):
         employee_current = {}
@@ -132,6 +136,18 @@ class LeaseOrderListAPI(APIView):
         )
 
 
+class LeaseOrderDDListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.LEASE_ORDER_DROPDOWN_LIST).get(params)
+        return resp.auto_return(key_success='lease_order_dd_list')
+
+
 class LeaseOrderDetail(View):
     permission_classes = [IsAuthenticated]
 
@@ -140,6 +156,8 @@ class LeaseOrderDetail(View):
         template='sales/leaseorder/lease_order_detail.html',
         menu_active='menu_lease_order_list',
         breadcrumb='LEASE_ORDER_DETAIL_PAGE',
+        icon_cls='fas fa-handshake',
+        icon_bg='bg-green',
     )
     def get(self, request, pk, *args, **kwargs):
         employee_current = {}
@@ -163,12 +181,13 @@ class LeaseOrderUpdate(View):
         template='sales/leaseorder/lease_order_update.html',
         breadcrumb='LEASE_ORDER_UPDATE_PAGE',
         menu_active='menu_lease_order_list',
+        icon_cls='fas fa-handshake',
+        icon_bg='bg-green',
     )
     def get(self, request, pk, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.SALE_ORDER_SALE_ORDER
         return {
                    'data': {'doc_id': pk},
-                   'input_mapping_properties': input_mapping_properties,
+                   'input_mapping_properties': InputMappingProperties.LEASE_ORDER_LEASE_ORDER,
                    'form_id': 'frm_lease_create',
                    'list_from_app': 'leaseorder.leaseorder.edit',
                    'payment_term_stage': PAYMENT_TERM_STAGE,

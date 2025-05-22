@@ -32,7 +32,7 @@
             <div class="form-group">
                 <div class="row">
                     <div class="col-6">
-                        <label class="form-label" for="inp-tax-code" id="tax-code-label">{% trans "Tax code" %}</label>
+                        <label class="form-label required" for="inp-tax-code" id="tax-code-label">{% trans "Tax code" %}</label>
                     </div>
                     <div class="col-6 text-right">
                         <span hidden id="invalid-tax" class="text-warning small">{% trans 'Tax code is not valid' %}</span>
@@ -56,8 +56,7 @@
                        data-trans-individual="{% trans 'Individual code' %}"
                        data-trans-organization="{% trans 'Organization code' %}"
                 >{% trans "Organization code" %}</label>
-                <input id="inp-code" class="form-control" required
-                       oninput="this.value=this.value.toUpperCase()">
+                <input id="inp-code" class="form-control" oninput="this.value=this.value.toUpperCase()" required>
             </div>
         </div>
         <div class="col-12">

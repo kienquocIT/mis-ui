@@ -13,10 +13,13 @@ function loadOpportunityCallLogList() {
         let frm = new SetupFormSubmit(dtb);
         dtb.DataTableDefault({
             rowIdx: true,
-            scrollX: '100vw',
-            scrollY: '75vh',
+            scrollX: true,
+            scrollY: '70vh',
             scrollCollapse: true,
             useDataServer: true,
+            fixedColumns: {
+                leftColumns: 2
+            },
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
@@ -32,45 +35,34 @@ function loadOpportunityCallLogList() {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return ``;
                     }
                 },
                 {
-                    data: 'subject',
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data, type, row) => {
-                        let status = ''
-                        if (row?.['is_cancelled']) {
-                            status = `<span class="badge badge-sm badge-soft-danger">${call_log_trans_script.attr('data-trans-activity-cancelled')}</i>`
-                        }
-                        return `<a class="text-primary fw-bold offcanvas-call-log-button" href="" data-bs-toggle="offcanvas" data-id="${row?.['id']}" data-bs-target="#offcanvas-call-log-detail">
-                                    <span class="mr-1">${row?.['subject']}</span>${status}
-                                </a>`
+                        let status = row?.['is_cancelled'] ? `<span class="ml-2 badge badge-sm badge-soft-danger">${call_log_trans_script.attr('data-trans-activity-cancelled')}</i>` : ''
+                        return `<a href="#" class="link-primary underline_hover fw-bold offcanvas-call-log-button" title="${row?.['subject']}" data-bs-toggle="offcanvas" data-id="${row?.['id']}" data-bs-target="#offcanvas-call-log-detail">${row?.['subject']}</a>${status}`
                     }
                 },
                 {
-                    data: 'opportunity',
-                    className: 'wrap-text text-center w-20',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `${row?.['opportunity']?.['code']}`
                     }
                 },
                 {
-                    data: 'employee_inherit',
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data, type, row) => {
-                        return `<span class="text-blue">${row?.['employee_inherit']?.['full_name']}</span><span class="text-primary"> --- <i class="fas fa-phone-volume"></i> --- </span><a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="text-primary underline_hover">${row?.['contact']?.['fullname']}</span></a>`
+                        return `<span>${row?.['employee_inherit']?.['full_name']}</span> - <a target="_blank" href="${table_opportunity_call_log_list.attr('data-url-contact-detail').replace('0', row?.['contact']?.['id'])}"><span class="underline_hover">${row?.['contact']?.['fullname']}</span></a>`
                     }
                 },
                 {
-                    data: 'call_date',
-                    className: 'wrap-text text-center w-15',
-                    render: (data) => {
-                        return $x.fn.displayRelativeTime(data, {
-                            'outputFormat': 'DD/MM/YYYY',
-                        });
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return $x.fn.displayRelativeTime(row?.['call_date'], {'outputFormat': 'DD/MM/YYYY'});
                     }
                 },
             ],

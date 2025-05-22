@@ -139,19 +139,18 @@ $(function () {
                 }
             }
             let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-            headerToolbar$.prepend(textFilter$);
-
-            if (textFilter$.length > 0) {
-                textFilter$.css('display', 'flex');
-                // Check if the button already exists before appending
+            if (headerToolbar$.length > 0) {
                 if (!$('#btn-open-filter').length) {
-                    let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
-                                        <span><span class="icon"><i class="fas fa-filter"></i></span><span>${$transFact.attr('data-filter')}</span></span>
-                                    </button>`);
-                    textFilter$.append(
-                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
-                    );
+                    let $group = $(`<div class="btn-filter">
+                                        <div class="d-flex justify-content-end align-items-center">
+                                            <div class="btn-group dropdown ml-1" data-bs-toggle="tooltip" title="${$transFact.attr('data-filter')}">
+                                                <button type="button" class="btn btn-light ml-1" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                                    <span><span class="icon"><i class="fas fa-filter"></i></span></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>`);
+                    headerToolbar$.append($group);
                 }
             }
         }
@@ -207,17 +206,14 @@ $(function () {
                                 if (period?.['fiscal_year'] === currentYear) {
                                     let {startDate, endDate} = getYearRange(period?.['start_date']);
                                     // set init val date range
-                                    let startDateObj = new Date(startDate);
-                                    let endDateObj = new Date(endDate);
-                                    let formattedStartDate = `${padWithZero(startDateObj.getDate())}/${padWithZero(startDateObj.getMonth() + 1)}/${startDateObj.getFullYear()}`;
-                                    let formattedEndDate = `${padWithZero(endDateObj.getDate())}/${padWithZero(endDateObj.getMonth() + 1)}/${endDateObj.getFullYear()}`;
+                                    let formattedStartDate = DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", startDate);
+                                    let formattedEndDate = DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", endDate);
                                     boxStart.val(formattedStartDate);
                                     boxEnd.val(formattedEndDate);
                                     $.fn.callAjax2({
                                             'url': $table.attr('data-url'),
                                             'method': $table.attr('data-method'),
                                             'data': {
-                                                'is_initial': false,
                                                 'date_approved__gte': startDate,
                                                 'date_approved__lte': endDate,
                                             },
@@ -320,56 +316,18 @@ $(function () {
 
         // load init
         function initData() {
-            loadInitS2(boxGroup, [], {}, null, true);
-            loadInitS2(boxEmployee, [], {}, null, true);
+            FormElementControl.loadInitS2(boxGroup, [], {}, null, true);
+            FormElementControl.loadInitS2(boxEmployee, [], {}, null, true);
             loadDbl();
             storeLoadInitByDataFiscalYear();
         }
 
         initData();
 
-        function loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
-            let opts = {'allowClear': isClear};
-            $ele.empty();
-            if (data.length > 0) {
-                opts['data'] = data;
-            }
-            if (Object.keys(dataParams).length !== 0) {
-                opts['dataParams'] = dataParams;
-            }
-            if ($modal) {
-                opts['dropdownParent'] = $modal;
-            }
-            if (Object.keys(customRes).length !== 0) {
-                opts['templateResult'] = function (state) {
-                    let res1 = `<span class="badge badge-soft-primary mr-2">${state.data?.[customRes['res1']] ? state.data?.[customRes['res1']] : "--"}</span>`
-                    let res2 = `<span>${state.data?.[customRes['res2']] ? state.data?.[customRes['res2']] : "--"}</span>`
-                    return $(`<span>${res1} ${res2}</span>`);
-                }
-            }
-            $ele.initSelect2(opts);
-            return true;
-        }
-
         // init date picker
         $('.date-picker').each(function () {
-            $(this).daterangepicker({
-                singleDatePicker: true,
-                timepicker: false,
-                showDropdowns: false,
-                minYear: 2023,
-                locale: {
-                    format: 'DD/MM/YYYY',
-                },
-                maxYear: parseInt(moment().format('YYYY'), 10),
-                drops: 'down',
-                autoApply: true,
-                autoUpdateInput: false,
-            }).on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
-            });
-            $(this).val('').trigger('change');
-        })
+            DateTimeControl.initDatePicker(this);
+        });
 
         // mask money
         $.fn.initMaskMoney2();
@@ -381,13 +339,11 @@ $(function () {
 
         // Events
         boxGroup.on('change', function() {
-            loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
+            FormElementControl.loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
         });
 
         $('#btn-apply-filter').on('click', function () {
-            // this.closest('.dropdown-menu').classList.remove('show');
             let dataParams = {};
-            dataParams['is_initial'] = false;
             let listViewBy = [];
             let listDate = [];
             if (boxGroup.val() && boxGroup.val().length > 0) {
@@ -406,12 +362,12 @@ $(function () {
             }
             loadFilter(listViewBy, $('#card-filter-vb'));
             if (boxStart.val()) {
-                let dateStart = moment(boxStart.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                let dateStart = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxStart.val());
                 dataParams['date_approved__gte'] = formatStartDate(dateStart);
                 listDate.push(boxStart.val());
             }
             if (boxEnd.val()) {
-                let dateEnd = moment(boxEnd.val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+                let dateEnd = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxEnd.val());
                 dataParams['date_approved__lte'] = formatEndDate(dateEnd);
                 listDate.push(boxEnd.val());
             }

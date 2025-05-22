@@ -16,8 +16,6 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    {{ data.data.VND_currency | json_script:"VND_currency" }}
-
     <script id="trans-script"
             data-trans-opp="{% trans 'Opportunity' %}"
             data-trans-quo="{% trans 'Quotation' %}"
@@ -39,18 +37,16 @@
           data-method="POST">
         {% csrf_token %}
         <div class="row">
-            <div class="col-12 col-md-9 col-lg-9">
+            <div class="col-12 col-md-9 co-lg-9">
+                <h4><span class="badge badge-soft-primary w-100">{% trans 'Company information' %}</span></h4>
                 <div class="row">
-                    <div class="col-12 mb-2">
-                        <h6 class="text-primary text-decoration-underline">{% trans 'Company information' %}</h6>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label required" for="code">{% trans 'Company code' %}</label>
                             <input type="text" class="form-control" id="code" oninput=" this.value=this.value.toUpperCase()" placeholder="MIS001" required/>
                         </div>
                     </div>
-                    <div class="col-12">
+                    <div class="col-12 col-md-9 col-lg-9">
                         <div class="form-group">
                             <label class="form-label required" for="title">{% trans 'Company name' %}</label>
                             <input type="text" class="form-control" id="title" placeholder="MT Solution" required/>
@@ -87,20 +83,18 @@
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-3">
+                <h4><span class="badge badge-soft-primary w-100">{% trans 'Company representative' %}</span></h4>
                 <div class="row">
-                    <div class="col-12 mb-2">
-                        <h6 class="text-primary text-decoration-underline">{% trans 'Company representative' %}</h6>
-                    </div>
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label required" for="representative_fullname">{% trans 'Representator fullname' %}</label>
+                            <label class="form-label required" for="representative_fullname">{% trans 'Fullname' %}</label>
                             <input type="text" class="form-control" id="representative_fullname" placeholder="Nguyen Van A" required/>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
                             <label class="form-label required" for="phone">{% trans 'Phone number' %}</label>
-                            <input type="text" class="form-control" id="phone" placeholder="+84987654321" required/>
+                            <input type="text" class="form-control" id="phone" placeholder="0123456789" required/>
                         </div>
                     </div>
                     <div class="col-12">

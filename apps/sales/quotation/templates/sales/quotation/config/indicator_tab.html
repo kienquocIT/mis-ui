@@ -79,7 +79,7 @@
     </div>
 
 
-    <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="formulaCanvas" aria-labelledby="offcanvasTopLabel">
+    <div class="offcanvas offcanvas-end w-65" tabindex="-1" id="formulaCanvas" aria-labelledby="offcanvasTopLabel">
         <div class="modal-header">
             <h5><b>{% trans 'Edit formula' %} <span id="formula_title"></span></b></h5>
             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
@@ -140,6 +140,13 @@
                     </div>
                 </div>
             </div>
+
+            <div class="form-check form-check-lg">
+                <input type="checkbox" class="form-check-input is_negative_set_zero" id="is_negative_set_zero">
+                <label class="form-check-label" for="is_negative_set_zero">{% trans 'Return 0 if value of indicator is negative' %}</label>
+            </div>
+
+            <br>
 
             <div class="row final-acceptance-zone">
                 <b>{% trans 'Final acceptance setting' %}</b>

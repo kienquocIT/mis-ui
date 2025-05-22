@@ -36,23 +36,22 @@ $(function () {
                         },
                         {
                             data: 'code',
-                            className: 'wrap-text w-10',
+                            className: 'ellipsis-cell-xs w-10',
                             render: (data, type, row) => {
                                 const link = dtb.attr('data-url-detail').replace('0', row.id);
-                                return `<a href="${link}" class="badge badge-primary w-70">${row.code}</a> ${$x.fn.buttonLinkBlank(link)}`;
+                                return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                             }
                         },
                         {
                             data: 'title',
-                            className: 'wrap-text w-30',
+                            className: 'w-30',
                             render: (data, type, row) => {
                                 return `<span><b>` + row.title + `</b></span>`
                             }
                         },
                         {
                             data: 'purchase_requests w-15',
-                            className: 'wrap-text',
-                            render: (data, type, row) => {
+                                render: (data, type, row) => {
                                 let html = ``;
                                 for (let i = 0; i < row.purchase_requests.length; i++) {
                                     html += `<span class="badge badge-secondary mr-1 mb-1 w-30">${row.purchase_requests[i].code}</span>`;
@@ -62,28 +61,27 @@ $(function () {
                         },
                         {
                             data: 'delivered_date w-15',
-                            className: 'wrap-text',
-                            render: (data, type, row) => {
+                                render: (data, type, row) => {
                                 return moment(row.delivered_date.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY');
                             }
                         },
                         {
                             data: 'status',
-                            className: 'wrap-text text-center w-15',
+                            className: 'text-center w-15',
                             render: (data, type, row) => {
                                 return `<span class="text-success" id="status">Open</span>`
                             }
                         },
                         {
                             data: 'response_status w-10',
-                            className: 'wrap-text text-center',
+                            className: 'text-center',
                             render: () => {
                                 return `<span class="text-primary" id="response_status">Wait</span>`
                             }
                         },
                         {
                             data: '',
-                            className: 'wrap-text text-center w-5',
+                            className: 'text-center w-5',
                             render: (data, type, row) => {
                                 let href = $('#datatable_pqr_list').attr('data-url-purchase-quotation');
                                 let param = {'id': row.id, 'title': row.title}

@@ -107,6 +107,7 @@ function reGetDetail(gantt_obj) {
                 if (res && (res['status'] === 201 || res['status'] === 200)) {
                     let group = res['groups'];
                     let work = res['works'];
+                    animating_number(res['completion_rate'], $('.completion_rate_block .heading span'))
                     const afterData = fGanttCustom.convert_data(group, work);
                     gantt_obj.refresh(afterData);
                     $('.lazy_loading').delay(1000).removeClass('active');

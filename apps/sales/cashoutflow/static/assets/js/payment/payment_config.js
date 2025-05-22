@@ -26,14 +26,12 @@ $(document).ready(function () {
             columns: [
                     {
                         data: 'code',
-                        className: 'wrap-text',
                         render: (data, type, row) => {
                             return `<span data-id="${row.employee_allowed.id}" class="badge badge-primary code">${row.employee_allowed.code}</span>`
                         }
                     },
                     {
                         data: 'full_name',
-                        className: 'wrap-text',
                         render: (data, type, row) => {
                             return `<span class="full_name">${row.employee_allowed.full_name}</span>`
                         }
@@ -73,21 +71,18 @@ $(document).ready(function () {
                     },
                     {
                         data: 'code',
-                        className: 'wrap-text',
                         render: (data, type, row) => {
                             return `<span class="badge badge-soft-primary badge-outline code">${row.code}</span>`
                         }
                     },
                     {
                         data: 'full_name',
-                        className: 'wrap-text',
                         render: (data, type, row) => {
                             return `<span class="full_name">${row.full_name}</span>`
                         }
                     },
                     {
                         data: '',
-                        className: 'wrap-text',
                         render: (data, type, row) => {
                             let flag = ''
                             tableSelectedEmployees.find('tbody tr').each(function () {

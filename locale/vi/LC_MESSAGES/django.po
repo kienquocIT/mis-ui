@@ -2612,16 +2612,20 @@ msgid "Account create"
 msgstr "Tạo tài khoản"
 
 #
-msgid "Master Data Contact"
-msgstr "Dữ liệu liên hệ dùng chung"
+msgid "Master data name"
+msgstr "Tên master data"
 
 #
-msgid "Master Data Account"
-msgstr "Dữ liệu tài khoản dùng chung"
+msgid "Master data contact"
+msgstr "Master data liên hệ"
 
 #
-msgid "Master Data Product"
-msgstr "Dữ liệu sản phẩm dùng chung"
+msgid "Master data account"
+msgstr "Master data tài khoản"
+
+#
+msgid "Master data product"
+msgstr "Master data sản phẩm"
 
 #
 msgid "Product list"
@@ -3185,7 +3189,7 @@ msgstr "Đơn hàng"
 
 #
 msgid "Master data config"
-msgstr "Cấu hình dữ liệu chính"
+msgstr "Cấu hình master data"
 
 #
 msgid "Items"
@@ -5369,10 +5373,6 @@ msgid "Function"
 msgstr "Chức năng"
 
 #
-msgid "Numbering by"
-msgstr "Kiểu đánh số"
-
-#
 msgid "Add Schema"
 msgstr "Thêm công thức"
 
@@ -5397,8 +5397,8 @@ msgid "Company setting"
 msgstr "Cấu hình công ty"
 
 #
-msgid "Function number"
-msgstr "Cấu hình đánh số chức năng"
+msgid "Auto Code Generator"
+msgstr "Cấu hình sinh mã tự động"
 
 #
 msgid "Company name"
@@ -5879,10 +5879,6 @@ msgstr "Tính giá cost theo Lot/batch"
 #
 msgid "Save config"
 msgstr "Lưu cấu hình"
-
-#
-msgid "Representator fullname"
-msgstr "Họ tên người đại diện"
 
 #
 msgid "Select products"
@@ -9089,8 +9085,8 @@ msgid "The product does not have opportunity BOM"
 msgstr "Sản phẩm không có định mức nguyên vật liệu dự án"
 
 #
-msgid "According to product's inventory UOM"
-msgstr "Theo đơn vị lưu kho của sản phẩm"
+msgid "According to inventory UOM"
+msgstr "Theo đơn vị lưu kho"
 
 #
 msgid "Import status"
@@ -9418,7 +9414,7 @@ msgstr "Tiền tệ"
 
 #
 msgid "Master data price"
-msgstr "Dữ liệu tiền tệ dùng chung"
+msgstr "Master data tiền tệ"
 
 #
 msgid "Node configuration"
@@ -9861,8 +9857,16 @@ msgid "Data Import Limit"
 msgstr "Giới hạn nhập dữ liệu"
 
 #
-msgid "To ensure system performance and stability, row number is limited to 150 rows. If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears."
-msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở 150 dòng trên mỗi lần nhập. Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
+msgid "To ensure system performance and stability, row number is limited to"
+msgstr "Để đảm bảo hiệu suất và ổn định của hệ thống, số dòng dữ liệu được giới hạn ở"
+
+#
+msgid "rows"
+msgstr "dòng"
+
+#
+msgid "If you have a large amount of data, we recommend importing it in smaller batches or waiting until a success notification appears."
+msgstr "Nếu bạn có nhiều dữ liệu, chúng tôi khuyên bạn nên nhập từng lô nhỏ hoặc chờ một chút đến khi có thông báo nhập thành công."
 
 #
 msgid "Lease order"
@@ -10304,8 +10308,12 @@ msgid "Reality"
 msgstr "Thực tế"
 
 #
-msgid "View my revenue plan this period"
-msgstr "Xem kế hoạch doanh thu của tôi kỳ này"
+msgid "View my revenue plan this year"
+msgstr "Xem KHDT của tôi năm nay"
+
+#
+msgid "My revenue plan this year"
+msgstr "KHDT của tôi năm nay"
 
 #
 msgid "Period revenue / profit"
@@ -10488,6 +10496,10 @@ msgid "Total Value"
 msgstr "Tổng giá trị"
 
 #
+msgid "Total Value After Tax"
+msgstr "Tổng giá trị sau thuế"
+
+#
 msgid "Prior FA Increase"
 msgstr "Tăng tài sản trước đó"
 
@@ -10576,12 +10588,12 @@ msgid "Tool Number"
 msgstr "Mã công cụ"
 
 #
-msgid "Master Data Document"
-msgstr "Dữ liệu tài liệu dùng chung"
+msgid "Master data document"
+msgstr "Master data tài liệu"
 
 #
-msgid "Master Data Asset"
-msgstr "Dữ liệu tài sản dùng chung"
+msgid "Master data asset"
+msgstr "Master data tài sản"
 
 #
 msgid "Liabilities"
@@ -10758,10 +10770,6 @@ msgstr "Tạo phòng họp"
 #
 msgid "Zoom account config"
 msgstr "Cấu hình tài khoản Zoom"
-
-#
-msgid "Add new meeting room"
-msgstr "Thêm phòng họp"
 
 #
 msgid "See instruction here"
@@ -11272,16 +11280,16 @@ msgid "Periods config"
 msgstr "Cấu hình Kỳ kế toán"
 
 #
-msgid "Master Data Categories"
-msgstr "Dữ liệu Phân loại dùng chung"
+msgid "Master data categories"
+msgstr "Master data phân loại"
 
 #
 msgid "Categories"
 msgstr "Phân loại"
 
 #
-msgid "Master Data Bank"
-msgstr "Dữ liệu Ngân hàng dùng chung"
+msgid "Master data bank"
+msgstr "Master data ngân hàng"
 
 #
 msgid "Recon account"
@@ -11416,8 +11424,8 @@ msgid "Adjustment method"
 msgstr "Phương pháp hệ số"
 
 #
-msgid "Product will convert into"
-msgstr "Sản phẩm chuyển đổi thành"
+msgid "Goods convert into"
+msgstr "Hàng hóa chuyển thành"
 
 #
 msgid "When leased product converted into fixed asset"
@@ -11702,3 +11710,71 @@ msgstr "Tên hợp đồng"
 #
 msgid "Contract code"
 msgstr "Mã hợp đồng"
+
+#
+msgid "Free input"
+msgstr "Nhập liệu tự do"
+
+#
+msgid "Turn on/off free input ?"
+msgstr "Bật/tắt nhập liệu tự do ?"
+
+#
+msgid "Free input is on"
+msgstr "Nhập liệu tự do được bật"
+
+#
+msgid "Users are responsible for calculations when entering data"
+msgstr "Người dùng tự chịu trách nhiệm cho việc tính toán khi nhập liệu"
+
+#
+msgid "Goods"
+msgstr "Hàng hóa"
+
+#
+msgid "Lease"
+msgstr "Cho thuê"
+
+#
+msgid "Tool name"
+msgstr "Tên công cụ"
+
+#
+msgid "Tool code"
+msgstr "Mã công cụ"
+
+#
+msgid "Offset item"
+msgstr "Đối ứng"
+
+#
+msgid "Depreciation from"
+msgstr "Khấu hao từ"
+
+#
+msgid "Document No."
+msgstr "Số hoá đơn"
+
+#
+msgid "Meeting config"
+msgstr "Cấu hình cuộc họp"
+
+#
+msgid "Add new meeting room"
+msgstr "Thêm phòng họp"
+
+#
+msgid "Update meeting room"
+msgstr "Cập nhập phòng họp"
+
+#
+msgid "Delivery information"
+msgstr "Thông tin giao hàng"
+
+#
+msgid "Estimated delivery date is required"
+msgstr "Ngày giao dự kiến là bắt buộc"
+
+#
+msgid "Return 0 if value of indicator is negative"
+msgstr "Trả về 0 nếu giá trị chỉ tiêu âm"

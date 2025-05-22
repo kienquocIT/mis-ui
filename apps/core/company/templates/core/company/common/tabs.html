@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="row mt-5" id="tabs">
+<div class="row mt-3 mb-5">
     <div class="col-12">
         <ul class="nav nav-tabs nav-icon nav-light">
             <li class="nav-item">
@@ -10,15 +10,15 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_function_number">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-123"></i></span></span>
-                    <span class="nav-link-text">{% trans 'Function number' %}</span>
-                </a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_inventory_management">
                     <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-warehouse"></i></span></span>
                     <span class="nav-link-text">{% trans 'Inventory management' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_function_number">
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-arrow-up-1-9"></i></span></span>
+                    <span class="nav-link-text">{% trans 'Auto Code Generator' %}</span>
                 </a>
             </li>
         </ul>
@@ -27,7 +27,7 @@
         <div class="tab-pane fade show active" id="tab_config">
             <form id="tblCompanyConfig" data-url="{% url 'CompanyConfigDetailAPI' %}" data-method="PUT">
                 {% csrf_token %}
-                <div class="row" id="company-config" data-url-detail="{% url 'CompanyConfigDetailAPI' %}" data-url-currency-list="{% url 'CurrencyListAPI' %}">
+                <div class="row" id="company-config" data-url-detail="{% url 'CompanyConfigDetailAPI' %}" data-url-all-app="{% url 'TenantApplicationListAPI' %}" data-url-currency-list="{% url 'CurrencyListAPI' %}">
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label required" for="idxLanguage">{% trans 'Language' %}</label>
@@ -98,24 +98,6 @@
                 </div>
             </form>
         </div>
-        <div class="tab-pane fade" id="tab_function_number">
-            <div class="row">
-                <div class="col-12">
-                    <table class="table nowrap w-100" id="function_number_table">
-                        <thead>
-                            <tr>
-                                <th class="w-5" style="min-width: 50px"></th>
-                                <th class="w-20" style="min-width: 250px">{% trans 'Function' %}</th>
-                                <th class="w-20" style="min-width: 250px">{% trans 'Numbering by' %}</th>
-                                <th class="w-45" style="min-width: 350px">{% trans 'Schema' %}</th>
-                                <th class="w-10" style="min-width: 50px">{% trans 'Action' %}</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
         <div class="tab-pane fade" id="tab_inventory_management">
             <div class="row">
                 <div class="col-12 mb-3">
@@ -162,6 +144,62 @@
                                     <label class="form-check-label" for="cost-per-prj">{% trans 'Cost per project (sale order in Opp)' %}</label>
                                 </div>
                             </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="tab_function_number">
+            <div class="row">
+                <div class="col-12">
+                    <ul class="nav nav-line nav-light">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#tab_code_application">
+                                <span class="nav-link-text">{% trans 'Application' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_code_master_data">
+                                <span class="nav-link-text">{% trans 'Master data' %}</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tab_code_application">
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table table-bordered nowrap w-100" id="app_function_number_table">
+                                        <thead class="bg-primary-light-5">
+                                            <tr>
+                                                <th class="w-5" style="min-width: 30px"></th>
+                                                <th class="w-20" style="min-width: 200px">{% trans 'Application name' %}</th>
+                                                <th class="w-70" style="min-width: 400px">{% trans 'Schema' %}</th>
+                                                <th class="w-5" style="min-width: 50px"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    <button id="add-new-app" class="btn btn-primary btn-sm mt-2" type="button">{% trans 'Add new config' %}</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_code_master_data">
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table table-bordered nowrap w-100" id="master_data_function_number_table">
+                                        <thead class="bg-primary-light-5">
+                                            <tr>
+                                                <th class="w-5" style="min-width: 30px"></th>
+                                                <th class="w-20" style="min-width: 200px">{% trans 'Master data name' %}</th>
+                                                <th class="w-70" style="min-width: 400px">{% trans 'Schema' %}</th>
+                                                <th class="w-5" style="min-width: 50px"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    <button id="add-new-master-data" class="btn btn-primary btn-sm mt-2" type="button">{% trans 'Add new config' %}</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

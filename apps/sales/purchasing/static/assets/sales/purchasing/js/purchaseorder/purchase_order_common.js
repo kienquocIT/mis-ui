@@ -410,6 +410,7 @@ class POLoadDataHandle {
         if (POLoadDataHandle.supplierSelectEle.val()) {
             dataFilter = {'supplier_mapped_id': POLoadDataHandle.supplierSelectEle.val()}
         }
+        WindowControl.showLoading();
         $.fn.callAjax2({
                 'url': frm.dataUrl,
                 'method': frm.dataMethod,
@@ -435,6 +436,7 @@ class POLoadDataHandle {
                             POLoadDataHandle.loadDataShowPurchaseQuotation();
                             POLoadDataHandle.loadAllTablesDisabled();
                         }
+                        WindowControl.hideLoading();
                     }
                 }
             }
@@ -1839,6 +1841,7 @@ class PODataTableHandle {
                 // add css to Dtb
                 POLoadDataHandle.loadCssToDtb('datable-purchase-request');
                 POLoadDataHandle.loadEventCheckbox($table, true);
+                PODataTableHandle.dtbPurchaseRequestHDCustom();
             },
         });
     };
@@ -1846,13 +1849,18 @@ class PODataTableHandle {
     static dataTablePurchaseRequestProduct(data) {
         let $table = $('#datable-purchase-request-product');
         $table.DataTableDefault({
+            styleDom: 'hide-foot',
             data: data ? data : [],
+            ordering: false,
             paging: false,
             info: false,
+            searching: false,
+            autoWidth: true,
+            scrollX: true,
             columns: [
                 {
                     targets: 0,
-                    class: 'w-5',
+                    width: '5%',
                     render: (data, type, row, meta) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" data-row="${dataRow}">${(meta.row + 1)}</span>`
@@ -1860,7 +1868,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
-                    class: 'w-20',
+                    width: '30%',
                     render: (data, type, row) => {
                         let checked = '';
                         let disabled = '';
@@ -1891,35 +1899,35 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
-                    class: 'w-15',
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-code">${row?.['purchase_request']?.['code']}</span>`
                     }
                 },
                 {
                     targets: 3,
-                    class: 'w-10',
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-uom-request" id="${row.uom.id}">${row.uom.title}</span>`
                     }
                 },
                 {
                     targets: 4,
-                    class: 'w-10',
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-quantity-request">${row.quantity}</span>`
                     }
                 },
                 {
                     targets: 5,
-                    class: 'w-10',
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<span class="table-row-remain">${row?.['remain_for_purchase_order']}</span>`
                     }
                 },
                 {
                     targets: 6,
-                    class: 'w-20',
+                    width: '15%',
                     render: (data, type, row) => {
                         if ($('#frm_purchase_order_create').attr('data-method') !== 'GET') {
                             if (row.hasOwnProperty('quantity_order')) {
@@ -1941,6 +1949,7 @@ class PODataTableHandle {
                 // add css to Dtb
                 POLoadDataHandle.loadCssToDtb('datable-purchase-request-product');
                 POLoadDataHandle.loadEventCheckbox($table);
+                PODataTableHandle.dtbPurchaseRequestProductHDCustom();
             },
         });
     };
@@ -2020,6 +2029,7 @@ class PODataTableHandle {
             drawCallback: function () {
                 // add css to Dtb
                 POLoadDataHandle.loadCssToDtb('datable-purchase-request-product-merge');
+                PODataTableHandle.dtbPurchaseRequestProductMergeHDCustom();
             },
         });
     };
@@ -2102,7 +2112,8 @@ class PODataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<div class="row table-row-item-area">
+                        return `<textarea class="form-control table-row-item-show zone-readonly" rows="2" readonly>${row?.['product']?.['title']}</textarea>
+                                <div class="row table-row-item-area hidden">
                                     <div class="col-12 col-md-12 col-lg-12">
                                         <select
                                             class="form-select table-row-item"
@@ -2600,7 +2611,7 @@ class PODataTableHandle {
                     }
                 }
                 if (invoiceDataEle) {
-                    $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : []));
+                    $(invoiceDataEle).val(JSON.stringify(data?.['invoice_data'] ? data?.['invoice_data'] : {}));
                 }
                 if (valBeforeEle) {
                     if (checkTax?.['check'] === "mixed" && POLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
@@ -2960,6 +2971,45 @@ class PODataTableHandle {
     };
 
     // Custom dtb
+    static dtbPurchaseRequestHDCustom() {
+        let $table = $('#datable-purchase-request');
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
+    static dtbPurchaseRequestProductHDCustom() {
+        let $table = $('#datable-purchase-request-product');
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
+    static dtbPurchaseRequestProductMergeHDCustom() {
+        let $table = $('#datable-purchase-request-product-merge');
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
     static dtbProductHDCustom() {
         let $table = PODataTableHandle.$tablePOByAdd;
         let wrapper$ = $table.closest('.dataTables_wrapper');

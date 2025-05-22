@@ -15,11 +15,13 @@ $(document).ready(function () {
             dtb_balance_init_item_Ele.DataTable().clear().destroy()
             let frm = new SetupFormSubmit(dtb_balance_init_item_Ele);
             dtb_balance_init_item_Ele.DataTableDefault({
-                dom: '',
                 rowIdx: true,
                 useDataServer: true,
                 reloadCurrency: true,
                 paging: false,
+                scrollCollapse: true,
+                scrollY: '60vh',
+                scrollX: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -34,51 +36,56 @@ $(document).ready(function () {
                 },
                 columns: [
                     {
-                        className: 'wrap-text',
+                        className: 'w-5',
                         render: (data, type, row) => {
                             return ``;
                         }
                     },
                     {
-                        className: 'wrap-text',
+                        className: 'w-15',
                         render: (data, type, row) => {
-                            return `<span data-item-id="${row?.['product']?.['id']}"
-                                          class="badge badge-soft-primary balance-item">
+                            return `<span data-item-id="${row?.['product']?.['id']}" class="fw-bold text-primary balance-item">
                                         ${row?.['product']?.['code']}
-                                    </span>&nbsp;<span>${row?.['product']?.['title']}</span>
+                                    </span>`;
+                        }
+                    },
+                    {
+                        className: 'w-20',
+                        render: (data, type, row) => {
+                            return `<span class="text-primary">${row?.['product']?.['title']}</span>
                                     <script class="script-lot">${JSON.stringify(row?.['data_lot'])}</script>
                                     <script class="script-sn">${JSON.stringify(row?.['data_sn'])}</script>
                             `;
                         }
                     },
                     {
-                        className: 'wrap-text',
+                        className: 'w-10',
                         render: (data, type, row) => {
-                            return `<span class="text-muted uom-title">${row?.['uom']?.['title']}</span>`;
+                            return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="text-primary fw-bold balance-wh">${row?.['warehouse']?.['code']}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text',
+                        className: 'w-15',
                         render: (data, type, row) => {
-                            return `<span data-wh-id="${row?.['warehouse']?.['id']}" class="badge badge-soft-blue balance-wh">${row?.['warehouse']?.['code']}</span>&nbsp;<span>${row?.['warehouse']?.['title']}</span>`;
+                            return `<span class="text-primary">${row?.['warehouse']?.['title']}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text',
+                        className: 'w-15',
                         render: (data, type, row) => {
-                            return `<span class="balance-quantity">${row?.['quantity']}</span>`;
+                            return `<span class="balance-quantity mr-1">${row?.['quantity']}</span><span class="text-muted uom-title">${row?.['uom']?.['title']}</span>`;
                         }
                     },
                     {
-                        className: 'wrap-text',
+                        className: 'w-15',
                         render: (data, type, row) => {
                             return `<span class="balance-value mask-money" data-init-money="${row?.['value']}"></span>`;
                         }
                     },
                     {
-                        className: 'wrap-text text-right',
+                        className: 'w-5 text-center',
                         render: (data, type, row) => {
-                            return `<a href="#" class="text-secondary clear-balance-init"><i class="bi bi-x-lg"></i></a>`;
+                            return `<a href="#" class="text-danger clear-balance-init"><i class="ri-delete-bin-6-line fs-5"></i></a>`;
                         }
                     },
                 ],

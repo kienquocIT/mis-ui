@@ -176,8 +176,7 @@ $(function () {
             if (this.closest('.btn-group')) {
                 if (this.closest('.btn-group').querySelector('.control')) {
                     let target = parseInt(this.closest('.btn-group').querySelector('.control').getAttribute('data-drag'));
-                    NodeLoadDataHandle.dataNode = NodeLoadDataHandle.dataNode.filter(data => data.order !== target);
-                    FlowJsP.init();
+                    NodeLoadDataHandle.loadDeleteNode(target);
                 }
             }
         });
@@ -186,8 +185,7 @@ $(function () {
             if (this.closest('.btn-group')) {
                 if (this.closest('.btn-group').querySelector('.clone')) {
                     let target = parseInt(this.closest('.btn-group').querySelector('.clone').getAttribute('data-drag'));
-                    NodeLoadDataHandle.dataNode = NodeLoadDataHandle.dataNode.filter(data => data.order !== target);
-                    FlowJsP.init();
+                    NodeLoadDataHandle.loadDeleteNode(target);
                 }
             }
         });
@@ -297,8 +295,18 @@ $(function () {
                 let dataShow = JSON.parse(dataShowRaw);
                 let dataSelected = SelectDDControl.get_data_from_idx($(this), $(this).val());
                 if (dataSelected) {
+                    let text = "";
+                    if (dataSelected?.['title']) {
+                        text = dataSelected?.['title'];
+                    }
+                    if (dataSelected?.['full_name']) {
+                        text = dataSelected?.['full_name'];
+                    }
+                    if (dataSelected?.['name']) {
+                        text = dataSelected?.['name'];
+                    }
                     // show editor
-                    NodeFormulaHandle.$formulaEditor.val(`${NodeFormulaHandle.$formulaEditor.val() + dataShow?.['syntax']}=="${dataSelected?.['title']}"`);
+                    NodeFormulaHandle.$formulaEditor.val(`${NodeFormulaHandle.$formulaEditor.val() + dataShow?.['syntax']}=="${text}"`);
                     // on blur editor to validate formula
                     NodeFormulaHandle.$formulaEditor.blur();
                 }

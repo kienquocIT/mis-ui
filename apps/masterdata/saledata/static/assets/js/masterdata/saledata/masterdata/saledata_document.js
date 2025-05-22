@@ -87,19 +87,16 @@ $(document).ready(function () {
                 {
                     className: 'wrap-text text-right w-10',
                     render: (data, type, row, meta) => {
-                        if (!row?.['is_default']) {
-                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover ${btnUpdateDocType}"
-                                           data-id="${row?.['id']}"
-                                           data-code="${row?.['code']}"
-                                           data-title="${row?.['title']}"
-                                           data-bs-toggle="modal"
-                                           data-bs-target=${modalUpdateDocType}
-                                           data-bs-placement="top" title=""
-                                           >
-                                           <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
-                                        </a>`
-                        }
-                        return ``
+                        return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover ${btnUpdateDocType}"
+                                   data-id="${row?.['id']}"
+                                   data-code="${row?.['code']}"
+                                   data-title="${row?.['title']}"
+                                   data-bs-toggle="modal"
+                                   data-bs-target=${modalUpdateDocType}
+                                   data-bs-placement="top" title=""
+                                   >
+                                   <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                               </a>`
                     }
                 }
             ]

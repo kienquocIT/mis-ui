@@ -1073,7 +1073,7 @@ class OpportunityActivity {
         $table.DataTable().clear().destroy()
         $table.DataTableDefault({
             rowIdx: true,
-            scrollX: '100vw',
+            scrollX: true,
             scrollY: '40vh',
             scrollCollapse: true,
             ajax: {
@@ -1221,7 +1221,7 @@ class OpportunityActivity {
                     targets: 5,
                     className: 'text-right',
                     render: (data, type, row) => {
-                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY',})
+                        return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                     }
                 }
             ],
@@ -1307,7 +1307,7 @@ class LoadConfigAndLoadStage {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '50vh',
                 ajax: {
                     url: frm.dataUrl,
@@ -1322,20 +1322,20 @@ class LoadConfigAndLoadStage {
                 },
                 columns: [
                     {
-                        className: 'wrap-text w-5',
+                        className: 'w-5',
                         render: (data, type, row) => {
                             return '';
                         }
                     },
                     {
-                        className: 'wrap-text w-45',
+                        className: 'w-45',
                         render: (data, type, row) => {
                             return `<span class="badge badge-soft-primary w-30">${row?.['code']}</span><span class="text-primary ml-2">${row?.['full_name']}</span>`
                         }
                     },
                     {
                         data: 'group',
-                        className: 'wrap-text w-40',
+                        className: 'w-40',
                         render: (data) => {
                             return `<span class="badge badge-outline badge-blue">{0}</span>`.format_by_idx(
                                 data.title
@@ -1344,7 +1344,7 @@ class LoadConfigAndLoadStage {
                     },
                     {
                         data: 'is_checked_new',
-                        className: 'wrap-text w-10',
+                        className: 'w-10',
                         render: (data, type, row) => {
                             if ($('.member-item .card[data-id="' + row.id + '"]').length > 0) {
                                 return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`
@@ -1836,15 +1836,19 @@ class LoadConfigAndLoadStage {
 
 class InitDataTables {
     static loadDtbOpportunityList() {
-        if (!$.fn.DataTable.isDataTable('#table_opportunity_list-purchase-request')) {
+        if (!$.fn.DataTable.isDataTable('#table_opportunity_list')) {
             let $table = $('#table_opportunity_list')
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '70vh',
                 scrollCollapse: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -1859,73 +1863,61 @@ class InitDataTables {
                 columns: [
                     {
                         targets: 0,
-                        className: 'wrap-text w-5',
+                        className: 'w-5',
                         render: () => {
                             return ``
                         }
                     },
                     {
                         targets: 1,
-                        className: 'wrap-text w-10',
+                        className: 'ellipsis-cell-xs w-10',
                         render: (data, type, row) => {
                             const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}"><span class="badge badge-primary">${row?.['code']}</span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover fw-bold" title="${row?.['code']}">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
                         targets: 2,
-                        className: 'wrap-text w-20',
+                        className: 'ellipsis-cell-lg w-20',
                         render: (data, type, row) => {
                             const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row?.['id'])
-                            return `<a href="${link}"><span class="fw-bold text-primary">${row?.['title']}</span></a>`
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
                         targets: 3,
-                        className: 'wrap-text w-20',
+                        className: 'ellipsis-cell-lg w-20',
                         render: (data, type, row) => {
-                            return `<span class="text-muted">${row?.['customer']?.['title']}</span>`
+                            return `<span title="${row?.['customer']?.['title']}">${row?.['customer']?.['title']}</span>`
                         }
                     },
                     {
                         targets: 4,
-                        className: 'wrap-text w-15',
+                        className: 'w-10',
                         render: (data, type, row) => {
-                            return `<span class="text-blue">${row?.['sale_person']?.['full_name']}</span>`
+                            return `<span>${row?.['sale_person']?.['full_name']}</span>`
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
                         targets: 5,
-                        className: 'wrap-text w-10',
+                        className: 'w-15',
                         data: "open_date",
                         render: (data, type, row) => {
-                            return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
-                                'outputFormat': 'DD-MM-YYYY',
-                                callback: function (data) {
-                                    return `<p>${data?.['relate']}</p><small>${data?.['output']}</small>`;
-                                }
-                            }) : "_";
-                        }
-                    },
-                    {
-                        targets: 6,
-                        className: 'wrap-text w-10',
-                        data: "close_date",
-                        render: (data, type, row) => {
-                            return data !== null && data !== undefined ? $x.fn.displayRelativeTime(data, {
-                                'outputFormat': 'DD-MM-YYYY',
-                                callback: function (data) {
-                                    return `<p>${data?.['relate']}</p><small>${data?.['output']}</small>`;
-                                }
-                            }) : "_";
+                            return $x.fn.displayRelativeTime(row?.['close_date'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
                         targets: 7,
-                        className: 'wrap-text w-10',
+                        className: 'w-10',
                         render: (data, type, row) => {
                             let stage_current = row?.['stage'] || {}
-                            return `<span class="${stage_current?.['win_rate'] === 100 ? 'text-gold' : 'text-secondary'}">${stage_current?.['indicator']} (${stage_current?.['win_rate']}%)</span>${stage_current?.['win_rate'] === 100 ? '&nbsp;<i class="bi bi-trophy-fill text-gold"></i>' : ''}`
+                            return `<span class="badge badge-pill text-dark ${stage_current?.['win_rate'] === 100 ? 'bg-success-light-4' : 'bg-secondary-light-4'} w-100">${stage_current?.['indicator']} (${stage_current?.['win_rate']}%)</span>`
                         }
                     },
                 ],
@@ -1941,7 +1933,7 @@ class InitDataTables {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '25vh',
                 scrollCollapse: true,
                 data: data,
@@ -1953,7 +1945,6 @@ class InitDataTables {
                     },
                     {
                         data: 'product',
-                        className: 'wrap-text',
                         render: (data) => {
                             if (data) {
                                 return `<select class="form-select select-box-product" data-method="GET" data-url="${urlEle.data('url-product')}" data-keyResp="product_sale_list" required></select><input class="form-control input-product-name hidden" type="text" value="${data.title}"/>`
@@ -1963,20 +1954,17 @@ class InitDataTables {
                         }
                     },
                     {
-                        className: 'wrap-text',
                         render: () => {
                             return `<select class="form-select box-select-product-category" data-method="GET" data-url="${urlEle.data('url-product-category')}" data-keyResp="product_category_list" required></select>`
                         }
                     },
                     {
-                        className: 'wrap-text',
                         render: () => {
                             return `<select class="form-select box-select-uom" data-method="GET" data-url="${urlEle.data('url-uom')}" data-keyResp="unit_of_measure" required></select>`
                         }
                     },
                     {
                         data: 'product_quantity',
-                        className: 'wrap-text',
                         render: (data) => {
                             return `<input type="number" class="form-control input-quantity" value="{0}" required/>`.format_by_idx(
                                 data
@@ -1985,7 +1973,6 @@ class InitDataTables {
                     },
                     {
                         data: 'product_unit_price',
-                        className: 'wrap-text',
                         render: (data) => {
                             return `<input type="text" class="form-control mask-money input-unit-price" data-return-type="number" value="{0}" required/>`.format_by_idx(
                                 data
@@ -1993,14 +1980,12 @@ class InitDataTables {
                         }
                     },
                     {
-                        className: 'wrap-text',
                         render: () => {
                             return `<select class="form-select box-select-tax" data-method="GET" data-url="${urlEle.data('url-tax')}" data-keyResp="tax_list" required></select>`
                         }
                     },
                     {
                         data: 'product_subtotal_price',
-                        className: 'wrap-text',
                         render: (data) => {
                             return `<input class="form-control mask-money input-subtotal" type="text" data-return-type="number" value="{0}" readonly required>`.format_by_idx(
                                 data
@@ -2008,7 +1993,6 @@ class InitDataTables {
                         }
                     },
                     {
-                        className: 'wrap-text',
                         render: () => {
                             return `<a class="btn btn-icon btn-del-item"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
                         }
@@ -2026,25 +2010,22 @@ class InitDataTables {
                 rowIdx: true,
                 data: data,
                 paging: false,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '40vh',
                 scrollCollapse: true,
                 columns: [
                     {
-                        className: 'wrap-text',
                         render: () => {
                             return ``
                         }
                     },
                     {
-                        className: 'wrap-text',
                         render: () => {
                             return `<select class="form-control box-select-competitor" data-method="GET" data-url="${urlEle.data('url-competitor')}" data-keyResp="account_sale_list" data-keyText="name" required></select>`
                         }
                     },
                     {
                         data: 'strength',
-                        className: 'wrap-text',
                         render: (data) => {
                             return `<input class="form-control input-strength" type="text" value="{0}"/>`.format_by_idx(
                                 data
@@ -2053,7 +2034,6 @@ class InitDataTables {
                     },
                     {
                         data: 'weakness',
-                        className: 'wrap-text',
                         render: (data) => {
                             return `<input type="text" class="form-control input-weakness" value="{0}"/>`.format_by_idx(
                                 data
@@ -2062,7 +2042,7 @@ class InitDataTables {
                     },
                     {
                         data: 'win_deal',
-                        className: 'wrap-text text-center',
+                        className: 'text-center',
                         render: (data) => {
                             if (data) {
                                 return `<div class="form-check"><input checked type="checkbox" class="form-check-input input-win-deal"></div>`
@@ -2072,7 +2052,6 @@ class InitDataTables {
                         }
                     },
                     {
-                        className: 'wrap-text',
                         render: () => {
                             return `<a class="btn btn-icon btn-del-item"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
                         }
@@ -2090,31 +2069,27 @@ class InitDataTables {
                 rowIdx: true,
                 data: data,
                 paging: false,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '25vh',
                 scrollCollapse: true,
                 columns: [
                     {
-                        className: 'wrap-text',
                         render: () => {
                             return ``
                         }
                     },
                     {
-                        className: 'wrap-text',
                         render: () => {
                             return `<select class="form-select box-select-type-customer" required></select>`
                         }
                     },
                     {
-                        className: 'wrap-text',
                         render: () => {
                             return `<select class="form-select box-select-contact" data-method="GET" data-url="${urlEle.data('url-contact')}" data-keyResp="contact_list" data-keyText="fullname" required></select>`
                         }
                     },
                     {
                         data: 'job_title',
-                        className: 'wrap-text',
                         render: (data) => {
                             return `<input type="text" class="form-control input-job-title" value="{0}" readonly/>`.format_by_idx(
                                 data
@@ -2122,13 +2097,11 @@ class InitDataTables {
                         }
                     },
                     {
-                        className: 'wrap-text',
                         render: () => {
                             return `<select class="form-select box-select-role" required></select>`
                         }
                     },
                     {
-                        className: 'wrap-text',
                         render: () => {
                             return `<a class="btn btn-icon btn-del-item">
                                         <span class="btn-icon-wrap">
@@ -2150,7 +2123,7 @@ class OpportunityLoadPage {
             dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
-                scrollX: '100vw',
+                scrollX: true,
                 scrollY: '40vh',
                 scrollCollapse: true,
                 ajax: {

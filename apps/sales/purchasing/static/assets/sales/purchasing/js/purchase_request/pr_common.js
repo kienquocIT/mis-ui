@@ -59,15 +59,19 @@ function LoadSupplier(ele, data) {
         if (selected) {
             let contact_owner = selected?.['owner']
             if (TYPE === '0' || $('#request-for-so').attr('data-type') === '0') {
+                contact_so.empty()
                 LoadContactOwner(contact_so, contact_owner)
             }
             else if (TYPE === '1' || $('#request-for-sf').attr('data-type') === '1') {
+                contact_sf.empty()
                 LoadContactOwner(contact_sf, contact_owner)
             }
             else if (TYPE === '2' || $('#request-for-sf').attr('data-type') === '1') {
+                contact_fa.empty()
                 LoadContactOwner(contact_fa, contact_owner)
             }
             else if (TYPE === '3' || $('#request-for-db').attr('data-type') === '3') {
+                contact_db.empty()
                 LoadContactOwner(contact_db, contact_owner)
             }
         }
@@ -75,9 +79,13 @@ function LoadSupplier(ele, data) {
 }
 
 function LoadContactOwner(ele, data) {
-    ele.empty()
     ele.initSelect2({
+        ajax: {
+            url: ele.attr('data-url'),
+            method: 'GET',
+        },
         data: (data ? data : null),
+        keyResp: 'contact_list',
         keyId: 'id',
         keyText: 'fullname',
     })
@@ -107,7 +115,6 @@ function LoadProductLineDetail(ele, data) {
             method: 'GET',
         },
         callbackDataResp: function (resp, keyResp) {
-            console.log(resp.data[keyResp])
             let result = [];
             for (let i = 0; i < resp.data[keyResp].length; i++) {
                 if (resp.data[keyResp][i]?.['product_choice'].includes(2)) {
@@ -172,24 +179,24 @@ function LoadLineDetailTable(ele, product_datas=[], disabled='') {
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         data: product_datas,
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: () => {
                     return ``
                 }
             },
             {
-                className: 'wrap-text w-20',
+                className: 'w-20',
                 render: (data, type, row) => {
                     return `<span data-so-product-id="${row?.['sale_order_product_id']}" data-id="${row?.['id']}" class="w-30 badge badge-soft-primary product-detail">${row?.['code']}</span>&nbsp;<span>${row?.['title']}</span>`;
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<button type="button" class="btn btn-xs btn-light" data-bs-toggle="tooltip" data-bs-placement="top" title="${row?.['description'] ? row?.['description'] : ''}">
                                 <i class="fa-solid fa-circle-info"></i> ${script_trans.attr('data-trans-description')}
@@ -197,25 +204,25 @@ function LoadLineDetailTable(ele, product_datas=[], disabled='') {
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<span data-id="${row?.['uom_id']}" class="product-uom-detail">${row?.['uom_title']}</span>`
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<span class="request-number-detail">${row?.['request_number']}</span>`
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<input ${disabled} class="form-control mask-money text-right unit-price-detail" value="${row?.['unit_price'] ? row?.['unit_price'] : 0}">`
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<select data-tax-id="${row?.['tax_id']}"
                                     data-tax-code="${row?.['tax_code']}"
@@ -225,7 +232,7 @@ function LoadLineDetailTable(ele, product_datas=[], disabled='') {
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<input class="form-control mask-money text-right subtotal-detail" disabled readonly value="${row?.['sub_total_price'] ? row?.['sub_total_price'] : 0}">`
                 }
@@ -263,60 +270,60 @@ function LoadLineDetailTableAddRow(ele, product_datas=[], disabled='') {
         rowIdx: true,
         reloadCurrency: true,
         paging: false,
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         data: product_datas,
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: () => {
                     return ``
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<select ${disabled} class="form-select select2 product-detail"></select>`;
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<textarea class="small product-des-detail">${row?.['description'] ? row?.['description'] : ''}</textarea>`
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<select ${disabled} class="form-select select2 product-uom-detail"></select>`
                 }
             },
             {
-                className: 'wrap-text w-10',
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<input ${disabled} type="number" class="form-control request-number-detail" value="${row?.['request_number'] ? row?.['request_number'] : 0}">`
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<input ${disabled} class="form-control mask-money text-right unit-price-detail" value="${row?.['unit_price'] ? row?.['unit_price'] : 0}">`
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: () => {
                     return `<select ${disabled} class="form-select select2 tax-detail"></select>`;
                 }
             },
             {
-                className: 'wrap-text w-15',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<input class="form-control mask-money text-right subtotal-detail" disabled readonly value="${row?.['sub_total_price'] ? row?.['sub_total_price'] : 0}">`
                 }
             },
             {
-                className: 'wrap-text text-center',
+                className: 'text-center',
                 'render': () => {
                     return `<button class="btn-del-line-detail btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                 }
@@ -362,7 +369,7 @@ function LoadSaleOrderTable(is_all_so=false) {
         useDataServer: true,
         rowIdx: true,
         scrollY: '25vh',
-        scrollX: '100vw',
+        scrollX: true,
         ajax: {
             url: tableSaleOrder.attr('data-url'),
             data: data_param,
@@ -383,22 +390,22 @@ function LoadSaleOrderTable(is_all_so=false) {
         },
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: () => {
                     return ``
                 }
             }, {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
                     return `<span class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-so" data-id="${row?.['id']}"/></span>`
                 }
             }, {
-                className: 'wrap-text w-45',
+                className: 'w-45',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary p-so-code">${row?.['code']}</span><br><span class="text-primary">${row?.['title']}</span>`
                 }
             }, {
-                className: 'wrap-text w-45',
+                className: 'w-45',
                 render: (data, type, row) => {
                    let group = row?.['employee_inherit']?.['group']?.['title']
                     return `<span class="badge badge-light">${row?.['employee_inherit']?.['code']}</span><br><span class="text-muted">${row?.['employee_inherit']?.['full_name']} ${group ? '(' + group + ')' : ''}</span>`
@@ -416,42 +423,42 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
             rowIdx: true,
             paging: false,
             scrollY: '30vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: [],
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text w-35',
+                    className: 'w-35',
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return ``
                     }
@@ -466,7 +473,7 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
             rowIdx: true,
             paging: false,
             scrollY: '30h',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             ajax: {
                 url: tableSaleOrderProduct.attr('data-url').replace('/0', `/${sale_order_id}`),
@@ -490,13 +497,13 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text w-35',
+                    className: 'w-35',
                     render: (data, type, row) => {
                         return `<span data-so-product-id="${row?.['id']}"
                                   data-product-id="${row?.['product']?.['id']}"
@@ -514,25 +521,25 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return `<span class="quantity-span">${row?.['product_quantity']}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return `<span class="requested-span">${parseFloat(row?.['product_quantity']) - parseFloat(row?.['remain_for_purchase_request'])}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return `<span class="remain-span">${row?.['remain_for_purchase_request']}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return `<input type="number" class="form-control text-center request-number-input" value="0" max="${parseFloat(row?.['remain_for_purchase_request'])}">`
                     }
@@ -548,7 +555,7 @@ function LoadDistributionTable() {
         useDataServer: true,
         rowIdx: true,
         scrollY: '25vh',
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         ajax: {
             url: tableDistribution.attr('data-url'),
@@ -567,22 +574,22 @@ function LoadDistributionTable() {
         },
         columns: [
             {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: () => {
                     return ``
                 }
             }, {
-                className: 'wrap-text w-5',
+                className: 'w-5',
                 render: (data, type, row) => {
                     return `<span class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-dp" data-id="${row?.['id']}"/></span>`
                 }
             }, {
-                className: 'wrap-text w-45',
+                className: 'w-45',
                 render: (data, type, row) => {
                     return `<span class="badge badge-primary p-db-code">${row?.['code']}</span><br><span class="text-secondary">${row?.['title']}</span>`
                 }
             }, {
-                className: 'wrap-text w-45',
+                className: 'w-45',
                 render: (data, type, row) => {
                    let group = row?.['employee_inherit']?.['group']?.['title']
                     return `<span class="badge badge-light">${row?.['employee_inherit']?.['code']}</span><br><span class="text-muted">${row?.['employee_inherit']?.['full_name']} ${group ? '(' + group + ')' : ''}</span>`
@@ -599,42 +606,42 @@ function LoadDistributionProductTable(distribution_id=null) {
             rowIdx: true,
             paging: false,
             scrollY: '30vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             data: [],
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text w-35',
+                    className: 'w-35',
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return ``
                     }
@@ -648,7 +655,7 @@ function LoadDistributionProductTable(distribution_id=null) {
             rowIdx: true,
             paging: false,
             scrollY: '30vh',
-            scrollX: '100vw',
+            scrollX: true,
             scrollCollapse: true,
             ajax: {
                 url: tableDistributionProduct.attr('data-url').replace('/0', `/${distribution_id}`),
@@ -669,13 +676,13 @@ function LoadDistributionProductTable(distribution_id=null) {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return ``
                     }
                 },
                 {
-                    className: 'wrap-text w-35',
+                    className: 'w-35',
                     render: (data, type, row) => {
                         return `<span data-so-product-id="${row?.['id']}"
                                   data-product-id="${row?.['id']}"
@@ -689,28 +696,28 @@ function LoadDistributionProductTable(distribution_id=null) {
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         let planned_quantity = parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month'])
                         return `<span class="quantity-span">${planned_quantity}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         let requested_quantity = parseFloat(row?.['purchase_request_number'])
                         return `<span class="requested-span">${requested_quantity}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         let remain_quantity = (parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month'])) - parseFloat(row?.['purchase_request_number'])
                         return `<span class="remain-span">${remain_quantity >= 0 ? remain_quantity : '(' + remain_quantity * (-1) + ')'}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-center w-15',
+                    className: 'text-center w-15',
                     render: (data, type, row) => {
                         return `<input type="number" class="form-control text-center request-number-input" value="0">`
                     }
@@ -970,6 +977,7 @@ function LoadDetailPR(option) {
                     deliveryDate_so.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $('#pr-status-so').val(data?.['purchase_status'])
                     LoadSupplier(supplier_so, data?.['supplier'])
+                    contact_so.empty()
                     LoadContactOwner(contact_so, data?.['contact'])
                     $('#code-so').val(data?.['sale_order']?.['code'])
                     $('#note-so').val(data?.['note'])
@@ -1004,6 +1012,7 @@ function LoadDetailPR(option) {
                     deliveryDate_sf.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $('#pr-status-sf').val(data?.['purchase_status'])
                     LoadSupplier(supplier_sf, data?.['supplier'])
+                    contact_sf.empty()
                     LoadContactOwner(contact_sf, data?.['contact'])
                     $('#note-sf').val(data?.['note'])
 
@@ -1038,6 +1047,7 @@ function LoadDetailPR(option) {
                     deliveryDate_fa.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $('#pr-status-fa').val(data?.['purchase_status'])
                     LoadSupplier(supplier_fa, data?.['supplier'])
+                    contact_fa.empty()
                     LoadContactOwner(contact_fa, data?.['contact'])
                     $('#note-fa').val(data?.['note'])
 
@@ -1072,6 +1082,7 @@ function LoadDetailPR(option) {
                     deliveryDate_db.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $('#pr-status-db').val(data?.['purchase_status'])
                     LoadSupplier(supplier_db, data?.['supplier'])
+                    contact_db.empty()
                     LoadContactOwner(contact_db, data?.['contact'])
                     $('#code-db').val(data?.['distribution_plan']?.['code'])
                     $('#note-db').val(data?.['note'])

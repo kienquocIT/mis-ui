@@ -78,32 +78,28 @@ class ReturnAPLoadTab {
             columns: [
                 {
                     targets: 0,
-                    className: 'wrap-text',
-                    render: () => {
+                        render: () => {
                         return ``
                     }
                 },
                 {
                     targets: 1,
-                    data: 'expense_name',
-                    className: 'wrap-text',
-                    render: (data, type, row) => {
+                    data: 'expense_description',
+                        render: (data, type, row) => {
                         return `<span class="text-primary row-expense" data-id="${row.id}">${data}</span>`
                     }
                 },
                 {
                     data: 'expense_type',
                     targets: 2,
-                    className: 'wrap-text',
-                    render: (data) => {
+                        render: (data) => {
                         return `<span class="row-expense-type" data-id="${data.id}">${data.title}</span>`
                     }
                 },
                 {
                     data: 'remain_total',
                     targets: 3,
-                    className: 'wrap-text',
-                    render: (data) => {
+                        render: (data) => {
                         return `<span class="mask-money remain-price" data-init-money="${data}"></span>`
                     }
                 },
@@ -218,7 +214,7 @@ class ReturnAPHandle {
         tbProduct.find('tbody tr').each(function () {
             returned_list.push({
                 'advance_payment_cost_id': $(this).find('.row-expense').data('id'),
-                'expense_name': $(this).find('.row-expense').text(),
+                'expense_description': $(this).find('.row-expense').text(),
                 'expense_type_id': $(this).find('.row-expense-type').data('id'),
                 'remain_value': parseFloat($(this).find('.remain-price').attr('data-init-money')),
                 'return_value': $(this).find('.return-price').attr('value'),

@@ -5,6 +5,10 @@ $(function () {
         let $table = $('#table_asset_status_lease_list');
         let $urlFact = $('#app-urls-factory');
         let $transFact = $('#app-trans-factory');
+        let dataAssetType = {
+            'Fixed asset': $transFact.attr('data-fixed-asset'),
+            'Tool': $transFact.attr('data-tool'),
+        };
 
         function loadDbl(data) {
             $table.DataTableDefault({
@@ -29,9 +33,12 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '3%',
+                        width: '5%',
                         render: (data, type, row) => {
-                            return `<span>${row?.['asset_type'] ? row?.['asset_type'] : ''}</span>`;
+                            if (row?.['asset_type']) {
+                                return `<span>${dataAssetType[row?.['asset_type']]}</span>`;
+                            }
+                            return ``;
                         }
                     },
                     {
@@ -135,19 +142,18 @@ $(function () {
                 }
             }
             let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-            headerToolbar$.prepend(textFilter$);
-
-            if (textFilter$.length > 0) {
-                textFilter$.css('display', 'flex');
-                // Check if the button already exists before appending
+            if (headerToolbar$.length > 0) {
                 if (!$('#btn-open-filter').length) {
-                    let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
-                                        <span><span class="icon"><i class="fas fa-filter"></i></span><span>${$transFact.attr('data-filter')}</span></span>
-                                    </button>`);
-                    textFilter$.append(
-                        $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
-                    );
+                    let $group = $(`<div class="btn-filter">
+                                        <div class="d-flex justify-content-end align-items-center">
+                                            <div class="btn-group dropdown ml-1" data-bs-toggle="tooltip" title="${$transFact.attr('data-filter')}">
+                                                <button type="button" class="btn btn-light ml-1" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                                    <span><span class="icon"><i class="fas fa-filter"></i></span></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>`);
+                    headerToolbar$.append($group);
                 }
             }
         }

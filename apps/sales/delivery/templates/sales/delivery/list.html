@@ -70,6 +70,37 @@
         </thead>
         <tbody></tbody>
     </table>
+
+    <div class="modal-canvas-area">
+
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
+            <div class="modal-header">
+                <h5><b>{% trans 'Filter' %}</b></h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label" for="box-status">{% trans 'Status' %}</label>
+                        <select class="form-select" id="box-status"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label" for="box-state">{% trans 'Delivery status' %}</label>
+                        <select class="form-select" id="box-state"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas" data-zone="lease_costs_data">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-primary" id="btn-apply-filter" data-bs-dismiss="offcanvas">{% trans 'Apply' %}</button>
+            </div>
+        </div>
+
+    </div>
+
+
 {% endblock %}
 
 {% block dataHiddenGroup %}
@@ -81,8 +112,12 @@
            data-create-delivery="{% url 'SaleOrderDetailDeliveryAPI' 1 %}"
            data-picking="{% url 'OrderPickingList' %}"
     >
-    <input type="hidden" id="app-trans-factory"
-    data-edit="{% trans 'Edit' %}">
+    <input
+            type="hidden"
+            id="app-trans-factory"
+            data-edit="{% trans 'Edit' %}"
+            data-filter="{% trans 'Filter' %}"
+    >
     {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 

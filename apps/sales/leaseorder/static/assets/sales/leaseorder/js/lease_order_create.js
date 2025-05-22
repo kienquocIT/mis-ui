@@ -10,6 +10,7 @@ $(function () {
 
         // Load inits
         LeaseOrderLoadDataHandle.loadCustomCss();
+        LeaseOrderLoadDataHandle.loadInitConfigLease();
         LeaseOrderLoadDataHandle.loadInitInherit();
         LeaseOrderLoadDataHandle.loadInitCustomer();
         LeaseOrderLoadDataHandle.loadBoxQuotationCustomer();
@@ -36,21 +37,7 @@ $(function () {
         LeaseOrderLoadDataHandle.loadInitQuotationConfig(LeaseOrderLoadDataHandle.$form.attr('data-method'));
         // date picker
         $('.date-picker').each(function () {
-            $(this).daterangepicker({
-                singleDatePicker: true,
-                timepicker: false,
-                showDropdowns: false,
-                minYear: 2023,
-                locale: {
-                    format: 'DD/MM/YYYY',
-                },
-                maxYear: parseInt(moment().format('YYYY'), 10),
-                autoApply: true,
-                autoUpdateInput: false,
-            }).on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY')).trigger('change');
-            });
-            $(this).val('').trigger('change');
+            DateTimeControl.initDatePicker(this);
         });
 
         // get WF initial zones
@@ -126,18 +113,18 @@ $(function () {
                 {'id': 2, 'title': 'Serial number'},
             ];
             let $modal = $(this);
-            LeaseOrderLoadDataHandle.loadInitS2($boxPType, [], {'is_default': true}, $modal);
-            LeaseOrderLoadDataHandle.loadInitS2($boxPCategory, [], {}, $modal);
-            LeaseOrderLoadDataHandle.loadInitS2($boxPUomGr, [], {}, $modal);
-            LeaseOrderLoadDataHandle.loadInitS2($boxPUom, [], {}, $modal);
-            LeaseOrderLoadDataHandle.loadInitS2($boxPTax, [], {}, $modal);
-            LeaseOrderLoadDataHandle.loadInitS2($boxPMethod, dataMethod, {}, $modal);
+            FormElementControl.loadInitS2($boxPType, [], {'is_default': true}, $modal);
+            FormElementControl.loadInitS2($boxPCategory, [], {}, $modal);
+            FormElementControl.loadInitS2($boxPUomGr, [], {}, $modal);
+            FormElementControl.loadInitS2($boxPUom, [], {}, $modal);
+            FormElementControl.loadInitS2($boxPTax, [], {}, $modal);
+            FormElementControl.loadInitS2($boxPMethod, dataMethod, {}, $modal);
         });
 
         $('#add-product-uom-group').on('change', function () {
             let $boxPUom = $('#add-product-uom');
             let $modal = $('#addQuickProduct');
-            LeaseOrderLoadDataHandle.loadInitS2($boxPUom, [], {'group': $(this).val()}, $modal);
+            FormElementControl.loadInitS2($boxPUom, [], {'group': $(this).val()}, $modal);
         });
 
         $('#btn-save-product').on('click', function () {
@@ -240,15 +227,29 @@ $(function () {
         });
 
         LeaseOrderDataTableHandle.$tableSTool.on('change', '.table-row-quantity', function () {
-            let row = this.closest('tr');
-            if (row) {
-                let checkELe = row.querySelector('.table-row-checkbox');
-                if (checkELe) {
-                    if ($(this).val() > 0) {
-                        checkELe.checked = true;
+            if ($(this).val()) {
+                let lease = parseFloat($(this).val());
+                let row = this.closest('tr');
+                if (row) {
+                    let availableEle = row.querySelector('.table-row-available');
+                    if (availableEle) {
+                        if (availableEle.innerHTML) {
+                            let available = parseFloat(availableEle.innerHTML);
+                            if (lease > available) {
+                                $(this).val(0);
+                                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-exceed-quantity')}, 'failure');
+                                return false;
+                            }
+                        }
                     }
-                    if ($(this).val() <= 0) {
-                        checkELe.checked = false;
+                    let checkELe = row.querySelector('.table-row-checkbox');
+                    if (checkELe) {
+                        if ($(this).val() > 0) {
+                            checkELe.checked = true;
+                        }
+                        if ($(this).val() <= 0) {
+                            checkELe.checked = false;
+                        }
                     }
                 }
             }
@@ -541,9 +542,14 @@ $(function () {
             LeaseOrderLoadDataHandle.loadDataTableDepreciation();
         });
 
+        LeaseOrderLoadDataHandle.$depreciationModal.on('click', '.btn-config-asset-tool', function () {
+            LeaseOrderLoadDataHandle.loadDataConfigAssetTool();
+        });
+
         LeaseOrderLoadDataHandle.$btnSaveDepreciation.on('click', function () {
             LeaseOrderLoadDataHandle.loadSaveDepreciation();
             LeaseOrderCalculateCaseHandle.calculateAllRowsTableCost();
+            LeaseOrderStoreDataHandle.storeDtbData(2);
         });
 
         $('#btn-collapse').click(function () {
@@ -743,16 +749,16 @@ $(function () {
             if (promotionParse?.['is_discount'] === true) { // DISCOUNT
                 if (promotionParse?.['row_apply_index'] !== null) { // on product
                     let newRow = LeaseOrderDataTableHandle.$tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-                    LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                    FormElementControl.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                    FormElementControl.loadInitS2($(newRow.querySelector('.table-row-tax')));
                     let afterRow = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(promotionParse?.['row_apply_index']).node();
                     $(newRow).detach().insertAfter(afterRow);
                     LeaseOrderCalculateCaseHandle.commonCalculate(LeaseOrderDataTableHandle.$tableProduct, newRow);
                     LeaseOrderLoadDataHandle.loadRowDisabled(newRow);
                 } else { // on whole order
                     let newRow = LeaseOrderDataTableHandle.$tableProduct.DataTable().row.add(dataAdd).draw().node();
-                    LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-                    LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                    FormElementControl.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                    FormElementControl.loadInitS2($(newRow.querySelector('.table-row-tax')));
                     LeaseOrderCalculateCaseHandle.commonCalculate(LeaseOrderDataTableHandle.$tableProduct, newRow);
                     if (promotionParse.hasOwnProperty('discount_rate_on_order')) {
                         if (promotionParse.discount_rate_on_order !== null) {
@@ -770,8 +776,8 @@ $(function () {
                     let newRow = LeaseOrderDataTableHandle.$tableProduct.DataTable().row.add(dataAdd).draw().node();
                     let afterRow = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(promotionParse?.['row_apply_index']).node();
                     $(newRow).detach().insertAfter(afterRow);
-                    LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-                    LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                    FormElementControl.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                    FormElementControl.loadInitS2($(newRow.querySelector('.table-row-tax')));
                     LeaseOrderLoadDataHandle.loadRowDisabled(newRow);
                 } else { // on whole order
                     let newRow = LeaseOrderDataTableHandle.$tableProduct.DataTable().row.add(dataAdd).draw().node();
@@ -820,8 +826,8 @@ $(function () {
                     "shipping_data": dataShipping,
                 };
                 let newRow = LeaseOrderDataTableHandle.$tableProduct.DataTable().row.add(dataAdd).draw().node();
-                LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-uom')));
-                LeaseOrderLoadDataHandle.loadInitS2($(newRow.querySelector('.table-row-tax')));
+                FormElementControl.loadInitS2($(newRow.querySelector('.table-row-uom')));
+                FormElementControl.loadInitS2($(newRow.querySelector('.table-row-tax')));
                 // Re Calculate after add shipping (pretax, discount, total)
                 shippingHandle.calculateShipping(shippingPrice);
                 // Load disabled

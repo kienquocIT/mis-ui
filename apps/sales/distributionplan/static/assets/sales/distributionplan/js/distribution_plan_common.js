@@ -44,7 +44,7 @@ function loadFixedCostsTable(data_list=[], option='create') {
         reloadCurrency: true,
         paging: false,
         scrollY: '35vh',
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         data: data_list,
         columns: [
@@ -54,19 +54,19 @@ function loadFixedCostsTable(data_list=[], option='create') {
                 }
             },
             {
-                className: 'wrap-text w-50',
+                className: 'w-50',
                 'render': () => {
                     return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 fixed-cost-expense-item"></select>`
                 }
             },
             {
-                className: 'wrap-text w-40',
+                className: 'w-40',
                 'render': () => {
                     return `<input ${option === 'detail' ? 'readonly disabled' : ''} class="form-control mask-money text-right fixed-cost-value" value="0">`;
                 }
             },
             {
-                className: 'wrap-text w-10 text-center',
+                className: 'w-10 text-center',
                 'render': () => {
                     return `<button type="button" class="btn ${option === 'detail' ? 'disabled' : ''} del-expense-row"><i class="fas fa-trash-alt text-secondary"></i></button>`;
                 }
@@ -90,7 +90,7 @@ function loadVariableCostsTable(data_list=[], option='create') {
         reloadCurrency: true,
         paging: false,
         scrollY: '35vh',
-        scrollX: '100vw',
+        scrollX: true,
         scrollCollapse: true,
         data: data_list,
         columns: [
@@ -100,19 +100,19 @@ function loadVariableCostsTable(data_list=[], option='create') {
                 }
             },
             {
-                className: 'wrap-text w-50',
+                className: 'w-50',
                 'render': () => {
                     return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 variable-cost-expense-item"></select>`
                 }
             },
             {
-                className: 'wrap-text w-40',
+                className: 'w-40',
                 'render': () => {
                     return `<input ${option === 'detail' ? 'readonly disabled' : ''} class="form-control text-right mask-money variable-cost-value" value="0">`;
                 }
             },
             {
-                className: 'wrap-text w-10 text-center',
+                className: 'w-10 text-center',
                 'render': () => {
                     return `<button type="button" class="btn ${option === 'detail' ? 'disabled' : ''} del-expense-row"><i class="fas fa-trash-alt text-secondary"></i></button>`;
                 }

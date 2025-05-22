@@ -815,12 +815,14 @@
                                 >
                                     <thead>
                                     <tr class="bg-light">
-                                        <th class="w-15">{% trans 'Tool name' %}</th>
-                                        <th class="w-15">{% trans 'Tool code' %}</th>
+                                        <th class="w-10">{% trans 'Tool name' %}</th>
+                                        <th class="w-10">{% trans 'Tool code' %}</th>
+                                        <th class="w-5">{% trans 'Quantity' %}</th>
                                         <th class="w-15">{% trans 'Original cost' %}</th>
-                                        <th class="w-15">{% trans 'Start depreciation' %}</th>
+                                        <th class="w-10">{% trans 'Depreciation from' %}</th>
                                         <th class="w-15">{% trans 'Net value' %}</th>
                                         <th class="w-15">{% trans 'Depreciation time' %}</th>
+                                        <th class="w-10">{% trans 'Available' %}</th>
                                         <th class="w-10">{% trans 'Lease' %}</th>
                                     </tr>
                                     </thead>
@@ -1041,7 +1043,7 @@
             <div class="offcanvas offcanvas-end w-85" tabindex="-1" id="viewDepreciationDetail" aria-labelledby="offcanvasTopLabel">
                 <div class="modal-header">
                     <h5><b>{% trans 'Depreciation detail' %}</b></h5>
-                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas" data-zone="lease_costs_data"><span class="icon"><i class="far fa-window-close"></i></span></button>
                 </div>
                 <div class="offcanvas-body">
                     <div class="row">
@@ -1061,7 +1063,7 @@
                         <div class="col-12 col-md-2 col-lg-2">
                             <div class="form-group">
                                 <label class="form-label" for="depreciation_method">{% trans 'Select method' %}</label>
-                                <select class="form-select depreciation-method" id="depreciation_method" readonly></select>
+                                <select class="form-select depreciation-method" id="depreciation_method" data-zone="lease_costs_data" readonly></select>
                             </div>
                         </div>
                         <div class="col-12 col-md-2 col-lg-2">
@@ -1071,9 +1073,88 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-2 col-lg-2">
-                            <div class="form-group" id="product_convert_into_area" hidden>
-                                <label class="form-label" for="product_convert_into">{% trans 'Product will convert into' %}</label>
-                                <select class="form-select product-convert-into" id="product_convert_into" readonly></select>
+                            <div class="d-flex align-items-center hidden"  id="product_convert_into_area">
+                                <div class="form-group">
+                                    <label class="form-label" for="product_convert_into">{% trans 'Goods convert into' %}</label>
+                                    <select class="form-select product-convert-into" id="product_convert_into" data-zone="lease_costs_data"></select>
+                                </div>
+                                <div class="dropdown mt-3">
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg btn-config-asset-tool" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="fas fa-ellipsis-h"></i></span></button>
+                                    <div role="menu" class="dropdown-menu w-300p" id="dropdown-menu-config-asset-tool">
+                                        <div class="row config-tool-area hidden">
+                                            <div class="form-group">
+                                                <label class="form-label" for="tool_type_id">{% trans 'Classification' %}</label>
+                                                <select
+                                                        class="form-select"
+                                                        id="tool_type_id"
+                                                        data-url="{% url "ToolClassificationMasterDataListAPI" %}"
+                                                        data-method="GET"
+                                                        name="tool_type_id"
+                                                        data-keyResp="tool_classification_list"
+                                                ></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label" for="tool_group_manage_id">{% trans 'Group manage' %}</label>
+                                                <select
+                                                        class="form-select"
+                                                        id="tool_group_manage_id"
+                                                        data-url="{% url "GroupListAPI" %}"
+                                                        data-method="GET"
+                                                        name="tool_group_manage_id"
+                                                        data-keyResp="group_list"
+                                                ></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label" for="tool_group_using_id">{% trans 'Group using' %}</label>
+                                                <select
+                                                        class="form-select"
+                                                        id="tool_group_using_id"
+                                                        data-url="{% url "GroupListAPI" %}"
+                                                        data-method="GET"
+                                                        name="tool_group_using_id"
+                                                        data-keyResp="group_list"
+                                                        multiple
+                                                ></select>
+                                            </div>
+                                        </div>
+                                        <div class="row config-asset-area hidden">
+                                            <div class="form-group">
+                                                <label class="form-label" for="asset_type_id">{% trans 'Classification' %}</label>
+                                                <select
+                                                        class="form-select"
+                                                        id="asset_type_id"
+                                                        data-url="{% url "FixedAssetClassificationMasterDataListAPI" %}"
+                                                        data-method="GET"
+                                                        name="asset_type_id"
+                                                        data-keyResp="classification_list"
+                                                ></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label" for="asset_group_manage_id">{% trans 'Group manage' %}</label>
+                                                <select
+                                                        class="form-select"
+                                                        id="asset_group_manage_id"
+                                                        data-url="{% url "GroupListAPI" %}"
+                                                        data-method="GET"
+                                                        name="asset_group_manage_id"
+                                                        data-keyResp="group_list"
+                                                ></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label" for="asset_group_using_id">{% trans 'Group using' %}</label>
+                                                <select
+                                                        class="form-select"
+                                                        id="asset_group_using_id"
+                                                        data-url="{% url "GroupListAPI" %}"
+                                                        data-method="GET"
+                                                        name="asset_group_using_id"
+                                                        data-keyResp="group_list"
+                                                        multiple
+                                                ></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1107,7 +1188,7 @@
                                 <label class="form-label required" for="lease_start_date">{% trans 'Start lease' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" id="lease_start_date"
-                                           class="form-control lease-start-date date-picker" autocomplete="off" disabled>
+                                           class="form-control lease-start-date date-picker" autocomplete="off" data-zone="lease_costs_data" disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -1119,7 +1200,7 @@
                                 <label class="form-label required" for="lease_end_date">{% trans 'End lease' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" id="lease_end_date"
-                                           class="form-control lease-end-date date-picker" autocomplete="off" disabled>
+                                           class="form-control lease-end-date date-picker" autocomplete="off" data-zone="lease_costs_data" disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -1221,7 +1302,7 @@
         data-required-contact="{% trans "Contact is required" %}"
         data-required-payment="{% trans "Payment is required" %}"
         data-required-product="{% trans "Product is required" %}"
-        data-asset-type-1="{% trans "Product" %}"
+        data-asset-type-1="{% trans "Goods" %}"
         data-asset-type-2="{% trans "Tool" %}"
         data-asset-type-3="{% trans "Fixed asset" %}"
         data-refresh="{% trans "Refresh" %}"
@@ -1327,6 +1408,12 @@
             type="text"
             id="data-init-customer"
             data-url="{% url "AccountForSaleListAPI" %}"
+            data-method="GET"
+    >
+    <input
+            type="text"
+            id="data-config-lease-order"
+            data-url="{% url "LeaseOrderConfigDetailAPI" %}"
             data-method="GET"
     >
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}

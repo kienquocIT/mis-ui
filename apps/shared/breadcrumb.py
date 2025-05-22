@@ -91,10 +91,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     MASTER_DATA_PRICE_PAGE = BreadcrumbChildren(_('Master data price'), 'PriceMasterDataList')
     MEETING_CONFIG_PAGE = BreadcrumbChildren(_('Meeting config'), 'MeetingScheduleMasterdataList')
 
-    # Master Data
-    CONTACT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Contact'), 'ContactMasterDataList')
-    ACCOUNT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Account'), 'AccountMasterDataList')
-    PRODUCT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Product'), 'ProductMasterDataList')
+    # Master data
+    CONTACT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master data contact'), 'ContactMasterDataList')
+    ACCOUNT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master data account'), 'AccountMasterDataList')
+    PRODUCT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master data product'), 'ProductMasterDataList')
 
     # Product
     PRODUCT_LIST_PAGE = BreadcrumbChildren(_('Product'), 'ProductList')
@@ -203,7 +203,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_LIST_PAGE = BreadcrumbChildren(_('Task'), 'OpportunityTaskList')
 
     # Document
-    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Document'), 'DocumentTypeMasterDataList')
+    DOCUMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master data document'), 'DocumentTypeMasterDataList')
 
     # Bidding Result config
     BIDDING_RESULT_CONFIG_PAGE = BreadcrumbChildren(_('Bidding'), 'BiddingResultConfigList')
@@ -471,12 +471,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PARTNER_CENTER_LIST_PAGE = BreadcrumbChildren(_('Lists'), 'ListList')
 
     # Fixed asset
-    CATEGORY_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Categories'), 'CategoryMasterDataList')
+    CATEGORY_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master data categories'), 'CategoryMasterDataList')
     FIXED_ASSET_PAGE = BreadcrumbChildren(_('Fixed Asset'), 'FixedAssetList')
     FIXED_ASSET_WRITE_OFF_PAGE = BreadcrumbChildren(_('Fixed Asset Write-off'), 'FixedAssetWriteOffList')
 
     # Bank
-    BANK_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master Data Bank'), 'BankMasterDataList')
+    BANK_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master data bank'), 'BankMasterDataList')
 
     # Instrument tool
     INSTRUMENT_TOOL_PAGE = BreadcrumbChildren(_('Instrument Tool'), 'InstrumentToolList')
@@ -487,6 +487,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Group Order
     GROUP_ORDER_PAGE = BreadcrumbChildren(_('Group order'), 'GroupOrderList')
+
+    # Payment plan
+    PAYMENT_PLAN_LIST_PAGE = BreadcrumbChildren(_('Payment plan'), 'PaymentPlanList')
 
     # KMS
     KMS_DOC_TYPE_LIST = BreadcrumbChildren(_('Document type'), 'DocumentTypeConfigList')
@@ -666,8 +669,8 @@ class BreadcrumbView:
     ]
 
     MEETING_CONFIG_PAGE = [
-                              BreadcrumbItem.MEETING_CONFIG_PAGE
-                          ],
+        BreadcrumbItem.MEETING_CONFIG_PAGE
+    ]
 
     CONTACT_MASTER_DATA_LIST_PAGE = [
         BreadcrumbItem.CONTACT_MASTER_DATA_LIST_PAGE
@@ -1321,6 +1324,12 @@ class BreadcrumbView:
     GROUP_ORDER_CREATE_PAGE = GROUP_ORDER_LIST + [BreadcrumbItem.BASTION_CREATE]
     GROUP_ORDER_DETAIL_PAGE = GROUP_ORDER_LIST + [BreadcrumbItem.BASTION_DETAIL]
     GROUP_ORDER_UPDATE_PAGE = GROUP_ORDER_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Payment plan
+    PAYMENT_PLAN_LIST_PAGE = [
+        BreadcrumbItem.PAYMENT_PLAN_LIST_PAGE
+    ]
+
 
     KMS_DOC_TYPE_LIST = [
         BreadcrumbItem.HOME_PAGE,

@@ -19,14 +19,14 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return ''
                     }
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-10',
+                    className: 'w-10',
                     render: (data, type, row) => {
                         if (row?.['is_default']) {
                             return `<span class="badge badge-light w-70">${data}</span>`
@@ -36,7 +36,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         if (row.is_default) {
                              return `<b>${data}</b>`
@@ -46,16 +46,15 @@ $(document).ready(function () {
                 },
                 {
                     data: 'description',
-                    className: 'wrap-text w-45',
+                    className: 'w-45',
                     render: (data) => {
                         return `<span class="initial-wrap">${data}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
-                        if (!row?.['is_default']) {
-                            return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-account-type"
+                        return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-account-type"
                                         data-id="${row?.['id']}"
                                         data-code="${row?.['code']}"
                                         data-title="${row?.['title']}"
@@ -70,8 +69,6 @@ $(document).ready(function () {
                                     </span>
                                 </span>
                             </a>`
-                        }
-                        return ``
                     }
                 }
             ],
@@ -97,14 +94,14 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return ''
                     }
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-10',
+                    className: 'w-10',
                     render: (data, type, row, meta) => {
                         if (row?.['is_default']) {
                             return `<span class="badge badge-light w-70">${data}</span>`
@@ -114,20 +111,20 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data) => {
                         return `${data}`
                     }
                 },
                 {
                     data: 'description',
-                    className: 'wrap-text w-45',
+                    className: 'w-45',
                     render: (data) => {
                         return `<span class="initial-wrap">${data}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-account-group"
                                     data-id="${row?.['id']}"
@@ -169,14 +166,14 @@ $(document).ready(function () {
             },
             columns: [
                 {
-                    className: 'wrap-text w-5',
+                    className: 'w-5',
                     render: () => {
                         return ''
                     }
                 },
                 {
                     data: 'code',
-                    className: 'wrap-text w-10',
+                    className: 'w-10',
                     render: (data, type, row, meta) => {
                         if (row?.['is_default']) {
                             return `<span class="badge badge-light w-70">${data}</span>`
@@ -186,20 +183,20 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'wrap-text w-30',
+                    className: 'w-30',
                     render: (data) => {
                         return `${data}`
                     }
                 },
                 {
                     data: 'description',
-                    className: 'wrap-text w-45',
+                    className: 'w-45',
                     render: (data) => {
                         return `<span class="initial-wrap">${data}</span>`
                     }
                 },
                 {
-                    className: 'wrap-text text-right w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-industry"
                                     data-id="${row?.['id']}"

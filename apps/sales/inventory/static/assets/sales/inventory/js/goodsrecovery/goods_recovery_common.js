@@ -252,10 +252,10 @@ class RecoveryLoadDataHandle {
         let dataJSON = {};
         let clonedData = JSON.parse(JSON.stringify(dataTool));
         for (let cloned of clonedData) {
-            if (dataJSON.hasOwnProperty(cloned?.['id'])) {
-                dataJSON[cloned?.['id']]['quantity_recovery'] += cloned?.['quantity_recovery'];
+            if (dataJSON.hasOwnProperty(cloned?.['tool_id'])) {
+                dataJSON[cloned?.['tool_id']]['quantity_recovery'] += cloned?.['quantity_recovery'];
             } else {
-                dataJSON[cloned?.['id']] = cloned;
+                dataJSON[cloned?.['tool_id']] = cloned;
             }
         }
         for (let key in dataJSON) {
@@ -974,6 +974,7 @@ class RecoveryDataTableHandle {
                 // add css to Dtb
                 RecoveryLoadDataHandle.loadCssToDtb('datable-delivery');
                 RecoveryLoadDataHandle.loadEventRadio(RecoveryDataTableHandle.$tableDelivery);
+                RecoveryDataTableHandle.dtbDeliveryHDCustom();
             },
         });
     };
@@ -1028,6 +1029,7 @@ class RecoveryDataTableHandle {
                 // add css to Dtb
                 RecoveryLoadDataHandle.loadCssToDtb('datable-deli-product');
                 RecoveryLoadDataHandle.loadEventRadio(RecoveryDataTableHandle.$tableDeliveryProduct);
+                RecoveryDataTableHandle.dtbDeliveryProductHDCustom();
             },
         });
     };
@@ -1111,6 +1113,7 @@ class RecoveryDataTableHandle {
                 // add css to Dtb
                 RecoveryLoadDataHandle.loadCssToDtb('datable-deli-product-new');
                 RecoveryLoadDataHandle.loadEventCheckbox(RecoveryDataTableHandle.$tableProductNew);
+                RecoveryDataTableHandle.dtbProductNewHDCustom();
             },
         });
     };
@@ -1224,6 +1227,7 @@ class RecoveryDataTableHandle {
             drawCallback: function () {
                 $.fn.initMaskMoney2();
                 RecoveryLoadDataHandle.loadCssToDtb("table-depreciation-detail");
+                RecoveryDataTableHandle.dtbDepreciationHDCustom();
             },
         });
     };
@@ -1254,6 +1258,58 @@ class RecoveryDataTableHandle {
                 textFilter$.append(
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                 );
+            }
+        }
+    };
+
+    static dtbDeliveryHDCustom() {
+        let $table = RecoveryDataTableHandle.$tableDelivery;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
+    static dtbDeliveryProductHDCustom() {
+        let $table = RecoveryDataTableHandle.$tableDeliveryProduct;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
+    static dtbProductNewHDCustom() {
+        let $table = RecoveryDataTableHandle.$tableProductNew;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
+            }
+        }
+    };
+
+    static dtbDepreciationHDCustom() {
+        let $table = RecoveryDataTableHandle.$tableDepreciationDetail;
+        let wrapper$ = $table.closest('.dataTables_wrapper');
+        let $theadEle = wrapper$.find('thead');
+        if ($theadEle.length > 0) {
+            for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                if (!$(thEle).hasClass('border-right')) {
+                    $(thEle).addClass('border-right');
+                }
             }
         }
     };

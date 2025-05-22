@@ -3878,18 +3878,18 @@ class POSubmitHandle {
         _form.dataForm['purchase_order_payment_stage'] = POSubmitHandle.setupDataPaymentStage();
         _form.dataForm['purchase_order_invoice'] = POSubmitHandle.setupDataInvoice();
         // validate payment stage submit
-        if (_form.dataForm?.['purchase_order_payment_stage'] && _form.dataForm?.['total_product']) {
-            if (_form.dataForm?.['purchase_order_payment_stage'].length > 0) {
-                let totalPayment = 0;
-                for (let payment of _form.dataForm['purchase_order_payment_stage']) {
-                    totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
-                }
-                if (totalPayment !== _form.dataForm?.['total_product']) {
-                    $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
-                    return false;
-                }
-            }
-        }
+        // if (_form.dataForm?.['purchase_order_payment_stage'] && _form.dataForm?.['total_product']) {
+        //     if (_form.dataForm?.['purchase_order_payment_stage'].length > 0) {
+        //         let totalPayment = 0;
+        //         for (let payment of _form.dataForm['purchase_order_payment_stage']) {
+        //             totalPayment += payment?.['value_total'] ? payment?.['value_total'] : 0;
+        //         }
+        //         if (totalPayment !== _form.dataForm?.['total_product']) {
+        //             $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-validate-total-payment')}, 'failure');
+        //             return false;
+        //         }
+        //     }
+        // }
         // attachment
         if (_form.dataForm.hasOwnProperty('attachment')) {
           _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);

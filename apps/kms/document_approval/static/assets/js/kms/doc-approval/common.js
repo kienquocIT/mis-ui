@@ -14,17 +14,27 @@ class handleAttached {
         $Form.on('submit', function(e){
             let data = $Form.serializeObject()
             e.preventDefault()
-            let file_name = []
+            let file_name_lst = []
             $('.dm-uploader-result-list li').each(function(){
                 if( data.attachment.indexOf($(this).attr('data-file-id')) > -1)
-                    file_name.push($(this).find('.f-item-name').text())
+                    file_name_lst.push($(this).find('.f-item-name').text())
             });
-            _this.init_table_attached([{
-                    data: data,
-                    file_name: file_name,
+
+            let temp_data = {
+                    attachment: data.attachment.split(','),
+                    content_group: data.content_group,
+                    document_type: data.document_type,
+                    folder: data.folder,
+                    published_place: data.published_place,
+                    security_lv: parseInt(data.security_lv),
+                    file_name: file_name_lst,
                     id: null,
                     title: data.title,
-                }]
+                }
+            if (data.effective_date) temp_data.effective_date = data.effective_date
+            if (data.expired_date) temp_data.expired_date = data.expired_date
+
+            _this.init_table_attached([temp_data]
             )
             _this.resetForm()
 
@@ -44,9 +54,15 @@ class handleAttached {
                     {
                         data: 'file_name',
                         width: '45%',
-                        render: (row) => {
+                        render: (row, index, data) => {
                             let txt = ''
-                            for (let item of row) txt += item
+                            if (!row){
+                                row = []
+                                for(let item of data.attachment){
+                                    row.push(item.file_name)
+                                }
+                            }
+                            for (let item of row) txt += `<span class="text-decoration-underline">${item}</span>, `
                             return txt
                         }
                     },
@@ -126,6 +142,7 @@ class load_editor{
     }
 }
 
+
 $('document').ready(function (e) {
 
     function init_table_recipient(data){
@@ -139,13 +156,16 @@ $('document').ready(function (e) {
                 searching: false,
                 columns: [
                     {
-                        data: 'group_name',
-                        render: (row) => {
+                        data: 'id',
+                        render: (row, index, data) => {
+                            if (!$x.fn.checkUUID4(row)) data.id = $x.cls.util.generateUUID4();
                             let html = ``;
-                            for (let item in row){
-                                let cls = 'chip-primary'
-                                if (item.is_group) cls = 'chip-outline-primary'
-                                html += `<div class="chip pill chip-pill ${cls}"><span class="chip-text">${item}</span></div>`
+                            const key = data?.kind === 1 ? 'employee_access' : 'group_access'
+                            const data_loop = data[key]
+                            for (let val of Object.values(data_loop)){
+                                html += `<div class="chip chip-outline-primary pill chip-pill mr-2"><span class="chip-text">${
+                                    data.kind === 1 ? val.full_name : val?.title
+                                }</span></div>`
                             }
                             return html
                         }
@@ -160,16 +180,23 @@ $('document').ready(function (e) {
                         data: 'id',
                         render: (row) => {
                             return `<div class="actions-btn text-center">` +
+                                `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button"` +
+                                `title="Edit" href="#" data-id="${row}" data-action="edit">` +
+                                `<span class="btn-icon-wrap"><i class="fa-solid fa-pen"></i></span></a>` +
                                 `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn" title="Delete"` +
                                 `href="#" data-id="${row}" data-action="delete">` +
                                 `<span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a></div>`;
                         }
                     }
                 ],
-                rowCallback: function (row) {
-                    $('.actions-btn a', row).off().on('click', function (e) {
+                rowCallback: function (row, data, index) {
+                    $('.actions-btn a.delete-btn', row).off().on('click', function (e) {
                         e.stopPropagation();
                         $tbl.DataTable().row(row).remove().draw(false);
+                    })
+                    $('.actions-btn a.edit-button', row).off().on('click', function (e) {
+                        e.stopPropagation();
+                        $('#modal-recipient').trigger('modal.Recipient.edit', [{row_index: index}]);
                     })
                 },
             })
@@ -196,7 +223,7 @@ $('document').ready(function (e) {
     // load internal recipient
     init_table_recipient()
 
-    // load folder
+    // load select
     $('#kms_folder').initSelect2()
     $('#select-box-doc_type').initSelect2()
     $('#select-box-content_group').initSelect2()
@@ -210,4 +237,19 @@ $('document').ready(function (e) {
     const remark = new load_editor()
     remark.init()
 
+    // form on submit
+    SetupFormSubmit.validate(
+        $('#frm_document_approval'),
+        {
+            submitHandler: function (form) {
+                const frm = new SetupFormSubmit(form);
+                let data = frm.dataForm
+                data.attached_list = $('#table_attached_info').DataTable().data().toArray()
+                data.internal_recipient = $('#table_internal_recipient').DataTable().data().toArray()
+                frm.formElm = form
+                frm.resetForm = true
+                WFRTControl.callWFSubmitForm(frm);
+            }
+        }
+    )
 })

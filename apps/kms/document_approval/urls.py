@@ -37,7 +37,7 @@ urlpatterns = [
         'document-approval/detail-api/<str:pk>', KMSDocumentApprovalDetailAPI.as_view(),
         name='KMSDocumentApprovalDetailAPI'
     ),
-    path('document-approval/edit/<str:pk>', KMSDocumentApprovalEdit.as_view(), name='KMSDocumentApprovalEdit'),
+    path('document-approval/update/<str:pk>', KMSDocumentApprovalEdit.as_view(), name='KMSDocumentApprovalEdit'),
     path(
         'document-approval/edit-api/<str:pk>', KMSDocumentApprovalDetailAPI.as_view(),
         name='KMSDocumentApprovalEditAPI'

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block title %}
-    {% trans 'Document approval create' %}
+    {% trans 'Document approval edit' %}
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
@@ -23,9 +23,10 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form class="form_main" id="frm_document_approval" data-method="POST"
-          data-url="{% url 'KMSDocumentApprovalCreateAPI' %}" data-url-redirect="{% url 'KMSDocumentApprovalList' %}">
+    <form class="form_main" id="frm_document_approval" data-method="PUT"
+          data-url="{% url 'KMSDocumentApprovalDetailAPI' data.pk %}">
         {% csrf_token %}
+        <input type="hidden" id="id" name="id">
         <div class="row">
             <div class="col-md-12 col-lg-6 form-group">
                 <label class="form-label required" for="txt_title">{% trans 'Name' %}</label>
@@ -80,12 +81,6 @@
     {% endif %}
 
     <script src="{% static 'assets/js/kms/doc-approval/common.js' %}"></script>
-    <script>
-        new $x.cls.file($('#attachment')).init({'name': 'attachment'});
-        $(document).ready(function(){
-            WFRTControl.setWFInitialData('kmsdocumentapproval');
-        })
-    </script>
     <script src="{% static 'assets/js/kms/doc-approval/recipient-js.js' %}"></script>
-
+    <script src="{% static 'assets/js/kms/doc-approval/edit.js' %}"></script>
 {% endblock %}

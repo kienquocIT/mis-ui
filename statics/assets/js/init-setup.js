@@ -2315,6 +2315,7 @@ class WFRTControl {
                 let data = $.fn.switcherResp(resp);
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
+                    if (_form?.resetForm) $(_form.formElm)[0].reset()
                     setTimeout(() => {
                         window.location.replace(_form.dataUrlRedirect);
                     }, 2000);

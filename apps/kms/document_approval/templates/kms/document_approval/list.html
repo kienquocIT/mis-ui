@@ -21,19 +21,21 @@
 
 {% block pageContent %}
     <div class="row">
-        <table class="table nowrap w-100" data-method="get" data-url="{% url 'KMSDocumentApprovalListAPI' %}"
+        <table class="table nowrap w-100 min-w-1500p" data-method="get" data-url="{% url 'KMSDocumentApprovalListAPI' %}"
         data-url-detail="{% url 'KMSDocumentApprovalDetail' 1%}" id="tbl_document_approval">
             <thead>
             <tr>
                 <td>{% trans 'Code' %}</td>
                 <td>{% trans 'Name' %}</td>
+                <td>{% trans 'Remark' %}</td>
+                <td>{% trans 'System status' %}</td>
             </tr>
             </thead>
         </table>
     </div>
 {% endblock %}
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory">
+    {{ data.stt_sys | json_script:'stt_sys' }}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/kms/doc-approval/list.js' %}"></script>

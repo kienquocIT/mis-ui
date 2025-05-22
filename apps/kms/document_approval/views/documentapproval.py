@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, InputMappingProperties
+from apps.shared import mask_view, ServerAPI, ApiURL, InputMappingProperties, SYSTEM_STATUS
 from apps.shared.msg import KMSMsg, BaseMsg
 
 SECURITY_LV = (
@@ -21,7 +21,7 @@ class KMSDocumentApprovalList(View):
         breadcrumb='KMS_DOCUMENT_APPROVAL_LIST',
     )
     def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
+        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
 
 
 class KMSDocumentApprovalListAPI(APIView):
@@ -104,7 +104,7 @@ class KMSDocumentApprovalEdit(View):
     @mask_view(
         login_require=True,
         auth_require=True,
-        template='kms/document_approval/detail.html',
+        template='kms/document_approval/edit.html',
         menu_active='menu_document_approval',
         breadcrumb='KMS_DOCUMENT_APPROVAL_UPDATE_PAGE',
     )

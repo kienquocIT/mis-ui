@@ -16,8 +16,7 @@ class handleAttached {
             e.preventDefault()
             let file_name_lst = []
             $('.dm-uploader-result-list li').each(function(){
-                if( data.attachment.indexOf($(this).attr('data-file-id')) > -1)
-                    file_name_lst.push($(this).find('.f-item-name').text())
+                file_name_lst.push($(this).find('.f-item-name').text())
             });
 
             let temp_data = {

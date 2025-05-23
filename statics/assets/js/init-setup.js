@@ -2617,7 +2617,8 @@ class WFRTControl {
         let htmlBody = `<div class="d-flex align-items-center">
                             <div class="media align-items-center">
                                 <div class="media-head me-2">
-                                    <i class="far fa-smile"></i>
+<!--                                    <i class="far fa-smile"></i>-->
+                                    <img src="/static/assets/images/systems/bot_4712104.png" alt="BflowBot"/>
                                 </div>
                                 <div class="media-body">
                                     <b class="d-block fs-7">BflowBot</b>
@@ -2630,7 +2631,7 @@ class WFRTControl {
         let htmlCancel = `<div class="d-flex align-items-center">
                                 <div class="media align-items-center">
                                     <div class="media-head me-2">
-                                        <i class="far fa-smile"></i>
+                                        <img src="/static/assets/images/systems/bot_4712104.png" alt="BflowBot"/>
                                     </div>
                                     <div class="media-body">
                                         <b class="d-block fs-7">BflowBot</b>

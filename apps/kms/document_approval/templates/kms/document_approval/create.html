@@ -80,12 +80,7 @@
     {% endif %}
 
     <script src="{% static 'assets/js/kms/doc-approval/common.js' %}"></script>
-    <script>
-        new $x.cls.file($('#attachment')).init({'name': 'attachment'});
-        $(document).ready(function(){
-            WFRTControl.setWFInitialData('kmsdocumentapproval');
-        })
-    </script>
     <script src="{% static 'assets/js/kms/doc-approval/recipient-js.js' %}"></script>
+    <script src="{% static 'assets/js/kms/doc-approval/create.js' %}"></script>
 
 {% endblock %}

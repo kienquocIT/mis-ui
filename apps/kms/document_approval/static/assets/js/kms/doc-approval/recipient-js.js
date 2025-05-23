@@ -215,7 +215,6 @@ class popup_recipient {
             defaultDate: null,
             locale: globeLanguage === 'vi' ? 'vn' : 'default',
             shorthandCurrentMonth: true,
-            minDate: new Date(),
         }).set('clickOpens', false)
 
         $('#enabled_switch').on('change', function(){

@@ -9060,6 +9060,7 @@ class LeaseOrderSubmitHandle {
                 _form.dataForm['contact_data'] = data;
             }
         }
+        _form.dataForm['payment_term_data'] = {};
         if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
             if (dataSelected) {

@@ -5,7 +5,7 @@ from apps.core.hr.views import (
     EmployeeDetailAPI, EmployeeDetail, EmployeeUpdate, EmployeeCompanyListAPI, EmployeeUploadAvatarAPI,
     GroupLevelDetailAPI, RoleUpdateView, RoleUpdateAPI,
     PlanAppGetAppListAPI, PlanSummaryListAPI, ApplicationSummaryListAPI, PermissionSummaryListAPI, EmployeeListAllAPI,
-    EmployeeAdminCompanyAPI, TestEmailConnection, EmployeeUpdateEmailAPIKeyAPI,
+    EmployeeAdminCompanyAPI, TestEmailConnection, EmployeeUpdateEmailAPIKeyAPI, GroupDDListAPI,
 )
 from apps.core.hr.views import (
     RoleList, RoleListAPI, RoleCreate, RoleDetail, RoleDetailAPI,
@@ -52,4 +52,5 @@ urlpatterns = [
     path('group/<str:pk>', GroupDetailAPI.as_view(), name='GroupDetailAPI'),
     path('group/detail/<str:pk>', GroupDetail.as_view(), name='GroupDetail'),
     path('group/update/<str:pk>', GroupUpdate.as_view(), name='GroupUpdate'),
+    path('group-dropdown/api', GroupDDListAPI.as_view(), name='GroupDDListAPI'),
 ]

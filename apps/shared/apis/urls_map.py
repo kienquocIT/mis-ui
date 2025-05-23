@@ -134,6 +134,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GROUP_DETAIL_PK = StringUrl('hr/group/{pk}')
     GROUP_PARENT = StringUrl('hr/group/parent')
     GROUP_PARENT_PK = StringUrl('hr/group/parent/{level}')
+    GROUP_DD_LIST = StringUrl('hr/groups-dropdown')
 
     # home/company
     COMPANY_CONFIG = StringUrl('company/config')

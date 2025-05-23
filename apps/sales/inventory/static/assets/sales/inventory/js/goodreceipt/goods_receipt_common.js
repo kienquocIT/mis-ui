@@ -169,13 +169,13 @@ class GRLoadDataHandle {
     static loadChangeByType(type) {
         if (type === "1") {
             if (!GRLoadDataHandle.POSelectEle.val()) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.POSelectEle, [], {
+                FormElementControl.loadInitS2(GRLoadDataHandle.POSelectEle, [], {
                     'receipt_status__in': [0, 1, 2].join(','),
                     'system_status': 3
                 }, null, false, {'res1': 'code', 'res2': 'title'});
             }
             if (!GRLoadDataHandle.supplierSelectEle.val()) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.supplierSelectEle);
+                FormElementControl.loadInitS2(GRLoadDataHandle.supplierSelectEle);
             }
             if (GRDataTableHandle.tablePR[0].querySelector('.th-custom')) {
                 GRDataTableHandle.tablePR[0].querySelector('.th-custom').innerHTML = GRLoadDataHandle.transEle.attr('data-purchase-request');
@@ -183,22 +183,22 @@ class GRLoadDataHandle {
         }
         if (type === "2") {
             if (!GRLoadDataHandle.IASelectEle.val()) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [], {'state': 2}, null, false, {'res1': 'code', 'res2': 'title'});
+                FormElementControl.loadInitS2(GRLoadDataHandle.IASelectEle, [], {'state': 2}, null, false, {'res1': 'code', 'res2': 'title'});
             }
         }
         if (type === "3") {
             if (!GRLoadDataHandle.$boxTypeReport.val()) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxTypeReport, GRLoadDataHandle.dataTypeReport);
+                FormElementControl.loadInitS2(GRLoadDataHandle.$boxTypeReport, GRLoadDataHandle.dataTypeReport);
             }
             if (!GRLoadDataHandle.$boxProductionOrder.val()) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionOrder, [], {'system_status': 3, 'status_production': 1}, null, false, {'res1': 'code', 'res2': 'title'});
+                FormElementControl.loadInitS2(GRLoadDataHandle.$boxProductionOrder, [], {'system_status': 3, 'status_production': 1}, null, false, {'res1': 'code', 'res2': 'title'});
             }
             if (!GRLoadDataHandle.$boxWorkOrder.val()) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxWorkOrder, [], {'system_status': 3, 'status_production': 1}, null, false, {'res1': 'code', 'res2': 'title'});
+                FormElementControl.loadInitS2(GRLoadDataHandle.$boxWorkOrder, [], {'system_status': 3, 'status_production': 1}, null, false, {'res1': 'code', 'res2': 'title'});
             }
             GRDataTableHandle.dataTableProductionReport();
             if (GRLoadDataHandle.$boxProductionReport.val().length === 0) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport);
+                FormElementControl.loadInitS2(GRLoadDataHandle.$boxProductionReport);
             }
             if (GRDataTableHandle.tablePR[0].querySelector('.th-custom')) {
                 GRDataTableHandle.tablePR[0].querySelector('.th-custom').innerHTML = GRLoadDataHandle.transEle.attr('data-production-report');
@@ -215,8 +215,8 @@ class GRLoadDataHandle {
 
     static loadCustomAreaReportByType() {
         GRLoadDataHandle.loadClearModal();
-        GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
-        GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxWorkOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+        FormElementControl.loadInitS2(GRLoadDataHandle.$boxProductionOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
+        FormElementControl.loadInitS2(GRLoadDataHandle.$boxWorkOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
         GRDataTableHandle.tableProductionReport.DataTable().clear().draw();
         for (let eleArea of GRLoadDataHandle.$form[0].querySelectorAll('.custom-area-report')) {
             eleArea.setAttribute('hidden', 'true');
@@ -299,7 +299,7 @@ class GRLoadDataHandle {
             let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.POSelectEle, $ele.val());
             // load supplier
             GRLoadDataHandle.supplierSelectEle.empty();
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.supplierSelectEle, [dataSelected?.['supplier']]);
+            FormElementControl.loadInitS2(GRLoadDataHandle.supplierSelectEle, [dataSelected?.['supplier']]);
             // load PR
             GRLoadDataHandle.loadDataShowPR(dataSelected?.['purchase_requests_data']);
         }
@@ -368,7 +368,7 @@ class GRLoadDataHandle {
                     }
                 }
             )
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, [], {'production_order_id': data?.['id']});
+            FormElementControl.loadInitS2(GRLoadDataHandle.$boxProductionReport, [], {'production_order_id': data?.['id']});
         }
         return true;
     };
@@ -1084,7 +1084,7 @@ class GRLoadDataHandle {
         let dataStore = $row.data();
         if (row.querySelector('.table-row-item')) {
             if (dataStore?.['product_data']?.['id']) {
-                GRLoadDataHandle.loadInitS2($(row.querySelector('.table-row-item')), [dataStore?.['product_data']]);
+                FormElementControl.loadInitS2($(row.querySelector('.table-row-item')), [dataStore?.['product_data']]);
                 if (GRLoadDataHandle.typeSelectEle.val() === '3') {
                     if (row.querySelector('.table-row-price')) {
                         // call ajax check BOM
@@ -1119,13 +1119,13 @@ class GRLoadDataHandle {
             }
         }
         if (row.querySelector('.table-row-uom')) {
-            GRLoadDataHandle.loadInitS2($(row.querySelector('.table-row-uom')), [dataStore?.['uom_data']], {'group': dataStore?.['uom_data']?.['uom_group']?.['id']});
+            FormElementControl.loadInitS2($(row.querySelector('.table-row-uom')), [dataStore?.['uom_data']], {'group': dataStore?.['uom_data']?.['uom_group']?.['id']});
         }
         if (row.querySelector('.table-row-tax')) {
-            GRLoadDataHandle.loadInitS2($(row.querySelector('.table-row-tax')), [dataStore?.['tax_data']]);
+            FormElementControl.loadInitS2($(row.querySelector('.table-row-tax')), [dataStore?.['tax_data']]);
         }
         if (row.querySelector('.table-row-warehouse')) {
-            GRLoadDataHandle.loadInitS2($(row.querySelector('.table-row-warehouse')), [dataStore?.['warehouse_data']]);
+            FormElementControl.loadInitS2($(row.querySelector('.table-row-warehouse')), [dataStore?.['warehouse_data']]);
         }
         return true;
     };
@@ -1192,7 +1192,7 @@ class GRLoadDataHandle {
             '3': GRLoadDataHandle.transEle.attr('data-for-production'),
         }
         let idAreaShow = String(data?.['goods_receipt_type'] + 1);
-        GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
+        FormElementControl.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
         GRLoadDataHandle.typeSelectEle.val(idAreaShow);
         let boxRender = $('#good-receipt-type-area')[0]?.querySelector('.select2-selection__rendered');
         if (boxRender) {
@@ -1204,21 +1204,21 @@ class GRLoadDataHandle {
             GRLoadDataHandle.$isNoWHEle.trigger('click');
         }
         if (idAreaShow === '1') {  // GR for PO
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.POSelectEle, [data?.['purchase_order_data']], {'receipt_status__in': [0, 1, 2].join(','), 'system_status': 3});
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.supplierSelectEle, [data?.['supplier_data']]);
+            FormElementControl.loadInitS2(GRLoadDataHandle.POSelectEle, [data?.['purchase_order_data']], {'receipt_status__in': [0, 1, 2].join(','), 'system_status': 3});
+            FormElementControl.loadInitS2(GRLoadDataHandle.supplierSelectEle, [data?.['supplier_data']]);
             GRLoadDataHandle.loadDataShowPR(data?.['purchase_requests']);
         }
         if (idAreaShow === '2') {  // GR for IA
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.IASelectEle, [data?.['inventory_adjustment_data']], {'state': 2});
+            FormElementControl.loadInitS2(GRLoadDataHandle.IASelectEle, [data?.['inventory_adjustment_data']], {'state': 2});
         }
         if (idAreaShow === '3') {  // GR for Production
             if (data?.['production_report_type'] === 0) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionOrder, [data?.['production_order_data']], {'system_status': 3});
+                FormElementControl.loadInitS2(GRLoadDataHandle.$boxProductionOrder, [data?.['production_order_data']], {'system_status': 3});
             }
             if (data?.['production_report_type'] === 1) {
-                GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxWorkOrder, [data?.['work_order_data']], {'system_status': 3});
+                FormElementControl.loadInitS2(GRLoadDataHandle.$boxWorkOrder, [data?.['work_order_data']], {'system_status': 3});
             }
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, data?.['production_reports_data']);
+            FormElementControl.loadInitS2(GRLoadDataHandle.$boxProductionReport, data?.['production_reports_data']);
         }
         GRDataTableHandle.tableLineDetailPO.DataTable().rows.add(data?.['gr_products_data']).draw();
         GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailPO);
@@ -1315,7 +1315,7 @@ class GRLoadDataHandle {
                     if (data) {
                         if (data.hasOwnProperty('production_report_gr') && Array.isArray(data.production_report_gr)) {
                             GRLoadDataHandle.loadTotal(dataDetail);
-                            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, data.production_report_gr, {'production_order_id': GRLoadDataHandle.$boxProductionOrder.val()});
+                            FormElementControl.loadInitS2(GRLoadDataHandle.$boxProductionReport, data.production_report_gr, {'production_order_id': GRLoadDataHandle.$boxProductionOrder.val()});
                             if (GRLoadDataHandle.$boxProductionReport.val().length > 0) {
                                 let dataProductionPro = GRLoadDataHandle.loadSetupProduction();
                                 let isDetail = false;

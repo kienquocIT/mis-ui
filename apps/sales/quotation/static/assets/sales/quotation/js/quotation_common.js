@@ -1446,6 +1446,7 @@ class QuotationLoadDataHandle {
         let ratioEle = row.querySelector('.table-row-ratio');
         let eleDate = row.querySelector('.table-row-date');
         let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+        let valReconcileEle = row.querySelector('.table-row-value-reconcile');
         let valTotalEle = row.querySelector('.table-row-value-total');
         let dueDateEle = row.querySelector('.table-row-due-date');
         if ($(ele).val()) {
@@ -1461,7 +1462,9 @@ class QuotationLoadDataHandle {
                     }
                     if (dataSelected?.['unit_type'] === 1) {
                         $(valBeforeEle).attr('value', String(dataSelected?.['value']));
-                        $(valTotalEle).attr('value', String(dataSelected?.['value']));
+                        if (!$(valReconcileEle).val()) {
+                            $(valTotalEle).attr('value', String(dataSelected?.['value']));
+                        }
                     }
                 }
                 dueDateEle.setAttribute('disabled', 'true');

@@ -19,6 +19,7 @@ from .application import AppMsg
 from .core import CoreMsg
 from .masterdata import MDMsg
 from .production import ProductionMsg
+from .kms import KMSMsg
 
 
 class BaseMsg:

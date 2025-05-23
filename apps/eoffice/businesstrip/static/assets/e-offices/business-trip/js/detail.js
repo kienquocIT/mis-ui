@@ -33,10 +33,7 @@ $(document).ready(function(){
             $('#dateFInput').val($x.fn.reformatData(data.date_f, 'YYYY-MM-DD', 'DD/MM/YYYY'))
             $('#dateTInput').val($x.fn.reformatData(data.date_t, 'YYYY-MM-DD', 'DD/MM/YYYY'))
             $('#totalDayInput').val(data.total_day)
-            if (data.attachment) {
-                const fileDetail = data.attachment[0]?.['files']
-                FileUtils.init($(`[name="attachment"]`).siblings('button'), fileDetail);
-            }
+
 
             $tblElm.DataTableDefault({
                 data: data.expense_items,

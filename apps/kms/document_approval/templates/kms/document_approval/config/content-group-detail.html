@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Content group detail' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'ContentGroupEdit' data.pk %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <form class="form_main" id="form_content_group" data-method="POST" data-url="{% url 'ContentGroupDetailAPI' data.pk%}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label required" for="txt_code">{% trans 'Code' %}</label>
+                <input type="text" class="form-control" name="code" id="txt_code" required readonly>
+            </div>
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label required" for="txt_title">{% trans 'Title' %}</label>
+                <input readonly type="text" class="form-control" name="title" id="txt_title" required>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/kms/doc-type/detail.js' %}"></script>
+{% endblock %}

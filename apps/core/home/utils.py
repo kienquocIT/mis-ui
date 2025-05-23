@@ -246,7 +246,7 @@ PLAN_APP_OF_E_OFFICE = {
     }
 }
 
-PLAN_APP_OF_E_HRM = {
+PLAN_APP_OF_HRM = {
     'employeeinfo': {
         'employeecontractruntime': ReverseUrlCommon(
             list_view_name='HRMEmployeeList', detail_view_name='HRMRuntimeSignatureDetail'
@@ -254,10 +254,19 @@ PLAN_APP_OF_E_HRM = {
     },
 }
 
+PLAN_APP_OF_KMS = {
+    'documentapproval': {
+        'kmsdocumentapproval': ReverseUrlCommon(
+            list_view_name='KMSDocumentApprovalList', detail_view_name='KMSDocumentApprovalDetail'
+        ).data,
+    },
+}
+
 PLAN_APP_MAP_VIEW = {
     **PLAN_APP_OF_SALE,
     **PLAN_APP_OF_E_OFFICE,
-    **PLAN_APP_OF_E_HRM,
+    **PLAN_APP_OF_HRM,
+    **PLAN_APP_OF_KMS,
 }
 
 APP_ID_MAP_PLAN_APP = {

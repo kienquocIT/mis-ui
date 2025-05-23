@@ -134,6 +134,8 @@ INSTALLED_APPS = \
     ] + [
         'apps.accounting.accountingsettings',
         'apps.accounting.journalentry'
+    ] + [
+        'apps.kms.document_approval'
     ]
 
 INSTALLED_APPS += [

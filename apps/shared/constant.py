@@ -19,7 +19,8 @@ __all__ = [
     'GENDER_TYPE',
     'MARITAL_STT',
     'LIST_BANK',
-    'CONTRACT_TYPE'
+    'CONTRACT_TYPE',
+    'SECURITY_LV'
 ]
 
 LEAD_STATUS = [
@@ -183,4 +184,9 @@ CONTRACT_TYPE = (
     (0, _('Probationary contract')),
     (1, _('Labor contract')),
     (2, _('Addendum contract')),
+)
+SECURITY_LV = (
+    (0, _('Low')),
+    (1, _('Medium')),
+    (2, _('High'))
 )

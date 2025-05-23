@@ -392,32 +392,8 @@ class QuotationLoadDataHandle {
     };
 
     static loadModalSProduct() {
-        let fnData = [];
-        WindowControl.showLoading();
-        $.fn.callAjax2({
-                'url': QuotationLoadDataHandle.urlEle.attr('data-md-product'),
-                'method': 'GET',
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                        for (let product of data.product_sale_list) {
-                            if (product.hasOwnProperty('product_choice') && Array.isArray(product.product_choice)) {
-                                if (product['product_choice'].includes(0)) {
-                                    fnData.push(product);
-                                }
-                            }
-                        }
-                        QuotationDataTableHandle.$tableSProduct.DataTable().clear().draw();
-                        QuotationDataTableHandle.$tableSProduct.DataTable().rows.add(fnData).draw();
-                        WindowControl.hideLoading();
-                    }
-                }
-            }
-        )
+        QuotationDataTableHandle.$tableSProduct.DataTable().destroy();
+        QuotationDataTableHandle.dataTableSelectProduct();
     };
 
     static loadModalSTerm(ele) {
@@ -4579,14 +4555,22 @@ class QuotationDataTableHandle {
         });
     };
 
-    static dataTableSelectProduct(data) {
+    static dataTableSelectProduct() {
         QuotationDataTableHandle.$tableSProduct.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
+            useDataServer: true,
+            ajax: {
+                url: QuotationLoadDataHandle.urlEle.attr('data-md-product'),
+                type: "GET",
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('product_sale_list')) {
+                        return resp.data['product_sale_list'] ? resp.data['product_sale_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
             autoWidth: true,
             scrollX: true,
-            scrollY: "400px",
             columns: [
                 {
                     targets: 0,

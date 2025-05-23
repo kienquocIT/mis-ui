@@ -335,7 +335,7 @@ class ProductModificationPageFunction {
                                 <div class="data-component-detail-space"></div>
                             `;
                         }
-                        return `<input class="form-control fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
+                        return `<input class="form-control fs-5 component-quantity" type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
                     }
                 },
                 {

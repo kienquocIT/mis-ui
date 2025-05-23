@@ -21,6 +21,8 @@ class QuotationLoadDataHandle {
     static $btnSaveReconcile = $('#btn-save-select-reconcile');
     static dataSuppliedBy = [{'id': 0, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-purchase')}, {'id': 1, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-make')}];
 
+    static $productsCheckedEle = $('#products-checked');
+
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
         $ele.empty();
@@ -313,6 +315,17 @@ class QuotationLoadDataHandle {
         // load again price of product by customer price list then Re Calculate
         QuotationLoadDataHandle.loadDataProductAll();
     };
+
+    static loadStoreSProduct() {
+        let dataSelected = {};
+        for (let itemEle of QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-item')) {
+            if ($(itemEle).attr('data-product-id')) {
+                dataSelected[$(itemEle).attr('data-product-id')] = true;
+            }
+        }
+        QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(dataSelected));
+        return true;
+    }
 
     static loadModalSProduct() {
         QuotationDataTableHandle.$tableSProduct.DataTable().destroy();
@@ -4505,11 +4518,23 @@ class QuotationDataTableHandle {
                         }
                         let disabled = '';
                         let checked = '';
-                        if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
-                            disabled = 'disabled';
-                            checked = 'checked';
-                            clsZoneReadonly = 'zone-readonly';
+                        // if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
+                        //     disabled = 'disabled';
+                        //     checked = 'checked';
+                        //     clsZoneReadonly = 'zone-readonly';
+                        // }
+
+                        if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
+                            let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
+                            if (typeof storeID === 'object') {
+                                if (storeID?.[row?.['id']]) {
+                                    disabled = 'disabled';
+                                    checked = 'checked';
+                                    clsZoneReadonly = 'zone-readonly';
+                                }
+                            }
                         }
+
                         let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(row);
                         if (checkBOM?.['is_pass'] === false) {
                             disabled = 'disabled';

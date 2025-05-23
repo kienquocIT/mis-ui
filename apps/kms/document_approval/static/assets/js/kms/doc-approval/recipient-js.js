@@ -17,12 +17,12 @@ class popup_recipient {
                 },
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    if (data && data.hasOwnProperty('group_list')) {
-                        return resp.data['group_list'] ? [{
+                    if (data && data.hasOwnProperty('group_dd_list')) {
+                        return resp.data['group_dd_list'] ? [{
                             id: "all_com",
                             title: $.fn.gettext('All company'),
                             code: 'all'
-                        }, ...resp.data['group_list']] : [];
+                        }, ...resp.data['group_dd_list']] : [];
                     }
                     throw Error('Call data raise errors.')
                 },

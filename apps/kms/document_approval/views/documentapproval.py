@@ -3,13 +3,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, InputMappingProperties, SYSTEM_STATUS
+from apps.shared.constant import SECURITY_LV
 from apps.shared.msg import KMSMsg, BaseMsg
-
-SECURITY_LV = (
-    (0, 'low'),
-    (1, 'medium'),
-    (2, 'high')
-)
 
 
 class KMSDocumentApprovalList(View):

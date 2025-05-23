@@ -20,3 +20,72 @@ msgstr ""
 #
 msgid "KMS Document type"
 msgstr "KMS Loại tài liệu"
+
+#
+msgid "Document approval"
+msgstr "Công văn phê duyệt"
+
+#
+msgid "Attached Documents"
+msgstr "Tệp Công văn"
+
+#
+msgid "Internal Recipient"
+msgstr "Người nhận nội bộ"
+
+#
+msgid "Add recipient"
+msgstr "Thêm người nhận"
+
+#
+msgid "Content group"
+msgstr "Nhóm nội dung"
+
+#
+msgid "Security level"
+msgstr "Mức bảo mật"
+
+#
+msgid "Published place"
+msgstr "Nơi lưu hành"
+
+#
+msgid "Effective date"
+msgstr "Ngày hiệu lực"
+
+#
+msgid "Folder"
+msgstr "Thư mục"
+
+#
+msgid "Recipient"
+msgstr "Người nhận"
+
+#
+msgid "File in folder"
+msgstr "Tệp trong thư mục"
+
+#
+msgid "Review"
+msgstr "Xem xét"
+
+#
+msgid "Share"
+msgstr "Chia sẽ"
+
+#
+msgid "Edit file attributes"
+msgstr "Chỉnh sửa thuộc tính tệp"
+
+#
+msgid "Upload version"
+msgstr "Tải phiên bản"
+
+#
+msgid "Duplicate"
+msgstr "Bản sao"
+
+#
+msgid "Edit file"
+msgstr "Sửa tệp"
+

@@ -7701,6 +7701,7 @@ class QuotationSubmitHandle {
                 _form.dataForm['contact_data'] = dataSelected;
             }
         }
+        _form.dataForm['payment_term_data'] = {};
         if (QuotationLoadDataHandle.paymentSelectEle.val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
             if (dataSelected) {

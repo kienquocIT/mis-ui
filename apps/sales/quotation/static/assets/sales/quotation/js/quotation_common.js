@@ -409,10 +409,20 @@ class QuotationLoadDataHandle {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
             if (dataSelected) {
                 term = dataSelected?.['term'];
+                let type = "percent";
                 for (let termData of term) {
+                    if (termData?.['unit_type'] === 1) {
+                        type = "amount";
+                    }
                     let isNum = parseFloat(termData?.['value']);
                     if (!isNum) {  // balance
-                        termData['value'] = String(QuotationLoadDataHandle.loadParseBalanceOfTerm());
+                        termData['value'] = String(QuotationLoadDataHandle.loadParseBalanceOfTerm("invoice"));
+                        if (type === "percent") {
+                            termData['unit_type'] = 0;
+                        }
+                        if (type === "amount") {
+                            termData['unit_type'] = 1;
+                        }
                     }
                 }
             }
@@ -1321,7 +1331,8 @@ class QuotationLoadDataHandle {
     };
 
     // PAYMENT TERM
-    static loadParseBalanceOfTerm() {
+    static loadParseBalanceOfTerm(invoice_or_payment) {
+        let type = "percent";
         let totalValue = 0;
         let term = [];
         if (QuotationLoadDataHandle.paymentSelectEle.val()) {
@@ -1329,13 +1340,43 @@ class QuotationLoadDataHandle {
             if (dataSelected) {
                 term = dataSelected?.['term'];
                 for (let termDataCheck of term) {
+                    if (termDataCheck?.['unit_type'] === 1) {
+                        type = "amount";
+                    }
                     if (parseFloat(termDataCheck?.['value'])) {
                         totalValue += parseFloat(termDataCheck?.['value']);
                     }
                 }
             }
         }
-        return 100 - totalValue;
+        if (type === "percent") {
+            return 100 - totalValue;
+        }
+        if (type === "amount") {
+            let valueSO = 0;
+            let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                if (tableProductFt) {
+                    if (invoice_or_payment === "invoice") {
+                        let eleTotal = tableProductFt.querySelector('.quotation-create-product-total-raw');
+                        if (eleTotal) {
+                            valueSO = parseFloat(eleTotal.value);
+                            return valueSO - totalValue;
+                        }
+                    }
+                    if (invoice_or_payment === "payment") {
+                        let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+                        let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+                        if (elePretax && eleDiscount) {
+                            valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
+                            return valueSO - totalValue;
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
     };
 
     static loadChangePaymentTerm() {
@@ -4257,10 +4298,20 @@ class QuotationDataTableHandle {
                         let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.paymentSelectEle, QuotationLoadDataHandle.paymentSelectEle.val());
                         if (dataSelected) {
                             term = dataSelected?.['term'];
+                            let type = "percent";
                             for (let termData of term) {
+                                if (termData?.['unit_type'] === 1) {
+                                    type = "amount";
+                                }
                                 let isNum = parseFloat(termData?.['value']);
                                 if (!isNum) {  // balance
-                                    termData['value'] = String(QuotationLoadDataHandle.loadParseBalanceOfTerm());
+                                    termData['value'] = String(QuotationLoadDataHandle.loadParseBalanceOfTerm("payment"));
+                                    if (type === "percent") {
+                                        termData['unit_type'] = 0;
+                                    }
+                                    if (type === "amount") {
+                                        termData['unit_type'] = 1;
+                                    }
                                 }
                             }
                         }
@@ -4856,7 +4907,7 @@ class QuotationDataTableHandle {
                         }
                         return `<div class="form-check form-check-lg d-flex align-items-center">
                                     <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-reconcile-${row?.['order']}" ${checked}>
-                                    <label class="form-check-label table-row-order" for="s-reconcile-${row?.['order']}">${row?.['term_data']?.['title']}</label>
+                                    <label class="form-check-label table-row-order" for="s-reconcile-${row?.['order']}">${row?.['term_data']?.['title'] ? row?.['term_data']?.['title'] : row?.['remark']}</label>
                                 </div>`;
                     }
                 },

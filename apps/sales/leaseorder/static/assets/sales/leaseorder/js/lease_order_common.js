@@ -1638,7 +1638,7 @@ class LeaseOrderLoadDataHandle {
                     }
                     if (dataSelected?.['unit_type'] === 1) {
                         $(valBeforeEle).attr('value', String(dataSelected?.['value']));
-                        if (!$(valReconcileEle).val()) {
+                        if (!$(valReconcileEle).valCurrency()) {
                             $(valTotalEle).attr('value', String(dataSelected?.['value']));
                         }
                     }

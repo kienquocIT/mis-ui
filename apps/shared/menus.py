@@ -180,6 +180,21 @@ class MenusCoreConfigurations:
                 name='Meeting', code='id_menu_master_data_meeting_schedule', view_name='MeetingScheduleMasterdataList',
                 icon='<i class="fas fa-chalkboard-teacher"></i>',
             ),
+            MenuCommon(
+                name='Project config', code='menu_project_config',
+                view_name='ProjectConfig',
+                icon='<i class="fas fa-brands fa-r-project"></i>',
+            ),
+            MenuCommon(
+                name='KMS Document type', code='menu_document_type_config',
+                view_name='DocumentTypeConfigList',
+                icon='<i class="fa-regular fa-file"></i>'
+            ),
+            MenuCommon(
+                name='KMS Content group', code='menu_content_group_config',
+                view_name='ContentGroupList',
+                icon='<i class="fa-regular fa-copy"></i>'
+            )
         ]
     )
     TRANSITION_DATA_CONFIG = MenuCommon(
@@ -248,11 +263,6 @@ class MenusCoreConfigurations:
                 name='Invoice form config', code='menu_invoice_sign',
                 view_name='InvoiceSignList',
                 icon='<i class="fas fa-signature"></i>',
-            ),
-            MenuCommon(
-                name='Project config', code='menu_project_config',
-                view_name='ProjectConfig',
-                icon='<i class="fas fa-brands fa-r-project"></i>',
             ),
             MenuCommon(
                 name='Bidding Result Config', code='menu_bidding_result_config', view_name='BiddingResultConfigList',
@@ -657,16 +667,22 @@ class MenuEOffice:
     )
 
 
-class MenuDMS:
+class MenuKMS:
     WORK_SPACE = MenuCommon(
         name='Work space', code='menu_dms_work_space', view_name='', icon='<i class="fas fa-laptop-house"></i>',
         child=[
+            # MenuCommon(
+            #     name='File',
+            #     code='menu_folder_list',
+            #     view_name='FolderList',
+            #     icon='<i class="fas fa-file"></i>',
+            # ),
             MenuCommon(
-                name='File',
-                code='menu_folder_list',
-                view_name='FolderList',
-                icon='<i class="fas fa-file"></i>',
-            )
+                name='Document approval',
+                code='menu_document_approval',
+                view_name='KMSDocumentApprovalList',
+                icon='<i class="fa-solid fa-file-circle-check"></i>',
+            ),
         ],
     )
     MY_SPACE = MenuCommon(
@@ -978,8 +994,8 @@ class SpaceItem:
             'kms',
             icon='<i class="fas far fa-folder-open"></i>',
             menus=[
-                MenuDMS.WORK_SPACE,
-                MenuDMS.MY_SPACE,
+                MenuKMS.WORK_SPACE,
+                # MenuKMS.MY_SPACE,
             ],
         ),
         'e-office': SpaceCommon(
@@ -1143,7 +1159,7 @@ class SpaceGroup:
     SPACE = SpaceCommon(
         'Space', 'space', child=[
             SpaceItem.mapping['crm'],
-            # SpaceItem.mapping['kms'],
+            SpaceItem.mapping['kms'],
             SpaceItem.mapping['e-office'],
             SpaceItem.mapping['financials'],
             SpaceItem.mapping['forms'],

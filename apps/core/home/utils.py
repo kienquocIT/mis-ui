@@ -255,7 +255,7 @@ PLAN_APP_OF_HRM = {
 }
 
 PLAN_APP_OF_KMS = {
-    'kms': {
+    'documentapproval': {
         'kmsdocumentapproval': ReverseUrlCommon(
             list_view_name='KMSDocumentApprovalList', detail_view_name='KMSDocumentApprovalDetail'
         ).data,

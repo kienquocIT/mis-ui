@@ -452,7 +452,7 @@ class LogController {
                 let logHTML = [];
                 item['logs'].map((itemLog) => {
                     let childLogHTML = `<div class="mt-2">`;
-                    let img = `<i class="far fa-smile"></i>`;
+                    let img = `<img src="/static/assets/images/systems/bot_4712104.png" alt="BflowBot"/>`;
                     let name = "BflowBot";
                     if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
                         img = `<i class="fas fa-user-circle"></i>`;

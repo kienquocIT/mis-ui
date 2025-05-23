@@ -60,37 +60,35 @@ function LoadSupplier(ele, data) {
             let contact_owner = selected?.['owner']
             if (TYPE === '0' || $('#request-for-so').attr('data-type') === '0') {
                 contact_so.empty()
-                LoadContactOwner(contact_so, contact_owner, ele.val())
+                LoadContactOwner(contact_so, contact_owner)
             }
             else if (TYPE === '1' || $('#request-for-sf').attr('data-type') === '1') {
                 contact_sf.empty()
-                LoadContactOwner(contact_sf, contact_owner, ele.val())
+                LoadContactOwner(contact_sf, contact_owner)
             }
             else if (TYPE === '2' || $('#request-for-sf').attr('data-type') === '1') {
                 contact_fa.empty()
-                LoadContactOwner(contact_fa, contact_owner, ele.val())
+                LoadContactOwner(contact_fa, contact_owner)
             }
             else if (TYPE === '3' || $('#request-for-db').attr('data-type') === '3') {
                 contact_db.empty()
-                LoadContactOwner(contact_db, contact_owner, ele.val())
+                LoadContactOwner(contact_db, contact_owner)
             }
         }
     })
 }
 
-function LoadContactOwner(ele, data, account_name_id) {
-    if (account_name_id) {
-        ele.initSelect2({
-            ajax: {
-                url: ele.attr('data-url') + `?account_name_id=${account_name_id}`,
-                method: 'GET',
-            },
-            data: (data ? data : null),
-            keyResp: 'contact_list',
-            keyId: 'id',
-            keyText: 'fullname',
-        })
-    }
+function LoadContactOwner(ele, data) {
+    ele.initSelect2({
+        ajax: {
+            url: ele.attr('data-url'),
+            method: 'GET',
+        },
+        data: (data ? data : null),
+        keyResp: 'contact_list',
+        keyId: 'id',
+        keyText: 'fullname',
+    })
 }
 
 function LoadDeliveryDate(ele) {
@@ -980,7 +978,7 @@ function LoadDetailPR(option) {
                     $('#pr-status-so').val(data?.['purchase_status'])
                     LoadSupplier(supplier_so, data?.['supplier'])
                     contact_so.empty()
-                    LoadContactOwner(contact_so, data?.['contact'], data?.['supplier']?.['id'])
+                    LoadContactOwner(contact_so, data?.['contact'])
                     $('#code-so').val(data?.['sale_order']?.['code'])
                     $('#note-so').val(data?.['note'])
 
@@ -1015,7 +1013,7 @@ function LoadDetailPR(option) {
                     $('#pr-status-sf').val(data?.['purchase_status'])
                     LoadSupplier(supplier_sf, data?.['supplier'])
                     contact_sf.empty()
-                    LoadContactOwner(contact_sf, data?.['contact'], data?.['supplier']?.['id'])
+                    LoadContactOwner(contact_sf, data?.['contact'])
                     $('#note-sf').val(data?.['note'])
 
                     let request_product_data = []
@@ -1050,7 +1048,7 @@ function LoadDetailPR(option) {
                     $('#pr-status-fa').val(data?.['purchase_status'])
                     LoadSupplier(supplier_fa, data?.['supplier'])
                     contact_fa.empty()
-                    LoadContactOwner(contact_fa, data?.['contact'], data?.['supplier']?.['id'])
+                    LoadContactOwner(contact_fa, data?.['contact'])
                     $('#note-fa').val(data?.['note'])
 
                     let request_product_data = []
@@ -1085,7 +1083,7 @@ function LoadDetailPR(option) {
                     $('#pr-status-db').val(data?.['purchase_status'])
                     LoadSupplier(supplier_db, data?.['supplier'])
                     contact_db.empty()
-                    LoadContactOwner(contact_db, data?.['contact'], data?.['supplier']?.['id'])
+                    LoadContactOwner(contact_db, data?.['contact'])
                     $('#code-db').val(data?.['distribution_plan']?.['code'])
                     $('#note-db').val(data?.['note'])
 

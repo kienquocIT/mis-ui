@@ -39,6 +39,9 @@ $(function () {
         };
 
         function loadDbl(data, columns) {
+            // if ($.fn.DataTable.isDataTable($dtbArea.find('.table_payment_plan'))) {
+            //     $dtbArea.find('.table_payment_plan').DataTable().destroy();
+            // }
             $dtbArea.find('.table_payment_plan').DataTableDefault({
                 data: data ? data : [],
                 autoWidth: true,
@@ -56,13 +59,85 @@ $(function () {
                         $(row).find('td:eq(1)').attr('colspan', 1);
                     }
                 },
-                drawCallback: function () {
+                drawCallback: function (settings) {
                     // mask money
                     $.fn.initMaskMoney2();
                     // add css to Dtb
                     dtbHDCustom();
+                    loadTotalInOut(settings);
                 },
             });
+        }
+
+        function loadTotalInOut(settings) {
+            let api = $dtbArea.find('.table_payment_plan').DataTable();
+
+            // Store totals for each column separately
+            let columnTotalsIn = {};
+            let columnTotalsOut = {};
+            let totalInRow = null;
+            let totalOutRow = null;
+
+            // Loop through all rows
+            api.rows().every(function () {
+                let row = this.node();
+                let rowIndex = api.row(row).index();
+                let $row = api.row(rowIndex);
+                let dataRow = $row.data();
+
+                // Identify special total rows
+                if (dataRow?.is_total_in) {
+                    totalInRow = row;
+                    return;
+                }
+                if (dataRow?.is_total_out) {
+                    totalOutRow = row;
+                    return;
+                }
+
+                // Loop through columns to calculate totals
+                api.columns().every(function (colIndex) {
+                    let colDef = settings.aoColumns[colIndex];
+
+                    if (colDef.checkRange && dataRow?.['date_approved']) {
+                        const date = DateTimeControl.formatDateType(
+                            'YYYY-MM-DD hh:mm:ss',
+                            'DD/MM/YYYY',
+                            dataRow['date_approved']
+                        );
+
+                        const inRange = isDateInRange(
+                            colDef.checkRange.from,
+                            colDef.checkRange.to,
+                            date
+                        );
+
+                        if (inRange) {
+                            let val = parseFloat(dataRow['value_pay']) || 0;
+
+                            if (dataRow?.['purchase_order_data']?.['id']) {
+                                columnTotalsOut[colIndex] = (columnTotalsOut[colIndex] || 0) + val;
+                            } else {
+                                columnTotalsIn[colIndex] = (columnTotalsIn[colIndex] || 0) + val;
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Inject totals into totalInRow
+            if (totalInRow) {
+                Object.entries(columnTotalsIn).forEach(([colIndex, total]) => {
+                    $(totalInRow).find('td').eq(colIndex).html(`<span class="text-success mask-money" data-init-money="${total}"></span>`);
+                });
+            }
+
+            // Inject totals into totalOutRow
+            if (totalOutRow) {
+                Object.entries(columnTotalsOut).forEach(([colIndex, total]) => {
+                    $(totalOutRow).find('td').eq(colIndex).html(`<span class="text-danger mask-money" data-init-money="${-total}"></span>`);
+                });
+            }
         }
 
         function dtbHDCustom() {
@@ -96,15 +171,6 @@ $(function () {
             $dtbArea.empty();
             $dtbArea.append(htmlDtb);
             let $table = $dtbArea.find('.table_payment_plan');
-            let minWidth = "min-w-2560p";
-            // for (let btn of $btnGroup[0].querySelectorAll('.btn-view')) {
-            //     if ($(btn).hasClass('active')) {
-            //         if (btn === $btnDay[0]) {
-            //             minWidth = "min-w-4000p";
-            //         }
-            //     }
-            // }
-            $table.addClass(minWidth);
             let $theadRow = $table.find('thead tr');
             $theadRow.empty(); // Clear all headers first
             let columns = [];
@@ -210,7 +276,7 @@ $(function () {
             }
             if (key === "6") {
                 return {
-                    width: '8%',
+                    width: '5%',
                     render: (data, type, row) => {
                         if (row?.['is_total_in'] === true) {
                             return `<b>Total cash in</b>`;
@@ -234,42 +300,57 @@ $(function () {
             };
         }
 
+        function setMinWidthDtb(columns) {
+            let colLength = columns.length - 6;
+            let rate = 70 / colLength;
+            let width = `${rate}%`;
+            for (let i = 0; i < columns.length; i++) {
+                if (i > 6) {
+                    columns[i]["width"] = width;
+                }
+            }
+            let $table = $dtbArea.find('.table_payment_plan');
+            let minWidth = "min-w-1366p";
+            if (columns.length > 10) {
+                minWidth = "min-w-2560p";
+            }
+            if (columns.length > 15) {
+                minWidth = "min-w-3440p";
+            }
+            $table.addClass(minWidth);
+            return true;
+        }
+
         function customDtbByDay() {
             let dataDtbCommon = customDtbCommon();
             let columns = dataDtbCommon?.['columns'];
             let $theadRow = dataDtbCommon?.['$theadRow'];
             if (boxStart.val() && boxEnd.val()) {
                 let dataByDay = setupDataViewByDay(boxStart.val(), boxEnd.val());
-                let rate = 70 / Object.keys(dataByDay).length;
-                let width = `${rate}%`;
                 for (let key in dataByDay) {
                     $theadRow.append(`<th data-check="${key}">${key}</th>`);
                     columns.push({
-                        // width: width,
+                        checkRange: dataByDay[key], // Custom key
                         render: (data, type, row, meta) => {
-
                             let value = "";
-                            let colIndex = meta.col;
-                            let table = $dtbArea.find('.table_payment_plan').DataTable();
-                            let $thElement = $(table.column(colIndex).header());
-                            if ($thElement.length > 0) {
-                                if ($thElement.attr('data-check')) {
-                                    let dataCheck = $thElement.attr('data-check');
-                                    if (row?.['date_approved']) {
-                                        let date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['date_approved']);
-                                        if (date === dataCheck) {
-                                            value = row?.['value_pay'];
-                                            if (row?.['purchase_order_data']?.['id']) {
-                                                value = -row?.['value_pay'];
-                                            }
-                                        }
+                            let checkRange = meta.settings.aoColumns[meta.col].checkRange;
+
+                            if (checkRange && row?.['date_approved']) {
+                                let date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['date_approved']);
+                                let check = isDateInRange(checkRange?.['from'], checkRange?.['to'], date);
+                                if (check) {
+                                    value = row?.['value_pay'];
+                                    if (row?.['purchase_order_data']?.['id']) {
+                                        value = -row?.['value_pay'];
                                     }
                                 }
                             }
+
                             return `<span class="mask-money" data-init-money="${value}"></span>`;
                         }
                     })
                 }
+                setMinWidthDtb(columns);
                 loadDbl([], columns);
             }
             return true;
@@ -296,7 +377,10 @@ $(function () {
             const endDate = parseDate(to);
 
             while (currentDate <= endDate) {
-                result[formatDate(currentDate)] = {};
+                result[formatDate(currentDate)] = {
+                    from: formatDate(currentDate),
+                    to: formatDate(currentDate),
+                };
                 currentDate.setDate(currentDate.getDate() + 1);
             }
 
@@ -309,14 +393,11 @@ $(function () {
             let $theadRow = dataDtbCommon?.['$theadRow'];
             if (boxStart.val() && boxEnd.val()) {
                 let dataByWeek = setupDataViewByWeek(boxStart.val(), boxEnd.val());
-                let rate = 70 / Object.keys(dataByWeek).length;
-                let width = `${rate}%`;
                 for (let key in dataByWeek) {
                     let text = `${$transFact.attr('data-week')} ${key}<br>(${dataByWeek[key]["from"]} - ${dataByWeek[key]["to"]})`;
                     $theadRow.append(`<th data-check=${JSON.stringify(dataByWeek[key])}>${text}</th>`);
                     columns.push({
                         class: 'text-center',
-                        width: width,
                         checkRange: dataByWeek[key], // Custom key
                         render: (data, type, row, meta) => {
                             let value = "";
@@ -337,6 +418,7 @@ $(function () {
                         }
                     });
                 }
+                setMinWidthDtb(columns);
                 loadDbl([], columns);
             }
 
@@ -408,14 +490,11 @@ $(function () {
             let $theadRow = dataDtbCommon?.['$theadRow'];
             if (boxStart.val() && boxEnd.val()) {
                 let dataByMonth = setupDataViewByMonth(boxStart.val(), boxEnd.val());
-                let rate = 70 / Object.keys(dataByMonth).length;
-                let width = `${rate}%`;
                 for (let key in dataByMonth) {
                     let text = dataMonth[key - 1][1];
                     $theadRow.append(`<th data-check=${JSON.stringify(dataByMonth[key])}>${text}</th>`);
                     columns.push({
                         class: 'text-center',
-                        width: width,
                         checkRange: dataByMonth[key], // Custom key
                         render: (data, type, row, meta) => {
                             let value = "";
@@ -436,6 +515,7 @@ $(function () {
                         }
                     });
                 }
+                setMinWidthDtb(columns);
                 loadDbl([], columns);
             }
 

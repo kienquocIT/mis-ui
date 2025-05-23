@@ -60,12 +60,6 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadCustomCss() {
-        $('.accordion-item').css({
-            'margin-bottom': 0
-        });
-    };
-
     static loadEventCheckbox($area, trigger = false) {
         // Use event delegation for dynamically added elements
         $area.on('click', '.form-check', function (event) {
@@ -172,9 +166,12 @@ class QuotationLoadDataHandle {
 
     static loadDataByOpportunity(oppData) {
         let tableProduct = $('#datable-quotation-create-product');
+        if (!$(QuotationLoadDataHandle.opportunitySelectEle).val()) {
+            QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('disabled');
+        }
         if ($(QuotationLoadDataHandle.opportunitySelectEle).val()) {
             QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
-            QuotationLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
+            QuotationLoadDataHandle.customerSelectEle[0].setAttribute('disabled', 'true');
             // load sale person
             QuotationLoadDataHandle.salePersonSelectEle.empty();
             QuotationLoadDataHandle.salePersonSelectEle.initSelect2({
@@ -205,10 +202,6 @@ class QuotationLoadDataHandle {
                     }
                 )
             }
-        } else {
-            QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
-            QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
-            QuotationLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
         }
         // Delete all promotion rows
         deletePromotionRows(tableProduct, true, false);
@@ -279,12 +272,24 @@ class QuotationLoadDataHandle {
 
     static loadDataByCustomer() {
         let tableProduct = $('#datable-quotation-create-product');
-        QuotationLoadDataHandle.loadBoxQuotationContact();
-        QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-        QuotationLoadDataHandle.loadChangePaymentTerm();
         if (QuotationLoadDataHandle.customerSelectEle.val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
             if (dataSelected) {
+                // load contact
+                if (dataSelected?.['contact_list']) {
+                    FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, dataSelected?.['contact_list']);
+                    for (let contact of dataSelected?.['contact_list']) {
+                        if (contact?.['is_owner'] === true) {
+                            QuotationLoadDataHandle.contactSelectEle.val(contact?.['id']).trigger('change');
+                            break;
+                        }
+                    }
+                }
+                // load payment term
+                if (dataSelected?.['payment_term_customer_mapped']) {
+                    FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [dataSelected?.['payment_term_customer_mapped']], {}, null, true);
+                    QuotationLoadDataHandle.loadChangePaymentTerm();
+                }
                 // load Shipping & Billing by Customer
                 QuotationLoadDataHandle.loadShippingBillingCustomer();
                 QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
@@ -307,88 +312,6 @@ class QuotationLoadDataHandle {
         deletePromotionRows(tableProduct, false, true);
         // load again price of product by customer price list then Re Calculate
         QuotationLoadDataHandle.loadDataProductAll();
-    };
-
-    static loadBoxQuotationContact(dataContact = {}, customerID = null) {
-        if ($(QuotationLoadDataHandle.customerSelectEle).val() && Object.keys(dataContact).length === 0) {
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
-            if (dataSelected) {
-                if (dataSelected?.['contact_mapped']) {
-                    if (Object.keys(dataSelected?.['contact_mapped']).length > 0) {
-                        dataContact = dataSelected?.['contact_mapped'];
-                    }
-                }
-                if (dataSelected?.['owner']) {
-                    if (Object.keys(dataSelected?.['owner']).length > 0) {
-                        dataContact = dataSelected?.['owner'];
-                    }
-                }
-                customerID = dataSelected?.['id'];
-            }
-        }
-        QuotationLoadDataHandle.contactSelectEle.empty();
-        QuotationLoadDataHandle.contactSelectEle.initSelect2({
-            data: dataContact,
-            'dataParams': {'account_name_id': customerID},
-            disabled: !(QuotationLoadDataHandle.contactSelectEle.attr('data-url')),
-            callbackTextDisplay: function (item) {
-                return item?.['fullname'] || '';
-            },
-        });
-    };
-
-    static loadBoxQuotationPaymentTerm() {
-        FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
-        if ($(QuotationLoadDataHandle.customerSelectEle).val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, $(QuotationLoadDataHandle.customerSelectEle).val());
-            if (dataSelected) {
-                if (dataSelected?.['payment_term_customer_mapped']) {
-                    FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [dataSelected?.['payment_term_customer_mapped']], {}, null, true);
-                }
-            }
-        }
-        return true;
-    };
-
-    static loadDataBySalePerson() {
-        if (!QuotationLoadDataHandle.opportunitySelectEle.val()) {
-            // load opp
-            if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
-                QuotationLoadDataHandle.opportunitySelectEle.empty();
-                QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
-                    'dataParams': {'employee_inherit': QuotationLoadDataHandle.salePersonSelectEle.val()},
-                    'allowClear': true,
-                    templateResult: function (state) {
-                        let titleHTML = `<span>${state.data?.title ? state.data.title : "_"}</span>`
-                        let codeHTML = `<span class="badge badge-soft-primary mr-2">${state.text ? state.text : "_"}</span>`
-                        return $(`<span>${codeHTML} ${titleHTML}</span>`);
-                    },
-                });
-            } else {
-                QuotationLoadDataHandle.opportunitySelectEle.empty();
-                QuotationLoadDataHandle.opportunitySelectEle.initSelect2({
-                    'allowClear': true,
-                    templateResult: function (state) {
-                        let titleHTML = `<span>${state.data?.title ? state.data.title : "_"}</span>`
-                        let codeHTML = `<span class="badge badge-soft-primary mr-2">${state.text ? state.text : "_"}</span>`
-                        return $(`<span>${codeHTML} ${titleHTML}</span>`);
-                    },
-                });
-            }
-            // load customer, contact, payment
-            QuotationLoadDataHandle.loadBoxQuotationCustomer();
-            QuotationLoadDataHandle.loadBoxQuotationContact();
-            QuotationLoadDataHandle.loadBoxQuotationPaymentTerm();
-        }
-    };
-
-    static loadInitDate() {
-        let currentDate = new Date();
-        let day = String(currentDate.getDate()).padStart(2, '0');
-        let month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        let year = currentDate.getFullYear();
-        let formattedDate = `${day}/${month}/${year}`;
-        $('#quotation-create-date-created').val(formattedDate);
     };
 
     static loadModalSProduct() {
@@ -2499,7 +2422,6 @@ class QuotationLoadDataHandle {
             if ($(form).attr('data-method').toLowerCase() !== 'get') {
                 QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
                 QuotationLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
-                QuotationLoadDataHandle.contactSelectEle[0].setAttribute('readonly', 'true');
             }
         }
         if (data?.['customer_data']) {
@@ -2509,7 +2431,7 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxQuotationCustomer(data?.['customer_data']);
         }
         if (data?.['contact_data']) {
-            QuotationLoadDataHandle.loadBoxQuotationContact(data?.['contact_data']);
+            FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, [data?.['contact_data']]);
         }
         if (data?.['payment_term_data']) {
             FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);
@@ -7730,15 +7652,15 @@ class QuotationSubmitHandle {
             }
         }
         if (QuotationLoadDataHandle.customerSelectEle.val()) {
-            let data = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
-            if (data) {
-                _form.dataForm['customer_data'] = data;
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.customerSelectEle, QuotationLoadDataHandle.customerSelectEle.val());
+            if (dataSelected) {
+                _form.dataForm['customer_data'] = dataSelected;
             }
         }
         if (QuotationLoadDataHandle.contactSelectEle.val()) {
-            let data = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.contactSelectEle, QuotationLoadDataHandle.contactSelectEle.val());
-            if (data) {
-                _form.dataForm['contact_data'] = data;
+            let dataSelected = SelectDDControl.get_data_from_idx(QuotationLoadDataHandle.contactSelectEle, QuotationLoadDataHandle.contactSelectEle.val());
+            if (dataSelected) {
+                _form.dataForm['contact_data'] = dataSelected;
             }
         }
         if (QuotationLoadDataHandle.paymentSelectEle.val()) {

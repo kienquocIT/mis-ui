@@ -711,6 +711,7 @@ class BastionFieldControl {
         let dataParams = {};
         if (oppID && $x.fn.checkUUID4(oppID)) dataParams['list_from_opp'] = oppID;
         if (processID && $x.fn.checkUUID4(processID)) dataParams['process_id'] = processID;
+        let dataEmpSelected = SelectDDControl.get_data_from_idx(clsThis.empInheritEle, clsThis.empInheritEle.val());
         clsThis.empInheritEle.destroySelect2();
         clsThis.empInheritEle.empty().initSelect2(clsThis.configInheritSelect({
             'data-params': dataParams,
@@ -721,6 +722,17 @@ class BastionFieldControl {
                 }
             ] : [],
         }));
+        if (!clsThis.oppEle.val()) {
+            clsThis.empInheritEle.empty().initSelect2(clsThis.configInheritSelect({
+                'data-params': dataParams,
+                data: dataEmpSelected ? [
+                    {
+                        ...dataEmpSelected,
+                        'selected': true,
+                    }
+                ] : [],
+            }));
+        }
     }
 
     selectedFillAllData(linkedData) {

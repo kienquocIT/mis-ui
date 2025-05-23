@@ -546,10 +546,20 @@ class LeaseOrderLoadDataHandle {
             let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
             if (dataSelected) {
                 term = dataSelected?.['term'];
+                let type = "percent";
                 for (let termData of term) {
+                    if (termData?.['unit_type'] === 1) {
+                        type = "amount";
+                    }
                     let isNum = parseFloat(termData?.['value']);
                     if (!isNum) {  // balance
-                        termData['value'] = String(LeaseOrderLoadDataHandle.loadParseBalanceOfTerm());
+                        termData['value'] = String(LeaseOrderLoadDataHandle.loadParseBalanceOfTerm("invoice"));
+                        if (type === "percent") {
+                            termData['unit_type'] = 0;
+                        }
+                        if (type === "amount") {
+                            termData['unit_type'] = 1;
+                        }
                     }
                 }
             }
@@ -1497,7 +1507,8 @@ class LeaseOrderLoadDataHandle {
     };
 
     // PAYMENT TERM
-    static loadParseBalanceOfTerm() {
+    static loadParseBalanceOfTerm(invoice_or_payment) {
+        let type = "percent";
         let totalValue = 0;
         let term = [];
         if (LeaseOrderLoadDataHandle.paymentSelectEle.val()) {
@@ -1505,13 +1516,43 @@ class LeaseOrderLoadDataHandle {
             if (dataSelected) {
                 term = dataSelected?.['term'];
                 for (let termDataCheck of term) {
+                    if (termDataCheck?.['unit_type'] === 1) {
+                        type = "amount";
+                    }
                     if (parseFloat(termDataCheck?.['value'])) {
                         totalValue += parseFloat(termDataCheck?.['value']);
                     }
                 }
             }
         }
-        return 100 - totalValue;
+        if (type === "percent") {
+            return 100 - totalValue;
+        }
+        if (type === "amount") {
+            let valueSO = 0;
+            let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+            if (tableProductWrapper) {
+                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+                if (tableProductFt) {
+                    if (invoice_or_payment === "invoice") {
+                        let eleTotal = tableProductFt.querySelector('.quotation-create-product-total-raw');
+                        if (eleTotal) {
+                            valueSO = parseFloat(eleTotal.value);
+                            return valueSO - totalValue;
+                        }
+                    }
+                    if (invoice_or_payment === "payment") {
+                        let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
+                        let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
+                        if (elePretax && eleDiscount) {
+                            valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
+                            return valueSO - totalValue;
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
     };
 
     static loadChangePaymentTerm() {
@@ -1581,6 +1622,7 @@ class LeaseOrderLoadDataHandle {
         let ratioEle = row.querySelector('.table-row-ratio');
         let eleDate = row.querySelector('.table-row-date');
         let valBeforeEle = row.querySelector('.table-row-value-before-tax');
+        let valReconcileEle = row.querySelector('.table-row-value-reconcile');
         let valTotalEle = row.querySelector('.table-row-value-total');
         let dueDateEle = row.querySelector('.table-row-due-date');
         if ($(ele).val()) {
@@ -1596,7 +1638,9 @@ class LeaseOrderLoadDataHandle {
                     }
                     if (dataSelected?.['unit_type'] === 1) {
                         $(valBeforeEle).attr('value', String(dataSelected?.['value']));
-                        $(valTotalEle).attr('value', String(dataSelected?.['value']));
+                        if (!$(valReconcileEle).val()) {
+                            $(valTotalEle).attr('value', String(dataSelected?.['value']));
+                        }
                     }
                 }
                 dueDateEle.setAttribute('disabled', 'true');
@@ -5653,10 +5697,20 @@ class LeaseOrderDataTableHandle {
                         let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.paymentSelectEle, LeaseOrderLoadDataHandle.paymentSelectEle.val());
                         if (dataSelected) {
                             term = dataSelected?.['term'];
+                            let type = "percent";
                             for (let termData of term) {
+                                if (termData?.['unit_type'] === 1) {
+                                    type = "amount";
+                                }
                                 let isNum = parseFloat(termData?.['value']);
                                 if (!isNum) {  // balance
-                                    termData['value'] = String(LeaseOrderLoadDataHandle.loadParseBalanceOfTerm());
+                                    termData['value'] = String(LeaseOrderLoadDataHandle.loadParseBalanceOfTerm("payment"));
+                                    if (type === "percent") {
+                                        termData['unit_type'] = 0;
+                                    }
+                                    if (type === "amount") {
+                                        termData['unit_type'] = 1;
+                                    }
                                 }
                             }
                         }

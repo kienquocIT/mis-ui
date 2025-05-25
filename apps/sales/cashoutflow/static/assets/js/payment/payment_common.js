@@ -142,20 +142,8 @@ class PaymentLoadPage {
                 url: supplierEle.attr('data-url'),
                 method: 'GET',
             },
-            callbackDataResp: function (resp, keyResp) {
-                let result = [];
-                for (let i = 0; i < resp.data[keyResp].length; i++) {
-                    if (resp.data[keyResp][i].account_type.includes('Supplier')) {
-                        result.push(resp.data[keyResp][i])
-                    }
-                }
-                if (result.length > 0) {
-                    $('.select2-results__message').prop('hidden', true);
-                }
-                return result;
-            },
             data: (data ? data : null),
-            keyResp: 'account_list',
+            keyResp: 'supplier_list',
             keyId: 'id',
             keyText: 'name',
         }).on('change', function () {

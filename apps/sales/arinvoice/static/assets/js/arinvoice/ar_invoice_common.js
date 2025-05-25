@@ -919,9 +919,11 @@ class ARInvoiceEventHandler {
         pageElements.$invoice_method.on('change', function () {
             if ($(this).val() === '1') {
                 pageElements.$bank_number.closest('.form-group').find('label').removeClass('required')
+                pageElements.$bank_number.prop('required', false)
             }
             else {
                 pageElements.$bank_number.closest('.form-group').find('label').addClass('required')
+                pageElements.$bank_number.prop('required', true)
             }
         })
         pageElements.$customer_select_btn.on('click', function () {
@@ -932,7 +934,6 @@ class ARInvoiceEventHandler {
             $('input[name="customer-selected-radio"]').each(async function () {
                 if ($(this).prop('checked')) {
                     selected_obj = $(this).attr('data-customer') ? JSON.parse($(this).attr('data-customer')) : {}
-                    console.log(selected_obj)
                     pageElements.$customer_name.val(selected_obj?.['name']).attr('data-id', selected_obj?.['id']).prop('readonly', true).prop('disabled', true)
                     pageElements.$customer_code.val(selected_obj?.['code'])
                     pageElements.$tax_code.val(selected_obj?.['tax_code'])

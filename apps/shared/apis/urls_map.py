@@ -324,15 +324,17 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # advance payment
     CASHOUTFLOW_QUOTATION_LIST = StringUrl('cashoutflow/quotation-list')
     CASHOUTFLOW_SALE_ORDER_LIST = StringUrl('cashoutflow/sale-order-list')
-    ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')
-    ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advances-payments/{pk}')
-    ADVANCE_PAYMENT_COST_LIST = StringUrl('cashoutflow/advances-payments-cost-list/lists')
+    CASHOUTFLOW_SUPPLIER_LIST = StringUrl('cashoutflow/supplier-list')
+    ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advance-payments')
+    ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advance-payment/{pk}')
+    ADVANCE_PAYMENT_PRINT = StringUrl('cashoutflow/advance-payment-print/{pk}')
+    ADVANCE_PAYMENT_COST_LIST = StringUrl('cashoutflow/advance-payment-cost-list/list')
 
     # payment
     PAYMENT_LIST = StringUrl('cashoutflow/payments')
-    PAYMENT_DETAIL = StringUrl('cashoutflow/payments/{pk}')
+    PAYMENT_DETAIL = StringUrl('cashoutflow/payment/{pk}')
     PAYMENT_CONFIG_LIST = StringUrl('cashoutflow/payment-config')
-    PAYMENT_COST_LIST = StringUrl('cashoutflow/payments-cost-list/lists')
+    PAYMENT_COST_LIST = StringUrl('cashoutflow/payment-cost-list/list')
 
     PAYMENT_COST_ITEMS_LIST = StringUrl('cashoutflow/payment-cost-items-list')
 

@@ -395,9 +395,6 @@ function loadProductUomList(ele, data, uom_group_id) {
                     result.push(resp.data[keyResp][i])
                 }
             }
-            if (result.length > 0) {
-                $('.select2-results__message').prop('hidden', true);
-            }
             return result;
         },
         data: (data ? data : null),

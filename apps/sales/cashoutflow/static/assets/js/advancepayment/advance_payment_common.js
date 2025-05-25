@@ -1,5 +1,3 @@
-const initEmployee = JSON.parse($('#employee_current').text());
-const APCreatorEle = $('#creator-select-box')
 const APTypeEle = $('#type-select-box')
 const supplierEle = $('#supplier-select-box')
 const tableLineDetail = $('#tab_line_detail_datatable')
@@ -7,6 +5,7 @@ const money_gave = $('#money-gave')
 const quotation_mapped_select = $('#quotation_mapped_select')
 const sale_order_mapped_select = $('#sale_order_mapped_select')
 const opp_mapped_select = $('#opportunity_id')
+const bank_number = $('#bank-number')
 const script_url = $('#script-url')
 const script_trans = $('#script-trans')
 const ap_method_Ele = $('#ap-method')
@@ -14,30 +13,40 @@ const tab_plan_datatable = $('#tab_plan_datatable')
 let ap_for = null
 
 class APLoadPage {
-    static LoadCreatedDate() {
-        $('#created_date_id').daterangepicker({
-            singleDatePicker: true,
-            timePicker: false,
-            showDropdowns: true,
-            autoApply: true,
-            minYear: parseInt(moment().format('YYYY')),
-            minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM'))-1, parseInt(moment().format('DD'))),
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY')) + 100,
-        }).prop('disabled', true);
-    }
-    static LoadCreator(data) {
-        APCreatorEle.val(data?.['full_name']).prop('readonly', true).prop('disabled', true)
-        let btn_detail = $('#btn-detail-creator-tab');
-        $('#creator-detail-span').prop('hidden', false);
-        $('#creator-name').text(data?.['full_name']);
-        $('#creator-code').text(data?.['code']);
-        $('#creator-department').text(data?.['group']?.['title']);
-        let url = btn_detail.attr('data-url').replace('0', data?.['id']);
-        btn_detail.attr('href', url);
+    static InitBankNumber(selected=null) {
+        let supplier_selected = SelectDDControl.get_data_from_idx(supplierEle, supplierEle.val())
+        let bank_data = []
+        let flag = false
+        for (let i = 0; i < (supplier_selected?.['bank_accounts_mapped'] || []).length; i++) {
+            let bank_obj = supplier_selected?.['bank_accounts_mapped'][i]
+            let bank_account_name = bank_obj?.['bank_account_name']
+            let bank_account_number = bank_obj?.['bank_account_number']
+            let bank_code = bank_obj?.['bank_code']
+            let bank_name = bank_obj?.['bank_name']
+            let is_default = bank_obj?.['is_default']
+            let bank_text = `${bank_name} (${bank_code}) - ${bank_account_number} (${bank_account_name})`
+            if (bank_text === selected) {
+                flag = true
+            }
+            bank_data.push({
+                'id': bank_text,
+                'text': `${is_default ? '*' : ''} ${bank_text})`,
+            })
+        }
+        if (selected && !flag) {
+            bank_data.push({
+                'id': selected,
+                'text': selected,
+            })
+        }
+        bank_number.select2({
+            placeholder: '',
+            tags: true,
+            data: bank_data,
+        });
+        if (selected) {
+            bank_number.val(selected).trigger('change')
+        }
     }
     static LoadQuotation(data) {
         quotation_mapped_select.initSelect2({
@@ -99,46 +108,40 @@ class APLoadPage {
             }
         })
     }
-    static LoadSupplier(data) {
+    static LoadSupplier(data, bank_added='') {
         supplierEle.initSelect2({
+            allowClear: true,
             ajax: {
                 url: supplierEle.attr('data-url'),
                 method: 'GET',
             },
-            callbackDataResp: function (resp, keyResp) {
-                let result = [];
-                for (let i = 0; i < resp.data[keyResp].length; i++) {
-                    if (resp.data[keyResp][i].account_type.includes('Supplier')) {
-                        result.push(resp.data[keyResp][i])
-                    }
-                }
-                if (result.length > 0) {
-                    $('.select2-results__message').prop('hidden', true);
-                }
-                return result;
-            },
             data: (data ? data : null),
-            keyResp: 'account_list',
+            keyResp: 'supplier_list',
             keyId: 'id',
             keyText: 'name',
         }).on('change', function () {
-            let obj_selected = JSON.parse($('#' + supplierEle.attr('data-idx-data-loaded')).text())[supplierEle.val()];
-            APLoadPage.LoadSupplierInfor(obj_selected);
-            APLoadTab.LoadBankInfo(obj_selected?.['bank_accounts_mapped']);
+            if ($(this).val()) {
+                APLoadPage.InitBankNumber()
+            }
         })
-    }
-    static LoadSupplierInfor(data) {
-        let btn_detail = $('#btn-detail-supplier-tab');
-        $('#supplier-detail-span').prop('hidden', false);
-        $('#supplier-name').text(data?.['name']);
-        $('#supplier-code').text(data?.['code']);
-        $('#supplier-owner').text(data?.['owner']?.['fullname']);
-        $('#supplier-industry').text(data?.['industry']?.['title']);
-        let url = btn_detail.attr('data-url').replace('0', data?.['id']);
-        btn_detail.attr('href', url);
     }
     static LoadReturnDate() {
         $('#return_date_id').daterangepicker({
+            singleDatePicker: true,
+            timePicker: false,
+            showDropdowns: true,
+            autoApply: true,
+            minYear: parseInt(moment().format('YYYY')),
+            minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM'))-1, parseInt(moment().format('DD'))),
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+            "cancelClass": "btn-secondary",
+            maxYear: parseInt(moment().format('YYYY')) + 100,
+        }).val('')
+    }
+    static LoadAdvanceDate() {
+        $('#advance_date_id').daterangepicker({
             singleDatePicker: true,
             timePicker: false,
             showDropdowns: true,
@@ -194,7 +197,7 @@ class APLoadTab {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollY: '30vh',
+            scrollY: '50vh',
             scrollX: true,
             scrollCollapse: true,
             data: data,
@@ -216,12 +219,17 @@ class APLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-uom-input" value="${row?.['expense_uom_name'] ? row?.['expense_uom_name'] : ''}">`;
-                    }
-                },
-                {
-                    'render': (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled readonly' : ''} type="number" min="1" class="form-control expense_quantity" value="${row?.['expense_quantity'] ? row?.['expense_quantity'] : 1}">`;
+                        return `<div class="input-group">
+                                    <div class="row g-1">
+                                        <div class="col-5">
+                                            <input ${option === 'detail' ? 'disabled readonly' : ''} type="number" min="1" class="form-control expense_quantity" value="${row?.['expense_quantity'] ? row?.['expense_quantity'] : 1}">
+                                        </div>
+                                        <div class="col-7">
+                                            <input ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-uom-input" value="${row?.['expense_uom_name'] ? row?.['expense_uom_name'] : ''}" placeholder="${$.fn.gettext('input UOM...')}">
+                                        </div>
+                                    </div>
+                                </div>`
+                        return ``;
                     }
                 },
                 {
@@ -230,13 +238,13 @@ class APLoadTab {
                     }
                 },
                 {
-                    'render': () => {
-                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-tax-select-box" data-method="GET"></select>`;
+                    'render': (data, type, row) => {
+                        return `<input type="text" class="form-control expense-subtotal-price mask-money zone-readonly" value="${row?.['expense_subtotal_price'] ? row?.['expense_subtotal_price'] : 0}" disabled readonly>`;
                     }
                 },
                 {
-                    'render': (data, type, row) => {
-                        return `<input type="text" class="form-control expense-subtotal-price mask-money zone-readonly" value="${row?.['expense_subtotal_price'] ? row?.['expense_subtotal_price'] : 0}" disabled readonly>`;
+                    'render': () => {
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-tax-select-box" data-method="GET"></select>`;
                     }
                 },
                 {
@@ -365,7 +373,7 @@ class APLoadTab {
                     console.log(errs);
                 }
             )
-    
+
             let dataParam2 = {'opportunity_id': opportunity_id}
             let ap_mapped_item = $.fn.callAjax2({
                 url: script_url.attr('data-url-ap-cost-list'),
@@ -383,7 +391,7 @@ class APLoadTab {
                     console.log(errs);
                 }
             )
-    
+
             let dataParam3 = {'opportunity_id': opportunity_id}
             let payment_mapped_item = $.fn.callAjax2({
                 url: script_url.attr('data-url-payment-cost-list'),
@@ -401,7 +409,7 @@ class APLoadTab {
                     console.log(errs);
                 }
             )
-    
+
             Promise.all([expense_quotation, ap_mapped_item, payment_mapped_item]).then(
                 (results) => {
                     let data_expense = results[0]
@@ -466,7 +474,7 @@ class APLoadTab {
                             'sum_available': sum_available
                         })
                     }
-    
+
                     let unplanned_ap = [];
                     let unplanned_payment = [];
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
@@ -479,7 +487,7 @@ class APLoadTab {
                             unplanned_payment.push(data_payment_mapped_item[j])
                         }
                     }
-    
+
                     let unplanned_ap_merged = {};
                     $.each(unplanned_ap, function(index, element) {
                         const typeId = element.expense_type.id;
@@ -501,7 +509,7 @@ class APLoadTab {
                     unplanned_ap_merged = $.map(unplanned_ap_merged, function(value) {
                         return value;
                     });
-    
+
                     let unplanned_payment_merged = {};
                     $.each(unplanned_payment, function(index, element) {
                         const typeId = element.expense_type.id;
@@ -515,7 +523,7 @@ class APLoadTab {
                     unplanned_payment_merged = $.map(unplanned_payment_merged, function(value) {
                         return value;
                     });
-    
+
                     if (unplanned_ap_merged.length !== 0 || unplanned_payment_merged.length !== 0) {
                         let unplanned_payment_merged_has_ap = [];
                         for (let i = 0; i < unplanned_ap_merged.length; i++) {
@@ -928,7 +936,7 @@ class APLoadTab {
                     console.log(errs);
                 }
             )
-    
+
             let dataParam2 = {'quotation_mapped_id': quotation_id}
             let ap_mapped_item = $.fn.callAjax2({
                 url: script_url.attr('data-url-ap-cost-list'),
@@ -946,7 +954,7 @@ class APLoadTab {
                     console.log(errs);
                 }
             )
-    
+
             let dataParam3 = {'quotation_mapped_id': quotation_id}
             let payment_mapped_item = $.fn.callAjax2({
                 url: script_url.attr('data-url-payment-cost-list'),
@@ -964,7 +972,7 @@ class APLoadTab {
                     console.log(errs);
                 }
             )
-    
+
             Promise.all([expense_quotation, ap_mapped_item, payment_mapped_item]).then(
                 (results) => {
                     let data_expense = results[0];
@@ -974,7 +982,7 @@ class APLoadTab {
                     let data_expense_merge = {};
                     data_expense.forEach(function (item) {
                         let expenseItemId = item?.['expense_item']?.['id'];
-    
+
                         if (data_expense_merge[expenseItemId] === undefined) {
                             data_expense_merge[expenseItemId] = {
                                 id: item?.['id'],
@@ -1028,7 +1036,7 @@ class APLoadTab {
                             'sum_available': sum_available
                         })
                     }
-    
+
                     let unplanned_ap = [];
                     let unplanned_payment = [];
                     for (let j = 0; j < data_ap_mapped_item.length; j++) {
@@ -1041,7 +1049,7 @@ class APLoadTab {
                             unplanned_payment.push(data_payment_mapped_item[j])
                         }
                     }
-    
+
                     let unplanned_ap_merged = {};
                     $.each(unplanned_ap, function(index, element) {
                         const typeId = element.expense_type.id;
@@ -1063,7 +1071,7 @@ class APLoadTab {
                     unplanned_ap_merged = $.map(unplanned_ap_merged, function(value) {
                         return value;
                     });
-    
+
                     let unplanned_payment_merged = {};
                     $.each(unplanned_payment, function(index, element) {
                         const typeId = element.expense_type.id;
@@ -1077,7 +1085,7 @@ class APLoadTab {
                     unplanned_payment_merged = $.map(unplanned_payment_merged, function(value) {
                         return value;
                     });
-    
+
                     if (unplanned_ap_merged.length !== 0 || unplanned_payment_merged.length !== 0) {
                         let unplanned_payment_merged_has_ap = [];
                         for (let i = 0; i < unplanned_ap_merged.length; i++) {
@@ -1335,30 +1343,6 @@ class APLoadTab {
                 })
         }
     }
-    // bank info
-    static LoadBankInfo(data) {
-        if (data.length > 0) {
-            $('#notify-none-bank-account').prop('hidden', true)
-            let bank_cards = ``
-            for (let i = 0; i < data.length; i++) {
-                let bank_account = data[i];
-                bank_cards += `<div class="col-12 col-md-6 col-lg-3 mb-2">
-                    <div class="border border-secondary rounded p-3 min-h-200p">
-                        <div class="text-center"><i class="bi bi-bank"></i></div>
-                        ${bank_account?.['bank_account_name'] ? `<div class="bank_account_name text-muted text-center">${bank_account?.['is_default'] ? '<i class="text-blue fas fa-thumbtack fa-rotate-by" style="--fa-rotate-angle: -45deg;""></i>' : ''} <b>${bank_account?.['bank_account_name'].toUpperCase()}</b></div>` : ''}
-                        ${bank_account?.['bank_account_number'] ? `<div class="bank_account_number text-muted text-center mb-3">${script_trans.attr('data-trans-bank-account-no')}: <b>${bank_account?.['bank_account_number']}</b></div>` : ''}
-                        ${bank_account?.['bank_name'] ? `<div class="bank_name text-muted text-center">${script_trans.attr('data-trans-bank-name')}: <b>${bank_account?.['bank_name']}</b></div>` : ''}
-                        ${bank_account?.['bank_code'] ? `<div class="bank_code text-muted text-center">${script_trans.attr('data-trans-bank-code')}: <b>${bank_account?.['bank_code'].toUpperCase()}</b></div>` : ''}
-                        ${bank_account?.['bic_swift_code'] ? `<div class="bic_swift_code text-muted text-center">${script_trans.attr('data-trans-BICSWIFT-code')}: <b>${bank_account?.['bic_swift_code'].toUpperCase()}</b></div>` : ''}
-                    </div>
-                </div>`
-            }
-            $('#bank-account-table').append(`<div class="row">${bank_cards}</div>`)
-        }
-        else {
-            $('#notify-none-bank-account').prop('hidden', false)
-        }
-    }
 }
 
 class APAction {
@@ -1399,11 +1383,11 @@ class APAction {
             'tám trăm',
             'chín trăm'
         ]
-    
+
         let result = ""
         let str_n = String(num)
         let len_n = str_n.length
-    
+
         if (len_n === 1) {
             result = xe0[num]
         }
@@ -1427,7 +1411,7 @@ class APAction {
         else if (len_n <= 12) {
             result = APAction.ReadMoneyVND(parseInt(str_n.substring(0, len_n - 9))) + " tỷ " + APAction.ReadMoneyVND(parseInt(str_n.substring(len_n - 9, len_n)))
         }
-    
+
         result = String(result.trim())
         return result;
     }
@@ -1557,9 +1541,6 @@ class APHandle {
             })
     }
     static LoadPage(option='create') {
-        APLoadPage.LoadCreatedDate()
-        APLoadPage.LoadCreator(initEmployee)
-
         if (option === "create") {
             const {
                 create_open, opp_id, opp_title, opp_code,
@@ -1628,6 +1609,8 @@ class APHandle {
         APLoadPage.LoadSaleOrder();
         APLoadPage.LoadSupplier()
         APLoadPage.LoadReturnDate()
+        APLoadPage.LoadAdvanceDate()
+        APLoadPage.InitBankNumber()
         APLoadTab.LoadLineDetailTable()
         APLoadTab.DrawTablePlan()
     }
@@ -1636,32 +1619,32 @@ class APHandle {
 
         frm.dataForm['title'] = $('#title').val()
 
-        if (option === 'create') {
-            if (ap_for === 'opportunity') {
-                frm.dataForm['opportunity_id'] = opp_mapped_select.val()
-                frm.dataForm['sale_code_type'] = 0
-            }
-            else if (ap_for === 'quotation') {
-                frm.dataForm['quotation_mapped_id'] = quotation_mapped_select.val()
-                frm.dataForm['sale_code_type'] = 0
-            }
-            else if (ap_for === 'saleorder') {
-                frm.dataForm['sale_order_mapped_id'] = sale_order_mapped_select.val()
-                frm.dataForm['sale_code_type'] = 0
-            }
-            else {
-                frm.dataForm['opportunity_id'] = null
-                frm.dataForm['quotation_mapped_id'] = null
-                frm.dataForm['sale_order_mapped_id'] = null
-                frm.dataForm['sale_code_type'] = 2
-            }
-            frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val()
+        if (ap_for === 'opportunity') {
+            frm.dataForm['opportunity_id'] = opp_mapped_select.val()
+            frm.dataForm['sale_code_type'] = 0
         }
+        else if (ap_for === 'quotation') {
+            frm.dataForm['quotation_mapped_id'] = quotation_mapped_select.val()
+            frm.dataForm['sale_code_type'] = 0
+        }
+        else if (ap_for === 'saleorder') {
+            frm.dataForm['sale_order_mapped_id'] = sale_order_mapped_select.val()
+            frm.dataForm['sale_code_type'] = 0
+        }
+        else {
+            frm.dataForm['opportunity_id'] = null
+            frm.dataForm['quotation_mapped_id'] = null
+            frm.dataForm['sale_order_mapped_id'] = null
+            frm.dataForm['sale_code_type'] = 2
+        }
+        frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val()
 
         frm.dataForm['advance_payment_type'] = APTypeEle.val()
-        frm.dataForm['supplier_id'] = supplierEle.val() ? supplierEle.val() : null
+        frm.dataForm['supplier_id'] = supplierEle.val() || null
         frm.dataForm['method'] = ap_method_Ele.val()
         frm.dataForm['return_date'] = moment($('#return_date_id').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['advance_date'] = $('#advance_date_id').val() ? moment($('#advance_date_id').val(), 'DD/MM/YYYY').format('YYYY-MM-DD') : null
+        frm.dataForm['bank_data'] = bank_number.val()
         frm.dataForm['money_gave'] = money_gave.prop('checked')
 
         let ap_item_list = []
@@ -1708,18 +1691,14 @@ class APHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     data = data['advance_payment_detail'];
-                    if (option === 'detail') {
-                        new PrintTinymceControl().render('57725469-8b04-428a-a4b0-578091d0e4f5', data, false);
-                    }
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
 
                     // console.log(data)
 
-                    opp_mapped_select.prop('disabled', true)
-                    quotation_mapped_select.prop('disabled', true)
-                    sale_order_mapped_select.prop('disabled', true)
-                    $('#employee_inherit_id').prop('disabled', true)
+                    if (data?.['system_status'] === 3) {
+                        $('#print-document').prop('hidden', false)
+                    }
 
                     const data_inherit = Object.keys(data?.['employee_inherit'] || {}).length > 0 ? [{
                         "id": data?.['employee_inherit']?.['id'],
@@ -1746,18 +1725,14 @@ class APHandle {
                         ...data['process_stage_app'],
                         'selected': true,
                     }] : [];
+
                     new $x.cls.bastionField({
-                        has_opp: true,
-                        has_inherit: true,
-                        has_process: true,
+                        list_from_app: "cashoutflow.advancepayment.create",
+                        app_id: "57725469-8b04-428a-a4b0-578091d0e4f5",
                         data_opp: data_opp,
                         data_inherit: data_inherit,
                         data_process: data_process,
                         data_process_stage_app: data_process_stage_app,
-                        oppFlagData: {"disabled": true},
-                        inheritFlagData: {"disabled": true},
-                        processFlagData: {"disabled": true},
-                        processStageAppFlagData: {"disabled": true},
                     }).init();
 
                     if (Object.keys(data?.['opportunity']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
@@ -1836,27 +1811,24 @@ class APHandle {
 
                     $('#title').val(data.title);
 
-                    APTypeEle.val(data.advance_payment_type);
-
-                    APLoadPage.LoadSupplier(data.supplier);
+                    APTypeEle.val(data.advance_payment_type).trigger('change');
 
                     ap_method_Ele.val(data.method)
 
-                    $('#created_date_id').val(moment(data.date_created.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
-
                     $('#return_date_id').val(moment(data.return_date.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
 
-                    APLoadPage.LoadCreator(data.employee_created)
+                    if (data.advance_date) {
+                        $('#advance_date_id').val(moment(data.advance_date.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
+                    }
 
                     if (Object.keys(data?.['supplier']).length !== 0) {
-                        APLoadPage.LoadSupplier(data?.['supplier'])
-                        APLoadPage.LoadSupplierInfor(data?.['supplier']);
-                        APLoadTab.LoadBankInfo(data?.['supplier']?.['bank_accounts_mapped']);
+                        APLoadPage.LoadSupplier(data?.['supplier'], data?.['bank_data'])
                     }
+
+                    APLoadPage.InitBankNumber(data?.['bank_data'])
 
                     APLoadTab.LoadLineDetailTable(data?.['expense_items'], option)
 
-                    money_gave.prop('disabled', data?.['money_gave']);
                     money_gave.prop('checked', data?.['money_gave']);
 
                     $.fn.initMaskMoney2();
@@ -1875,11 +1847,23 @@ class APHandle {
     }
 }
 
+ap_method_Ele.on('change', function () {
+    if ($(this).val() === '0') {
+        bank_number.closest('.form-group').find('label').removeClass('required')
+        bank_number.prop('required', false)
+    }
+    else {
+        bank_number.closest('.form-group').find('label').addClass('required')
+        bank_number.prop('required', true)
+    }
+})
+
 opp_mapped_select.on('change', function () {
     quotation_mapped_select.empty()
     sale_order_mapped_select.empty()
     if (opp_mapped_select.val()) {
         let selected = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
+        console.log(selected)
         if (selected?.['is_close']) {
             $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
             opp_mapped_select.empty()
@@ -1913,12 +1897,11 @@ opp_mapped_select.on('change', function () {
 
 APTypeEle.on('change', function () {
     if (APTypeEle.val() === '1') {
-        supplierEle.prop('disabled', false);
+        supplierEle.empty().prop('disabled', false);
         $('#supplier-label').addClass('required');
-        APLoadPage.LoadSupplier();
     }
     else {
-        supplierEle.prop('disabled', true);
+        supplierEle.empty().prop('disabled', true);
         $('#supplier-label').removeClass('required');
     }
 })

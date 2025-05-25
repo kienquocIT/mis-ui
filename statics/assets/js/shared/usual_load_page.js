@@ -4,11 +4,12 @@
 class UsualLoadPageFunction {
     /**
      * Định dạng ô nhập ngày
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {string} [output_format='DD/MM/YYYY'] - định dạng ngày
+     * @param {Boolean} [empty=true] - true nếu muốn làm trống ô ban đầu
      * @returns {void}
      */
-    static LoadDate({element, output_format='DD/MM/YYYY'}) {
+    static LoadDate({element, output_format='DD/MM/YYYY', empty=true}) {
         if (!element) {
             console.error("element is required.");
             return;
@@ -18,18 +19,48 @@ class UsualLoadPageFunction {
             timePicker: false,
             showDropdowns: true,
             autoApply: true,
-            autoUpdateInput: false,
-            minYear: parseInt(moment().format('YYYY')),
+            autoUpdateInput: !empty,
+            minYear: parseInt(moment().format('YYYY')) - 1,
             locale: {format: output_format},
-            maxYear: parseInt(moment().format('YYYY')) + 100,
         }).on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('DD/MM/YYYY'));
-        }).val('');
+            $(this).val(picker.startDate.format(output_format));
+        })
+    }
+
+    /**
+     * Định dạng ô nhập thời giam AM/PM
+     * @param {HTMLElement|jQuery} element - element
+     * @param {string} [output_format='hh:mm A'] - định dạng giờ
+     * @param {string} [minute_increment=1] - khoảng cách số phút
+     * @returns {void}
+     */
+    static LoadTime({element, output_format='HH:mm', minute_increment=1}) {
+        if (!element) {
+            console.error("element is required.");
+            return;
+        }
+        element.daterangepicker({
+			timePicker: true,
+			singleDatePicker: true,
+			timePicker24Hour: true,
+			timePickerIncrement: minute_increment,
+            autoUpdateInput: false,
+			locale: {
+                applyLabel: $.fn.gettext('Apply'),
+                format: output_format
+            }
+		}).on('show.daterangepicker', function (ev, picker) {
+            picker.container.find('.applyBtn').addClass('btn-primary btn-xs w-100 m-0')
+            picker.container.find('.cancelBtn').hide();
+			picker.container.find(".calendar-table").hide();
+		}).on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format(output_format));
+        });
     }
 
     /**
      * Load ô Employee (expected-data-url = EmployeeListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
@@ -53,6 +84,10 @@ class UsualLoadPageFunction {
                 method: 'GET',
             },
             data: (data ? data : null),
+            templateResult: function (state) {
+                let groupHTML = `<span class="small">${state.data?.group?.title ? '(' + state.data.group.title + ')' : ""}</span>`
+                return $(`<span>${state.text} ${groupHTML}</span>`);
+            },
             keyResp: 'employee_list',
             keyId: 'id',
             keyText: 'full_name',
@@ -61,7 +96,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load bảng Customer (expected-data-url = CustomerListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
@@ -120,7 +155,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load ô Industry (expected-data-url = IndustryListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
@@ -152,7 +187,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load ô Account (expected-data-url = AccountListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
@@ -184,7 +219,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load ô Account Group (expected-data-url = AccountGroupListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
@@ -216,7 +251,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load ô Customer (expected-data-url = CustomerListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
@@ -248,7 +283,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load bảng Customer (expected-data-url = CustomerListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
@@ -307,7 +342,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load ô Supplier (expected-data-url = SupplierListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
@@ -339,7 +374,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load bảng Supplier (expected-data-url = SupplierListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data_params - data_params
      * @param {string} data_url - data_url
      * @returns {void}
@@ -398,7 +433,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load ô Warehouse (expected-data-url = WareHouseListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
@@ -430,7 +465,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load ô Product (expected-data-url = ProductListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
@@ -462,7 +497,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load ô Expense (expected-data-url = ExpenseListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
@@ -494,7 +529,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load ô Tax (expected-data-url = TaxListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
@@ -526,7 +561,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load ô UOM Group (expected-data-url = UnitOfMeasureGroupListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
@@ -563,7 +598,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load ô Account Type (expected-data-url = AccountTypeListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
@@ -595,7 +630,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load ô UOM (expected-data-url = UnitOfMeasureListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params (truyền vào 'group_id' để lọc theo Group UOM)
@@ -627,7 +662,7 @@ class UsualLoadPageFunction {
 
     /**
      * Load ô Period (expected-data-url = PeriodsConfigListAPI)
-     * @param {HTMLElement} element - element
+     * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
      * @param {Boolean} [allow_clear=true] - select allow clear
      * @param {Object} data_params - data_params
@@ -668,27 +703,63 @@ class UsualLoadPageFunction {
 
     /**
      * Thêm dòng trong bảng
-     * @param {HTMLElement} table - table
+     * @param {HTMLElement|jQuery} table - table
      * @param {Object} [data={}] - data json tương ứng với các cột
+     * @param {Boolean} [is_draw=true] - vẽ lại bảng
      * @returns {void}
      */
-    static AddTableRow(table, data={}) {
-        table.DataTable().row.add(data).draw();
+    static AddTableRow(table, data={}, is_draw=true) {
+        table.DataTable().row.add(data).draw(is_draw);
+    }
+
+    /**
+     * Thêm dòng vào vị trí k trong bảng DataTable
+     * @param {HTMLElement|jQuery} table - Bảng DOM đã init DataTable
+     * @param {Object} [data={}] - Dữ liệu dòng mới
+     * @param {number} [index=0] - Vị trí muốn chèn (0-based)
+     * @param {function(rowEl: jQuery, oldData: Object): Object} extractFn - Hàm lấy lại dữ liệu từ DOM
+     * @param {Boolean} [is_draw=true] - vẽ lại bảng
+     */
+    static AddTableRowAtIndex(table, data={}, index=0, extractFn, is_draw=true) {
+        const dt = table.DataTable();
+        const currentData = [];
+        dt.rows().every(function () {
+            const $row = $(this.node());
+            const oldData = this.data();
+
+            const updatedData = extractFn($row, oldData);
+            currentData.push(updatedData);
+        });
+        currentData.splice(index, 0, data);
+        dt.clear();
+        dt.rows.add(currentData).draw(is_draw);
     }
 
     /**
      * Xóa dòng trong bảng
-     * @param {HTMLElement} table - table
+     * @param {HTMLElement|jQuery} table - table
      * @param {number} row_index - thứ tự của hàng cần xóa
+     * @param {Boolean} [is_draw=true] - vẽ lại bảng
      * @returns {void}
      */
-    static DeleteTableRow(table, row_index) {
+    static DeleteTableRow(table, row_index, is_draw=true) {
         if (row_index > 0) {
             row_index = parseInt(row_index) - 1
             let rowIndex = table.DataTable().row(row_index).index();
             let row = table.DataTable().row(rowIndex);
-            row.remove().draw();
+            row.remove().draw(is_draw);
         }
+    }
+
+    /**
+     * Scroll về cuối bảng khi add dòng
+     * @param {HTMLElement|jQuery} $table - table
+     * @returns {void}
+     */
+    static AutoScrollEnd($table) {
+        const table_wrapper = $table.attr('id') + '_wrapper'
+        const container = $(`#${table_wrapper} .dataTables_scrollBody`)[0]
+        container.scrollTop = container.scrollHeight
     }
 
     /**

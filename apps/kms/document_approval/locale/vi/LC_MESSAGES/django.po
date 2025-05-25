@@ -1,0 +1,91 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "KMS Document type"
+msgstr "KMS Loại tài liệu"
+
+#
+msgid "Document approval"
+msgstr "Công văn phê duyệt"
+
+#
+msgid "Attached Documents"
+msgstr "Tệp Công văn"
+
+#
+msgid "Internal Recipient"
+msgstr "Người nhận nội bộ"
+
+#
+msgid "Add recipient"
+msgstr "Thêm người nhận"
+
+#
+msgid "Content group"
+msgstr "Nhóm nội dung"
+
+#
+msgid "Security level"
+msgstr "Mức bảo mật"
+
+#
+msgid "Published place"
+msgstr "Nơi lưu hành"
+
+#
+msgid "Effective date"
+msgstr "Ngày hiệu lực"
+
+#
+msgid "Folder"
+msgstr "Thư mục"
+
+#
+msgid "Recipient"
+msgstr "Người nhận"
+
+#
+msgid "File in folder"
+msgstr "Tệp trong thư mục"
+
+#
+msgid "Review"
+msgstr "Xem xét"
+
+#
+msgid "Share"
+msgstr "Chia sẽ"
+
+#
+msgid "Edit file attributes"
+msgstr "Chỉnh sửa thuộc tính tệp"
+
+#
+msgid "Upload version"
+msgstr "Tải phiên bản"
+
+#
+msgid "Duplicate"
+msgstr "Bản sao"
+
+#
+msgid "Edit file"
+msgstr "Sửa tệp"
+

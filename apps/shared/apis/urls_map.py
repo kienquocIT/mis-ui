@@ -922,3 +922,11 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Payment plan
     PAYMENT_PLAN_LIST = StringUrl('paymentplan/list')
+
+    #  KMS
+    KMS_DOC_TYPE_LIST = StringUrl('kms/doc-approval/doc-type-list')
+    KMS_DOC_TYPE_DETAIL = StringUrl('kms/doc-approval/doc-type-detail/{pk}')
+    KMS_CONTENT_GROUP_LIST = StringUrl('kms/doc-approval/content-group-list')
+    KMS_CONTENT_GROUP_DETAIL = StringUrl('kms/doc-approval/content-group-detail/{pk}')
+    KMS_DOCUMENT_APPROVAL_LIST = StringUrl('kms/doc-approval/list')
+    KMS_DOCUMENT_APPROVAL_DETAIL = StringUrl('kms/doc-approval/detail/{pk}')

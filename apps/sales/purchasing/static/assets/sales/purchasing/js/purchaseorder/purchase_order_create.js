@@ -56,8 +56,16 @@ $(function () {
             if ($(this).val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx(POLoadDataHandle.supplierSelectEle, $(this).val());
                 if (dataSelected) {
-                    FormElementControl.loadInitS2(POLoadDataHandle.contactSelectEle, [dataSelected?.['owner']]);
-                    document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped']?.['id'];
+                    // load contact
+                    if (dataSelected?.['contact_list']) {
+                        FormElementControl.loadInitS2(POLoadDataHandle.contactSelectEle, dataSelected?.['contact_list']);
+                        for (let contact of dataSelected?.['contact_list']) {
+                            if (contact?.['is_owner'] === true) {
+                                POLoadDataHandle.contactSelectEle.val(contact?.['id']).trigger('change');
+                                break;
+                            }
+                        }
+                    }
                 }
             } else { // No Value => load again contact
                 POLoadDataHandle.contactSelectEle.empty();

@@ -491,6 +491,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Payment plan
     PAYMENT_PLAN_LIST_PAGE = BreadcrumbChildren(_('Payment plan'), 'PaymentPlanList')
 
+    # KMS
+    KMS_DOC_TYPE_LIST = BreadcrumbChildren(_('Document type'), 'DocumentTypeConfigList')
+    KMS_CONTENT_GROUP_LIST = BreadcrumbChildren(_('Content group'), 'ContentGroupList')
+    KMS_DOCUMENT_APPROVAL_LIST = BreadcrumbChildren(_('Document approval'), 'KMSDocumentApprovalList')
+
+
 class BreadcrumbView:
     """menu vertical item view"""
 
@@ -1323,3 +1329,29 @@ class BreadcrumbView:
     PAYMENT_PLAN_LIST_PAGE = [
         BreadcrumbItem.PAYMENT_PLAN_LIST_PAGE
     ]
+
+
+    KMS_DOC_TYPE_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.KMS_DOC_TYPE_LIST
+    ]
+    KMS_DOC_TYPE_CREATE_PAGE = KMS_DOC_TYPE_LIST + [BreadcrumbItem.BASTION_CREATE]
+    KMS_DOC_TYPE_DETAIL_PAGE = KMS_DOC_TYPE_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    KMS_DOC_TYPE_UPDATE_PAGE = KMS_DOC_TYPE_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    KMS_CONTENT_GROUP_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.KMS_CONTENT_GROUP_LIST
+    ]
+    KMS_CONTENT_GROUP_CREATE_PAGE = KMS_CONTENT_GROUP_LIST + [BreadcrumbItem.BASTION_CREATE]
+    KMS_CONTENT_GROUP_DETAIL_PAGE = KMS_CONTENT_GROUP_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    KMS_CONTENT_GROUP_UPDATE_PAGE = KMS_CONTENT_GROUP_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    KMS_DOCUMENT_APPROVAL_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.KMS_DOCUMENT_APPROVAL_LIST
+    ]
+    KMS_DOCUMENT_APPROVAL_CREATE_PAGE = KMS_DOCUMENT_APPROVAL_LIST + [BreadcrumbItem.BASTION_CREATE]
+    KMS_DOCUMENT_APPROVAL_DETAIL_PAGE = KMS_DOCUMENT_APPROVAL_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    KMS_DOCUMENT_APPROVAL_UPDATE_PAGE = KMS_DOCUMENT_APPROVAL_LIST + [BreadcrumbItem.BASTION_UPDATE]
+

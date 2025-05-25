@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Document Type list' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'DocumentTypeConfigCreate' %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <table class="table nowrap w-100" data-method="get" data-url="{% url 'DocumentTypeConfigListAPI' %}"
+        data-url-detail="{% url 'DocumentTypeConfigDetail' 1%}" id="tbl_document_type">
+            <thead>
+            <tr>
+                <td>{% trans 'Code' %}</td>
+                <td>{% trans 'Name' %}</td>
+                <td>{% trans 'Numbering' %}</td>
+                <td>{% trans 'Folder' %}</td>
+                <td></td>
+            </tr>
+            </thead>
+        </table>
+    </div>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-delete="{% url 'DocumentTypeConfigDetailAPI' pk=1%}"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/kms/doc-type/list.js' %}"></script>
+{% endblock %}

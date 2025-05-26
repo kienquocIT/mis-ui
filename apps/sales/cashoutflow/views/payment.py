@@ -123,17 +123,6 @@ class PaymentDetailAPI(APIView):
         return resp.auto_return()
 
 
-class PaymentCostItemsListAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_ITEMS_LIST).get(data)
-        return resp.auto_return(key_success='payment_cost_items_list')
-
-
 class PaymentConfigList(View):
     @mask_view(
         auth_require=True,

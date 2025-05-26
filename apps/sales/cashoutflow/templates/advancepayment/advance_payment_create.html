@@ -50,7 +50,6 @@
             data-trans-BICSWIFT-code="{% trans 'BIC/SWIFT code' %}"
     >
     </script>
-    {{ data.employee_current | json_script:"employee_current" }}
     <form id="form-create-advance"
           data-method="POST"
           data-url-redirect="{% url "AdvancePaymentList" %}"

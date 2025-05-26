@@ -385,7 +385,7 @@ class PrintTinymceControl {
                               tooltip: 'Rarely Used',
                               items: 'ltr rtl | charmap emoticons | superscript subscript | nonbreaking anchor media | undo redo | '
                             }
-                          },
+                            },
                         fontsize_formats: "8px 9px 10px 11px 12px 14px 16px 18px 20px 22px 24px 26px 28px 36px 48px 72px",
                         pagebreak_split_block: true,
                         pagebreak_separator: '<span class="page-break-here"><!-- my page break --></span>',
@@ -771,5 +771,47 @@ class PrintTinymceControl {
 
     static close_modal(){
         new PrintTinymceControl().modal$.modal('hide');
+    }
+
+    /**
+     * Load template in
+     * @param {string} application_id - id của application
+     * @param {string} print_ajax_url - url đến API lấy data print
+     * @param {string} response_key - field trả về
+     * @param {Object} params - params
+     * @returns {void}
+     */
+    static open_modal_and_render_templates({application_id, print_ajax_url, response_key, params={}}) {
+        if (application_id && print_ajax_url && response_key) {
+            WindowControl.showLoading();
+            let print_ajax = $.fn.callAjax2({
+                'url': print_ajax_url,
+                'data': params,
+                'method': 'GET',
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty(response_key)) {
+                        return data?.[response_key] || {};
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+            Promise.all([print_ajax]).then(
+                (results) => {
+                    const print_data = results[0] || {}
+                    console.log(print_data)
+                    new PrintTinymceControl().render(application_id, print_data, false);
+                    new PrintTinymceControl().modal$.modal('show');
+                    WindowControl.hideLoading();
+                })
+        }
+        else {
+            WindowControl.hideLoading();
+            $.fn.notifyB({description: $.fn.gettext("Can not get print data!")}, 'warning');
+        }
     }
 }

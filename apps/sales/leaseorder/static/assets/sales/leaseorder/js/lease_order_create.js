@@ -83,6 +83,10 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
+        LeaseOrderDataTableHandle.$tableSProduct.on('click', '.table-row-checkbox', function () {
+            LeaseOrderLoadDataHandle.loadStoreCheckProduct(this);
+        });
+
         LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
             LeaseOrderLoadDataHandle.loadNewProduct();
         });

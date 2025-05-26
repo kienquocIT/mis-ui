@@ -334,6 +334,45 @@ class QuotationLoadDataHandle {
         return true;
     };
 
+    static loadStoreCheckProduct(ele) {
+        let row = ele.closest('tr');
+        let rowIndex = QuotationDataTableHandle.$tableSProduct.DataTable().row(row).index();
+        let $row = QuotationDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
+        let dataRow = $row.data();
+
+        if (dataRow) {
+            if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
+                let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
+                if (typeof storeID === 'object') {
+                    if (ele.checked === true) {
+                        if (!storeID?.[dataRow?.['id']]) {
+                            storeID[dataRow?.['id']] = {
+                                "type": "current",
+                                "data": dataRow,
+                            };
+                        }
+                    }
+                    if (ele.checked === false) {
+                        if (storeID?.[dataRow?.['id']]) {
+                            delete storeID?.[dataRow?.['id']];
+                        }
+                    }
+                    QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(storeID));
+                }
+            } else {
+                let dataStore = {};
+                if (ele.checked === true) {
+                    dataStore[dataRow?.['id']] = {
+                        "type": "current",
+                        "data": dataRow,
+                    };
+                }
+                QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(dataStore));
+            }
+        }
+        return true;
+    };
+
     static loadModalSProduct() {
         QuotationLoadDataHandle.loadStoreSProduct();
         QuotationDataTableHandle.$tableSProduct.DataTable().destroy();

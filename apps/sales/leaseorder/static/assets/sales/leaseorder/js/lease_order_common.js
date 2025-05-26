@@ -44,6 +44,8 @@ class LeaseOrderLoadDataHandle {
         {'id': 1, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-depreciation-method-2')},
     ];
 
+    static $productsCheckedEle = $('#products-checked');
+
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
         $ele.empty();
@@ -403,34 +405,67 @@ class LeaseOrderLoadDataHandle {
         $('#quotation-create-date-created').val(formattedDate);
     };
 
-    static loadModalSProduct() {
-        let fnData = [];
-        WindowControl.showLoading();
-        $.fn.callAjax2({
-                'url': LeaseOrderLoadDataHandle.urlEle.attr('data-md-product'),
-                'method': 'GET',
-                'data': {'general_product_types_mapped__is_service': true},
-                'isDropdown': true,
+    static loadStoreSProduct() {
+        let dataSelected = {};
+        LeaseOrderDataTableHandle.$tableProduct.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(row).index();
+            let $row = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+            if (dataRow?.['product_data']?.['id']) {
+                dataSelected[dataRow?.['product_data']?.['id']] = {
+                    "type": "selected",
+                    "data": dataRow?.['product_data'],
+                };
             }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                        for (let product of data.product_sale_list) {
-                            if (product.hasOwnProperty('product_choice') && Array.isArray(product.product_choice)) {
-                                if (product['product_choice'].includes(0)) {
-                                    fnData.push(product);
-                                }
-                            }
+        });
+        LeaseOrderLoadDataHandle.$productsCheckedEle.val(JSON.stringify(dataSelected));
+        return true;
+    };
+
+    static loadStoreCheckProduct(ele) {
+        let row = ele.closest('tr');
+        let rowIndex = LeaseOrderDataTableHandle.$tableSProduct.DataTable().row(row).index();
+        let $row = LeaseOrderDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
+        let dataRow = $row.data();
+
+        if (dataRow) {
+            if (LeaseOrderLoadDataHandle.$productsCheckedEle.val()) {
+                let storeID = JSON.parse(LeaseOrderLoadDataHandle.$productsCheckedEle.val());
+                if (typeof storeID === 'object') {
+                    if (ele.checked === true) {
+                        if (!storeID?.[dataRow?.['id']]) {
+                            storeID[dataRow?.['id']] = {
+                                "type": "current",
+                                "data": dataRow,
+                            };
                         }
-                        LeaseOrderDataTableHandle.$tableSProduct.DataTable().clear().draw();
-                        LeaseOrderDataTableHandle.$tableSProduct.DataTable().rows.add(fnData).draw();
-                        WindowControl.hideLoading();
                     }
+                    if (ele.checked === false) {
+                        if (storeID?.[dataRow?.['id']]) {
+                            delete storeID?.[dataRow?.['id']];
+                        }
+                    }
+                    LeaseOrderLoadDataHandle.$productsCheckedEle.val(JSON.stringify(storeID));
                 }
+            } else {
+                let dataStore = {};
+                if (ele.checked === true) {
+                    dataStore[dataRow?.['id']] = {
+                        "type": "current",
+                        "data": dataRow,
+                    };
+                }
+                LeaseOrderLoadDataHandle.$productsCheckedEle.val(JSON.stringify(dataStore));
             }
-        )
+        }
+        return true;
+    };
+
+    static loadModalSProduct() {
+        LeaseOrderLoadDataHandle.loadStoreSProduct();
+        LeaseOrderDataTableHandle.$tableSProduct.DataTable().destroy();
+        LeaseOrderDataTableHandle.dataTableSelectProduct();
     };
 
     static loadModalSOffset(ele) {
@@ -4979,14 +5014,23 @@ class LeaseOrderDataTableHandle {
         }
     };
 
-    static dataTableSelectProduct(data) {
+    static dataTableSelectProduct() {
         LeaseOrderDataTableHandle.$tableSProduct.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
+            useDataServer: true,
+            ajax: {
+                url: LeaseOrderLoadDataHandle.urlEle.attr('data-md-product'),
+                data: {'general_product_types_mapped__is_service': true},
+                type: "GET",
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('product_sale_list')) {
+                        return resp.data['product_sale_list'] ? resp.data['product_sale_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
             autoWidth: true,
             scrollX: true,
-            scrollY: "400px",
             columns: [
                 {
                     targets: 0,
@@ -4995,10 +5039,17 @@ class LeaseOrderDataTableHandle {
                         let clsZoneReadonly = '';
                         let disabled = '';
                         let checked = '';
-                        if (LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
-                            disabled = 'disabled';
-                            checked = 'checked';
-                            clsZoneReadonly = 'zone-readonly';
+                        if (LeaseOrderLoadDataHandle.$productsCheckedEle.val()) {
+                            let storeID = JSON.parse(LeaseOrderLoadDataHandle.$productsCheckedEle.val());
+                            if (typeof storeID === 'object') {
+                                if (storeID?.[row?.['id']]) {
+                                    if (storeID?.[row?.['id']]?.['type'] === "selected") {
+                                        disabled = 'disabled';
+                                    }
+                                    checked = 'checked';
+                                    clsZoneReadonly = 'zone-readonly';
+                                }
+                            }
                         }
                         let checkBOM = LeaseOrderLoadDataHandle.loadCheckProductBOM(row);
                         if (checkBOM?.['is_pass'] === false) {
@@ -5066,7 +5117,6 @@ class LeaseOrderDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableSProduct);
                 LeaseOrderDataTableHandle.dtbSelectProductHDCustom();
             },
         });

@@ -449,6 +449,18 @@ class GroupListAPI(APIView):
         )
 
 
+class GroupDDListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.GROUP_DD_LIST, user=request.user).get()
+        return resp.auto_return(key_success='group_dd_list')
+
+
 class GroupDetail(View):
     @mask_view(
         auth_require=True,

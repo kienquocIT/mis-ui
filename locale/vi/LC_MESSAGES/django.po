@@ -11780,6 +11780,14 @@ msgid "Return 0 if value of indicator is negative"
 msgstr "Trả về 0 nếu giá trị chỉ tiêu âm"
 
 #
+msgid "Date of advance payment"
+msgstr "Ngày cần tạm ứng"
+
+#
+msgid "Select or input new"
+msgstr "Chọn hoặc nhập mới"
+
+#
 msgid "Component name"
 msgstr "Tên thành phần"
 

@@ -134,6 +134,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GROUP_DETAIL_PK = StringUrl('hr/group/{pk}')
     GROUP_PARENT = StringUrl('hr/group/parent')
     GROUP_PARENT_PK = StringUrl('hr/group/parent/{level}')
+    GROUP_DD_LIST = StringUrl('hr/groups-dropdown')
 
     # home/company
     COMPANY_CONFIG = StringUrl('company/config')
@@ -326,15 +327,17 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # advance payment
     CASHOUTFLOW_QUOTATION_LIST = StringUrl('cashoutflow/quotation-list')
     CASHOUTFLOW_SALE_ORDER_LIST = StringUrl('cashoutflow/sale-order-list')
-    ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advances-payments')
-    ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advances-payments/{pk}')
-    ADVANCE_PAYMENT_COST_LIST = StringUrl('cashoutflow/advances-payments-cost-list/lists')
+    CASHOUTFLOW_SUPPLIER_LIST = StringUrl('cashoutflow/supplier-list')
+    ADVANCE_PAYMENT_LIST = StringUrl('cashoutflow/advance-payments')
+    ADVANCE_PAYMENT_DETAIL = StringUrl('cashoutflow/advance-payment/{pk}')
+    ADVANCE_PAYMENT_PRINT = StringUrl('cashoutflow/advance-payment-print/{pk}')
+    ADVANCE_PAYMENT_COST_LIST = StringUrl('cashoutflow/advance-payment-cost-list/list')
 
     # payment
     PAYMENT_LIST = StringUrl('cashoutflow/payments')
-    PAYMENT_DETAIL = StringUrl('cashoutflow/payments/{pk}')
+    PAYMENT_DETAIL = StringUrl('cashoutflow/payment/{pk}')
     PAYMENT_CONFIG_LIST = StringUrl('cashoutflow/payment-config')
-    PAYMENT_COST_LIST = StringUrl('cashoutflow/payments-cost-list/lists')
+    PAYMENT_COST_LIST = StringUrl('cashoutflow/payment-cost-list/list')
 
     PAYMENT_COST_ITEMS_LIST = StringUrl('cashoutflow/payment-cost-items-list')
 
@@ -922,6 +925,13 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Payment plan
     PAYMENT_PLAN_LIST = StringUrl('paymentplan/list')
 
+    #  KMS
+    KMS_DOC_TYPE_LIST = StringUrl('kms/doc-approval/doc-type-list')
+    KMS_DOC_TYPE_DETAIL = StringUrl('kms/doc-approval/doc-type-detail/{pk}')
+    KMS_CONTENT_GROUP_LIST = StringUrl('kms/doc-approval/content-group-list')
+    KMS_CONTENT_GROUP_DETAIL = StringUrl('kms/doc-approval/content-group-detail/{pk}')
+    KMS_DOCUMENT_APPROVAL_LIST = StringUrl('kms/doc-approval/list')
+    KMS_DOCUMENT_APPROVAL_DETAIL = StringUrl('kms/doc-approval/detail/{pk}')
 
     # sales/product modification
     PRODUCT_COMPONENT_LIST = StringUrl('product-modification/product-component-list')

@@ -7,7 +7,7 @@ $(function () {
 
         // Load init
         if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
+            FormElementControl.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
             GRLoadDataHandle.loadCustomAreaByType();
         }
 
@@ -215,7 +215,7 @@ $(function () {
                     listData.push(JSON.parse(eleCheck.getAttribute('data-row')));
                 }
             }
-            GRLoadDataHandle.loadInitS2(GRLoadDataHandle.$boxProductionReport, listData);
+            FormElementControl.loadInitS2(GRLoadDataHandle.$boxProductionReport, listData);
             GRLoadDataHandle.$boxProductionReport.change();
         });
 

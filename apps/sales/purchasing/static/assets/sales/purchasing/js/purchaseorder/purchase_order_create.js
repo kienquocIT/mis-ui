@@ -14,8 +14,8 @@ $(function () {
         let tablePurchaseOrderProductRequest = $('#datable-purchase-order-product-request');
 
         // Load init
-        POLoadDataHandle.loadInitS2(POLoadDataHandle.supplierSelectEle, [], {'account_types_mapped__account_type_order': 1}, null, true);
-        POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle);
+        FormElementControl.loadInitS2(POLoadDataHandle.supplierSelectEle, [], {'account_types_mapped__account_type_order': 1}, null, true);
+        FormElementControl.loadInitS2(POLoadDataHandle.contactSelectEle);
         POLoadDataHandle.loadInitProduct();
         PODataTableHandle.dataTablePurchaseRequest();
         PODataTableHandle.dataTablePurchaseRequestProduct();
@@ -56,13 +56,20 @@ $(function () {
             if ($(this).val()) {
                 let dataSelected = SelectDDControl.get_data_from_idx(POLoadDataHandle.supplierSelectEle, $(this).val());
                 if (dataSelected) {
-                    POLoadDataHandle.contactSelectEle.empty();
-                    POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle, [dataSelected?.['owner']], {'account_name_id': dataSelected?.['id']});
-                    document.getElementById('customer-price-list').value = dataSelected?.['price_list_mapped']?.['id'];
+                    // load contact
+                    if (dataSelected?.['contact_list']) {
+                        FormElementControl.loadInitS2(POLoadDataHandle.contactSelectEle, dataSelected?.['contact_list']);
+                        for (let contact of dataSelected?.['contact_list']) {
+                            if (contact?.['is_owner'] === true) {
+                                POLoadDataHandle.contactSelectEle.val(contact?.['id']).trigger('change');
+                                break;
+                            }
+                        }
+                    }
                 }
             } else { // No Value => load again contact
                 POLoadDataHandle.contactSelectEle.empty();
-                POLoadDataHandle.loadInitS2(POLoadDataHandle.contactSelectEle);
+                FormElementControl.loadInitS2(POLoadDataHandle.contactSelectEle);
             }
             if (POLoadDataHandle.PRDataEle.val()) {
                 POLoadDataHandle.loadTableProductByPurchaseRequest();

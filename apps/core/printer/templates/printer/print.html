@@ -1,9 +1,7 @@
 {% load i18n string_utils %}
-<div
-        class="modal fade" id="printModal" tabindex="-1" role="dialog"
-        aria-labelledby="printModalTitle" aria-hidden="true"
->
-    <div class="modal-dialog modal-lg" role="document">
+
+<div class="modal fade" id="printModal" tabindex="-1" role="dialog" aria-labelledby="printModalTitle">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="printModalTitle">{% trans 'Print Preview' %}</h5>
@@ -13,14 +11,13 @@
             </div>
             <div class="modal-body">
                 <div class="w-100 mb-3">
-                    <small class="font-weight-bold">{% trans 'Displaying the PDF will take time depending on the size of the print template and the number of images to be printed.' %}</small>
-                    <br>
-                    <small class="font-weight-bold">{% trans 'Please wait for the images to finish loading before proceeding with the print operation.' %}</small>
+                    <p class="fw-bold text-orange">{% trans 'Displaying the PDF will take time depending on the size of the print template and the number of images to be printed.' %}</p>
+                    <p class="fw-bold text-orange">{% trans 'Please wait for the images to finish loading before proceeding with the print operation.' %}</p>
                 </div>
                 <div class="w-100 mb-2">
                     {% random_str as idx_label_fn %}
                     <label for="{{ idx_label_fn }}">{% trans 'Print Template' %}</label>
-                    <select id="{{ idx_label_fn }}" class="printer-template-list"></select>
+                    <select id="{{ idx_label_fn }}" class="form-select select2 printer-template-list"></select>
                 </div>
                 <div class="w-100 mb-5">
                     {% random_str as idx_fn %}

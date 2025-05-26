@@ -1,0 +1,4 @@
+#table_attached_info thead,
+#table_internal_recipient thead{
+    display: none;
+}

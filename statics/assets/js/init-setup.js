@@ -452,7 +452,7 @@ class LogController {
                 let logHTML = [];
                 item['logs'].map((itemLog) => {
                     let childLogHTML = `<div class="mt-2">`;
-                    let img = `<i class="far fa-smile"></i>`;
+                    let img = `<img src="/static/assets/images/systems/bot_4712104.png" alt="BflowBot"/>`;
                     let name = "BflowBot";
                     if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
                         img = `<i class="fas fa-user-circle"></i>`;
@@ -2315,6 +2315,7 @@ class WFRTControl {
                 let data = $.fn.switcherResp(resp);
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
+                    if (_form?.resetForm) $(_form.formElm)[0].reset()
                     setTimeout(() => {
                         window.location.replace(_form.dataUrlRedirect);
                     }, 2000);
@@ -2616,7 +2617,8 @@ class WFRTControl {
         let htmlBody = `<div class="d-flex align-items-center">
                             <div class="media align-items-center">
                                 <div class="media-head me-2">
-                                    <i class="far fa-smile"></i>
+<!--                                    <i class="far fa-smile"></i>-->
+                                    <img src="/static/assets/images/systems/bot_4712104.png" alt="BflowBot"/>
                                 </div>
                                 <div class="media-body">
                                     <b class="d-block fs-7">BflowBot</b>
@@ -2629,7 +2631,7 @@ class WFRTControl {
         let htmlCancel = `<div class="d-flex align-items-center">
                                 <div class="media align-items-center">
                                     <div class="media-head me-2">
-                                        <i class="far fa-smile"></i>
+                                        <img src="/static/assets/images/systems/bot_4712104.png" alt="BflowBot"/>
                                     </div>
                                     <div class="media-body">
                                         <b class="d-block fs-7">BflowBot</b>

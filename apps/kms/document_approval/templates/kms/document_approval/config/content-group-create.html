@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Content group create' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form_content_group">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+
+{% block pageContent %}
+    <form class="form_main" id="form_content_group" data-method="POST" data-url="{% url 'ContentGroupCreateAPI' %}"
+          data-url-redirect="{% url 'ContentGroupList' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label required" for="txt_code">{% trans 'Code' %}</label>
+                <input type="text" class="form-control" name="code" id="txt_code" required>
+            </div>
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label required" for="txt_title">{% trans 'Title' %}</label>
+                <input type="text" class="form-control" name="title" id="txt_title" required>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory">
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/kms/doc-type/common.js' %}"></script>
+{% endblock %}

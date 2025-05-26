@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Document approval detail' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/kms/doc-approval/recipient-css.css' %}" rel="stylesheet" type="text/css"/>
+
+    <link href="{% static 'assets/css/kms/doc-approval/common.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'KMSDocumentApprovalEdit' data.pk %}">
+        <button class="btn btn-outline-primary">
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </span>
+        </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <form class="form_main" id="frm_document_approval" data-method="POST"
+          data-url="{% url 'KMSDocumentApprovalDetailAPI' data.pk %}">
+        {% csrf_token %}
+        <input type="hidden" name="id" id="id">
+        <div class="row">
+            <div class="col-md-12 col-lg-6 form-group">
+                <label class="form-label required" for="txt_title">{% trans 'Name' %}</label>
+                <input type="text" class="form-control" name="title" id="txt_title" required>
+            </div>
+
+            <div class="col-md-12 content_attached mt-2 mb-2">
+                <label class="form-label mt-2" for="table_attached_info">{% trans 'Attached Documents' %}</label>
+                <table class="table nowrap table-advance w-100" id="table_attached_info">
+                </table>
+            </div>
+
+            <div class="col-md-12 form-group mt-4">
+                <label class="form-label" for="add-product-remark">{% trans 'Description' %}</label>
+                <textarea name="remark" class="form-control" id="txtarea_remark" rows="2"></textarea>
+            </div>
+
+            <div class="col-md-12 content_recipient mt-2">
+                <label class="form-label mt-2" for="table_internal_recipient">{% trans 'Internal Recipient' %}</label>
+                <table class="table nowrap table-advance w-100" id="table_internal_recipient"></table>
+            </div>
+        </div>
+    </form>
+    {% include 'kms/document_approval/extend/offcanvas-attached.html' %}
+    {% include 'kms/document_approval/extend/popup-recipient.html' %}
+{% endblock %}
+{% block dataHiddenGroup %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
+    <script src="{% static 'assets/js/kms/doc-approval/recipient-js.js' %}"></script>
+    <script src="{% static 'assets/js/kms/doc-approval/common.js' %}"></script>
+
+    <script src="{% static 'assets/js/kms/doc-approval/detail.js' %}"></script>
+
+{% endblock %}

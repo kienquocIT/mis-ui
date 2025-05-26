@@ -422,6 +422,14 @@ msgid "Auto-generate mode if blank"
 msgstr "Chế độ tự sinh mã nếu để trống"
 
 #
+msgid "Default"
+msgstr "Mặc định"
+
+#
+msgid "input UOM..."
+msgstr "nhập đơn vị..."
+
+#
 msgid "Warehouse"
 msgstr "Kho"
 

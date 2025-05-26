@@ -68,6 +68,44 @@ $(function () {
             QuotationStoreDataHandle.storeDtbData(5);
         });
 
+        QuotationDataTableHandle.$tableSProduct.on('click', '.table-row-checkbox', function () {
+            let row = this.closest('tr');
+            let rowIndex = QuotationDataTableHandle.$tableSProduct.DataTable().row(row).index();
+            let $row = QuotationDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+
+            if (dataRow) {
+                if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
+                    let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
+                    if (typeof storeID === 'object') {
+                        if (this.checked === true) {
+                            if (!storeID?.[dataRow?.['id']]) {
+                                storeID[dataRow?.['id']] = {
+                                    "type": "current",
+                                    "data": dataRow,
+                                };
+                            }
+                        }
+                        if (this.checked === false) {
+                            if (storeID?.[dataRow?.['id']]) {
+                                delete storeID?.[dataRow?.['id']];
+                            }
+                        }
+                        QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(storeID));
+                    }
+                } else {
+                    let dataStore = {};
+                    if (this.checked === true) {
+                        dataStore[dataRow?.['id']] = {
+                            "type": "current",
+                            "data": dataRow,
+                        };
+                    }
+                    QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(dataStore));
+                }
+            }
+        });
+
         QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
             QuotationLoadDataHandle.loadNewProduct();
         });

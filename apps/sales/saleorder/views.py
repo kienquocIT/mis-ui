@@ -193,6 +193,7 @@ class SaleOrderUpdate(View):
                    'list_from_app': 'saleorder.saleorder.edit',
                    'payment_term_stage': PAYMENT_TERM_STAGE,
                    'payment_date_type': PAYMENT_DATE_TYPE,
+                   'app_id': 'a870e392-9ad2-4fe2-9baa-298a38691cf2',
                }, status.HTTP_200_OK
 
 

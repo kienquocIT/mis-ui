@@ -21,6 +21,8 @@ class QuotationLoadDataHandle {
     static $btnSaveReconcile = $('#btn-save-select-reconcile');
     static dataSuppliedBy = [{'id': 0, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-purchase')}, {'id': 1, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-make')}];
 
+    static $productsCheckedEle = $('#products-checked');
+
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
         $ele.empty();
@@ -314,7 +316,26 @@ class QuotationLoadDataHandle {
         QuotationLoadDataHandle.loadDataProductAll();
     };
 
+    static loadStoreSProduct() {
+        let dataSelected = {};
+        QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = QuotationDataTableHandle.$tableProduct.DataTable().row(row).index();
+            let $row = QuotationDataTableHandle.$tableProduct.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+            if (dataRow?.['product_data']?.['id']) {
+                dataSelected[dataRow?.['product_data']?.['id']] = {
+                    "type": "selected",
+                    "data": dataRow?.['product_data'],
+                };
+            }
+        });
+        QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(dataSelected));
+        return true;
+    };
+
     static loadModalSProduct() {
+        QuotationLoadDataHandle.loadStoreSProduct();
         QuotationDataTableHandle.$tableSProduct.DataTable().destroy();
         QuotationDataTableHandle.dataTableSelectProduct();
     };
@@ -599,18 +620,27 @@ class QuotationLoadDataHandle {
     };
 
     static loadNewProduct() {
-        QuotationDataTableHandle.$tableSProduct.DataTable().rows().every(function () {
-            let row = this.node();
-            let rowIndex = QuotationDataTableHandle.$tableSProduct.DataTable().row(row).index();
-            let $row = QuotationDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
-            let dataRow = $row.data();
-
-            if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
-                if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
-                    QuotationLoadDataHandle.loadAddRowProduct(dataRow);
+        if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
+            let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
+            for (let key in storeID) {
+                if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${storeID[key]?.['data']?.['id']}"]`)) {
+                    QuotationLoadDataHandle.loadAddRowProduct(storeID[key]?.['data']);
                 }
             }
-        });
+        }
+
+        // QuotationDataTableHandle.$tableSProduct.DataTable().rows().every(function () {
+        //     let row = this.node();
+        //     let rowIndex = QuotationDataTableHandle.$tableSProduct.DataTable().row(row).index();
+        //     let $row = QuotationDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
+        //     let dataRow = $row.data();
+        //
+        //     if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
+        //         if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
+        //             QuotationLoadDataHandle.loadAddRowProduct(dataRow);
+        //         }
+        //     }
+        // });
         return true;
     };
 
@@ -2427,8 +2457,7 @@ class QuotationLoadDataHandle {
         }
         if ($(form).attr('data-method').toLowerCase() !== 'get') {
             QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
-            QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
-            QuotationLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
+            QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('disabled');
         }
         if (Object.keys(data?.['opportunity']).length > 0) {
             if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
@@ -2441,7 +2470,7 @@ class QuotationLoadDataHandle {
             }
             if ($(form).attr('data-method').toLowerCase() !== 'get') {
                 QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
-                QuotationLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
+                QuotationLoadDataHandle.customerSelectEle[0].setAttribute('disabled', 'true');
             }
         }
         if (data?.['customer_data']) {
@@ -4560,11 +4589,25 @@ class QuotationDataTableHandle {
                         }
                         let disabled = '';
                         let checked = '';
-                        if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
-                            disabled = 'disabled';
-                            checked = 'checked';
-                            clsZoneReadonly = 'zone-readonly';
+                        // if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
+                        //     disabled = 'disabled';
+                        //     checked = 'checked';
+                        //     clsZoneReadonly = 'zone-readonly';
+                        // }
+
+                        if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
+                            let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
+                            if (typeof storeID === 'object') {
+                                if (storeID?.[row?.['id']]) {
+                                    if (storeID?.[row?.['id']]?.['type'] === "selected") {
+                                        disabled = 'disabled';
+                                    }
+                                    checked = 'checked';
+                                    clsZoneReadonly = 'zone-readonly';
+                                }
+                            }
                         }
+
                         let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(row);
                         if (checkBOM?.['is_pass'] === false) {
                             disabled = 'disabled';
@@ -4634,7 +4677,7 @@ class QuotationDataTableHandle {
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                     QuotationDataTableHandle.dtbSProductHDCustom();
                 }
-                QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSProduct);
+                // QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSProduct);
             },
         });
     };

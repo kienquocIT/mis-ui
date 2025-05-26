@@ -12,6 +12,8 @@ pipeline {
         TELEGRAM_ENABLE = credentials('telegram-enable')
         TELEGRAM_TOKEN = credentials('telegram-token') 
         TELEGRAM_CHAT_ID = credentials('telegram-chat-id')
+
+        DISCORD_NOTIFY_URL = credentials('discord-notify')
     }
 
     stages {
@@ -19,7 +21,7 @@ pipeline {
             steps {
                 script {
                     if (TELEGRAM_ENABLE == '1') {
-//                         sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build started... 💛💛💛 \nLast commit: ${GIT_COMMIT_MSG}");
+                         sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build started... 💛💛💛 \nLast commit: ${GIT_COMMIT_MSG}");
                     }
                 }
             }
@@ -72,7 +74,7 @@ pipeline {
         success {
             script {
                 if (TELEGRAM_ENABLE == '1') {
-//                     sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME}] Build finished: Successful 💚💚💚")
+                     sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME}] Build finished: Successful 💚💚💚")
                 }
             }
         }
@@ -80,7 +82,7 @@ pipeline {
             script {
                 if (TELEGRAM_ENABLE == '1') {
                     def errorMsg = env.ERROR_MESSAGE ?: 'No error message available'
-//                     sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build finished: Failure 💔💔💔 \nErrors: ${errorMsg}")
+                     sendTelegram("[ ${BUILD_TRIGGER_BY_NAME} ][ ${JOB_NAME} ] Build finished: Failure 💔💔💔 \nErrors: ${errorMsg}")
                 }
             }
         }
@@ -93,11 +95,12 @@ def getGitBranchName() {
 }
 
 def sendTelegram(message) {
-    def msgEncode = java.net.URLEncoder.encode(message, "UTF-8")
+    // def msgEncode = java.net.URLEncoder.encode(message, "UTF-8")
+    def escapedMessage = message.replace('"', '\\"')
     sh """
-        curl -s -X POST https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage \
-            -d chat_id=${TELEGRAM_CHAT_ID} \
-            -d text="${msgEncode}"
+        curl -s -X POST ${DISCORD_NOTIFY_URL} \
+            -H "Content-Type: application/json" \
+            -d '{"content": "${escapedMessage}"}'
     """
 }
 

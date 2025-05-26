@@ -80,7 +80,10 @@ $(function () {
                     if (typeof storeID === 'object') {
                         if (this.checked === true) {
                             if (!storeID?.[dataRow?.['id']]) {
-                                storeID[dataRow?.['id']] = true;
+                                storeID[dataRow?.['id']] = {
+                                    "type": "current",
+                                    "data": dataRow,
+                                };
                             }
                         }
                         if (this.checked === false) {
@@ -93,7 +96,10 @@ $(function () {
                 } else {
                     let dataStore = {};
                     if (this.checked === true) {
-                        dataStore[dataRow?.['id']] = true;
+                        dataStore[dataRow?.['id']] = {
+                            "type": "current",
+                            "data": dataRow,
+                        };
                     }
                     QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(dataStore));
                 }

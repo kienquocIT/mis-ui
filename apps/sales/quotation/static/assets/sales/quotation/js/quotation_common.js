@@ -318,16 +318,24 @@ class QuotationLoadDataHandle {
 
     static loadStoreSProduct() {
         let dataSelected = {};
-        for (let itemEle of QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-item')) {
-            if ($(itemEle).attr('data-product-id')) {
-                dataSelected[$(itemEle).attr('data-product-id')] = true;
+        QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = QuotationDataTableHandle.$tableProduct.DataTable().row(row).index();
+            let $row = QuotationDataTableHandle.$tableProduct.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+            if (dataRow?.['product_data']?.['id']) {
+                dataSelected[dataRow?.['product_data']?.['id']] = {
+                    "type": "selected",
+                    "data": dataRow?.['product_data'],
+                };
             }
-        }
+        });
         QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(dataSelected));
         return true;
-    }
+    };
 
     static loadModalSProduct() {
+        QuotationLoadDataHandle.loadStoreSProduct();
         QuotationDataTableHandle.$tableSProduct.DataTable().destroy();
         QuotationDataTableHandle.dataTableSelectProduct();
     };
@@ -612,18 +620,27 @@ class QuotationLoadDataHandle {
     };
 
     static loadNewProduct() {
-        QuotationDataTableHandle.$tableSProduct.DataTable().rows().every(function () {
-            let row = this.node();
-            let rowIndex = QuotationDataTableHandle.$tableSProduct.DataTable().row(row).index();
-            let $row = QuotationDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
-            let dataRow = $row.data();
-
-            if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
-                if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
-                    QuotationLoadDataHandle.loadAddRowProduct(dataRow);
+        if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
+            let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
+            for (let key in storeID) {
+                if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${storeID[key]?.['data']?.['id']}"]`)) {
+                    QuotationLoadDataHandle.loadAddRowProduct(storeID[key]?.['data']);
                 }
             }
-        });
+        }
+
+        // QuotationDataTableHandle.$tableSProduct.DataTable().rows().every(function () {
+        //     let row = this.node();
+        //     let rowIndex = QuotationDataTableHandle.$tableSProduct.DataTable().row(row).index();
+        //     let $row = QuotationDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
+        //     let dataRow = $row.data();
+        //
+        //     if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
+        //         if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
+        //             QuotationLoadDataHandle.loadAddRowProduct(dataRow);
+        //         }
+        //     }
+        // });
         return true;
     };
 
@@ -4582,7 +4599,9 @@ class QuotationDataTableHandle {
                             let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
                             if (typeof storeID === 'object') {
                                 if (storeID?.[row?.['id']]) {
-                                    disabled = 'disabled';
+                                    if (storeID?.[row?.['id']]?.['type'] === "selected") {
+                                        disabled = 'disabled';
+                                    }
                                     checked = 'checked';
                                     clsZoneReadonly = 'zone-readonly';
                                 }
@@ -4658,7 +4677,7 @@ class QuotationDataTableHandle {
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                     QuotationDataTableHandle.dtbSProductHDCustom();
                 }
-                QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSProduct);
+                // QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSProduct);
             },
         });
     };

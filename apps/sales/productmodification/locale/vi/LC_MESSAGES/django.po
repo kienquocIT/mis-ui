@@ -1,0 +1,74 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "Component name"
+msgstr "Tên thành phần"
+
+#
+msgid "Component description"
+msgstr "Mô tả thành phần"
+
+#
+msgid "Add new component"
+msgstr "Thêm thành phần mới"
+
+#
+msgid "This table is for reference only - used to preload data for 'Product modification'."
+msgstr "Bảng này có tính chất tham khảo - dùng để tải trước dữ liệu trong chúc năng 'Tháo - lắp thết bị'."
+
+#
+msgid "Product modification"
+msgstr "Tháo - lắp thết bị"
+
+#
+msgid "Product Modification"
+msgstr "Tháo - lắp thết bị"
+
+#
+msgid "Select modified product"
+msgstr "Chọn sản phẩm tháo - lắp"
+
+#
+msgid "Picking modified product"
+msgstr "Lấy sản phẩm tháo - lắp"
+
+#
+msgid "Current component"
+msgstr "Thành phần hiện tại"
+
+#
+msgid "Removed component"
+msgstr "Thành phần bị tháo"
+
+#
+msgid "Insert component"
+msgstr "Thêm thành phần"
+
+#
+msgid "Current quantity"
+msgstr "SL hiện tại"
+
+#
+msgid "Select inserted component"
+msgstr "Chọn thành phần được thêm vào"
+
+#
+msgid "Picking component"
+msgstr "Lấy thành phần"

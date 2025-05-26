@@ -163,28 +163,38 @@ class ProductModificationPageFunction {
             ]
         });
     }
-    static LoadTableWarehouseByProduct(data_list=[]) {
+    static LoadTableWarehouseByProduct(url_with_product_id='') {
         pageElements.$table_select_warehouse.DataTable().clear().destroy()
-        pageElements.$table_select_warehouse.DataTableDefault({
-            useDataServer: false,
-            rowIdx: true,
-            paging: false,
-            scrollX: true,
-            scrollY: '20vh',
-            scrollCollapse: true,
-            reloadCurrency: true,
-            data: data_list,
-            columns: [
-                {
-                    className: 'w-5',
-                    'render': () => {
-                        return ``;
-                    }
+        if (url_with_product_id) {
+            pageElements.$table_select_warehouse.DataTableDefault({
+                useDataServer: true,
+                rowIdx: true,
+                scrollX: true,
+                scrollY: '20vh',
+                scrollCollapse: true,
+                reloadCurrency: true,
+                ajax: {
+                    url: url_with_product_id,
+                    type: 'GET',
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            return resp.data['warehouse_list_by_product'] ? resp.data['warehouse_list_by_product'] : [];
+                        }
+                        return [];
+                    },
                 },
-                {
-                    className: 'w-5',
-                    render: (data, type, row) => {
-                        return `<div class="form-check">
+                columns: [
+                    {
+                        className: 'w-5',
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
+                        className: 'w-5',
+                        render: (data, type, row) => {
+                            return `<div class="form-check">
                                     <input type="radio" name="product-warehouse-select"
                                            class="form-check-input product-warehouse-select"
                                            data-product-warehouse-id="${row?.['id']}"
@@ -192,97 +202,226 @@ class ProductModificationPageFunction {
                                            data-warehouse-title="${row?.['warehouse_data']?.['title']}"
                                     >
                                 </div>`;
+                        }
+                    },
+                    {
+                        className: 'w-20',
+                        render: (data, type, row) => {
+                            return `<span class="fw-bold text-primary">${row?.['warehouse_data']?.['code']}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-40',
+                        render: (data, type, row) => {
+                            return `<span class="text-primary">${row?.['warehouse_data']?.['title']}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-30',
+                        render: (data, type, row) => {
+                            return `<span>${row?.['stock_amount']}</span> <span>${row?.['uom_data']?.['title']}</span>`
+                        }
                     }
-                },
-                {
-                    className: 'w-20',
-                    render: (data, type, row) => {
-                        return `<span class="fw-bold text-primary">${row?.['warehouse_data']?.['code']}</span>`
+                ]
+            });
+        }
+        else {
+            pageElements.$table_select_warehouse.DataTableDefault({
+                useDataServer: false,
+                rowIdx: true,
+                scrollX: true,
+                scrollY: '20vh',
+                scrollCollapse: true,
+                reloadCurrency: true,
+                data:[],
+                columns: [
+                    {
+                        className: 'w-5',
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
+                        className: 'w-5',
+                        render: (data, type, row) => {
+                            return `<div class="form-check">
+                                    <input type="radio" name="product-warehouse-select"
+                                           class="form-check-input product-warehouse-select"
+                                           data-product-warehouse-id="${row?.['id']}"
+                                           data-warehouse-code="${row?.['warehouse_data']?.['code']}"
+                                           data-warehouse-title="${row?.['warehouse_data']?.['title']}"
+                                    >
+                                </div>`;
+                        }
+                    },
+                    {
+                        className: 'w-20',
+                        render: (data, type, row) => {
+                            return `<span class="fw-bold text-primary">${row?.['warehouse_data']?.['code']}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-40',
+                        render: (data, type, row) => {
+                            return `<span class="text-primary">${row?.['warehouse_data']?.['title']}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-30',
+                        render: (data, type, row) => {
+                            return `<span>${row?.['stock_amount']}</span> <span>${row?.['uom_data']?.['title']}</span>`
+                        }
                     }
-                },
-                {
-                    className: 'w-40',
-                    render: (data, type, row) => {
-                        return `<span class="text-primary">${row?.['warehouse_data']?.['title']}</span>`
-                    }
-                },
-                {
-                    className: 'w-30',
-                    render: (data, type, row) => {
-                        return `<span>${row?.['stock_amount']}</span> <span>${row?.['uom_data']?.['title']}</span>`
-                    }
-                }
-            ]
-        });
+                ]
+            });
+        }
     }
-    static LoadTableSerialListByWarehouse(data_list=[]) {
+    static LoadTableSerialListByWarehouse(url_with_product_warehouse_id='') {
         pageElements.$table_select_serial.DataTable().clear().destroy()
-        pageElements.$table_select_serial.DataTableDefault({
-            useDataServer: false,
-            rowIdx: true,
-            paging: false,
-            scrollX: true,
-            scrollY: '30vh',
-            scrollCollapse: true,
-            reloadCurrency: true,
-            data: data_list,
-            columns: [
-                {
-                    className: 'w-5',
-                    'render': () => {
-                        return ``;
-                    }
+        if (url_with_product_warehouse_id) {
+            pageElements.$table_select_serial.DataTableDefault({
+                useDataServer: true,
+                rowIdx: true,
+                scrollX: true,
+                scrollY: '30vh',
+                scrollCollapse: true,
+                reloadCurrency: true,
+                ajax: {
+                    url: url_with_product_warehouse_id,
+                    type: 'GET',
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            return resp.data['product_serial_list'] ? resp.data['product_serial_list'] : [];
+                        }
+                        return [];
+                    },
                 },
-                {
-                    className: 'w-5',
-                    render: (data, type, row) => {
-                        return `<div class="form-check">
+                columns: [
+                    {
+                        className: 'w-5',
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
+                        className: 'w-5',
+                        render: (data, type, row) => {
+                            return `<div class="form-check">
                                     <input type="radio" name="serial-select"
                                            class="form-check-input serial-select"
                                            data-serial-id="${row?.['id']}"
                                            data-sn="${row?.['serial_number']}"
                                     >
                                 </div>`;
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<span>${row?.['vendor_serial_number']}</span>`
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<span>${row?.['serial_number']}</span>`
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<span>${moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<span>${moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<span>${moment(row?.['warranty_start'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<span>${moment(row?.['warranty_end'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
-                    }
-                },
-            ]
-        });
+                        }
+                    },
+                    {
+                        className: 'w-15',
+                        render: (data, type, row) => {
+                            return `<span>${row?.['vendor_serial_number']}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-15',
+                        render: (data, type, row) => {
+                            return `<span>${row?.['serial_number']}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-15',
+                        render: (data, type, row) => {
+                            return `<span>${moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-15',
+                        render: (data, type, row) => {
+                            return `<span>${moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-15',
+                        render: (data, type, row) => {
+                            return `<span>${moment(row?.['warranty_start'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-15',
+                        render: (data, type, row) => {
+                            return `<span>${moment(row?.['warranty_end'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                        }
+                    },
+                ]
+            });
+        }
+        else {
+            pageElements.$table_select_serial.DataTableDefault({
+                useDataServer: false,
+                rowIdx: true,
+                scrollX: true,
+                scrollY: '30vh',
+                scrollCollapse: true,
+                reloadCurrency: true,
+                data: [],
+                columns: [
+                    {
+                        className: 'w-5',
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
+                        className: 'w-5',
+                        render: (data, type, row) => {
+                            return `<div class="form-check">
+                                    <input type="radio" name="serial-select"
+                                           class="form-check-input serial-select"
+                                           data-serial-id="${row?.['id']}"
+                                           data-sn="${row?.['serial_number']}"
+                                    >
+                                </div>`;
+                        }
+                    },
+                    {
+                        className: 'w-15',
+                        render: (data, type, row) => {
+                            return `<span>${row?.['vendor_serial_number']}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-15',
+                        render: (data, type, row) => {
+                            return `<span>${row?.['serial_number']}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-15',
+                        render: (data, type, row) => {
+                            return `<span>${moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-15',
+                        render: (data, type, row) => {
+                            return `<span>${moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-15',
+                        render: (data, type, row) => {
+                            return `<span>${moment(row?.['warranty_start'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                        }
+                    },
+                    {
+                        className: 'w-15',
+                        render: (data, type, row) => {
+                            return `<span>${moment(row?.['warranty_end'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                        }
+                    },
+                ]
+            });
+        }
     }
     static LoadTableProductCurrentComponentList(data_list=[]) {
         pageElements.$table_product_current_component.DataTable().clear().destroy()
@@ -305,7 +444,7 @@ class ProductModificationPageFunction {
                     className: 'w-60',
                     render: (data, type, row) => {
                         if (row?.['product_id']) {
-                            return `<span class="badge badge-sm badge-primary">${row?.['product_code']}</span><br><span data-row-type="${row?.['type'] || ''}" data-product-id="${row?.['product_id']}" class="fw-bold text-primary component-title">${row?.['product_title']}</span><br><span class="small">${row?.['product_des'] || ''}</span>`;
+                            return `<span class="badge badge-sm badge-secondary">${row?.['product_code']}</span><br><span data-row-type="${row?.['type'] || ''}" data-product-id="${row?.['product_id']}" class="fw-bold component-title">${row?.['product_title']}</span><br><span class="small">${row?.['product_des'] || ''}</span>`;
                         }
                         return `<span class="fw-bold component-title" data-component-id="${row?.['id']}">${row?.['component_name']}</span><br><span class="small">${row?.['component_des'] || ''}</span>`
                     }
@@ -329,13 +468,13 @@ class ProductModificationPageFunction {
                         if (row?.['product_id']) {
                             return `
                                 <div class="input-group">
-                                    <input class="form-control component-quantity" type="number" min="1" value="${row?.['product_quantity'] || 0}">
+                                    <input class="form-control fs-5 component-quantity" type="number" min="1" value="${row?.['product_quantity'] || 0}">
                                     ${picking_component_btn}
                                 </div>
                                 <div class="data-component-detail-space"></div>
                             `;
                         }
-                        return `<input class="form-control fs-5 component-quantity" type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
+                        return `<input class="form-control form-control-line fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
                     }
                 },
                 {
@@ -384,14 +523,14 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return `<input class="form-control fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
+                        return `<input class="form-control form-control-line fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
                     }
                 },
                 {
                     className: 'text-center w-5',
                     render: (data, type, row) => {
                         return `<button type="button"
-                                        class="btn-icon btn-rounded flush-soft-hover btn btn-flush-primary return-component-btn"
+                                        class="btn-icon btn-rounded flush-soft-hover btn btn-flush-success return-component-btn"
                                         data-component-id="${row?.['id'] || ''}"
                                         data-component-name="${row?.['component_name'] || ''}"
                                         data-component-des="${row?.['component_des'] || ''}"
@@ -449,7 +588,7 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-90',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-primary">${row?.['code']}</span><br><span class="fw-bold text-primary">${row?.['title']}</span><br><span class="small">${row?.['description'] || ''}</span>`
+                        return `<span class="badge badge-sm badge-secondary">${row?.['code']}</span><br><span class="fw-bold">${row?.['title']}</span><br><span class="small">${row?.['description'] || ''}</span>`
                     }
                 }
             ]
@@ -620,54 +759,16 @@ class ProductModificationEventHandler {
         $(document).on("click", '.btn-modal-picking-product', function () {
             pageElements.$table_select_serial.closest('.table-serial-space').prop('hidden', true)
             let product_id = $(this).attr('data-product-id')
-            let warehouse_ajax = $.fn.callAjax2({
-                url: pageElements.$script_url.attr('data-url-warehouse-list-by-product'),
-                data: {'product_id': product_id},
-                method: 'GET'
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_list_by_product')) {
-                        return data?.['warehouse_list_by_product'];
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
-
-            Promise.all([warehouse_ajax]).then(
-                (results) => {
-                    ProductModificationPageFunction.LoadTableWarehouseByProduct(results[0])
-                    ProductModificationPageFunction.LoadTableSerialListByWarehouse()
-                }
-            )
+            let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}&product_id=${product_id}`
+            ProductModificationPageFunction.LoadTableWarehouseByProduct(url)
+            ProductModificationPageFunction.LoadTableSerialListByWarehouse()
         })
         $(document).on("change", '.product-warehouse-select', function () {
             pageElements.$table_select_serial.closest('.table-serial-space').prop('hidden', pageVariables.current_product_modified?.['general_traceability_method'] !== '2')
             if (pageVariables.current_product_modified?.['general_traceability_method'] === '2') {
                 let product_warehouse_id = $(this).attr('data-product-warehouse-id')
-                let serial_list_ajax = $.fn.callAjax2({
-                    url: pageElements.$script_url.attr('data-url-serial-list-by-warehouse'),
-                    data: {'product_warehouse_id': product_warehouse_id},
-                    method: 'GET'
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && typeof data === 'object' && data.hasOwnProperty('product_serial_list')) {
-                            return data?.['product_serial_list'];
-                        }
-                    },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    }
-                )
-
-                Promise.all([serial_list_ajax]).then(
-                    (results) => {
-                        ProductModificationPageFunction.LoadTableSerialListByWarehouse(results[0])
-                    }
-                )
+                let url = `${pageElements.$script_url.attr('data-url-serial-list-by-warehouse')}&product_warehouse_id=${product_warehouse_id}`
+                ProductModificationPageFunction.LoadTableSerialListByWarehouse(url)
             }
         })
         pageElements.$accept_picking_product_btn.on('click', function () {
@@ -758,7 +859,7 @@ class ProductModificationEventHandler {
                 )
                 let row_added = pageElements.$table_product_current_component.find('tbody tr:last-child')
                 row_added.find('.component-quantity').focus()
-                row_added.addClass('bg-primary-light-5')
+                row_added.addClass('bg-success-light-5')
             } else {
                 pageVariables.component_inserted_id_list.delete(rowId)
                 pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {

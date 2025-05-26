@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-12">
         <table class="table nowrap w-100" id="table-current-product-modified">
-            <thead>
+            <thead class="bg-secondary-light-5">
                 <tr>
                     <th style="min-width: 50px"></th>
                     <th style="min-width: 200px">{% trans 'Product code' %}</th>
@@ -26,9 +26,9 @@
 <div class="row">
     <div class="col-12 col-md-6 col-lg-6 mt-3">
         <div class="border rounded p-2 h-100" style="min-height: 89vh">
-            <span class="fw-bold text-primary h6">{% trans "Current component" %}</span>
+            <span class="fw-bold text-green h6">{% trans "Current component" %}</span>
             <table class="table nowrap w-100" id="table-product-current-component">
-                <thead>
+                <thead class="bg-success-light-5">
                     <tr>
                         <th style="min-width: 50px"></th>
                         <th style="min-width: 250px">{% trans 'Component' %}</th>
@@ -37,7 +37,7 @@
                     </tr>
                 </thead>
             </table>
-            <button hidden type="button" class="btn btn-xs btn-primary mt-2" id="insert-component-btn" data-bs-toggle="offcanvas" data-bs-target="#insert-component-offcanvas">
+            <button hidden type="button" class="btn btn-xs btn-success mt-2" id="insert-component-btn" data-bs-toggle="offcanvas" data-bs-target="#insert-component-offcanvas">
                 <span>
                     <span class="icon">
                         <span class="feather-icon">
@@ -53,7 +53,7 @@
         <div class="border rounded p-2 h-100" style="min-height: 89vh">
             <span class="fw-bold text-danger h6">{% trans "Removed component" %}</span>
             <table class="table nowrap w-100" id="table-product-removed-component">
-                <thead>
+                <thead class="bg-danger-light-5">
                     <tr>
                         <th style="min-width: 50px"></th>
                         <th style="min-width: 250px">{% trans 'Component' %}</th>

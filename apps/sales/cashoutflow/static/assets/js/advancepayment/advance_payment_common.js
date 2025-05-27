@@ -73,7 +73,7 @@ class AdvancePaymentPageFunction {
                                     <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account name')}:</label><div class="col-9"><input class="form-control fw-bold bank_account_name"></div></div>
                                     <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account number')}:</label><div class="col-9"><input class="form-control fw-bold bank_account_number"></div></div>`
                         }
-                        return `${row?.['is_default'] ? `<span class="text-blue small">(${$.fn.gettext('Default')})</span>` : ''}<br>
+                        return `${row?.['is_default'] ? `<span class="text-blue small">(${$.fn.gettext('Default')})</span><br>` : ''}
                                     <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Bank name')}:</label><div class="col-9"><input disabled readonly class="form-control fw-bold bank_name" value="${row?.['bank_name'] || ''}"></div></div>
                                     <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account name')}:</label><div class="col-9"><input disabled readonly class="form-control fw-bold bank_account_name" value="${row?.['bank_account_name'] || ''}"></div></div>
                                     <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account number')}:</label><div class="col-9"><input disabled readonly class="form-control fw-bold bank_account_number" value="${row?.['bank_account_number'] || ''}"></div></div>`

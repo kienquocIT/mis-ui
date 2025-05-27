@@ -45,6 +45,7 @@ class LeaseOrderLoadDataHandle {
     ];
 
     static $productsCheckedEle = $('#products-checked');
+    static $assetsCheckedEle = $('#assets-checked');
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
@@ -469,7 +470,6 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadModalSOffset(ele) {
-        let fnData = [];
         let row = ele.closest('tr');
         LeaseOrderDataTableHandle.$tableSOffset.DataTable().clear().draw();
         if (row) {
@@ -482,31 +482,8 @@ class LeaseOrderLoadDataHandle {
                 if ($(eleType).val() === "2") {
                     params['general_product_types_mapped__is_tool'] = true;
                 }
-                WindowControl.showLoading();
-                $.fn.callAjax2({
-                        'url': LeaseOrderLoadDataHandle.urlEle.attr('data-md-product'),
-                        'method': 'GET',
-                        'data': params,
-                        'isDropdown': true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                                for (let product of data.product_sale_list) {
-                                    if (product.hasOwnProperty('product_choice') && Array.isArray(product.product_choice)) {
-                                        if (product['product_choice'].includes(0)) {
-                                            fnData.push(product);
-                                        }
-                                    }
-                                }
-                                LeaseOrderDataTableHandle.$tableSOffset.DataTable().rows.add(fnData).draw();
-                                WindowControl.hideLoading();
-                            }
-                        }
-                    }
-                )
+                LeaseOrderDataTableHandle.$tableSOffset.DataTable().destroy();
+                LeaseOrderDataTableHandle.dataTableSelectOffset(params);
             }
         }
         return true;
@@ -540,30 +517,74 @@ class LeaseOrderLoadDataHandle {
         return true;
     };
 
-    static loadModalSAsset(ele) {
-        let fnData = [];
+    static loadStoreSAsset(ele) {
+        let dataSelected = {};
         let row = ele.closest('tr');
-        LeaseOrderDataTableHandle.$tableSAsset.DataTable().clear().draw();
         if (row) {
-            WindowControl.showLoading();
-            $.fn.callAjax2({
-                    'url': LeaseOrderLoadDataHandle.urlEle.attr('data-md-asset'),
-                    'method': 'GET',
-                    'data': {"status": 0},
-                    'isDropdown': true,
+            let rowIndex = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(row).index();
+            let $row = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+            if (dataRow?.['asset_data']) {
+                for (let assetData of dataRow?.['asset_data']) {
+                    if (assetData?.['asset_data']?.['id']) {
+                        dataSelected[assetData?.['asset_data']?.['id']] = {
+                            "type": "selected",
+                            "data": assetData?.['asset_data'],
+                        };
+                    }
+
                 }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('fixed_asset_for_lease_list') && Array.isArray(data.fixed_asset_for_lease_list)) {
-                            fnData = data?.['fixed_asset_for_lease_list'];
-                            LeaseOrderDataTableHandle.$tableSAsset.DataTable().rows.add(fnData).draw();
-                            WindowControl.hideLoading();
+            }
+        }
+        LeaseOrderLoadDataHandle.$assetsCheckedEle.val(JSON.stringify(dataSelected));
+        return true;
+    };
+
+    static loadStoreCheckAsset(ele) {
+        let row = ele.closest('tr');
+        let rowIndex = LeaseOrderDataTableHandle.$tableSAsset.DataTable().row(row).index();
+        let $row = LeaseOrderDataTableHandle.$tableSAsset.DataTable().row(rowIndex);
+        let dataRow = $row.data();
+
+        if (dataRow) {
+            if (LeaseOrderLoadDataHandle.$assetsCheckedEle.val()) {
+                let storeID = JSON.parse(LeaseOrderLoadDataHandle.$assetsCheckedEle.val());
+                if (typeof storeID === 'object') {
+                    if (ele.checked === true) {
+                        if (!storeID?.[dataRow?.['id']]) {
+                            storeID[dataRow?.['id']] = {
+                                "type": "current",
+                                "data": dataRow,
+                            };
                         }
                     }
+                    if (ele.checked === false) {
+                        if (storeID?.[dataRow?.['id']]) {
+                            delete storeID?.[dataRow?.['id']];
+                        }
+                    }
+                    LeaseOrderLoadDataHandle.$assetsCheckedEle.val(JSON.stringify(storeID));
                 }
-            )
+            } else {
+                let dataStore = {};
+                if (ele.checked === true) {
+                    dataStore[dataRow?.['id']] = {
+                        "type": "current",
+                        "data": dataRow,
+                    };
+                }
+                LeaseOrderLoadDataHandle.$assetsCheckedEle.val(JSON.stringify(dataStore));
+            }
+        }
+        return true;
+    };
+
+    static loadModalSAsset(ele) {
+        let row = ele.closest('tr');
+        if (row) {
+            LeaseOrderLoadDataHandle.loadStoreSAsset(ele);
+            LeaseOrderDataTableHandle.$tableSAsset.DataTable().destroy();
+            LeaseOrderDataTableHandle.dataTableSelectAsset();
         }
         return true;
     };
@@ -805,18 +826,27 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadNewProduct() {
-        LeaseOrderDataTableHandle.$tableSProduct.DataTable().rows().every(function () {
-            let row = this.node();
-            let rowIndex = LeaseOrderDataTableHandle.$tableSProduct.DataTable().row(row).index();
-            let $row = LeaseOrderDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
-            let dataRow = $row.data();
-
-            if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
-                if (!LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
-                    LeaseOrderLoadDataHandle.loadAddRowProduct(dataRow);
+        if (LeaseOrderLoadDataHandle.$productsCheckedEle.val()) {
+            let storeID = JSON.parse(LeaseOrderLoadDataHandle.$productsCheckedEle.val());
+            for (let key in storeID) {
+                if (!LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${storeID[key]?.['data']?.['id']}"]`)) {
+                    LeaseOrderLoadDataHandle.loadAddRowProduct(storeID[key]?.['data']);
                 }
             }
-        });
+        }
+
+        // LeaseOrderDataTableHandle.$tableSProduct.DataTable().rows().every(function () {
+        //     let row = this.node();
+        //     let rowIndex = LeaseOrderDataTableHandle.$tableSProduct.DataTable().row(row).index();
+        //     let $row = LeaseOrderDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
+        //     let dataRow = $row.data();
+        //
+        //     if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
+        //         if (!LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
+        //             LeaseOrderLoadDataHandle.loadAddRowProduct(dataRow);
+        //         }
+        //     }
+        // });
         return true;
     };
 
@@ -1007,25 +1037,43 @@ class LeaseOrderLoadDataHandle {
                 if (itemEle && assetDataEle && offsetShowEle && quantityEle) {
                     let assetData = [];
                     let titles = [];
-                    for (let checkedEle of LeaseOrderDataTableHandle.$tableSAsset[0].querySelectorAll('.table-row-checkbox:checked')) {
-                        let row = checkedEle.closest('tr');
-                        if (row) {
-                            let rowIndex = LeaseOrderDataTableHandle.$tableSAsset.DataTable().row(row).index();
-                            let $row = LeaseOrderDataTableHandle.$tableSAsset.DataTable().row(rowIndex);
-                            let rowData = $row.data();
+
+                    if (LeaseOrderLoadDataHandle.$assetsCheckedEle.val()) {
+                        let storeID = JSON.parse(LeaseOrderLoadDataHandle.$assetsCheckedEle.val());
+                        for (let key in storeID) {
                             let itemData = SelectDDControl.get_data_from_idx($(itemEle), $(itemEle).val());
                             if (itemData?.['id']) {
                                 assetData.push({
                                     "product_id": itemData?.['id'],
                                     "product_data": itemData,
-                                    "asset_id": rowData?.['id'],
-                                    "asset_data": rowData,
+                                    "asset_id": storeID[key]?.['data']?.['id'],
+                                    "asset_data": storeID[key]?.['data'],
                                     "product_quantity": 1,
                                 });
                             }
-                            titles.push(rowData?.['title']);
+                            titles.push(storeID[key]?.['data']?.['title']);
                         }
                     }
+
+                    // for (let checkedEle of LeaseOrderDataTableHandle.$tableSAsset[0].querySelectorAll('.table-row-checkbox:checked')) {
+                    //     let row = checkedEle.closest('tr');
+                    //     if (row) {
+                    //         let rowIndex = LeaseOrderDataTableHandle.$tableSAsset.DataTable().row(row).index();
+                    //         let $row = LeaseOrderDataTableHandle.$tableSAsset.DataTable().row(rowIndex);
+                    //         let rowData = $row.data();
+                    //         let itemData = SelectDDControl.get_data_from_idx($(itemEle), $(itemEle).val());
+                    //         if (itemData?.['id']) {
+                    //             assetData.push({
+                    //                 "product_id": itemData?.['id'],
+                    //                 "product_data": itemData,
+                    //                 "asset_id": rowData?.['id'],
+                    //                 "asset_data": rowData,
+                    //                 "product_quantity": 1,
+                    //             });
+                    //         }
+                    //         titles.push(rowData?.['title']);
+                    //     }
+                    // }
                     $(assetDataEle).val(JSON.stringify(assetData));
                     $(offsetShowEle).val(titles.join(", "));
                     $(quantityEle).val(assetData.length);
@@ -5122,14 +5170,23 @@ class LeaseOrderDataTableHandle {
         });
     };
 
-    static dataTableSelectOffset(data) {
+    static dataTableSelectOffset(params) {
         LeaseOrderDataTableHandle.$tableSOffset.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
+            useDataServer: true,
+            ajax: {
+                url: LeaseOrderLoadDataHandle.urlEle.attr('data-md-product'),
+                data: params,
+                type: "GET",
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('product_sale_list')) {
+                        return resp.data['product_sale_list'] ? resp.data['product_sale_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
             autoWidth: true,
             scrollX: true,
-            scrollY: "400px",
             columns: [
                 {
                     targets: 0,
@@ -5342,14 +5399,23 @@ class LeaseOrderDataTableHandle {
         });
     };
 
-    static dataTableSelectAsset(data) {
+    static dataTableSelectAsset() {
         LeaseOrderDataTableHandle.$tableSAsset.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
+            useDataServer: true,
+            ajax: {
+                url: LeaseOrderLoadDataHandle.urlEle.attr('data-md-asset'),
+                data: {"status": 0},
+                type: "GET",
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('fixed_asset_for_lease_list')) {
+                        return resp.data['fixed_asset_for_lease_list'] ? resp.data['fixed_asset_for_lease_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
             autoWidth: true,
             scrollX: true,
-            scrollY: "400px",
             columns: [
                 {
                     targets: 0,
@@ -5358,21 +5424,11 @@ class LeaseOrderDataTableHandle {
                         let clsZoneReadonly = '';
                         let disabled = '';
                         let checked = '';
-                        let targetEle = LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${LeaseOrderLoadDataHandle.$btnSaveSelectAsset.attr('data-product-id')}"]`);
-                        if (targetEle) {
-                            let targetRow = targetEle.closest('tr');
-                            if (targetRow) {
-                                let assetDataEle = targetRow.querySelector('.table-row-asset-data');
-                                if (assetDataEle) {
-                                    if ($(assetDataEle).val()) {
-                                        let assetData = JSON.parse($(assetDataEle).val());
-                                        for (let asset of assetData) {
-                                            if (asset?.['asset_id'] === row?.['id']) {
-                                                checked = 'checked';
-                                                break;
-                                            }
-                                        }
-                                    }
+                        if (LeaseOrderLoadDataHandle.$assetsCheckedEle.val()) {
+                            let storeID = JSON.parse(LeaseOrderLoadDataHandle.$assetsCheckedEle.val());
+                            if (typeof storeID === 'object') {
+                                if (storeID?.[row?.['id']]) {
+                                    checked = 'checked';
                                 }
                             }
                         }
@@ -5428,7 +5484,6 @@ class LeaseOrderDataTableHandle {
             ],
             drawCallback: function () {
                 $.fn.initMaskMoney2();
-                LeaseOrderLoadDataHandle.loadEventCheckbox(LeaseOrderDataTableHandle.$tableSAsset);
                 LeaseOrderDataTableHandle.dtbSelectAssetHDCustom();
             },
         });

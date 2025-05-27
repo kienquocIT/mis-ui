@@ -99,8 +99,13 @@ $(function () {
             LeaseOrderLoadDataHandle.loadTool(this);
         });
 
+        LeaseOrderDataTableHandle.$tableSAsset.on('click', '.table-row-checkbox', function () {
+            LeaseOrderLoadDataHandle.loadStoreCheckAsset(this);
+        });
+
         LeaseOrderLoadDataHandle.$btnSaveSelectAsset.on('click', function () {
             LeaseOrderLoadDataHandle.loadAsset(this);
+            LeaseOrderStoreDataHandle.storeDtbData(1);
         });
 
         // QUICK PRODUCT

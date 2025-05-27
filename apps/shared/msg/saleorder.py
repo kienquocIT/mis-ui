@@ -19,3 +19,6 @@ class SOMsg:  # pylint: disable=too-few-public-methods
     PAYMENT_DATE_TYPE_ACCEPTANCE = _('Acceptance date')
     PAYMENT_DATE_TYPE_MONTH = _('End of invoice month')
     PAYMENT_DATE_TYPE_ORDER = _('Order date')
+    INVOICE_STATUS_NONE = _('Invoice not issued yet')
+    INVOICE_STATUS_PART = _('Invoice partially issued')
+    INVOICE_STATUS_DONE = _('Invoice issued')

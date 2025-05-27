@@ -101,7 +101,7 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '12%',
+                        width: '10%',
                         render: (data, type, row) => {
                             const link = urlsEle.data('link-detail').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
@@ -109,7 +109,7 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '12%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if (Object.keys(row?.['customer']).length !== 0) {
                                 return `<p>${row?.['customer']?.['title']}</p>`;
@@ -129,7 +129,7 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '10%',
+                        width: '8%',
                         data: "date_created",
                         render: (data) => {
                             return $x.fn.displayRelativeTime(data, {
@@ -183,6 +183,18 @@ $(function () {
                     },
                     {
                         targets: 11,
+                        width: '8%',
+                        render: (data, type, row) => {
+                            let sttTxt = JSON.parse($('#invoice_status').text())
+                            let hidden = "hidden";
+                            if (row?.['invoice_status'] === 2) {
+                                hidden = "";
+                            }
+                            return `<span>${sttTxt[row?.['invoice_status']][1]}</span><i class="far fa-check-circle text-success ml-2" ${hidden}></i>`;
+                        }
+                    },
+                    {
+                        targets: 12,
                         width: '1%',
                         className: 'action-center',
                         render: (data, type, row) => {

@@ -147,7 +147,7 @@ class ContractLoadDataHandle {
         let count = 0;
         let attachIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
         if (attachIds) {
-            let ids = $x.cls.file.get_val(attachIds.value, []);
+            let ids = $x.cls.file.get_val(attachIds.value, []).reverse();
             if (ids.length > 0) {
                 for (let mediaBody of ContractLoadDataHandle.$attachment[0].querySelectorAll('.media-body')) {
                     let fileName = mediaBody.querySelector('.f-item-name');
@@ -180,7 +180,7 @@ class ContractLoadDataHandle {
         let count = 0;
         let attachIds = ContractLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
         if (attachIds) {
-            let ids = $x.cls.file.get_val(attachIds.value, []);
+            let ids = $x.cls.file.get_val(attachIds.value, []).reverse();
             if (ids.length > 0) {
                 for (let mediaBody of ContractLoadDataHandle.$attachment[0].querySelectorAll('.media-body')) {
                     // append custom data to .media-body

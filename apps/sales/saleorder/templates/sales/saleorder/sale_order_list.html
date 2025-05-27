@@ -39,6 +39,7 @@
             <th>{% trans 'Quotation value' %}</th>
             <th>{% trans 'Status' %}</th>
             <th>{% trans 'Delivery' %}</th>
+            <th>{% trans 'Invoice' %}</th>
             <th></th>
         </tr>
         </thead>
@@ -115,6 +116,7 @@
     >
     {{ data.stt_sys|json_script:'stt_sys' }}
     {{ data.delivery_status|json_script:'delivery_status' }}
+    {{ data.invoice_status|json_script:'invoice_status' }}
 {% endblock %}
 
 {% block jsFooter %}

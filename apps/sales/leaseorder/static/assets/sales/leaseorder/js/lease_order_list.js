@@ -160,7 +160,7 @@ $(function () {
                             if (row?.['delivery_status'] === 3) {
                                 hidden = "";
                             }
-                            return `<span>${sttTxt[row?.['delivery_status']][1]}</span><i class="fas fa-check text-success fs-4" ${hidden}></i>`;
+                            return `<div class="d-flex align-items-center justify-content-between"><span>${sttTxt[row?.['delivery_status']][1]}</span><i class="fas fa-check text-success fs-4" ${hidden}></i></div>`;
                         }
                     },
                     {

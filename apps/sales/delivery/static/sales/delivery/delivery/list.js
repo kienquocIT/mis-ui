@@ -111,7 +111,7 @@ $(document).ready(function () {
                         if (row?.['state'] === 2) {
                             hidden = "";
                         }
-                        return `<span>${letStateChoices[data]}</span><i class="far fa-check-circle text-success ml-2" ${hidden}></i>`;
+                        return `<span>${letStateChoices[data]}</span><i class="fas fa-check text-success fs-4" ${hidden}></i>`;
                     }
                 },
                 {

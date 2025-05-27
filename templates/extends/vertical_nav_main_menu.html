@@ -217,26 +217,32 @@
             }
         }
 
+        function removeVietnameseTones(str) {
+            return str.normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "") // remove diacritics
+                .replace(/đ/g, "d")
+                .replace(/Đ/g, "D");
+        }
 
         function searchMenus(data, keyword) {
             const result = {};
 
+            const cleanKeyword = removeVietnameseTones(keyword.toLowerCase());
+
             function searchInMenu(menu) {
-                const matchedMenus = menu.filter(item => {
-                    const isMatch =
-                        item.name.toLowerCase().includes(keyword.toLowerCase()) ||
-                        item.name_i18n.toLowerCase().includes(keyword.toLowerCase());
+                return menu.filter(item => {
+                    const name = removeVietnameseTones(item.name?.toLowerCase() || "");
+                    const name_i18n = removeVietnameseTones(item.name_i18n?.toLowerCase() || "");
+
+                    const isMatch = name.includes(cleanKeyword) || name_i18n.includes(cleanKeyword);
 
                     const matchingChildren = searchInMenu(item.child || []);
                     if (matchingChildren.length > 0) {
                         item.child = matchingChildren;
-                        return true;
                     }
 
-                    return isMatch;
+                    return isMatch || matchingChildren.length > 0;
                 });
-
-                return matchedMenus;
             }
 
             for (const key in data) {
@@ -248,6 +254,37 @@
 
             return result;
         }
+
+        {#function searchMenus(data, keyword) {#}
+        {#    const result = {};#}
+        {##}
+        {#    function searchInMenu(menu) {#}
+        {#        const matchedMenus = menu.filter(item => {#}
+        {#            const isMatch =#}
+        {#                item.name.toLowerCase().includes(keyword.toLowerCase()) ||#}
+        {#                item.name_i18n.toLowerCase().includes(keyword.toLowerCase());#}
+        {##}
+        {#            const matchingChildren = searchInMenu(item.child || []);#}
+        {#            if (matchingChildren.length > 0) {#}
+        {#                item.child = matchingChildren;#}
+        {#                return true;#}
+        {#            }#}
+        {##}
+        {#            return isMatch;#}
+        {#        });#}
+        {##}
+        {#        return matchedMenus;#}
+        {#    }#}
+        {##}
+        {#    for (const key in data) {#}
+        {#        const filteredMenus = searchInMenu(data[key]);#}
+        {#        if (filteredMenus.length > 0) {#}
+        {#            result[key] = filteredMenus;#}
+        {#        }#}
+        {#    }#}
+        {##}
+        {#    return result;#}
+        {#}#}
 
         function renderMenus(data) {
             data$.empty();

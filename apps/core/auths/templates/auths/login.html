@@ -258,13 +258,15 @@
             let hostData = window.location.hostname;
             let frmLoginEle = $('#form-login');
 
-            if (hostData.endsWith(fixedDomain)) {
-                const inp$ = $(":input[name=tenant_code]");
-                let tenantCode = fixedDomain.split(".")[0];
-                if (tenantCode) {
-                    inp$.val(tenantCode).attr('readonly', 'readonly');
-                } else {
-                    inp$.focus();
+            if (fixedDomain) {
+                if (fixedDomain.endsWith(hostData)) {
+                    const inp$ = $(":input[name=tenant_code]");
+                    let tenantCode = fixedDomain.split(".")[0];
+                    if (tenantCode) {
+                        inp$.val(tenantCode).attr('readonly', 'readonly');
+                    } else {
+                        inp$.focus();
+                    }
                 }
             }
 

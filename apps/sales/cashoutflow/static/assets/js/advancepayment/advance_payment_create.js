@@ -1,14 +1,85 @@
 $(document).ready(function () {
     new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 
-    // call load page
-    APHandle.LoadPage('create');
+    AdvancePaymentEventHandler.InitPageEven()
+    UsualLoadPageFunction.LoadDate({element: pageElements.$return_date})
+    UsualLoadPageFunction.LoadDate({element: pageElements.$advance_date})
+    const {
+        create_open, opp_id, opp_title, opp_code,
+        process_id, process_title, process_stage_app_id, process_stage_app_title,
+        inherit_id, inherit_title
+    } = $x.fn.getManyUrlParameters([
+        'create_open', 'opp_id', 'opp_title', 'opp_code',
+        'process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title',
+        'inherit_id', 'inherit_title'
+    ])
+    const group$ = $('#bastion-space')
+    if (create_open) {
+        const data_inherit = [{
+            "id": inherit_id || '',
+            "full_name": inherit_title || '',
+            "selected": true,
+        }];
+        const data_opp = [{
+            "id": opp_id || '',
+            "title": opp_title || '',
+            "code": opp_code || '',
+            "selected": true,
+        }];
+        const data_process = [{
+            "id": process_id || '',
+            "title": process_title || '',
+            "selected": true,
+        }];
+        const data_process_stage_app = [{
+            "id": process_stage_app_id || '',
+            "title": process_stage_app_title || '',
+            'selected': true,
+        }];
+        new $x.cls.bastionField({
+            list_from_app: "cashoutflow.advancepayment.create",
+            app_id: "57725469-8b04-428a-a4b0-578091d0e4f5",
+            mainDiv: group$,
+            oppEle: group$.find('select[name=opportunity_id]'),
+            prjEle: group$.find('select[name=project_id]'),
+            empInheritEle: group$.find('select[name=employee_inherit_id]'),
+            processEle: group$.find('select[name=process]'),
+            processStageAppEle$: group$.find('select[name=process_stage_app]'),
+            data_opp: data_opp,
+            data_inherit: data_inherit,
+            data_process: data_process,
+            data_process_stage_app: data_process_stage_app,
+        }).init();
+
+        AdvancePaymentHandler.LoadPageActionWithParams(opp_id)
+    }
+    else {
+        new $x.cls.bastionField({
+            list_from_app: "cashoutflow.advancepayment.create",
+            app_id: "57725469-8b04-428a-a4b0-578091d0e4f5",
+            mainDiv: group$,
+            oppEle: group$.find('select[name=opportunity_id]'),
+            prjEle: group$.find('select[name=project_id]'),
+            empInheritEle: group$.find('select[name=employee_inherit_id]'),
+            processEle: group$.find('select[name=process]'),
+            processStageAppEle$: group$.find('select[name=process_stage_app]'),
+        }).init();
+    }
+    AdvancePaymentPageFunction.LoadQuotation()
+    AdvancePaymentPageFunction.LoadSaleOrder()
+    AdvancePaymentPageFunction.LoadSupplier()
+    AdvancePaymentPageFunction.LoadReturnDate()
+    AdvancePaymentPageFunction.LoadAdvanceDate()
+    AdvancePaymentPageFunction.LoadTableBankAccount()
+    AdvancePaymentPageFunction.LoadLineDetailTable()
+    AdvancePaymentPageFunction.DrawTablePlan()
+
     WFRTControl.setWFInitialData('advancepayment')
 
     // SUBMIT FORM CREATE ADVANCE PAYMENT
     let form_validator = $('#form-create-advance').validate({
         submitHandler: function (form) {
-            let form_data = APHandle.CombinesData(form, 'create');
+            let form_data = AdvancePaymentHandler.CombinesData(form);
             if (form_data) {
                 WFRTControl.callWFSubmitForm(form_data);
             }
@@ -18,7 +89,7 @@ $(document).ready(function () {
         {
             key: 'supplier_id',
             condition: (value, element) => {
-                let conditions = [APTypeEle.val() === '1', value]
+                let conditions = [pageElements.$advance_payment_type.val() === '1', value]
                 return conditions.every(c => c)
             },
         },

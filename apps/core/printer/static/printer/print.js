@@ -803,9 +803,8 @@ class PrintTinymceControl {
             Promise.all([print_ajax]).then(
                 (results) => {
                     const print_data = results[0] || {}
-                    console.log(print_data)
                     new PrintTinymceControl().render(application_id, print_data, false);
-                    new PrintTinymceControl().modal$.modal('show');
+                    PrintTinymceControl.open_modal();
                     WindowControl.hideLoading();
                 })
         }

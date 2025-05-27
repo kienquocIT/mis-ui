@@ -36,9 +36,9 @@
             </div>
             <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
-                    <label class="form-label required" for="type-select-box">{% trans "Type" %}</label>
+                    <label class="form-label required" for="advance_payment_type">{% trans "Type" %}</label>
                     <select required class="form-select"
-                            id="type-select-box"
+                            id="advance_payment_type"
                             name="advance_payment_type">
                         <option value="0">{% trans "To employee" %}</option>
                         <option value="1">{% trans "To supplier" %}</option>
@@ -47,11 +47,11 @@
             </div>
             <div class="col-12 col-md-9 col-lg-9">
                 <div class="form-group">
-                    <label class="form-label" id="supplier-label" for="supplier-select-box">{% trans "Supplier name" %}</label>
+                    <label class="form-label" id="supplier-label" for="supplier_id">{% trans "Supplier name" %}</label>
                     <select name="supplier_id"
                             class="form-select select2"
                             data-method="GET"
-                            id="supplier-select-box"
+                            id="supplier_id"
                             disabled
                             data-url="{% url 'CashOutflowSupplierListAPI' %}">
                     </select>
@@ -59,8 +59,8 @@
             </div>
             <div class="col-12 col-md-3 col-lg-3">
                 <div class="form-group">
-                    <label class="form-label required" for="ap-method">{% trans "Method" %}</label>
-                    <select class="form-select" required id="ap-method" name="method">
+                    <label class="form-label required" for="method">{% trans "Method" %}</label>
+                    <select class="form-select" required id="method" name="method">
                         <option value="0">{% trans "Cash" %}</option>
                         <option value="1" selected>{% trans "Bank transfer" %}</option>
                     </select>
@@ -68,11 +68,13 @@
             </div>
             <div class="col-12 col-md-9 col-lg-9">
                 <div class="form-group">
-                    <label class="form-label" for="bank-number">{% trans "Bank number" %}</label>
-                    <select class="form-select" id="bank-number">
-                        <option></option>
-                    </select>
-                    <span class="small text-muted">{% trans 'Select or input new' %}</span>
+                    <label class="form-label" for="bank-info">{% trans "Bank information" %}</label>
+                    <textarea readonly
+                              rows="3"
+                              placeholder="{% trans 'Click to select or input new' %}" id="bank-info" class="form-control"
+                              data-bs-toggle="modal"
+                              data-bs-target="#bank-account-modal"
+                    ></textarea>
                 </div>
             </div>
         </div>
@@ -81,14 +83,14 @@
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
-                    <label class="form-label" for="advance_date_id">{% trans "Date of advance payment" %}</label>
-                    <input class="form-control" id="advance_date_id" name="advance_date">
+                    <label class="form-label" for="advance_date">{% trans "Date of advance payment" %}</label>
+                    <input class="form-control" id="advance_date" name="advance_date">
                 </div>
             </div>
             <div class="col-12">
                 <div class="form-group">
-                    <label class="form-label required" for="return_date_id">{% trans "Return date" %}</label>
-                    <input required class="form-control" id="return_date_id" name="return_date">
+                    <label class="form-label required" for="return_date">{% trans "Return date" %}</label>
+                    <input required class="form-control" id="return_date" name="return_date">
                 </div>
             </div>
             <div class="col-12 py-5">

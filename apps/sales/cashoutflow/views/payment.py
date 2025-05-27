@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, PermCheck, InputMappingProperties
 from django.utils.translation import gettext_lazy as _
 
-
+# main
 class PaymentList(View):
     permission_classes = [IsAuthenticated]
 
@@ -39,6 +39,45 @@ class PaymentCreate(View):
         }, status.HTTP_200_OK
 
 
+class PaymentDetail(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='payment/payment_detail.html',
+        breadcrumb='PAYMENT_DETAIL_PAGE',
+        menu_active='menu_payment_detail',
+    )
+    def get(self, request, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_PAYMENT
+        return {
+            'data': {'employee_current': request.user.employee_current_data},
+            'app_id': '1010563f-7c94-42f9-ba99-63d5d26a1aca',
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'form-detail-payment'
+        }, status.HTTP_200_OK
+
+
+class PaymentUpdate(View):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        template='payment/payment_update.html',
+        breadcrumb='PAYMENT_DETAIL_PAGE',
+        menu_active='menu_payment_detail',
+    )
+    def get(self, request, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_PAYMENT
+        return {
+            'data': {'employee_current': request.user.employee_current_data},
+            'app_id': '1010563f-7c94-42f9-ba99-63d5d26a1aca',
+            'list_from_app': 'cashoutflow.payment.edit',
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'form-detail-payment'
+        }, status.HTTP_200_OK
+
+
 class PaymentListAPI(APIView):
     permission_classes = [IsAuthenticated] # noqa
 
@@ -61,42 +100,6 @@ class PaymentListAPI(APIView):
             resp.result['message'] = SaleMsg.PAYMENT_CREATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
-
-
-class PaymentDetail(View):
-    permission_classes = [IsAuthenticated]
-
-    @mask_view(
-        auth_require=True,
-        template='payment/payment_detail.html',
-        breadcrumb='PAYMENT_DETAIL_PAGE',
-        menu_active='menu_payment_detail',
-    )
-    def get(self, request, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_PAYMENT
-        return {
-            'data': {'employee_current': request.user.employee_current_data},
-            'input_mapping_properties': input_mapping_properties,
-            'form_id': 'form-detail-payment'
-        }, status.HTTP_200_OK
-
-
-class PaymentUpdate(View):
-    permission_classes = [IsAuthenticated]
-
-    @mask_view(
-        auth_require=True,
-        template='payment/payment_update.html',
-        breadcrumb='PAYMENT_DETAIL_PAGE',
-        menu_active='menu_payment_detail',
-    )
-    def get(self, request, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.CASHOUTFLOW_PAYMENT
-        return {
-            'data': {'employee_current': request.user.employee_current_data},
-            'input_mapping_properties': input_mapping_properties,
-            'form_id': 'form-detail-payment'
-        }, status.HTTP_200_OK
 
 
 class PaymentDetailAPI(APIView):
@@ -122,7 +125,7 @@ class PaymentDetailAPI(APIView):
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
-
+# related
 class PaymentConfigList(View):
     @mask_view(
         auth_require=True,
@@ -166,3 +169,15 @@ class PaymentCostListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_COST_LIST).get(data)
         return resp.auto_return(key_success='payment_cost_list')
+
+
+class PaymentPrintAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='payment_print_data')

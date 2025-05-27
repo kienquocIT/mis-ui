@@ -1,118 +1,166 @@
-const APTypeEle = $('#type-select-box')
-const supplierEle = $('#supplier-select-box')
-const tableLineDetail = $('#tab_line_detail_datatable')
-const money_gave = $('#money-gave')
-const quotation_mapped_select = $('#quotation_mapped_select')
-const sale_order_mapped_select = $('#sale_order_mapped_select')
-const opp_mapped_select = $('#opportunity_id')
-const bank_number = $('#bank-number')
-const script_url = $('#script-url')
-const script_trans = $('#script-trans')
-const ap_method_Ele = $('#ap-method')
-const tab_plan_datatable = $('#tab_plan_datatable')
-let ap_for = null
+/**
+ * Khai báo các element trong page
+ */
+class AdvancePaymentPageElements {
+    constructor() {
+        // info
+        this.$script_url = $('#script-url')
+        this.$script_trans = $('#script-trans')
+        this.$opportunity_id = $('#opportunity_id')
+        this.$employee_inherit_id = $('#employee_inherit_id')
+        this.$quotation_mapped_select = $('#quotation_mapped_select')
+        this.$sale_order_mapped_select = $('#sale_order_mapped_select')
+        this.$title = $('#title')
+        this.$advance_payment_type = $('#advance_payment_type')
+        this.$supplier_id = $('#supplier_id')
+        this.$supplier_label = $('#supplier-label')
+        this.$method = $('#method')
+        this.$bank_info = $('#bank-info')
+        this.$bank_account_table = $('#bank-account-table')
+        this.$accept_bank_account_btn = $('#accept-bank-account-btn')
+        this.$return_date = $('#return_date')
+        this.$advance_date = $('#advance_date')
+        this.$money_gave = $('#money-gave')
+        // tab
+        this.$table_line_detail = $('#table_line_detail')
+        this.$table_plan = $('#table_plan')
+    }
+}
+const pageElements = new AdvancePaymentPageElements()
 
-class APLoadPage {
-    static InitBankNumber(selected=null) {
-        let supplier_selected = SelectDDControl.get_data_from_idx(supplierEle, supplierEle.val())
-        let bank_data = []
-        let flag = false
-        for (let i = 0; i < (supplier_selected?.['bank_accounts_mapped'] || []).length; i++) {
-            let bank_obj = supplier_selected?.['bank_accounts_mapped'][i]
-            let bank_account_name = bank_obj?.['bank_account_name']
-            let bank_account_number = bank_obj?.['bank_account_number']
-            let bank_code = bank_obj?.['bank_code']
-            let bank_name = bank_obj?.['bank_name']
-            let is_default = bank_obj?.['is_default']
-            let bank_text = `${bank_name} (${bank_code}) - ${bank_account_number} (${bank_account_name})`
-            if (bank_text === selected) {
-                flag = true
+/**
+ * Khai báo các biến sử dụng trong page
+ */
+class AdvancePaymentPageVariables {
+    constructor() {
+        this.ap_for = null
+    }
+}
+const pageVariables = new AdvancePaymentPageVariables()
+
+/**
+ * Các hàm load page và hàm hỗ trợ
+ */
+class AdvancePaymentPageFunction {
+    // load page
+    static LoadTableBankAccount(data_list=[]) {
+        pageElements.$bank_account_table.DataTable().clear().destroy()
+        pageElements.$bank_account_table.DataTableDefault({
+            styleDom: 'hide-foot',
+            scrollY: '70vh',
+            scrollCollapse: true,
+            rowIdx: true,
+            paging: false,
+            data: data_list,
+            columns: [
+                {
+                    className: 'w-5',
+                    render: () => {
+                        return ''
+                    }
+                },
+                {
+                    className: 'w-5 text-center',
+                    render: (data, type, row) => {
+                        return `<div class="form-check"><input class="form-check-input bank_account_selected" name="bank_account_selected" type="radio"></div>`
+                    }
+                },
+                {
+                    className: 'w-90',
+                    render: (data, type, row) => {
+                        if (row?.['manual']) {
+                            return `<div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Bank name')}:</label><div class="col-9"><input class="form-control fw-bold bank_name"></div></div>
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account name')}:</label><div class="col-9"><input class="form-control fw-bold bank_account_name"></div></div>
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account number')}:</label><div class="col-9"><input class="form-control fw-bold bank_account_number"></div></div>`
+                        }
+                        return `${row?.['is_default'] ? `<span class="text-blue small">(${$.fn.gettext('Default')})</span>` : ''}<br>
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Bank name')}:</label><div class="col-9"><input disabled readonly class="form-control fw-bold bank_name" value="${row?.['bank_name'] || ''}"></div></div>
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account name')}:</label><div class="col-9"><input disabled readonly class="form-control fw-bold bank_account_name" value="${row?.['bank_account_name'] || ''}"></div></div>
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account number')}:</label><div class="col-9"><input disabled readonly class="form-control fw-bold bank_account_number" value="${row?.['bank_account_number'] || ''}"></div></div>`
+                    }
+                },
+            ],
+            initComplete: function () {
+                UsualLoadPageFunction.AddTableRow(
+                    pageElements.$bank_account_table,
+                    {'manual': true}
+                )
+                let row_added = pageElements.$bank_account_table.find('tbody tr:last-child')
+                row_added.addClass('bg-primary-light-5')
             }
-            bank_data.push({
-                'id': bank_text,
-                'text': `${is_default ? '*' : ''} ${bank_text})`,
-            })
-        }
-        if (selected && !flag) {
-            bank_data.push({
-                'id': selected,
-                'text': selected,
-            })
-        }
-        bank_number.select2({
-            placeholder: '',
-            tags: true,
-            data: bank_data,
-        });
-        if (selected) {
-            bank_number.val(selected).trigger('change')
-        }
+        })
     }
     static LoadQuotation(data) {
-        quotation_mapped_select.initSelect2({
+        pageElements.$quotation_mapped_select.initSelect2({
             allowClear: true,
             ajax: {
-                url: quotation_mapped_select.attr('data-url'),
+                url: pageElements.$quotation_mapped_select.attr('data-url'),
                 method: 'GET',
+            },
+            templateResult: function (state) {
+                return $(`<span class="badge badge-soft-primary mr-2">${state.data?.['code']}</span><span>${state.data?.['title']}</span>`);
             },
             data: (data ? data : null),
             keyResp: 'quotation_list',
             keyId: 'id',
             keyText: 'code',
         }).on('change', function () {
-            opp_mapped_select.empty();
-            sale_order_mapped_select.empty();
-            if (quotation_mapped_select.val()) {
-                opp_mapped_select.prop('disabled', true)
-                sale_order_mapped_select.prop('disabled', true)
-                let selected = SelectDDControl.get_data_from_idx(quotation_mapped_select, quotation_mapped_select.val())
-                APLoadPage.LoadSaleOrder(selected?.['sale_order'])
-                APLoadTab.LoadPlanQuotationOnly($(this).val())
-                ap_for = 'quotation'
+            pageElements.$opportunity_id.empty();
+            pageElements.$sale_order_mapped_select.empty();
+            if (pageElements.$quotation_mapped_select.val()) {
+                pageElements.$opportunity_id.prop('disabled', true)
+                pageElements.$sale_order_mapped_select.prop('disabled', true)
+                let selected = SelectDDControl.get_data_from_idx(pageElements.$quotation_mapped_select, pageElements.$quotation_mapped_select.val())
+                AdvancePaymentPageFunction.LoadSaleOrder(selected?.['sale_order'])
+                AdvancePaymentPageFunction.LoadPlanQuotationOnly($(this).val())
+                pageVariables.ap_for = 'quotation'
             }
             else {
-                opp_mapped_select.prop('disabled', false)
-                sale_order_mapped_select.prop('disabled', false)
-                ap_for = null
-                APLoadTab.DrawTablePlan()
+                pageElements.$opportunity_id.prop('disabled', false)
+                pageElements.$sale_order_mapped_select.prop('disabled', false)
+                pageVariables.ap_for = null
+                AdvancePaymentPageFunction.DrawTablePlan()
             }
         })
     }
     static LoadSaleOrder(data) {
-        sale_order_mapped_select.initSelect2({
+        pageElements.$sale_order_mapped_select.initSelect2({
             allowClear: true,
             ajax: {
-                url: sale_order_mapped_select.attr('data-url'),
+                url: pageElements.$sale_order_mapped_select.attr('data-url'),
                 method: 'GET',
+            },
+            templateResult: function (state) {
+                return $(`<span class="badge badge-soft-primary mr-2">${state.data?.['code']}</span><span>${state.data?.['title']}</span>`);
             },
             data: (data ? data : null),
             keyResp: 'sale_order_list',
             keyId: 'id',
             keyText: 'code',
         }).on('change', function () {
-            opp_mapped_select.empty()
-            quotation_mapped_select.empty()
-            if (sale_order_mapped_select.val()) {
-                opp_mapped_select.prop('disabled', true)
-                quotation_mapped_select.prop('disabled', true)
-                let selected = SelectDDControl.get_data_from_idx(sale_order_mapped_select, sale_order_mapped_select.val())
-                APLoadPage.LoadQuotation(selected?.['quotation'])
-                APLoadTab.LoadPlanSaleOrderOnly($(this).val())
-                ap_for = 'saleorder'
+            pageElements.$opportunity_id.empty()
+            pageElements.$quotation_mapped_select.empty()
+            if (pageElements.$sale_order_mapped_select.val()) {
+                pageElements.$opportunity_id.prop('disabled', true)
+                pageElements.$quotation_mapped_select.prop('disabled', true)
+                let selected = SelectDDControl.get_data_from_idx(pageElements.$sale_order_mapped_select, pageElements.$sale_order_mapped_select.val())
+                AdvancePaymentPageFunction.LoadQuotation(selected?.['quotation'])
+                AdvancePaymentPageFunction.LoadPlanSaleOrderOnly($(this).val())
+                pageVariables.ap_for = 'saleorder'
             }
             else {
-                opp_mapped_select.prop('disabled', false)
-                quotation_mapped_select.prop('disabled', false)
-                ap_for = null
-                APLoadTab.DrawTablePlan()
+                pageElements.$opportunity_id.prop('disabled', false)
+                pageElements.$quotation_mapped_select.prop('disabled', false)
+                pageVariables.ap_for = null
+                AdvancePaymentPageFunction.DrawTablePlan()
             }
         })
     }
-    static LoadSupplier(data, bank_added='') {
-        supplierEle.initSelect2({
+    static LoadSupplier(data) {
+        pageElements.$supplier_id.initSelect2({
             allowClear: true,
             ajax: {
-                url: supplierEle.attr('data-url'),
+                url: pageElements.$supplier_id.attr('data-url'),
                 method: 'GET',
             },
             data: (data ? data : null),
@@ -121,48 +169,16 @@ class APLoadPage {
             keyText: 'name',
         }).on('change', function () {
             if ($(this).val()) {
-                APLoadPage.InitBankNumber()
+                let supplier_selected = SelectDDControl.get_data_from_idx(pageElements.$supplier_id, pageElements.$supplier_id.val())
+                AdvancePaymentPageFunction.LoadTableBankAccount(supplier_selected?.['bank_accounts_mapped'] || [])
             }
         })
     }
-    static LoadReturnDate() {
-        $('#return_date_id').daterangepicker({
-            singleDatePicker: true,
-            timePicker: false,
-            showDropdowns: true,
-            autoApply: true,
-            minYear: parseInt(moment().format('YYYY')),
-            minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM'))-1, parseInt(moment().format('DD'))),
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY')) + 100,
-        }).val('')
-    }
-    static LoadAdvanceDate() {
-        $('#advance_date_id').daterangepicker({
-            singleDatePicker: true,
-            timePicker: false,
-            showDropdowns: true,
-            autoApply: true,
-            minYear: parseInt(moment().format('YYYY')),
-            minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM'))-1, parseInt(moment().format('DD'))),
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY')) + 100,
-        }).val('')
-    }
-}
-
-class APLoadTab {
     // line detail
     static LoadExpenseItem(ele, data) {
         ele.initSelect2({
             ajax: {
-                url: tableLineDetail.attr('data-url-expense-type-list'),
+                url: pageElements.$table_line_detail.attr('data-url-expense-type-list'),
                 method: 'GET',
             },
             data: (data ? data : null),
@@ -181,7 +197,7 @@ class APLoadTab {
         ele.initSelect2({
             allowClear: true,
             ajax: {
-                url: tableLineDetail.attr('data-url-tax-list'),
+                url: pageElements.$table_line_detail.attr('data-url-tax-list'),
                 method: 'GET',
             },
             data: (data ? data : null),
@@ -191,8 +207,8 @@ class APLoadTab {
         })
     }
     static LoadLineDetailTable(data=[], option='create') {
-        tableLineDetail.DataTable().clear().destroy()
-        tableLineDetail.DataTableDefault({
+        pageElements.$table_line_detail.DataTable().clear().destroy()
+        pageElements.$table_line_detail.DataTableDefault({
             dom: 't',
             rowIdx: true,
             reloadCurrency: true,
@@ -261,20 +277,20 @@ class APLoadTab {
             ],
             initComplete: function () {
                 if (data.length > 0) {
-                    tableLineDetail.find('tbody tr').each(function (index) {
-                        APLoadTab.LoadExpenseItem($(this).find('.expense-type-select-box'), data[index]?.['expense_type'])
-                        APLoadTab.LoadExpenseTax($(this).find('.expense-tax-select-box'), data[index]?.['expense_tax'])
+                    pageElements.$table_line_detail.find('tbody tr').each(function (index) {
+                        AdvancePaymentPageFunction.LoadExpenseItem($(this).find('.expense-type-select-box'), data[index]?.['expense_type'])
+                        AdvancePaymentPageFunction.LoadExpenseTax($(this).find('.expense-tax-select-box'), data[index]?.['expense_tax'])
                     })
-                    APAction.CalculateTotalPrice();
+                    AdvancePaymentPageFunction.CalculateTotalPrice();
                 }
             }
         });
     }
     // plan
     static DrawTablePlan(data_list=[]) {
-        $('#notify-none-sale-code').prop('hidden', data_list.length > 0 && opp_mapped_select.val() || quotation_mapped_select.val() || sale_order_mapped_select.val())
-        tab_plan_datatable.DataTable().clear().destroy()
-        tab_plan_datatable.DataTableDefault({
+        $('#notify-none-sale-code').prop('hidden', data_list.length > 0 && pageElements.$opportunity_id.val() || pageElements.$quotation_mapped_select.val() || pageElements.$sale_order_mapped_select.val())
+        pageElements.$table_plan.DataTable().clear().destroy()
+        pageElements.$table_plan.DataTableDefault({
             styleDom: 'hide-foot',
             rowIdx: true,
             reloadCurrency: true,
@@ -358,7 +374,7 @@ class APLoadTab {
         if (opportunity_id && quotation_id) {
             let dataParam1 = {'quotation_id': quotation_id}
             let expense_quotation = $.fn.callAjax2({
-                url: script_url.attr('data-url-expense-quotation'),
+                url: pageElements.$script_url.attr('data-url-expense-quotation'),
                 data: dataParam1,
                 method: 'GET'
             }).then(
@@ -376,7 +392,7 @@ class APLoadTab {
 
             let dataParam2 = {'opportunity_id': opportunity_id}
             let ap_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-ap-cost-list'),
+                url: pageElements.$script_url.attr('data-url-ap-cost-list'),
                 data: dataParam2,
                 method: 'GET'
             }).then(
@@ -394,7 +410,7 @@ class APLoadTab {
 
             let dataParam3 = {'opportunity_id': opportunity_id}
             let payment_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-payment-cost-list'),
+                url: pageElements.$script_url.attr('data-url-payment-cost-list'),
                 data: dataParam3,
                 method: 'GET'
             }).then(
@@ -563,7 +579,7 @@ class APLoadTab {
                         }
                     }
 
-                    APLoadTab.DrawTablePlan(data_table_planned)
+                    AdvancePaymentPageFunction.DrawTablePlan(data_table_planned)
                     WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
@@ -572,7 +588,7 @@ class APLoadTab {
         if (opportunity_id && sale_order_id) {
             let dataParam1 = {'sale_order_id': sale_order_id}
             let expense_sale_order = $.fn.callAjax2({
-                url: script_url.attr('data-url-expense-sale-order'),
+                url: pageElements.$script_url.attr('data-url-expense-sale-order'),
                 data: dataParam1,
                 method: 'GET'
             }).then(
@@ -590,7 +606,7 @@ class APLoadTab {
 
             let dataParam2 = {'opportunity_id': opportunity_id}
             let ap_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-ap-cost-list'),
+                url: pageElements.$script_url.attr('data-url-ap-cost-list'),
                 data: dataParam2,
                 method: 'GET'
             }).then(
@@ -608,7 +624,7 @@ class APLoadTab {
 
             let dataParam3 = {'opportunity_id': opportunity_id}
             let payment_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-payment-cost-list'),
+                url: pageElements.$script_url.attr('data-url-payment-cost-list'),
                 data: dataParam3,
                 method: 'GET'
             }).then(
@@ -777,7 +793,7 @@ class APLoadTab {
                         }
                     }
 
-                    APLoadTab.DrawTablePlan(data_table_planned)
+                    AdvancePaymentPageFunction.DrawTablePlan(data_table_planned)
                     WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
@@ -786,7 +802,7 @@ class APLoadTab {
         if (opportunity_id) {
             let dataParam1 = {'opportunity_id': opportunity_id}
             let ap_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-ap-cost-list'),
+                url: pageElements.$script_url.attr('data-url-ap-cost-list'),
                 data: dataParam1,
                 method: 'GET'
             }).then(
@@ -804,7 +820,7 @@ class APLoadTab {
 
             let dataParam2 = {'opportunity_id': opportunity_id}
             let payment_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-payment-cost-list'),
+                url: pageElements.$script_url.attr('data-url-payment-cost-list'),
                 data: dataParam2,
                 method: 'GET'
             }).then(
@@ -912,7 +928,7 @@ class APLoadTab {
                         }
                     }
 
-                    APLoadTab.DrawTablePlan(data_table_planned)
+                    AdvancePaymentPageFunction.DrawTablePlan(data_table_planned)
                     WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
@@ -921,7 +937,7 @@ class APLoadTab {
         if (quotation_id) {
             let dataParam1 = {'quotation_id': quotation_id}
             let expense_quotation = $.fn.callAjax2({
-                url: script_url.attr('data-url-expense-quotation'),
+                url: pageElements.$script_url.attr('data-url-expense-quotation'),
                 data: dataParam1,
                 method: 'GET'
             }).then(
@@ -939,7 +955,7 @@ class APLoadTab {
 
             let dataParam2 = {'quotation_mapped_id': quotation_id}
             let ap_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-ap-cost-list'),
+                url: pageElements.$script_url.attr('data-url-ap-cost-list'),
                 data: dataParam2,
                 method: 'GET'
             }).then(
@@ -957,7 +973,7 @@ class APLoadTab {
 
             let dataParam3 = {'quotation_mapped_id': quotation_id}
             let payment_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-payment-cost-list'),
+                url: pageElements.$script_url.attr('data-url-payment-cost-list'),
                 data: dataParam3,
                 method: 'GET'
             }).then(
@@ -1125,7 +1141,7 @@ class APLoadTab {
                         }
                     }
 
-                    APLoadTab.DrawTablePlan(data_table_planned)
+                    AdvancePaymentPageFunction.DrawTablePlan(data_table_planned)
                     WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
@@ -1134,7 +1150,7 @@ class APLoadTab {
         if (sale_order_id) {
             let dataParam1 = {'sale_order_id': sale_order_id}
             let expense_sale_order = $.fn.callAjax2({
-                url: script_url.attr('data-url-expense-sale-order'),
+                url: pageElements.$script_url.attr('data-url-expense-sale-order'),
                 data: dataParam1,
                 method: 'GET'
             }).then(
@@ -1152,7 +1168,7 @@ class APLoadTab {
 
             let dataParam2 = {'sale_order_mapped_id': sale_order_id}
             let ap_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-ap-cost-list'),
+                url: pageElements.$script_url.attr('data-url-ap-cost-list'),
                 data: dataParam2,
                 method: 'GET'
             }).then(
@@ -1170,7 +1186,7 @@ class APLoadTab {
 
             let dataParam3 = {'sale_order_mapped_id': sale_order_id}
             let payment_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-payment-cost-list'),
+                url: pageElements.$script_url.attr('data-url-payment-cost-list'),
                 data: dataParam3,
                 method: 'GET'
             }).then(
@@ -1338,83 +1354,12 @@ class APLoadTab {
                         }
                     }
 
-                    APLoadTab.DrawTablePlan(data_table_planned)
+                    AdvancePaymentPageFunction.DrawTablePlan(data_table_planned)
                     WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
     }
-}
-
-class APAction {
-    static ReadMoneyVND(num) {
-        let xe0 = [
-            '',
-            'một',
-            'hai',
-            'ba',
-            'bốn',
-            'năm',
-            'sáu',
-            'bảy',
-            'tám',
-            'chín'
-        ]
-        let xe1 = [
-            '',
-            'mười',
-            'hai mươi',
-            'ba mươi',
-            'bốn mươi',
-            'năm mươi',
-            'sáu mươi',
-            'bảy mươi',
-            'tám mươi',
-            'chín mươi'
-        ]
-        let xe2 = [
-            '',
-            'một trăm',
-            'hai trăm',
-            'ba trăm',
-            'bốn trăm',
-            'năm trăm',
-            'sáu trăm',
-            'bảy trăm',
-            'tám trăm',
-            'chín trăm'
-        ]
-
-        let result = ""
-        let str_n = String(num)
-        let len_n = str_n.length
-
-        if (len_n === 1) {
-            result = xe0[num]
-        }
-        else if (len_n === 2) {
-            if (num === 10) {
-                result = "mười"
-            }
-            else {
-                result = xe1[parseInt(str_n[0])] + " " + xe0[parseInt(str_n[1])]
-            }
-        }
-        else if (len_n === 3) {
-            result = xe2[parseInt(str_n[0])] + " " + APAction.ReadMoneyVND(parseInt(str_n.substring(1, len_n)))
-        }
-        else if (len_n <= 6) {
-            result = APAction.ReadMoneyVND(parseInt(str_n.substring(0, len_n - 3))) + " nghìn " + APAction.ReadMoneyVND(parseInt(str_n.substring(len_n - 3, len_n)))
-        }
-        else if (len_n <= 9) {
-            result = APAction.ReadMoneyVND(parseInt(str_n.substring(0, len_n - 6))) + " triệu " + APAction.ReadMoneyVND(parseInt(str_n.substring(len_n - 6, len_n)))
-        }
-        else if (len_n <= 12) {
-            result = APAction.ReadMoneyVND(parseInt(str_n.substring(0, len_n - 9))) + " tỷ " + APAction.ReadMoneyVND(parseInt(str_n.substring(len_n - 9, len_n)))
-        }
-
-        result = String(result.trim())
-        return result;
-    }
+    // sub
     static ChangeRowPrice(tr) {
         let unit_price = tr.find('.expense-unit-price-input');
         let quantity = tr.find('.expense_quantity');
@@ -1436,7 +1381,7 @@ class APAction {
             subtotal.attr('value', '');
             subtotal_after_tax.attr('value', '');
         }
-        APAction.CalculateTotalPrice();
+        AdvancePaymentPageFunction.CalculateTotalPrice();
     }
     static CalculateTotalPrice() {
         let sum_subtotal = 0
@@ -1451,7 +1396,7 @@ class APAction {
         $('#pretax-value').attr('value', sum_subtotal);
         $('#taxes-value').attr('value', sum_tax);
         $('#total-value').attr('value', sum_subtotal_price_after_tax);
-        let total_value_by_words = APAction.ReadMoneyVND(sum_subtotal_price_after_tax) + ' đồng'
+        let total_value_by_words = UsualLoadPageFunction.ReadMoneyVND(sum_subtotal_price_after_tax) + ' đồng'
         total_value_by_words = total_value_by_words.charAt(0).toUpperCase() + total_value_by_words.slice(1)
         if (total_value_by_words[total_value_by_words.length - 1] === ',') {
             total_value_by_words = total_value_by_words.substring(0, total_value_by_words.length - 1) + ' đồng'
@@ -1459,33 +1404,16 @@ class APAction {
         $('#total-value-by-words').val(total_value_by_words)
         $.fn.initMaskMoney2();
     }
-    static AddRow(table, data) {
-        table.DataTable().row.add(data).draw();
-    }
-    static DeleteRow(table, currentRow) {
-        currentRow = parseInt(currentRow) - 1
-        let rowIndex = table.DataTable().row(currentRow).index();
-        let row = table.DataTable().row(rowIndex);
-        row.remove().draw();
-    }
-    static DisabledDetailPage(option) {
-        if (option === 'detail') {
-            $('form input').prop('readonly', true).prop('disabled', true);
-            $('form select').prop('disabled', true);
-            $('.del-address-item').prop('hidden', true);
-            $('.card-close').addClass('disabled').prop('hidden', true);
-            $('#btn-add-row-line-detail').prop('disabled', true);
-            $('.btn-del-line-detail').prop('disabled', true);
-            $('.btn-choose-from-price-list').prop('disabled', true);
-        }
-    }
 }
 
-class APHandle {
+/**
+ * Khai báo các hàm chính
+ */
+class AdvancePaymentHandler {
     static LoadPageActionWithParams(opp_id) {
         let dataParam = {'id': opp_id}
         let opportunity_ajax = $.fn.callAjax2({
-            url: script_url.attr('data-url-opp-list'),
+            url: pageElements.$script_url.attr('data-url-opp-list'),
             data: dataParam,
             method: 'GET'
         }).then(
@@ -1506,129 +1434,55 @@ class APHandle {
                 let opportunity_data = results[0];
                 if (opportunity_data) {
                     $('#opportunity_id').trigger('change')
-                    quotation_mapped_select.empty()
-                    sale_order_mapped_select.empty()
+                    pageElements.$quotation_mapped_select.empty()
+                    pageElements.$sale_order_mapped_select.empty()
                     if (opportunity_data?.['id']) {
                         if (opportunity_data?.['is_close']) {
                             $.fn.notifyB({description: `Opportunity ${opportunity_data?.['code']} has been closed. Can not select.`}, 'failure');
-                            opp_mapped_select.empty()
-                            ap_for = null
+                            pageElements.$opportunity_id.empty()
+                            pageVariables.ap_for = null
                         } else {
-                            sale_order_mapped_select.prop('disabled', true)
-                            quotation_mapped_select.prop('disabled', true)
+                            pageElements.$sale_order_mapped_select.prop('disabled', true)
+                            pageElements.$quotation_mapped_select.prop('disabled', true)
                             let quo_mapped = opportunity_data?.['quotation'];
                             let so_mapped = opportunity_data?.['sale_order'];
-                            APLoadPage.LoadQuotation(quo_mapped)
-                            APLoadPage.LoadSaleOrder(so_mapped);
+                            AdvancePaymentPageFunction.LoadQuotation(quo_mapped)
+                            AdvancePaymentPageFunction.LoadSaleOrder(so_mapped);
                             if (so_mapped?.['id']) {
-                                APLoadTab.LoadPlanSaleOrder(opportunity_data?.['id'], so_mapped?.['id'])
+                                AdvancePaymentPageFunction.LoadPlanSaleOrder(opportunity_data?.['id'], so_mapped?.['id'])
                             }
                             else if (quo_mapped?.['id']) {
-                                APLoadTab.LoadPlanQuotation(opportunity_data?.['id'], quo_mapped?.['id'])
+                                AdvancePaymentPageFunction.LoadPlanQuotation(opportunity_data?.['id'], quo_mapped?.['id'])
                             }
                             else {
-                                APLoadTab.LoadPlanOppOnly(opportunity_data?.['id'])
+                                AdvancePaymentPageFunction.LoadPlanOppOnly(opportunity_data?.['id'])
                             }
-                            ap_for = 'opportunity'
+                            pageVariables.ap_for = 'opportunity'
                         }
                     } else {
-                        quotation_mapped_select.prop('disabled', false)
-                        sale_order_mapped_select.prop('disabled', false)
-                        ap_for = null
-                        APLoadTab.DrawTablePlan()
+                        pageElements.$quotation_mapped_select.prop('disabled', false)
+                        pageElements.$sale_order_mapped_select.prop('disabled', false)
+                        pageVariables.ap_for = null
+                        AdvancePaymentPageFunction.DrawTablePlan()
                     }
                 }
             })
     }
-    static LoadPage(option='create') {
-        if (option === "create") {
-            const {
-                create_open, opp_id, opp_title, opp_code,
-                process_id, process_title, process_stage_app_id, process_stage_app_title,
-                inherit_id, inherit_title
-            } = $x.fn.getManyUrlParameters([
-                'create_open', 'opp_id', 'opp_title', 'opp_code',
-                'process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title',
-                'inherit_id', 'inherit_title'
-            ])
-            const group$ = $('#bastion-space')
-            if (create_open) {
-                const data_inherit = [{
-                    "id": inherit_id || '',
-                    "full_name": inherit_title || '',
-                    "selected": true,
-                }];
-                const data_opp = [{
-                    "id": opp_id || '',
-                    "title": opp_title || '',
-                    "code": opp_code || '',
-                    "selected": true,
-                }];
-                const data_process = [{
-                    "id": process_id || '',
-                    "title": process_title || '',
-                    "selected": true,
-                }];
-                const data_process_stage_app = [{
-                    "id": process_stage_app_id || '',
-                    "title": process_stage_app_title || '',
-                    'selected': true,
-                }];
-                new $x.cls.bastionField({
-                    list_from_app: "cashoutflow.advancepayment.create",
-                    app_id: "57725469-8b04-428a-a4b0-578091d0e4f5",
-                    mainDiv: group$,
-                    oppEle: group$.find('select[name=opportunity_id]'),
-                    prjEle: group$.find('select[name=project_id]'),
-                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
-                    processEle: group$.find('select[name=process]'),
-                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
-                    data_opp: data_opp,
-                    data_inherit: data_inherit,
-                    data_process: data_process,
-                    data_process_stage_app: data_process_stage_app,
-                }).init();
-
-                APHandle.LoadPageActionWithParams(opp_id)
-            }
-            else {
-                new $x.cls.bastionField({
-                    list_from_app: "cashoutflow.advancepayment.create",
-                    app_id: "57725469-8b04-428a-a4b0-578091d0e4f5",
-                    mainDiv: group$,
-                    oppEle: group$.find('select[name=opportunity_id]'),
-                    prjEle: group$.find('select[name=project_id]'),
-                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
-                    processEle: group$.find('select[name=process]'),
-                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
-                }).init();
-            }
-        }
-
-        APLoadPage.LoadQuotation()
-        APLoadPage.LoadSaleOrder();
-        APLoadPage.LoadSupplier()
-        APLoadPage.LoadReturnDate()
-        APLoadPage.LoadAdvanceDate()
-        APLoadPage.InitBankNumber()
-        APLoadTab.LoadLineDetailTable()
-        APLoadTab.DrawTablePlan()
-    }
-    static CombinesData(frmEle, option) {
+    static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
-        frm.dataForm['title'] = $('#title').val()
+        frm.dataForm['title'] = pageElements.$title.val()
 
-        if (ap_for === 'opportunity') {
-            frm.dataForm['opportunity_id'] = opp_mapped_select.val()
+        if (pageVariables.ap_for === 'opportunity') {
+            frm.dataForm['opportunity_id'] = pageElements.$opportunity_id.val()
             frm.dataForm['sale_code_type'] = 0
         }
-        else if (ap_for === 'quotation') {
-            frm.dataForm['quotation_mapped_id'] = quotation_mapped_select.val()
+        else if (pageVariables.ap_for === 'quotation') {
+            frm.dataForm['quotation_mapped_id'] = pageElements.$quotation_mapped_select.val()
             frm.dataForm['sale_code_type'] = 0
         }
-        else if (ap_for === 'saleorder') {
-            frm.dataForm['sale_order_mapped_id'] = sale_order_mapped_select.val()
+        else if (pageVariables.ap_for === 'saleorder') {
+            frm.dataForm['sale_order_mapped_id'] = pageElements.$sale_order_mapped_select.val()
             frm.dataForm['sale_code_type'] = 0
         }
         else {
@@ -1637,18 +1491,18 @@ class APHandle {
             frm.dataForm['sale_order_mapped_id'] = null
             frm.dataForm['sale_code_type'] = 2
         }
-        frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val()
+        frm.dataForm['employee_inherit_id'] = pageElements.$employee_inherit_id.val()
 
-        frm.dataForm['advance_payment_type'] = APTypeEle.val()
-        frm.dataForm['supplier_id'] = supplierEle.val() || null
-        frm.dataForm['method'] = ap_method_Ele.val()
-        frm.dataForm['return_date'] = moment($('#return_date_id').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
-        frm.dataForm['advance_date'] = $('#advance_date_id').val() ? moment($('#advance_date_id').val(), 'DD/MM/YYYY').format('YYYY-MM-DD') : null
-        frm.dataForm['bank_data'] = bank_number.val()
-        frm.dataForm['money_gave'] = money_gave.prop('checked')
+        frm.dataForm['advance_payment_type'] = pageElements.$advance_payment_type.val()
+        frm.dataForm['supplier_id'] = pageElements.$supplier_id.val() || null
+        frm.dataForm['method'] = pageElements.$method.val()
+        frm.dataForm['return_date'] = moment(pageElements.$return_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['advance_date'] = pageElements.$advance_date.val() ? moment(pageElements.$advance_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD') : null
+        frm.dataForm['bank_data'] = pageElements.$bank_info.val()
+        frm.dataForm['money_gave'] = pageElements.$money_gave.prop('checked')
 
         let ap_item_list = []
-        tableLineDetail.find('tbody tr').each(function () {
+        pageElements.$table_line_detail.find('tbody tr').each(function () {
             let row = $(this);
             let expense_description = row.find('.expense-des-input').val();
             let expense_type = row.find('.expense-type-select-box').val();
@@ -1681,7 +1535,6 @@ class APHandle {
 
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
 
-        // console.log(frm)
         return frm
     }
     static LoadDetailAP(option) {
@@ -1727,46 +1580,53 @@ class APHandle {
                     }] : [];
 
                     new $x.cls.bastionField({
-                        list_from_app: "cashoutflow.advancepayment.create",
-                        app_id: "57725469-8b04-428a-a4b0-578091d0e4f5",
+                        has_opp: true,
+                        has_inherit: true,
+                        has_process: true,
                         data_opp: data_opp,
                         data_inherit: data_inherit,
                         data_process: data_process,
                         data_process_stage_app: data_process_stage_app,
                     }).init();
+                    AdvancePaymentPageFunction.LoadQuotation()
+                    AdvancePaymentPageFunction.LoadSaleOrder()
 
                     if (Object.keys(data?.['opportunity']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
-                        APLoadPage.LoadQuotation(data?.['opportunity']?.['quotation_mapped'])
-                        APLoadPage.LoadSaleOrder(data?.['opportunity']?.['sale_order_mapped']);
+                        pageElements.$quotation_mapped_select.prop('disabled', true)
+                        pageElements.$sale_order_mapped_select.prop('disabled', true)
+                        AdvancePaymentPageFunction.LoadQuotation(data?.['opportunity']?.['quotation_mapped'])
+                        AdvancePaymentPageFunction.LoadSaleOrder(data?.['opportunity']?.['sale_order_mapped']);
                         if (data?.['opportunity']?.['sale_order_mapped']?.['id']) {
-                            APLoadTab.LoadPlanSaleOrder(
-                                opp_mapped_select.val(),
+                            AdvancePaymentPageFunction.LoadPlanSaleOrder(
+                                pageElements.$opportunity_id.val(),
                                 data?.['opportunity']?.['sale_order_mapped']?.['id'],
                                 data?.['workflow_runtime_id']
                             )
                         }
                         else if (data?.['opportunity']?.['quotation_mapped']?.['id']) {
-                            APLoadTab.LoadPlanQuotation(
-                                opp_mapped_select.val(),
+                            AdvancePaymentPageFunction.LoadPlanQuotation(
+                                pageElements.$opportunity_id.val(),
                                 data?.['opportunity']?.['quotation_mapped']?.['id'],
                                 data?.['workflow_runtime_id']
                             )
                         }
                         else {
-                            APLoadTab.LoadPlanOppOnly(
-                                opp_mapped_select.val(),
+                            AdvancePaymentPageFunction.LoadPlanOppOnly(
+                                pageElements.$opportunity_id.val(),
                                 data?.['workflow_runtime_id']
                             )
                         }
-                        ap_for = 'opportunity'
+                        pageVariables.ap_for = 'opportunity'
                     }
                     else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
-                        APLoadPage.LoadQuotation(data?.['quotation_mapped'])
-                        APLoadPage.LoadSaleOrder(data?.['quotation_mapped']?.['sale_order_mapped'])
+                        pageElements.$opportunity_id.prop('disabled', true)
+                        pageElements.$sale_order_mapped_select.prop('disabled', true)
+                        AdvancePaymentPageFunction.LoadQuotation(data?.['quotation_mapped'])
+                        AdvancePaymentPageFunction.LoadSaleOrder(data?.['quotation_mapped']?.['sale_order_mapped'])
 
-                        let dataParam = {'quotation_id': quotation_mapped_select.val()}
+                        let dataParam = {'quotation_id': pageElements.$quotation_mapped_select.val()}
                         let ap_mapped_item = $.fn.callAjax2({
-                            url: sale_order_mapped_select.attr('data-url'),
+                            url: pageElements.$sale_order_mapped_select.attr('data-url'),
                             data: dataParam,
                             method: 'GET'
                         }).then(
@@ -1786,50 +1646,50 @@ class APHandle {
                             (results) => {
                                 let so_mapped_opp = results[0];
                                 if (so_mapped_opp.length > 0) {
-                                    APLoadPage.LoadSaleOrder(so_mapped_opp[0]);
+                                    AdvancePaymentPageFunction.LoadSaleOrder(so_mapped_opp[0]);
                                 }
                             })
 
-                        APLoadTab.LoadPlanQuotationOnly(
+                        AdvancePaymentPageFunction.LoadPlanQuotationOnly(
                             data?.['quotation_mapped']?.['id'],
                             data?.['workflow_runtime_id']
                         )
-                        ap_for = 'quotation'
+                        pageVariables.ap_for = 'quotation'
                     }
                     else if (Object.keys(data?.['sale_order_mapped']).length !== 0) {
-                        APLoadPage.LoadSaleOrder(data?.['sale_order_mapped'])
-                        APLoadPage.LoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
-                        APLoadTab.LoadPlanSaleOrderOnly(
+                        pageElements.$opportunity_id.prop('disabled', true)
+                        pageElements.$quotation_mapped_select.prop('disabled', true)
+                        AdvancePaymentPageFunction.LoadSaleOrder(data?.['sale_order_mapped'])
+                        AdvancePaymentPageFunction.LoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
+                        AdvancePaymentPageFunction.LoadPlanSaleOrderOnly(
                             data?.['sale_order_mapped']?.['id'],
                             data?.['workflow_runtime_id']
                         )
-                        ap_for = 'saleorder'
+                        pageVariables.ap_for = 'saleorder'
                     }
                     else {
-                        ap_for = null
+                        pageVariables.ap_for = null
                     }
 
-                    $('#title').val(data.title);
+                    pageElements.$title.val(data.title);
 
-                    APTypeEle.val(data.advance_payment_type).trigger('change');
+                    pageElements.$advance_payment_type.val(data.advance_payment_type).trigger('change');
 
-                    ap_method_Ele.val(data.method)
+                    pageElements.$method.val(data.method).trigger('change')
 
-                    $('#return_date_id').val(moment(data.return_date.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
+                    pageElements.$return_date.val(data.return_date ? moment(data.return_date.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY') : '')
 
-                    if (data.advance_date) {
-                        $('#advance_date_id').val(moment(data.advance_date.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
-                    }
+                    pageElements.$advance_date.val(data.advance_date ? moment(data.advance_date.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY') : '')
 
-                    if (Object.keys(data?.['supplier']).length !== 0) {
-                        APLoadPage.LoadSupplier(data?.['supplier'], data?.['bank_data'])
-                    }
+                    AdvancePaymentPageFunction.LoadSupplier(data?.['supplier'] || {})
 
-                    APLoadPage.InitBankNumber(data?.['bank_data'])
+                    pageElements.$bank_info.val(data?.['bank_data'] || '')
 
-                    APLoadTab.LoadLineDetailTable(data?.['expense_items'], option)
+                    AdvancePaymentPageFunction.LoadTableBankAccount((data?.['supplier'] || {})?.['bank_accounts_mapped'] || [])
 
-                    money_gave.prop('checked', data?.['money_gave']);
+                    AdvancePaymentPageFunction.LoadLineDetailTable(data?.['expense_items'], option)
+
+                    pageElements.$money_gave.prop('checked', data?.['money_gave']);
 
                     $.fn.initMaskMoney2();
 
@@ -1840,92 +1700,115 @@ class APHandle {
                         name: 'attachment'
                     })
 
-                    APAction.DisabledDetailPage(option);
+                    UsualLoadPageFunction.DisablePage(
+                        option==='detail'
+                    );
+
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }
 }
 
-ap_method_Ele.on('change', function () {
-    if ($(this).val() === '0') {
-        bank_number.closest('.form-group').find('label').removeClass('required')
-        bank_number.prop('required', false)
-    }
-    else {
-        bank_number.closest('.form-group').find('label').addClass('required')
-        bank_number.prop('required', true)
-    }
-})
-
-opp_mapped_select.on('change', function () {
-    quotation_mapped_select.empty()
-    sale_order_mapped_select.empty()
-    if (opp_mapped_select.val()) {
-        let selected = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
-        console.log(selected)
-        if (selected?.['is_close']) {
-            $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
-            opp_mapped_select.empty()
-            ap_for = null
-        }
-        else {
-            sale_order_mapped_select.prop('disabled', true)
-            quotation_mapped_select.prop('disabled', true)
-            let quo_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
-            let so_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
-            APLoadPage.LoadQuotation(quo_mapped)
-            APLoadPage.LoadSaleOrder(so_mapped);
-            if (so_mapped?.['id']) {
-                APLoadTab.LoadPlanSaleOrder(opp_mapped_select.val(), so_mapped?.['id'])
+/**
+ * Khai báo các Event
+ */
+class AdvancePaymentEventHandler {
+    static InitPageEven() {
+        pageElements.$opportunity_id.on('change', function () {
+            pageElements.$quotation_mapped_select.empty()
+            pageElements.$sale_order_mapped_select.empty()
+            if (pageElements.$opportunity_id.val()) {
+                let selected = SelectDDControl.get_data_from_idx(pageElements.$opportunity_id, pageElements.$opportunity_id.val())
+                if (selected?.['is_close']) {
+                    $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
+                    pageElements.$opportunity_id.empty()
+                    pageVariables.ap_for = null
+                }
+                else {
+                    pageElements.$sale_order_mapped_select.prop('disabled', true)
+                    pageElements.$quotation_mapped_select.prop('disabled', true)
+                    let quo_mapped = SelectDDControl.get_data_from_idx(pageElements.$opportunity_id, pageElements.$opportunity_id.val())['quotation'];
+                    let so_mapped = SelectDDControl.get_data_from_idx(pageElements.$opportunity_id, pageElements.$opportunity_id.val())['sale_order'];
+                    AdvancePaymentPageFunction.LoadQuotation(quo_mapped)
+                    AdvancePaymentPageFunction.LoadSaleOrder(so_mapped);
+                    if (so_mapped?.['id']) {
+                        AdvancePaymentPageFunction.LoadPlanSaleOrder(pageElements.$opportunity_id.val(), so_mapped?.['id'])
+                    }
+                    else if (quo_mapped?.['id']) {
+                        AdvancePaymentPageFunction.LoadPlanQuotation(pageElements.$opportunity_id.val(), quo_mapped?.['id'])
+                    } else {
+                        AdvancePaymentPageFunction.LoadPlanOppOnly(pageElements.$opportunity_id.val())
+                    }
+                    pageVariables.ap_for = 'opportunity'
+                }
             }
-            else if (quo_mapped?.['id']) {
-                APLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped?.['id'])
-            } else {
-                APLoadTab.LoadPlanOppOnly(opp_mapped_select.val())
+            else {
+                pageElements.$quotation_mapped_select.prop('disabled', false)
+                pageElements.$sale_order_mapped_select.prop('disabled', false)
+                pageVariables.ap_for = null
+                AdvancePaymentPageFunction.DrawTablePlan()
             }
-            ap_for = 'opportunity'
-        }
+        })
+        pageElements.$advance_payment_type.on('change', function () {
+            if ($(this).val() === '1') {
+                pageElements.$supplier_id.empty().prop('disabled', false);
+                pageElements.$supplier_label.addClass('required');
+            }
+            else {
+                pageElements.$supplier_id.empty().prop('disabled', true);
+                pageElements.$supplier_label.removeClass('required');
+            }
+        })
+        pageElements.$method.on('change', function () {
+            if ($(this).val() === '0') {
+                pageElements.$bank_info.closest('.form-group').find('label').removeClass('required')
+                pageElements.$bank_info.prop('required', false)
+            }
+            else {
+                pageElements.$bank_info.closest('.form-group').find('label').addClass('required')
+                pageElements.$bank_info.prop('required', true)
+            }
+        })
+        pageElements.$accept_bank_account_btn.on('click', function () {
+            let bank_selected = $('.bank_account_selected:checked')
+            if (bank_selected) {
+                let bank_name = bank_selected.closest('tr').find('.bank_name').val()
+                let account_name = bank_selected.closest('tr').find('.bank_account_name').val()
+                let account_number = bank_selected.closest('tr').find('.bank_account_number').val()
+                if (bank_name && account_name && account_number) {
+                    pageElements.$bank_info.val(`${$.fn.gettext('Bank name')}: ${bank_name}\n${$.fn.gettext('Account name')}: ${account_name}\n${$.fn.gettext('Account number')}: ${account_number}`)
+                    $('#bank-account-modal').modal('hide')
+                } else {
+                    pageElements.$bank_info.val('')
+                    $.fn.notifyB({description: 'Bank information is missing'}, 'failure');
+                }
+            }
+        })
+        $(document).on("click", '#btn-add-row-line-detail', function () {
+            UsualLoadPageFunction.AddTableRow(
+                pageElements.$table_line_detail,
+                {}
+            )
+            let row_added = pageElements.$table_line_detail.find('tbody tr:last-child')
+            AdvancePaymentPageFunction.LoadExpenseItem(row_added.find('.expense-type-select-box'))
+            AdvancePaymentPageFunction.LoadExpenseTax(row_added.find('.expense-tax-select-box'))
+        });
+        $(document).on("click", '.btn-del-line-detail', function () {
+            UsualLoadPageFunction.DeleteTableRow(
+                pageElements.$table_line_detail,
+                parseInt($(this).closest('tr').find('td:first-child').text())
+            )
+            AdvancePaymentPageFunction.CalculateTotalPrice();
+        });
+        $(document).on("change", '.expense-unit-price-input', function () {
+            AdvancePaymentPageFunction.ChangeRowPrice($(this).closest('tr'));
+        })
+        $(document).on("change", '.expense-tax-select-box', function () {
+            AdvancePaymentPageFunction.ChangeRowPrice($(this).closest('tr'));
+        })
+        $(document).on("change", '.expense_quantity', function () {
+            AdvancePaymentPageFunction.ChangeRowPrice($(this).closest('tr'));
+        })
     }
-    else {
-        quotation_mapped_select.prop('disabled', false)
-        sale_order_mapped_select.prop('disabled', false)
-        ap_for = null
-        APLoadTab.DrawTablePlan()
-    }
-})
-
-APTypeEle.on('change', function () {
-    if (APTypeEle.val() === '1') {
-        supplierEle.empty().prop('disabled', false);
-        $('#supplier-label').addClass('required');
-    }
-    else {
-        supplierEle.empty().prop('disabled', true);
-        $('#supplier-label').removeClass('required');
-    }
-})
-
-$(document).on("click", '#btn-add-row-line-detail', function () {
-    APAction.AddRow(tableLineDetail, {})
-    let row_added = tableLineDetail.find('tbody tr:last-child')
-    APLoadTab.LoadExpenseItem(row_added.find('.expense-type-select-box'))
-    APLoadTab.LoadExpenseTax(row_added.find('.expense-tax-select-box'))
-});
-
-$(document).on("click", '.btn-del-line-detail', function () {
-    APAction.DeleteRow(tableLineDetail, parseInt($(this).closest('tr').find('td:first-child').text()))
-    APAction.CalculateTotalPrice();
-});
-
-$(document).on("change", '.expense-unit-price-input', function () {
-    APAction.ChangeRowPrice($(this).closest('tr'));
-})
-
-$(document).on("change", '.expense-tax-select-box', function () {
-    APAction.ChangeRowPrice($(this).closest('tr'));
-})
-
-$(document).on("change", '.expense_quantity', function () {
-    APAction.ChangeRowPrice($(this).closest('tr'));
-})
+}

@@ -11780,9 +11780,21 @@ msgid "Return 0 if value of indicator is negative"
 msgstr "Trả về 0 nếu giá trị chỉ tiêu âm"
 
 #
+msgid "Bank information"
+msgstr "Thông tin ngân hàng"
+
+#
 msgid "Date of advance payment"
 msgstr "Ngày cần tạm ứng"
 
 #
-msgid "Select or input new"
-msgstr "Chọn hoặc nhập mới"
+msgid "Click to select or input new"
+msgstr "Nhấn để chọn hoặc thêm mới"
+
+#
+msgid "Select bank account"
+msgstr "Chọn tài khoản ngân hàng"
+
+#
+msgid "Pick a bank account, or add one in the last row."
+msgstr "Chọn tài khoản hoặc thêm mới ở dòng cuối."

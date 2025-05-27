@@ -2048,13 +2048,15 @@ class PaymentHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     data = data['payment_detail'];
-                    if (option === 'detail') {
-                        new PrintTinymceControl().render('1010563f-7c94-42f9-ba99-63d5d26a1aca', data, false);
-                    }
-                    // console.log(data)
-                    DETAIL_DATA = data;
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
+                    DETAIL_DATA = data;
+
+                    if (data?.['system_status'] === 3) {
+                        $('#print-document').prop('hidden', false)
+                    }
+
+                    // console.log(data)
 
                     opp_mapped_select.prop('disabled', true)
                     quotation_mapped_select.prop('disabled', true)
@@ -2084,6 +2086,7 @@ class PaymentHandle {
                         ...data['process_stage_app'],
                         'selected': true,
                     }] : [];
+
                     new $x.cls.bastionField({
                         has_opp: true,
                         has_inherit: true,

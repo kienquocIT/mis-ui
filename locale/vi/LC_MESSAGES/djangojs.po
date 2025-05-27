@@ -428,3 +428,15 @@ msgstr "Mặc định"
 #
 msgid "input UOM..."
 msgstr "nhập đơn vị..."
+
+#
+msgid "Bank name"
+msgstr "Tên ngân hàng"
+
+#
+msgid "Account name"
+msgstr "Tên tài khoản"
+
+#
+msgid "Account number"
+msgstr "Số tài khoản"

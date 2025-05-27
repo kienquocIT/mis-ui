@@ -773,7 +773,7 @@ class ConsultingHandler{
         dataStore['remark'] = dataStoreFields.remark.val();
         let fileIds = dataStoreFields.attachment.find('.dm-uploader-ids')
         if(fileIds){
-            let ids = $x.cls.file.get_val(fileIds.val(), []);
+            let ids = $x.cls.file.get_val(fileIds.val(), []).slice().reverse()
             if(ids.length>0){
                 let order = 1;
                 for (let mediaBody of this.attachment.find('.media-body')) {

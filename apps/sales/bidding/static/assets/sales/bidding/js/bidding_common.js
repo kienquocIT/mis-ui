@@ -776,7 +776,7 @@ class BiddingStoreHandle {
         dataStore['remark'] = BiddingLoadDataHandle.$remark.val();
         let fileIds = BiddingLoadDataHandle.$attachment[0].querySelector('.dm-uploader-ids');
         if (fileIds) {
-            let ids = $x.cls.file.get_val(fileIds.value, []);
+            let ids = $x.cls.file.get_val(fileIds.value, []).slice().reverse()
             if (ids.length > 0) {
                 let result = [];
                 let order = 1;

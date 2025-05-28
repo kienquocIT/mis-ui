@@ -257,6 +257,16 @@ $(document).ready(function () {
 
     let validator = SetupFormSubmit.call_validate(formSubmit, {
         onsubmit: true,
+        rules: {
+            opportunity_id: {
+                required: true,
+            }
+        },
+        messages: {
+            opportunity_id: {
+                required: "This field is required."
+            },
+        },
         submitHandler: function (form, event) {
             let _form = new SetupFormSubmit(formSubmit);
             BiddingSubmitHandle.setupDataSubmit(_form)

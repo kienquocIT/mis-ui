@@ -9,14 +9,12 @@ $(function () {
         let $quotationTabs = $('#quotation-tabs');
 
         // Load inits
-        LeaseOrderLoadDataHandle.loadCustomCss();
         LeaseOrderLoadDataHandle.loadInitConfigLease();
         LeaseOrderLoadDataHandle.loadInitInherit();
-        LeaseOrderLoadDataHandle.loadInitCustomer();
         LeaseOrderLoadDataHandle.loadBoxQuotationCustomer();
-        LeaseOrderLoadDataHandle.loadBoxQuotationContact();
-        LeaseOrderLoadDataHandle.loadBoxQuotationPaymentTerm();
-        LeaseOrderLoadDataHandle.loadInitDate();
+        FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.contactSelectEle);
+        FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [], {}, null, true);
+        $('#quotation-create-date-created').val(DateTimeControl.getCurrentDate("DMY", "/"));
         LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderLoadDataHandle.$depreciationModal);
         // init dataTable
         LeaseOrderDataTableHandle.dataTableProduct();
@@ -605,15 +603,7 @@ $(function () {
                 LeaseOrderDataTableHandle.$tableQuotationCopy[0].removeAttribute('hidden');
                 divCopyOption[0].setAttribute('hidden', true);
                 // load table quotation list for copy
-                let opp_id = null;
-                let sale_person_id = null;
-                if (LeaseOrderLoadDataHandle.opportunitySelectEle.val()) {
-                    opp_id = LeaseOrderLoadDataHandle.opportunitySelectEle.val()
-                }
-                if (LeaseOrderLoadDataHandle.salePersonSelectEle.val()) {
-                    sale_person_id = LeaseOrderLoadDataHandle.salePersonSelectEle.val()
-                }
-                LeaseOrderLoadDataHandle.loadTableCopyQuotation(opp_id, sale_person_id);
+                LeaseOrderLoadDataHandle.loadTableCopyQuotation();
             } else if (type === 'copy-to') {
                 // load data product for table datable-copy-quotation-product
                 let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);

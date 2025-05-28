@@ -137,6 +137,7 @@
                                     data-link-detail="{% url 'ContactDetail' 1 %}"
                                     name="contact_id"
                                     data-keyResp="contact_list"
+                                    data-keyText="fullname"
                                     readonly
                                 ></select>
                             </div>
@@ -1333,6 +1334,8 @@
 
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
         data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
+        data-quotation="{% url "QuotationListAPI" %}"
+        data-quotation-detail="{% url "QuotationDetailAPI" 1 %}"
     >
 
     <input

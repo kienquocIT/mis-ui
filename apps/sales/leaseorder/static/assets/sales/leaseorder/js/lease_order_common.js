@@ -18,7 +18,6 @@ class LeaseOrderLoadDataHandle {
     static $eleStoreDetail = $('#quotation-detail-data');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#app-url-factory');
-    static customerInitEle = $('#data-init-customer');
     static $priceModal = $('#selectPriceModal');
     static $btnSavePrice = $('#btn-save-select-price');
     static $costModal = $('#selectCostModal');
@@ -212,18 +211,29 @@ class LeaseOrderLoadDataHandle {
                 'allowClear': true,
             });
             // load customer
-            if (LeaseOrderLoadDataHandle.customerInitEle.val()) {
-                let initCustomer = JSON.parse(LeaseOrderLoadDataHandle.customerInitEle.val());
-                LeaseOrderLoadDataHandle.customerSelectEle.empty();
-                LeaseOrderLoadDataHandle.customerSelectEle.initSelect2({
-                    data: initCustomer?.[oppData?.['customer']?.['id']],
-                });
-                LeaseOrderLoadDataHandle.customerSelectEle.trigger('change');
+            if (oppData?.['customer']?.['id']) {
+                WindowControl.showLoading();
+                $.fn.callAjax2({
+                        'url': LeaseOrderLoadDataHandle.customerSelectEle.attr('data-url'),
+                        'method': "GET",
+                        'data': {'id': oppData?.['customer']?.['id']},
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
+                                if (data?.['account_sale_list'].length > 0) {
+                                    FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.customerSelectEle, data?.['account_sale_list']);
+                                    LeaseOrderLoadDataHandle.customerSelectEle.trigger('change');
+                                }
+                                WindowControl.hideLoading();
+                            }
+                        }
+                    }
+                )
             }
-        } else {
-            LeaseOrderLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
-            LeaseOrderLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
-            LeaseOrderLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
         }
         // Delete all promotion rows
         deletePromotionRows(tableProduct, true, false);
@@ -247,33 +257,6 @@ class LeaseOrderLoadDataHandle {
         }
     };
 
-    static loadInitCustomer() {
-        let result = {};
-        let ele = LeaseOrderLoadDataHandle.customerInitEle;
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-                'url': url,
-                'method': method,
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
-                        for (let customer of data.account_sale_list) {
-                            if (!result.hasOwnProperty(customer?.['id'])) {
-                                result[customer?.['id']] = customer;
-                            }
-                        }
-                        ele.val(JSON.stringify(result));
-                    }
-                }
-            }
-        )
-    };
-
     static loadBoxQuotationCustomer(dataCustomer = {}) {
         let data_filter = {};
         let employee_current_data = JSON.parse($('#employee_current').text());
@@ -294,12 +277,24 @@ class LeaseOrderLoadDataHandle {
 
     static loadDataByCustomer() {
         let tableProduct = $('#datable-quotation-create-product');
-        LeaseOrderLoadDataHandle.loadBoxQuotationContact();
-        LeaseOrderLoadDataHandle.loadBoxQuotationPaymentTerm();
-        LeaseOrderLoadDataHandle.loadChangePaymentTerm();
         if (LeaseOrderLoadDataHandle.customerSelectEle.val()) {
             let dataSelected = SelectDDControl.get_data_from_idx(LeaseOrderLoadDataHandle.customerSelectEle, LeaseOrderLoadDataHandle.customerSelectEle.val());
             if (dataSelected) {
+                // load contact
+                if (dataSelected?.['contact_list']) {
+                    FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.contactSelectEle, dataSelected?.['contact_list']);
+                    for (let contact of dataSelected?.['contact_list']) {
+                        if (contact?.['is_owner'] === true) {
+                            LeaseOrderLoadDataHandle.contactSelectEle.val(contact?.['id']).trigger('change');
+                            break;
+                        }
+                    }
+                }
+                // load payment term
+                if (dataSelected?.['payment_term_customer_mapped']) {
+                    FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [dataSelected?.['payment_term_customer_mapped']], {}, null, true);
+                    LeaseOrderLoadDataHandle.loadChangePaymentTerm();
+                }
                 // load Shipping & Billing by Customer
                 LeaseOrderLoadDataHandle.loadShippingBillingCustomer();
                 LeaseOrderLoadDataHandle.loadShippingBillingCustomer(dataSelected);
@@ -687,39 +682,9 @@ class LeaseOrderLoadDataHandle {
         return {'is_pass': check, 'note_type': note_type};
     };
 
-    static loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
-        let ele = $('#data-init-copy-quotation');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $('#datable-copy-quotation').DataTable().destroy();
-        if (sale_person_id) {
-            let data_filter = {
-                'employee_inherit': sale_person_id,
-                'system_status__in': [2, 3].join(','),
-            };
-            WindowControl.showLoading();
-            $.fn.callAjax2({
-                    'url': url,
-                    'method': method,
-                    'data': data_filter,
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
-                            let dataInit = data.quotation_list;
-                            LeaseOrderDataTableHandle.dataTableCopyQuotation(dataInit);
-                            WindowControl.hideLoading();
-                        }
-                    }
-                }
-            )
-        } else {
-            LeaseOrderDataTableHandle.dataTableCopyQuotation();
-            WindowControl.hideLoading();
-        }
+    static loadTableCopyQuotation() {
+        LeaseOrderDataTableHandle.$tableQuotationCopy.DataTable().destroy();
+        LeaseOrderDataTableHandle.dataTableCopyQuotation();
         return true;
     };
 
@@ -1157,14 +1122,11 @@ class LeaseOrderLoadDataHandle {
     };
 
     static loadAPIDetailQuotation(select_id) {
-        let ele = $('#data-init-copy-quotation');
-        let url = ele.attr('data-url-detail').format_url_with_uuid(select_id);
-        let method = ele.attr('data-method');
         WindowControl.showLoading();
         $.fn.callAjax2(
             {
-                'url': url,
-                'method': method,
+                'url': LeaseOrderLoadDataHandle.urlEle.attr('data-quotation-detail').format_url_with_uuid(select_id),
+                'method': "GET",
                 'isDropdown': true,
             }
         ).then(
@@ -4803,15 +4765,34 @@ class LeaseOrderDataTableHandle {
         }
     };
 
-    static dataTableCopyQuotation(data) {
+    static dataTableCopyQuotation() {
         // init dataTable
-        LeaseOrderDataTableHandle.$tableQuotationCopy.DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
+        let params = {
+            'employee_inherit': LeaseOrderLoadDataHandle.salePersonSelectEle.val(),
+            'system_status__in': [2, 3].join(','),
+        }
+        if (!LeaseOrderLoadDataHandle.$form[0].classList.contains('sale-order')) {
+            params = {
+                'employee_inherit': LeaseOrderLoadDataHandle.salePersonSelectEle.val(),
+                'system_status__in': [2, 3, 4].join(','),
+            }
+        }
+        LeaseOrderDataTableHandle.$tableQuotationCopy.not('.dataTable').DataTableDefault({
+            useDataServer: true,
+            ajax: {
+                url: LeaseOrderLoadDataHandle.urlEle.attr('data-quotation'),
+                type: "GET",
+                data: params,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('quotation_list')) {
+                        return resp.data['quotation_list'] ? resp.data['quotation_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
             autoWidth: true,
             scrollX: true,
-            scrollY: "400px",
             columns: [
                 {
                     targets: 0,

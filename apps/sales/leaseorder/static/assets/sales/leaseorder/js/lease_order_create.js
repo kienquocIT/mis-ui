@@ -83,6 +83,10 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
+        LeaseOrderDataTableHandle.$tableSProduct.on('click', '.table-row-checkbox', function () {
+            LeaseOrderLoadDataHandle.loadStoreCheckProduct(this);
+        });
+
         LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
             LeaseOrderLoadDataHandle.loadNewProduct();
         });
@@ -95,8 +99,13 @@ $(function () {
             LeaseOrderLoadDataHandle.loadTool(this);
         });
 
+        LeaseOrderDataTableHandle.$tableSAsset.on('click', '.table-row-checkbox', function () {
+            LeaseOrderLoadDataHandle.loadStoreCheckAsset(this);
+        });
+
         LeaseOrderLoadDataHandle.$btnSaveSelectAsset.on('click', function () {
             LeaseOrderLoadDataHandle.loadAsset(this);
+            LeaseOrderStoreDataHandle.storeDtbData(1);
         });
 
         // QUICK PRODUCT

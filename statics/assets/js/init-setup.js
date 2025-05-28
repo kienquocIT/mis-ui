@@ -2731,8 +2731,11 @@ class WFRTControl {
                             WFRTControl.checkAllowEditZones(actionMySelf);
                             WFRTControl.activeSetZoneHiddenMySelf(runtimeData['zones_hidden_myself']);
                             if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === $x.fn.getEmployeeCurrentID()) {
-                                // Bật nút CR & Cancel (sau khi hoàn thành)
-                                WFRTControl.setBtnWFAfterFinishDetail();
+                                // Bật nút CR & Cancel
+                                let appAllowCR = ["quotation.quotation", "saleorder.saleorder"];
+                                if (appAllowCR.includes(runtimeData?.['app_code'])) {
+                                    WFRTControl.setBtnWFAfterFinishDetail();
+                                }
                                 // Bật nút in
                                 let $btnPrint = $('#print-document');
                                 if ($btnPrint && $btnPrint.length > 0) {

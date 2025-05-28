@@ -101,7 +101,7 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
                             const link = urlsEle.data('link-detail').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
@@ -109,7 +109,7 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if (Object.keys(row?.['customer']).length !== 0) {
                                 return `<p>${row?.['customer']?.['title']}</p>`;
@@ -119,7 +119,7 @@ $(function () {
                     },
                     {
                         targets: 4,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if (Object.keys(row?.['sale_person']).length !== 0) {
                                 return `<p>${row?.['sale_person']?.['full_name']}</p>`;
@@ -129,7 +129,7 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '12%',
+                        width: '8%',
                         data: "date_created",
                         render: (data) => {
                             return $x.fn.displayRelativeTime(data, {
@@ -139,32 +139,62 @@ $(function () {
                     },
                     {
                         targets: 6,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money" data-init-money="${parseFloat(row?.['indicator_revenue'])}"></span>`
                         }
                     },
                     {
                         targets: 7,
-                        width: '10%',
+                        width: '5%',
                         render: (data, type, row) => {
-                            return WFRTControl.displayRuntimeStatus(row?.['system_status']);
+                            if (row?.['quotation']?.['id']) {
+                                const link = urlsEle.data('link-detail-quotation').format_url_with_uuid(row?.['quotation']?.['id'])
+                                return `<a href="${link}" class="link-primary underline_hover">${row?.['quotation']?.['code']}</a>`
+                            }
+                            return ``;
                         }
                     },
                     {
                         targets: 8,
                         width: '10%',
                         render: (data, type, row) => {
+                            return `<span class="mask-money" data-init-money="${parseFloat(row?.['quotation']?.['indicator_revenue'])}"></span>`
+                        }
+                    },
+                    {
+                        targets: 9,
+                        width: '8%',
+                        render: (data, type, row) => {
+                            return WFRTControl.displayRuntimeStatus(row?.['system_status']);
+                        }
+                    },
+                    {
+                        targets: 10,
+                        width: '8%',
+                        render: (data, type, row) => {
                             let sttTxt = JSON.parse($('#delivery_status').text())
                             let hidden = "hidden";
                             if (row?.['delivery_status'] === 3) {
                                 hidden = "";
                             }
-                            return `<span>${sttTxt[row?.['delivery_status']][1]}</span><i class="far fa-check-circle text-success ml-2" ${hidden}></i>`;
+                            return `<div class="d-flex align-items-center justify-content-between"><span>${sttTxt[row?.['delivery_status']][1]}</span><i class="fas fa-check text-success fs-4" ${hidden}></i></div>`;
                         }
                     },
                     {
-                        targets: 9,
+                        targets: 11,
+                        width: '8%',
+                        render: (data, type, row) => {
+                            let sttTxt = JSON.parse($('#invoice_status').text())
+                            let hidden = "hidden";
+                            if (row?.['invoice_status'] === 2) {
+                                hidden = "";
+                            }
+                            return `<div class="d-flex align-items-center justify-content-between"><span>${sttTxt[row?.['invoice_status']][1]}</span><i class="fas fa-check text-success fs-4" ${hidden}></i></div>`;
+                        }
+                    },
+                    {
+                        targets: 12,
                         width: '1%',
                         className: 'action-center',
                         render: (data, type, row) => {

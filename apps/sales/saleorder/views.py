@@ -18,6 +18,12 @@ DELIVERY_STATUS = (
     (3, SOMsg.DELIVERY_TYPE_DELIVERED),
 )
 
+INVOICE_STATUS = (
+    (0, SOMsg.INVOICE_STATUS_NONE),
+    (1, SOMsg.INVOICE_STATUS_PART),
+    (2, SOMsg.INVOICE_STATUS_DONE),
+)
+
 PAYMENT_TERM_STAGE = (
     (0, SOMsg.PAYMENT_STAGE_SO),
     (1, SOMsg.PAYMENT_STAGE_CONTRACT),
@@ -75,7 +81,11 @@ class SaleOrderList(View):
         icon_bg='bg-brown',
     )
     def get(self, request, *args, **kwargs):
-        return {'stt_sys': SYSTEM_STATUS, 'delivery_status': DELIVERY_STATUS}, status.HTTP_200_OK
+        return {
+                   'stt_sys': SYSTEM_STATUS,
+                   'delivery_status': DELIVERY_STATUS,
+                   'invoice_status': INVOICE_STATUS,
+               }, status.HTTP_200_OK
 
 
 class SaleOrderCreate(View):
@@ -193,6 +203,7 @@ class SaleOrderUpdate(View):
                    'list_from_app': 'saleorder.saleorder.edit',
                    'payment_term_stage': PAYMENT_TERM_STAGE,
                    'payment_date_type': PAYMENT_DATE_TYPE,
+                   'app_id': 'a870e392-9ad2-4fe2-9baa-298a38691cf2',
                }, status.HTTP_200_OK
 
 

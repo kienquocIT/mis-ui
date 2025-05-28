@@ -68,6 +68,10 @@ $(function () {
             QuotationStoreDataHandle.storeDtbData(5);
         });
 
+        QuotationDataTableHandle.$tableSProduct.on('click', '.table-row-checkbox', function () {
+            QuotationLoadDataHandle.loadStoreCheckProduct(this);
+        });
+
         QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
             QuotationLoadDataHandle.loadNewProduct();
         });

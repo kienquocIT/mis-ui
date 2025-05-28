@@ -526,7 +526,7 @@ class contract_data {
             for (let item of data) {
                 html += `<div class="item_sign">` +
                     `<input type="text" class="form-control" readonly value="${item}"><strong> : </strong>` +
-                    `<div><select class="form-select" id="sign_emp_${item}" multiple data-allowClear="true" data-closeOnSelect="false"></select></div></div>`
+                    `<div><select class="form-select" id="sign_emp_${item}" data-allowClear="true" data-closeOnSelect="true"></select></div></div>`
             }
             $ModalElm.find('.modal-body').html('').append(html)
             $('.modal-body select', $ModalElm).each(function () {
@@ -538,27 +538,31 @@ class contract_data {
                     keyResp: 'employee_list',
                     keyText: 'full_name',
                     keyId: "id",
+                }).on('select2:select', function(e){
+                    $(this).data('data', e.params.data.data)
                 })
             });
             $ModalElm.modal('show')
             $('#submit_runtime').off().on('click', function(e){
                 e.preventDefault();
                 let data_form = {
+                    'csrfmiddlewaretoken': $('#frm_employee_hrm input[name="csrfmiddlewaretoken"]').val(),
                     'employee_contract': $('#contract_id').val(),
-                    'contract': data,
+                    'contract': tinymce.activeEditor.getContent(),
                 }
                 let signature_list = {}
                 let value_count = 0
                 $('.item_sign').each(function () {
                     const key = $(this).find('input').val();
-                    const value = $(this).find('select').val() || []
+                    const value = $(this).find('select[id*="sign_emp_"]').data('data') || {}
                     const old = data_form.members || []
-                    if (!value.length) return false
+                    if (!Object.keys(value).length) return false
                     value_count++
-                    signature_list[key] = {}
-                    signature_list[key]['assignee'] = value
-                    signature_list[key]['stt'] = false
-                    data_form.members = old.concat(value)
+                    signature_list[key] = {
+                        'assignee': value,
+                        'stt': false
+                    }
+                    data_form.members = old.concat([value])
                 });
                 data_form['signatures'] = signature_list
                 if (value_count !== data.length) {
@@ -566,7 +570,7 @@ class contract_data {
                         $.fn.gettext('Signature and employee not equal')}</p></li></ul>`)
                     return false
                 }
-                _this.call_sign_request(data);
+                _this.call_sign_request(data_form);
                 $ModalElm.modal('hide');
             })
         }

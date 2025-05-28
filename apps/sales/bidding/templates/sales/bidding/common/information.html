@@ -133,155 +133,160 @@
         <!-- tabs -->
         <!-- tabs navigation -->
         <div class="row">
-            <ul class="nav nav-light nav-tabs" id="bidding-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_bids">
-                        <span class="nav-link-text">{% trans 'Bids' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_result">
-                        <span class="nav-link-text">{% trans 'Result' %}</span>
-                    </a>
-                </li>
-            </ul>
+            <div class="col-12">
+                <ul class="nav nav-light nav-tabs" id="bidding-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_bids">
+                            <span class="nav-link-text">{% trans 'Bids' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_result">
+                            <span class="nav-link-text">{% trans 'Result' %}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
         </div>
 
         <!-- tabs content -->
-        <div class="tab-content" id="tab-content-bidding">
-            <div class="tab-pane fade show active" id="tab_bids">
-                <!-- document -->
-                <div class="form-group" data-zone="document_data">
-                    <label class="form-label fs-5" for="datatable-document">{% trans 'Required Documents' %}</label>
-                    <table
-                            id="datatable-document"
-                            class="table nowrap w-100"
-                    >
-                        <thead>
-                            <tr class="bg-light">
-                                <th class="w-5"></th>
-                                <th class="w-75">{% trans 'Document name' %}</th>
-                                <th class="w-20">{% trans 'Action' %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <button type="button" class="btn btn-outline-primary" id="btn-open-document-modal"
-                            data-bs-toggle="modal" data-bs-target="#modal-document">
-                        <span>
-                            <span class="icon"><i class="fa-solid fa-plus"></i></span>
-                            <span>{% trans 'Add' %}</span>
-                        </span>
-                    </button>
-                </div>
-
-                 <!-- abstract -->
-                <div class="form-group" data-zone="tinymce_content">
-                    <label class="form-label fs-5" for="inp-contents">{% trans 'Abstract' %}</label>
-                    <textarea class="form-control" id="inp-contents"></textarea>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="tab_result" disabled>
-
-                <!-- other bidder -->
-                <div>
-                    <div class="row mb-4">
-                        <div class="col-12 col-lg-10">
-                            <label class="form-label fs-5" for="datatable-bidder">{% trans 'Other Bidder' %}</label>
-                        </div>
-                        <div class="col-12 col-lg-2 text-right">
-                            <button class="btn btn-outline-primary" type="button" id="btn-save-result" disabled>
-                                <span>
-                                    <span>{% trans 'Save result' %}</span>
-                                    <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
-                                </span>
-                            </button>
-                        </div>
+        <div class="row">
+             <div class="tab-content" id="tab-content-bidding">
+                <div class="tab-pane fade show active" id="tab_bids">
+                    <!-- document -->
+                    <div class="form-group" data-zone="document_data">
+                        <label class="form-label fs-5" for="datatable-document">{% trans 'Required Documents' %}</label>
+                        <table
+                                id="datatable-document"
+                                class="table nowrap w-100"
+                        >
+                            <thead>
+                                <tr class="bg-light">
+                                    <th class="w-5"></th>
+                                    <th class="w-75">{% trans 'Document name' %}</th>
+                                    <th class="w-20">{% trans 'Action' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-outline-primary" id="btn-open-document-modal"
+                                data-bs-toggle="modal" data-bs-target="#modal-document">
+                            <span>
+                                <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                                <span>{% trans 'Add' %}</span>
+                            </span>
+                        </button>
                     </div>
 
-                    <table
-                            id="datatable-bidder"
-                            class="table nowrap w-100"
-                    >
-                        <thead>
-                            <tr class="bg-light">
-                                <th class="w-5"></th>
-                                <th class="w-15">{% trans 'Partner Code' %}</th>
-                                <th class="w-65">{% trans 'Partner Name' %}</th>
-                                <th class="w-5">{% trans 'Won' %}</th>
-                                <th class="w-10">{% trans 'Action' %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <button disabled type="button" class="btn btn-outline-primary" id="btn-open-bidder-modal"
-                            data-bs-toggle="modal" data-bs-target="#modal-account">
-                        <span>
-                            <span class="icon"><i class="fa-solid fa-plus"></i></span>
-                            <span>{% trans 'Add' %}</span>
-                        </span>
-                    </button>
+                     <!-- abstract -->
+                    <div class="form-group" data-zone="tinymce_content">
+                        <label class="form-label fs-5" for="inp-contents">{% trans 'Abstract' %}</label>
+                        <textarea class="form-control" id="inp-contents"></textarea>
+                    </div>
                 </div>
-                <div class="separator"></div>
 
-                <!-- bids result status -->
-                <div class="row">
-                    <div class="col-12 col-lg-6">
-                        <div class="row">
-                            <div class="col-12">
-                                <label class="form-label">{% trans 'Bids result' %}</label>
+                <div class="tab-pane fade" id="tab_result" disabled>
+
+                    <!-- other bidder -->
+                    <div>
+                        <div class="row mb-4">
+                            <div class="col-12 col-lg-10">
+                                <label class="form-label fs-5" for="datatable-bidder">{% trans 'Other Bidder' %}</label>
+                            </div>
+                            <div class="col-12 col-lg-2 text-right">
+                                <button class="btn btn-outline-primary" type="button" id="btn-save-result" disabled>
+                                    <span>
+                                        <span>{% trans 'Save result' %}</span>
+                                        <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+                                    </span>
+                                </button>
                             </div>
                         </div>
-                        <div class="form-group">
+
+                        <table
+                                id="datatable-bidder"
+                                class="table nowrap w-100"
+                        >
+                            <thead>
+                                <tr class="bg-light">
+                                    <th class="w-5"></th>
+                                    <th class="w-15">{% trans 'Partner Code' %}</th>
+                                    <th class="w-65">{% trans 'Partner Name' %}</th>
+                                    <th class="w-5">{% trans 'Won' %}</th>
+                                    <th class="w-10">{% trans 'Action' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <button disabled type="button" class="btn btn-outline-primary" id="btn-open-bidder-modal"
+                                data-bs-toggle="modal" data-bs-target="#modal-account">
+                            <span>
+                                <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                                <span>{% trans 'Add' %}</span>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="separator"></div>
+
+                    <!-- bids result status -->
+                    <div class="row">
+                        <div class="col-12 col-lg-6">
                             <div class="row">
-                                <div class="col-6 mt-lg-3">
-                                    <div class="form-check">
-                                        <input disabled class="form-check-input" type="radio" name="bid_status" id="bid-status-won" value="1">
-                                        <label class="form-check-label" for="bid-status-won">
-                                            Won
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-6 mt-lg-3">
-                                    <div class="form-check">
-                                        <input disabled class="form-check-input" type="radio" name="bid_status" id="bid-status-lost" value="2">
-                                        <label class="form-check-label" for="bid-status-lost">
-                                            Lost
-                                        </label>
-                                    </div>
+                                <div class="col-12">
+                                    <label class="form-label">{% trans 'Bids result' %}</label>
                                 </div>
                             </div>
-                        </div >
-                    </div>
-                    <div class="col-12 col-lg-6" id="cause-of-lost" hidden>
-                        <div class="form-group">
-                            <label class="form-label" >{% trans 'Cause of lost' %}</label>
-                            <div class="form-check">
-                                <input disabled class="form-check-input" type="checkbox" id="cause-withdrawal" name="cause_of_lost" value="1">
-                                <label class="form-check-label" for="cause-withdrawal">{% trans 'Bids withdrawal' %}</label>
-                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-6 mt-lg-3">
+                                        <div class="form-check">
+                                            <input disabled class="form-check-input" type="radio" name="bid_status" id="bid-status-won" value="1">
+                                            <label class="form-check-label" for="bid-status-won">
+                                                Won
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 mt-lg-3">
+                                        <div class="form-check">
+                                            <input disabled class="form-check-input" type="radio" name="bid_status" id="bid-status-lost" value="2">
+                                            <label class="form-check-label" for="bid-status-lost">
+                                                Lost
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div >
+                        </div>
+                        <div class="col-12 col-lg-6" id="cause-of-lost" hidden>
+                            <div class="form-group">
+                                <label class="form-label" >{% trans 'Cause of lost' %}</label>
+                                <div class="form-check">
+                                    <input disabled class="form-check-input" type="checkbox" id="cause-withdrawal" name="cause_of_lost" value="1">
+                                    <label class="form-check-label" for="cause-withdrawal">{% trans 'Bids withdrawal' %}</label>
+                                </div>
 
-                            <div class="form-check">
-                                <input disabled class="form-check-input" type="checkbox" id="cause-price" name="cause_of_lost" value="2">
-                                <label class="form-check-label" for="cause-price">{% trans 'Higher bid price' %}</label>
-                            </div>
+                                <div class="form-check">
+                                    <input disabled class="form-check-input" type="checkbox" id="cause-price" name="cause_of_lost" value="2">
+                                    <label class="form-check-label" for="cause-price">{% trans 'Higher bid price' %}</label>
+                                </div>
 
-                            <div class="form-check">
-                                <input disabled class="form-check-input" type="checkbox" id="cause-non-compliance" name="cause_of_lost" value="3">
-                                <label class="form-check-label" for="cause-non-compliance">{% trans 'Non-compliance' %}</label>
-                            </div>
+                                <div class="form-check">
+                                    <input disabled class="form-check-input" type="checkbox" id="cause-non-compliance" name="cause_of_lost" value="3">
+                                    <label class="form-check-label" for="cause-non-compliance">{% trans 'Non-compliance' %}</label>
+                                </div>
 
-                             <div class="form-check">
-                                <input disabled class="form-check-input" type="checkbox" id="cause-other" name="cause_of_lost" value="4">
-                                <label class="form-check-label" for="cause-other">{% trans 'Other reasons' %}</label>
-                            </div>
+                                 <div class="form-check">
+                                    <input disabled class="form-check-input" type="checkbox" id="cause-other" name="cause_of_lost" value="4">
+                                    <label class="form-check-label" for="cause-other">{% trans 'Other reasons' %}</label>
+                                </div>
 
-                            <div class="form-group mt-2">
-                                <label class="form-check-label" for="cause-other-input" hidden></label>
-                                <input  id="cause-other-input" type="text" class="form-control" name="other_cause" placeholder="Please specify" disabled>
+                                <div class="form-group mt-2">
+                                    <label class="form-check-label" for="cause-other-input" hidden></label>
+                                    <input  id="cause-other-input" type="text" class="form-control" name="other_cause" placeholder="Please specify" disabled>
+                                </div>
                             </div>
                         </div>
                     </div>

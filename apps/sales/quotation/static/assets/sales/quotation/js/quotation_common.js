@@ -11,7 +11,6 @@ class QuotationLoadDataHandle {
     static $eleStoreDetail = $('#quotation-detail-data');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#app-url-factory');
-    static customerInitEle = $('#data-init-customer');
     static $priceModal = $('#selectPriceModal');
     static $btnSavePrice = $('#btn-save-select-price');
     static $costModal = $('#selectCostModal');
@@ -225,33 +224,6 @@ class QuotationLoadDataHandle {
                 }
             }
         }
-    };
-
-    static loadInitCustomer() {
-        let result = {};
-        let ele = QuotationLoadDataHandle.customerInitEle;
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-                'url': url,
-                'method': method,
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
-                        for (let customer of data.account_sale_list) {
-                            if (!result.hasOwnProperty(customer?.['id'])) {
-                                result[customer?.['id']] = customer;
-                            }
-                        }
-                        ele.val(JSON.stringify(result));
-                    }
-                }
-            }
-        )
     };
 
     static loadBoxQuotationCustomer(dataCustomer = {}) {
@@ -477,66 +449,9 @@ class QuotationLoadDataHandle {
         return {'is_pass': check, 'note_type': note_type};
     };
 
-    static loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
-        let ele = $('#data-init-copy-quotation');
-        let formSubmit = $('#frm_quotation_create');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $('#datable-copy-quotation').DataTable().destroy();
-        if (sale_person_id) {
-            let data_filter = {
-                'employee_inherit': sale_person_id,
-                'system_status__in': [2, 3].join(','),
-            };
-            WindowControl.showLoading();
-            $.fn.callAjax2({
-                    'url': url,
-                    'method': method,
-                    'data': data_filter,
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
-                            let dataInit = data.quotation_list;
-                            // check OppID to get canceled quotation in same Opp then concat 2 list data (only for Quotation pages)
-                            if (opp_id && !formSubmit[0].classList.contains('sale-order')) {
-                                data_filter = {'system_status': 4}
-                                data_filter['opportunity'] = opp_id;
-                                data_filter['opportunity__is_close_lost'] = false;
-                                data_filter['opportunity__is_deal_close'] = false;
-                                $.fn.callAjax2({
-                                        'url': url,
-                                        'method': method,
-                                        'data': data_filter,
-                                        'isDropdown': true,
-                                    }
-                                ).then(
-                                    (resp) => {
-                                        let data = $.fn.switcherResp(resp);
-                                        if (data) {
-                                            if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
-                                                let dataHasOpp = data.quotation_list.concat(dataInit);
-                                                QuotationDataTableHandle.dataTableCopyQuotation(dataHasOpp);
-                                                WindowControl.hideLoading();
-                                            }
-                                        }
-                                    }
-                                )
-                            } else {
-                                QuotationDataTableHandle.dataTableCopyQuotation(dataInit);
-                                WindowControl.hideLoading();
-                            }
-                        }
-                    }
-                }
-            )
-        } else {
-            QuotationDataTableHandle.dataTableCopyQuotation();
-            WindowControl.hideLoading();
-        }
+    static loadTableCopyQuotation() {
+        QuotationDataTableHandle.$tableQuotationCopy.DataTable().destroy();
+        QuotationDataTableHandle.dataTableCopyQuotation();
         return true;
     };
 
@@ -814,14 +729,11 @@ class QuotationLoadDataHandle {
     };
 
     static loadAPIDetailQuotation(select_id) {
-        let ele = $('#data-init-copy-quotation');
-        let url = ele.attr('data-url-detail').format_url_with_uuid(select_id);
-        let method = ele.attr('data-method');
         WindowControl.showLoading();
         $.fn.callAjax2(
             {
-                'url': url,
-                'method': method,
+                'url': QuotationLoadDataHandle.urlEle.attr('data-quotation-detail').format_url_with_uuid(select_id),
+                'method': "GET",
                 'isDropdown': true,
             }
         ).then(
@@ -3785,15 +3697,34 @@ class QuotationDataTableHandle {
         }
     };
 
-    static dataTableCopyQuotation(data) {
+    static dataTableCopyQuotation() {
         // init dataTable
-        QuotationDataTableHandle.$tableQuotationCopy.DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
+        let params = {
+            'employee_inherit': QuotationLoadDataHandle.salePersonSelectEle.val(),
+            'system_status__in': [2, 3].join(','),
+        }
+        if (!QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+            params = {
+                'employee_inherit': QuotationLoadDataHandle.salePersonSelectEle.val(),
+                'system_status__in': [2, 3, 4].join(','),
+            }
+        }
+        QuotationDataTableHandle.$tableQuotationCopy.not('.dataTable').DataTableDefault({
+            useDataServer: true,
+            ajax: {
+                url: QuotationLoadDataHandle.urlEle.attr('data-quotation'),
+                type: "GET",
+                data: params,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('quotation_list')) {
+                        return resp.data['quotation_list'] ? resp.data['quotation_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
             autoWidth: true,
             scrollX: true,
-            scrollY: "400px",
             columns: [
                 {
                     targets: 0,

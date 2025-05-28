@@ -455,7 +455,7 @@ class LogController {
                     let img = `<img src="/static/assets/images/systems/bot_4712104.png" alt="BflowBot"/>`;
                     let name = "BflowBot";
                     if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                        img = `<i class="fas fa-user-circle"></i>`;
+                        img = `<i class="fas fa-user-circle fs-4 text-blue"></i>`;
                         name = itemLog['actor_data']?.['full_name'];
                     }
                     childLogHTML += `<div class="d-flex align-items-center">

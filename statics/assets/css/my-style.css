@@ -1338,3 +1338,30 @@ table.dataTable tr.dtrg-group th {
 .auto-code-field {
     animation: gradientBorder 2s infinite alternate;
 }
+
+/* -- Animation button */
+
+@keyframes glowing {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.glow-gradient {
+  background: linear-gradient(270deg, #6a5acd, #00bcd4, #6a5acd);
+  /*background: linear-gradient(270deg, #8e2de2, #4a00e0, #00ffe7, #8e2de2);*/
+  background-size: 600% 600%;
+  animation: glowing 3s ease infinite;
+  color: white;
+  border: none;
+  transition: all 0.3s ease-in-out;
+}
+
+
+

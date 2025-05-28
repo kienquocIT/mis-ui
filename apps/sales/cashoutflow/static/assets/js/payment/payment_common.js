@@ -1,116 +1,167 @@
-const initEmployee = JSON.parse($('#employee_current').text());
-const script_trans = $('#script-trans')
-const script_url = $('#script-url')
-const creatorEle = $('#creator-select-box')
-const supplierEle = $('#supplier-select-box')
-const employeeEle = $('#employee-select-box')
-const tableLineDetail = $('#tab_line_detail_datatable')
-const AP_db = $('#advance_payment_list_datatable')
-const quotation_mapped_select = $('#quotation_mapped_select')
-const sale_order_mapped_select = $('#sale_order_mapped_select')
-const opp_mapped_select = $('#opportunity_id')
-const tab_plan_datatable = $('#tab_plan_datatable')
-const offcanvasRightLabel = $('#offcanvasRightLabel')
-const checkbox_internal = $('#internal')
-const supplier_label = $('#supplier-label')
-const employee_label = $('#employee-label')
-const employee_detail_span = $('#employee-detail-span')
-const supplier_detail_span = $('#supplier-detail-span')
-let current_value_converted_from_ap = '';
-let AP_filter = null
-let DETAIL_DATA = null
-let payment_for = null
-
-class PaymentLoadPage {
-    static LoadCreatedDate() {
-        $('#created_date_id').daterangepicker({
-            singleDatePicker: true,
-            timePicker: false,
-            showDropdowns: true,
-            autoApply: true,
-            minYear: parseInt(moment().format('YYYY')),
-            minDate: new Date(parseInt(moment().format('YYYY')), parseInt(moment().format('MM'))-1, parseInt(moment().format('DD'))),
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            "cancelClass": "btn-secondary",
-            maxYear: parseInt(moment().format('YYYY')) + 100,
-        }).prop('disabled', true);
+/**
+ * Khai báo các element trong page
+ */
+class PaymentPageElements {
+    constructor() {
+        this.$script_trans = $('#script-trans')
+        this.$script_url = $('#script-url')
+        this.$opportunity_id = $('#opportunity_id')
+        this.$employee_inherit_id = $('#employee_inherit_id')
+        this.$quotation_mapped_select = $('#quotation_mapped_select')
+        this.$sale_order_mapped_select = $('#sale_order_mapped_select')
+        this.$title = $('#title')
+        this.$payment_type = $('#payment_type')
+        this.$supplier_id = $('#supplier_id')
+        this.$employee_payment_id = $('#employee_payment_id')
+        this.$payment_method = $('#payment-method')
+        this.$bank_info = $('#bank-info')
+        this.$bank_account_table = $('#bank-account-table')
+        this.$accept_bank_account_btn = $('#accept-bank-account-btn')
+        this.$date_created = $('#date_created')
+        this.$employee_created = $('#employee_created')
+        // tab
+        this.$table_line_detail = $('#table_line_detail')
+        this.$table_plan = $('#table_plan')
+        this.$advance_payment_list_datatable = $('#advance_payment_list_datatable')
+        this.$offcanvasRightLabel = $('#offcanvasRightLabel')
     }
-    static LoadCreator(data) {
-        creatorEle.val(data?.['full_name']).prop('readonly', true).prop('disabled', true)
-        let btn_detail = $('#btn-detail-creator-tab');
-        $('#creator-detail-span').prop('hidden', false);
-        $('#creator-name').text(data?.['full_name']);
-        $('#creator-code').text(data?.['code']);
-        $('#creator-department').text(data?.['group']?.['title']);
-        let url = btn_detail.attr('data-url').replace('0', data?.['id']);
-        btn_detail.attr('href', url);
+}
+const pageElements = new PaymentPageElements()
+
+/**
+ * Khai báo các biến sử dụng trong page
+ */
+class PaymentPageVariables {
+    constructor() {
+        this.current_value_converted_from_ap = ''
+        this.AP_filter = null
+        this.DETAIL_DATA = null
+        this.payment_for = null
+    }
+}
+const pageVariables = new PaymentPageVariables()
+
+/**
+ * Các hàm load page và hàm hỗ trợ
+ */
+class PaymentPageFunction {
+    static LoadTableBankAccount(data_list=[]) {
+        pageElements.$bank_account_table.DataTable().clear().destroy()
+        pageElements.$bank_account_table.DataTableDefault({
+            styleDom: 'hide-foot',
+            scrollY: '70vh',
+            scrollCollapse: true,
+            rowIdx: true,
+            paging: false,
+            data: data_list,
+            columns: [
+                {
+                    className: 'w-5',
+                    render: () => {
+                        return ''
+                    }
+                },
+                {
+                    className: 'w-5 text-center',
+                    render: (data, type, row) => {
+                        return `<div class="form-check"><input class="form-check-input bank_account_selected" name="bank_account_selected" type="radio"></div>`
+                    }
+                },
+                {
+                    className: 'w-90',
+                    render: (data, type, row) => {
+                        if (row?.['manual']) {
+                            return `<div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Bank name')}:</label><div class="col-9"><input class="form-control fw-bold bank_name"></div></div>
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account name')}:</label><div class="col-9"><input class="form-control fw-bold bank_account_name"></div></div>
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account number')}:</label><div class="col-9"><input class="form-control fw-bold bank_account_number"></div></div>`
+                        }
+                        return `${row?.['is_default'] ? `<span class="text-blue small">(${$.fn.gettext('Default')})</span><br>` : ''}
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Bank name')}:</label><div class="col-9"><input disabled readonly class="form-control fw-bold bank_name" value="${row?.['bank_name'] || ''}"></div></div>
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account name')}:</label><div class="col-9"><input disabled readonly class="form-control fw-bold bank_account_name" value="${row?.['bank_account_name'] || ''}"></div></div>
+                                    <div class="row mb-1"><label class="form-label col-form-label col-3">${$.fn.gettext('Account number')}:</label><div class="col-9"><input disabled readonly class="form-control fw-bold bank_account_number" value="${row?.['bank_account_number'] || ''}"></div></div>`
+                    }
+                },
+            ],
+            initComplete: function () {
+                UsualLoadPageFunction.AddTableRow(
+                    pageElements.$bank_account_table,
+                    {'manual': true}
+                )
+                let row_added = pageElements.$bank_account_table.find('tbody tr:last-child')
+                row_added.addClass('bg-primary-light-5')
+            }
+        })
     }
     static LoadQuotation(data) {
-        quotation_mapped_select.initSelect2({
+        pageElements.$quotation_mapped_select.initSelect2({
             allowClear: true,
             ajax: {
-                url: quotation_mapped_select.attr('data-url'),
+                url: pageElements.$quotation_mapped_select.attr('data-url'),
                 method: 'GET',
+            },
+            templateResult: function (state) {
+                return $(`<span class="badge badge-soft-primary mr-2">${state.data?.['code']}</span><span>${state.data?.['title']}</span>`);
             },
             data: (data ? data : null),
             keyResp: 'quotation_list',
             keyId: 'id',
             keyText: 'code',
         }).on('change', function () {
-            opp_mapped_select.empty();
-            sale_order_mapped_select.empty();
-            if (quotation_mapped_select.val()) {
-                opp_mapped_select.prop('disabled', true)
-                sale_order_mapped_select.prop('disabled', true)
-                let selected = SelectDDControl.get_data_from_idx(quotation_mapped_select, quotation_mapped_select.val())
-                PaymentLoadPage.LoadSaleOrder(selected?.['sale_order'])
-                PaymentLoadTab.LoadPlanQuotationOnly($(this).val())
-                payment_for = 'quotation'
+            pageElements.$opportunity_id.empty();
+            pageElements.$sale_order_mapped_select.empty();
+            if (pageElements.$quotation_mapped_select.val()) {
+                pageElements.$opportunity_id.prop('disabled', true)
+                pageElements.$sale_order_mapped_select.prop('disabled', true)
+                let selected = SelectDDControl.get_data_from_idx(pageElements.$quotation_mapped_select, pageElements.$quotation_mapped_select.val())
+                PaymentPageFunction.LoadSaleOrder(selected?.['sale_order'])
+                PaymentPageFunction.LoadPlanQuotationOnly($(this).val())
+                pageVariables.payment_for = 'quotation'
             }
             else {
-                opp_mapped_select.prop('disabled', false)
-                sale_order_mapped_select.prop('disabled', false)
-                payment_for = null
-                PaymentLoadTab.DrawTablePlan()
+                pageElements.$opportunity_id.prop('disabled', false)
+                pageElements.$sale_order_mapped_select.prop('disabled', false)
+                pageVariables.payment_for = null
+                PaymentPageFunction.DrawTablePlan()
             }
         })
     }
     static LoadSaleOrder(data) {
-        sale_order_mapped_select.initSelect2({
+        pageElements.$sale_order_mapped_select.initSelect2({
             allowClear: true,
             ajax: {
-                url: sale_order_mapped_select.attr('data-url'),
+                url: pageElements.$sale_order_mapped_select.attr('data-url'),
                 method: 'GET',
+            },
+            templateResult: function (state) {
+                return $(`<span class="badge badge-soft-primary mr-2">${state.data?.['code']}</span><span>${state.data?.['title']}</span>`);
             },
             data: (data ? data : null),
             keyResp: 'sale_order_list',
             keyId: 'id',
             keyText: 'code',
         }).on('change', function () {
-            opp_mapped_select.empty()
-            quotation_mapped_select.empty()
-            if (sale_order_mapped_select.val()) {
-                opp_mapped_select.prop('disabled', true)
-                quotation_mapped_select.prop('disabled', true)
-                let selected = SelectDDControl.get_data_from_idx(sale_order_mapped_select, sale_order_mapped_select.val())
-                PaymentLoadPage.LoadQuotation(selected?.['quotation'])
-                PaymentLoadTab.LoadPlanSaleOrderOnly($(this).val())
-                payment_for = 'saleorder'
+            pageElements.$opportunity_id.empty()
+            pageElements.$quotation_mapped_select.empty()
+            if (pageElements.$sale_order_mapped_select.val()) {
+                pageElements.$opportunity_id.prop('disabled', true)
+                pageElements.$quotation_mapped_select.prop('disabled', true)
+                let selected = SelectDDControl.get_data_from_idx(pageElements.$sale_order_mapped_select, pageElements.$sale_order_mapped_select.val())
+                PaymentPageFunction.LoadQuotation(selected?.['quotation'])
+                PaymentPageFunction.LoadPlanSaleOrderOnly($(this).val())
+                pageVariables.payment_for = 'saleorder'
             }
             else {
-                opp_mapped_select.prop('disabled', false)
-                quotation_mapped_select.prop('disabled', false)
-                payment_for = null
-                PaymentLoadTab.DrawTablePlan()
+                pageElements.$opportunity_id.prop('disabled', false)
+                pageElements.$quotation_mapped_select.prop('disabled', false)
+                pageVariables.payment_for = null
+                PaymentPageFunction.DrawTablePlan()
             }
         })
     }
     static LoadEmployee(data) {
-        employeeEle.initSelect2({
+        pageElements.$employee_payment_id.initSelect2({
             ajax: {
-                url: employeeEle.attr('data-url'),
+                url: pageElements.$employee_payment_id.attr('data-url'),
                 method: 'GET',
             },
             data: (data ? data : null),
@@ -125,21 +176,12 @@ class PaymentLoadPage {
             keyResp: 'employee_list',
             keyId: 'id',
             keyText: 'full_name',
-        }).on('change', function () {
-            let employee_selected = SelectDDControl.get_data_from_idx(employeeEle, employeeEle.val())
-            let btn_detail = $('#btn-detail-employee-tab');
-            employee_detail_span.prop('hidden', false);
-            $('#employee-name').text(employee_selected?.['full_name'])
-            $('#employee-code').text(employee_selected?.['code']);
-            $('#employee-department').text(employee_selected?.['group']['title']);
-            let url = btn_detail.attr('data-url').replace('0', employee_selected?.['id']);
-            btn_detail.attr('href', url);
         })
     }
     static LoadSupplier(data) {
-        supplierEle.initSelect2({
+        pageElements.$supplier_id.initSelect2({
             ajax: {
-                url: supplierEle.attr('data-url'),
+                url: pageElements.$supplier_id.attr('data-url'),
                 method: 'GET',
             },
             data: (data ? data : null),
@@ -147,92 +189,11 @@ class PaymentLoadPage {
             keyId: 'id',
             keyText: 'name',
         }).on('change', function () {
-            let obj_selected = JSON.parse($('#' + supplierEle.attr('data-idx-data-loaded')).text())[supplierEle.val()];
-            PaymentLoadPage.LoadInforSupplier(obj_selected);
-            PaymentLoadTab.LoadBankInfo(obj_selected?.['bank_accounts_mapped']);
+            if ($(this).val()) {
+                let supplier_selected = SelectDDControl.get_data_from_idx(pageElements.$supplier_id, pageElements.$supplier_id.val())
+                PaymentPageFunction.LoadTableBankAccount(supplier_selected?.['bank_accounts_mapped'] || [])
+            }
         })
-    }
-    static LoadInforSupplier(data) {
-        let btn_detail = $('#btn-detail-supplier-tab');
-        supplier_detail_span.prop('hidden', false);
-        $('#supplier-name').text(data?.['name']);
-        $('#supplier-code').text(data?.['code']);
-        $('#supplier-owner').text(data?.['owner']?.['fullname']);
-        $('#supplier-industry').text(data?.['industry']?.['title']);
-        let url = btn_detail.attr('data-url').replace('0', data?.['id']);
-        btn_detail.attr('href', url);
-    }
-}
-
-class PaymentAction {
-    static ReadMoneyVND(num) {
-        let xe0 = [
-            '',
-            'một',
-            'hai',
-            'ba',
-            'bốn',
-            'năm',
-            'sáu',
-            'bảy',
-            'tám',
-            'chín'
-        ]
-        let xe1 = [
-            '',
-            'mười',
-            'hai mươi',
-            'ba mươi',
-            'bốn mươi',
-            'năm mươi',
-            'sáu mươi',
-            'bảy mươi',
-            'tám mươi',
-            'chín mươi'
-        ]
-        let xe2 = [
-            '',
-            'một trăm',
-            'hai trăm',
-            'ba trăm',
-            'bốn trăm',
-            'năm trăm',
-            'sáu trăm',
-            'bảy trăm',
-            'tám trăm',
-            'chín trăm'
-        ]
-
-        let result = ""
-        let str_n = String(num)
-        let len_n = str_n.length
-
-        if (len_n === 1) {
-            result = xe0[num]
-        }
-        else if (len_n === 2) {
-            if (num === 10) {
-                result = "mười"
-            }
-            else {
-                result = xe1[parseInt(str_n[0])] + " " + xe0[parseInt(str_n[1])]
-            }
-        }
-        else if (len_n === 3) {
-            result = xe2[parseInt(str_n[0])] + " " + PaymentAction.ReadMoneyVND(parseInt(str_n.substring(1, len_n)))
-        }
-        else if (len_n <= 6) {
-            result = PaymentAction.ReadMoneyVND(parseInt(str_n.substring(0, len_n - 3))) + " nghìn " + PaymentAction.ReadMoneyVND(parseInt(str_n.substring(len_n - 3, len_n)))
-        }
-        else if (len_n <= 9) {
-            result = PaymentAction.ReadMoneyVND(parseInt(str_n.substring(0, len_n - 6))) + " triệu " + PaymentAction.ReadMoneyVND(parseInt(str_n.substring(len_n - 6, len_n)))
-        }
-        else if (len_n <= 12) {
-            result = PaymentAction.ReadMoneyVND(parseInt(str_n.substring(0, len_n - 9))) + " tỷ " + PaymentAction.ReadMoneyVND(parseInt(str_n.substring(len_n - 9, len_n)))
-        }
-
-        result = String(result.trim())
-        return result;
     }
     static ChangeRowPrice(tr) {
         if (!$('#free-input').prop('checked')) {
@@ -257,8 +218,8 @@ class PaymentAction {
                 subtotal_after_tax.attr('value', 0);
             }
         }
-        PaymentAction.CheckAndOpenExpandRow(tr)
-        PaymentAction.CalculateTotalPrice();
+        PaymentPageFunction.CheckAndOpenExpandRow(tr)
+        PaymentPageFunction.CalculateTotalPrice();
         $.fn.initMaskMoney2();
     }
     static CalculateTotalPrice() {
@@ -266,7 +227,7 @@ class PaymentAction {
         let sum_tax = 0;
         let sum_subtotal_price_after_tax = 0;
 
-        tableLineDetail.find('tbody tr').each(function (index, ele) {
+        pageElements.$table_line_detail.find('tbody tr').each(function (index, ele) {
             let tr = $(ele)
             let subtotal = tr.find('.expense-subtotal-price')
             let subtotal_after_tax = tr.find('.expense-subtotal-price-after-tax')
@@ -285,7 +246,7 @@ class PaymentAction {
         $('#pretax-value').attr('value', sum_subtotal.toFixed(0));
         $('#taxes-value').attr('value', sum_tax.toFixed(0));
         $('#total-value').attr('value', sum_subtotal_price_after_tax.toFixed(0));
-        let total_value_by_words = PaymentAction.ReadMoneyVND(sum_subtotal_price_after_tax.toFixed(0)) + ' đồng'
+        let total_value_by_words = UsualLoadPageFunction.ReadMoneyVND(sum_subtotal_price_after_tax) + ' đồng'
         total_value_by_words = total_value_by_words.charAt(0).toUpperCase() + total_value_by_words.slice(1)
         if (total_value_by_words[total_value_by_words.length - 1] === ',') {
             total_value_by_words = total_value_by_words.substring(0, total_value_by_words.length - 1) + ' đồng'
@@ -326,8 +287,8 @@ class PaymentAction {
             if (detail_converted_html) {
                 detail_converted_html_full = `<div class="btn-group" role="group">
                     <button data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                            class="btn border rounded btn-icon btn-flush-primary flush-soft-hover" type="button">
-                        <span class="icon"><i class="bi bi-chevron-down text-primary"></i></span>
+                            class="btn btn-rounded btn-icon btn-light" type="button">
+                        <span class="icon"><i class="bi bi-chevron-down"></i></span>
                     </button>
                     <div class="dropdown-menu">
                         ${detail_converted_html}
@@ -338,7 +299,7 @@ class PaymentAction {
         return `<div class="row">
                     <div class="col-4">
                         <div class="row">
-                            <label class="col-3 col-form-label">${script_trans.attr('data-trans-payment-value')}</label>
+                            <label class="col-3 col-form-label">${pageElements.$script_trans.attr('data-trans-payment-value')}</label>
                             <div class="col-7">
                                 <input class="value-inp form-control form-control-line mask-money text-primary text-right" value="${data_row?.['real_value'] ? data_row?.['real_value'] : 0}">
                             </div>
@@ -348,7 +309,7 @@ class PaymentAction {
                 <div class="row">
                     <div class="col-4">
                         <div class="row">
-                            <label class="col-3 col-form-label">${script_trans.attr('data-trans-converted-from-ap')}</label>
+                            <label class="col-3 col-form-label">${pageElements.$script_trans.attr('data-trans-converted-from-ap')}</label>
                             <div class="col-7">
                                 <input class="value-converted-from-ap-inp form-control form-control-line mask-money text-primary text-right" value="${data_row?.['converted_value'] ? data_row?.['converted_value'] : 0}" disabled readonly>
                             </div>
@@ -357,9 +318,9 @@ class PaymentAction {
                                     <button data-bs-toggle="offcanvas"
                                             data-bs-target="#offcanvasSelectDetailAP"
                                             aria-controls="offcanvasExample"
-                                            class="mr-1 btn border rounded btn-icon btn-flush-primary flush-soft-hover btn-add-payment-value"
+                                            class="mr-1 btn btn-rounded btn-icon btn-soft-primary btn-add-payment-value"
                                             type="button">
-                                        <span class="icon"><i class="bi bi-pencil-square text-primary"></i></span>
+                                        <span class="icon"><i class="bi bi-pencil-square"></i></span>
                                     </button>
                                     ${detail_converted_html_full}
                                 </div>
@@ -370,7 +331,7 @@ class PaymentAction {
                 <div class="row">
                     <div class="col-4">
                         <div class="row">
-                            <label class="col-3 col-form-label">${script_trans.attr('data-trans-sum')}</label>
+                            <label class="col-3 col-form-label">${pageElements.$script_trans.attr('data-trans-sum')}</label>
                             <div class="col-7">
                                 <input class="total-value-salecode-item form-control form-control-line mask-money text-primary text-right" value="${data_row?.['sum_value'] ? data_row?.['sum_value'] : 0}" disabled readonly>
                             </div>
@@ -394,17 +355,17 @@ class PaymentAction {
         let this_uom = row.find('.expense-uom-input').val()
         let this_document_number = row.find('.expense-document-number').val()
         if (this_product_item && this_quantity > 0 && this_after_tax_subtotal > 0 && this_uom && this_document_number) {
-            PaymentAction.AddExpandRow(row, data)
+            PaymentPageFunction.AddExpandRow(row, data)
         }
         else {
-            PaymentAction.RemoveExpandRow(row)
+            PaymentPageFunction.RemoveExpandRow(row)
         }
     }
     static AddExpandRow(tr, data) {
         tr.find('.hide-expand-row-btn').prop('disabled', false)
-        let row = tableLineDetail.DataTable().row(tr);
+        let row = pageElements.$table_line_detail.DataTable().row(tr);
         if (!row.child.isShown()) {
-            row.child(PaymentAction.ExpandRowFormat(data)).show();
+            row.child(PaymentPageFunction.ExpandRowFormat(data)).show();
             tr.next().attr('class', `row-detail-product-${tr.find('td:eq(0)').text()}`)
             tr.addClass('shown');
         }
@@ -412,41 +373,22 @@ class PaymentAction {
     }
     static RemoveExpandRow(tr) {
         tr.find('.hide-expand-row-btn').prop('disabled', true)
-        let row = tableLineDetail.DataTable().row(tr);
+        let row = pageElements.$table_line_detail.DataTable().row(tr);
         if (row.child.isShown()) {
             row.child.hide();
             tr.removeClass('shown');
         }
         $.fn.initMaskMoney2()
     }
-    static AddRow(table, data) {
-        table.DataTable().row.add(data).draw();
-    }
-    static DeleteRow(table, currentRow) {
-        currentRow = parseInt(currentRow) - 1
-        let rowIndex = table.DataTable().row(currentRow).index();
-        let row = table.DataTable().row(rowIndex);
-        row.remove().draw();
-    }
-    static DisabledDetailPage(option) {
-        if (option === 'detail') {
-            $('form input').prop('disabled', true).prop('readonly', true)
-            $('form select').prop('disabled', true)
-            $('#btn-add-row-line-detail').prop('disabled', true);
-        }
-    }
-}
-
-class PaymentLoadTab {
     // line detail
     static DrawLineDetailTable(data_list = [], option = 'create') {
-        tableLineDetail.DataTable().clear().destroy()
-        tableLineDetail.DataTableDefault({
+        pageElements.$table_line_detail.DataTable().clear().destroy()
+        pageElements.$table_line_detail.DataTableDefault({
             dom: 't',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollY: '40vh',
+            scrollY: '50vh',
             scrollX: true,
             scrollCollapse: true,
             data: data_list,
@@ -475,12 +417,16 @@ class PaymentLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-uom-input" value="${row?.['expense_uom_name'] ? row?.['expense_uom_name'] : ''}">`;
-                    }
-                },
-                {
-                    'render': (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled readonly' : ''} type="number" min="1" class="form-control expense_quantity" value="${row?.['expense_quantity'] ? row?.['expense_quantity'] : '1'}">`;
+                        return `<div class="input-group">
+                                    <div class="row g-1">
+                                        <div class="col-5">
+                                            <input ${option === 'detail' ? 'disabled readonly' : ''} type="number" min="1" class="form-control expense_quantity" value="${row?.['expense_quantity'] ? row?.['expense_quantity'] : 1}">
+                                        </div>
+                                        <div class="col-7">
+                                            <input ${option === 'detail' ? 'disabled readonly' : ''} class="form-control expense-uom-input" value="${row?.['expense_uom_name'] ? row?.['expense_uom_name'] : ''}" placeholder="${$.fn.gettext('input UOM...')}">
+                                        </div>
+                                    </div>
+                                </div>`
                     }
                 },
                 {
@@ -490,12 +436,12 @@ class PaymentLoadTab {
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-tax-select-box"></select>`;
+                        return `<input class="form-control expense-subtotal-price mask-money" ${$('#free-input').prop('checked') ? '' : 'readonly disabled'} value="${row?.['expense_subtotal_price'] ? row?.['expense_subtotal_price'] : '0'}">`;
                     }
                 },
                 {
                     'render': (data, type, row) => {
-                        return `<input class="form-control expense-subtotal-price mask-money" ${$('#free-input').prop('checked') ? '' : 'readonly disabled'} value="${row?.['expense_subtotal_price'] ? row?.['expense_subtotal_price'] : '0'}">`;
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 expense-tax-select-box"></select>`;
                     }
                 },
                 {
@@ -509,23 +455,24 @@ class PaymentLoadTab {
                     }
                 },
                 {
+                    className: 'text-right',
                     'render': () => {
-                        return `
-                            <button ${option === 'detail' ? 'disabled' : ''} class="btn-del-line-detail btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="bi bi-dash-circle"></i></span></button>
-                        `;
+                        return `<button type='button' ${option === 'detail' ? 'disabled' : ''} class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs btn-del-line-detail">
+                                    <span class="icon"><i class="fas fa-trash"></i></span>
+                                </button>`;
                     }
                 },
             ],
             initComplete: function () {
                 if (data_list.length > 0) {
-                    tableLineDetail.find('tbody tr').each(function (index) {
+                    pageElements.$table_line_detail.find('tbody tr').each(function (index) {
                         $(this).attr('id', `row-${index+1}`)
-                        PaymentLoadTab.LoadExpenseItem($(this).find('.expense-type-select-box'), data_list[index]?.['expense_type'])
-                        PaymentLoadTab.LoadTax($(this).find('.expense-tax-select-box'), data_list[index]?.['expense_tax'])
-                        PaymentAction.CheckAndOpenExpandRow($(this), data_list[index])
+                        PaymentPageFunction.LoadExpenseItem($(this).find('.expense-type-select-box'), data_list[index]?.['expense_type'])
+                        PaymentPageFunction.LoadTax($(this).find('.expense-tax-select-box'), data_list[index]?.['expense_tax'])
+                        PaymentPageFunction.CheckAndOpenExpandRow($(this), data_list[index])
                         $('.btn-add-payment-value').prop('disabled', option==='detail');
                     })
-                    PaymentAction.CalculateTotalPrice();
+                    PaymentPageFunction.CalculateTotalPrice();
                 }
             }
         });
@@ -533,7 +480,7 @@ class PaymentLoadTab {
     static LoadExpenseItem(ele, data) {
         ele.initSelect2({
             ajax: {
-                url: tableLineDetail.attr('data-url-expense-type-list'),
+                url: pageElements.$table_line_detail.attr('data-url-expense-type-list'),
                 method: 'GET',
             },
             data: (data ? data : null),
@@ -541,14 +488,14 @@ class PaymentLoadTab {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            PaymentAction.CheckAndOpenExpandRow($(this).closest('tr'))
+            PaymentPageFunction.CheckAndOpenExpandRow($(this).closest('tr'))
         })
     }
     static LoadTax(ele, data) {
         ele.initSelect2({
             allowClear: true,
             ajax: {
-                url: tableLineDetail.attr('data-url-tax-list'),
+                url: pageElements.$table_line_detail.attr('data-url-tax-list'),
                 method: 'GET',
             },
             data: (data ? data : null),
@@ -558,23 +505,22 @@ class PaymentLoadTab {
         })
     }
     static LoadAPList() {
-        AP_db.DataTable().clear().destroy();
         let current_sale_code = []
-        if (DETAIL_DATA) {
-            if (DETAIL_DATA?.['opportunity']) {
-                current_sale_code.push(DETAIL_DATA?.['opportunity']?.['id'])
-            } else if (DETAIL_DATA?.['quotation_mapped']) {
-                current_sale_code.push(DETAIL_DATA?.['quotation_mapped']?.['id'])
-            } else if (DETAIL_DATA?.['sale_order_mapped']) {
-                current_sale_code.push(DETAIL_DATA?.['sale_order_mapped']?.['id'])
+        if (pageVariables.DETAIL_DATA) {
+            if (pageVariables.DETAIL_DATA?.['opportunity']) {
+                current_sale_code.push(pageVariables.DETAIL_DATA?.['opportunity']?.['id'])
+            } else if (pageVariables.DETAIL_DATA?.['quotation_mapped']) {
+                current_sale_code.push(pageVariables.DETAIL_DATA?.['quotation_mapped']?.['id'])
+            } else if (pageVariables.DETAIL_DATA?.['sale_order_mapped']) {
+                current_sale_code.push(pageVariables.DETAIL_DATA?.['sale_order_mapped']?.['id'])
             }
         } else {
             const urlParams = new URLSearchParams(window.location.search);
             let type = urlParams.get('type');
             if (type) {
-                let opportunity = opp_mapped_select.val();
-                let quotation_mapped = quotation_mapped_select.val();
-                let sale_order_mapped = sale_order_mapped_select.val();
+                let opportunity = pageElements.$opportunity_id.val();
+                let quotation_mapped = pageElements.$quotation_mapped_select.val();
+                let sale_order_mapped = pageElements.$sale_order_mapped_select.val();
                 if (opportunity && type === '0') {
                     current_sale_code.push(opportunity)
                 } else if (quotation_mapped && type === '1') {
@@ -583,39 +529,42 @@ class PaymentLoadTab {
                     current_sale_code.push(sale_order_mapped)
                 }
             } else {
-                let opportunity = opp_mapped_select.val();
-                let quotation_mapped = quotation_mapped_select.val();
-                let sale_order_mapped = sale_order_mapped_select.val();
-                if (opportunity && opp_mapped_select.prop('disabled') === false) {
+                let opportunity = pageElements.$opportunity_id.val();
+                let quotation_mapped = pageElements.$quotation_mapped_select.val();
+                let sale_order_mapped = pageElements.$sale_order_mapped_select.val();
+                if (opportunity && pageElements.$opportunity_id.prop('disabled') === false) {
                     current_sale_code.push(opportunity)
-                } else if (quotation_mapped && quotation_mapped_select.prop('disabled') === false) {
+                } else if (quotation_mapped && pageElements.$quotation_mapped_select.prop('disabled') === false) {
                     current_sale_code.push(quotation_mapped)
-                } else if (sale_order_mapped && sale_order_mapped_select.prop('disabled') === false) {
+                } else if (sale_order_mapped && pageElements.$sale_order_mapped_select.prop('disabled') === false) {
                     current_sale_code.push(sale_order_mapped)
                 }
             }
         }
-    
-        AP_db.DataTableDefault({
-            reloadCurrency: true,
-            dom: "",
+
+        pageElements.$advance_payment_list_datatable.DataTable().clear().destroy();
+        pageElements.$advance_payment_list_datatable.DataTableDefault({
+            styleDom: 'hide-foot',
+            scrollY: '70vh',
+            scrollCollapse: true,
+            rowIdx: true,
             paging: false,
             ajax: {
-                url: AP_db.attr('data-url'),
-                type: AP_db.attr('data-method'),
+                url: pageElements.$advance_payment_list_datatable.attr('data-url'),
+                type: pageElements.$advance_payment_list_datatable.attr('data-method'),
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (resp.data['advance_payment_list']) {
                             let result = [];
-                            if (!AP_filter) {
+                            if (!pageVariables.AP_filter) {
                                 for (let i = 0; i < resp.data['advance_payment_list'].length; i++) {
                                     let item = resp.data['advance_payment_list'][i]
                                     let this_sale_code = []
                                     if (item?.['opportunity']?.['id']) this_sale_code = this_sale_code.concat(item?.['opportunity']?.['id'])
                                     if (item?.['quotation_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['quotation_mapped']?.['id'])
                                     if (item?.['sale_order_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['sale_order_mapped']?.['id'])
-                                    if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === $('#employee_inherit_id').val()) {
+                                    if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === pageElements.$employee_inherit_id.val()) {
                                         if (current_sale_code.length > 0 && this_sale_code.length > 0) {
                                             if (current_sale_code[0] === this_sale_code[0] && item?.['system_status'] === 3) {
                                                 result.push(item)
@@ -635,7 +584,7 @@ class PaymentLoadTab {
                                     if (item?.['opportunity']?.['id']) this_sale_code = this_sale_code.concat(item?.['opportunity']?.['id'])
                                     if (item?.['quotation_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['quotation_mapped']?.['id'])
                                     if (item?.['sale_order_mapped']?.['id']) this_sale_code = this_sale_code.concat(item?.['sale_order_mapped']?.['id'])
-                                    if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === $('#employee_inherit_id').val() && item?.['id'] === AP_filter) {
+                                    if (item?.['remain_value'] > 0 && item?.['employee_inherit']?.['id'] === pageElements.$employee_inherit_id.val() && item?.['id'] === pageVariables.AP_filter) {
                                         if (current_sale_code.length > 0 && this_sale_code.length > 0) {
                                             if (current_sale_code[0] === this_sale_code[0] && item?.['system_status'] === 3) {
                                                 result.push(item)
@@ -660,15 +609,32 @@ class PaymentLoadTab {
             },
             columns: [
                 {
+                    data: '',
+                        render: (data, type, row) => {
+                        return ``;
+                    }
+                },
+                {
+                    render: (data, type, row) => {
+                        let checked = '';
+                        let disabled = '';
+                        if (pageVariables.AP_filter) {
+                            checked = 'checked';
+                            disabled = 'disabled';
+                        }
+                        return `<div class="form-check"><input ${checked} ${disabled} data-id="${row.id}" class="form-check-input ap-selected" type="checkbox"></div>`
+                    }
+                },
+                {
                     data: 'code',
                         render: (data, type, row) => {
-                        return `<span class="badge badge-outline badge-soft-danger">` + row.code + `</span>`;
+                        return `<span class="fw-bold text-primary">${row.code}</span>`;
                     }
                 },
                 {
                     data: 'title',
                         render: (data, type, row) => {
-                        return `<span>` + row.title + `</span>`;
+                        return `<span class="text-primary">${row.title}</span>`;
                     }
                 },
                 {
@@ -680,24 +646,13 @@ class PaymentLoadTab {
                 {
                     data: 'return_value',
                         render: (data, type, row) => {
-                        return `<span class="text-primary mask-money" data-init-money="` + row.return_value + `"></span>`
+                        return `<span class="text-primary mask-money" data-init-money="${row.return_value}"></span>`
                     }
                 },
                 {
                     data: 'remain_value',
                         render: (data, type, row) => {
-                        return `<span class="text-primary mask-money" data-init-money="` + row.remain_value + `"></span>`
-                    }
-                },
-                {
-                    render: (data, type, row) => {
-                        let checked = '';
-                        let disabled = '';
-                        if (AP_filter) {
-                            checked = 'checked';
-                            disabled = 'disabled';
-                        }
-                        return `<input ${checked} ${disabled} data-id="` + row.id + `" class="ap-selected" type="checkbox">`
+                        return `<span class="text-primary mask-money" data-init-money="${row.remain_value}"></span>`
                     }
                 },
             ],
@@ -705,9 +660,9 @@ class PaymentLoadTab {
     }
     // plan
     static DrawTablePlan(data_list=[]) {
-        $('#notify-none-sale-code').prop('hidden', data_list.length > 0 && opp_mapped_select.val() || quotation_mapped_select.val() || sale_order_mapped_select.val())
-        tab_plan_datatable.DataTable().clear().destroy()
-        tab_plan_datatable.DataTableDefault({
+        $('#notify-none-sale-code').prop('hidden', data_list.length > 0 && pageElements.$opportunity_id.val() || pageElements.$quotation_mapped_select.val() || pageElements.$sale_order_mapped_select.val())
+        pageElements.$table_plan.DataTable().clear().destroy()
+        pageElements.$table_plan.DataTableDefault({
             styleDom: 'hide-foot',
             rowIdx: true,
             reloadCurrency: true,
@@ -792,7 +747,7 @@ class PaymentLoadTab {
         if (opportunity_id && quotation_id) {
             let dataParam1 = {'quotation_id': quotation_id}
             let expense_quotation = $.fn.callAjax2({
-                url: script_url.attr('data-url-expense-quotation'),
+                url: pageElements.$script_url.attr('data-url-expense-quotation'),
                 data: dataParam1,
                 method: 'GET'
             }).then(
@@ -810,7 +765,7 @@ class PaymentLoadTab {
 
             let dataParam2 = {'opportunity_id': opportunity_id}
             let ap_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-ap-cost-list'),
+                url: pageElements.$script_url.attr('data-url-ap-cost-list'),
                 data: dataParam2,
                 method: 'GET'
             }).then(
@@ -828,7 +783,7 @@ class PaymentLoadTab {
 
             let dataParam3 = {'opportunity_id': opportunity_id}
             let payment_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-payment-cost-list'),
+                url: pageElements.$script_url.attr('data-url-payment-cost-list'),
                 data: dataParam3,
                 method: 'GET'
             }).then(
@@ -997,7 +952,7 @@ class PaymentLoadTab {
                         }
                     }
 
-                    PaymentLoadTab.DrawTablePlan(data_table_planned)
+                    PaymentPageFunction.DrawTablePlan(data_table_planned)
                     WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
@@ -1006,7 +961,7 @@ class PaymentLoadTab {
         if (opportunity_id && sale_order_id) {
             let dataParam1 = {'sale_order_id': sale_order_id}
             let expense_sale_order = $.fn.callAjax2({
-                url: script_url.attr('data-url-expense-sale-order'),
+                url: pageElements.$script_url.attr('data-url-expense-sale-order'),
                 data: dataParam1,
                 method: 'GET'
             }).then(
@@ -1024,7 +979,7 @@ class PaymentLoadTab {
 
             let dataParam2 = {'opportunity_id': opportunity_id}
             let ap_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-ap-cost-list'),
+                url: pageElements.$script_url.attr('data-url-ap-cost-list'),
                 data: dataParam2,
                 method: 'GET'
             }).then(
@@ -1042,7 +997,7 @@ class PaymentLoadTab {
 
             let dataParam3 = {'opportunity_id': opportunity_id}
             let payment_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-payment-cost-list'),
+                url: pageElements.$script_url.attr('data-url-payment-cost-list'),
                 data: dataParam3,
                 method: 'GET'
             }).then(
@@ -1211,7 +1166,7 @@ class PaymentLoadTab {
                         }
                     }
 
-                    PaymentLoadTab.DrawTablePlan(data_table_planned)
+                    PaymentPageFunction.DrawTablePlan(data_table_planned)
                     WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
@@ -1220,7 +1175,7 @@ class PaymentLoadTab {
         if (opportunity_id) {
             let dataParam1 = {'opportunity_id': opportunity_id}
             let ap_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-ap-cost-list'),
+                url: pageElements.$script_url.attr('data-url-ap-cost-list'),
                 data: dataParam1,
                 method: 'GET'
             }).then(
@@ -1238,7 +1193,7 @@ class PaymentLoadTab {
 
             let dataParam2 = {'opportunity_id': opportunity_id}
             let payment_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-payment-cost-list'),
+                url: pageElements.$script_url.attr('data-url-payment-cost-list'),
                 data: dataParam2,
                 method: 'GET'
             }).then(
@@ -1346,7 +1301,7 @@ class PaymentLoadTab {
                         }
                     }
 
-                    PaymentLoadTab.DrawTablePlan(data_table_planned)
+                    PaymentPageFunction.DrawTablePlan(data_table_planned)
                     WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
@@ -1355,7 +1310,7 @@ class PaymentLoadTab {
         if (quotation_id) {
             let dataParam1 = {'quotation_id': quotation_id}
             let expense_quotation = $.fn.callAjax2({
-                url: script_url.attr('data-url-expense-quotation'),
+                url: pageElements.$script_url.attr('data-url-expense-quotation'),
                 data: dataParam1,
                 method: 'GET'
             }).then(
@@ -1373,7 +1328,7 @@ class PaymentLoadTab {
 
             let dataParam2 = {'quotation_mapped_id': quotation_id}
             let ap_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-ap-cost-list'),
+                url: pageElements.$script_url.attr('data-url-ap-cost-list'),
                 data: dataParam2,
                 method: 'GET'
             }).then(
@@ -1391,7 +1346,7 @@ class PaymentLoadTab {
 
             let dataParam3 = {'quotation_mapped_id': quotation_id}
             let payment_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-payment-cost-list'),
+                url: pageElements.$script_url.attr('data-url-payment-cost-list'),
                 data: dataParam3,
                 method: 'GET'
             }).then(
@@ -1559,7 +1514,7 @@ class PaymentLoadTab {
                         }
                     }
 
-                    PaymentLoadTab.DrawTablePlan(data_table_planned)
+                    PaymentPageFunction.DrawTablePlan(data_table_planned)
                     WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
@@ -1568,7 +1523,7 @@ class PaymentLoadTab {
         if (sale_order_id) {
             let dataParam1 = {'sale_order_id': sale_order_id}
             let expense_sale_order = $.fn.callAjax2({
-                url: script_url.attr('data-url-expense-sale-order'),
+                url: pageElements.$script_url.attr('data-url-expense-sale-order'),
                 data: dataParam1,
                 method: 'GET'
             }).then(
@@ -1586,7 +1541,7 @@ class PaymentLoadTab {
 
             let dataParam2 = {'sale_order_mapped_id': sale_order_id}
             let ap_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-ap-cost-list'),
+                url: pageElements.$script_url.attr('data-url-ap-cost-list'),
                 data: dataParam2,
                 method: 'GET'
             }).then(
@@ -1604,7 +1559,7 @@ class PaymentLoadTab {
 
             let dataParam3 = {'sale_order_mapped_id': sale_order_id}
             let payment_mapped_item = $.fn.callAjax2({
-                url: script_url.attr('data-url-payment-cost-list'),
+                url: pageElements.$script_url.attr('data-url-payment-cost-list'),
                 data: dataParam3,
                 method: 'GET'
             }).then(
@@ -1772,42 +1727,21 @@ class PaymentLoadTab {
                         }
                     }
 
-                    PaymentLoadTab.DrawTablePlan(data_table_planned)
+                    PaymentPageFunction.DrawTablePlan(data_table_planned)
                     WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
         }
     }
-    // bank info
-    static LoadBankInfo(data) {
-        if (data.length > 0) {
-            $('#notify-none-bank-account').prop('hidden', true)
-            let bank_cards = ``
-            for (let i = 0; i < data.length; i++) {
-                let bank_account = data[i];
-                bank_cards += `<div class="col-12 col-md-6 col-lg-3 mb-2">
-                    <div class="border border-secondary rounded p-3 min-h-200p">
-                        <div class="text-center"><i class="bi bi-bank"></i></div>
-                        ${bank_account?.['bank_account_name'] ? `<div class="bank_account_name text-muted text-center">${bank_account?.['is_default'] ? '<i class="text-blue fas fa-thumbtack fa-rotate-by" style="--fa-rotate-angle: -45deg;""></i>' : ''} <b>${bank_account?.['bank_account_name'].toUpperCase()}</b></div>` : ''}
-                        ${bank_account?.['bank_account_number'] ? `<div class="bank_account_number text-muted text-center mb-3">${script_trans.attr('data-trans-bank-account-no')}: <b>${bank_account?.['bank_account_number']}</b></div>` : ''}
-                        ${bank_account?.['bank_name'] ? `<div class="bank_name text-muted text-center">${script_trans.attr('data-trans-bank-name')}: <b>${bank_account?.['bank_name']}</b></div>` : ''}
-                        ${bank_account?.['bank_code'] ? `<div class="bank_code text-muted text-center">${script_trans.attr('data-trans-bank-code')}: <b>${bank_account?.['bank_code'].toUpperCase()}</b></div>` : ''}
-                        ${bank_account?.['bic_swift_code'] ? `<div class="bic_swift_code text-muted text-center">${script_trans.attr('data-trans-BICSWIFT-code')}: <b>${bank_account?.['bic_swift_code'].toUpperCase()}</b></div>` : ''}
-                    </div>
-                </div>`
-            }
-            $('#bank-account-table').append(`<div class="row">${bank_cards}</div>`)
-        }
-        else {
-            $('#notify-none-bank-account').prop('hidden', false)
-        }
-    }
 }
 
-class PaymentHandle {
+/**
+ * Khai báo các hàm chính
+ */
+class PaymentHandler {
     static LoadPageActionWithParams(opp_id) {
         let dataParam = {'id': opp_id}
         let opportunity_ajax = $.fn.callAjax2({
-            url: script_url.attr('data-url-opp-list'),
+            url: pageElements.$script_url.attr('data-url-opp-list'),
             data: dataParam,
             method: 'GET'
         }).then(
@@ -1828,170 +1762,100 @@ class PaymentHandle {
                 let opportunity_data = results[0];
                 if (opportunity_data) {
                     $('#opportunity_id').trigger('change')
-                    quotation_mapped_select.empty()
-                    sale_order_mapped_select.empty()
+                    pageElements.$quotation_mapped_select.empty()
+                    pageElements.$sale_order_mapped_select.empty()
                     if (opportunity_data?.['id']) {
                         if (opportunity_data?.['is_close']) {
                             $.fn.notifyB({description: `Opportunity ${opportunity_data?.['code']} has been closed. Can not select.`}, 'failure');
-                            opp_mapped_select.empty()
-                            payment_for = null
+                            pageElements.$opportunity_id.empty()
+                            pageVariables.payment_for = null
                         } else {
-                            sale_order_mapped_select.prop('disabled', true)
-                            quotation_mapped_select.prop('disabled', true)
+                            pageElements.$sale_order_mapped_select.prop('disabled', true)
+                            pageElements.$quotation_mapped_select.prop('disabled', true)
                             let quo_mapped = opportunity_data?.['quotation'];
                             let so_mapped = opportunity_data?.['sale_order'];
-                            PaymentLoadPage.LoadQuotation(quo_mapped)
-                            PaymentLoadPage.LoadSaleOrder(so_mapped);
+                            PaymentPageFunction.LoadQuotation(quo_mapped)
+                            PaymentPageFunction.LoadSaleOrder(so_mapped);
                             if (so_mapped?.['id']) {
-                                PaymentLoadTab.LoadPlanSaleOrder(opportunity_data?.['id'], so_mapped?.['id'])
+                                PaymentPageFunction.LoadPlanSaleOrder(opportunity_data?.['id'], so_mapped?.['id'])
                             }
                             else if (quo_mapped?.['id']) {
-                                PaymentLoadTab.LoadPlanQuotation(opportunity_data?.['id'], quo_mapped?.['id'])
+                                PaymentPageFunction.LoadPlanQuotation(opportunity_data?.['id'], quo_mapped?.['id'])
                             }
                             else {
-                                PaymentLoadTab.LoadPlanOppOnly(opportunity_data?.['id'])
+                                PaymentPageFunction.LoadPlanOppOnly(opportunity_data?.['id'])
                             }
-                            payment_for = 'opportunity'
+                            pageVariables.payment_for = 'opportunity'
                         }
                     } else {
-                        quotation_mapped_select.prop('disabled', false)
-                        sale_order_mapped_select.prop('disabled', false)
-                        payment_for = null
-                        PaymentLoadTab.DrawTablePlan()
+                        pageElements.$quotation_mapped_select.prop('disabled', false)
+                        pageElements.$sale_order_mapped_select.prop('disabled', false)
+                        pageVariables.payment_for = null
+                        PaymentPageFunction.DrawTablePlan()
                     }
                 }
             })
     }
-    static LoadPage(option='create') {
-        PaymentLoadPage.LoadCreatedDate()
-        PaymentLoadPage.LoadCreator(initEmployee)
-
-        if (option === "create") {
-                        const {
-                create_open, opp_id, opp_title, opp_code,
-                process_id, process_title, process_stage_app_id, process_stage_app_title,
-                inherit_id, inherit_title
-            } = $x.fn.getManyUrlParameters([
-                'create_open', 'opp_id', 'opp_title', 'opp_code',
-                'process_id', 'process_title', 'process_stage_app_id', 'process_stage_app_title',
-                'inherit_id', 'inherit_title'
-            ])
-            const group$ = $('#bastion-space')
-            if (create_open) {
-                const data_inherit = [{
-                    "id": inherit_id || '',
-                    "full_name": inherit_title || '',
-                    "selected": true,
-                }];
-                const data_opp = [{
-                    "id": opp_id || '',
-                    "title": opp_title || '',
-                    "code": opp_code || '',
-                    "selected": true,
-                }];
-                const data_process = [{
-                    "id": process_id || '',
-                    "title": process_title || '',
-                    "selected": true,
-                }];
-                const data_process_stage_app = [{
-                    "id": process_stage_app_id || '',
-                    "title": process_stage_app_title || '',
-                    'selected': true,
-                }];
-                new $x.cls.bastionField({
-                    list_from_app: "cashoutflow.payment.create",
-                    app_id: "1010563f-7c94-42f9-ba99-63d5d26a1aca",
-                    mainDiv: group$,
-                    oppEle: group$.find('select[name=opportunity_id]'),
-                    prjEle: group$.find('select[name=project_id]'),
-                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
-                    processEle: group$.find('select[name=process]'),
-                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
-                    data_opp: data_opp,
-                    data_inherit: data_inherit,
-                    data_process: data_process,
-                    data_process_stage_app: data_process_stage_app,
-                }).init();
-
-                PaymentHandle.LoadPageActionWithParams(opp_id)
-            }
-            else {
-                new $x.cls.bastionField({
-                    list_from_app: "cashoutflow.payment.create",
-                    app_id: "1010563f-7c94-42f9-ba99-63d5d26a1aca",
-                    mainDiv: group$,
-                    oppEle: group$.find('select[name=opportunity_id]'),
-                    prjEle: group$.find('select[name=project_id]'),
-                    empInheritEle: group$.find('select[name=employee_inherit_id]'),
-                    processEle: group$.find('select[name=process]'),
-                    processStageAppEle$: group$.find('select[name=process_stage_app]'),
-                }).init();
-            }
-        }
-
-        PaymentLoadPage.LoadQuotation()
-        PaymentLoadPage.LoadSaleOrder();
-        PaymentLoadPage.LoadSupplier()
-        PaymentLoadPage.LoadEmployee()
-        PaymentLoadTab.DrawLineDetailTable()
-        PaymentLoadTab.DrawTablePlan()
-    }
-    static CombinesData(frmEle, option) {
+    static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
-        frm.dataForm['title'] = $('#title').val()
-        if (option === 'create') {
-            if (payment_for === 'opportunity') {
-                frm.dataForm['opportunity_id'] = opp_mapped_select.val()
-                frm.dataForm['sale_code_type'] = 0
-            }
-            else if (payment_for === 'quotation') {
-                frm.dataForm['quotation_mapped_id'] = quotation_mapped_select.val()
-                frm.dataForm['sale_code_type'] = 0
-            }
-            else if (payment_for === 'saleorder') {
-                frm.dataForm['sale_order_mapped_id'] = sale_order_mapped_select.val()
-                frm.dataForm['sale_code_type'] = 0
-            }
-            else {
-                frm.dataForm['opportunity_id'] = null
-                frm.dataForm['quotation_mapped_id'] = null
-                frm.dataForm['sale_order_mapped_id'] = null
-                frm.dataForm['sale_code_type'] = 2
-            }
-            frm.dataForm['employee_inherit_id'] = $('#employee_inherit_id').val()
+        frm.dataForm['title'] = pageElements.$title.val()
+        if (pageVariables.payment_for === 'opportunity') {
+            frm.dataForm['opportunity_id'] = pageElements.$opportunity_id.val()
+            frm.dataForm['sale_code_type'] = 0
         }
-        frm.dataForm['supplier_id'] = supplierEle.val()
-        frm.dataForm['is_internal_payment'] = checkbox_internal.prop('checked')
-        frm.dataForm['employee_payment_id'] = employeeEle.val()
-        frm.dataForm['method'] = parseInt($('#payment-method').val())
+        else if (pageVariables.payment_for === 'quotation') {
+            frm.dataForm['quotation_mapped_id'] = pageElements.$quotation_mapped_select.val()
+            frm.dataForm['sale_code_type'] = 0
+        }
+        else if (pageVariables.payment_for === 'saleorder') {
+            frm.dataForm['sale_order_mapped_id'] = pageElements.$sale_order_mapped_select.val()
+            frm.dataForm['sale_code_type'] = 0
+        }
+        else {
+            frm.dataForm['opportunity_id'] = null
+            frm.dataForm['quotation_mapped_id'] = null
+            frm.dataForm['sale_order_mapped_id'] = null
+            frm.dataForm['sale_code_type'] = 2
+        }
+        frm.dataForm['is_internal_payment'] = Number(pageElements.$payment_type.val())
+        frm.dataForm['employee_inherit_id'] = pageElements.$employee_inherit_id.val() || null
+        frm.dataForm['supplier_id'] = pageElements.$supplier_id.val() || null
+        frm.dataForm['employee_payment_id'] = pageElements.$employee_payment_id.val() || null
+        if (pageElements.$payment_type.val() === '0') {
+            frm.dataForm['employee_payment_id'] = null
+        }
+        else {
+            frm.dataForm['supplier_id'] = null
+        }
+        frm.dataForm['method'] = parseInt(pageElements.$payment_method.val())
+        frm.dataForm['bank_data'] = pageElements.$bank_info.val()
 
         frm.dataForm['free_input'] = $('#free-input').prop('checked')
         let payment_item_list = [];
-        if (tableLineDetail.find('tr').length > 0) {
-            let row_count = tableLineDetail.find('tr').length / 2;
+        if (pageElements.$table_line_detail.find('tr').length > 0) {
+            let row_count = pageElements.$table_line_detail.find('tr').length / 2;
             for (let i = 1; i <= row_count; i++) {
                 let expense_detail_value = 0;
                 let row_id = '#row-' + i.toString();
-                let expense_type = tableLineDetail.find(row_id + ' .expense-type-select-box').val();
-                let expense_description = tableLineDetail.find(row_id + ' .expense-des-input').val();
-                let expense_uom_name = tableLineDetail.find(row_id + ' .expense-uom-input').val();
-                let expense_quantity = tableLineDetail.find(row_id + ' .expense_quantity').val();
-                let expense_tax = tableLineDetail.find(row_id + ' .expense-tax-select-box option:selected').attr('value');
-                let expense_unit_price = parseFloat(tableLineDetail.find(row_id + ' .expense-unit-price-input').attr('value'));
-                let expense_subtotal_price = parseFloat(tableLineDetail.find(row_id + ' .expense-subtotal-price').attr('value'));
-                let expense_after_tax_price = parseFloat(tableLineDetail.find(row_id + ' .expense-subtotal-price-after-tax').attr('value'));
+                let expense_type = pageElements.$table_line_detail.find(row_id + ' .expense-type-select-box').val();
+                let expense_description = pageElements.$table_line_detail.find(row_id + ' .expense-des-input').val();
+                let expense_uom_name = pageElements.$table_line_detail.find(row_id + ' .expense-uom-input').val();
+                let expense_quantity = pageElements.$table_line_detail.find(row_id + ' .expense_quantity').val();
+                let expense_tax = pageElements.$table_line_detail.find(row_id + ' .expense-tax-select-box option:selected').attr('value');
+                let expense_unit_price = parseFloat(pageElements.$table_line_detail.find(row_id + ' .expense-unit-price-input').attr('value'));
+                let expense_subtotal_price = parseFloat(pageElements.$table_line_detail.find(row_id + ' .expense-subtotal-price').attr('value'));
+                let expense_after_tax_price = parseFloat(pageElements.$table_line_detail.find(row_id + ' .expense-subtotal-price-after-tax').attr('value'));
 
-                let row_tax_ELe = tableLineDetail.find(row_id + ' .expense-tax-select-box')
+                let row_tax_ELe = pageElements.$table_line_detail.find(row_id + ' .expense-tax-select-box')
                 let tax_selected = SelectDDControl.get_data_from_idx(row_tax_ELe, row_tax_ELe.val())
                 let tax_rate = 0;
                 if (Object.keys(tax_selected).length !== 0) {
                     tax_rate = tax_selected?.['rate']
                 }
-                let document_number = tableLineDetail.find(row_id + ' .expense-document-number').val();
+                let document_number = pageElements.$table_line_detail.find(row_id + ' .expense-document-number').val();
 
-                let sale_code_item = tableLineDetail.find(row_id).nextAll().slice(0, 1);
+                let sale_code_item = pageElements.$table_line_detail.find(row_id).nextAll().slice(0, 1);
                 sale_code_item.each(function () {
                     let expense_items_detail_list = [];
                     if ($(this).find('.detail-ap-items').html()) {
@@ -2050,18 +1914,13 @@ class PaymentHandle {
                     data = data['payment_detail'];
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    DETAIL_DATA = data;
+                    pageVariables.DETAIL_DATA = data;
 
                     if (data?.['system_status'] === 3) {
                         $('#print-document').prop('hidden', false)
                     }
 
                     // console.log(data)
-
-                    opp_mapped_select.prop('disabled', true)
-                    quotation_mapped_select.prop('disabled', true)
-                    sale_order_mapped_select.prop('disabled', true)
-                    $('#employee_inherit_id').prop('disabled', true)
 
                     const data_inherit = Object.keys(data?.['employee_inherit'] || {}).length > 0 ? [{
                         "id": data?.['employee_inherit']?.['id'],
@@ -2095,41 +1954,41 @@ class PaymentHandle {
                         data_inherit: data_inherit,
                         data_process: data_process,
                         data_process_stage_app: data_process_stage_app,
-                        oppFlagData: {"disabled": true},
-                        inheritFlagData: {"disabled": true},
-                        processFlagData: {"disabled": true},
-                        processStageAppFlagData: {"disabled": true},
                     }).init();
 
                     if (Object.keys(data?.['opportunity']).length !== 0 && Object.keys(data?.['employee_inherit']).length !== 0) {
-                        PaymentLoadPage.LoadQuotation(data?.['opportunity']?.['quotation_mapped'])
-                        PaymentLoadPage.LoadSaleOrder(data?.['opportunity']?.['sale_order_mapped']);
+                        pageElements.$quotation_mapped_select.prop('disabled', true)
+                        pageElements.$sale_order_mapped_select.prop('disabled', true)
+                        PaymentPageFunction.LoadQuotation(data?.['opportunity']?.['quotation_mapped'])
+                        PaymentPageFunction.LoadSaleOrder(data?.['opportunity']?.['sale_order_mapped']);
                         if (data?.['opportunity']?.['sale_order_mapped']?.['id']) {
-                            PaymentLoadTab.LoadPlanSaleOrder(
-                                opp_mapped_select.val(),
+                            PaymentPageFunction.LoadPlanSaleOrder(
+                                pageElements.$opportunity_id.val(),
                                 data?.['opportunity']?.['sale_order_mapped']?.['id'],
                                 data?.['workflow_runtime_id']
                             )
                         }
                         else if (data?.['opportunity']?.['quotation_mapped']?.['id']) {
-                            PaymentLoadTab.LoadPlanQuotation(
-                                opp_mapped_select.val(),
+                            PaymentPageFunction.LoadPlanQuotation(
+                                pageElements.$opportunity_id.val(),
                                 data?.['opportunity']?.['quotation_mapped']?.['id'],
                                 data?.['workflow_runtime_id']
                             )
                         }
                         else {
-                            PaymentLoadTab.LoadPlanOppOnly(opp_mapped_select.val())
+                            PaymentPageFunction.LoadPlanOppOnly(pageElements.$opportunity_id.val())
                         }
-                        payment_for = 'opportunity'
+                        pageVariables.payment_for = 'opportunity'
                     }
                     else if (Object.keys(data?.['quotation_mapped']).length !== 0) {
-                        PaymentLoadPage.LoadQuotation(data?.['quotation_mapped'])
-                        PaymentLoadPage.LoadSaleOrder(data?.['quotation_mapped']?.['sale_order_mapped'])
+                        pageElements.$opportunity_id.prop('disabled', true)
+                        pageElements.$sale_order_mapped_select.prop('disabled', true)
+                        PaymentPageFunction.LoadQuotation(data?.['quotation_mapped'])
+                        PaymentPageFunction.LoadSaleOrder(data?.['quotation_mapped']?.['sale_order_mapped'])
 
-                        let dataParam = {'quotation_id': quotation_mapped_select.val()}
+                        let dataParam = {'quotation_id': pageElements.$quotation_mapped_select.val()}
                         let ap_mapped_item = $.fn.callAjax2({
-                            url: sale_order_mapped_select.attr('data-url'),
+                            url: pageElements.$sale_order_mapped_select.attr('data-url'),
                             data: dataParam,
                             method: 'GET'
                         }).then(
@@ -2149,71 +2008,52 @@ class PaymentHandle {
                             (results) => {
                                 let so_mapped_opp = results[0];
                                 if (so_mapped_opp.length > 0) {
-                                    PaymentLoadPage.LoadSaleOrder(so_mapped_opp[0]);
+                                    PaymentPageFunction.LoadSaleOrder(so_mapped_opp[0]);
                                 }
                             })
 
-                        PaymentLoadTab.LoadPlanQuotationOnly(
+                        PaymentPageFunction.LoadPlanQuotationOnly(
                             data?.['quotation_mapped']?.['id'],
                             data?.['workflow_runtime_id']
                         )
-                        payment_for = 'quotation'
+                        pageVariables.payment_for = 'quotation'
                     }
                     else if (Object.keys(data?.['sale_order_mapped']).length !== 0) {
-                        PaymentLoadPage.LoadSaleOrder(data?.['sale_order_mapped'])
-                        PaymentLoadPage.LoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
+                        pageElements.$opportunity_id.prop('disabled', true)
+                        pageElements.$quotation_mapped_select.prop('disabled', true)
+                        PaymentPageFunction.LoadSaleOrder(data?.['sale_order_mapped'])
+                        PaymentPageFunction.LoadQuotation(data?.['sale_order_mapped']?.['quotation_mapped'])
 
-                        PaymentLoadTab.LoadPlanSaleOrderOnly(
+                        PaymentPageFunction.LoadPlanSaleOrderOnly(
                             data?.['sale_order_mapped']?.['id'],
                             data?.['workflow_runtime_id']
                         )
-                        payment_for = 'saleorder'
+                        pageVariables.payment_for = 'saleorder'
                     }
                     else {
-                        payment_for = null
+                        pageVariables.payment_for = null
                     }
 
-                    $('#title').val(data?.['title']);
+                    pageElements.$title.val(data?.['title']);
+
+                    pageElements.$date_created.val(data.date_created ? DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", data.date_created) : '')
+
+                    UsualLoadPageFunction.AutoLoadCurrentEmployee({element: pageElements.$employee_created, fullname: data.employee_created?.['full_name']})
+
+                    pageElements.$payment_type.val(Number(data?.['is_internal_payment']))
+
+                    pageElements.$employee_payment_id.closest('.form-group').prop('hidden', !data?.['is_internal_payment'])
+                    pageElements.$supplier_id.closest('.form-group').prop('hidden', data?.['is_internal_payment'])
+                    PaymentPageFunction.LoadEmployee(data?.['employee_payment'])
+                    PaymentPageFunction.LoadSupplier(data?.['supplier'])
+
+                    pageElements.$payment_method.val(data?.['method']).trigger('change')
+
+                    pageElements.$bank_info.val(data?.['bank_data'] || '')
 
                     $('#free-input').prop('checked', data?.['free_input'])
 
-                    $('#created_date_id').val(moment(data.date_created.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
-
-                    PaymentLoadPage.LoadCreator(data?.['employee_created'])
-
-                    if (data?.['is_internal_payment']) {
-                        checkbox_internal.prop('checked', true)
-                        supplier_label.prop('hidden', true)
-                        employee_label.prop('hidden', false)
-                        employee_detail_span.prop('hidden', false)
-                        supplier_detail_span.prop('hidden', true)
-                        if (Object.keys(data?.['employee_payment']).length !== 0) {
-                            PaymentLoadPage.LoadEmployee(data?.['employee_payment'])
-                            let btn_detail = $('#btn-detail-employee-tab');
-                            employee_detail_span.prop('hidden', false);
-                            $('#employee-name').text(data?.['employee_payment']?.['full_name'])
-                            $('#employee-code').text(data?.['employee_payment']?.['code']);
-                            $('#employee-department').text(data?.['employee_payment']?.['group']['title']);
-                            let url = btn_detail.attr('data-url').replace('0', data?.['employee_payment']?.['id']);
-                            btn_detail.attr('href', url);
-                        }
-                    }
-                    else {
-                        checkbox_internal.prop('checked', false)
-                        supplier_label.prop('hidden', false)
-                        employee_label.prop('hidden', true)
-                        employee_detail_span.prop('hidden', true)
-                        supplier_detail_span.prop('hidden', false)
-                        if (Object.keys(data?.['supplier']).length !== 0) {
-                            PaymentLoadPage.LoadSupplier(data?.['supplier'])
-                            PaymentLoadPage.LoadInforSupplier(data?.['supplier']);
-                            PaymentLoadTab.LoadBankInfo(data?.['supplier']?.['bank_accounts_mapped']);
-                        }
-                    }
-
-                    $('#payment-method').val(data?.['method']).trigger('change')
-
-                    PaymentLoadTab.DrawLineDetailTable(data?.['expense_items'], option)
+                    PaymentPageFunction.DrawLineDetailTable(data?.['expense_items'], option)
 
                     $.fn.initMaskMoney2();
 
@@ -2223,364 +2063,365 @@ class PaymentHandle {
                         name: 'attachment'
                     })
 
-                    PaymentAction.DisabledDetailPage(option);
+                    UsualLoadPageFunction.DisablePage(
+                        option==='detail'
+                    );
+
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }
 }
 
-opp_mapped_select.on('change', function () {
-    quotation_mapped_select.empty()
-    sale_order_mapped_select.empty()
-    if (opp_mapped_select.val()) {
-        let selected = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())
-        if (selected?.['is_close']) {
-            $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
-            opp_mapped_select.empty()
-            payment_for = null
-        }
-        else {
-            sale_order_mapped_select.prop('disabled', true)
-            quotation_mapped_select.prop('disabled', true)
-            let quo_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['quotation'];
-            let so_mapped = SelectDDControl.get_data_from_idx(opp_mapped_select, opp_mapped_select.val())['sale_order'];
-            PaymentLoadPage.LoadQuotation(quo_mapped)
-            PaymentLoadPage.LoadSaleOrder(so_mapped);
-            if (so_mapped?.['id']) {
-                PaymentLoadTab.LoadPlanSaleOrder(opp_mapped_select.val(), so_mapped?.['id'])
-            }
-            else if (quo_mapped?.['id']) {
-                PaymentLoadTab.LoadPlanQuotation(opp_mapped_select.val(), quo_mapped?.['id'])
-            }
-            else {
-                PaymentLoadTab.LoadPlanOppOnly(opp_mapped_select.val())
-            }
-            payment_for = 'opportunity'
-        }
-    }
-    else {
-        quotation_mapped_select.prop('disabled', false)
-        sale_order_mapped_select.prop('disabled', false)
-        payment_for = null
-        PaymentLoadTab.DrawTablePlan()
-    }
-})
-
-checkbox_internal.on('change', function () {
-    if ($(this).prop('checked')) {
-        supplier_label.prop('hidden', true)
-        employee_label.prop('hidden', false)
-        employee_detail_span.prop('hidden', false)
-        supplier_detail_span.prop('hidden', true)
-        $('#payment-method').val(0);
-    } else {
-        supplier_label.prop('hidden', false)
-        employee_label.prop('hidden', true)
-        employee_detail_span.prop('hidden', true)
-        supplier_detail_span.prop('hidden', false)
-    }
-})
-
-$(document).on("click", '#btn-add-row-line-detail', function () {
-    PaymentAction.AddRow(tableLineDetail, {})
-    let row_added = tableLineDetail.find('tbody tr:last-child')
-    row_added.attr('id', `row-${row_added.find('td:eq(0)').text()}`)
-    PaymentLoadTab.LoadExpenseItem(row_added.find('.expense-type-select-box'))
-    PaymentLoadTab.LoadTax(row_added.find('.expense-tax-select-box'))
-});
-
-$(document).on("click", '.btn-del-line-detail', function () {
-    PaymentAction.DeleteRow(tableLineDetail, parseInt($(this).closest('tr').find('td:first-child').text()))
-});
-
-$(document).on('click', '.hide-expand-row-btn', function () {
-    let is_hiding = $(this).closest('tr').next().prop('hidden')
-    $(this).closest('tr').next().prop('hidden', !is_hiding)
-});
-
-$(document).on("change", '.expense-unit-price-input', function () {
-    PaymentAction.ChangeRowPrice($(this).closest('tr'));
-})
-
-$(document).on("change", '.expense-tax-select-box', function () {
-    PaymentAction.ChangeRowPrice($(this).closest('tr'));
-})
-
-$(document).on("change", '.expense_quantity', function () {
-    PaymentAction.ChangeRowPrice($(this).closest('tr'));
-})
-
-$(document).on("change", '.expense-subtotal-price', function () {
-    PaymentAction.CheckAndOpenExpandRow($(this).closest('tr'))
-    PaymentAction.CalculateTotalPrice();
-    $.fn.initMaskMoney2();
-})
-
-$(document).on("change", '.expense-subtotal-price-after-tax', function () {
-    PaymentAction.CheckAndOpenExpandRow($(this).closest('tr'))
-    PaymentAction.CalculateTotalPrice();
-    $.fn.initMaskMoney2();
-})
-
-$(document).on("change", '#free-input', function () {
-    let current_stage = $(this).prop('checked')
-    Swal.fire({
-        html: `<span>${script_trans.attr('data-trans-free-input-turn-on-off')}</span>`,
-        customClass: {
-            confirmButton: 'btn btn-outline-secondary text-primary',
-            cancelButton: 'btn btn-outline-secondary text-gray',
-            container: 'swal2-has-bg'
-        },
-        showCancelButton: true,
-        buttonsStyling: false,
-    }).then((result) => {
-        if (result.value) {
-            if (current_stage === true) {
-                Swal.fire({
-                    html: `<div class="d-flex align-items-center">
-                                <i class="ri-checkbox-line me-2 fs-3 text-success"></i>
-                                <h5 class="text-success mb-0">${script_trans.attr('data-trans-free-input-is-on')}</h5>
-                            </div>
-                            <p class="mt-2 small text-start">${script_trans.attr('data-trans-free-input-responsible')}</p>`,
-                    customClass: {
-                        confirmButton: 'btn btn-primary',
-                        actions: 'w-100',
-                    },
-                    buttonsStyling: false,
-                })
-            }
-            PaymentLoadTab.DrawLineDetailTable()
-        }
-        else {
-            $(this).prop('checked', !current_stage)
-        }
-    })
-})
-
-$(document).on("change", '.expense-uom-input', function () {
-    PaymentAction.ChangeRowPrice($(this).closest('tr'));
-})
-
-$(document).on("change", '.expense-document-number', function () {
-    PaymentAction.ChangeRowPrice($(this).closest('tr'));
-})
-
-$(document).on("change", '.value-inp', function () {
-    let value_converted_from_ap = parseFloat($(this).closest('tr').find('.value-converted-from-ap-inp').attr('value'));
-    let this_value = parseFloat($(this).attr('value'));
-    if (isNaN(value_converted_from_ap)) {
-        value_converted_from_ap = 0;
-    }
-    if (isNaN(this_value)) {
-        this_value = 0;
-    }
-    $(this).closest('tr').find('.total-value-salecode-item').attr('value', this_value + value_converted_from_ap);
-    $.fn.initMaskMoney2();
-})
-
-$(document).on("click", '.btn-add-payment-value', function () {
-    $('.total-converted').attr('hidden', true);
-    current_value_converted_from_ap = $(this);
-    $('.total-product-selected').attr('data-init-money', 0);
-    $.fn.initMaskMoney2();
-    $('.product-tables').html(``);
-
-    PaymentLoadTab.LoadAPList();
-
-    offcanvasRightLabel.text(offcanvasRightLabel.attr('data-text-1'));
-    $('#step1').prop('hidden', false);
-    $('#step2').prop('hidden', true);
-    $('#next-btn').prop('hidden', false);
-    $('#previous-btn').prop('hidden', true);
-    $('#finish-btn').prop('hidden', true);
-    $('#total-converted').attr('hidden', true);
-});
-
-$("#next-btn").on('click', function () {
-    offcanvasRightLabel.text(offcanvasRightLabel.attr('data-text-2'));
-    $('#step1').prop('hidden', true);
-    $('#step2').prop('hidden', false);
-    $('#next-btn').prop('hidden', true);
-    $('#previous-btn').prop('hidden', false);
-    $('#finish-btn').prop('hidden', false);
-    $('#total-converted').attr('hidden', false);
-
-    let tab2 = $('.product-tables');
-    tab2.html(``);
-
-    let selected_ap_list = [];
-    let selected_ap_code_list = [];
-    $('.ap-selected').each(function () {
-        if ($(this).is(':checked') === true) {
-            selected_ap_list.push($(this).attr('data-id'));
-            selected_ap_code_list.push($(this).closest('tr').find('td:first-child span').text());
-        }
-    })
-    if (selected_ap_list.length === 0) {
-        $.fn.notifyB({description: 'Warning: Select at least 1 Advance Payment Item for next step.'}, 'warning');
-    } else {
-        let selected_converted_value = []
-        $('.detail-ap-items').each(function () {
-            if ($(this).text() && $(this).closest('tr').attr('class') !== current_value_converted_from_ap.closest('tr').attr('class')) {
-                selected_converted_value = selected_converted_value.concat(JSON.parse($(this).text()))
+/**
+ * Khai báo các Event
+ */
+class PaymentEventHandler {
+    static InitPageEven() {
+        pageElements.$accept_bank_account_btn.on('click', function () {
+            let bank_selected = $('.bank_account_selected:checked')
+            if (bank_selected) {
+                let bank_name = bank_selected.closest('tr').find('.bank_name').val()
+                let account_name = bank_selected.closest('tr').find('.bank_account_name').val()
+                let account_number = bank_selected.closest('tr').find('.bank_account_number').val()
+                if (bank_name && account_name && account_number) {
+                    pageElements.$bank_info.val(`${$.fn.gettext('Bank name')}: ${bank_name}\n${$.fn.gettext('Account name')}: ${account_name}\n${$.fn.gettext('Account number')}: ${account_number}`)
+                    $('#bank-account-modal').modal('hide')
+                } else {
+                    pageElements.$bank_info.val('')
+                    $.fn.notifyB({description: 'Bank information is missing'}, 'failure');
+                }
             }
         })
-
-        for (let i = 0; i < selected_ap_list.length; i++) {
-            $.fn.callAjax(AP_db.attr('data-url-ap-detail').format_url_with_uuid(selected_ap_list[i]), AP_db.attr('data-method')).then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
-                        let ap_item_detail = data?.['advance_payment_detail'];
-                        if (ap_item_detail?.['expense_items'].length > 0) {
-                            tab2.append(`<table id="expense-item-table-${ap_item_detail.id}" class="table nowrap w-100 mb-10">
-                                <thead>
-                                    <tr>
-                                        <th class="w-10"><span class="ap-code-span badge badge-primary w-100">${selected_ap_code_list[i]}</span></th>
-                                        <th class="w-15">Expense name</th>
-                                        <th class="w-15">Expense type</th>
-                                        <th class="w-5">Quantity</th>
-                                        <th class="w-15">Unit Price</th>
-                                        <th class="w-10">Tax</th>
-                                        <th class="w-15">Available</th>
-                                        <th class="w-15">Converted Value</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>`);
-                            let product_table = $('#expense-item-table-' + ap_item_detail.id);
-                            let total_remain_value = 0;
-                            for (let i = 0; i < ap_item_detail?.['expense_items'].length; i++) {
-                                let expense_item = ap_item_detail?.['expense_items'][i];
-                                let row_id_previous = `#row-${current_value_converted_from_ap.closest('tr').attr('class').slice(-1)}`
-                                if ($(row_id_previous).find('.expense-type-select-box').val() === expense_item?.['expense_type']?.['id']) {
-                                    let tax_code = expense_item?.['expense_tax']?.['code'] ? expense_item?.['expense_tax']?.['code'] : '';
-                                    let disabled = 'disabled';
-                                    if (expense_item.remain_total > 0) {
-                                        disabled = '';
-                                    }
-                                    total_remain_value += expense_item.remain_total - PaymentAction.FindValueConvertedById(expense_item.id, selected_converted_value);
-                                    product_table.find('tbody').append(`<tr>
-                                        <td class="text-center"><input data-ap-title="${ap_item_detail?.['title']}" data-id="${expense_item.id}" class="product-selected" type="checkbox" ${disabled}></td>
-                                        <td>${expense_item.expense_description}</td>
-                                        <td>${expense_item.expense_type.title}</td>
-                                        <td>${expense_item.expense_quantity}</td>
-                                        <td><span class="text-primary mask-money" data-init-money="${expense_item.expense_unit_price}"></span></td>
-                                        <td><span class="badge badge-soft-danger">${tax_code}</span></td>
-                                        <td>
-                                        <span class="text-primary mask-money product-remain-value" data-init-money="${expense_item.remain_total - PaymentAction.FindValueConvertedById(expense_item.id, selected_converted_value)}"></span>
-                                        </td>
-                                        <td><input class="mask-money form-control converted-value-inp" disabled></td>
-                                    </tr>`)
-                                }
-                            }
-                            if (product_table.find('tbody').html() === '') {
-                                product_table.remove()
-                            } else {
-                                product_table.find('tbody').append(`<tr style="background-color: #ebf5f5">
-                                    <td colspan="5"></td>
-                                    <td><span style="text-align: left"><b>Total:</b></span></td>
-                                    <td><span class="mask-money total-available-value text-primary" data-init-money="${total_remain_value}"></span></td>
-                                    <td><span class="mask-money total-converted-value text-primary" data-init-money="0"></span></td>
-                                </tr>`)
-                            }
-
-                            $('.converted-value-inp').on('change', function () {
-                                let product_remain_value = $(this).closest('tr').find('.product-remain-value').attr('data-init-money');
-                                let converted_value = $(this).attr('value');
-                                if (parseFloat(converted_value) > parseFloat(product_remain_value)) {
-                                    $(this).attr('value', parseFloat(product_remain_value));
-                                }
-
-                                let new_total_converted_value = 0;
-                                $(this).closest('tbody').find('.converted-value-inp').each(function () {
-                                    if (parseFloat($(this).attr('value'))) {
-                                        new_total_converted_value += parseFloat($(this).attr('value'));
-                                    }
-                                });
-                                $(this).closest('tbody').find('.total-converted-value').attr('data-init-money', new_total_converted_value);
-
-                                $('.total-product-selected').attr('data-init-money', PaymentAction.SumAPItemsCast());
-
-                                $.fn.initMaskMoney2();
-                            });
-
-                            $('.product-selected').on('change', function () {
-                                if ($(this).is(':checked')) {
-                                    $(this).closest('tr').find('.converted-value-inp').prop('disabled', false);
-                                    $(this).closest('tr').find('.converted-value-inp').addClass('is-valid');
-                                } else {
-                                    $(this).closest('tr').find('.converted-value-inp').prop('disabled', true);
-                                    $(this).closest('tr').find('.converted-value-inp').attr('value', '');
-                                    $(this).closest('tr').find('.converted-value-inp').removeClass('is-valid');
-                                }
-
-                                let new_total_converted_value = 0;
-                                $(this).closest('tbody').find('.converted-value-inp').each(function () {
-                                    if (parseFloat($(this).attr('value'))) {
-                                        new_total_converted_value += parseFloat($(this).attr('value'));
-                                    }
-                                });
-                                $(this).closest('tbody').find('.total-converted-value').attr('data-init-money', new_total_converted_value);
-
-                                $('.total-product-selected').attr('data-init-money', PaymentAction.SumAPItemsCast());
-
-                                $.fn.initMaskMoney2();
-                            });
-
-                            $.fn.initMaskMoney2();
-                        }
-                    }
+        pageElements.$opportunity_id.on('change', function () {
+            pageElements.$quotation_mapped_select.empty()
+            pageElements.$sale_order_mapped_select.empty()
+            if (pageElements.$opportunity_id.val()) {
+                let selected = SelectDDControl.get_data_from_idx(pageElements.$opportunity_id, pageElements.$opportunity_id.val())
+                if (selected?.['is_close']) {
+                    $.fn.notifyB({description: `Opportunity ${selected?.['code']} has been closed. Can not select.`}, 'failure');
+                    pageElements.$opportunity_id.empty()
+                    pageVariables.payment_for = null
                 }
-            });
-        }
+                else {
+                    pageElements.$sale_order_mapped_select.prop('disabled', true)
+                    pageElements.$quotation_mapped_select.prop('disabled', true)
+                    let quo_mapped = SelectDDControl.get_data_from_idx(pageElements.$opportunity_id, pageElements.$opportunity_id.val())['quotation'];
+                    let so_mapped = SelectDDControl.get_data_from_idx(pageElements.$opportunity_id, pageElements.$opportunity_id.val())['sale_order'];
+                    PaymentPageFunction.LoadQuotation(quo_mapped)
+                    PaymentPageFunction.LoadSaleOrder(so_mapped);
+                    if (so_mapped?.['id']) {
+                        PaymentPageFunction.LoadPlanSaleOrder(pageElements.$opportunity_id.val(), so_mapped?.['id'])
+                    }
+                    else if (quo_mapped?.['id']) {
+                        PaymentPageFunction.LoadPlanQuotation(pageElements.$opportunity_id.val(), quo_mapped?.['id'])
+                    }
+                    else {
+                        PaymentPageFunction.LoadPlanOppOnly(pageElements.$opportunity_id.val())
+                    }
+                    pageVariables.payment_for = 'opportunity'
+                }
+            }
+            else {
+                pageElements.$quotation_mapped_select.prop('disabled', false)
+                pageElements.$sale_order_mapped_select.prop('disabled', false)
+                pageVariables.payment_for = null
+                PaymentPageFunction.DrawTablePlan()
+            }
+        })
+        pageElements.$payment_type.on('change', function () {
+            pageElements.$employee_payment_id.closest('.form-group').prop('hidden', $(this).val() !== '1')
+            pageElements.$supplier_id.closest('.form-group').prop('hidden', $(this).val() === '1')
+        })
+        $(document).on("click", '#btn-add-row-line-detail', function () {
+            UsualLoadPageFunction.AddTableRow(pageElements.$table_line_detail, {})
+            let row_added = pageElements.$table_line_detail.find('tbody tr:last-child')
+            row_added.attr('id', `row-${row_added.find('td:eq(0)').text()}`)
+            PaymentPageFunction.LoadExpenseItem(row_added.find('.expense-type-select-box'))
+            PaymentPageFunction.LoadTax(row_added.find('.expense-tax-select-box'))
+        })
+        $(document).on("click", '.btn-del-line-detail', function () {
+            UsualLoadPageFunction.DeleteTableRow(
+                pageElements.$table_line_detail,
+                parseInt($(this).closest('tr').find('td:first-child').text())
+            )
+        })
+        $(document).on('click', '.hide-expand-row-btn', function () {
+            let is_hiding = $(this).closest('tr').next().prop('hidden')
+            $(this).closest('tr').next().prop('hidden', !is_hiding)
+        })
+        $(document).on("change", '.expense-unit-price-input', function () {
+            PaymentPageFunction.ChangeRowPrice($(this).closest('tr'));
+        })
+        $(document).on("change", '.expense-tax-select-box', function () {
+            PaymentPageFunction.ChangeRowPrice($(this).closest('tr'));
+        })
+        $(document).on("change", '.expense_quantity', function () {
+            PaymentPageFunction.ChangeRowPrice($(this).closest('tr'));
+        })
+        $(document).on("change", '.expense-subtotal-price', function () {
+            PaymentPageFunction.CheckAndOpenExpandRow($(this).closest('tr'))
+            PaymentPageFunction.CalculateTotalPrice();
+            $.fn.initMaskMoney2();
+        })
+        $(document).on("change", '.expense-subtotal-price-after-tax', function () {
+            PaymentPageFunction.CheckAndOpenExpandRow($(this).closest('tr'))
+            PaymentPageFunction.CalculateTotalPrice();
+            $.fn.initMaskMoney2();
+        })
+        $(document).on("change", '#free-input', function () {
+            let current_stage = $(this).prop('checked')
+            Swal.fire({
+                html: `<span>${pageElements.$script_trans.attr('data-trans-free-input-turn-on-off')}</span>`,
+                customClass: {
+                    confirmButton: 'btn btn-outline-secondary text-primary',
+                    cancelButton: 'btn btn-outline-secondary text-gray',
+                    container: 'swal2-has-bg'
+                },
+                showCancelButton: true,
+                buttonsStyling: false,
+            }).then((result) => {
+                if (result.value) {
+                    if (current_stage === true) {
+                        Swal.fire({
+                            html: `<div class="d-flex align-items-center">
+                                        <i class="ri-checkbox-line me-2 fs-3 text-success"></i>
+                                        <h5 class="text-success mb-0">${pageElements.$script_trans.attr('data-trans-free-input-is-on')}</h5>
+                                    </div>
+                                    <p class="mt-2 small text-start">${pageElements.$script_trans.attr('data-trans-free-input-responsible')}</p>`,
+                            customClass: {
+                                confirmButton: 'btn btn-primary',
+                                actions: 'w-100',
+                            },
+                            buttonsStyling: false,
+                        })
+                    }
+                    PaymentPageFunction.DrawLineDetailTable()
+                }
+                else {
+                    $(this).prop('checked', !current_stage)
+                }
+            })
+        })
+        $(document).on("change", '.expense-uom-input', function () {
+            PaymentPageFunction.ChangeRowPrice($(this).closest('tr'));
+        })
+        $(document).on("change", '.expense-document-number', function () {
+            PaymentPageFunction.ChangeRowPrice($(this).closest('tr'));
+        })
+        $(document).on("change", '.value-inp', function () {
+            let value_converted_from_ap = parseFloat($(this).closest('tr').find('.value-converted-from-ap-inp').attr('value'));
+            let this_value = parseFloat($(this).attr('value'));
+            if (isNaN(value_converted_from_ap)) {
+                value_converted_from_ap = 0;
+            }
+            if (isNaN(this_value)) {
+                this_value = 0;
+            }
+            $(this).closest('tr').find('.total-value-salecode-item').attr('value', this_value + value_converted_from_ap);
+            $.fn.initMaskMoney2();
+        })
+        $(document).on("click", '.btn-add-payment-value', function () {
+            $('.total-converted').attr('hidden', true);
+            pageVariables.current_value_converted_from_ap = $(this);
+            $('.total-product-selected').attr('data-init-money', 0);
+            $.fn.initMaskMoney2();
+            $('.product-tables').html(``);
+
+            PaymentPageFunction.LoadAPList();
+
+            pageElements.$offcanvasRightLabel.text(pageElements.$offcanvasRightLabel.attr('data-text-1'));
+            $('#step1').prop('hidden', false);
+            $('#step2').prop('hidden', true);
+            $('#next-btn').prop('hidden', false);
+            $('#previous-btn').prop('hidden', true);
+            $('#finish-btn').prop('hidden', true);
+            $('#total-converted').attr('hidden', true);
+        })
+        $("#next-btn").on('click', function () {
+            pageElements.$offcanvasRightLabel.text(pageElements.$offcanvasRightLabel.attr('data-text-2'));
+            $('#step1').prop('hidden', true);
+            $('#step2').prop('hidden', false);
+            $('#next-btn').prop('hidden', true);
+            $('#previous-btn').prop('hidden', false);
+            $('#finish-btn').prop('hidden', false);
+            $('#total-converted').attr('hidden', false);
+
+            let tab2 = $('.product-tables');
+            tab2.html(``);
+
+            let selected_ap_list = [];
+            let selected_ap_code_list = [];
+            $('.ap-selected').each(function () {
+                if ($(this).is(':checked') === true) {
+                    selected_ap_list.push($(this).attr('data-id'));
+                    selected_ap_code_list.push($(this).closest('tr').find('td:first-child span').text());
+                }
+            })
+            if (selected_ap_list.length === 0) {
+                $.fn.notifyB({description: 'Warning: Select at least 1 Advance Payment Item for next step.'}, 'warning');
+            } else {
+                let selected_converted_value = []
+                $('.detail-ap-items').each(function () {
+                    if ($(this).text() && $(this).closest('tr').attr('class') !== pageVariables.current_value_converted_from_ap.closest('tr').attr('class')) {
+                        selected_converted_value = selected_converted_value.concat(JSON.parse($(this).text()))
+                    }
+                })
+
+                for (let i = 0; i < selected_ap_list.length; i++) {
+                    $.fn.callAjax(pageElements.$advance_payment_list_datatable.attr('data-url-ap-detail').format_url_with_uuid(selected_ap_list[i]), pageElements.$advance_payment_list_datatable.attr('data-method')).then((resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (resp.hasOwnProperty('data') && resp.data.hasOwnProperty('advance_payment_detail')) {
+                                let ap_item_detail = data?.['advance_payment_detail'];
+                                if (ap_item_detail?.['expense_items'].length > 0) {
+                                    tab2.append(`<table id="expense-item-table-${ap_item_detail.id}" class="table nowrap w-100 mb-10">
+                                        <thead>
+                                            <tr>
+                                                <th class="w-10"><span class="ap-code-span badge badge-primary w-100">${selected_ap_code_list[i]}</span></th>
+                                                <th class="w-15">${$.fn.gettext('Expense name')}</th>
+                                                <th class="w-15">${$.fn.gettext('Expense type')}</th>
+                                                <th class="w-5">${$.fn.gettext('Quantity')}</th>
+                                                <th class="w-15">${$.fn.gettext('Unit price')}</th>
+                                                <th class="w-10">${$.fn.gettext('Tax')}</th>
+                                                <th class="w-15">${$.fn.gettext('Available')}</th>
+                                                <th class="w-15">${$.fn.gettext('Converted value')}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>`);
+                                    let product_table = $('#expense-item-table-' + ap_item_detail.id);
+                                    let total_remain_value = 0;
+                                    for (let i = 0; i < ap_item_detail?.['expense_items'].length; i++) {
+                                        let expense_item = ap_item_detail?.['expense_items'][i];
+                                        let row_id_previous = `#row-${pageVariables.current_value_converted_from_ap.closest('tr').attr('class').slice(-1)}`
+                                        if ($(row_id_previous).find('.expense-type-select-box').val() === expense_item?.['expense_type']?.['id']) {
+                                            let tax_code = expense_item?.['expense_tax']?.['code'] ? expense_item?.['expense_tax']?.['code'] : '';
+                                            let disabled = 'disabled';
+                                            if (expense_item.remain_total > 0) {
+                                                disabled = '';
+                                            }
+                                            total_remain_value += expense_item.remain_total - PaymentPageFunction.FindValueConvertedById(expense_item.id, selected_converted_value);
+                                            product_table.find('tbody').append(`<tr>
+                                                <td class="text-center"><div class="form-check"><input data-ap-title="${ap_item_detail?.['title']}" data-id="${expense_item.id}" class="form-check-input product-selected" type="checkbox" ${disabled}></div></td>
+                                                <td>${expense_item.expense_description}</td>
+                                                <td>${expense_item.expense_type.title}</td>
+                                                <td>${expense_item.expense_quantity}</td>
+                                                <td><span class="text-primary mask-money" data-init-money="${expense_item.expense_unit_price}"></span></td>
+                                                <td><span class="badge badge-soft-danger">${tax_code}</span></td>
+                                                <td>
+                                                <span class="text-primary mask-money product-remain-value" data-init-money="${expense_item.remain_total - PaymentPageFunction.FindValueConvertedById(expense_item.id, selected_converted_value)}"></span>
+                                                </td>
+                                                <td><input class="mask-money form-control converted-value-inp" disabled></td>
+                                            </tr>`)
+                                        }
+                                    }
+                                    if (product_table.find('tbody').html() === '') {
+                                        product_table.remove()
+                                    } else {
+                                        product_table.find('tbody').append(`<tr style="background-color: #ebf5f5">
+                                            <td colspan="5"></td>
+                                            <td><span style="text-align: left"><b>Total:</b></span></td>
+                                            <td><span class="mask-money total-available-value text-primary" data-init-money="${total_remain_value}"></span></td>
+                                            <td><span class="mask-money total-converted-value text-primary" data-init-money="0"></span></td>
+                                        </tr>`)
+                                    }
+
+                                    $('.converted-value-inp').on('change', function () {
+                                        let product_remain_value = $(this).closest('tr').find('.product-remain-value').attr('data-init-money');
+                                        let converted_value = $(this).attr('value');
+                                        if (parseFloat(converted_value) > parseFloat(product_remain_value)) {
+                                            $(this).attr('value', parseFloat(product_remain_value));
+                                        }
+
+                                        let new_total_converted_value = 0;
+                                        $(this).closest('tbody').find('.converted-value-inp').each(function () {
+                                            if (parseFloat($(this).attr('value'))) {
+                                                new_total_converted_value += parseFloat($(this).attr('value'));
+                                            }
+                                        });
+                                        $(this).closest('tbody').find('.total-converted-value').attr('data-init-money', new_total_converted_value);
+
+                                        $('.total-product-selected').attr('data-init-money', PaymentPageFunction.SumAPItemsCast());
+
+                                        $.fn.initMaskMoney2();
+                                    });
+
+                                    $('.product-selected').on('change', function () {
+                                        if ($(this).is(':checked')) {
+                                            $(this).closest('tr').find('.converted-value-inp').prop('disabled', false);
+                                            $(this).closest('tr').find('.converted-value-inp').addClass('is-valid');
+                                        } else {
+                                            $(this).closest('tr').find('.converted-value-inp').prop('disabled', true);
+                                            $(this).closest('tr').find('.converted-value-inp').attr('value', '');
+                                            $(this).closest('tr').find('.converted-value-inp').removeClass('is-valid');
+                                        }
+
+                                        let new_total_converted_value = 0;
+                                        $(this).closest('tbody').find('.converted-value-inp').each(function () {
+                                            if (parseFloat($(this).attr('value'))) {
+                                                new_total_converted_value += parseFloat($(this).attr('value'));
+                                            }
+                                        });
+                                        $(this).closest('tbody').find('.total-converted-value').attr('data-init-money', new_total_converted_value);
+
+                                        $('.total-product-selected').attr('data-init-money', PaymentPageFunction.SumAPItemsCast());
+
+                                        $.fn.initMaskMoney2();
+                                    });
+
+                                    $.fn.initMaskMoney2();
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        })
+        $("#previous-btn").on('click', function () {
+            pageElements.$offcanvasRightLabel.text(pageElements.$offcanvasRightLabel.attr('data-text-1'));
+            $('#step1').prop('hidden', false);
+            $('#step2').prop('hidden', true);
+            $('#next-btn').prop('hidden', false);
+            $('#previous-btn').prop('hidden', true);
+            $('#finish-btn').prop('hidden', true);
+            $('#total-converted').attr('hidden', true);
+        })
+        $("#finish-btn").on('click', function () {
+            $('.total-converted').attr('hidden', true);
+            let result_total_value = PaymentPageFunction.SumAPItemsCast();
+            pageVariables.current_value_converted_from_ap.closest('.row').find('.value-converted-from-ap-inp').attr('value', result_total_value);
+
+            pageVariables.current_value_converted_from_ap.closest('tr').prev().find('.expense-type-select-box').prop('disabled', true).prop('readonly', true)
+            let value_input_ap = parseFloat(pageVariables.current_value_converted_from_ap.closest('tr').find('.value-inp').attr('value'));
+            if (isNaN(value_input_ap)) {
+                value_input_ap = 0;
+            }
+            pageVariables.current_value_converted_from_ap.closest('tr').find('.total-value-salecode-item').attr('value', result_total_value + value_input_ap);
+            let ap_product_items = PaymentPageFunction.GetAPItems()
+            pageVariables.current_value_converted_from_ap.closest('tr').find('.detail-ap-items').text(JSON.stringify(ap_product_items));
+            if (result_total_value > 0) {
+                let detail_converted_html = ``;
+                for (let x = 0; x < ap_product_items.length; x++) {
+                    detail_converted_html += `<a class="dropdown-item" href="#">${ap_product_items[x]?.['ap_title']}: <span class="mask-money text-secondary" data-init-money="${ap_product_items[x]?.['value_converted']}"></span></a>`
+                }
+                let detail_converted_html_full = ``
+                if (detail_converted_html) {
+                    detail_converted_html_full = `<div class="btn-group" role="group">
+                        <button data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                class="btn btn-icon btn-flush-primary flush-soft-hover" type="button">
+                            <span class="icon"><i class="bi bi-chevron-down text-primary"></i></span>
+                        </button>
+                        <div class="dropdown-menu">
+                            ${detail_converted_html}
+                        </div>
+                    </div>`;
+                }
+                pageVariables.current_value_converted_from_ap.closest('tr').find('.input-group .btn-group').remove()
+                pageVariables.current_value_converted_from_ap.closest('tr').find('.input-group').append(detail_converted_html_full)
+            }
+
+            $.fn.initMaskMoney2();
+        })
     }
-})
-
-$("#previous-btn").on('click', function () {
-    offcanvasRightLabel.text(offcanvasRightLabel.attr('data-text-1'));
-    $('#step1').prop('hidden', false);
-    $('#step2').prop('hidden', true);
-    $('#next-btn').prop('hidden', false);
-    $('#previous-btn').prop('hidden', true);
-    $('#finish-btn').prop('hidden', true);
-    $('#total-converted').attr('hidden', true);
-})
-
-$("#finish-btn").on('click', function () {
-    $('.total-converted').attr('hidden', true);
-    let result_total_value = PaymentAction.SumAPItemsCast();
-    current_value_converted_from_ap.closest('.row').find('.value-converted-from-ap-inp').attr('value', result_total_value);
-
-    current_value_converted_from_ap.closest('tr').prev().find('.expense-type-select-box').prop('disabled', true).prop('readonly', true)
-    let value_input_ap = parseFloat(current_value_converted_from_ap.closest('tr').find('.value-inp').attr('value'));
-    if (isNaN(value_input_ap)) {
-        value_input_ap = 0;
-    }
-    current_value_converted_from_ap.closest('tr').find('.total-value-salecode-item').attr('value', result_total_value + value_input_ap);
-    let ap_product_items = PaymentAction.GetAPItems()
-    current_value_converted_from_ap.closest('tr').find('.detail-ap-items').text(JSON.stringify(ap_product_items));
-    if (result_total_value > 0) {
-        let detail_converted_html = ``;
-        for (let x = 0; x < ap_product_items.length; x++) {
-            detail_converted_html += `<a class="dropdown-item" href="#">${ap_product_items[x]?.['ap_title']}: <span class="mask-money text-secondary" data-init-money="${ap_product_items[x]?.['value_converted']}"></span></a>`
-        }
-        let detail_converted_html_full = ``
-        if (detail_converted_html) {
-            detail_converted_html_full = `<div class="btn-group" role="group">
-                <button data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                        class="btn btn-icon btn-flush-primary flush-soft-hover" type="button">
-                    <span class="icon"><i class="bi bi-chevron-down text-primary"></i></span>
-                </button>
-                <div class="dropdown-menu">
-                    ${detail_converted_html}
-                </div>
-            </div>`;
-        }
-        current_value_converted_from_ap.closest('tr').find('.input-group .btn-group').remove()
-        current_value_converted_from_ap.closest('tr').find('.input-group').append(detail_converted_html_full)
-    }
-
-    $.fn.initMaskMoney2();
-})
+}

@@ -874,4 +874,24 @@ class UsualLoadPageFunction {
         }
         return ''
     }
+
+    /**
+     * Auto load ô Employee created
+     * @param {HTMLElement|jQuery} element - element
+     * @param {Object} data - data json
+     * @returns {void}
+     */
+    static AutoLoadCurrentEmployee({element, fullname=null}) {
+        if (!element) {
+            console.error("element is required.");
+            return;
+        }
+        if (!fullname) {
+            let ele_emp = $('#idx-link-to-current-employee')
+            let data_emp = ele_emp.attr('data-value-full') ? JSON.parse(ele_emp.attr('data-value-full')) : {}
+            element.val(data_emp?.['full_name'] || '')
+            return;
+        }
+        element.val(fullname)
+    }
 }

@@ -40,14 +40,14 @@
                     <select required class="form-select"
                             id="advance_payment_type"
                             name="advance_payment_type">
-                        <option value="0">{% trans "To employee" %}</option>
-                        <option value="1">{% trans "To supplier" %}</option>
+                        <option value="0">{% trans "Advance for employee" %}</option>
+                        <option value="1">{% trans "Advance for supplier" %}</option>
                     </select>
                 </div>
             </div>
             <div class="col-12 col-md-9 col-lg-9">
                 <div class="form-group">
-                    <label class="form-label" id="supplier-label" for="supplier_id">{% trans "Supplier name" %}</label>
+                    <label class="form-label" id="supplier-label" for="supplier_id">{% trans "Advance for supplier" %}</label>
                     <select name="supplier_id"
                             class="form-select select2"
                             data-method="GET"
@@ -83,6 +83,18 @@
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
+                    <label class="form-label" for="date_created">{% trans "Date created" %}</label>
+                    <input disabled readonly class="form-control form-control-line" id="date_created" name="date_created">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label" for="employee_created">{% trans "Employee created" %}</label>
+                    <input disabled readonly class="form-control form-control-line" id="employee_created" name="employee_created">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
                     <label class="form-label" for="advance_date">{% trans "Date of advance payment" %}</label>
                     <input class="form-control" id="advance_date" name="advance_date">
                 </div>
@@ -93,15 +105,12 @@
                     <input required class="form-control" id="return_date" name="return_date">
                 </div>
             </div>
-            <div class="col-12 py-5">
-                <div class="border rounded-5 bg-green-light-5 py-1 w-100 text-center">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" name="money_gave" id="money-gave">
-                        <label class="text-primary fw-bold" for="money-gave">{% trans "Money gave/transferred" %}</label>
-                    </div>
+            <div class="col-12">
+                <div class="form-check d-flex align-items-center overflow-hidden">
+                    <input type="checkbox" class="form-check-input" name="money_gave" id="money-gave">
+                    <label class="text-primary fw-bold" for="money-gave">{% trans "Money gave/transferred" %}</label>
                 </div>
             </div>
         </div>
     </div>
 </div>
-

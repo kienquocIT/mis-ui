@@ -2,6 +2,8 @@ $(document).ready(function () {
     new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 
     AdvancePaymentEventHandler.InitPageEven()
+    UsualLoadPageFunction.AutoLoadCurrentEmployee({element: pageElements.$employee_created})
+    UsualLoadPageFunction.LoadDate({element: pageElements.$date_created, empty: false})
     UsualLoadPageFunction.LoadDate({element: pageElements.$return_date})
     UsualLoadPageFunction.LoadDate({element: pageElements.$advance_date})
     const {
@@ -68,8 +70,6 @@ $(document).ready(function () {
     AdvancePaymentPageFunction.LoadQuotation()
     AdvancePaymentPageFunction.LoadSaleOrder()
     AdvancePaymentPageFunction.LoadSupplier()
-    AdvancePaymentPageFunction.LoadReturnDate()
-    AdvancePaymentPageFunction.LoadAdvanceDate()
     AdvancePaymentPageFunction.LoadTableBankAccount()
     AdvancePaymentPageFunction.LoadLineDetailTable()
     AdvancePaymentPageFunction.DrawTablePlan()

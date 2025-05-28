@@ -18,6 +18,8 @@ class AdvancePaymentPageElements {
         this.$bank_info = $('#bank-info')
         this.$bank_account_table = $('#bank-account-table')
         this.$accept_bank_account_btn = $('#accept-bank-account-btn')
+        this.$date_created = $('#date_created')
+        this.$employee_created = $('#employee_created')
         this.$return_date = $('#return_date')
         this.$advance_date = $('#advance_date')
         this.$money_gave = $('#money-gave')
@@ -206,7 +208,7 @@ class AdvancePaymentPageFunction {
             keyText: 'title',
         })
     }
-    static LoadLineDetailTable(data=[], option='create') {
+    static LoadLineDetailTable(data_list=[], option='create') {
         pageElements.$table_line_detail.DataTable().clear().destroy()
         pageElements.$table_line_detail.DataTableDefault({
             dom: 't',
@@ -216,7 +218,7 @@ class AdvancePaymentPageFunction {
             scrollY: '50vh',
             scrollX: true,
             scrollCollapse: true,
-            data: data,
+            data: data_list,
             columns: [
                 {
                     'render': () => {
@@ -245,7 +247,6 @@ class AdvancePaymentPageFunction {
                                         </div>
                                     </div>
                                 </div>`
-                        return ``;
                     }
                 },
                 {
@@ -271,15 +272,17 @@ class AdvancePaymentPageFunction {
                 {
                     className: 'text-right',
                     'render': () => {
-                        return `<button ${option === 'detail' ? 'disabled' : ''} class="btn-del-line-detail btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                        return `<button type='button' ${option === 'detail' ? 'disabled' : ''} class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs btn-del-line-detail">
+                                    <span class="icon"><i class="fas fa-trash"></i></span>
+                                </button>`;
                     }
                 },
             ],
             initComplete: function () {
-                if (data.length > 0) {
+                if (data_list.length > 0) {
                     pageElements.$table_line_detail.find('tbody tr').each(function (index) {
-                        AdvancePaymentPageFunction.LoadExpenseItem($(this).find('.expense-type-select-box'), data[index]?.['expense_type'])
-                        AdvancePaymentPageFunction.LoadExpenseTax($(this).find('.expense-tax-select-box'), data[index]?.['expense_tax'])
+                        AdvancePaymentPageFunction.LoadExpenseItem($(this).find('.expense-type-select-box'), data_list[index]?.['expense_type'])
+                        AdvancePaymentPageFunction.LoadExpenseTax($(this).find('.expense-tax-select-box'), data_list[index]?.['expense_tax'])
                     })
                     AdvancePaymentPageFunction.CalculateTotalPrice();
                 }
@@ -1675,13 +1678,17 @@ class AdvancePaymentHandler {
 
                     pageElements.$advance_payment_type.val(data.advance_payment_type).trigger('change');
 
-                    pageElements.$method.val(data.method).trigger('change')
+                    pageElements.$date_created.val(data.date_created ? DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", data.date_created) : '')
 
-                    pageElements.$return_date.val(data.return_date ? moment(data.return_date.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY') : '')
+                    UsualLoadPageFunction.AutoLoadCurrentEmployee({element: pageElements.$employee_created, fullname: data.employee_created?.['full_name']})
 
-                    pageElements.$advance_date.val(data.advance_date ? moment(data.advance_date.split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY') : '')
+                    pageElements.$return_date.val(data.return_date ? DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", data.return_date) : '')
+
+                    pageElements.$advance_date.val(data.advance_date ? DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", data.advance_date) : '')
 
                     AdvancePaymentPageFunction.LoadSupplier(data?.['supplier'] || {})
+
+                    pageElements.$method.val(data.method).trigger('change')
 
                     pageElements.$bank_info.val(data?.['bank_data'] || '')
 

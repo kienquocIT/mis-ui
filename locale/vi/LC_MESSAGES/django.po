@@ -11810,3 +11810,23 @@ msgstr "Chọn tài khoản ngân hàng"
 #
 msgid "Pick a bank account, or add one in the last row."
 msgstr "Chọn tài khoản hoặc thêm mới ở dòng cuối."
+
+#
+msgid "Advance for supplier"
+msgstr "Tạm ứng cho NCC"
+
+#
+msgid "Advance for employee"
+msgstr "Tạm ứng cho NV"
+
+#
+msgid "Payment for supplier"
+msgstr "Thanh toán cho NCC"
+
+#
+msgid "Payment for employee"
+msgstr "Thanh toán cho NV"
+
+#
+msgid "Select advance payment"
+msgstr "Chọn phiếu tạm ứng"

@@ -11798,3 +11798,7 @@ msgstr "Xuất hóa đơn một phần"
 #
 msgid "Invoice issued"
 msgstr "Đã xuất hóa đơn"
+
+#
+msgid "Rejected because of workflow error"
+msgstr " Phiếu tự động hủy vì cấu hình quy trình lỗi"

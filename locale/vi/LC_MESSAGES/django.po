@@ -11801,4 +11801,4 @@ msgstr "Đã xuất hóa đơn"
 
 #
 msgid "Rejected because of workflow error"
-msgstr " Phiếu tự động hủy vì cấu hình quy trình lỗi"
+msgstr "Phiếu tự động hủy vì cấu hình quy trình lỗi"

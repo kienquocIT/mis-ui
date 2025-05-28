@@ -3897,7 +3897,7 @@ class WFAssociateControl {
             if (val) {
                 if (Array.isArray(val)) {
                     // val = val.map(item => item.replace(/\s/g, "").toLowerCase());
-                    val.map(item =>
+                    val = val.map(item =>
                         typeof item === 'string'
                             ? item.replace(/\s/g, "").toLowerCase()
                             : item

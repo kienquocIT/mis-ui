@@ -869,6 +869,12 @@ $(function () {
             }
         });
 
+        LeaseOrderDataTableHandle.$tableInvoice.on('click', '.del-row', function (e) {
+            deleteRow(this.closest('tr'), LeaseOrderDataTableHandle.$tableInvoice);
+            reOrderSTT(LeaseOrderDataTableHandle.$tableInvoice);
+            LeaseOrderDataTableHandle.$tablePayment.DataTable().clear().draw();
+        });
+
         LeaseOrderLoadDataHandle.$btnSaveTerm.on('click', function () {
            LeaseOrderLoadDataHandle.loadSaveSTerm();
         });

@@ -2225,7 +2225,8 @@ class WFRTControl {
         let eleStatus = $('#systemStatus');
         let $eleCode = $('#documentCode');
         let currentEmployee = $x.fn.getEmployeeCurrentID();
-        if (eleStatus.attr('data-status-cr') === '5' && eleStatus.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {  // change document after finish
+        // Check CR
+        if (eleStatus.attr('data-status-cr') === '5' && eleStatus.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {
             let $eleForm = $(`#${globeFormMappedZone}`);
             let docRootID = eleStatus.attr('data-doc-root-id');
             let docChangeOrder = eleStatus.attr('data-doc-change-order');
@@ -2240,6 +2241,9 @@ class WFRTControl {
                 if (docChangeOrder) {
                     _form.dataForm['document_change_order'] = parseInt(docChangeOrder) + 1;
                 }
+                // check next node
+                let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
+                // select cancel/confirm change
                 Swal.fire({
                     title: $.fn.transEle.attr('data-msg-are-u-sure'),
                     text: $.fn.transEle.attr('data-warning-can-not-undo'),
@@ -2251,13 +2255,14 @@ class WFRTControl {
                     cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        WFRTControl.submitCheckCollabNextNode(_form);
+                            WFRTControl.submitCheckAssociation(_form, associationData, 0);
                     }
                 })
             }
             return true;
         }
-        if (!IDRuntime) {  // create document, run WF by @decorator_run_workflow in API
+        // Create/Update document
+        if (!IDRuntime) {  // Create document, run WF by @decorator_run_workflow in API
             // check next node
             let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
             // select save status before select collaborator
@@ -2301,7 +2306,7 @@ class WFRTControl {
                     }
                 }
             });
-        } else { // update document with zones, already runtime WF
+        } else { // Update document with zones, already runtime WF
             _form.dataForm['system_status'] = 1;
             WFRTControl.callAjaxWFUpdate(_form);
         }

@@ -434,6 +434,7 @@ class LogController {
             'Workflow ended': $.fn.transEle.attr('data-workflow-end'),
             'Workflow ended (Approved)': $.fn.transEle.attr('data-end-approved'),
             'Workflow ended (Rejected)': $.fn.transEle.attr('data-end-rejected'),
+            'Rejected because of workflow error': $.fn.transEle.attr('data-workflow-error'),
         }
         if (stagesData.length > 0) {
             stagesData.map((item) => {
@@ -454,6 +455,10 @@ class LogController {
                     let childLogHTML = `<div class="mt-2">`;
                     let img = `<img src="/static/assets/images/systems/bot_4712104.png" alt="BflowBot"/>`;
                     let name = "BflowBot";
+                    let msg = itemLog?.['msg'];
+                    if (actions?.[itemLog?.['msg']]) {
+                        msg = actions?.[itemLog?.['msg']];
+                    }
                     if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
                         img = `<i class="fas fa-user-circle"></i>`;
                         name = itemLog['actor_data']?.['full_name'];
@@ -470,7 +475,7 @@ class LogController {
                                             <small class="text-light">  -  ${UtilControl.parseDateTime(itemLog?.['date_created'])}</small>
                                         </div>`;
                     childLogHTML += ` <ul>
-                                        <li><span class="fs-7">- ${actions[itemLog?.['msg']]}</span></li>
+                                        <li><span class="fs-7">- ${msg}</span></li>
                                     </ul></div>`;
                     logHTML.push(childLogHTML);
                 })

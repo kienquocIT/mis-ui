@@ -146,7 +146,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '5%',
+                        width: '6%',
                         render: (data, type, row) => {
                             if (row?.['quotation']?.['id']) {
                                 const link = urlsEle.data('link-detail-quotation').format_url_with_uuid(row?.['quotation']?.['id'])
@@ -262,7 +262,7 @@ $(function () {
             $.fn.callAjax2({
                     'url': frm.dataUrl,
                     'method': 'GET',
-                    'data': {'document_root_id': data?.['id']},
+                    'data': {'document_root_id': data?.['document_root_id']},
                     'isDropdown': true,
                 }
             ).then(

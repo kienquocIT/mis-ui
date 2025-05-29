@@ -2613,13 +2613,13 @@ class QuotationLoadDataHandle {
         }
         // payment stage (sale order)
         if (form.classList.contains('sale-order')) {
-            if (data?.['sale_order_payment_stage']) {
-                QuotationDataTableHandle.$tablePayment.DataTable().clear().draw();
-                QuotationDataTableHandle.$tablePayment.DataTable().rows.add(data?.['sale_order_payment_stage']).draw();
-            }
             if (data?.['sale_order_invoice']) {
                 QuotationDataTableHandle.$tableInvoice.DataTable().clear().draw();
                 QuotationDataTableHandle.$tableInvoice.DataTable().rows.add(data?.['sale_order_invoice']).draw();
+            }
+            if (data?.['sale_order_payment_stage']) {
+                QuotationDataTableHandle.$tablePayment.DataTable().clear().draw();
+                QuotationDataTableHandle.$tablePayment.DataTable().rows.add(data?.['sale_order_payment_stage']).draw();
             }
         }
         // load indicators & set attr disabled for detail page

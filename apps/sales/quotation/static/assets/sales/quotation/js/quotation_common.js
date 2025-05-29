@@ -820,7 +820,15 @@ class QuotationLoadDataHandle {
                 $(discount).attr('data-init-money', String(data?.['total_product_discount']));
                 discountRaw.value = data?.['total_product_discount'];
                 discountRate.value = data?.['total_product_discount_rate'];
-                discountRateCopy.value = data?.['total_product_discount_rate'];
+                discountRateCopy.value = "0";
+                if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                    if (QuotationLoadDataHandle.quotationSelectEle.attr('data-detail')) {
+                        let dataCopy = JSON.parse(QuotationLoadDataHandle.quotationSelectEle.attr('data-detail'));
+                        if (dataCopy?.['id']) {
+                            discountRateCopy.value = data?.['total_product_discount_rate'];
+                        }
+                    }
+                }
             }
             // tax
             if (is_product === true) {

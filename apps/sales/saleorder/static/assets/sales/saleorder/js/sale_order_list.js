@@ -2,6 +2,8 @@
 $(function () {
     $(document).ready(function () {
 
+        let $table = $('#table_sale_order_list')
+        let frm = new SetupFormSubmit($table);
         let transEle = $('#trans-factory');
         let urlsEle = $('#app-url-factory');
         let $modalDeliveryInfoEle = $('#deliveryInfoModalCenter');
@@ -29,8 +31,6 @@ $(function () {
         });
 
         function loadDbl() {
-            let $table = $('#table_sale_order_list')
-            let frm = new SetupFormSubmit($table);
             let changeList = [];
             $table.DataTableDefault({
                 useDataServer: true,
@@ -211,7 +211,7 @@ $(function () {
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                                     <div role="menu" class="dropdown-menu">
                                         <a class="dropdown-item ${disabledEdit} border-bottom mb-2" href="${link}"><i class="dropdown-icon far fa-edit"></i><span>${transEle.attr('data-edit')}</span></a>
-                                        <a class="dropdown-item delivery-info ${disabledDeli}" href="#" data-bs-toggle="modal" data-bs-target="#deliveryInfoModalCenter"><i class="dropdown-icon fas fa-truck"></i><span>${transEle.attr('data-delivery')}</span></a>
+                                        <a class="dropdown-item delivery-info ${disabledDeli}" href="#"><i class="dropdown-icon fas fa-truck"></i><span>${transEle.attr('data-delivery')}</span></a>
                                     </div>
                                 </div>`;
                         },
@@ -219,11 +219,7 @@ $(function () {
                 ],
                 rowCallback: (row, data) => {
                     $(row).on('click', '.delivery-info', function () {
-                        $btnDelivery.attr('data-id', data?.['id']);
-                        let targetCodeEle = $modalDeliveryInfoEle[0].querySelector('.target-code');
-                        if (targetCodeEle) {
-                            targetCodeEle.innerHTML = data?.['code'] ? data?.['code'] : '';
-                        }
+                        checkOpenDeliveryInfo(data);
                     })
                 },
                 drawCallback: function () {
@@ -258,6 +254,60 @@ $(function () {
                     });
                 },
             });
+        }
+
+        function checkOpenDeliveryInfo(data) {
+            // check CR all cancel then allow delivery
+            WindowControl.showLoading();
+            $.fn.callAjax2({
+                    'url': frm.dataUrl,
+                    'method': 'GET',
+                    'data': {'document_root_id': data?.['id']},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let dataCR = $.fn.switcherResp(resp);
+                    if (dataCR) {
+                        if (dataCR.hasOwnProperty('sale_order_list') && Array.isArray(dataCR.sale_order_list)) {
+                            let check = false;
+                            if (dataCR?.['sale_order_list'].length > 0) {
+                                let countCancel = 0;
+                                for (let saleOrder of dataCR?.['sale_order_list']) {
+                                    if (saleOrder?.['system_status'] === 4) {
+                                        countCancel++;
+                                    }
+                                }
+                                if (countCancel === (dataCR?.['sale_order_list'].length - 1)) {
+                                    check = true;
+                                }
+                            }
+                            if (check === true) {
+                                // open modal
+                                $btnDelivery.attr('data-id', data?.['id']);
+                                let targetCodeEle = $modalDeliveryInfoEle[0].querySelector('.target-code');
+                                if (targetCodeEle) {
+                                    targetCodeEle.innerHTML = data?.['code'] ? data?.['code'] : '';
+                                }
+                                $modalDeliveryInfoEle.modal('show');
+                            }
+                            if (check === false) {
+                                Swal.fire({
+                                    title: "Oops...",
+                                    text: $.fn.transEle.attr('data-check-cr'),
+                                    icon: "error",
+                                    allowOutsideClick: false,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                    }
+                                })
+                            }
+                            WindowControl.hideLoading();
+                        }
+                    }
+                }
+            )
+            return true;
         }
 
         loadDbl();

@@ -899,6 +899,8 @@
         data-md-expense="{% url "ExpenseItemListAPI" %}"
 
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
+        data-quotation="{% url "QuotationListAPI" %}"
+        data-quotation-detail="{% url "QuotationDetailAPI" 1 %}"
     >
 
     <input
@@ -965,6 +967,10 @@
             id="data-init-customer"
             data-url="{% url "AccountForSaleListAPI" %}"
             data-method="GET"
+    >
+    <input
+            type="text"
+            id="products-checked"
     >
     {{ data.employee_current|json_script:'employee_current' }}
 {% endblock %}

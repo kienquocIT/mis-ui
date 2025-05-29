@@ -821,6 +821,8 @@
 
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
         data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
+        data-quotation="{% url "QuotationListAPI" %}"
+        data-quotation-detail="{% url "QuotationDetailAPI" 1 %}"
     >
 
     <input
@@ -887,6 +889,10 @@
             id="data-init-customer"
             data-url="{% url "AccountForSaleListAPI" %}"
             data-method="GET"
+    >
+    <input
+            type="text"
+            id="products-checked"
     >
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}
     {{ data.payment_date_type|json_script:'payment_date_type' }}

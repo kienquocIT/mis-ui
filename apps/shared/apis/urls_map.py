@@ -64,6 +64,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # files
     FILE_UPLOAD = StringUrl('attachment/upload')
+    PUBLIC_FILE_UPLOAD = StringUrl('attachment/public-upload')
     FILE_UNUSED = StringUrl('attachment/unused')
     FILE_UPLOAD_WEB_BUILDER = StringUrl('attachment/web-builder/upload')
     FILE_LIST_WEB_BUILDER = StringUrl('attachment/web-builder/list')
@@ -338,7 +339,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PAYMENT_DETAIL = StringUrl('cashoutflow/payment/{pk}')
     PAYMENT_CONFIG_LIST = StringUrl('cashoutflow/payment-config')
     PAYMENT_COST_LIST = StringUrl('cashoutflow/payment-cost-list/list')
-
+    PAYMENT_PRINT = StringUrl('cashoutflow/payment-print/{pk}')
     PAYMENT_COST_ITEMS_LIST = StringUrl('cashoutflow/payment-cost-items-list')
 
     # masterdata/price

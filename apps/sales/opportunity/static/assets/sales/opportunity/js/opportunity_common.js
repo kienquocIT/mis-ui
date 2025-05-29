@@ -1347,9 +1347,9 @@ class LoadConfigAndLoadStage {
                         className: 'w-10',
                         render: (data, type, row) => {
                             if ($('.member-item .card[data-id="' + row.id + '"]').length > 0) {
-                                return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`
+                                return `<div class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`
                             }
-                            return `<span class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" ${data === true ? "checked" : ""}/></span>`
+                            return `<div class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" ${data === true ? "checked" : ""}/></span>`
                         }
                     },
                 ],

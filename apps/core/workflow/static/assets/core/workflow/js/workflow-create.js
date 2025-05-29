@@ -90,13 +90,39 @@ $(function () {
                 }
                 _form.dataForm['association'] = associate_data_submit;
             }
+            // Check required node
             if (!_form.dataForm.hasOwnProperty('node')) {
                 $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-node')}, 'failure');
                 return false;
             }
+            // Check required association
             if (!_form.dataForm.hasOwnProperty('association')) {
                 $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-association')}, 'failure');
                 return false;
+            }
+            // Check node approved associate with node completed
+            if (_form.dataForm.hasOwnProperty('node') && _form.dataForm.hasOwnProperty('association')) {
+                let approved_order = null;
+                let completed_order = null;
+                let checkAC = false;
+                for (let node of _form.dataForm?.['node']) {
+                    if (node?.['code_node_system'] === 'approved') {
+                        approved_order = node?.['order'];
+                    }
+                    if (node?.['code_node_system'] === 'completed') {
+                        completed_order = node?.['order'];
+                    }
+                }
+                for (let assoc of _form.dataForm?.['association']) {
+                    if (assoc?.['node_in'] === approved_order && assoc?.['node_out'] === completed_order) {
+                        checkAC = true;
+                        break;
+                    }
+                }
+                if (checkAC === false) {
+                    $.fn.notifyB({description: NodeLoadDataHandle.transEle.attr('data-complete-association')}, 'failure');
+                    return false;
+                }
             }
             let submitFields = [
                 'title',

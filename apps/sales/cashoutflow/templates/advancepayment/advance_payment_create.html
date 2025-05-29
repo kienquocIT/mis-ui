@@ -43,13 +43,7 @@
             data-url-expense-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
             data-url-payment-cost-list="{% url 'PaymentCostListAPI' %}">
     </script>
-    <script id="script-trans"
-            data-trans-bank-account-no="{% trans 'Account number' %}"
-            data-trans-bank-name="{% trans 'Bank name' %}"
-            data-trans-bank-code="{% trans 'Bank code' %}"
-            data-trans-BICSWIFT-code="{% trans 'BIC/SWIFT code' %}"
-    >
-    </script>
+    <script id="script-trans"></script>
     <form id="form-create-advance"
           data-method="POST"
           data-url-redirect="{% url "AdvancePaymentList" %}"
@@ -59,11 +53,15 @@
         {% include 'advancepayment/common/tabs.html' %}
     </form>
 {% endblock %}
+{% block modalData %}
+    {% include 'advancepayment/common/modals.html' %}
+{% endblock %}
 {% block jsFooter %}
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static "assets/js/advancepayment/advance_payment_common.js" %}"></script>
     <script src="{% static "assets/js/advancepayment/advance_payment_create.js" %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>

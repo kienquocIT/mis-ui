@@ -9,14 +9,12 @@ $(function () {
         let $quotationTabs = $('#quotation-tabs');
 
         // Load inits
-        LeaseOrderLoadDataHandle.loadCustomCss();
         LeaseOrderLoadDataHandle.loadInitConfigLease();
         LeaseOrderLoadDataHandle.loadInitInherit();
-        LeaseOrderLoadDataHandle.loadInitCustomer();
         LeaseOrderLoadDataHandle.loadBoxQuotationCustomer();
-        LeaseOrderLoadDataHandle.loadBoxQuotationContact();
-        LeaseOrderLoadDataHandle.loadBoxQuotationPaymentTerm();
-        LeaseOrderLoadDataHandle.loadInitDate();
+        FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.contactSelectEle);
+        FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [], {}, null, true);
+        $('#quotation-create-date-created').val(DateTimeControl.getCurrentDate("DMY", "/"));
         LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderLoadDataHandle.$depreciationModal);
         // init dataTable
         LeaseOrderDataTableHandle.dataTableProduct();
@@ -83,6 +81,10 @@ $(function () {
             LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
+        LeaseOrderDataTableHandle.$tableSProduct.on('click', '.table-row-checkbox', function () {
+            LeaseOrderLoadDataHandle.loadStoreCheckProduct(this);
+        });
+
         LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
             LeaseOrderLoadDataHandle.loadNewProduct();
         });
@@ -95,8 +97,13 @@ $(function () {
             LeaseOrderLoadDataHandle.loadTool(this);
         });
 
+        LeaseOrderDataTableHandle.$tableSAsset.on('click', '.table-row-checkbox', function () {
+            LeaseOrderLoadDataHandle.loadStoreCheckAsset(this);
+        });
+
         LeaseOrderLoadDataHandle.$btnSaveSelectAsset.on('click', function () {
             LeaseOrderLoadDataHandle.loadAsset(this);
+            LeaseOrderStoreDataHandle.storeDtbData(1);
         });
 
         // QUICK PRODUCT
@@ -596,15 +603,7 @@ $(function () {
                 LeaseOrderDataTableHandle.$tableQuotationCopy[0].removeAttribute('hidden');
                 divCopyOption[0].setAttribute('hidden', true);
                 // load table quotation list for copy
-                let opp_id = null;
-                let sale_person_id = null;
-                if (LeaseOrderLoadDataHandle.opportunitySelectEle.val()) {
-                    opp_id = LeaseOrderLoadDataHandle.opportunitySelectEle.val()
-                }
-                if (LeaseOrderLoadDataHandle.salePersonSelectEle.val()) {
-                    sale_person_id = LeaseOrderLoadDataHandle.salePersonSelectEle.val()
-                }
-                LeaseOrderLoadDataHandle.loadTableCopyQuotation(opp_id, sale_person_id);
+                LeaseOrderLoadDataHandle.loadTableCopyQuotation();
             } else if (type === 'copy-to') {
                 // load data product for table datable-copy-quotation-product
                 let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);
@@ -868,6 +867,12 @@ $(function () {
                     $.fn.initMaskMoney2();
                 }
             }
+        });
+
+        LeaseOrderDataTableHandle.$tableInvoice.on('click', '.del-row', function (e) {
+            deleteRow(this.closest('tr'), LeaseOrderDataTableHandle.$tableInvoice);
+            reOrderSTT(LeaseOrderDataTableHandle.$tableInvoice);
+            LeaseOrderDataTableHandle.$tablePayment.DataTable().clear().draw();
         });
 
         LeaseOrderLoadDataHandle.$btnSaveTerm.on('click', function () {

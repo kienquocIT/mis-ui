@@ -3,22 +3,21 @@
 <div class="tab-pane fade show active" id="tab_line_detail" data-zone="payment_expense_valid_list">
     <div class="row">
         <div class="col-12">
-            <table id="tab_line_detail_datatable" class="table nowrap w-100"
+            <table id="table_line_detail" class="table nowrap w-100"
                    data-url-expense-type-list="{% url 'ExpenseItemListAPI' %}"
                    data-url-tax-list="{% url 'TaxListAPI' %}">
                 <thead>
                     <tr>
                         <th style="min-width: 50px"></th>
                         <th style="min-width: 50px"></th>
-                        <th style="min-width: 200px">{% trans 'Expense type' %}</th>
-                        <th style="min-width: 150px">{% trans 'Description' %}</th>
-                        <th style="min-width: 150px">{% trans 'UoM' %}</th>
-                        <th style="min-width: 120px">{% trans 'Quantity' %}</th>
-                        <th style="min-width: 200px">{% trans 'Unit price' %}</th>
+                        <th style="min-width: 250px">{% trans 'Expense type' %}</th>
+                        <th style="min-width: 200px">{% trans 'Description' %}</th>
+                        <th style="min-width: 200px">{% trans 'Quantity' %}</th>
+                        <th style="min-width: 150px">{% trans 'Unit price' %}</th>
+                        <th style="min-width: 150px">{% trans 'Subtotal price' %}</th>
                         <th style="min-width: 100px">{% trans 'Tax' %}</th>
-                        <th style="min-width: 200px">{% trans 'Subtotal price' %}</th>
-                        <th style="min-width: 200px">{% trans 'After tax subtotal' %}</th>
-                        <th style="min-width: 150px">{% trans 'Document number' %}</th>
+                        <th style="min-width: 150px">{% trans 'After tax subtotal' %}</th>
+                        <th style="min-width: 200px">{% trans 'Document number' %}</th>
                         <th style="min-width: 50px"></th>
                     </tr>
                 </thead>

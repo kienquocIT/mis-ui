@@ -62,7 +62,7 @@
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
                     {% trans 'Select Sale Person' as inherit_title %}
-                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-process-prj-inherit' opp_title=opp_title has_opp=True has_process=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True process_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                    {% include 'extends/the-documents/bastion.html' with opp_title=opp_title has_process=True has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True inherit_readonly=True %}
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
@@ -1091,6 +1091,8 @@
 
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
         data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
+        data-quotation="{% url "QuotationListAPI" %}"
+        data-quotation-detail="{% url "QuotationDetailAPI" 1 %}"
     >
 
     <input
@@ -1157,6 +1159,10 @@
             id="data-init-customer"
             data-url="{% url "AccountForSaleListAPI" %}"
             data-method="GET"
+    >
+    <input
+            type="text"
+            id="products-checked"
     >
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}
     {{ data.payment_date_type|json_script:'payment_date_type' }}

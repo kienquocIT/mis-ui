@@ -74,22 +74,19 @@ function InitAdvancePaymentTable(data_param={}) {
                 }
             },
             {
-                className: 'w-10',
-                render: (data, type, row) => {
-                    let to_employee_trans = dtb.attr('data-type-translate-employee')
-                    let to_supplier_trans = dtb.attr('data-type-translate-supplier')
-                    if (row?.['advance_payment_type'] === 0) {
-                        return `<span>${to_employee_trans}</span>`
-                    } else if (row?.['advance_payment_type'] === 1) {
-                        return `<span>${to_supplier_trans}</span>`
-                    }
-                    return '--'
-                }
-            },
-            {
                 className: 'ellipsis-cell-xs w-5',
                 render: (data, type, row) => {
                     return `<span title="${row?.['sale_code'] || '--'}">${row?.['sale_code'] || '--'}</span>`
+                }
+            },
+            {
+                className: 'ellipsis-cell-lg w-10',
+                render: (data, type, row) => {
+                    if (row?.['advance_payment_type'] === 0) {
+                        return WFRTControl.displayEmployeeWithGroup(row?.['employee_inherit']);
+                    } else if (row?.['advance_payment_type'] === 1) {
+                        return `<span title="${row?.['supplier']?.['name']}">${row?.['supplier']?.['name']}</span>`
+                    }
                 }
             },
             {
@@ -120,7 +117,7 @@ function InitAdvancePaymentTable(data_param={}) {
             {
                 className: 'ellipsis-cell-sm w-10',
                 render: (data, type, row) => {
-                    return WFRTControl.displayEmployeeWithGroup(row?.['employee_inherit']);
+                    return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                 }
             },
             {

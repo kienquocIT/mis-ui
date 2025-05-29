@@ -163,6 +163,7 @@ class QuotationUpdate(View):
             'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
             'form_id': 'frm_quotation_create',
             'list_from_app': 'quotation.quotation.edit',
+            'app_id': 'b9650500-aba7-44e3-b6e0-2542622702a3',
         }
         return ctx, status.HTTP_200_OK
 

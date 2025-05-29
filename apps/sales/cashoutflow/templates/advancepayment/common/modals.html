@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<div class="modal fade" id="bank-account-modal" tabindex="-1" role="dialog" aria-labelledby="bank-account-modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Select bank account' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span class="text-primary">{% trans 'Pick a bank account, or add one in the last row.' %}</span>
+                <table class="table w-100 nowrap" id="bank-account-table">
+                    <thead class="bg-primary-light-5">
+                    <tr>
+                        <th style="min-width: 50px;"></th>
+                        <th style="min-width: 50px;"></th>
+                        <th style="min-width: 300px;">{% trans 'Information' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="accept-bank-account-btn" class="btn btn-primary">{% trans 'Select' %}</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -474,7 +474,7 @@ class ProductModificationPageFunction {
                                 <div class="data-component-detail-space"></div>
                             `;
                         }
-                        return `<input class="form-control form-control-line fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
+                        return `<input class="form-control fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
                     }
                 },
                 {
@@ -523,7 +523,7 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return `<input class="form-control form-control-line fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
+                        return `<input class="form-control fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
                     }
                 },
                 {

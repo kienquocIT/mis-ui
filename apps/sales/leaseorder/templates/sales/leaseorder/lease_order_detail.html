@@ -42,7 +42,7 @@
         </div>
         <div class="col-12 col-md-6 col-lg-6">
             <div class="d-flex justify-content-end">
-                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <div class="btn-group hidden" role="group" aria-label="Button group with nested dropdown">
                     <button type="button" class="btn btn-outline-secondary" id="btn-copy-quotation" data-bs-toggle="modal" data-bs-target="#quotationModalCenter" data-copy-type="copy-from" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Copy Quotation' %}"><i class="far fa-copy"></i></button>
                 </div>
             </div>
@@ -137,6 +137,7 @@
                                     data-link-detail="{% url 'ContactDetail' 1 %}"
                                     name="contact_id"
                                     data-keyResp="contact_list"
+                                    data-keyText="fullname"
                                     readonly
                                 ></select>
                             </div>
@@ -1333,6 +1334,8 @@
 
         data-so-product-wo="{% url 'SOProductWOListAPI' %}"
         data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
+        data-quotation="{% url "QuotationListAPI" %}"
+        data-quotation-detail="{% url "QuotationDetailAPI" 1 %}"
     >
 
     <input
@@ -1415,6 +1418,14 @@
             id="data-config-lease-order"
             data-url="{% url "LeaseOrderConfigDetailAPI" %}"
             data-method="GET"
+    >
+    <input
+            type="text"
+            id="products-checked"
+    >
+    <input
+            type="text"
+            id="assets-checked"
     >
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}
     {{ data.payment_date_type|json_script:'payment_date_type' }}

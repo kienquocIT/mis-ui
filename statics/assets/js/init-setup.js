@@ -434,6 +434,7 @@ class LogController {
             'Workflow ended': $.fn.transEle.attr('data-workflow-end'),
             'Workflow ended (Approved)': $.fn.transEle.attr('data-end-approved'),
             'Workflow ended (Rejected)': $.fn.transEle.attr('data-end-rejected'),
+            'Rejected because of workflow error': $.fn.transEle.attr('data-workflow-error'),
         }
         if (stagesData.length > 0) {
             stagesData.map((item) => {
@@ -454,8 +455,12 @@ class LogController {
                     let childLogHTML = `<div class="mt-2">`;
                     let img = `<img src="/static/assets/images/systems/bot_4712104.png" alt="BflowBot"/>`;
                     let name = "BflowBot";
+                    let msg = itemLog?.['msg'];
+                    if (actions?.[itemLog?.['msg']]) {
+                        msg = actions?.[itemLog?.['msg']];
+                    }
                     if ($.fn.hasOwnProperties(itemLog['actor_data'], ['full_name'])) {
-                        img = `<i class="fas fa-user-circle"></i>`;
+                        img = `<i class="fas fa-user-circle fs-4 text-blue"></i>`;
                         name = itemLog['actor_data']?.['full_name'];
                     }
                     childLogHTML += `<div class="d-flex align-items-center">
@@ -470,7 +475,7 @@ class LogController {
                                             <small class="text-light">  -  ${UtilControl.parseDateTime(itemLog?.['date_created'])}</small>
                                         </div>`;
                     childLogHTML += ` <ul>
-                                        <li><span class="fs-7">- ${actions[itemLog?.['msg']]}</span></li>
+                                        <li><span class="fs-7">- ${msg}</span></li>
                                     </ul></div>`;
                     logHTML.push(childLogHTML);
                 })
@@ -2220,7 +2225,8 @@ class WFRTControl {
         let eleStatus = $('#systemStatus');
         let $eleCode = $('#documentCode');
         let currentEmployee = $x.fn.getEmployeeCurrentID();
-        if (eleStatus.attr('data-status-cr') === '5' && eleStatus.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {  // change document after finish
+        // Check CR
+        if (eleStatus.attr('data-status-cr') === '5' && eleStatus.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {
             let $eleForm = $(`#${globeFormMappedZone}`);
             let docRootID = eleStatus.attr('data-doc-root-id');
             let docChangeOrder = eleStatus.attr('data-doc-change-order');
@@ -2235,6 +2241,9 @@ class WFRTControl {
                 if (docChangeOrder) {
                     _form.dataForm['document_change_order'] = parseInt(docChangeOrder) + 1;
                 }
+                // check next node
+                let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
+                // select cancel/confirm change
                 Swal.fire({
                     title: $.fn.transEle.attr('data-msg-are-u-sure'),
                     text: $.fn.transEle.attr('data-warning-can-not-undo'),
@@ -2246,13 +2255,14 @@ class WFRTControl {
                     cancelButtonText: $.fn.transEle.attr('data-cancel'),
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        WFRTControl.submitCheckCollabNextNode(_form);
+                            WFRTControl.submitCheckAssociation(_form, associationData, 0);
                     }
                 })
             }
             return true;
         }
-        if (!IDRuntime) {  // create document, run WF by @decorator_run_workflow in API
+        // Create/Update document
+        if (!IDRuntime) {  // Create document, run WF by @decorator_run_workflow in API
             // check next node
             let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
             // select save status before select collaborator
@@ -2296,7 +2306,7 @@ class WFRTControl {
                     }
                 }
             });
-        } else { // update document with zones, already runtime WF
+        } else { // Update document with zones, already runtime WF
             _form.dataForm['system_status'] = 1;
             WFRTControl.callAjaxWFUpdate(_form);
         }
@@ -2731,8 +2741,11 @@ class WFRTControl {
                             WFRTControl.checkAllowEditZones(actionMySelf);
                             WFRTControl.activeSetZoneHiddenMySelf(runtimeData['zones_hidden_myself']);
                             if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === $x.fn.getEmployeeCurrentID()) {
-                                // Bật nút CR & Cancel (sau khi hoàn thành)
-                                WFRTControl.setBtnWFAfterFinishDetail();
+                                // Bật nút CR & Cancel
+                                let appAllowCR = ["quotation.quotation", "saleorder.saleorder"];
+                                if (appAllowCR.includes(runtimeData?.['app_code'])) {
+                                    WFRTControl.setBtnWFAfterFinishDetail();
+                                }
                                 // Bật nút in
                                 let $btnPrint = $('#print-document');
                                 if ($btnPrint && $btnPrint.length > 0) {
@@ -3894,7 +3907,7 @@ class WFAssociateControl {
             if (val) {
                 if (Array.isArray(val)) {
                     // val = val.map(item => item.replace(/\s/g, "").toLowerCase());
-                    val.map(item =>
+                    val = val.map(item =>
                         typeof item === 'string'
                             ? item.replace(/\s/g, "").toLowerCase()
                             : item

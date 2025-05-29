@@ -10,7 +10,6 @@ $(function () {
 
         // Load inits
         QuotationLoadDataHandle.loadInitInherit();
-        QuotationLoadDataHandle.loadInitCustomer();
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
         FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle);
         FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
@@ -66,6 +65,10 @@ $(function () {
             QuotationStoreDataHandle.storeDtbData(3);
             QuotationStoreDataHandle.storeDtbData(4);
             QuotationStoreDataHandle.storeDtbData(5);
+        });
+
+        QuotationDataTableHandle.$tableSProduct.on('click', '.table-row-checkbox', function () {
+            QuotationLoadDataHandle.loadStoreCheckProduct(this);
         });
 
         QuotationLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
@@ -430,15 +433,7 @@ $(function () {
                 QuotationDataTableHandle.$tableQuotationCopy[0].removeAttribute('hidden');
                 divCopyOption[0].setAttribute('hidden', true);
                 // load table quotation list for copy
-                let opp_id = null;
-                let sale_person_id = null;
-                if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
-                    opp_id = QuotationLoadDataHandle.opportunitySelectEle.val()
-                }
-                if (QuotationLoadDataHandle.salePersonSelectEle.val()) {
-                    sale_person_id = QuotationLoadDataHandle.salePersonSelectEle.val()
-                }
-                QuotationLoadDataHandle.loadTableCopyQuotation(opp_id, sale_person_id);
+                QuotationLoadDataHandle.loadTableCopyQuotation();
             } else if (type === 'copy-to') {
                 // load data product for table datable-copy-quotation-product
                 let dataCopy = JSON.parse($('#data-copy-quotation-detail')[0].value);

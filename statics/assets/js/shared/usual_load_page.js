@@ -717,7 +717,7 @@ class UsualLoadPageFunction {
      * @param {HTMLElement|jQuery} table - Bảng DOM đã init DataTable
      * @param {Object} [data={}] - Dữ liệu dòng mới
      * @param {number} [index=0] - Vị trí muốn chèn (0-based)
-     * @param {function(rowEl: HTMLElement|jQuery, oldData: Object): Object} extractFn - Hàm lấy lại dữ liệu từ DOM
+     * @param {function(rowEl: jQuery, oldData: Object): Object} extractFn - Hàm lấy lại dữ liệu từ DOM
      * @param {Boolean} [is_draw=true] - vẽ lại bảng
      */
     static AddTableRowAtIndex(table, data={}, index=0, extractFn, is_draw=true) {
@@ -770,6 +770,7 @@ class UsualLoadPageFunction {
      */
     static DisablePage(active=true, except=[]) {
         if (active) {
+            except = except.concat(['#print-document', '#printModal select', '#printModal button'])
             const shouldExclude = (el) => except.some(selector => el.matches(selector));
 
             const containers = document.querySelectorAll('#idxPageContent, .idxModalData');
@@ -800,5 +801,97 @@ class UsualLoadPageFunction {
                 observer.observe(container, { childList: true, subtree: true });
             });
         }
+    }
+
+    /**
+     * Hàm đọc tiền thành chữ (VND)
+     * @param {float} num
+     * @returns {string}
+     */
+    static ReadMoneyVND(num) {
+        if (num) {
+            let xe0 = [
+                '',
+                'một',
+                'hai',
+                'ba',
+                'bốn',
+                'năm',
+                'sáu',
+                'bảy',
+                'tám',
+                'chín'
+            ]
+            let xe1 = [
+                '',
+                'mười',
+                'hai mươi',
+                'ba mươi',
+                'bốn mươi',
+                'năm mươi',
+                'sáu mươi',
+                'bảy mươi',
+                'tám mươi',
+                'chín mươi'
+            ]
+            let xe2 = [
+                '',
+                'một trăm',
+                'hai trăm',
+                'ba trăm',
+                'bốn trăm',
+                'năm trăm',
+                'sáu trăm',
+                'bảy trăm',
+                'tám trăm',
+                'chín trăm'
+            ]
+
+            let result = ""
+            let str_n = String(num)
+            let len_n = str_n.length
+
+            if (len_n === 1) {
+                result = xe0[num]
+            } else if (len_n === 2) {
+                if (num === 10) {
+                    result = "mười"
+                } else {
+                    result = xe1[parseInt(str_n[0])] + " " + xe0[parseInt(str_n[1])]
+                }
+            } else if (len_n === 3) {
+                result = xe2[parseInt(str_n[0])] + " " + UsualLoadPageFunction.ReadMoneyVND(parseInt(str_n.substring(1, len_n)))
+            } else if (len_n <= 6) {
+                result = UsualLoadPageFunction.ReadMoneyVND(parseInt(str_n.substring(0, len_n - 3))) + " nghìn " + UsualLoadPageFunction.ReadMoneyVND(parseInt(str_n.substring(len_n - 3, len_n)))
+            } else if (len_n <= 9) {
+                result = UsualLoadPageFunction.ReadMoneyVND(parseInt(str_n.substring(0, len_n - 6))) + " triệu " + UsualLoadPageFunction.ReadMoneyVND(parseInt(str_n.substring(len_n - 6, len_n)))
+            } else if (len_n <= 12) {
+                result = UsualLoadPageFunction.ReadMoneyVND(parseInt(str_n.substring(0, len_n - 9))) + " tỷ " + UsualLoadPageFunction.ReadMoneyVND(parseInt(str_n.substring(len_n - 9, len_n)))
+            }
+
+            result = String(result.trim())
+            return result;
+        }
+        return ''
+    }
+
+    /**
+     * Auto load ô Employee created
+     * @param {HTMLElement|jQuery} element - element
+     * @param {Object} data - data json
+     * @returns {void}
+     */
+    static AutoLoadCurrentEmployee({element, fullname=null}) {
+        if (!element) {
+            console.error("element is required.");
+            return;
+        }
+        if (!fullname) {
+            let ele_emp = $('#idx-link-to-current-employee')
+            let data_emp = ele_emp.attr('data-value-full') ? JSON.parse(ele_emp.attr('data-value-full')) : {}
+            element.val(data_emp?.['full_name'] || '')
+            return;
+        }
+        element.val(fullname)
     }
 }

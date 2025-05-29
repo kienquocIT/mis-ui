@@ -11,7 +11,6 @@ class QuotationLoadDataHandle {
     static $eleStoreDetail = $('#quotation-detail-data');
     static transEle = $('#app-trans-factory');
     static urlEle = $('#app-url-factory');
-    static customerInitEle = $('#data-init-customer');
     static $priceModal = $('#selectPriceModal');
     static $btnSavePrice = $('#btn-save-select-price');
     static $costModal = $('#selectCostModal');
@@ -20,6 +19,8 @@ class QuotationLoadDataHandle {
     static $btnSaveInvoice = $('#btn-save-select-invoice');
     static $btnSaveReconcile = $('#btn-save-select-reconcile');
     static dataSuppliedBy = [{'id': 0, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-purchase')}, {'id': 1, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-make')}];
+
+    static $productsCheckedEle = $('#products-checked');
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
         let opts = {'allowClear': isClear};
@@ -225,33 +226,6 @@ class QuotationLoadDataHandle {
         }
     };
 
-    static loadInitCustomer() {
-        let result = {};
-        let ele = QuotationLoadDataHandle.customerInitEle;
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-                'url': url,
-                'method': method,
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
-                        for (let customer of data.account_sale_list) {
-                            if (!result.hasOwnProperty(customer?.['id'])) {
-                                result[customer?.['id']] = customer;
-                            }
-                        }
-                        ele.val(JSON.stringify(result));
-                    }
-                }
-            }
-        )
-    };
-
     static loadBoxQuotationCustomer(dataCustomer = {}) {
         let data_filter = {};
         let employee_current_data = JSON.parse($('#employee_current').text());
@@ -314,7 +288,65 @@ class QuotationLoadDataHandle {
         QuotationLoadDataHandle.loadDataProductAll();
     };
 
+    static loadStoreSProduct() {
+        let dataSelected = {};
+        QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = QuotationDataTableHandle.$tableProduct.DataTable().row(row).index();
+            let $row = QuotationDataTableHandle.$tableProduct.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+            if (dataRow?.['product_data']?.['id']) {
+                dataSelected[dataRow?.['product_data']?.['id']] = {
+                    "type": "selected",
+                    "data": dataRow?.['product_data'],
+                };
+            }
+        });
+        QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(dataSelected));
+        return true;
+    };
+
+    static loadStoreCheckProduct(ele) {
+        let row = ele.closest('tr');
+        let rowIndex = QuotationDataTableHandle.$tableSProduct.DataTable().row(row).index();
+        let $row = QuotationDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
+        let dataRow = $row.data();
+
+        if (dataRow) {
+            if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
+                let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
+                if (typeof storeID === 'object') {
+                    if (ele.checked === true) {
+                        if (!storeID?.[dataRow?.['id']]) {
+                            storeID[dataRow?.['id']] = {
+                                "type": "current",
+                                "data": dataRow,
+                            };
+                        }
+                    }
+                    if (ele.checked === false) {
+                        if (storeID?.[dataRow?.['id']]) {
+                            delete storeID?.[dataRow?.['id']];
+                        }
+                    }
+                    QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(storeID));
+                }
+            } else {
+                let dataStore = {};
+                if (ele.checked === true) {
+                    dataStore[dataRow?.['id']] = {
+                        "type": "current",
+                        "data": dataRow,
+                    };
+                }
+                QuotationLoadDataHandle.$productsCheckedEle.val(JSON.stringify(dataStore));
+            }
+        }
+        return true;
+    };
+
     static loadModalSProduct() {
+        QuotationLoadDataHandle.loadStoreSProduct();
         QuotationDataTableHandle.$tableSProduct.DataTable().destroy();
         QuotationDataTableHandle.dataTableSelectProduct();
     };
@@ -417,66 +449,9 @@ class QuotationLoadDataHandle {
         return {'is_pass': check, 'note_type': note_type};
     };
 
-    static loadTableCopyQuotation(opp_id = null, sale_person_id = null) {
-        let ele = $('#data-init-copy-quotation');
-        let formSubmit = $('#frm_quotation_create');
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $('#datable-copy-quotation').DataTable().destroy();
-        if (sale_person_id) {
-            let data_filter = {
-                'employee_inherit': sale_person_id,
-                'system_status__in': [2, 3].join(','),
-            };
-            WindowControl.showLoading();
-            $.fn.callAjax2({
-                    'url': url,
-                    'method': method,
-                    'data': data_filter,
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
-                            let dataInit = data.quotation_list;
-                            // check OppID to get canceled quotation in same Opp then concat 2 list data (only for Quotation pages)
-                            if (opp_id && !formSubmit[0].classList.contains('sale-order')) {
-                                data_filter = {'system_status': 4}
-                                data_filter['opportunity'] = opp_id;
-                                data_filter['opportunity__is_close_lost'] = false;
-                                data_filter['opportunity__is_deal_close'] = false;
-                                $.fn.callAjax2({
-                                        'url': url,
-                                        'method': method,
-                                        'data': data_filter,
-                                        'isDropdown': true,
-                                    }
-                                ).then(
-                                    (resp) => {
-                                        let data = $.fn.switcherResp(resp);
-                                        if (data) {
-                                            if (data.hasOwnProperty('quotation_list') && Array.isArray(data.quotation_list)) {
-                                                let dataHasOpp = data.quotation_list.concat(dataInit);
-                                                QuotationDataTableHandle.dataTableCopyQuotation(dataHasOpp);
-                                                WindowControl.hideLoading();
-                                            }
-                                        }
-                                    }
-                                )
-                            } else {
-                                QuotationDataTableHandle.dataTableCopyQuotation(dataInit);
-                                WindowControl.hideLoading();
-                            }
-                        }
-                    }
-                }
-            )
-        } else {
-            QuotationDataTableHandle.dataTableCopyQuotation();
-            WindowControl.hideLoading();
-        }
+    static loadTableCopyQuotation() {
+        QuotationDataTableHandle.$tableQuotationCopy.DataTable().destroy();
+        QuotationDataTableHandle.dataTableCopyQuotation();
         return true;
     };
 
@@ -599,18 +574,27 @@ class QuotationLoadDataHandle {
     };
 
     static loadNewProduct() {
-        QuotationDataTableHandle.$tableSProduct.DataTable().rows().every(function () {
-            let row = this.node();
-            let rowIndex = QuotationDataTableHandle.$tableSProduct.DataTable().row(row).index();
-            let $row = QuotationDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
-            let dataRow = $row.data();
-
-            if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
-                if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
-                    QuotationLoadDataHandle.loadAddRowProduct(dataRow);
+        if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
+            let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
+            for (let key in storeID) {
+                if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${storeID[key]?.['data']?.['id']}"]`)) {
+                    QuotationLoadDataHandle.loadAddRowProduct(storeID[key]?.['data']);
                 }
             }
-        });
+        }
+
+        // QuotationDataTableHandle.$tableSProduct.DataTable().rows().every(function () {
+        //     let row = this.node();
+        //     let rowIndex = QuotationDataTableHandle.$tableSProduct.DataTable().row(row).index();
+        //     let $row = QuotationDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
+        //     let dataRow = $row.data();
+        //
+        //     if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
+        //         if (!QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
+        //             QuotationLoadDataHandle.loadAddRowProduct(dataRow);
+        //         }
+        //     }
+        // });
         return true;
     };
 
@@ -745,14 +729,11 @@ class QuotationLoadDataHandle {
     };
 
     static loadAPIDetailQuotation(select_id) {
-        let ele = $('#data-init-copy-quotation');
-        let url = ele.attr('data-url-detail').format_url_with_uuid(select_id);
-        let method = ele.attr('data-method');
         WindowControl.showLoading();
         $.fn.callAjax2(
             {
-                'url': url,
-                'method': method,
+                'url': QuotationLoadDataHandle.urlEle.attr('data-quotation-detail').format_url_with_uuid(select_id),
+                'method': "GET",
                 'isDropdown': true,
             }
         ).then(
@@ -839,7 +820,15 @@ class QuotationLoadDataHandle {
                 $(discount).attr('data-init-money', String(data?.['total_product_discount']));
                 discountRaw.value = data?.['total_product_discount'];
                 discountRate.value = data?.['total_product_discount_rate'];
-                discountRateCopy.value = data?.['total_product_discount_rate'];
+                discountRateCopy.value = "0";
+                if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                    if (QuotationLoadDataHandle.quotationSelectEle.attr('data-detail')) {
+                        let dataCopy = JSON.parse(QuotationLoadDataHandle.quotationSelectEle.attr('data-detail'));
+                        if (dataCopy?.['id']) {
+                            discountRateCopy.value = data?.['total_product_discount_rate'];
+                        }
+                    }
+                }
             }
             // tax
             if (is_product === true) {
@@ -2427,8 +2416,7 @@ class QuotationLoadDataHandle {
         }
         if ($(form).attr('data-method').toLowerCase() !== 'get') {
             QuotationLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
-            QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
-            QuotationLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
+            QuotationLoadDataHandle.customerSelectEle[0].removeAttribute('disabled');
         }
         if (Object.keys(data?.['opportunity']).length > 0) {
             if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
@@ -2441,7 +2429,7 @@ class QuotationLoadDataHandle {
             }
             if ($(form).attr('data-method').toLowerCase() !== 'get') {
                 QuotationLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
-                QuotationLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
+                QuotationLoadDataHandle.customerSelectEle[0].setAttribute('disabled', 'true');
             }
         }
         if (data?.['customer_data']) {
@@ -3717,15 +3705,34 @@ class QuotationDataTableHandle {
         }
     };
 
-    static dataTableCopyQuotation(data) {
+    static dataTableCopyQuotation() {
         // init dataTable
-        QuotationDataTableHandle.$tableQuotationCopy.DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
+        let params = {
+            'employee_inherit': QuotationLoadDataHandle.salePersonSelectEle.val(),
+            'system_status__in': [2, 3].join(','),
+        }
+        if (!QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+            params = {
+                'employee_inherit': QuotationLoadDataHandle.salePersonSelectEle.val(),
+                'system_status__in': [2, 3, 4].join(','),
+            }
+        }
+        QuotationDataTableHandle.$tableQuotationCopy.not('.dataTable').DataTableDefault({
+            useDataServer: true,
+            ajax: {
+                url: QuotationLoadDataHandle.urlEle.attr('data-quotation'),
+                type: "GET",
+                data: params,
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('quotation_list')) {
+                        return resp.data['quotation_list'] ? resp.data['quotation_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
             autoWidth: true,
             scrollX: true,
-            scrollY: "400px",
             columns: [
                 {
                     targets: 0,
@@ -4560,11 +4567,25 @@ class QuotationDataTableHandle {
                         }
                         let disabled = '';
                         let checked = '';
-                        if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
-                            disabled = 'disabled';
-                            checked = 'checked';
-                            clsZoneReadonly = 'zone-readonly';
+                        // if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
+                        //     disabled = 'disabled';
+                        //     checked = 'checked';
+                        //     clsZoneReadonly = 'zone-readonly';
+                        // }
+
+                        if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
+                            let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
+                            if (typeof storeID === 'object') {
+                                if (storeID?.[row?.['id']]) {
+                                    if (storeID?.[row?.['id']]?.['type'] === "selected") {
+                                        disabled = 'disabled';
+                                    }
+                                    checked = 'checked';
+                                    clsZoneReadonly = 'zone-readonly';
+                                }
+                            }
                         }
+
                         let checkBOM = QuotationLoadDataHandle.loadCheckProductBOM(row);
                         if (checkBOM?.['is_pass'] === false) {
                             disabled = 'disabled';
@@ -4634,7 +4655,7 @@ class QuotationDataTableHandle {
                 if (['post', 'put'].includes(QuotationLoadDataHandle.$form.attr('data-method').toLowerCase())) {
                     QuotationDataTableHandle.dtbSProductHDCustom();
                 }
-                QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSProduct);
+                // QuotationLoadDataHandle.loadEventCheckbox(QuotationDataTableHandle.$tableSProduct);
             },
         });
     };

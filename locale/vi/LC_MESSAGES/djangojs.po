@@ -430,6 +430,38 @@ msgid "input UOM..."
 msgstr "nhập đơn vị..."
 
 #
+msgid "Bank name"
+msgstr "Tên ngân hàng"
+
+#
+msgid "Account name"
+msgstr "Tên tài khoản"
+
+#
+msgid "Account number"
+msgstr "Số tài khoản"
+
+#
+msgid "Expense type"
+msgstr "Loại chi phí"
+
+#
+msgid "Unit price"
+msgstr "Đơn giá"
+
+#
+msgid "Available"
+msgstr "Khả dụng"
+
+#
+msgid "Converted value"
+msgstr "Giá trị chuyển đổi"
+
+#
+msgid "Total"
+msgstr "Tổng cộng"
+
+#
 msgid "Warehouse"
 msgstr "Kho"
 

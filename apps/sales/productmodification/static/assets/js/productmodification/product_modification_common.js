@@ -767,7 +767,7 @@ class ProductModificationEventHandler {
             pageElements.$table_select_serial.closest('.table-serial-space').prop('hidden', pageVariables.current_product_modified?.['general_traceability_method'] !== '2')
             if (pageVariables.current_product_modified?.['general_traceability_method'] === '2') {
                 let product_warehouse_id = $(this).attr('data-product-warehouse-id')
-                let url = `${pageElements.$script_url.attr('data-url-serial-list-by-warehouse')}&product_warehouse_id=${product_warehouse_id}`
+                let url = `${pageElements.$script_url.attr('data-url-serial-list-by-warehouse')}?product_warehouse_id=${product_warehouse_id}`
                 ProductModificationPageFunction.LoadTableSerialListByWarehouse(url)
             }
         })

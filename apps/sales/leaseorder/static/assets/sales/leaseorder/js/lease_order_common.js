@@ -3602,13 +3602,13 @@ class LeaseOrderLoadDataHandle {
             tableExpense.DataTable().rows.add(expenses_data).draw();
         }
         // load table payment stage
-        if (data?.['lease_payment_stage']) {
-            LeaseOrderDataTableHandle.$tablePayment.DataTable().clear().draw();
-            LeaseOrderDataTableHandle.$tablePayment.DataTable().rows.add(data?.['lease_payment_stage']).draw();
-        }
         if (data?.['lease_invoice']) {
             LeaseOrderDataTableHandle.$tableInvoice.DataTable().clear().draw();
             LeaseOrderDataTableHandle.$tableInvoice.DataTable().rows.add(data?.['lease_invoice']).draw();
+        }
+        if (data?.['lease_payment_stage']) {
+            LeaseOrderDataTableHandle.$tablePayment.DataTable().clear().draw();
+            LeaseOrderDataTableHandle.$tablePayment.DataTable().rows.add(data?.['lease_payment_stage']).draw();
         }
         // load indicators & set attr disabled for detail page
         if ($(form).attr('data-method').toLowerCase() === 'get') {

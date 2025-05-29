@@ -286,8 +286,7 @@ class PaymentPageFunction {
             }
             if (detail_converted_html) {
                 detail_converted_html_full = `<div class="btn-group" role="group">
-                    <button data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                            class="btn btn-rounded btn-icon btn-light" type="button">
+                    <button data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-sm btn-rounded btn-icon btn-outline-light" type="button">
                         <span class="icon"><i class="bi bi-chevron-down"></i></span>
                     </button>
                     <div class="dropdown-menu">
@@ -318,7 +317,7 @@ class PaymentPageFunction {
                                     <button data-bs-toggle="offcanvas"
                                             data-bs-target="#offcanvasSelectDetailAP"
                                             aria-controls="offcanvasExample"
-                                            class="mr-1 btn btn-rounded btn-icon btn-soft-primary btn-add-payment-value"
+                                            class="mx-1 btn btn-sm btn-rounded btn-icon btn-outline-primary btn-add-payment-value"
                                             type="button">
                                         <span class="icon"><i class="bi bi-pencil-square"></i></span>
                                     </button>

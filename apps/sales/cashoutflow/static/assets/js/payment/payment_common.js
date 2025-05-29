@@ -317,7 +317,7 @@ class PaymentPageFunction {
                                     <button data-bs-toggle="offcanvas"
                                             data-bs-target="#offcanvasSelectDetailAP"
                                             aria-controls="offcanvasExample"
-                                            class="mx-1 btn btn-sm btn-rounded btn-icon btn-outline-primary btn-add-payment-value"
+                                            class="mx-2 btn btn-sm btn-rounded btn-icon btn-outline-primary btn-add-payment-value"
                                             type="button">
                                         <span class="icon"><i class="bi bi-pencil-square"></i></span>
                                     </button>

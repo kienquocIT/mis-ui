@@ -179,5 +179,5 @@ class PaymentPrintAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_DETAIL.fill_key(pk=pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.PAYMENT_PRINT.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='payment_print_data')

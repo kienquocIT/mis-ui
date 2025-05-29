@@ -11800,6 +11800,10 @@ msgid "Invoice issued"
 msgstr "Đã xuất hóa đơn"
 
 #
+msgid "Rejected because of workflow error"
+msgstr "Phiếu tự động hủy vì cấu hình quy trình lỗi"
+
+#
 msgid "Click to select or input new"
 msgstr "Nhấn để chọn hoặc thêm mới"
 

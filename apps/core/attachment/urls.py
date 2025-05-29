@@ -3,12 +3,13 @@ from django.urls import path
 from apps.core.attachment.views import (
     AttachmentUpload, FilesUnusedAPI,
     ImageWebBuilderUpload, ImageWebBuilderList, FolderList, FolderListAPI, FolderDetailAPI,
-    FolderUploadFileList, AttachmentDownload, AttachmentPreview, AttachmentInfo,
+    FolderUploadFileList, AttachmentDownload, AttachmentPreview, AttachmentInfo, PublicAttachmentUpload,
 )
 
 urlpatterns = [
     path('unused', FilesUnusedAPI.as_view(), name='FilesUnusedAPI'),
     path('upload', AttachmentUpload.as_view(), name='AttachmentUpload'),
+    path('public-upload', PublicAttachmentUpload.as_view(), name='PublicAttachmentUpload'),
     path('download/<str:pk>', AttachmentDownload.as_view(), name='AttachmentDownload'),
     path('web-builder/upload', ImageWebBuilderUpload.as_view(), name='ImageWebBuilderUpload'),
     path('web-builder/list', ImageWebBuilderList.as_view(), name='ImageWebBuilderList'),

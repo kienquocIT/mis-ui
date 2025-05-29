@@ -33,6 +33,27 @@ class AttachmentUpload(APIView):
             return resp.auto_return(key_success='file_detail')
         return RespData.resp_400(errors_data={'file': 'Not found'})
 
+class PublicAttachmentUpload(APIView):
+    parser_classes = [MultiPartParser]
+
+    @mask_view(login_require=True, auth_require=True, is_api=True)
+    def post(self, request, *args, **kwargs):
+        uploaded_file = request.FILES.get('file')
+        if uploaded_file:
+            m = MultipartEncoder(
+                fields={
+                    'file': (uploaded_file.name, uploaded_file, uploaded_file.content_type),
+                    'remarks': request.data.get('remarks', ''),
+                }
+            )
+            resp = ServerAPI(
+                request=request, user=request.user, url=ApiURL.PUBLIC_FILE_UPLOAD,
+                cus_headers={
+                    'content-type': m.content_type,
+                }
+            ).post(data=m)
+            return resp.auto_return(key_success='file_detail')
+        return RespData.resp_400(errors_data={'file': 'Not found'})
 
 class AttachmentDownload(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)

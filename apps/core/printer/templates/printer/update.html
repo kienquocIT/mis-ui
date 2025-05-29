@@ -16,7 +16,7 @@
     <form
             id="frm-detail-print-template"
             data-url="{% url 'PrintTemplateDetailAPI' pk=pk %}"
-            data-url-upload="{% url 'AttachmentUpload' %}"
+            data-url-upload="{% url 'PublicAttachmentUpload' %}"
             data-url-template = {% url 'PrintApplicationTemplateSample' app_id='__app_id__' %}
             data-method="PUT"
     >

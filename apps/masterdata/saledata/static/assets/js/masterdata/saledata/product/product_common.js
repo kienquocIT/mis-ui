@@ -611,7 +611,7 @@ class ProductPageFunction {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollY: '30vh',
+            scrollY: '68vh',
             scrollX: true,
             scrollCollapse: true,
             data: data_list,
@@ -623,15 +623,10 @@ class ProductPageFunction {
                     }
                 },
                 {
-                    className: 'w-25',
+                    className: 'w-75',
                     'render': (data, type, row) => {
-                        return `<input ${option === 'detail' ? 'disabled readonly' : ''} class="form-control component-name" value="${row?.['component_name'] || ''}">`;
-                    }
-                },
-                {
-                    className: 'w-50',
-                    'render': (data, type, row) => {
-                        return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} rows="1" class="form-control component-des">${row?.['component_des'] || ''}</textarea>`;
+                        return `<input placeholder="${$.fn.gettext('Component name')}" ${option === 'detail' ? 'disabled readonly' : ''} class="form-control form-control-line fw-bold mb-1 component-name" value="${row?.['component_name'] || ''}">
+                                <textarea placeholder="${$.fn.gettext('Description')}..." ${option === 'detail' ? 'disabled readonly' : ''} rows="10" class="form-control component-des">${row?.['component_des'] || ''}</textarea>`;
                     }
                 },
                 {
@@ -1750,6 +1745,7 @@ class ProductEventHandler {
                 pageElements.$component_table,
                 parseInt($(this).closest('tr').find('td:first-child').text())
             )
+            UsualLoadPageFunction.AutoScrollEnd(pageElements.$component_table)
         })
         // variant tab
         $('#add-variant-value-item').on('click', function () {

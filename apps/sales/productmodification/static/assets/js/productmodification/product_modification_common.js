@@ -37,6 +37,7 @@ const pageElements = new ProductModificationPageElements()
 class ProductModificationPageVariables {
     constructor() {
         this.current_product_modified = {}
+        this.current_product_modified_detail = {}
         this.component_inserted_id_list = new Set()
         this.current_component = {}
         this.current_component_row = null
@@ -112,7 +113,7 @@ class ProductModificationPageFunction {
             ]
         });
     }
-    static LoadTableCurrentProductModified(data_list=[]) {
+    static LoadTableCurrentProductModified(data_list=[], detail_product_modified_info='') {
         pageElements.$table_current_product_modified.DataTable().clear().destroy()
         pageElements.$table_current_product_modified.DataTableDefault({
             dom: 't',
@@ -160,7 +161,14 @@ class ProductModificationPageFunction {
                         return `<div class="data-product-detail-space"></div>`;
                     }
                 },
-            ]
+            ],
+            initComplete: function () {
+                if (detail_product_modified_info) {
+                    pageElements.$table_current_product_modified.find('tbody tr').each(function (index, ele) {
+                        $(ele).find('.data-product-detail-space').text(detail_product_modified_info)
+                    })
+                }
+            }
         });
     }
     static LoadTableWarehouseByProduct(url_with_product_id='') {
@@ -728,6 +736,45 @@ class ProductModificationPageFunction {
  * Khai báo các hàm chính
  */
 class ProductModificationHandler {
+    static CombinesData(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle))
+
+        frm.dataForm['title'] = pageElements.$title.val()
+        frm.dataForm['product_modified'] = pageVariables.current_product_modified?.['id']
+        frm.dataForm['prd_wh'] = pageVariables.current_product_modified_detail?.['product_warehouse_id']
+        frm.dataForm['prd_wh_serial'] = pageVariables.current_product_modified_detail?.['serial_id']
+        frm.dataForm['detail_product_modified_info'] = pageVariables.current_product_modified_detail?.['detail_product_modified_info']
+
+        return frm
+    }
+    static LoadDetailProductModification(option) {
+        let url_loaded = $('#form-detail-product-modification').attr('data-url');
+        $.fn.callAjax(url_loaded, 'GET').then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    data = data['product_modification_detail'];
+
+                    console.log(data)
+
+                    $.fn.compareStatusShowPageAction(data);
+                    $x.fn.renderCodeBreadcrumb(data);
+
+                    pageElements.$title.val(data?.['title'])
+                    pageElements.$created_date.val(data?.['date_created'] ? DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", data?.['date_created']) : '')
+                    pageVariables.current_product_modified = data?.['prd_wh_data']?.['product']
+                    ProductModificationPageFunction.LoadTableCurrentProductModified([pageVariables.current_product_modified], data?.['detail_product_modified_info'])
+
+                    $.fn.initMaskMoney2();
+
+                    WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
+
+                    UsualLoadPageFunction.DisablePage(
+                        option==='detail'
+                    )
+                }
+            })
+    }
 }
 
 /**
@@ -764,8 +811,8 @@ class ProductModificationEventHandler {
             ProductModificationPageFunction.LoadTableSerialListByWarehouse()
         })
         $(document).on("change", '.product-warehouse-select', function () {
-            pageElements.$table_select_serial.closest('.table-serial-space').prop('hidden', pageVariables.current_product_modified?.['general_traceability_method'] !== '2')
-            if (pageVariables.current_product_modified?.['general_traceability_method'] === '2') {
+            pageElements.$table_select_serial.closest('.table-serial-space').prop('hidden', Number(pageVariables.current_product_modified?.['general_traceability_method']) !== 2)
+            if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 2) {
                 let product_warehouse_id = $(this).attr('data-product-warehouse-id')
                 let url = `${pageElements.$script_url.attr('data-url-serial-list-by-warehouse')}?product_warehouse_id=${product_warehouse_id}`
                 ProductModificationPageFunction.LoadTableSerialListByWarehouse(url)
@@ -830,10 +877,11 @@ class ProductModificationEventHandler {
                 )
 
                 pageElements.$picking_product_modal.modal('hide')
+                let detail_product_modified_info = `${$.fn.gettext('Warehouse')}: ${warehouse_data?.['code']} - ${warehouse_data?.['title']}, ${$.fn.gettext('Serial number')}: ${serial_data?.['sn']}`
+                detail_product['detail_product_modified_info'] = detail_product_modified_info
                 pageElements.$table_current_product_modified.find('tbody .btn-modal-picking-product:eq(0)').attr('data-detail-product', JSON.stringify(detail_product))
-                pageElements.$table_current_product_modified.find('tbody .data-product-detail-space').html(`
-                    <span class="small">${$.fn.gettext('Warehouse')}: ${warehouse_data?.['code']} - ${warehouse_data?.['title']}</span>, <span class="small">${$.fn.gettext('Serial number')}: ${serial_data?.['sn']}</span>
-                `)
+                pageElements.$table_current_product_modified.find('tbody .data-product-detail-space').html(`<span class="small">${detail_product_modified_info}</span>`)
+                pageVariables.current_product_modified_detail = detail_product
                 pageElements.$insert_component_btn.prop('hidden', false)
             }
         })

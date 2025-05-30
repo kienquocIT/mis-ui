@@ -20,8 +20,13 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
-    >
-    </script>
+            data-url-warehouse-list-by-product="{% url 'WarehouseListByProductAPI' %}?interact=1"
+            data-url-serial-list-by-warehouse="{% url 'ProductSerialListAPI' %}"
+            data-url-product-component-list="{% url 'ProductComponentListAPI' %}"
+    ></script>
+    <script id="trans-url"
+            data-trans-select-one="{% trans 'Select one' %}"
+    ></script>
     <form id="form-detail-product-modification"
         data-method="PUT"
         data-url-redirect="{% url "ProductModificationDetail" pk=pk %}"
@@ -38,6 +43,6 @@
 {% block jsFooter %}
     <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
-    <script src="{% static "assets/js/arinvoice/ar_invoice_common.js" %}"></script>
-    <script src="{% static "assets/js/arinvoice/ar_invoice_detail.js" %}"></script>
+    <script src="{% static "assets/js/productmodification/product_modification_common.js" %}"></script>
+    <script src="{% static "assets/js/productmodification/product_modification_detail.js" %}"></script>
 {% endblock %}

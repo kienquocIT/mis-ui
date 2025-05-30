@@ -35,11 +35,11 @@ msgstr "Bảng này có tính chất tham khảo - dùng để tải trước d�
 
 #
 msgid "Product modification"
-msgstr "Tháo - lắp thết bị"
+msgstr "Tháo - lắp thiết bị"
 
 #
 msgid "Product Modification"
-msgstr "Tháo - lắp thết bị"
+msgstr "Tháo - lắp thiết bị"
 
 #
 msgid "Select modified product"

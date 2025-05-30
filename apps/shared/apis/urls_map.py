@@ -322,8 +322,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_SALE_DETAIL = StringUrl('saledata/products-sale')
     PRODUCT_VARIANT_LIST = StringUrl('saledata/products-variants')
 
-    PRODUCT_MODIFICATION_LIST = StringUrl('saledata/product-modifications')
-    PRODUCT_MODIFICATION_DETAIL = StringUrl('saledata/product-modification/{pk}')
+    PRODUCT_MODIFICATION_LIST = StringUrl('product-modification/list')
+    PRODUCT_MODIFICATION_DETAIL = StringUrl('product-modification/detail/{pk}')
 
     # advance payment
     CASHOUTFLOW_QUOTATION_LIST = StringUrl('cashoutflow/quotation-list')

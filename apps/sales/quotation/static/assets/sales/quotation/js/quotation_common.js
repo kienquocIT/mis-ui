@@ -3177,11 +3177,12 @@ class QuotationDataTableHandle {
                 // add classes for collapse
                 if (data?.['is_group'] === true) {
                     $(row).find('td:eq(1)').attr('colspan', 2);
+                    row.classList.add('tr-group');
                 }
                 if (data?.['is_group'] !== true) {
-                    let groupsEle = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-group');
-                    if (groupsEle) {
-                        let lastGroup = groupsEle[groupsEle.length - 1];
+                    let $lastGroupRow = $(row).prevAll('.tr-group').first();
+                    if ($lastGroupRow.length > 0) {
+                        let lastGroup = $lastGroupRow[0].querySelector('.table-row-group');
                         if (lastGroup) {
                             let classGroupDot = lastGroup.getAttribute('data-bs-target');
                             let dataGroupOrder = lastGroup.getAttribute('data-group-order');

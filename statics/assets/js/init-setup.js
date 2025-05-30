@@ -3905,24 +3905,33 @@ class WFAssociateControl {
         if (typeof leftValueJSON === 'object' && leftValueJSON !== null) {
             let val = WFAssociateControl.findKey(data, leftValueJSON?.['code']);
             if (val) {
+                // TH val là danh sách => loop kiểm tra
                 if (Array.isArray(val)) {
-                    // val = val.map(item => item.replace(/\s/g, "").toLowerCase());
                     val = val.map(item =>
                         typeof item === 'string'
                             ? item.replace(/\s/g, "").toLowerCase()
                             : item
                     );
                     let check = val.includes(rightValue);
+                    // Danh sách có chứa rightValue => loop lấy dữ liệu tương ứng
                     if (check === true) {
                         let valData = WFAssociateControl.findKey(data, lastElement?.['code']);
-                        functionBody += String(valData);
-                        functionBody += ",";
+                        if (val.length === valData.length) {
+                            for (let i = 0; i < val.length; i++) {
+                                if (val[i] === rightValue) {
+                                    functionBody += String(valData[i]);
+                                    functionBody += ",";
+                                }
+                            }
+                        }
                     }
+                    // Danh sách không chứa rightValue => trả về 0
                     if (check === false) {
                         functionBody += String(0);
                         functionBody += ",";
                     }
                 }
+                // TH val là 1 giá trị => kiểm tra trực tiếp
                 if (typeof val === 'string') {
                     let leftValue = val.replace(/\s/g, "").toLowerCase();
                     let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;

@@ -4617,11 +4617,17 @@ class QuotationDataTableHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<span class="table-row-uom">${row?.['sale_information']?.['default_uom']?.['title'] ? row?.['sale_information']?.['default_uom']?.['title'] : ''}</span>`;
+                        return `<span class="table-row-category">${row?.['general_information']?.['product_category']?.['title'] ? row?.['general_information']?.['product_category']?.['title'] : ''}</span>`;
                     }
                 },
                 {
                     targets: 4,
+                    render: (data, type, row) => {
+                        return `<span class="table-row-uom">${row?.['sale_information']?.['default_uom']?.['title'] ? row?.['sale_information']?.['default_uom']?.['title'] : ''}</span>`;
+                    }
+                },
+                {
+                    targets: 5,
                     render: (data, type, row) => {
                         let txt = QuotationLoadDataHandle.transEle.attr('data-available');
                         let badge = 'success';
@@ -4638,7 +4644,7 @@ class QuotationDataTableHandle {
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 6,
                     render: (data, type, row) => {
                         let txt = '';
                         if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {

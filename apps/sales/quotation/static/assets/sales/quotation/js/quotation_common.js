@@ -5982,7 +5982,17 @@ class indicatorHandle {
                         let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
                         let check = indicatorHandle.evaluateFormula(checkExpression);
                         if (check === true) {
-                            functionBody += String(data[lastElement?.['code']]);
+                            let valPush = data[lastElement?.['code']];
+                            if (lastElement?.['code'] === "product_subtotal_price") {
+                                if (data?.['product_discount_value'] && data?.['product_discount_amount']) {
+                                    let valSubtotal = data?.['product_unit_price'] * data?.['product_quantity'];
+                                    let valPlusDiscount = valPush + data?.['product_discount_amount'];
+                                    if (valSubtotal !== valPlusDiscount) {
+                                        valPush = valPush - data?.['product_discount_amount'];
+                                    }
+                                }
+                            }
+                            functionBody += String(valPush);
                             functionBody += ",";
                         }
                         if (check === false) {

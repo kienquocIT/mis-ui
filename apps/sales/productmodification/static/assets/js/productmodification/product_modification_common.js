@@ -113,7 +113,7 @@ class ProductModificationPageFunction {
             ]
         });
     }
-    static LoadTableCurrentProductModified(data_list=[], detail_product_modified_info='') {
+    static LoadTableCurrentProductModified(data_list=[], detail_page=false, detail_product_modified_info='') {
         pageElements.$table_current_product_modified.DataTable().clear().destroy()
         pageElements.$table_current_product_modified.DataTableDefault({
             dom: 't',
@@ -166,6 +166,9 @@ class ProductModificationPageFunction {
                 if (detail_product_modified_info) {
                     pageElements.$table_current_product_modified.find('tbody tr').each(function (index, ele) {
                         $(ele).find('.data-product-detail-space').text(detail_product_modified_info)
+                        if (detail_page) {
+                            $(ele).find('.btn-modal-picking-product').remove()
+                        }
                     })
                 }
             }
@@ -763,7 +766,7 @@ class ProductModificationHandler {
                     pageElements.$title.val(data?.['title'])
                     pageElements.$created_date.val(data?.['date_created'] ? DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", data?.['date_created']) : '')
                     pageVariables.current_product_modified = data?.['prd_wh_data']?.['product']
-                    ProductModificationPageFunction.LoadTableCurrentProductModified([pageVariables.current_product_modified], data?.['detail_product_modified_info'])
+                    ProductModificationPageFunction.LoadTableCurrentProductModified([pageVariables.current_product_modified], option==='detail', data?.['detail_product_modified_info'])
 
                     $.fn.initMaskMoney2();
 

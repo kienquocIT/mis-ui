@@ -11806,3 +11806,7 @@ msgstr "Phiếu tự động hủy vì cấu hình quy trình lỗi"
 #
 msgid "The action cannot be performed because there are change requests (CR). Please approve or cancel the change requests."
 msgstr "Thao tác không thể thực hiện vì có các phiếu thay đổi (CR). Vui lòng duyệt hoặc hủy các phiếu thay đổi."
+
+#
+msgid "Save and approve"
+msgstr "Lưu và duyệt"

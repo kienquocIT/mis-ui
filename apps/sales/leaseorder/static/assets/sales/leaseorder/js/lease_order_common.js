@@ -6357,7 +6357,7 @@ class LeaseOrderDataTableHandle {
                 if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
                     hidden = "hidden";
                 }
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_products_data" ${hidden}>
+                let $group = $(`<button type="button" class="btn btn-primary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_products_data" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -6422,7 +6422,7 @@ class LeaseOrderDataTableHandle {
                 if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
                     hidden = "hidden";
                 }
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_expenses_data" ${hidden}>
+                let $group = $(`<button type="button" class="btn btn-primary" aria-expanded="false" data-bs-toggle="dropdown" data-zone="lease_expenses_data" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -6464,7 +6464,7 @@ class LeaseOrderDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-refresh-indicator').length) {
-                let html1 = `<button type="button" class="btn btn-primary btn-square" id="btn-refresh-indicator">${LeaseOrderLoadDataHandle.transEle.attr('data-refresh')}</button>`;
+                let html1 = `<button type="button" class="btn btn-primary" id="btn-refresh-indicator">${LeaseOrderLoadDataHandle.transEle.attr('data-refresh')}</button>`;
                 let $group = $(`<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                 ${html1}
                             </div>`);
@@ -6513,10 +6513,10 @@ class LeaseOrderDataTableHandle {
                     hiddenLoad = "hidden";
                     hiddenAdd = "hidden";
                 }
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
+                let $group = $(`<button type="button" class="btn btn-primary" id="btn-load-payment-stage" data-zone="sale_order_payment_stage" ${hiddenLoad}>
                                     <span><span class="icon"><i class="fas fa-arrow-down"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-detail')}</span></span>
                                 </button>
-                                <button type="button" class="btn btn-primary btn-square" id="btn-add-payment-stage" data-zone="sale_order_payment_stage" ${hiddenAdd}>
+                                <button type="button" class="btn btn-primary" id="btn-add-payment-stage" data-zone="sale_order_payment_stage" ${hiddenAdd}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -6558,7 +6558,7 @@ class LeaseOrderDataTableHandle {
                 if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
                     hidden = "hidden";
                 }
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" data-zone="sale_order_payment_stage" ${hidden}>
+                let $group = $(`<button type="button" class="btn btn-primary" id="btn-add-invoice" data-zone="sale_order_payment_stage" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${LeaseOrderLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -9170,39 +9170,37 @@ class LeaseOrderSubmitHandle {
             }
         }
         let quotation_products_data_setup = LeaseOrderSubmitHandle.setupDataProduct();
-        if (quotation_products_data_setup.length > 0) {
-            _form.dataForm[quotation_products_data] = quotation_products_data_setup;
-            // total product
-            let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
-            if (tableProductWrapper) {
-                let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-                if (tableProductFt) {
-                    _form.dataForm['total_product_pretax_amount'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw').value);
-                    if (!_form.dataForm['total_product_pretax_amount']) {
-                        _form.dataForm['total_product_pretax_amount'] = 0;
-                    }
-                    let totalProductDiscountRate = tableProductFt.querySelector('.quotation-create-product-discount').value;
-                    if (totalProductDiscountRate) {
-                        _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
-                    } else {
-                        _form.dataForm['total_product_discount_rate'] = 0;
-                    }
-                    _form.dataForm['total_product_discount'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-discount-amount-raw').value);
-                    if (!_form.dataForm['total_product_discount']) {
-                        _form.dataForm['total_product_discount'] = 0;
-                    }
-                    _form.dataForm['total_product_tax'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-taxes-raw').value);
-                    if (!_form.dataForm['total_product_tax']) {
-                        _form.dataForm['total_product_tax'] = 0;
-                    }
-                    _form.dataForm['total_product'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-total-raw').value);
-                    if (!_form.dataForm['total_product']) {
-                        _form.dataForm['total_product'] = 0;
-                    }
-                    _form.dataForm['total_product_revenue_before_tax'] = parseFloat(tableProductFt.querySelector('.quotation-final-revenue-before-tax').value);
-                    if (!_form.dataForm['total_product_revenue_before_tax']) {
-                        _form.dataForm['total_product_revenue_before_tax'] = 0;
-                    }
+        _form.dataForm[quotation_products_data] = quotation_products_data_setup;
+        // total product
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+        if (tableProductWrapper) {
+            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+            if (tableProductFt) {
+                _form.dataForm['total_product_pretax_amount'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw').value);
+                if (!_form.dataForm['total_product_pretax_amount']) {
+                    _form.dataForm['total_product_pretax_amount'] = 0;
+                }
+                let totalProductDiscountRate = tableProductFt.querySelector('.quotation-create-product-discount').value;
+                if (totalProductDiscountRate) {
+                    _form.dataForm['total_product_discount_rate'] = parseFloat(totalProductDiscountRate);
+                } else {
+                    _form.dataForm['total_product_discount_rate'] = 0;
+                }
+                _form.dataForm['total_product_discount'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-discount-amount-raw').value);
+                if (!_form.dataForm['total_product_discount']) {
+                    _form.dataForm['total_product_discount'] = 0;
+                }
+                _form.dataForm['total_product_tax'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-taxes-raw').value);
+                if (!_form.dataForm['total_product_tax']) {
+                    _form.dataForm['total_product_tax'] = 0;
+                }
+                _form.dataForm['total_product'] = parseFloat(tableProductFt.querySelector('.quotation-create-product-total-raw').value);
+                if (!_form.dataForm['total_product']) {
+                    _form.dataForm['total_product'] = 0;
+                }
+                _form.dataForm['total_product_revenue_before_tax'] = parseFloat(tableProductFt.querySelector('.quotation-final-revenue-before-tax').value);
+                if (!_form.dataForm['total_product_revenue_before_tax']) {
+                    _form.dataForm['total_product_revenue_before_tax'] = 0;
                 }
             }
         }
@@ -9213,50 +9211,44 @@ class LeaseOrderSubmitHandle {
             }
         }
         // COST
-        let quotation_costs_data_setup = LeaseOrderSubmitHandle.setupDataCost();
-        if (quotation_costs_data_setup.length > 0) {
-            _form.dataForm[quotation_costs_data] = quotation_costs_data_setup;
-            // total cost
-            let tableCostWrapper = document.getElementById('datable-quotation-create-cost_wrapper');
-            if (tableCostWrapper) {
-                let tableCostFt = tableCostWrapper.querySelector('.dataTables_scrollFoot');
-                if (tableCostFt) {
-                    _form.dataForm['total_cost_pretax_amount'] = parseFloat(tableCostFt.querySelector('.quotation-create-cost-pretax-amount-raw').value);
-                    if (!_form.dataForm['total_cost_pretax_amount']) {
-                        _form.dataForm['total_cost_pretax_amount'] = 0;
-                    }
-                    _form.dataForm['total_cost_tax'] = parseFloat(tableCostFt.querySelector('.quotation-create-cost-taxes-raw').value);
-                    if (!_form.dataForm['total_cost_tax']) {
-                        _form.dataForm['total_cost_tax'] = 0;
-                    }
-                    _form.dataForm['total_cost'] = parseFloat(tableCostFt.querySelector('.quotation-create-cost-total-raw').value);
-                    if (!_form.dataForm['total_cost']) {
-                        _form.dataForm['total_cost'] = 0;
-                    }
+        _form.dataForm[quotation_costs_data] = LeaseOrderSubmitHandle.setupDataCost();
+        // total cost
+        let tableCostWrapper = document.getElementById('datable-quotation-create-cost_wrapper');
+        if (tableCostWrapper) {
+            let tableCostFt = tableCostWrapper.querySelector('.dataTables_scrollFoot');
+            if (tableCostFt) {
+                _form.dataForm['total_cost_pretax_amount'] = parseFloat(tableCostFt.querySelector('.quotation-create-cost-pretax-amount-raw').value);
+                if (!_form.dataForm['total_cost_pretax_amount']) {
+                    _form.dataForm['total_cost_pretax_amount'] = 0;
+                }
+                _form.dataForm['total_cost_tax'] = parseFloat(tableCostFt.querySelector('.quotation-create-cost-taxes-raw').value);
+                if (!_form.dataForm['total_cost_tax']) {
+                    _form.dataForm['total_cost_tax'] = 0;
+                }
+                _form.dataForm['total_cost'] = parseFloat(tableCostFt.querySelector('.quotation-create-cost-total-raw').value);
+                if (!_form.dataForm['total_cost']) {
+                    _form.dataForm['total_cost'] = 0;
                 }
             }
         }
         // EXPENSE
-        let quotation_expenses_data_setup = LeaseOrderSubmitHandle.setupDataExpense();
-        if (quotation_expenses_data_setup.length > 0) {
-            _form.dataForm[quotation_expenses_data] = quotation_expenses_data_setup;
-            // total expense
-            let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
-            if (tableExpenseWrapper) {
-                let tableExpenseFt = tableExpenseWrapper.querySelector('.dataTables_scrollFoot');
-                if (tableExpenseFt) {
-                    _form.dataForm['total_expense_pretax_amount'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount-raw').value);
-                    if (!_form.dataForm['total_expense_pretax_amount']) {
-                        _form.dataForm['total_expense_pretax_amount'] = 0;
-                    }
-                    _form.dataForm['total_expense_tax'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-taxes-raw').value);
-                    if (!_form.dataForm['total_expense_tax']) {
-                        _form.dataForm['total_expense_tax'] = 0;
-                    }
-                    _form.dataForm['total_expense'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-total-raw').value);
-                    if (!_form.dataForm['total_expense']) {
-                        _form.dataForm['total_expense'] = 0;
-                    }
+        _form.dataForm[quotation_expenses_data] = LeaseOrderSubmitHandle.setupDataExpense();
+        // total expense
+        let tableExpenseWrapper = document.getElementById('datable-quotation-create-expense_wrapper');
+        if (tableExpenseWrapper) {
+            let tableExpenseFt = tableExpenseWrapper.querySelector('.dataTables_scrollFoot');
+            if (tableExpenseFt) {
+                _form.dataForm['total_expense_pretax_amount'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-pretax-amount-raw').value);
+                if (!_form.dataForm['total_expense_pretax_amount']) {
+                    _form.dataForm['total_expense_pretax_amount'] = 0;
+                }
+                _form.dataForm['total_expense_tax'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-taxes-raw').value);
+                if (!_form.dataForm['total_expense_tax']) {
+                    _form.dataForm['total_expense_tax'] = 0;
+                }
+                _form.dataForm['total_expense'] = parseFloat(tableExpenseFt.querySelector('.quotation-create-expense-total-raw').value);
+                if (!_form.dataForm['total_expense']) {
+                    _form.dataForm['total_expense'] = 0;
                 }
             }
         }

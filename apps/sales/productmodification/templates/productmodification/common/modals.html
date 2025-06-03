@@ -16,10 +16,8 @@
                             <thead>
                                 <tr>
                                     <th style="min-width: 50px"></th>
-                                    <th style="min-width: 50px"></th>
-                                    <th style="min-width: 100px">{% trans 'Product code' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Product name' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Description' %}</th>
+                                    <th style="min-width: 20px"></th>
+                                    <th style="min-width: 200px">{% trans 'Product' %}</th>
                                 </tr>
                             </thead>
                         </table>
@@ -50,9 +48,8 @@
                             <thead>
                                 <tr>
                                     <th style="min-width: 50px"></th>
-                                    <th style="min-width: 50px"></th>
-                                    <th style="min-width: 100px">{% trans 'Warehouse code' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Warehouse name' %}</th>
+                                    <th style="min-width: 20px"></th>
+                                    <th style="min-width: 200px">{% trans 'Warehouse' %}</th>
                                     <th style="min-width: 100px">{% trans 'Current quantity' %}</th>
                                 </tr>
                             </thead>
@@ -63,13 +60,13 @@
                             <thead>
                                 <tr>
                                     <th style="min-width: 50px"></th>
-                                    <th style="min-width: 50px"></th>
-                                    <th style="min-width: 100px">{% trans 'Vendor serial no.' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Serial no.' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Expiration date' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Mfr date' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Warranty start' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Warranty end' %}</th>
+                                    <th style="min-width: 20px"></th>
+                                    <th style="min-width: 150px">{% trans 'Vendor serial no.' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Serial no.' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Expiration date' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Mfr date' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Warranty start' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Warranty end' %}</th>
                                 </tr>
                             </thead>
                         </table>
@@ -96,7 +93,7 @@
                     <thead>
                         <tr>
                             <th style="min-width: 50px"></th>
-                            <th style="min-width: 50px"></th>
+                            <th style="min-width: 20px"></th>
                             <th style="min-width: 400px">{% trans 'Component' %}</th>
                         </tr>
                     </thead>
@@ -105,7 +102,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="picking-component-modal" tabindex="-1" role="dialog" aria-labelledby="picking-component-modal">
     <div class="modal-dialog modal-xl" role="document">
@@ -123,9 +119,8 @@
                             <thead>
                                 <tr>
                                     <th style="min-width: 50px"></th>
-                                    <th style="min-width: 50px"></th>
-                                    <th style="min-width: 100px">{% trans 'Warehouse code' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Warehouse name' %}</th>
+                                    <th style="min-width: 20px"></th>
+                                    <th style="min-width: 200px">{% trans 'Warehouse' %}</th>
                                     <th style="min-width: 100px">{% trans 'Current quantity' %}</th>
                                 </tr>
                             </thead>
@@ -136,13 +131,13 @@
                             <thead>
                                 <tr>
                                     <th style="min-width: 50px"></th>
-                                    <th style="min-width: 50px"></th>
-                                    <th style="min-width: 100px">{% trans 'Vendor serial no.' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Serial no.' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Expiration date' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Mfr date' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Warranty start' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Warranty end' %}</th>
+                                    <th style="min-width: 20px"></th>
+                                    <th style="min-width: 150px">{% trans 'Vendor serial no.' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Serial no.' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Expiration date' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Mfr date' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Warranty start' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Warranty end' %}</th>
                                 </tr>
                             </thead>
                         </table>
@@ -151,7 +146,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button type="button" id="accept-picking-component-btn" class="btn btn-primary">{% trans 'Select' %}</button>
+                <button type="button" id="accept-picking-component-btn" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">{% trans 'Select' %}</button>
             </div>
         </div>
     </div>

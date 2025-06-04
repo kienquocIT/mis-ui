@@ -58,7 +58,7 @@
                 <!-- Row -->
                 <div class="row mx-auto" style="max-width: 450px;">
                     <div class="col-12 position-relative ">
-                        <div class="card card-lg card-border box-vertical-blur">
+                        <div class="card card-lg card-border">
                             <div class="card-header d-flex justify-content-center" style="border-bottom: 0;">
                                 <img
                                         src="{% static 'assets/images/brand/bflow-by-mts/png/bflow-by-mts-original.png' %}"
@@ -400,7 +400,7 @@
             let hostData = window.location.hostname;
             let notFoundUrl = "{% url 'OutLayoutNotFoundView' %}";
 
-            if (hostData.endsWith(mainDomain) || hostData.endsWith(fixedDomain)) {
+            if (hostData.endsWith(mainDomain) || fixedDomain.endsWith(hostData)) {
                 let validateFormOpts = {
                     focusInvalid: true,
                     validClass: "is-valid",
@@ -421,8 +421,12 @@
                 let btnCopy = $('#btnCopyPass');
                 let btnCopyNotSupport = $('#msg-copy-not-support');
 
-                $('#inp-tenant-code').val(fixedDomain.split(".")[0]);
-                $('#inp-tenant-code').val(hostData.replaceAll('.' + mainDomain, ''));
+                if (fixedDomain.endsWith(hostData)) {
+                    $('#inp-tenant-code').val(fixedDomain.split(".")[0]);
+                }
+                if (hostData.endsWith(mainDomain)) {
+                    $('#inp-tenant-code').val(hostData.replaceAll('.' + mainDomain, ''));
+                }
 
                 let frmOTPValidate = $('#frmSubmitOTPValidate');
                 let inputReissuedPassword = $('#inp-gen-pass');

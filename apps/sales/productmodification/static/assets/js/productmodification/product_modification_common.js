@@ -349,8 +349,8 @@ class ProductModificationPageFunction {
                                     <input class="form-control fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['product_quantity'] || 0}">
                                     ${picking_component_btn}
                                 </div>
-                                <script class="data-component-none-detail"></script>
-                                <script class="data-component-lot-detail"></script>
+                                <script class="data-component-none-detail">${JSON.stringify(row?.['component_product_none_detail'] || [])}</script>
+                                <script class="data-component-lot-detail">${JSON.stringify(row?.['component_product_lot_detail'] || [])}</script>
                                 <script class="data-component-sn-detail">${JSON.stringify(row?.['component_product_sn_detail'] || [])}</script>
                             `;
                         }
@@ -567,6 +567,16 @@ class ProductModificationPageFunction {
                 initComplete: function () {
                     ProductModificationPageFunction.LoadTableComponentSerialListByWarehouse()
                 }
+            }).on('draw.dt', function () {
+                const component_none_list_raw = pageVariables.current_component_row.find('.data-component-none-detail').text()
+                const component_none_list = component_none_list_raw ? JSON.parse(component_none_list_raw) : []
+
+                pageElements.$table_select_component_warehouse.find('tbody tr').each(function () {
+                    const matched = component_none_list.find(item => item?.['warehouse_id'] === $(this).find('.product-warehouse-component-select').attr('data-warehouse-id'))
+                    if (matched) {
+                        $(this).find('.picked-quantity').val(matched?.['picked_quantity'] || 0)
+                    }
+                });
             });
         }
         else {
@@ -775,6 +785,8 @@ class ProductModificationHandler {
                         'description': $(ele).find('.component-des').text(),
                     },
                     'component_product_id': $(ele).find('.component-title').attr('data-product-id') || null,
+                    'component_product_none_detail': $(ele).find('.data-component-none-detail').text() ? JSON.parse($(ele).find('.data-component-none-detail').text()) : [],
+                    'component_product_lot_detail': $(ele).find('.data-component-lot-detail').text() ? JSON.parse($(ele).find('.data-component-lot-detail').text()) : [],
                     'component_product_sn_detail': $(ele).find('.data-component-sn-detail').text() ? JSON.parse($(ele).find('.data-component-sn-detail').text()) : [],
                     'component_quantity': $(ele).find('.component-quantity').val()
                 })
@@ -1014,13 +1026,13 @@ class ProductModificationEventHandler {
             let product_id = $(this).attr('data-product-id')
             let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}&product_id=${product_id}`
             ProductModificationPageFunction.LoadTableComponentWarehouseByProduct(url)
+            pageElements.$table_select_component_warehouse.DataTable().column(4).visible($(this).attr('data-product-general-traceability-method') === '0')
         })
         $(document).on("change", '.product-warehouse-component-select', function () {
             pageElements.$table_select_component_serial.closest('.table-serial-space').prop('hidden', pageVariables.current_component?.['general_traceability_method'] !== '2')
-            pageElements.$table_select_component_warehouse.DataTable().column(4).visible(pageVariables.current_component?.['general_traceability_method'] !== '0')
             if (pageVariables.current_component?.['general_traceability_method'] === '0') {
-                $(this).closest('tr').find('.picked-quantity').prop('disabled', false).prop('readonly', false)
                 pageElements.$table_select_component_warehouse.find('tr .picked-quantity').prop('disabled', true).prop('readonly', true)
+                $(this).closest('tr').find('.picked-quantity').prop('disabled', false).prop('readonly', false)
             }
             if (pageVariables.current_component?.['general_traceability_method'] === '1') {
 
@@ -1029,6 +1041,21 @@ class ProductModificationEventHandler {
                 let url = `${pageElements.$script_url.attr('data-url-serial-list-by-warehouse')}?product_warehouse__product_id=${pageVariables.current_component?.['id']}&product_warehouse__warehouse_id=${$(this).attr('data-warehouse-id')}`
                 ProductModificationPageFunction.LoadTableComponentSerialListByWarehouse(url)
             }
+        })
+        $(document).on("change", '.picked-quantity', function () {
+            let component_none_list = []
+
+            let sum_picked_quantity = 0
+            pageElements.$table_select_component_warehouse.find('tbody tr').each(function (index, ele) {
+                component_none_list.push({
+                    'warehouse_id': $(ele).find('.product-warehouse-component-select').attr('data-warehouse-id'),
+                    'picked_quantity': parseFloat($(ele).find('.picked-quantity').val()) || 0
+                })
+                sum_picked_quantity += parseFloat($(ele).find('.picked-quantity').val()) || 0
+            })
+
+            pageVariables.current_component_row.find('.data-component-none-detail').text(JSON.stringify(component_none_list))
+            pageVariables.current_component_row.find('.component-quantity').val(sum_picked_quantity)
         })
         $(document).on("change", '.serial-component-select', function () {
             let serial_id_list_raw = pageVariables.current_component_row.find('.data-component-sn-detail').text()

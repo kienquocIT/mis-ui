@@ -1,0 +1,94 @@
+{% load i18n %}
+
+<div class="modal fade" id="bank-account-modal" tabindex="-1" role="dialog" aria-labelledby="bank-account-modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Select bank account' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span class="text-primary">{% trans 'Pick a bank account, or add one in the last row.' %}</span>
+                <table class="table w-100 nowrap" id="bank-account-table">
+                    <thead class="bg-primary-light-5">
+                    <tr>
+                        <th style="min-width: 50px;"></th>
+                        <th style="min-width: 50px;"></th>
+                        <th style="min-width: 300px;">{% trans 'Information' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="accept-bank-account-btn" class="btn btn-primary">{% trans 'Select' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-end w-90" tabindex="-1" id="offcanvasSelectDetailAP" aria-labelledby="offcanvasTopLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel" data-text-1="{% trans 'Select advance payment' %}" data-text-2="{% trans 'Select Expense Item' %}">{% trans 'Select Advance' %}</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div id="step1">
+            <table id="advance_payment_list_datatable" class="table nowrap w-100"
+                   data-method="GET" data-url="{% url 'AdvancePaymentListAPI' %}"
+                   data-url-ap-detail="{% url 'AdvancePaymentDetailAPI' pk='0' %}">
+                <thead>
+                    <tr>
+                        <th class="w-5"></th>
+                        <th class="w-5"></th>
+                        <th class="w-10">{% trans 'Code' %}</th>
+                        <th class="w-20">{% trans 'Name' %}</th>
+                        <th class="w-20">{% trans 'To payment' %}</th>
+                        <th class="w-20">{% trans 'Returned value' %}</th>
+                        <th class="w-20">{% trans 'Remain AP' %}</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="step2" class="product-tables" hidden></div>
+
+        <div class="row mt-2">
+            <div class="col-6">
+                <div class="form-group" id="total-converted" hidden>
+                    <label class="col-form-label text-primary text-decoration-underline"><b>{% trans 'TOTAL' %}</b></label>
+                    <span class="mask-money total-product-selected text-primary" data-init-money="0"></span>
+                </div>
+            </div>
+            <div class="col-6 text-right">
+                <button class="btn btn-secondary" id="previous-btn" type="button" hidden>
+                    <span>
+                        <span class="icon">
+                            <i class="bi bi-arrow-left-circle"></i>
+                        </span>
+                        <span>{% trans 'Previous' %}</span>
+                    </span>
+                </button>
+                <button class="btn btn-primary" id="next-btn" type="button">
+                    <span>
+                        <span class="icon">
+                            <i class="bi bi-arrow-right-circle"></i>
+                        </span>
+                        <span>{% trans 'Next' %}</span>
+                    </span>
+                </button>
+                <button class="btn btn-primary" data-bs-dismiss="offcanvas" id="finish-btn" type="button" hidden>
+                    <span>
+                        <span class="icon">
+                            <i class="bi bi-clipboard-check"></i>
+                        </span>
+                        <span>{% trans 'Finish' %}</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

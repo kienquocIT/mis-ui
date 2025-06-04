@@ -11780,12 +11780,12 @@ msgid "Return 0 if value of indicator is negative"
 msgstr "Trả về 0 nếu giá trị chỉ tiêu âm"
 
 #
-msgid "Date of advance payment"
-msgstr "Ngày cần tạm ứng"
+msgid "Bank information"
+msgstr "Thông tin ngân hàng"
 
 #
-msgid "Select or input new"
-msgstr "Chọn hoặc nhập mới"
+msgid "Date of advance payment"
+msgstr "Ngày cần tạm ứng"
 
 #
 msgid "Invoice not issued yet"
@@ -11810,3 +11810,35 @@ msgstr "Thao tác không thể thực hiện vì có các phiếu thay đổi (C
 #
 msgid "Save and approve"
 msgstr "Lưu và duyệt"
+
+#
+msgid "Click to select or input new"
+msgstr "Nhấn để chọn hoặc thêm mới"
+
+#
+msgid "Select bank account"
+msgstr "Chọn tài khoản ngân hàng"
+
+#
+msgid "Pick a bank account, or add one in the last row."
+msgstr "Chọn tài khoản hoặc thêm mới ở dòng cuối."
+
+#
+msgid "Advance for supplier"
+msgstr "Tạm ứng cho NCC"
+
+#
+msgid "Advance for employee"
+msgstr "Tạm ứng cho NV"
+
+#
+msgid "Payment for supplier"
+msgstr "Thanh toán cho NCC"
+
+#
+msgid "Payment for employee"
+msgstr "Thanh toán cho NV"
+
+#
+msgid "Select advance payment"
+msgstr "Chọn phiếu tạm ứng"

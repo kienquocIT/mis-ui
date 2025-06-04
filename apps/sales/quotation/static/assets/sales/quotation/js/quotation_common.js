@@ -3044,13 +3044,21 @@ class QuotationDataTableHandle {
                                     <input
                                         type="text"
                                         class="form-control mask-money table-row-discount-amount"
+                                        value="${row?.['product_discount_amount'] ? row?.['product_discount_amount'] : 0}"
+                                        data-return-type="number"
+                                        hidden
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control mask-money table-row-discount-amount-total"
+                                        value="${row?.['product_discount_amount_total'] ? row?.['product_discount_amount_total'] : 0}"
                                         data-return-type="number"
                                         hidden
                                     >
                                     <input
                                         type="text"
                                         class="form-control table-row-discount-amount-raw"
-                                        value="0"
+                                        value="${row?.['product_discount_amount'] ? row?.['product_discount_amount'] : 0}"
                                         hidden
                                     >
                                 </div>`;
@@ -5407,7 +5415,8 @@ class QuotationCalculateCaseHandle {
         let eleDiscount = row.querySelector('.table-row-discount');
         let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
         let eleDiscountAmountRaw = row.querySelector('.table-row-discount-amount-raw');
-        if (eleDiscount && eleDiscountAmount) {
+        let eleDiscountAmountTotal = row.querySelector('.table-row-discount-amount-total');
+        if (eleDiscount && eleDiscountAmount && eleDiscountAmountTotal) {
             if (eleDiscount.value) {
                 discount = parseFloat(eleDiscount.value)
             } else if (!eleDiscount.value || eleDiscount.value === "0") {
@@ -5449,17 +5458,12 @@ class QuotationCalculateCaseHandle {
                 }
             }
             // store discount amount
-            if (!form.classList.contains('sale-order')) {
+            $(eleDiscountAmount).attr('value', String(discountAmount));
+            eleDiscountAmountRaw.value = discountAmount;
+            if (!form.classList.contains('sale-order')) {  // Bao gia
                 if (discountAmountOnTotal > 0) {
-                    $(eleDiscountAmount).attr('value', String(discountAmountOnTotal));
-                    eleDiscountAmountRaw.value = discountAmountOnTotal;
-                } else {
-                    $(eleDiscountAmount).attr('value', String(discountAmount));
-                    eleDiscountAmountRaw.value = discountAmount;
+                    $(eleDiscountAmountTotal).attr('value', String(discountAmountOnTotal));
                 }
-            } else {
-                $(eleDiscountAmount).attr('value', String(discountAmount));
-                eleDiscountAmountRaw.value = discountAmount;
             }
         } else {
             // calculate tax no discount on total
@@ -5984,13 +5988,7 @@ class indicatorHandle {
                         if (check === true) {
                             let valPush = data[lastElement?.['code']];
                             if (lastElement?.['code'] === "product_subtotal_price") {
-                                if (data?.['product_discount_value'] && data?.['product_discount_amount']) {
-                                    let valSubtotal = data?.['product_unit_price'] * data?.['product_quantity'];
-                                    let valPlusDiscount = valPush + data?.['product_discount_amount'];
-                                    if (valSubtotal !== valPlusDiscount) {
-                                        valPush = valPush - data?.['product_discount_amount'];
-                                    }
-                                }
+                                valPush = data[lastElement?.['code']] - (data?.['product_discount_amount_total'] * data?.['product_quantity'])
                             }
                             functionBody += String(valPush);
                             functionBody += ",";
@@ -7153,6 +7151,10 @@ class QuotationSubmitHandle {
                 let eleDiscountAmount = row.querySelector('.table-row-discount-amount');
                 if (eleDiscountAmount) {
                     rowData['product_discount_amount'] = $(eleDiscountAmount).valCurrency();
+                }
+                let eleDiscountAmountTotal = row.querySelector('.table-row-discount-amount-total');
+                if (eleDiscountAmountTotal) {
+                    rowData['product_discount_amount_total'] = $(eleDiscountAmountTotal).valCurrency();
                 }
                 let eleSubtotal = row.querySelector('.table-row-subtotal-raw');
                 if (eleSubtotal) {

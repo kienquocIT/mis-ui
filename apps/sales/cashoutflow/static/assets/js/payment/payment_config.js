@@ -92,7 +92,7 @@ $(document).ready(function () {
                                     flag = 'checked'
                                 }
                             })
-                            return `<span class="form-check">
+                            return `<div class="form-check">
                                         <input data-id="${row.id}" ${flag} type="checkbox" class="form-check-input employees-checkbox">
                                         <label class="form-check-label"></label>
                                     </span>`

@@ -43,13 +43,7 @@
             data-url-expense-sale-order="{% url 'SaleOrderExpenseListAPI' %}"
             data-url-payment-cost-list="{% url 'PaymentCostListAPI' %}">
     </script>
-    <script id="script-trans"
-            data-trans-bank-account-no="{% trans 'Bank account number' %}"
-            data-trans-bank-name="{% trans 'Bank name' %}"
-            data-trans-bank-code="{% trans 'Bank code' %}"
-            data-trans-BICSWIFT-code="{% trans 'BIC/SWIFT code' %}"
-    >
-    </script>
+    <script id="script-trans"></script>
     <form id="form-detail-advance"
           data-method="PUT"
           data-url-redirect="{% url "AdvancePaymentDetail" pk=pk %}"
@@ -60,13 +54,14 @@
     </form>
 {% endblock %}
 {% block modalData %}
-    {% include 'printer/print.html' %}
+    {% include 'advancepayment/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static "assets/js/advancepayment/advance_payment_common.js" %}"></script>
     <script src="{% static "assets/js/advancepayment/advance_payment_update.js" %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>

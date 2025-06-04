@@ -1033,7 +1033,7 @@ class NodeDataTableHandle {
             if (!$('#btn-add-collab-in-wf').length) {
                 let $group = $(`<button
                                         type="button"
-                                        class="btn btn-primary btn-square"
+                                        class="btn btn-primary"
                                         data-bs-toggle="offcanvas"
                                         data-bs-target="#inWFCanvas"
                                         aria-controls="inWFCanvas"

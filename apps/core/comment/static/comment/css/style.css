@@ -130,12 +130,23 @@
     border-bottom: 1px solid #f1f1f1;
 }
 
-.mention-person-list li:hover {
-    background-color: #f1f1f1;
-}
 .mention-person-list li .mention-person-item-title span:after {
     content: "▸";
     color: #005413;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+}
+
+.mention-person-list .mention-item:hover {
+    background-color: #e0f3ff;
+    border-radius: 4px;
+}
+
+/*Animation khi chèn*/
+.params-data {
+    animation: mentionFadeIn 0.3s ease-in-out;
+}
+@keyframes mentionFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
 }

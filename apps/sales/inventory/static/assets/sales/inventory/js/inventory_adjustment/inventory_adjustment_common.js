@@ -115,7 +115,7 @@ class IAAction {
                         <tr>
                             <td>${index}</td>
                             <td>
-                                <span class="form-check">
+                                <div class="form-check">
                                     <input type="checkbox" class="form-check-input selected_product" data-warehouse-id="${item?.['warehouse_id']}" data-product-id="${item?.['product_id']}" data-id="${item?.['product_warehouse_id']}">
                                     <label class="form-check-label"></label>
                                 </span>
@@ -325,7 +325,7 @@ class IAHandle {
                                     <td ${data?.['state'] === 0 ? 'hidden' : ''} class="difference_td">${difference}</td>
                                     <td ${data?.['state'] === 0 ? 'hidden' : ''} class="text-center issued_receipted_td">${data_row?.['issued_receipted_quantity']}</td>
                                     <td hidden class="text-center">
-                                        <span class="form-check">
+                                        <div class="form-check">
                                             <input ${disabled_select} type="checkbox" class="form-check-input selected_for_actions" ${checked}>
                                             <label class="form-check-label"></label>
                                         </span>
@@ -385,7 +385,7 @@ selectProductBtn.on('click', async function () {
                 <td hidden class="difference_td text-center">0</td>
                 <td hidden class="text-center issued_receipted_td">0</td>
                 <td hidden class="text-center">
-                    <span class="form-check">
+                    <div class="form-check">
                         <input type="checkbox" disabled class="form-check-input selected_for_actions">
                         <label class="form-check-label"></label>
                     </span>

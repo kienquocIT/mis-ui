@@ -368,52 +368,56 @@ class PrintTinymceControl {
                     textarea$.val(content);
 
                     const defaultOptions = {
+                        skin: 'oxide',
                         convert_urls: false,
                         branding: false,
-                        readonly : 0,
-                        menubar: false,
+                        readonly: 0,
+                        menubar: true,
                         height: 120,
-                        // plugins: 'quickbars columns advlist autolink lists insertdatetime hr emoticons table mention link media image preview tabfocus visualchars visualblocks wordcount pagebreak print preview',
-                        // toolbar: 'undo redo | styleselect | bold italic strikethrough sizeselect fontselect fontsizeselect | centerHeight centerWidth | forecolor backcolor | numlist bullist table twoColumn threeColumn | pagebreak preview print | link image media emoticons | outdent indent hr insertdatetime | visualblocks visualchars wordcount removeformat',
-                        plugins: 'columns mention print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount textpattern noneditable help charmap quickbars emoticons',
-                        toolbar: 'bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist table twoColumn threeColumn removeColumnsSplit cleanColumnItem | forecolor backcolor removeformat removeSelectionEle | image template link hr pagebreak| preview print visualblocks | rarely_used',
-                        paste_data_images: true,
-                        quickbars_insert_toolbar: 'link image | numlist bullist table twoColumn threeColumn | hr pagebreak | removeSelectionEle',
+                        plugins: [
+                            'columns', 'mention', 'print', 'preview', 'paste', 'importcss', 'searchreplace',
+                            'autolink', 'autosave', 'save', 'directionality', 'code', 'visualblocks',
+                            'visualchars', 'fullscreen', 'image', 'link', 'media', 'template', 'codesample',
+                            'table', 'charmap', 'hr', 'pagebreak', 'nonbreaking', 'anchor', 'toc',
+                            'insertdatetime', 'advlist', 'lists', 'wordcount', 'textpattern', 'noneditable',
+                            'help', 'quickbars', 'emoticons'
+                        ],
+                        toolbar: [
+                            'undo redo | fontselect fontsizeselect formatselect | bold italic underline strikethrough | forecolor backcolor',
+                            'alignleft aligncenter alignright alignjustify | bullist numlist checklist outdent indent',
+                            'link image | removeformat | code | preview print'
+                        ].join(' | '),
                         toolbar_groups: {
                             rarely_used: {
-                              icon: 'more-drawer',
-                              tooltip: 'Rarely Used',
-                              items: 'ltr rtl | charmap emoticons | superscript subscript | nonbreaking anchor media | undo redo | '
+                                icon: 'more-drawer',
+                                tooltip: 'Rarely Used',
+                                items: 'ltr rtl | charmap emoticons | superscript subscript | nonbreaking anchor media | undo redo'
                             }
-                            },
-                        fontsize_formats: "8px 9px 10px 11px 12px 14px 16px 18px 20px 22px 24px 26px 28px 36px 48px 72px",
+                        },
+                        fontsize_formats: '8px 9px 10px 11px 12px 14px 16px 18px 20px 22px 24px 26px 28px 36px 48px 72px',
                         pagebreak_split_block: true,
                         pagebreak_separator: '<span class="page-break-here"><!-- my page break --></span>',
                         nonbreaking_force_tab: true,
-                        templates : templateResult.map(
-                            (item) => {
-                                item['url'] = staticStart + item['url'];
-                                return item;
-                            }
-                        ),
-                        insertdatetime_formats: ['%d-%m-%Y %H:%M:%S', '%d-%m-%Y', '%H:%M:%S', '%I:%M:%S %p'],
+                        paste_data_images: true,
+                        quickbars_insert_toolbar: 'link image | numlist bullist table twoColumn threeColumn | hr pagebreak | removeSelectionEle',
                         content_css: textarea$.attr('data-css-url-render'),
                         content_style: `
-                            body { font-family: Arial, Helvetica, "Times New Roman", Times, serif, sans-serif; font-size: 11px; }
+                            body { font-family: Arial, Helvetica, 'Times New Roman', Times, serif, sans-serif; font-size: 11px; }
                             table tr { vertical-align: top; }
                             @media print {
-                                .mce-visual-caret {
-                                    display: none;
-                                }
+                                .mce-visual-caret { display: none; }
                             }
                         `,
+                        insertdatetime_formats: ['%d-%m-%Y %H:%M:%S', '%d-%m-%Y', '%H:%M:%S', '%I:%M:%S %p'],
+                        templates: templateResult.map(item => ({ ...item, url: staticStart + item.url })),
+                        default_link_target: '_blank',
+                        link_assume_external_targets: true,
+                        link_default_protocol: 'https',
                         mentions: {
                             queryBy: 'code',
                             items: 10,
                             delimiter: '#',
-                            source: function (query, process, delimiter) {
-                                // Do your ajax call
-                                // When using multiple delimiters you can alter the query depending on the delimiter used
+                            source: function(query, process, delimiter) {
                                 if (delimiter === '#') {
                                     let params = $.param(
                                         $.extend(
@@ -446,21 +450,38 @@ class PrintTinymceControl {
                             },
                             insert: function (item) {
                                 // zero with space: \u200B&nbsp; or \u200B
-                                return `<span
-                                    id="idx-${$x.fn.randomStr(16)}" 
-                                    class="params-data" 
-                                    data-code="${item.code}" 
-                                    style="padding: 3px;background-color: #f1f1f1;"
-                                >#${item.title}</span>\u200B`;
+                                // return `<span id="idx-${$x.fn.randomStr(16)}" class="params-data" data-code="${item.code}" style="padding: 3px;background-color: #f1f1f1;">#${item.title}</span>\u200B`;
+                                return `
+                                        <span 
+                                            id="idx-${$x.fn.randomStr(16)}"
+                                            class="params-data badge badge-light border px-2 py-1 rounded-pill d-inline-block" 
+                                            data-code="${item.code}" 
+                                            style="background-color: #e0f3ff; color: #007bff; font-weight: 500;"
+                                        >
+                                        #${item.title}
+                                        </span>&nbsp;
+                                        `;
                             },
                             render: function(item) {
+                                // return `
+                                //     <li style="cursor: pointer;" class="d-flex align-items-center">
+                                //         ${item.code.indexOf('___') !== -1 ? '<i class="fa-solid fa-table-list fa-2xs mr-1"></i>' : '<i class="fa-solid fa-paragraph fa-2xs mr-1"></i>'}
+                                //         ${item.title}
+                                //         <small style="margin-left: 5px;">${ item.remark ? ' - ' + item.remark : ''}</small>
+                                //     </li>
+                                // `
                                 return `
-                                    <li style="cursor: pointer;" class="d-flex align-items-center">
-                                        ${item.code.indexOf('___') !== -1 ? '<i class="fa-solid fa-table-list fa-2xs mr-1"></i>' : '<i class="fa-solid fa-paragraph fa-2xs mr-1"></i>'}
-                                        ${item.title} 
-                                        <small style="margin-left: 5px;">${ item.remark ? ' - ' + item.remark : ''}</small>
+                                    <li class="mention-item d-flex align-items-center px-2 py-1" 
+                                        style="cursor: pointer; transition: background 0.2s;">
+                                        ${item.code.includes('___') 
+                                            ? '<i class="fa-solid fa-table-list fa-xs mr-2 text-secondary"></i>' 
+                                            : '<i class="fa-solid fa-paragraph fa-xs mr-2 text-secondary"></i>'}
+                                        <span class="font-weight-bold text-dark">${item.title}</span>
+                                        ${item.remark 
+                                            ? `<small class="ml-2 text-muted">${item.remark}</small>` 
+                                            : ''}
                                     </li>
-                                `
+                                `;
                             },
                             renderDropdown: function() {
                                 return '<ul class="rte-autocomplete dropdown-menu mention-person-list"></ul>';
@@ -471,11 +492,11 @@ class PrintTinymceControl {
                         },
                         setup: function(editor) {
                             tinymceEditor = editor;
+
                             editor.on('keydown', function(e) {
                                 if (e.key === 'Backspace' || e.key === 'Delete') {
-                                    let node = editor.selection.getNode();
-
-                                    if (node.classList.contains('params-data') && node.getAttribute('data-code')){
+                                    const node = editor.selection.getNode();
+                                    if (node.classList.contains('params-data') && node.getAttribute('data-code')) {
                                         e.preventDefault();
                                         node.remove();
                                         if (editor.getContent() === '') editor.setContent('<p>&nbsp;</p>');
@@ -483,35 +504,29 @@ class PrintTinymceControl {
                                     }
                                 }
                             });
-                            editor.on('init', function (){
-                                // https://www.tiny.cloud/blog/tinymce-and-modal-windows/
-                                // Include the following JavaScript into your tiny.init script to prevent the Bootstrap dialog from blocking focus:
+                            editor.on('init', function() {
                                 document.addEventListener('focusin', (e) => {
-                                    if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+                                    if (e.target.closest('.tox-tinymce-aux, .moxman-window, .tam-assetmanager-root')) {
                                         e.stopImmediatePropagation();
                                     }
-                                })
-                            })
+                                });
+                            });
                         },
-                        // config of: link
-                        default_link_target: '_blank',
-                        link_assume_external_targets: true,
-                        link_default_protocol: 'https',
-                        init_instance_callback: function (editor) {
+                        init_instance_callback: function(editor) {
                             let bookmark;
-                            editor.on('BeforeExecCommand', function (e) {
+                            editor.on('BeforeExecCommand', function(e) {
                                 if (e.command === 'mcePrint') {
                                     bookmark = editor.selection.getBookmark();
                                     editor.selection.setCursorLocation(editor.dom.select('div')[0]);
                                 }
                             });
-                            editor.on('ExecCommand', function (e) {
+                            editor.on('ExecCommand', function(e) {
                                 if (e.command === 'mcePrint') {
                                     editor.selection.moveToBookmark(bookmark);
                                 }
                             });
-                        },
-                    }
+                        }
+                    };
 
                     const defaultSetup = defaultOptions?.['setup']
                     const optSetup = opts['setup'] || function () {}
@@ -803,9 +818,8 @@ class PrintTinymceControl {
             Promise.all([print_ajax]).then(
                 (results) => {
                     const print_data = results[0] || {}
-                    console.log(print_data)
                     new PrintTinymceControl().render(application_id, print_data, false);
-                    new PrintTinymceControl().modal$.modal('show');
+                    PrintTinymceControl.open_modal();
                     WindowControl.hideLoading();
                 })
         }

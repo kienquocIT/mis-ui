@@ -159,6 +159,7 @@ $(function () {
             QuotationCalculateCaseHandle.updateTotal(QuotationDataTableHandle.$tableProduct[0]);
             // load again table cost
             QuotationLoadDataHandle.loadSetWFRuntimeZone();
+            QuotationStoreDataHandle.storeDtbData(1);
         });
 
         QuotationDataTableHandle.$tableProduct.on('click', '.btn-select-price', function () {
@@ -217,14 +218,16 @@ $(function () {
                         let modalBody = QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
                         if (modalBody) {
                             let priceChecked = modalBody.querySelector('.table-row-price-option:checked');
-                            if (priceChecked.getAttribute('data-price')) {
-                                let dataPrice = JSON.parse(priceChecked.getAttribute('data-price'));
-                                if (dataPrice?.['uom']?.['id'] !== $(this).val()) {
-                                    let elePrice = row.querySelector('.table-row-price');
-                                    if (elePrice) {
-                                        $(elePrice).attr('value', String(0));
+                            if (priceChecked) {
+                                if (priceChecked.getAttribute('data-price')) {
+                                    let dataPrice = JSON.parse(priceChecked.getAttribute('data-price'));
+                                    if (dataPrice?.['uom']?.['id'] !== $(this).val()) {
+                                        let elePrice = row.querySelector('.table-row-price');
+                                        if (elePrice) {
+                                            $(elePrice).attr('value', String(0));
+                                        }
+                                        $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-valid-price-uom')}, 'failure');
                                     }
-                                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-valid-price-uom')}, 'failure');
                                 }
                             }
                         }
@@ -295,6 +298,7 @@ $(function () {
             // Re order
             reOrderSTT(QuotationDataTableHandle.$tableExpense);
             QuotationCalculateCaseHandle.updateTotal(QuotationDataTableHandle.$tableExpense[0]);
+            QuotationStoreDataHandle.storeDtbData(3);
         });
 
         QuotationDataTableHandle.$tableExpense.on('click', '.table-row-price-option', function () {
@@ -695,6 +699,7 @@ $(function () {
             deleteRow(this.closest('tr'), QuotationDataTableHandle.$tableInvoice);
             reOrderSTT(QuotationDataTableHandle.$tableInvoice);
             QuotationDataTableHandle.$tablePayment.DataTable().clear().draw();
+            QuotationStoreDataHandle.storeDtbData(5);
         });
 
         QuotationLoadDataHandle.$btnSaveTerm.on('click', function () {
@@ -778,6 +783,7 @@ $(function () {
         QuotationDataTableHandle.$tablePayment.on('click', '.del-row', function () {
             deleteRow(this.closest('tr'), QuotationDataTableHandle.$tablePayment);
             reOrderSTT(QuotationDataTableHandle.$tablePayment);
+            QuotationStoreDataHandle.storeDtbData(4);
         });
 
 // IMPORT TABLE

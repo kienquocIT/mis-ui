@@ -143,8 +143,9 @@
     <style>
         #idxPageContent {
             background-color: #f1f1f1;
-            background: linear-gradient(270deg, #aed5be, #a9b7e0);
-            {#background: linear-gradient(270deg, #6a5acd, #00bcd4, #6a5acd);#}
+            {#background: linear-gradient(270deg, #aed5be, #a9b7e0);#}
+            background: linear-gradient(270deg, #6a5acd, #00bcd4, #6a5acd);
+            {#background: linear-gradient(270deg, #0064cd, #00bcd4, #0064cd);#}
         }
     </style>
     <style>
@@ -289,7 +290,7 @@
                     id="my-task-summary-report"
                     class="w-100 mb-3 p-3"
                     data-url="{% url 'MyTaskSummaryReport' %}"
-                    style="background-color: #ebf5f5;color: #00585f;"
+                    style="background-color: #ffffff;color: #00585f;"
             >
                 <div class="w-100 d-flex justify-content-center align-items-start">
                     <div class="summary-item" data-item="actives">
@@ -490,7 +491,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <table
-                                            class="table nowrap table-advance w-100"
+                                            class="table nowrap w-100"
                                             id="tbl_my_task"
                                             data-url="{% url 'FlowRuntimeTaskListAPI' %}"
                                             data-method="GET"

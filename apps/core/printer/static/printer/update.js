@@ -43,7 +43,7 @@ $(document).ready(function (){
                     let txtArea = $('#inp-contents');
                     let templateUrl = frm.attr('data-url-template')
                     PrintTinymceControl.init_tinymce_editable(txtArea, detail?.['application']?.['id'], {
-                        height: 682,
+                        height: '88vh',
                         readonly: 0,
                         templateUrl: templateUrl,
                         images_upload_handler: function (blobInfo, success, failure) {

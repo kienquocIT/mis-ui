@@ -71,7 +71,7 @@
                                 data-url-select-tenant="{% url 'AuthLoginSelectTenant' %}"
                                 data-url-2fa="{% url 'TwoFAVerifyView' %}"
                         >
-                            <div class="card card-lg card-border box-vertical-blur">
+                            <div class="card card-lg card-border">
                                 <div class="card-body">
                                     <div class="text-center mb-7 overflow-hidden">
                                         <a class="navbar-brand me-0" href="https://www.bflow.vn">
@@ -114,7 +114,8 @@
                                                         class="form-control"
                                                         name="username"
                                                         id="inp-username"
-                                                        placeholder="{% trans 'Username' %}"
+{#                                                        placeholder="{% trans 'Username' %}"#}
+                                                        placeholder="{% trans 'Username or email' %}"
                                                         tabindex="1"
                                                         required
                                                         autofocus

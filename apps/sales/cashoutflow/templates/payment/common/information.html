@@ -4,147 +4,91 @@
     {% trans 'Select Sale Person (Beneficiary)' as inherit_title %}
     {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
 </div>
+
 <div class="row">
-    <div class="col-12 col-md-6 col-lg-6">
-        <div class="form-group">
-            <label for="title" class="form-label required">{% trans "Title" %}</label>
-            <input required maxlength="100" name="title" class="form-control" id="title">
-        </div>
-    </div>
-    <div class="col-12 col-md-3 col-lg-3">
-        <div class="form-group">
-            <label for="created_date_id" class="form-label required">{% trans "Created date" %}</label>
-            <input required name="date_created" class="form-control form-control-line" id="created_date_id" readonly disabled>
-        </div>
-    </div>
-    <div class="col-12 col-md-3 col-lg-3">
-        <div class="form-group">
-            <label for="creator-select-box" class="form-label required">{% trans "Creator" %}</label>
-            <span class="input-affix-wrapper">
-                <span class="input-prefix" id="creator-detail-span">
-                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
-                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
-                        <span class="row small">
-                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
-                            <a id="btn-detail-creator-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
-                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
-                            </a>
-                        </span>
-                        <span class="row small">
-                            <span class="col-5" style="font-style: italic">{% trans "Employee" %}</span>
-                            <span class="col-7 text-primary" id="creator-name"></span>
-                        </span>
-                        <span class="row small">
-                            <span class="col-5" style="font-style: italic">{% trans "Code" %}</span>
-                            <span class="col-7 text-primary" id="creator-code"></span>
-                        </span>
-                        <span class="row small">
-                            <span class="col-5" style="font-style: italic">{% trans "Department" %}</span>
-                            <span class="col-7 text-primary" id="creator-department"></span>
-                        </span>
-                    </span>
-                </span>
-                <input required name="employee_created_id" class="form-control form-control-line" id="creator-select-box" data-method="GET" disabled readonly>
-            </span>
-        </div>
-    </div>
-    <div class="col-12 col-md-3 col-lg-3">
-        <div class="form-group">
-            <label for="quotation_mapped_select" class="form-label">{% trans "Quotation" %}</label>
-            <select name="quotation_id"
-                    class="select2 form-select"
-                    data-url="{% url 'CashOutflowQuotationListAPI' %}"
-                    id="quotation_mapped_select">
-            </select>
-        </div>
-    </div>
-    <div class="col-12 col-md-3 col-lg-3">
-        <div class="form-group">
-            <label for="sale_order_mapped_select" class="form-label">{% trans "Sale Order" %}</label>
-            <select name="sale_order_id"
-                    class="select2 form-select"
-                    data-url="{% url 'CashOutflowSaleOrderListAPI' %}"
-                    id="sale_order_mapped_select"></select>
-        </div>
-    </div>
-    <div class="col-12 col-md-3 col-lg-3">
-        <div class="form-group">
-            <div class="row">
-                <div class="col-8 text-left">
-                    <label for="supplier-select-box" class="form-label required" id="supplier-label">{% trans "Supplier name" %}</label>
-                    <label for="employee-select-box" class="form-label required" hidden id="employee-label">{% trans "Employee" %}</label>
-                </div>
-                <div class="col-4 text-right form-check">
-                    <input name="is_internal_payment" class="form-check-input" type="checkbox" id="internal">
-                    <label for="internal" class="form-label">{% trans "Internal" %}</label>
+    <div class="col-12 col-md-9 col-lg-9">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label for="quotation_mapped_select" class="form-label">{% trans "Quotation" %}</label>
+                    <select name="quotation_id"
+                            class="select2 form-select"
+                            data-url="{% url 'CashOutflowQuotationListAPI' %}"
+                            id="quotation_mapped_select">
+                    </select>
                 </div>
             </div>
-            <span id="supplier-detail-span" class="input-affix-wrapper">
-                <span class="input-prefix" >
-                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
-                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 35rem">
-                        <span class="row small">
-                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
-                            <a id="btn-detail-supplier-tab" class="col-5 text-right" href="{% url 'AccountDetail' '0' %}" data-url="{% url 'AccountDetail' '0' %}" target="_blank">
-                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
-                            </a>
-                        </span>
-                        <span class="row small">
-                            <span class="col-3" style="font-style: italic">{% trans "Supplier" %}</span>
-                            <span class="col-9 text-primary" id="supplier-name"></span>
-                        </span>
-                        <span class="row small">
-                            <span class="col-3" style="font-style: italic">{% trans "Code" %}</span>
-                            <span class="col-9 text-primary" id="supplier-code"></span>
-                        </span>
-                        <span class="row small">
-                            <span class="col-3" style="font-style: italic">{% trans "Owner" %}</span>
-                            <span class="col-9 text-primary" id="supplier-owner"></span>
-                        </span>
-                        <span class="row small">
-                            <span class="col-3" style="font-style: italic">{% trans "Industry" %}</span>
-                            <span class="col-9 text-primary" id="supplier-industry"></span>
-                        </span>
-                    </span>
-                </span>
-                <select required name="supplier_id" class="form-select" data-method="GET" id="supplier-select-box" data-url="{% url 'CashOutflowSupplierListAPI' %}"></select>
-            </span>
-            <span id="employee-detail-span" hidden class="input-affix-wrapper">
-                <span class="input-prefix">
-                    <i class="fas fa-info-circle text-primary" aria-expanded="false" data-bs-toggle="dropdown"></i>
-                    <span role="menu" class="dropdown-menu ml-4 pl-3 pr-3 pt-3 pb-3" style="width: 25rem;">
-                        <span class="row small">
-                            <span class="col-7" style="font-style: italic; font-weight: bold">{% trans "More information" %}</span>
-                            <a id="btn-detail-employee-tab" class="col-5 text-right" href="{% url 'EmployeeDetail' '0' %}" data-url="{% url 'EmployeeDetail' '0' %}" target="_blank">
-                                <span class="badge btn-outline-primary">{% trans "More" %}&nbsp;<i class="bi bi-arrow-right"></i></span>
-                            </a>
-                        </span>
-                        <span class="row small">
-                            <span class="col-5" style="font-style: italic">{% trans "Employee" %}</span>
-                            <span class="col-7 text-primary" id="employee-name"></span>
-                        </span>
-                        <span class="row small">
-                            <span class="col-5" style="font-style: italic">{% trans "Code" %}</span>
-                            <span class="col-7 text-primary" id="employee-code"></span>
-                        </span>
-                        <span class="row small">
-                            <span class="col-5" style="font-style: italic">{% trans "Department" %}</span>
-                            <span class="col-7 text-primary" id="employee-department"></span>
-                        </span>
-                    </span>
-                </span>
-                <select required name="employee_payment_id" class="form-select" data-method="GET" id="employee-select-box" data-url="{% url 'EmployeeListAPI' %}"></select>
-            </span>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label for="sale_order_mapped_select" class="form-label">{% trans "Sale Order" %}</label>
+                    <select name="sale_order_id"
+                            class="select2 form-select"
+                            data-url="{% url 'CashOutflowSaleOrderListAPI' %}"
+                            id="sale_order_mapped_select"></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label for="title" class="form-label required">{% trans "Title" %}</label>
+                    <input required maxlength="100" name="title" class="form-control" id="title">
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label class="form-label required" for="payment_type">{% trans "Type" %}</label>
+                    <select required class="form-select" id="payment_type" name="payment_type">
+                        <option value="0">{% trans "Payment for supplier" %}</option>
+                        <option value="1">{% trans "Payment for employee" %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-9 col-lg-9">
+                <div class="form-group">
+                    <label for="supplier_id" class="form-label">{% trans "Supplier" %}</label>
+                    <select required name="supplier_id" class="form-select" data-method="GET" id="supplier_id" data-url="{% url 'CashOutflowSupplierListAPI' %}"></select>
+                </div>
+                <div class="form-group" hidden>
+                    <label for="employee_payment_id" class="form-label">{% trans "Employee" %}</label>
+                    <select required name="employee_payment_id" class="form-select" data-method="GET" id="employee_payment_id" data-url="{% url 'EmployeeListAPI' %}"></select>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                    <label for="payment-method" class="form-label required">{% trans "Method" %}</label>
+                    <select required name="method" class="form-select" id="payment-method">
+                        <option value="0">{% trans "None" %}</option>
+                        <option value="1">{% trans "Cash" %}</option>
+                        <option value="2">{% trans "Bank transfer" %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 col-md-9 col-lg-9">
+                <div class="form-group">
+                    <label class="form-label" for="bank-info">{% trans "Bank information" %}</label>
+                    <textarea readonly
+                              rows="3"
+                              placeholder="{% trans 'Click to select or input new' %}" id="bank-info" class="form-control"
+                              data-bs-toggle="modal"
+                              data-bs-target="#bank-account-modal"
+                    ></textarea>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-12 col-md-3 col-lg-3">
-        <div class="form-group">
-            <label for="payment-method" class="form-label required">{% trans "Method" %}</label>
-            <select required name="method" class="form-select" id="payment-method">
-                <option value="0">{% trans "None" %}</option>
-                <option value="1">{% trans "Cash" %}</option>
-                <option value="2">{% trans "Bank transfer" %}</option>
-            </select>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label" for="date_created">{% trans "Date created" %}</label>
+                    <input disabled readonly class="form-control form-control-line" id="date_created" name="date_created">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label" for="employee_created">{% trans "Employee created" %}</label>
+                    <input disabled readonly class="form-control form-control-line" id="employee_created" name="employee_created">
+                </div>
+            </div>
         </div>
     </div>
 </div>

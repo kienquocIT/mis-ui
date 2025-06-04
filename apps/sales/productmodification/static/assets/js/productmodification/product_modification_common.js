@@ -300,7 +300,7 @@ class ProductModificationPageFunction {
             });
         }
     }
-    static LoadTableProductCurrentComponentList(data_list=[]) {
+    static LoadTableProductCurrentComponentList(data_list=[], option='create') {
         pageElements.$table_product_current_component.DataTable().clear().destroy()
         pageElements.$table_product_current_component.DataTableDefault({
             rowIdx: true,
@@ -365,6 +365,7 @@ class ProductModificationPageFunction {
                         if (row?.['type'] !== 'new') {
                             if (row?.['product_id']) {
                                 return `<button type="button"
+                                            ${option === 'detail' ? 'disabled' : ''}
                                             class="btn-icon btn-rounded flush-soft-hover btn btn-flush-danger remove-component-btn"
                                             data-component-id="${row?.['product_id'] || ''}"
                                             data-component-code="${row?.['product_code'] || ''}"
@@ -375,6 +376,7 @@ class ProductModificationPageFunction {
                                     </button>`;
                             }
                             return `<button type="button"
+                                            ${option === 'detail' ? 'disabled' : ''}
                                             class="btn-icon btn-rounded flush-soft-hover btn btn-flush-danger remove-component-btn"
                                             data-component-id="${row?.['id'] || ''}"
                                             data-component-name="${row?.['component_name'] || ''}"
@@ -389,7 +391,7 @@ class ProductModificationPageFunction {
             ]
         });
     }
-    static LoadTableProductRemovedComponentList(data_list=[]) {
+    static LoadTableProductRemovedComponentList(data_list=[], option='create') {
         pageElements.$table_product_removed_component.DataTable().clear().destroy()
         pageElements.$table_product_removed_component.DataTableDefault({
             rowIdx: true,
@@ -425,6 +427,7 @@ class ProductModificationPageFunction {
                     className: 'text-center w-5',
                     render: (data, type, row) => {
                         return `<button type="button"
+                                        ${option === 'detail' ? 'disabled' : ''}
                                         class="btn-icon btn-rounded flush-soft-hover btn btn-flush-success return-component-btn"
                                         data-component-id="${row?.['id'] || ''}"
                                         data-component-code="${row?.['component_code'] || ''}"
@@ -745,8 +748,18 @@ class ProductModificationHandler {
 
                     pageElements.$insert_component_btn.prop('hidden', false)
 
-                    ProductModificationPageFunction.LoadTableProductCurrentComponentList(ProductModificationPageFunction.ParseDataCurrentComponent(data?.['current_component_data'] || []))
-                    ProductModificationPageFunction.LoadTableProductRemovedComponentList(ProductModificationPageFunction.ParseDataRemovedComponent(data?.['removed_component_data'] || []))
+                    ProductModificationPageFunction.LoadTableProductCurrentComponentList(
+                        ProductModificationPageFunction.ParseDataCurrentComponent(
+                            data?.['current_component_data'] || []
+                        ),
+                        option
+                    )
+                    ProductModificationPageFunction.LoadTableProductRemovedComponentList(
+                        ProductModificationPageFunction.ParseDataRemovedComponent(
+                            data?.['removed_component_data'] || []
+                        ),
+                        option
+                    )
 
                     $.fn.initMaskMoney2();
 
@@ -949,7 +962,10 @@ class ProductModificationEventHandler {
             if (pageVariables.current_component?.['general_traceability_method'] === '2') {
                 let serial_list_ajax = $.fn.callAjax2({
                     url: pageElements.$script_url.attr('data-url-serial-list-by-warehouse'),
-                    data: {'product_warehouse__product_id': pageVariables.current_product_modified?.['id'], 'product_warehouse__warehouse_id': $(this).attr('data-warehouse-id')},
+                    data: {
+                        'product_warehouse__product_id': pageVariables.current_component?.['id'],
+                        'product_warehouse__warehouse_id': $(this).attr('data-warehouse-id')
+                    },
                     method: 'GET'
                 }).then(
                     (resp) => {

@@ -11838,3 +11838,7 @@ msgstr "Thanh toán cho NV"
 #
 msgid "Select advance payment"
 msgstr "Chọn phiếu tạm ứng"
+
+#
+msgid "Picked quantity"
+msgstr "SL được lấy"

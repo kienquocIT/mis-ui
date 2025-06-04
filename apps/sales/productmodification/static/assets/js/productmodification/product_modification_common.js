@@ -24,8 +24,6 @@ class ProductModificationPageElements {
         this.$insert_component_btn = $('#insert-component-btn')
         this.$table_select_component_inserted = $('#table-select-component-inserted')
         this.$table_product_removed_component = $('#table-product-removed-component')
-        this.$picking_component_modal = $('#picking-component-modal')
-        this.$accept_picking_component_btn = $('#accept-picking-component-btn')
         this.$table_select_component_warehouse = $('#table-select-component-warehouse')
         this.$table_select_component_serial = $('#table-select-component-serial')
     }
@@ -121,7 +119,7 @@ class ProductModificationPageFunction {
                             data-product-code="${row?.['code']}"
                             data-product-title="${row?.['title']}"
                             data-product-description="${row?.['description'] || ''}"
-                            data-product-general-traceability-method="${row?.['general_traceability_method'] || ''}"
+                            data-product-general-traceability-method="${row?.['general_traceability_method']}"
                             >
                         </div>`;
                     }
@@ -166,7 +164,7 @@ class ProductModificationPageFunction {
             {
                 className: 'text-right w-30',
                 render: (data, type, row) => {
-                    return `<span>${row?.['stock_amount'] || ''}</span> <span>${(row?.['uom_data'] || {})?.['title']}</span>`
+                    return `<span>${row?.['stock_amount']}</span> <span>${(row?.['uom_data'] || {})?.['title']}</span>`
                 }
             }
         ]
@@ -322,7 +320,7 @@ class ProductModificationPageFunction {
                     render: (data, type, row) => {
                         if (row?.['product_id']) {
                             return `<span class="badge badge-sm badge-secondary">${row?.['product_code'] || ''}</span>
-                                    <br><span data-row-type="${row?.['type'] || ''}" data-product-id="${row?.['product_id'] || ''}" class="fw-bold component-title">${row?.['product_title'] || ''}</span>
+                                    <br><span data-row-type="${row?.['type']}" data-product-id="${row?.['product_id'] || ''}" class="fw-bold component-title">${row?.['product_title'] || ''}</span>
                                     <br><span class="small component-des">${row?.['product_des'] || ''}</span>`;
                         }
                         return `<span class="fw-bold component-title" data-component-id="${row?.['id'] || ''}">${row?.['component_name'] || ''}</span>
@@ -340,7 +338,7 @@ class ProductModificationPageFunction {
                                         data-product-code="${row?.['product_code'] || ''}"
                                         data-product-title="${row?.['product_title'] || ''}"
                                         data-product-description="${row?.['product_des'] || ''}"
-                                        data-product-general-traceability-method="${row?.['general_traceability_method'] || ''}"
+                                        data-product-general-traceability-method="${row?.['general_traceability_method']}"
                                         data-bs-toggle="modal"
                                         data-bs-target="#picking-component-modal">
                                     <i class="fa-solid fa-ellipsis-vertical"></i>
@@ -457,6 +455,7 @@ class ProductModificationPageFunction {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        console.log(resp.data['component_inserted_list'])
                         return resp.data['component_inserted_list'] ? resp.data['component_inserted_list'] : [];
                     }
                     return [];
@@ -475,11 +474,11 @@ class ProductModificationPageFunction {
                         return `<div class="form-check">
                             <input type="checkbox"
                                 class="form-check-input component-inserted-select"
-                                data-product-id="${row?.['id']}"
-                                data-product-code="${row?.['code']}"
-                                data-product-title="${row?.['title']}"
+                                data-product-id="${row?.['id'] || ''}"
+                                data-product-code="${row?.['code'] || ''}"
+                                data-product-title="${row?.['title'] || ''}"
                                 data-product-description="${row?.['description'] || ''}"
-                                data-product-general-traceability-method="${row?.['general_traceability_method'] || ''}"
+                                data-product-general-traceability-method="${row?.['general_traceability_method']}"
                             >
                         </div>`;
                     }
@@ -500,118 +499,197 @@ class ProductModificationPageFunction {
             });
         });
     }
-    static LoadTableComponentWarehouseByProduct(data_list=[]) {
-        pageElements.$table_select_component_warehouse.DataTable().clear().destroy()
-        pageElements.$table_select_component_warehouse.DataTableDefault({
-            useDataServer: false,
-            rowIdx: true,
-            paging: false,
-            scrollX: true,
-            scrollY: '15vh',
-            scrollCollapse: true,
-            reloadCurrency: true,
-            data: data_list,
-            columns: [
-                {
-                    className: 'w-5',
-                    'render': () => {
-                        return ``;
-                    }
-                },
-                {
-                    className: 'w-5',
-                    render: (data, type, row) => {
-                        return `<div class="form-check">
-                                    <input type="radio" name="product-warehouse-component-select"
-                                           class="form-check-input product-warehouse-component-select"
-                                           data-warehouse-id="${(row?.['warehouse_data'] || {})?.['id'] || ''}"
-                                    >
-                                </div>`;
-                    }
-                },
-                {
-                    className: 'w-60',
-                    render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-primary">${(row?.['warehouse_data'] || {})?.['code'] || ''}</span> <span class="text-primary">${(row?.['warehouse_data'] || {})?.['title'] || ''}</span>`
-                    }
-                },
-                {
-                    className: 'text-right w-30',
-                    render: (data, type, row) => {
-                        return `<span>${row?.['stock_amount'] || ''}</span> <span>${(row?.['uom_data'] || {})?.['title'] || ''}</span>`
-                    }
+    static LoadTableComponentWarehouseByProduct(url='') {
+        const table_columns_cfg = [
+            {
+                className: 'w-5',
+                'render': () => {
+                    return ``;
                 }
-            ]
-        });
+            },
+            {
+                className: 'w-5',
+                render: (data, type, row) => {
+                    return `<div class="form-check">
+                            <input type="radio" name="product-warehouse-component-select"
+                                   class="form-check-input product-warehouse-component-select"
+                                   data-warehouse-id="${(row?.['warehouse_data'] || {})?.['id'] || ''}"
+                            >
+                        </div>`;
+                }
+            },
+            {
+                className: 'w-60',
+                render: (data, type, row) => {
+                    return `<span class="badge badge-sm badge-primary">${(row?.['warehouse_data'] || {})?.['code'] || ''}</span> <span class="text-primary">${(row?.['warehouse_data'] || {})?.['title'] || ''}</span>`
+                }
+            },
+            {
+                className: 'w-20',
+                render: (data, type, row) => {
+                    return `<span>${row?.['stock_amount']}</span> <span>${(row?.['uom_data'] || {})?.['title'] || ''}</span>`
+                }
+            },
+            {
+                className: '',
+                render: (data, type, row) => {
+                    return `<input disabled readonly type="number" class="form-control picked-quantity" value="0">`
+                }
+            }
+        ]
+        pageElements.$table_select_component_warehouse.DataTable().clear().destroy()
+        if (url) {
+            pageElements.$table_select_component_warehouse.DataTableDefault({
+                useDataServer: true,
+                rowIdx: true,
+                scrollX: true,
+                scrollY: '15vh',
+                scrollCollapse: true,
+                reloadCurrency: true,
+                ajax: {
+                    url: url,
+                    type: 'GET',
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            return resp.data['warehouse_list_by_product'] ? resp.data['warehouse_list_by_product'] : [];
+                        }
+                        return [];
+                    },
+                },
+                columns: table_columns_cfg,
+                columnDefs: [
+                    {
+                        targets: [4],
+                        visible: false,
+                    }
+                ],
+                initComplete: function () {
+                    ProductModificationPageFunction.LoadTableComponentSerialListByWarehouse()
+                }
+            });
+        }
+        else {
+            pageElements.$table_select_component_warehouse.DataTableDefault({
+                useDataServer: false,
+                rowIdx: true,
+                scrollX: true,
+                scrollY: '15vh',
+                scrollCollapse: true,
+                reloadCurrency: true,
+                data: [],
+                columns: table_columns_cfg,
+                columnDefs: [
+                    {
+                        targets: [4],
+                        visible: false,
+                    }
+                ],
+                initComplete: function () {
+                    ProductModificationPageFunction.LoadTableComponentSerialListByWarehouse()
+                }
+            });
+        }
     }
-    static LoadTableComponentSerialListByWarehouse(data_list=[], serial_id_list=[]) {
+    static LoadTableComponentSerialListByWarehouse(url='') {
+        const table_columns_cfg = [
+            {
+                className: 'w-5',
+                'render': () => {
+                    return ``;
+                }
+            },
+            {
+                className: 'w-5',
+                render: (data, type, row) => {
+                    return `<div class="form-check">
+                                <input type="checkbox"
+                                       class="form-check-input serial-component-select"
+                                       data-serial-id="${row?.['id']}"
+                                >
+                            </div>`;
+                }
+            },
+            {
+                className: 'w-15',
+                render: (data, type, row) => {
+                    return `<span>${row?.['vendor_serial_number']}</span>`
+                }
+            },
+            {
+                className: 'w-15',
+                render: (data, type, row) => {
+                    return `<span>${row?.['serial_number']}</span>`
+                }
+            },
+            {
+                className: 'w-15',
+                render: (data, type, row) => {
+                    return `<span>${moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                }
+            },
+            {
+                className: 'w-15',
+                render: (data, type, row) => {
+                    return `<span>${moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                }
+            },
+            {
+                className: 'w-15',
+                render: (data, type, row) => {
+                    return `<span>${moment(row?.['warranty_start'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                }
+            },
+            {
+                className: 'w-15',
+                render: (data, type, row) => {
+                    return `<span>${moment(row?.['warranty_end'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                }
+            },
+        ]
         pageElements.$table_select_component_serial.DataTable().clear().destroy()
-        pageElements.$table_select_component_serial.DataTableDefault({
-            useDataServer: false,
-            rowIdx: true,
-            paging: false,
-            scrollX: true,
-            scrollY: '25vh',
-            scrollCollapse: true,
-            reloadCurrency: true,
-            data: data_list,
-            columns: [
-                {
-                    className: 'w-5',
-                    'render': () => {
-                        return ``;
-                    }
+        if (url) {
+            pageElements.$table_select_component_serial.DataTableDefault({
+                useDataServer: true,
+                rowIdx: true,
+                scrollX: true,
+                scrollY: '25vh',
+                scrollCollapse: true,
+                reloadCurrency: true,
+                ajax: {
+                    url: url,
+                    type: 'GET',
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            return resp.data['product_serial_list'] ? resp.data['product_serial_list'] : [];
+                        }
+                        return [];
+                    },
                 },
-                {
-                    className: 'w-5',
-                    render: (data, type, row) => {
-                        return `<div class="form-check">
-                                    <input type="checkbox"
-                                           ${serial_id_list.includes(row?.['id']) ? 'checked' : ''}
-                                           class="form-check-input serial-component-select"
-                                           data-serial-id="${row?.['id']}"
-                                    >
-                                </div>`;
+                columns: table_columns_cfg
+            }).on('draw.dt', function () {
+                let serial_id_list_raw = pageVariables.current_component_row.find('.data-component-sn-detail').text()
+                let serial_id_list = serial_id_list_raw ? JSON.parse(serial_id_list_raw) : []
+                pageElements.$table_select_component_serial.find('tbody tr .serial-component-select').each(function () {
+                    if (serial_id_list.includes($(this).attr('data-serial-id'))) {
+                        $(this).prop('checked', true)
                     }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<span>${row?.['vendor_serial_number']}</span>`
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<span>${row?.['serial_number']}</span>`
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<span>${moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<span>${moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<span>${moment(row?.['warranty_start'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<span>${moment(row?.['warranty_end'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
-                    }
-                },
-            ]
-        });
+                })
+            });
+        }
+        else {
+            pageElements.$table_select_component_serial.DataTableDefault({
+                useDataServer: false,
+                rowIdx: true,
+                scrollX: true,
+                scrollY: '25vh',
+                scrollCollapse: true,
+                reloadCurrency: true,
+                data: [],
+                columns: table_columns_cfg
+            });
+        }
     }
     // load detail sub
     static ParseDataCurrentComponent(current_component_data=[]) {
@@ -621,24 +699,24 @@ class ProductModificationPageFunction {
             if (Object.keys(item?.['component_product_data']).length !== 0) {
                 let component_product_data = item?.['component_product_data'] || {}
                 parsed_current_component_data.push({
-                    'order': item?.['order'] || '',
+                    'order': item?.['order'],
                     'product_id': component_product_data?.['id'] || '',
                     'product_code': component_product_data?.['code'] || '',
                     'product_title': component_product_data?.['title'] || '',
                     'product_des': component_product_data?.['description'] || '',
-                    'general_traceability_method': component_product_data?.['general_traceability_method'] || '',
+                    'general_traceability_method': component_product_data?.['general_traceability_method'],
                     'component_product_sn_detail': item?.['component_product_sn_detail'] || [],
-                    'product_quantity': item?.['component_quantity'] || ''
+                    'product_quantity': item?.['component_quantity']
                 })
             }
             else {
                 let component_text_data = item?.['component_text_data'] || {}
                 parsed_current_component_data.push({
-                    'order': item?.['order'] || '',
+                    'order': item?.['order'],
                     'id': item?.['id'] || '',
                     'component_name': component_text_data?.['title'] || '',
                     'component_des': component_text_data?.['description'] || '',
-                    'component_quantity': item?.['component_quantity'] || ''
+                    'component_quantity': item?.['component_quantity']
                 })
             }
         }
@@ -652,23 +730,23 @@ class ProductModificationPageFunction {
             if (Object.keys(item?.['component_product_data']).length !== 0) {
                 let component_product_data = item?.['component_product_data'] || {}
                 parsed_removed_component_data.push({
-                    'order': item?.['order'] || '',
+                    'order': item?.['order'],
                     'product_id': component_product_data?.['id'] || '',
                     'product_code': component_product_data?.['code'] || '',
                     'product_title': component_product_data?.['title'] || '',
                     'product_des': component_product_data?.['description'] || '',
-                    'general_traceability_method': component_product_data?.['general_traceability_method'] || '',
-                    'product_quantity': item?.['component_quantity'] || ''
+                    'general_traceability_method': component_product_data?.['general_traceability_method'],
+                    'product_quantity': item?.['component_quantity']
                 })
             }
             else {
                 let component_text_data = item?.['component_text_data'] || {}
                 parsed_removed_component_data.push({
-                    'order': item?.['order'] || '',
+                    'order': item?.['order'],
                     'id': item?.['id'] || '',
                     'component_name': component_text_data?.['title'] || '',
                     'component_des': component_text_data?.['description'] || '',
-                    'component_quantity': item?.['component_quantity'] || ''
+                    'component_quantity': item?.['component_quantity']
                 })
             }
         }
@@ -934,59 +1012,22 @@ class ProductModificationEventHandler {
                 'general_traceability_method': $(this).attr('data-product-general-traceability-method'),
             }
             let product_id = $(this).attr('data-product-id')
-            let warehouse_ajax = $.fn.callAjax2({
-                url: pageElements.$script_url.attr('data-url-warehouse-list-by-product'),
-                data: {'product_id': product_id},
-                method: 'GET'
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data && typeof data === 'object' && data.hasOwnProperty('warehouse_list_by_product')) {
-                        return data?.['warehouse_list_by_product'];
-                    }
-                },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                }
-            )
-
-            Promise.all([warehouse_ajax]).then(
-                (results) => {
-                    ProductModificationPageFunction.LoadTableComponentWarehouseByProduct(results[0])
-                    ProductModificationPageFunction.LoadTableComponentSerialListByWarehouse()
-                }
-            )
+            let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}&product_id=${product_id}`
+            ProductModificationPageFunction.LoadTableComponentWarehouseByProduct(url)
         })
         $(document).on("change", '.product-warehouse-component-select', function () {
             pageElements.$table_select_component_serial.closest('.table-serial-space').prop('hidden', pageVariables.current_component?.['general_traceability_method'] !== '2')
+            pageElements.$table_select_component_warehouse.DataTable().column(4).visible(pageVariables.current_component?.['general_traceability_method'] !== '0')
+            if (pageVariables.current_component?.['general_traceability_method'] === '0') {
+                $(this).closest('tr').find('.picked-quantity').prop('disabled', false).prop('readonly', false)
+                pageElements.$table_select_component_warehouse.find('tr .picked-quantity').prop('disabled', true).prop('readonly', true)
+            }
+            if (pageVariables.current_component?.['general_traceability_method'] === '1') {
+
+            }
             if (pageVariables.current_component?.['general_traceability_method'] === '2') {
-                let serial_list_ajax = $.fn.callAjax2({
-                    url: pageElements.$script_url.attr('data-url-serial-list-by-warehouse'),
-                    data: {
-                        'product_warehouse__product_id': pageVariables.current_component?.['id'],
-                        'product_warehouse__warehouse_id': $(this).attr('data-warehouse-id')
-                    },
-                    method: 'GET'
-                }).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && typeof data === 'object' && data.hasOwnProperty('product_serial_list')) {
-                            return data?.['product_serial_list'];
-                        }
-                    },
-                    (errs) => {
-                        $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    }
-                )
-
-                Promise.all([serial_list_ajax]).then(
-                    (results) => {
-                        let serial_id_list_raw = pageVariables.current_component_row.find('.data-component-sn-detail').text()
-                        let serial_id_list = serial_id_list_raw ? JSON.parse(serial_id_list_raw) : []
-
-                        ProductModificationPageFunction.LoadTableComponentSerialListByWarehouse(results[0], serial_id_list)
-                    }
-                )
+                let url = `${pageElements.$script_url.attr('data-url-serial-list-by-warehouse')}?product_warehouse__product_id=${pageVariables.current_component?.['id']}&product_warehouse__warehouse_id=${$(this).attr('data-warehouse-id')}`
+                ProductModificationPageFunction.LoadTableComponentSerialListByWarehouse(url)
             }
         })
         $(document).on("change", '.serial-component-select', function () {

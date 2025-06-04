@@ -715,6 +715,7 @@ class ProductModificationPageFunction {
                     'product_title': component_product_data?.['title'] || '',
                     'product_des': component_product_data?.['description'] || '',
                     'general_traceability_method': component_product_data?.['general_traceability_method'],
+                    'component_product_none_detail': item?.['component_product_none_detail'] || [],
                     'component_product_sn_detail': item?.['component_product_sn_detail'] || [],
                     'product_quantity': item?.['component_quantity']
                 })
@@ -730,7 +731,6 @@ class ProductModificationPageFunction {
                 })
             }
         }
-        console.log(parsed_current_component_data)
         return parsed_current_component_data
     }
     static ParseDataRemovedComponent(removed_component_data=[]) {

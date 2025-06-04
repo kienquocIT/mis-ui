@@ -161,7 +161,7 @@ class NodeLoadDataHandle {
         NodeLoadDataHandle.loadDDAction();
         NodeLoadDataHandle.loadActionShow();
         NodeLoadDataHandle.loadZone();
-        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxSource, NodeLoadDataHandle.dataSource);
+        FormElementControl.loadInitS2(NodeLoadDataHandle.$boxSource, NodeLoadDataHandle.dataSource);
 
         NodeDataTableHandle.dataTableCollabInWFEmployee();
         NodeDataTableHandle.dataTableCollabInWFExitCon();
@@ -183,7 +183,7 @@ class NodeLoadDataHandle {
                     let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
                     if ([2, 3].includes(dataRow?.['action'])) {
                         if (row.querySelector('.table-row-min-collab')) {
-                            NodeLoadDataHandle.loadInitS2($(row.querySelector('.table-row-min-collab')), [
+                            FormElementControl.loadInitS2($(row.querySelector('.table-row-min-collab')), [
                                 {'id': '', 'title': 'Select...',},
                                 {'id': '1', 'title': '0',},
                                 {'id': 'else', 'title': 'Else',},
@@ -323,7 +323,7 @@ class NodeLoadDataHandle {
                                                 }
                                                 if ([2, 3].includes(dataRow?.['action'])) {
                                                     let value = NodeDataTableHandle.$tableInWF.DataTable().data().count() + 1 - parseInt(approvedVal);
-                                                    NodeLoadDataHandle.loadInitS2($(row.querySelector('.table-row-min-collab')), [
+                                                    FormElementControl.loadInitS2($(row.querySelector('.table-row-min-collab')), [
                                                         {'id': '', 'title': 'Select...',},
                                                         {'id': String(value), 'title': String(value),},
                                                         {'id': 'else', 'title': 'Else',},
@@ -362,9 +362,9 @@ class NodeLoadDataHandle {
 
     static loadCollabElements() {
         let $canvas = $('#inWFCanvas');
-        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFOpt, NodeLoadDataHandle.dataInWFOption, {}, $canvas);
-        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFPos, NodeLoadDataHandle.dataInWFPosition, {}, $canvas);
-        NodeLoadDataHandle.loadInitS2(NodeLoadDataHandle.$boxInWFEmp, [], {}, $canvas);
+        FormElementControl.loadInitS2(NodeLoadDataHandle.$boxInWFOpt, NodeLoadDataHandle.dataInWFOption, {}, $canvas);
+        FormElementControl.loadInitS2(NodeLoadDataHandle.$boxInWFPos, NodeLoadDataHandle.dataInWFPosition, {}, $canvas);
+        FormElementControl.loadInitS2(NodeLoadDataHandle.$boxInWFEmp, [], {}, $canvas);
         return true;
     };
 
@@ -668,10 +668,12 @@ class NodeLoadDataHandle {
     }
 
     static loadChangeExitCon(ele) {
-        if (ele.closest('tr')) {
-            if (ele.closest('tr').querySelector('.table-row-action')) {
-                if (ele.closest('tr').querySelector('.table-row-action').getAttribute('data-row')) {
-                    let dataRow = JSON.parse(ele.closest('tr').querySelector('.table-row-action').getAttribute('data-row'));
+        let row = ele.closest('tr');
+        if (row) {
+            let actionEle = row.querySelector('.table-row-action');
+            if (actionEle) {
+                if (actionEle.getAttribute('data-row')) {
+                    let dataRow = JSON.parse(actionEle.getAttribute('data-row'));
                     if (dataRow?.['action'] === 1) {
                         NodeLoadDataHandle.loadChangeExitConApproved(ele);
                     }
@@ -688,16 +690,24 @@ class NodeLoadDataHandle {
         if (parseInt($(ele).val()) <= NodeDataTableHandle.$tableInWF.DataTable().data().count()) {
             NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
                 let row = this.node();
-                if (row.querySelector('.table-row-action') && row.querySelector('.table-row-min-collab')) {
-                    if (row.querySelector('.table-row-action').getAttribute('data-row')) {
-                        let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
+                let actionEle = row.querySelector('.table-row-action');
+                let minCollabEle = row.querySelector('.table-row-min-collab');
+                if (actionEle && minCollabEle) {
+                    if (actionEle.getAttribute('data-row')) {
+                        let dataRow = JSON.parse(actionEle.getAttribute('data-row'));
                         if ([2, 3].includes(dataRow?.['action'])) {
                             let value = NodeDataTableHandle.$tableInWF.DataTable().data().count() + 1 - parseInt($(ele).val());
-                            NodeLoadDataHandle.loadInitS2($(row.querySelector('.table-row-min-collab')), [
+                            FormElementControl.loadInitS2($(minCollabEle), [
                                 {'id': '', 'title': 'Select...',},
                                 {'id': String(value), 'title': String(value),},
                                 {'id': 'else', 'title': 'Else',},
                             ], {}, NodeLoadDataHandle.$modalNode);
+                            if (dataRow?.['action'] === 2) {
+                                $(minCollabEle).val(String(value)).trigger('change');
+                            }
+                            if (dataRow?.['action'] === 3) {
+                                $(minCollabEle).val('else').trigger('change');
+                            }
                         }
                     }
                 }
@@ -714,13 +724,15 @@ class NodeLoadDataHandle {
         if (parseInt($(ele).val()) <= NodeDataTableHandle.$tableInWF.DataTable().data().count()) {
             NodeDataTableHandle.$tableInWFExitCon.DataTable().rows().every(function () {
                 let row = this.node();
-                if (row.querySelector('.table-row-action') && row.querySelector('.table-row-min-collab')) {
-                    if (row.querySelector('.table-row-action').getAttribute('data-row')) {
-                        let dataRow = JSON.parse(row.querySelector('.table-row-action').getAttribute('data-row'));
+                let actionEle = row.querySelector('.table-row-action');
+                let minCollabEle = row.querySelector('.table-row-min-collab');
+                if (actionEle && minCollabEle) {
+                    if (actionEle.getAttribute('data-row')) {
+                        let dataRow = JSON.parse(actionEle.getAttribute('data-row'));
                         if ([2, 3].includes(dataRow?.['action'])) {
                             if (dataRow?.['action'] !== actionType) {
                                 if ($(ele).val() !== 'else') {
-                                    $(row.querySelector('.table-row-min-collab')).val('else').trigger('change');
+                                    $(minCollabEle).val('else').trigger('change');
                                 } else {
 
                                 }

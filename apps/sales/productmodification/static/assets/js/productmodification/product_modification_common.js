@@ -20,6 +20,7 @@ class ProductModificationPageElements {
         this.$accept_picking_product_btn = $('#accept-picking-product-btn')
         // space
         this.$table_current_product_modified = $('#table-current-product-modified')
+        this.$confirm_initial_components_table = $('#confirm-initial-components-table')
         this.$table_product_current_component = $('#table-product-current-component')
         this.$insert_component_btn = $('#insert-component-btn')
         this.$table_select_component_inserted = $('#table-select-component-inserted')
@@ -147,9 +148,9 @@ class ProductModificationPageFunction {
                     return `<div class="form-check">
                             <input type="radio" name="product-warehouse-select"
                                    class="form-check-input product-warehouse-select"
-                                   data-warehouse-id="${(row?.['warehouse_data'] || {})?.['id'] || ''}"
-                                   data-warehouse-code="${(row?.['warehouse_data'] || {})?.['code'] || ''}"
-                                   data-warehouse-title="${(row?.['warehouse_data'] || {})?.['title'] || ''}"
+                                   data-warehouse-id="${row?.['warehouse_data']?.['id'] || ''}"
+                                   data-warehouse-code="${row?.['warehouse_data']?.['code'] || ''}"
+                                   data-warehouse-title="${row?.['warehouse_data']?.['title'] || ''}"
                             >
                         </div>`;
                 }
@@ -157,14 +158,14 @@ class ProductModificationPageFunction {
             {
                 className: 'w-60',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-sm badge-primary warehouse-code">${(row?.['warehouse_data'] || {})?.['code'] || ''}</span>
-                            <span class="text-primary">${(row?.['warehouse_data'] || {})?.['title'] || ''}</span>`
+                    return `<span class="badge badge-sm badge-primary warehouse-code">${row?.['warehouse_data']?.['code'] || ''}</span>
+                            <span class="text-primary">${row?.['warehouse_data']?.['title'] || ''}</span>`
                 }
             },
             {
                 className: 'text-right w-30',
                 render: (data, type, row) => {
-                    return `<span>${row?.['stock_amount']}</span> <span>${(row?.['uom_data'] || {})?.['title']}</span>`
+                    return `<span>${row?.['stock_amount']}</span> <span>${row?.['uom_data']?.['title']}</span>`
                 }
             }
         ]
@@ -298,6 +299,54 @@ class ProductModificationPageFunction {
             });
         }
     }
+    static LoadTableProductConfirmInitComponentList(data_list=[]) {
+        pageElements.$confirm_initial_components_table.DataTable().clear().destroy()
+        pageElements.$confirm_initial_components_table.DataTableDefault({
+            rowIdx: true,
+            reloadCurrency: true,
+            paging: false,
+            scrollX: true,
+            scrollY: '65vh',
+            scrollCollapse: true,
+            data: data_list,
+            columns: [
+                {
+                    className: 'text-center w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-60',
+                    render: (data, type, row) => {
+                        return `<span class="fw-bold component-title" data-component-id="${row?.['id'] || ''}">${row?.['component_name'] || ''}</span>
+                                <br><span class="small component-des">${row?.['component_des'] || ''}</span>`
+                    }
+                },
+                {
+                    className: 'w-30',
+                    render: (data, type, row) => {
+                        return `<input class="form-control fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
+                    }
+                },
+                {
+                    className: 'text-center w-5',
+                    render: (data, type, row) => {
+                        return `<button type="button" class="btn-icon btn-rounded flush-soft-hover btn btn-flush-danger delete-added-component-btn">
+                                    <span class="icon"><i class="fa-solid fa-trash-can text-danger"></i></span>
+                                </button>`;
+                    }
+                },
+            ],
+            initComplete: function () {
+                pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
+                    if (data_list[index]?.['is_added_component']) {
+                        $(ele).addClass('bg-success-light-5 is_added_component')
+                    }
+                })
+            }
+        });
+    }
     static LoadTableProductCurrentComponentList(data_list=[], option='create') {
         pageElements.$table_product_current_component.DataTable().clear().destroy()
         pageElements.$table_product_current_component.DataTableDefault({
@@ -361,32 +410,50 @@ class ProductModificationPageFunction {
                     className: 'text-center w-5',
                     render: (data, type, row) => {
                         if (row?.['type'] !== 'new') {
+                            if (row?.['is_added_component']) {
+                                return `<button type="button" class="btn-icon btn-rounded flush-soft-hover btn btn-flush-danger delete-added-component-btn" ${option === 'detail' ? 'disabled' : ''}>
+                                            <span class="icon"><i class="fa-solid fa-trash-can text-danger"></i></span>
+                                        </button>`;
+                            }
+                            let comp = {}
                             if (row?.['product_id']) {
-                                return `<button type="button"
-                                            ${option === 'detail' ? 'disabled' : ''}
-                                            class="btn-icon btn-rounded flush-soft-hover btn btn-flush-danger remove-component-btn"
-                                            data-component-id="${row?.['product_id'] || ''}"
-                                            data-component-code="${row?.['product_code'] || ''}"
-                                            data-component-name="${row?.['product_title'] || ''}"
-                                            data-component-des="${row?.['product_des'] || ''}"
-                                    >
-                                        <span class="icon"><i class="bi bi-arrow-right-circle"></i></span>
-                                    </button>`;
+                                comp = {
+                                    'id': row?.['product_id'],
+                                    'code': row?.['product_code'],
+                                    'name': row?.['product_title'],
+                                    'des': row?.['product_des'],
+                                }
+                            }
+                            else {
+                                comp = {
+                                    'id': row?.['id'],
+                                    'name': row?.['component_name'],
+                                    'des': row?.['component_des'],
+                                }
                             }
                             return `<button type="button"
                                             ${option === 'detail' ? 'disabled' : ''}
                                             class="btn-icon btn-rounded flush-soft-hover btn btn-flush-danger remove-component-btn"
-                                            data-component-id="${row?.['id'] || ''}"
-                                            data-component-name="${row?.['component_name'] || ''}"
-                                            data-component-des="${row?.['component_des'] || ''}"
-                                    >
+                                            data-component-id="${comp?.['id'] || ''}"
+                                            data-component-code="${comp?.['code'] || ''}"
+                                            data-component-name="${comp?.['name'] || ''}"
+                                            data-component-des="${comp?.['des'] || ''}">
                                         <span class="icon"><i class="bi bi-arrow-right-circle"></i></span>
                                     </button>`;
                         }
-                        return `<i class="fa-solid fa-trash-can text-danger delete-added-component-btn"></i>`;
+                        return `<button type="button" class="btn-icon btn-rounded flush-soft-hover btn btn-flush-danger delete-added-component-btn" ${option === 'detail' ? 'disabled' : ''}>
+                                    <span class="icon"><i class="fa-solid fa-trash-can text-danger"></i></span>
+                                </button>`;
                     }
                 },
-            ]
+            ],
+            initComplete: function () {
+                pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
+                    if (data_list[index]?.['is_added_component']) {
+                        $(ele).addClass('bg-success-light-5 is_added_component')
+                    }
+                })
+            }
         });
     }
     static LoadTableProductRemovedComponentList(data_list=[], option='create') {
@@ -513,7 +580,7 @@ class ProductModificationPageFunction {
                     return `<div class="form-check">
                             <input type="radio" name="product-warehouse-component-select"
                                    class="form-check-input product-warehouse-component-select"
-                                   data-warehouse-id="${(row?.['warehouse_data'] || {})?.['id'] || ''}"
+                                   data-warehouse-id="${row?.['warehouse_data']?.['id'] || ''}"
                             >
                         </div>`;
                 }
@@ -521,13 +588,13 @@ class ProductModificationPageFunction {
             {
                 className: 'w-60',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-sm badge-primary">${(row?.['warehouse_data'] || {})?.['code'] || ''}</span> <span class="text-primary">${(row?.['warehouse_data'] || {})?.['title'] || ''}</span>`
+                    return `<span class="badge badge-sm badge-primary">${row?.['warehouse_data']?.['code'] || ''}</span> <span class="text-primary">${row?.['warehouse_data']?.['title'] || ''}</span>`
                 }
             },
             {
                 className: 'w-20',
                 render: (data, type, row) => {
-                    return `<span>${row?.['stock_amount']}</span> <span>${(row?.['uom_data'] || {})?.['title'] || ''}</span>`
+                    return `<span>${row?.['stock_amount']}</span> <span>${row?.['uom_data']?.['title'] || ''}</span>`
                 }
             },
             {
@@ -707,7 +774,7 @@ class ProductModificationPageFunction {
         for (let i= 0; i < (current_component_data || []).length; i++) {
             let item = current_component_data[i]
             if (Object.keys(item?.['component_product_data']).length !== 0) {
-                let component_product_data = item?.['component_product_data'] || {}
+                let component_product_data = item?.['component_product_data']
                 parsed_current_component_data.push({
                     'order': item?.['order'],
                     'product_id': component_product_data?.['id'] || '',
@@ -717,11 +784,12 @@ class ProductModificationPageFunction {
                     'general_traceability_method': component_product_data?.['general_traceability_method'],
                     'component_product_none_detail': item?.['component_product_none_detail'] || [],
                     'component_product_sn_detail': item?.['component_product_sn_detail'] || [],
-                    'product_quantity': item?.['component_quantity']
+                    'product_quantity': item?.['component_quantity'],
+                    'is_added_component': item?.['is_added_component'],
                 })
             }
             else {
-                let component_text_data = item?.['component_text_data'] || {}
+                let component_text_data = item?.['component_text_data']
                 parsed_current_component_data.push({
                     'order': item?.['order'],
                     'id': item?.['id'] || '',
@@ -738,7 +806,7 @@ class ProductModificationPageFunction {
         for (let i= 0; i < (removed_component_data || []).length; i++) {
             let item = removed_component_data[i]
             if (Object.keys(item?.['component_product_data']).length !== 0) {
-                let component_product_data = item?.['component_product_data'] || {}
+                let component_product_data = item?.['component_product_data']
                 parsed_removed_component_data.push({
                     'order': item?.['order'],
                     'product_id': component_product_data?.['id'] || '',
@@ -750,7 +818,7 @@ class ProductModificationPageFunction {
                 })
             }
             else {
-                let component_text_data = item?.['component_text_data'] || {}
+                let component_text_data = item?.['component_text_data']
                 parsed_removed_component_data.push({
                     'order': item?.['order'],
                     'id': item?.['id'] || '',
@@ -788,7 +856,8 @@ class ProductModificationHandler {
                     'component_product_none_detail': $(ele).find('.data-component-none-detail').text() ? JSON.parse($(ele).find('.data-component-none-detail').text()) : [],
                     'component_product_lot_detail': $(ele).find('.data-component-lot-detail').text() ? JSON.parse($(ele).find('.data-component-lot-detail').text()) : [],
                     'component_product_sn_detail': $(ele).find('.data-component-sn-detail').text() ? JSON.parse($(ele).find('.data-component-sn-detail').text()) : [],
-                    'component_quantity': $(ele).find('.component-quantity').val()
+                    'component_quantity': $(ele).find('.component-quantity').val(),
+                    'is_added_component': $(ele).hasClass('is_added_component')
                 })
             }
         })
@@ -826,14 +895,14 @@ class ProductModificationHandler {
 
                     pageElements.$title.val(data?.['title'])
                     pageElements.$created_date.val(data?.['date_created'] ? DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", data?.['date_created']) : '')
-                    pageVariables.current_product_modified = (data?.['prd_wh_data'] || {})?.['product'] || {}
-                    pageVariables.current_product_modified['warehouse_id'] = ((data?.['prd_wh_data'] || {})?.['warehouse'] || {})?.['id']
-                    pageVariables.current_product_modified['product_id'] = ((data?.['prd_wh_data'] || {})?.['product'] || {})?.['id']
-                    pageVariables.current_product_modified['serial_id'] = (data?.['prd_wh_serial_data'] || {})?.['id']
+                    pageVariables.current_product_modified = data?.['prd_wh_data']?.['product']
+                    pageVariables.current_product_modified['warehouse_id'] = data?.['prd_wh_data']?.['warehouse']?.['id']
+                    pageVariables.current_product_modified['product_id'] = data?.['prd_wh_data']?.['product']?.['id']
+                    pageVariables.current_product_modified['serial_id'] = data?.['prd_wh_serial_data']?.['id']
                     ProductModificationPageFunction.LoadTableCurrentProductModified(
                         [pageVariables.current_product_modified],
-                        ((data?.['prd_wh_data'] || {})?.['warehouse'] || {})?.['code'],
-                        (data?.['prd_wh_serial_data'] || {})?.['serial_number']
+                        data?.['prd_wh_data']?.['warehouse']?.['code'],
+                        data?.['prd_wh_serial_data']?.['serial_number']
                     )
 
                     pageElements.$insert_component_btn.prop('hidden', false)
@@ -953,6 +1022,7 @@ class ProductModificationEventHandler {
 
                 Promise.all([product_component_list_ajax]).then(
                     (results) => {
+                        ProductModificationPageFunction.LoadTableProductConfirmInitComponentList(results[0]?.['component_list_data' || []])
                         ProductModificationPageFunction.LoadTableProductCurrentComponentList(results[0]?.['component_list_data' || []])
                         ProductModificationPageFunction.LoadTableProductRemovedComponentList()
                     }
@@ -985,7 +1055,7 @@ class ProductModificationEventHandler {
                 )
                 let row_added = pageElements.$table_product_current_component.find('tbody tr:last-child')
                 row_added.find('.component-quantity').focus()
-                row_added.addClass('bg-success-light-5')
+                row_added.addClass('bg-success-light-5 is_added_component')
             } else {
                 pageVariables.component_inserted_id_list.delete(rowId)
                 pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {

@@ -11846,3 +11846,7 @@ msgstr "Chọn phiếu tạm ứng"
 #
 msgid "Picked quantity"
 msgstr "SL được lấy"
+
+#
+msgid "Confirm initial components"
+msgstr "Xác nhận các thành phần ban đầu"

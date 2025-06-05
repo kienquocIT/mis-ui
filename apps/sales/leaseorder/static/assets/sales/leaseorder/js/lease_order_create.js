@@ -190,6 +190,7 @@ $(function () {
             LeaseOrderCalculateCaseHandle.updateTotal(LeaseOrderDataTableHandle.$tableProduct[0]);
             // load again table cost
             LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
+            LeaseOrderStoreDataHandle.storeDtbData(1);
         });
 
         LeaseOrderDataTableHandle.$tableProduct.on('click', '.btn-select-price', function () {
@@ -278,14 +279,16 @@ $(function () {
                         let modalBody = LeaseOrderLoadDataHandle.$priceModal[0].querySelector('.modal-body');
                         if (modalBody) {
                             let priceChecked = modalBody.querySelector('.table-row-price-option:checked');
-                            if (priceChecked.getAttribute('data-price')) {
-                                let dataPrice = JSON.parse(priceChecked.getAttribute('data-price'));
-                                if (dataPrice?.['uom']?.['id'] !== $(this).val()) {
-                                    let elePrice = row.querySelector('.table-row-price');
-                                    if (elePrice) {
-                                        $(elePrice).attr('value', String(0));
+                            if (priceChecked) {
+                                if (priceChecked.getAttribute('data-price')) {
+                                    let dataPrice = JSON.parse(priceChecked.getAttribute('data-price'));
+                                    if (dataPrice?.['uom']?.['id'] !== $(this).val()) {
+                                        let elePrice = row.querySelector('.table-row-price');
+                                        if (elePrice) {
+                                            $(elePrice).attr('value', String(0));
+                                        }
+                                        $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-valid-price-uom')}, 'failure');
                                     }
-                                    $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-valid-price-uom')}, 'failure');
                                 }
                             }
                         }
@@ -394,6 +397,7 @@ $(function () {
             // Re order
             reOrderSTT(LeaseOrderDataTableHandle.$tableExpense);
             LeaseOrderCalculateCaseHandle.updateTotal(LeaseOrderDataTableHandle.$tableExpense[0]);
+            LeaseOrderStoreDataHandle.storeDtbData(3);
         });
 
         LeaseOrderDataTableHandle.$tableExpense.on('click', '.table-row-price-option', function () {
@@ -873,6 +877,7 @@ $(function () {
             deleteRow(this.closest('tr'), LeaseOrderDataTableHandle.$tableInvoice);
             reOrderSTT(LeaseOrderDataTableHandle.$tableInvoice);
             LeaseOrderDataTableHandle.$tablePayment.DataTable().clear().draw();
+            LeaseOrderStoreDataHandle.storeDtbData(5);
         });
 
         LeaseOrderLoadDataHandle.$btnSaveTerm.on('click', function () {
@@ -953,6 +958,8 @@ $(function () {
 
         LeaseOrderDataTableHandle.$tablePayment.on('click', '.del-row', function () {
             deleteRow(this.closest('tr'), LeaseOrderDataTableHandle.$tablePayment);
+            reOrderSTT(LeaseOrderDataTableHandle.$tablePayment);
+            LeaseOrderStoreDataHandle.storeDtbData(4);
         });
 
 // IMPORT TABLE

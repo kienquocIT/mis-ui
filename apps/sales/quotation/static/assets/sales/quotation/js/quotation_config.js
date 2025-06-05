@@ -250,7 +250,7 @@ $(function () {
                 if (!$('#btn-add-indicator').length) {
                     let $group = $(`<button
                                             type="button"
-                                            class="btn btn-primary btn-square"
+                                            class="btn btn-primary"
                                             id="btn-add-indicator"
                                             data-bs-toggle="modal"
                                             data-bs-target="#indicatorCreateModalCenter"
@@ -259,7 +259,7 @@ $(function () {
                                     </button>
                                     <button
                                             type="button"
-                                            class="btn btn-outline-primary btn-square"
+                                            class="btn btn-outline-primary"
                                             data-bs-toggle="modal"
                                             data-bs-target="#restoreIndicatorModalCenter"
                                     >

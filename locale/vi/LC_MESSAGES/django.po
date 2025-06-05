@@ -11808,6 +11808,10 @@ msgid "The action cannot be performed because there are change requests (CR). Pl
 msgstr "Thao tác không thể thực hiện vì có các phiếu thay đổi (CR). Vui lòng duyệt hoặc hủy các phiếu thay đổi."
 
 #
+msgid "Save and approve"
+msgstr "Lưu và duyệt"
+
+#
 msgid "Click to select or input new"
 msgstr "Nhấn để chọn hoặc thêm mới"
 

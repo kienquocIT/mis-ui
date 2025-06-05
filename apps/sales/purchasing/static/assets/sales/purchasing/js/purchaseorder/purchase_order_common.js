@@ -3033,7 +3033,7 @@ class PODataTableHandle {
                 if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
                     hidden = "hidden";
                 }
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" aria-expanded="false" data-bs-toggle="dropdown" ${hidden}>
+                let $group = $(`<button type="button" class="btn btn-primary" aria-expanded="false" data-bs-toggle="dropdown" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${POLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>
                                 <div class="dropdown-menu w-210p">
@@ -3095,7 +3095,7 @@ class PODataTableHandle {
                 if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
                     hidden = "hidden";
                 }
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-payment-stage" ${hidden}>
+                let $group = $(`<button type="button" class="btn btn-primary" id="btn-add-payment-stage" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${POLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -3133,7 +3133,7 @@ class PODataTableHandle {
                 if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
                     hidden = "hidden";
                 }
-                let $group = $(`<button type="button" class="btn btn-primary btn-square" id="btn-add-invoice" ${hidden}>
+                let $group = $(`<button type="button" class="btn btn-primary" id="btn-add-invoice" ${hidden}>
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${POLoadDataHandle.transEle.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(

@@ -184,10 +184,10 @@ class FlowChartLoadDataHandle {
                                     <div class="col-12 col-md-11 col-lg-11 block-cond-child">
                                         ${htmlCond}
                                         <div class="d-flex justify-content-between">
-                                            <button type="button" class="btn btn-primary btn-square btn-add-block-cond-child" data-idx="${order-1}">
+                                            <button type="button" class="btn btn-primary btn-add-block-cond-child" data-idx="${order-1}">
                                                 <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${FlowChartLoadDataHandle.$transEle.attr('data-add')}</span></span>
                                             </button>
-                                            <button type="button" class="btn btn-outline-secondary btn-square btn-del-block-cond mr-5" data-idx="${order}">
+                                            <button type="button" class="btn btn-outline-secondary btn-del-block-cond mr-5" data-idx="${order}">
                                                 <span><span class="icon"><i class="fas fa-trash-alt"></i></span><span>${FlowChartLoadDataHandle.$transEle.attr('data-delete-block')}</span></span>
                                             </button>
                                         </div>

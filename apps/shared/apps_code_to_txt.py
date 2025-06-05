@@ -229,6 +229,18 @@ class AppsCodeToList:
                 'is_active': True,
             },
         },
+        'bidding' :{
+            'bidding': {
+                'title': _('Bidding'),
+                'is_active': True,
+            },
+        },
+        'consulting': {
+            'consulting': {
+                'title': _('Consulting'),
+                'is_active': True,
+            },
+        }
     }
 
     @classmethod

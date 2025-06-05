@@ -421,11 +421,25 @@
                 let btnCopy = $('#btnCopyPass');
                 let btnCopyNotSupport = $('#msg-copy-not-support');
 
-                if (fixedDomain.endsWith(hostData)) {
-                    $('#inp-tenant-code').val(fixedDomain.split(".")[0]);
+                if (fixedDomain) {
+                    if (fixedDomain.endsWith(hostData)) {
+                        const inp$ = $('#inp-tenant-code');
+                        let tenantCode = fixedDomain.split(".")[0];
+                        if (tenantCode) {
+                            inp$.val(tenantCode);
+                        }
+                    }
                 }
-                if (hostData.endsWith(mainDomain)) {
-                    $('#inp-tenant-code').val(hostData.replaceAll('.' + mainDomain, ''));
+                if (!fixedDomain) {
+                    if (hostData.endsWith(mainDomain)) {
+                        const inp$ = $('#inp-tenant-code');
+                        let tenantCode = hostData.split(mainDomain)[0];
+                        if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
+
+                        if (tenantCode) {
+                            inp$.val(tenantCode);
+                        }
+                    }
                 }
 
                 let frmOTPValidate = $('#frmSubmitOTPValidate');

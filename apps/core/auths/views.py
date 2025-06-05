@@ -77,7 +77,7 @@ class AuthLogin(APIView):
                 'secret_key_gg': settings.GG_RECAPTCHA_CLIENT_KEY if settings.GG_RECAPTCHA_ENABLED else None,
                 'allow_auto_tenant': settings.UI_ALLOW_AUTO_TENANT,
                 'ui_domain': settings.UI_DOMAIN,
-                'ui_fixed_domain': settings.UI_FIXED_DOMAIN,
+                'ui_fixed_domain': settings.UI_FIXED_DOMAIN if settings.UI_FIXED_DOMAIN else '',
             }
         )
 
@@ -232,7 +232,7 @@ class ForgotPasswordView(View):
             return OutLayoutRender(request=request).render_404()
         ctx = {
             'ui_domain': settings.UI_DOMAIN,
-            'ui_fixed_domain': settings.UI_FIXED_DOMAIN,
+            'ui_fixed_domain': settings.UI_FIXED_DOMAIN if settings.UI_FIXED_DOMAIN else '',
             'captcha_enabled': settings.GG_RECAPTCHA_ENABLED,
             'secret_key_gg': settings.GG_RECAPTCHA_CLIENT_KEY if settings.GG_RECAPTCHA_ENABLED else None,
         }

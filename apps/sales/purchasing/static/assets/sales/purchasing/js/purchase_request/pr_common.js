@@ -397,7 +397,7 @@ function LoadSaleOrderTable(is_all_so=false) {
             }, {
                 className: 'w-5',
                 render: (data, type, row) => {
-                    return `<span class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-so" data-id="${row?.['id']}"/></span>`
+                    return `<div class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-so" data-id="${row?.['id']}"/></span>`
                 }
             }, {
                 className: 'w-45',
@@ -581,7 +581,7 @@ function LoadDistributionTable() {
             }, {
                 className: 'w-5',
                 render: (data, type, row) => {
-                    return `<span class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-dp" data-id="${row?.['id']}"/></span>`
+                    return `<div class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-dp" data-id="${row?.['id']}"/></span>`
                 }
             }, {
                 className: 'w-45',

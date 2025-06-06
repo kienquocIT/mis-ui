@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    PaymentHandle.LoadDetailPayment('detail');
+    PaymentHandler.LoadDetailPayment('detail');
 })

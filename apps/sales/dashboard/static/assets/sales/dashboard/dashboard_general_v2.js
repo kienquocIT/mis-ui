@@ -675,6 +675,7 @@ class DashBoardGeneralEventHandler {
 
 
 $(document).ready(function () {
+    $('#avt-copy').html($('.avatar-img').first())
     DashBoardGeneralEventHandler.InitPageEven()
     // Load Page
     DashBoardGeneralPageFunction.LoadPeriod(pageVariables.CURRENT_PERIOD)

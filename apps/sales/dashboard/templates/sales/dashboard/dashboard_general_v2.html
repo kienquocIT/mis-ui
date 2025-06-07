@@ -7,17 +7,32 @@
     <style>
         #setting-btn:hover .icon i {
             transform: rotate(360deg);
-            transition: transform 1s ease-in-out;
+            transition: transform 0.6s ease-in-out;
         }
+
         .carousel-container {
             overflow: hidden;
             display: flex;
             align-items: center;
+            justify-content: flex-start;
         }
+
         .carousel-text {
             position: relative;
-            transition: transform 0.5s ease;
+            white-space: nowrap;
+            overflow: hidden;
             will-change: transform;
+            transition: transform 0.5s ease;
+        }
+
+        /* Responsive tweak for carousel text on smaller screens */
+        @media (max-width: 576px) {
+            .carousel-container {
+                font-size: 0.9rem;
+                height: auto;
+                padding: 0.25rem 0.5rem;
+                border-left-width: 3px;
+            }
         }
     </style>
 {% endblock %}
@@ -67,27 +82,42 @@
     ></script>
 
     <div class="row d-flex align-items-center">
-        <div class="col-11">
-            <h2 class="text-primary">
-                {% if request.user.is_authenticated %}
-                    {% trans "Welcome back" %}, {{ request.user.employee_current_data.full_name }}!
-                {% else %}
-                    {% trans "Welcome back" %}!
-                {% endif %}
-            </h2>
-            <div class="carousel-container">
-                <div class="carousel-text" id="carouselText"></div>
-                <div id="phrases" style="display: none;">
-                    <p class="text-muted">{% trans "Track all your business metrics on the Bflow Dashboard easily" %}</p>
-                    <p class="text-muted">{% trans "Never miss any important insights when your data will be updated automatically updated continuously" %}</p>
-                    <p class="text-muted">{% trans "Customize your dashboards to focus on what matters most" %}</p>
+        <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <div class="me-2">
+                        <div class="position-relative avatar avatar--large">
+                            <div class="avatar__content" id="avt-copy"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-primary">
+                            {% if request.user.is_authenticated %}
+                                {% trans "Welcome back" %}, {{ request.user.employee_current_data.full_name }}!
+                            {% else %}
+                                {% trans "Welcome back" %}!
+                            {% endif %}
+                        </h2>
+                        <div class="carousel-container">
+                            <div class="carousel-text" id="carouselText"></div>
+                            <div id="phrases" class="d-none">
+                                <p class="text-muted">{% trans "Track all your business metrics on the Bflow Dashboard easily" %}</p>
+                                <p class="text-muted">{% trans "Never miss any important insights when your data will be updated automatically updated continuously" %}</p>
+                                <p class="text-muted">{% trans "Customize your dashboards to focus on what matters most" %}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <button
+                    id="setting-btn"
+                    class="btn btn-xs btn-icon btn-rounded btn-light"
+                    data-bs-toggle="modal"
+                    data-bs-target="#settingModal"
+                    aria-label="{% trans 'Open settings' %}"
+                    title="{% trans 'Open settings' %}">
+                    <span class="icon"><i class="fa-solid fa-gear"></i></span>
+                </button>
             </div>
-        </div>
-        <div class="col-1 text-right">
-            <button id="setting-btn" class="btn btn-xs btn-icon btn-rounded btn-light" data-bs-toggle="modal" data-bs-target="#settingModal">
-                <span class="icon"><i class="fa-solid fa-gear"></i></span>
-            </button>
         </div>
     </div>
     <div class="row d-flex align-items-center mt-5">
@@ -133,7 +163,7 @@
     </div>
     <div class="row">
         <div class="col-12 col-md-12 col-lg-6 mt-2">
-            <div class="border rounded p-2">
+            <div class="border rounded shadow p-2">
                 <div id="revenue-spinner" class="spinner-grow" role="status"></div>
                 <div id="revenue_chart" style="width: 100%; height: 300px"></div>
                 <div class="row mt-4">
@@ -148,7 +178,7 @@
             </div>
         </div>
         <div class="col-12 col-md-12 col-lg-6 mt-2">
-            <div class="border rounded p-2">
+            <div class="border rounded shadow p-2">
                 <div id="profit-spinner" class="spinner-grow" role="status"></div>
                 <div id="profit_chart" style="width: 100%; height: 300px"></div>
                 <div class="row d-flex align-items-center mt-4">
@@ -163,66 +193,6 @@
             </div>
         </div>
     </div>
-
-{#    <div class="row mt-2">#}
-{#        <div class="col-6">#}
-{#            <button class="btn btn-xs btn-outline-secondary" data-bs-toggle="collapse" href="#topsalecustomerCollapse">#}
-{#                <span>#}
-{#                    <span class="icon"><span class="feather-icon"><i class="bi bi-filter-circle"></i></span></span>#}
-{#                    <span>{% trans 'Filter' %}</span>#}
-{#                </span>#}
-{#            </button>#}
-{#        </div>#}
-{#        <div class="col-6 text-right">#}
-{#            <button class="btn btn-xs btn-soft-success" id="reload-top-sale-customer-data-btn" data-bs-toggle="tooltip" title="{% trans 'Refresh data' %}">#}
-{#                <i class="fas fa-sync"></i>#}
-{#            </button>#}
-{#        </div>#}
-{#    </div>#}
-{#    <div class="collapse" id="topsalecustomerCollapse">#}
-{#        <div class="row">#}
-{#            <div class="col-12 col-md-6 col-lg-6">#}
-{#                <div class="form-group">#}
-{#                    <label class="form-label" for="top-sale-customer-time">{% trans 'Time range' %}</label>#}
-{#                    <div class="input-group">#}
-{#                        <select class="form-select select2" id="top-sale-customer-time">#}
-{#                            <option value="0">{% trans 'Month' %}</option>#}
-{#                            <option value="1">{% trans 'Quarter' %}</option>#}
-{#                            <option value="2" selected>{% trans 'Whole year' %}</option>#}
-{#                        </select>#}
-{#                        <label class="input-group-text" for="top-sale-customer-time-detail" hidden></label>#}
-{#                        <select class="form-select select2" id="top-sale-customer-time-detail" disabled></select>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#            <div class="col-12 col-md-3 col-lg-3">#}
-{#                <div class="form-group">#}
-{#                    <label for="top-sale-number" class="form-label">{% trans 'Sale number viewed' %}</label>#}
-{#                    <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">#}
-{#                </div>#}
-{#            </div>#}
-{#            <div class="col-12 col-md-3 col-lg-3">#}
-{#                            <div class="form-group">#}
-{#                                <label for="top-customer-number" class="form-label">{% trans 'Customer number viewed' %}</label>#}
-{#                                <input class="form-control" type="number" id="top-customer-number" min="1" max="20" value="10">#}
-{#                            </div>#}
-{#                        </div>#}
-{#        </div>#}
-{#    </div>#}
-{#    <div class="row">#}
-{#        <div class="col-12 col-md-12 col-lg-6 mt-2">#}
-{#            <div class="border rounded p-2">#}
-{#                <div id="topsale-spinner" class="spinner-grow" role="status"></div>#}
-{#                <div id="topsale_chart" style="width: 100%; height: 300px"></div>#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="col-12 col-md-12 col-lg-6 mt-2">#}
-{#            <div class="border rounded p-2">#}
-{#                <div id="topcustomer-spinner" class="spinner-grow" role="status"></div>#}
-{#                <div id="topcustomer_chart" style="width: 100%; height: 300px"></div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
 {% endblock %}
 {% block modalData %}
     <div class="modal fade" id="settingModal" tabindex="-1" role="dialog" aria-labelledby="settingModalLabel" aria-hidden="true">
@@ -276,32 +246,42 @@
     <script>
         let $phrasesContainer = $('#phrases');
         let phrases = $phrasesContainer.find('p').map(function () {
-            return $(this).prop('outerHTML').trim();  // lấy cả đoạn HTML <p>...</p>
+            return $(this).prop('outerHTML').trim();
         }).get();
 
         let $carouselText = $('#carouselText');
         let index = 0;
 
         function showPhrase(i) {
-            $carouselText.html(phrases[i]).css('transform', 'translateY(0)').css('transition', 'transform 0.5s ease');
+            $carouselText
+                .html(phrases[i])
+                .css({
+                    transform: 'translateY(0)',
+                    opacity: 1,
+                    transition: 'transform 0.6s ease, opacity 0.6s ease'
+                });
+        }
+
+        function hidePhrase(callback) {
+            $carouselText.css({
+                transform: 'translateY(-20px)',
+                opacity: 0,
+                transition: 'transform 0.6s ease, opacity 0.6s ease'
+            });
+
+            setTimeout(callback, 600);
+        }
+
+        function nextPhrase() {
+            hidePhrase(function () {
+                index = (index + 1) % phrases.length;
+                showPhrase(index);
+            });
         }
 
         showPhrase(index);
 
-        function nextPhrase() {
-            $carouselText.css('transform', 'translateY(-100%)');
-
-            setTimeout(function () {
-                index = (index + 1) % phrases.length;
-                $carouselText.html(phrases[index]);
-                $carouselText.css('transition', 'none').css('transform', 'translateY(100%)');
-                requestAnimationFrame(function () {
-                    $carouselText.css('transition', 'transform 0.5s ease').css('transform', 'translateY(0)');
-                });
-            }, 500);
-        }
-
-        setInterval(nextPhrase, 10000);
+        setInterval(nextPhrase, 8000);
     </script>
     <script src="{% static 'vendors/echartjs/echart.js' %}"></script>
     <script src="{% static 'assets/sales/dashboard/dashboard_general_v2.js' %}"></script>

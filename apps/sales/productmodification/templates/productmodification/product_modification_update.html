@@ -19,6 +19,7 @@
 {% block pageContent %}
     <script id="script-url"
             data-url-warehouse-list-by-product="{% url 'WarehouseListByProductAPI' %}?interact=1"
+            data-url-lot-list-by-warehouse="{% url 'ProductLotListAPI' %}"
             data-url-serial-list-by-warehouse="{% url 'ProductSerialListAPI' %}"
             data-url-product-component-list="{% url 'ProductComponentListAPI' %}"
     ></script>

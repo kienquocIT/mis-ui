@@ -54,6 +54,20 @@
                             </thead>
                         </table>
                     </div>
+                    <div class="col-12 mt-3 table-lot-space" hidden>
+                        <table class="table nowrap w-100" id="table-select-lot">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 20px"></th>
+                                    <th style="min-width: 150px">{% trans 'Lot number' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Quantity' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Expiration date' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Mfr date' %}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                     <div class="col-12 mt-3 table-serial-space" hidden>
                         <table class="table nowrap w-100" id="table-select-serial">
                             <thead>
@@ -79,7 +93,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="confirm-initial-components-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-initial-components-modal">
+<div class="modal fade" id="confirm-initial-components-modal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="confirm-initial-components-modal">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -105,7 +119,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Confirm' %}</button>
+                <button type="button" id="confirm-initial-components-btn" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Confirm' %}</button>
             </div>
         </div>
     </div>

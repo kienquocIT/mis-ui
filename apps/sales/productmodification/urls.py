@@ -2,7 +2,7 @@ from django.urls import path
 from apps.sales.productmodification.views import (
     ProductModificationList, ProductModificationCreate, ProductModificationDetail, ProductModificationUpdate,
     ProductModificationListAPI, ProductModificationDetailAPI, WarehouseListByProductAPI, ProductSerialListAPI,
-    ProductModifiedListAPI, ProductComponentListAPI, ComponentInsertedListAPI,
+    ProductModifiedListAPI, ProductComponentListAPI, ComponentInsertedListAPI, ProductLotListAPI,
 )
 
 urlpatterns = [
@@ -16,6 +16,7 @@ urlpatterns = [
     path('product-modified-list/api', ProductModifiedListAPI.as_view(), name='ProductModifiedListAPI'),
     path('product-component-list/api', ProductComponentListAPI.as_view(), name='ProductComponentListAPI'),
     path('warehouse-list-by-product/api', WarehouseListByProductAPI.as_view(), name='WarehouseListByProductAPI'),
+    path('product-lot-list/api', ProductLotListAPI.as_view(), name='ProductLotListAPI'),
     path('product-serial-list/api', ProductSerialListAPI.as_view(), name='ProductSerialListAPI'),
     path('product-inserted-list/api', ComponentInsertedListAPI.as_view(), name='ComponentInsertedListAPI'),
 ]

@@ -11850,3 +11850,27 @@ msgstr "SL được lấy"
 #
 msgid "Confirm initial components"
 msgstr "Xác nhận các thành phần ban đầu"
+
+#
+msgid "Welcome back"
+msgstr "Chào mừng trở lại"
+
+#
+msgid "Track all your business metrics on the Bflow Dashboard easily"
+msgstr "Theo dõi tất cả chỉ số doanh nghiệp của bạn trên Bflow Dashboard một cách dễ dàng"
+
+#
+msgid "Never miss any important insights when your data will be updated automatically updated continuously"
+msgstr "Không bỏ lỡ bất kỳ thông tin quan trọng nào với dữ liệu được cập nhật tự động liên tục"
+
+#
+msgid "Customize your dashboards to focus on what matters most"
+msgstr "Tùy chỉnh biểu đồ của bạn để tập trung vào những điều quan trọng nhất"
+
+#
+msgid "Compared with last month"
+msgstr "So với tháng trước"
+
+#
+msgid "Last updated at"
+msgstr "Cập nhật lúc"

@@ -675,11 +675,10 @@ class DashBoardGeneralEventHandler {
 
 
 $(document).ready(function () {
-    $('#avt-copy').html($('.avatar-img').first())
     DashBoardGeneralEventHandler.InitPageEven()
     // Load Page
     DashBoardGeneralPageFunction.LoadPeriod(pageVariables.CURRENT_PERIOD)
     DashBoardGeneralPageFunction.LoadRevenueGroup()
     DashBoardGeneralPageFunction.DrawRevenueProfitChart()
-    setInterval(DashBoardGeneralPageFunction.DrawRevenueProfitChart, 5 * 60 * 1000);
+    setInterval(DashBoardGeneralPageFunction.DrawRevenueProfitChart, 15 * 60 * 1000);
 })

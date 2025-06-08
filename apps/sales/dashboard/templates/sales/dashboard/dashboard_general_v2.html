@@ -81,31 +81,15 @@
             data-compare-with-last-month="{% trans 'Compared with last month' %}"
     ></script>
 
-    <div class="row d-flex align-items-center">
+    <div class="row">
         <div class="col-12">
             <div class="d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center">
-                    <div class="me-2">
-                        <div class="position-relative avatar avatar--large">
-                            <div class="avatar__content" id="avt-copy"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <h2 class="text-primary">
-                            {% if request.user.is_authenticated %}
-                                {% trans "Welcome back" %}, {{ request.user.employee_current_data.full_name }}!
-                            {% else %}
-                                {% trans "Welcome back" %}!
-                            {% endif %}
-                        </h2>
-                        <div class="carousel-container">
-                            <div class="carousel-text" id="carouselText"></div>
-                            <div id="phrases" class="d-none">
-                                <p class="text-muted">{% trans "Track all your business metrics on the Bflow Dashboard easily" %}</p>
-                                <p class="text-muted">{% trans "Never miss any important insights when your data will be updated automatically updated continuously" %}</p>
-                                <p class="text-muted">{% trans "Customize your dashboards to focus on what matters most" %}</p>
-                            </div>
-                        </div>
+                <div class="carousel-container">
+                    <div class="carousel-text" id="carouselText"></div>
+                    <div id="phrases" class="d-none">
+                        <p class="text-muted">{% trans "Track all your business metrics on the Bflow Dashboard easily" %}</p>
+                        <p class="text-muted">{% trans "Never miss any important insights when your data will be updated automatically updated continuously" %}</p>
+                        <p class="text-muted">{% trans "Customize your dashboards to focus on what matters most" %}</p>
                     </div>
                 </div>
                 <button
@@ -181,7 +165,7 @@
             <div class="border rounded shadow p-2">
                 <div id="profit-spinner" class="spinner-grow" role="status"></div>
                 <div id="profit_chart" style="width: 100%; height: 300px"></div>
-                <div class="row d-flex align-items-center mt-4">
+                <div class="row mt-4">
                     <div class="col-8">
                         <span class="text-muted">{% trans 'This month profit' %}</span>
                         <div class="d-flex align-items-center">
@@ -190,6 +174,64 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row d-flex align-items-center mt-5">
+        <div class="col-6">
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% trans 'Time range' %}
+                </button>
+                <div class="dropdown-menu" style="min-width: 400px;">
+                    <div class="input-group">
+                        <select class="form-select select2" id="top-sale-customer-time">
+                            <option value="0">{% trans 'Month' %}</option>
+                            <option value="1">{% trans 'Quarter' %}</option>
+                            <option value="2" selected>{% trans 'Whole year' %}</option>
+                        </select>
+                        <label class="input-group-text" for="top-sale-customer-time-detail" hidden></label>
+                        <select class="form-select select2" id="top-sale-customer-time-detail" disabled></select>
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% trans 'Sale number viewed' %}
+                </button>
+                <div class="dropdown-menu" style="min-width: 150px;">
+                    <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
+                </div>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% trans 'Customer number viewed' %}
+                </button>
+                <div class="dropdown-menu" style="min-width: 150px;">
+                    <input class="form-control" type="number" id="top-customer-number" min="1" max="20" value="10">
+                </div>
+            </div>
+        </div>
+        <div class="col-6 text-right">
+            <span class="small text-muted">{% trans 'Last updated at' %}:</span>
+            <span class="small text-muted" id="latest-data-time-revenue-profit"></span>
+            <button class="btn btn-xs btn-soft-success" id="reload-top-sale-customer-data-btn" data-bs-toggle="tooltip" title="{% trans 'Refresh data' %}">
+                <i class="fas fa-sync"></i>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-12 col-lg-6 mt-2">
+            <div class="border rounded shadow p-2">
+                <div id="topsale-spinner" class="spinner-grow" role="status"></div>
+                <div id="topsale_chart" style="width: 100%; height: 300px"></div>
+            </div>
+        </div>
+        <div class="col-12 col-md-12 col-lg-6 mt-2">
+            <div class="border rounded shadow p-2">
+                <div id="topcustomer-spinner" class="spinner-grow" role="status"></div>
+                <div id="topcustomer_chart" style="width: 100%; height: 300px"></div>
             </div>
         </div>
     </div>

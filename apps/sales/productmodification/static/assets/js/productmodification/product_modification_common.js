@@ -730,6 +730,16 @@ class ProductModificationPageFunction {
                 ],
                 initComplete: function () {
                     pageElements.$table_select_component_warehouse.DataTable().column(4).visible(general_traceability_method === '0')
+                    if (general_traceability_method === '0') {
+                        let none_list_raw = pageVariables.current_component_row.find('.data-component-none-detail').text()
+                        let none_list = none_list_raw ? JSON.parse(none_list_raw) : []
+                        pageElements.$table_select_component_warehouse.find('tbody tr').each(function (index, ele) {
+                            let existed = none_list.filter(item => item?.['warehouse_id'] === $(ele).find('.product-warehouse-component-select').attr('data-warehouse-id'))
+                            if (existed.length === 1) {
+                                $(ele).find('.none-picked-quantity').val(existed[0]?.['picked_quantity'])
+                            }
+                        })
+                    }
                     ProductModificationPageFunction.LoadTableComponentLotListByWarehouse()
                     ProductModificationPageFunction.LoadTableComponentSerialListByWarehouse()
                 }
@@ -763,6 +773,16 @@ class ProductModificationPageFunction {
                 ],
                 initComplete: function () {
                     pageElements.$table_select_component_warehouse.DataTable().column(4).visible(general_traceability_method === '0')
+                    if (general_traceability_method === '0') {
+                        let none_list_raw = pageVariables.current_component_row.find('.data-component-none-detail').text()
+                        let none_list = none_list_raw ? JSON.parse(none_list_raw) : []
+                        pageElements.$table_select_component_warehouse.find('tbody tr').each(function (index, ele) {
+                            let existed = none_list.filter(item => item?.['warehouse_id'] === $(ele).find('.product-warehouse-component-select').attr('data-warehouse-id'))
+                            if (existed.length === 1) {
+                                $(ele).find('.none-picked-quantity').val(existed[0]?.['picked_quantity'])
+                            }
+                        })
+                    }
                     ProductModificationPageFunction.LoadTableComponentLotListByWarehouse()
                     ProductModificationPageFunction.LoadTableComponentSerialListByWarehouse()
                 }

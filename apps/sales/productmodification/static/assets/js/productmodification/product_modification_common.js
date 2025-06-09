@@ -777,9 +777,9 @@ class ProductModificationPageFunction {
                         let none_list_raw = pageVariables.current_component_row.find('.data-component-none-detail').text()
                         let none_list = none_list_raw ? JSON.parse(none_list_raw) : []
                         pageElements.$table_select_component_warehouse.find('tbody tr').each(function (index, ele) {
-                            let existed = none_list.filter(item => item?.['warehouse_id'] === $(ele).find('.product-warehouse-component-select').attr('data-warehouse-id'))
-                            if (existed.length === 1) {
-                                $(ele).find('.none-picked-quantity').val(existed[0]?.['picked_quantity'])
+                            let existed = none_list.find(item => item?.['warehouse_id'] === $(ele).find('.product-warehouse-component-select').attr('data-warehouse-id'))
+                            if (existed) {
+                                $(ele).find('.none-picked-quantity').val(existed?.['picked_quantity'])
                             }
                         })
                     }

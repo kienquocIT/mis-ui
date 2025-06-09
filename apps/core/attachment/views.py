@@ -22,6 +22,7 @@ class AttachmentUpload(APIView):
                 fields={
                     'file': (uploaded_file.name, uploaded_file, uploaded_file.content_type),
                     'remarks': request.data.get('remarks', ''),
+                    'folder': request.data.get('folder', ''),
                 }
             )
             resp = ServerAPI(
@@ -141,6 +142,28 @@ class FolderListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.FOLDER_LIST).get(data)
         return resp.auto_return(key_success='folder_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_common(
+            request=request,
+            url=ApiURL.FOLDER_LIST,
+            msg=CoreMsg.FOLDER_CREATE
+        )
+
+
+class FolderListSharedAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.FOLDER_LIST_SHARED_TO_ME).get(data)
+        return resp.auto_return(key_success='folder_stm_list')
 
     @mask_view(
         auth_require=True,

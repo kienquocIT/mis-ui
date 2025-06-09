@@ -45,6 +45,9 @@ class ProductPageElements {
         this.$purchase_uom = $('#purchase-uom')
         this.$purchase_tax = $('#purchase-tax')
         this.$purchase_supplied_by = $('#purchase-supplied-by')
+        // component tab
+        this.$component_table = $('#component-table')
+        this.$btn_add_row_component = $('#btn-add-row-component')
         // variant tab
         this.$table_variant_attributes = $('#table-variant-attributes')
         this.$btn_add_row_variant_attributes = $('#btn-add-row-variant-attributes')
@@ -69,9 +72,9 @@ class ProductPageVariables {
         this.current_row_variant_attribute = null
         this.current_row_variant_item = null
         // account determination tab
-        this.columns_cfg = [
+        this.account_deter_columns_cfg = [
             {
-                className: ' w-5',
+                className: 'w-5',
                 'render': () => {
                     return ``;
                 }
@@ -285,17 +288,16 @@ class ProductPageFunction {
             keyText: 'title',
         })
     }
-    static LoadPriceListTable(price_list_from_detail, option) {
+    static LoadPriceListTable(price_list_from_detail=[], option) {
         let disabled_all_input = option === 'detail' ? 'disabled readonly' : ''
         pageElements.$table_price_list.DataTableDefault({
             styleDom: 'hide-foot',
-            paging: false,
-            scrollX: true,
-            scrollY: '35vh',
-            scrollCollapse: true,
-            useDataServer: true,
-            reloadCurrency: true,
             rowIdx: true,
+            reloadCurrency: true,
+            paging: false,
+            scrollY: '65vh',
+            scrollX: true,
+            scrollCollapse: true,
             ajax: {
                 url: pageElements.$table_price_list.attr('data-url'),
                 type: pageElements.$table_price_list.attr('data-method'),
@@ -353,12 +355,12 @@ class ProductPageFunction {
             },
             columns: [
                 {
-                    className: 'w-5',
+                    className: 'w-5 text-center',
                     'render': () => {
                         return ``;
                     }
                 }, {
-                    className: 'w-5',
+                    className: 'w-5 text-center',
                     render: (data, type, row) => {
                         return `<div class="form-check"><input ${disabled_all_input} ${row.hidden} class="select_price_list form-check-input" type="checkbox" data-id="${row.id}" ${row.checked} ${row.disabled}><label class="form-check-label" for="select_price_list"></label></div>`
                     }
@@ -384,10 +386,6 @@ class ProductPageFunction {
                     }
                 }
             ],
-        }).on('draw.dt', function () {
-            pageElements.$table_price_list.find('tbody').find('tr').each(function () {
-                $(this).after('<tr class="table-row-gap"><td></td></tr>');
-            });
         });
     }
     static LoadPriceForChild(element_id, element_value) {
@@ -425,7 +423,7 @@ class ProductPageFunction {
     }
     static LoadWareHouseListDetail(data_list=[]) {
         pageElements.$datatable_warehouse_list.DataTableDefault({
-            dom: '',
+            dom: 't',
             paging: false,
             data: data_list,
             columns: [
@@ -516,17 +514,16 @@ class ProductPageFunction {
                     }
                 });
             }
-        }).on('draw.dt', function () {
-            pageElements.$datatable_warehouse_list.find('tbody').find('tr').each(function () {
-                $(this).after('<tr class="table-row-gap"><td></td></tr>');
-            });
         });
     }
     static LoadWareHouseOverViewDetail(data_list=[]) {
         pageElements.$datatable_warehouse_overview.DataTable().clear().destroy();
         pageElements.$datatable_warehouse_overview.DataTableDefault({
-            dom: '',
+            dom: 't',
             paging: false,
+            scrollX: true,
+            scrollY: '65vh',
+            scrollCollapse: true,
             data: data_list,
             columns: [
                 {
@@ -570,10 +567,6 @@ class ProductPageFunction {
                     }
                 },
             ],
-        }).on('draw.dt', function () {
-            pageElements.$datatable_warehouse_overview.find('tbody').find('tr').each(function () {
-                $(this).after('<tr class="table-row-gap"><td colspan="5"></td></tr>');
-            });
         });
     }
     // purchase tab
@@ -610,6 +603,52 @@ class ProductPageFunction {
             keyId: 'id',
             keyText: 'title',
         })
+    }
+    // component tab
+    static LoadComponentTable(option, data_list=[]) {
+        pageElements.$component_table.DataTableDefault({
+            dom: 't',
+            rowIdx: true,
+            reloadCurrency: true,
+            paging: false,
+            scrollY: '68vh',
+            scrollX: true,
+            scrollCollapse: true,
+            data: data_list,
+            columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-75',
+                    'render': (data, type, row) => {
+                        return `<input placeholder="${$.fn.gettext('Component name')}" ${option === 'detail' ? 'disabled readonly' : ''} class="form-control form-control-line fw-bold mb-1 component-name" value="${row?.['component_name'] || ''}">
+                                <textarea placeholder="${$.fn.gettext('Description')}..." ${option === 'detail' ? 'disabled readonly' : ''} rows="10" class="form-control component-des">${row?.['component_des'] || ''}</textarea>`;
+                    }
+                },
+                {
+                    className: 'w-15',
+                    'render': (data, type, row) => {
+                        return `<input ${option === 'detail' ? 'disabled readonly' : ''} type="number" class="form-control component-quantity" value="${row?.['component_quantity'] || 1}">`;
+                    }
+                },
+                {
+                    className: 'text-center w-5',
+                    'render': (data, type, row) => {
+                        return `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete ${option === 'detail' ? 'disabled' : ''}">
+                            <span class="btn-icon-wrap">
+                                <span class="feather-icon text-danger">
+                                    <i class="bi bi-trash"></i>
+                                </span>
+                            </span>
+                        </a>`
+                    }
+                },
+            ]
+        });
     }
     // variant tab
     static ReloadModalConfig(option, color_data) {
@@ -944,7 +983,7 @@ class ProductPageFunction {
         }
     }
     // account determination tab
-    static LoadAccountDeterminationTable() {
+    static LoadAccountDeterminationTable(option) {
         if (!$.fn.DataTable.isDataTable('#product-account-determination-table')) {
             let frm = new SetupFormSubmit(pageElements.$product_account_determination_table);
             pageElements.$product_account_determination_table.DataTableDefault({
@@ -952,6 +991,9 @@ class ProductPageFunction {
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
+                scrollX: true,
+                scrollY: '65vh',
+                scrollCollapse: true,
                 ajax: {
                     url: frm.dataUrl,
                     data: {'product_mapped_id': $.fn.getPkDetail()},
@@ -975,7 +1017,7 @@ class ProductPageFunction {
                         return [];
                     },
                 },
-                columns: pageVariables.columns_cfg,
+                columns: pageVariables.account_deter_columns_cfg,
                 rowGroup: {
                     dataSrc: 'account_determination_type_convert'
                 },
@@ -1018,14 +1060,6 @@ class ProductPageFunction {
  * Khai báo các hàm chính
  */
 class ProductHandler {
-    static Disable(option) {
-        if (option === 'detail') {
-            $('form select').prop('disabled', true);
-            $('form input').prop('disabled', true).prop('readonly', true);
-            $('form textarea').prop('disabled', true).prop('readonly', true);
-            pageElements.$btn_add_row_variant_attributes.prop('disabled', true);
-        }
-    }
     static GetDataForm() {
         let data = {
             'code': pageElements.$code.val(),
@@ -1067,6 +1101,33 @@ class ProductHandler {
         data['general_manufacturer'] = pageElements.$general_manufacturer.val() || null;
         data['general_traceability_method'] = $('#general-traceability-method').val();
         data['standard_price'] = pageElements.$general_standard_price.attr('value')
+
+        let component_create_valid = true;
+        let component_list_data = []
+        pageElements.$component_table.find('tbody tr').each(function (index) {
+            let row = $(this);
+            let component_name = row.find('.component-name').val()
+            let component_des = row.find('.component-des').val()
+            let component_quantity = row.find('.component-quantity').val()
+
+            if (component_name !== '' && parseFloat(component_quantity) > 0) {
+                component_list_data.push({
+                    'order': index + 1,
+                    'component_name': component_name,
+                    'component_des': component_des,
+                    'component_quantity': component_quantity
+                })
+            } else {
+                if (!row.find('.dataTables_empty')) {
+                    $.fn.notifyB({description: 'Component Table is missing data (Row ' + (index + 1) + ')'}, 'failure');
+                    component_create_valid = false;
+                }
+            }
+        })
+        if (!component_create_valid) {
+            return false;
+        }
+        data['component_list_data'] = component_list_data
 
         let variant_attribute_create_valid = true;
         let variant_item_create_valid = true;
@@ -1141,7 +1202,7 @@ class ProductHandler {
                 }
             })
 
-            if (!variant_attribute_create_valid && !variant_item_create_valid) {
+            if (!variant_attribute_create_valid || !variant_item_create_valid) {
                 return false;
             }
 
@@ -1274,35 +1335,38 @@ class ProductHandler {
                 if (data) {
                     let product_detail = data['product'];
                     pageVariables.data_detail = product_detail;
+                    $('#data-detail-page').val(JSON.stringify(product_detail));
+
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(product_detail);
+
                     // console.log(product_detail)
 
-                    pageElements.$code.val(product_detail['code']).prop('disabled', true).prop('readonly', true).addClass('form-control-line fw-bold text-primary')
-                    pageElements.$title.val(product_detail['title'])
-                    pageElements.$description.val(product_detail['description'])
-                    pageElements.$part_number.val(product_detail['part_number'])
+                    pageElements.$code.val(product_detail?.['code']).prop('disabled', true).prop('readonly', true).addClass('form-control-line fw-bold text-primary')
+                    pageElements.$title.val(product_detail?.['title'])
+                    pageElements.$description.val(product_detail?.['description'])
+                    pageElements.$part_number.val(product_detail?.['part_number'])
 
-                    if (product_detail['product_choice'].includes(0)) {
+                    if (product_detail?.['product_choice'].includes(0)) {
                         $('#check-tab-sale').attr('checked', true);
                         $('#link-tab-sale').removeClass('disabled');
                         $('#tab_sale').find('.row').prop('hidden', false)
                     }
 
-                    if (product_detail['product_choice'].includes(1)) {
+                    if (product_detail?.['product_choice'].includes(1)) {
                         $('#check-tab-inventory').attr('checked', true);
                         $('#link-tab-inventory').removeClass('disabled');
                         $('#tab_inventory').find('.row').prop('hidden', false)
                     }
 
-                    if (product_detail['product_choice'].includes(2)) {
+                    if (product_detail?.['product_choice'].includes(2)) {
                         $('#check-tab-purchase').attr('checked', true);
                         $('#link-tab-purchase').removeClass('disabled');
                         $('#tab_purchase').find('.row').prop('hidden', false)
                     }
 
-                    if (Object.keys(product_detail['general_information']).length !== 0) {
-                        let general_information = product_detail['general_information'];
+                    if (Object.keys(product_detail?.['general_information']).length !== 0) {
+                        let general_information = product_detail?.['general_information'];
                         ProductPageFunction.LoadGeneralProductType(general_information['general_product_types_mapped'][0]);
                         pageElements.$general_product_type.trigger('change');
                         ProductPageFunction.LoadGeneralProductCategory(general_information['product_category']);
@@ -1319,8 +1383,8 @@ class ProductHandler {
                         }
                     }
 
-                    if (Object.keys(product_detail['sale_information']).length !== 0) {
-                        let sale_information = product_detail['sale_information'];
+                    if (Object.keys(product_detail?.['sale_information']).length !== 0) {
+                        let sale_information = product_detail?.['sale_information'];
                         ProductPageFunction.LoadSaleUom(sale_information['default_uom']);
                         ProductPageFunction.LoadSaleTax(sale_information['tax']);
 
@@ -1330,12 +1394,12 @@ class ProductHandler {
                             price_list_filter.push(item.id)
                         }
 
-                        ProductPageFunction.LoadPriceListTable(sale_information['sale_product_price_list'], option);
+                        ProductPageFunction.LoadPriceListTable(sale_information['sale_product_price_list'] || [], option);
 
                         ProductPageFunction.LoadSalePriceListForSaleOnline(sale_information['price_list_for_online_sale'], price_list_filter)
 
-                        pageElements.$is_publish_website.prop('checked', product_detail['is_public_website'])
-                        if (product_detail['is_public_website']) {
+                        pageElements.$is_publish_website.prop('checked', product_detail?.['is_public_website'])
+                        if (product_detail?.['is_public_website']) {
                             pageElements.$price_list_for_sale_online.prop('disabled', false)
                         }
                         else {
@@ -1352,14 +1416,14 @@ class ProductHandler {
                         $.fn.initMaskMoney2();
                     }
 
-                    if (Object.keys(product_detail['inventory_information']).length !== 0) {
-                        let inventory_information = product_detail['inventory_information'];
+                    if (Object.keys(product_detail?.['inventory_information']).length !== 0) {
+                        let inventory_information = product_detail?.['inventory_information'];
                         ProductPageFunction.LoadInventoryUom(inventory_information['uom']);
                         pageElements.$inventory_level_min.val(inventory_information['inventory_level_min']);
                         pageElements.$inventory_level_max.val(inventory_information['inventory_level_max']);
                         pageElements.$valuation_method.val(inventory_information['valuation_method'])
 
-                        ProductPageFunction.LoadWareHouseListDetail(product_detail['product_warehouse_detail']);
+                        ProductPageFunction.LoadWareHouseListDetail(product_detail?.['product_warehouse_detail']);
                         let data_overview = [];
                         let sum_stock = product_detail?.['stock_amount'] ? product_detail?.['stock_amount'] : 0;
                         let sum_wait_for_delivery = product_detail?.['wait_delivery_amount'] ? product_detail?.['wait_delivery_amount'] : 0;
@@ -1376,14 +1440,14 @@ class ProductHandler {
                         ProductPageFunction.LoadWareHouseOverViewDetail(data_overview);
                     }
 
-                    if (Object.keys(product_detail['purchase_information']).length !== 0) {
-                        let purchase_information = product_detail['purchase_information'];
+                    if (Object.keys(product_detail?.['purchase_information']).length !== 0) {
+                        let purchase_information = product_detail?.['purchase_information'];
                         ProductPageFunction.LoadPurchaseUom(purchase_information['default_uom']);
                         ProductPageFunction.LoadPurchaseTax(purchase_information['tax']);
                         pageElements.$purchase_supplied_by.val(product_detail?.['purchase_information']?.['supplied_by'])
                     }
 
-                    $('#data-detail-page').val(JSON.stringify(product_detail));
+                    ProductPageFunction.LoadComponentTable(option, product_detail?.['component_list_data'] || [])
 
                     let readonly = '';
                     let disabled = '';
@@ -1392,8 +1456,8 @@ class ProductHandler {
                         disabled = 'disabled';
                     }
 
-                    for (let i = 0; i < product_detail['product_variant_attribute_list'].length; i++) {
-                         let item = product_detail['product_variant_attribute_list'][i];
+                    for (let i = 0; i < product_detail?.['product_variant_attribute_list'].length; i++) {
+                         let item = product_detail?.['product_variant_attribute_list'][i];
                          let attribute_config_list = [
                              'Dropdown List', 'Radio Select',
                              'Select (Fill by text)', 'Select (Fill by color)', 'Select (Fill bu photo)'
@@ -1429,11 +1493,11 @@ class ProductHandler {
                          $(`#row-${i + 1} .attribute_value_list_span`).text(JSON.stringify(item.attribute_value_list))
                      }
 
-                    $('#table-variant-items-label').text(product_detail['product_variant_item_list'].length);
+                    $('#table-variant-items-label').text(product_detail?.['product_variant_item_list'].length);
 
                     let data_list = []
-                    for (let i = 0; i < product_detail['product_variant_item_list'].length; i++) {
-                        let item = product_detail['product_variant_item_list'][i];
+                    for (let i = 0; i < product_detail?.['product_variant_item_list'].length; i++) {
+                        let item = product_detail?.['product_variant_item_list'][i];
                         let variant_html = ``;
                         for (let j = 0; j < item?.['variant_value_list'].length; j++) {
                             variant_html += `<span class="variant-item badge badge-soft-danger badge-outline mr-1 mb-1">${item?.['variant_value_list'][j]}</span>`;
@@ -1471,6 +1535,9 @@ class ProductHandler {
                         dom: "<'d-flex dtb-header-toolbar'<'btnAddFilter'><'textFilter overflow-hidden'>f<'util-btn'>><'row manualFilter hidden'>rt",
                         reloadCurrency: true,
                         paging: false,
+                        scrollX: true,
+                        scrollY: '65vh',
+                        scrollCollapse: true,
                         data: data_list ? data_list : [],
                         columns: [
                          {
@@ -1525,17 +1592,19 @@ class ProductHandler {
                         }
                     });
 
-                    if (product_detail['product_variant_item_list'].length > 0) {
+                    if (product_detail?.['product_variant_item_list'].length > 0) {
                      $('#table-variant-items-div').prop('hidden', false);
                     }
 
-                    pageElements.$account_deter_referenced_by.val(product_detail['account_deter_referenced_by']).prop('disabled', true)
-                    pageElements.$product_account_determination_table.closest('.row').prop('hidden', product_detail['account_deter_referenced_by'] !== 2)
+                    pageElements.$account_deter_referenced_by.val(product_detail?.['account_deter_referenced_by']).prop('disabled', true)
+                    pageElements.$product_account_determination_table.closest('.row').prop('hidden', product_detail?.['account_deter_referenced_by'] !== 2)
                     ProductPageFunction.LoadAccountDeterminationTable()
 
                     $.fn.initMaskMoney2();
 
-                    ProductHandler.Disable(option);
+                    UsualLoadPageFunction.DisablePage(
+                        option==='detail'
+                    )
                 }
             })
     }
@@ -1665,6 +1734,18 @@ class ProductEventHandler {
         pageElements.$check_tab_purchase.change(function () {
             $('#tab_purchase').find('.row').prop('hidden', !pageElements.$check_tab_purchase.is(':checked'))
             $.fn.initMaskMoney2()
+        })
+        // component tab
+        pageElements.$btn_add_row_component.on('click', function () {
+            UsualLoadPageFunction.AddTableRow(pageElements.$component_table, {})
+            let row_added = pageElements.$component_table.find('tbody tr:last-child')
+        })
+        $(document).on("click", '.btn-delete', function () {
+            UsualLoadPageFunction.DeleteTableRow(
+                pageElements.$component_table,
+                parseInt($(this).closest('tr').find('td:first-child').text())
+            )
+            UsualLoadPageFunction.AutoScrollEnd(pageElements.$component_table)
         })
         // variant tab
         $('#add-variant-value-item').on('click', function () {

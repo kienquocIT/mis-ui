@@ -8,7 +8,7 @@
 {% endblock %}
 {% block pageAction %}
     <a href="{% url "AdvancePaymentCreate" %}">
-        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button">
+        <button class="btn btn-outline-primary" type="button">
             <span>
                 <span>{% trans 'Add' %}</span>
                 <span class="icon">
@@ -53,7 +53,7 @@
             >
                 <thead>
                 <tr>
-                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 50px"></th>
                     <th style="min-width: 100px">{% trans "Code" %}</th>
                     <th style="min-width: 300px">{% trans "Title" %}</th>
                     <th style="min-width: 100px">{% trans "Sale Code" %}</th>

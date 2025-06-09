@@ -8,7 +8,7 @@
 {% endblock %}
 {% block pageAction %}
     <a href="{% url "ReconCreate" %}">
-        <button id="btn-show-modal-create" class="btn btn-outline-primary" type="button">
+        <button class="btn btn-outline-primary" type="button">
             <span>
                 <span>{% trans 'Add' %}</span>
                 <span class="icon">
@@ -29,7 +29,7 @@
             >
                 <thead>
                     <tr>
-                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 50px"></th>
                         <th style="min-width: 100px">{% trans "Code" %}</th>
                         <th style="min-width: 250px">{% trans 'Name' %}</th>
                         <th style="min-width: 200px">{% trans 'Customer' %}</th>

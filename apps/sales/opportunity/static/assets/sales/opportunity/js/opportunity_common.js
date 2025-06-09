@@ -1870,7 +1870,7 @@ class InitDataTables {
                     },
                     {
                         targets: 1,
-                        className: 'ellipsis-cell-xs w-10',
+                        className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
                             const link = $('#opportunity-link').data('link-update').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover fw-bold" title="${row?.['code']}">${row?.['code'] || '--'}</a>`;

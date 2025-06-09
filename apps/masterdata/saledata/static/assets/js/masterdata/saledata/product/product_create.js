@@ -14,11 +14,12 @@ $(document).ready(async function () {
     ProductPageFunction.LoadSaleUom()
     ProductPageFunction.LoadSalePriceListForSaleOnline(null, [])
     ProductPageFunction.LoadInventoryUom()
-    ProductPageFunction.LoadPriceListTable([])
+    ProductPageFunction.LoadPriceListTable()
     ProductPageFunction.LoadWareHouseListDetail()
     ProductPageFunction.LoadWareHouseOverViewDetail()
     ProductPageFunction.LoadPurchaseUom()
     ProductPageFunction.LoadPurchaseTax()
+    ProductPageFunction.LoadComponentTable()
 
     $('#form-create-product').submit(function (event) {
         event.preventDefault();

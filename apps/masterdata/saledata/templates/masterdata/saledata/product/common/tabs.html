@@ -5,13 +5,13 @@
         <ul class="nav nav-tabs nav-icon nav-light">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-list"></i></span></span>
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-list"></i></span></span>
                     <span class="nav-link-text">{% trans 'General' %}</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_sale" id="link-tab-sale">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-currency-dollar"></i></span></span>
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-sack-dollar"></i></span></span>
                     <span class="nav-link-text">{% trans 'Sale' %}</span>
                 </a>
             </li>
@@ -23,19 +23,25 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" id="link-tab-purchase" href="#tab_purchase">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-cart"></i></span></span>
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-cart-shopping"></i></span></span>
                     <span class="nav-link-text">{% trans 'Purchase' %}</span>
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" id="link-tab-variants" href="#tab_component">
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-puzzle-piece"></i></span></span>
+                    <span class="nav-link-text">{% trans 'Component description' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" id="link-tab-variants" href="#tab_variants">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-palette"></i></span></span>
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-palette"></i></span></span>
                     <span class="nav-link-text">{% trans 'Variants' %}</span>
                 </a>
             </li>
             <li class="nav-item" id="accounting-determination-tab">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_account_determination">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-journal-text"></i></span></span>
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-book"></i></span></span>
                     <span class="nav-link-text">{% trans 'Account determination' %}</span>
                 </a>
             </li>
@@ -217,15 +223,15 @@
                 </div>
             </div>
             <div class="col-12 col-md-12 col-lg-8 ul-price-list" id="sale-select-price-list" data-method="GET" data-url="{% url "PriceListAPI" %}">
-                <table class="table table-advance nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
-                    <thead>
+                <table class="table nowrap w-100" id="table_price_list" data-method="GET" data-url="{% url "PriceListAPI" %}">
+                    <thead class="bg-secondary-light-5">
                         <tr>
-                            <th></th>
-                            <th>{% trans 'Select' %}</th>
-                            <th>{% trans 'Price list' %}</th>
-                            <th>{% trans 'Start' %}</th>
-                            <th>{% trans 'End' %}</th>
-                            <th>{% trans 'Price' %}</th>
+                            <th style="min-width: 50px"></th>
+                            <th style="min-width: 50px">{% trans 'Select' %}</th>
+                            <th style="min-width: 150px">{% trans 'Price list' %}</th>
+                            <th style="min-width: 150px">{% trans 'Start' %}</th>
+                            <th style="min-width: 150px">{% trans 'End' %}</th>
+                            <th style="min-width: 150px">{% trans 'Price' %}</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -284,10 +290,10 @@
             <div class="col-12 mt-5">
                 <div class="row">
                     <div class="col-12 col-md-9 col-lg-6">
-                        <span class="text-muted text-decoration-underline">* {% trans 'Product overview' %}</span>
-                        <table id="datatable-warehouse-overview" class="table table-advance nowrap w-100">
+                        <span class="text-muted">{% trans 'Product overview' %}</span>
+                        <table id="datatable-warehouse-overview" class="table nowrap w-100">
                             <thead>
-                                <tr>
+                                <tr class="bg-secondary-light-5">
                                     <th>{% trans "Stock" %}</th>
                                     <th>{% trans "Sale order" %}</th>
                                     <th>{% trans "Purchase" %}</th>
@@ -299,12 +305,12 @@
                         </table>
                     </div>
                     <div class="col-12 col-md-9 col-lg-6">
-                        <span class="text-muted text-decoration-underline">* {% trans 'Product warehouse detail' %}</span>
-                        <table id="datatable-warehouse-list" class="table table-advance nowrap w-100"
+                        <span class="text-muted">{% trans 'Product warehouse detail' %}</span>
+                        <table id="datatable-warehouse-list" class="table nowrap w-100"
                                data-url="{% url "WareHouseListAPI" %}"
                                data-method="GET">
                             <thead>
-                                <tr>
+                                <tr class="bg-secondary-light-5">
                                     <th>{% trans "WH Code" %}</th>
                                     <th>{% trans "WH Name" %}</th>
                                     <th>{% trans "Stock" %}</th>
@@ -349,11 +355,37 @@
             </div>
         </div>
     </div>
+    <div class="tab-pane fade" id="tab_component">
+        <div class="row">
+            <div class="col-12">
+                <span class="small">{% trans "This table is for reference only - used to preload data for 'Product modification'." %}</span>
+                <table class="table nowrap w-100" id="component-table">
+                    <thead class="bg-secondary-light-5">
+                    <tr>
+                        <th style="min-width: 50px"></th>
+                        <th style="min-width: 500px">{% trans 'Component' %}</th>
+                        <th style="min-width: 150px">{% trans 'Quantity' %}</th>
+                        <th style="min-width: 50px"></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <button id="btn-add-row-component" class="btn btn-sm btn-primary mt-2" type="button">
+                    <span>
+                        <span>{% trans "Add new component" %}</span>
+                        <span class="icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="tab-pane fade" id="tab_variants">
         <div class="row">
             <div class="col-12">
                 <table class="table nowrap w-100" id="table-variant-attributes">
-                    <thead>
+                    <thead class="bg-secondary-light-5">
                         <tr>
                             <th></th>
                             <th class="required">{% trans 'Attributes' %}</th>
@@ -365,11 +397,7 @@
                     </thead>
                     <tbody></tbody>
                 </table>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <button id="btn-add-row-variant-attributes" class="btn btn-sm btn-soft-primary mb-3" type="button">
+                <button id="btn-add-row-variant-attributes" class="btn btn-sm btn-primary mt-2" type="button">
                     <span>
                         <span>{% trans "Add new attribute" %}</span>
                         <span class="icon">
@@ -381,7 +409,7 @@
         </div>
         <div class="row" id="table-variant-items-div" hidden>
             <div class="col-12">
-                <table id="table-variant-items" class="table nowrap w-100">
+                <table id="table-variant-items" class="table  nowrap w-100">
                     <thead class="thead-primary">
                         <tr>
                             <th class="w-5"></th>

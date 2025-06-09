@@ -3,6 +3,11 @@
 {% block title %}{% trans 'Purchase Request Detail' %}{% endblock %}
 {% block cssHeader %}
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+    <style>
+        table .select2-selection__rendered {
+            max-width: 250px;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}
     <a href="{% url 'PurchaseRequestUpdate' pk=pk %}" id="btn-edit">

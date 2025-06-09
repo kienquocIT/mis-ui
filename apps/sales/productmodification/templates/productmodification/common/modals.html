@@ -61,7 +61,7 @@
                                     <th style="min-width: 50px"></th>
                                     <th style="min-width: 20px"></th>
                                     <th style="min-width: 150px">{% trans 'Lot number' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Quantity' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Remain' %}</th>
                                     <th style="min-width: 80px">{% trans 'Expiration date' %}</th>
                                     <th style="min-width: 80px">{% trans 'Mfr date' %}</th>
                                 </tr>
@@ -167,6 +167,21 @@
                                     <th style="min-width: 200px">{% trans 'Warehouse' %}</th>
                                     <th style="min-width: 100px">{% trans 'Current quantity' %}</th>
                                     <th style="min-width: 100px">{% trans 'Picked quantity' %}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="col-12 mt-3 table-lot-space" hidden>
+                        <table class="table nowrap w-100" id="table-select-component-lot">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 20px"></th>
+                                    <th style="min-width: 150px">{% trans 'Lot number' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Remain' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Expiration date' %}</th>
+                                    <th style="min-width: 80px">{% trans 'Mfr date' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Picked quantity' %}</th>
                                 </tr>
                             </thead>
                         </table>

@@ -2222,14 +2222,14 @@ class WFRTControl {
 
     static callWFSubmitForm(_form) {
         let IDRuntime = WFRTControl.getRuntimeWF();
-        let eleStatus = $('#systemStatus');
         let $eleCode = $('#documentCode');
         let currentEmployee = $x.fn.getEmployeeCurrentID();
+        let docData = WFRTControl.getRuntimeDocData();
         // Check CR
-        if (eleStatus.attr('data-status-cr') === '5' && eleStatus.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {
+        if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {
             let $eleForm = $(`#${globeFormMappedZone}`);
-            let docRootID = eleStatus.attr('data-doc-root-id');
-            let docChangeOrder = eleStatus.attr('data-doc-change-order');
+            let docRootID = docData?.['document_root_id'];
+            let docChangeOrder = docData?.['document_change_order'] + 1;
             if ($eleForm && $eleForm.length > 0 && docRootID) {
                 _form.dataMethod = 'POST';
                 _form.dataUrl = $eleForm.attr('data-url-cr');
@@ -2237,10 +2237,7 @@ class WFRTControl {
                 _form.dataForm['system_status'] = 1;
                 _form.dataForm['is_change'] = true;
                 _form.dataForm['document_root_id'] = docRootID;
-                _form.dataForm['document_change_order'] = 1;
-                if (docChangeOrder) {
-                    _form.dataForm['document_change_order'] = parseInt(docChangeOrder) + 1;
-                }
+                _form.dataForm['document_change_order'] = docChangeOrder;
                 // check next node
                 let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
                 // select cancel/confirm change

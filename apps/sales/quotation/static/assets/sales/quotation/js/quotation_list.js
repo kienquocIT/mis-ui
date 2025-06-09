@@ -158,7 +158,7 @@ $(function () {
                                 if (dataRoots?.['quotation_list'].length === 1) {
                                     let dataRoot = dataRoots?.['quotation_list'][0];
                                     let link = urlsEle.data('link-detail').format_url_with_uuid(dataRoot?.['id']);
-                                    let html = `<b>${$.fn.transEle.attr('data-main-document')}</b>
+                                    let html = `<b>${$.fn.transEle.attr('data-root-document')}</b>
                                                 <div><span>${$.fn.transEle.attr('data-title')}: </span><a href="${link}" class="link-primary underline_hover"><span>${dataRoot?.['title']}</span></a></div>
                                                 <div><span>${$.fn.transEle.attr('data-code')}: </span><a href="${link}" class="link-primary underline_hover"><span>${dataRoot?.['code']}</span></a></div>`;
                                     $(ele).addClass('popover-rendered');

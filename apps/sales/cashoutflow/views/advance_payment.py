@@ -29,8 +29,8 @@ class AdvancePaymentCreate(View):
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
         return {
-            'list_from_app': 'cashoutflow.advancepayment.create',
             'app_id': '57725469-8b04-428a-a4b0-578091d0e4f5',
+            'list_from_app': 'cashoutflow.advancepayment.create',
             'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-create-advance'
         }, status.HTTP_200_OK
@@ -48,6 +48,7 @@ class AdvancePaymentDetail(View):
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
         return {
+            'app_id': '57725469-8b04-428a-a4b0-578091d0e4f5',
             'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-detail-advance'
         }, status.HTTP_200_OK
@@ -65,8 +66,9 @@ class AdvancePaymentUpdate(View):
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
         return {
-            'input_mapping_properties': input_mapping_properties,
             'list_from_app': 'cashoutflow.advancepayment.edit',
+            'app_id': '57725469-8b04-428a-a4b0-578091d0e4f5',
+            'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-detail-advance'
         }, status.HTTP_200_OK
 

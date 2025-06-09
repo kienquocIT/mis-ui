@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    APHandle.LoadDetailAP('detail');
+    AdvancePaymentHandler.LoadDetailAP('detail');
 })

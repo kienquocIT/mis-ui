@@ -17,7 +17,7 @@ $(document).ready(function (){
         if (txtArea.tinymce()) txtArea.tinymce().destroy();
         let templateUrl = frm.attr('data-url-template')
         PrintTinymceControl.init_tinymce_editable(txtArea, $(this).val(), {
-            height: 420,
+            height: 640,
             readonly: 0,
             templateUrl: templateUrl,
             images_upload_handler: function (blobInfo, success, failure) {

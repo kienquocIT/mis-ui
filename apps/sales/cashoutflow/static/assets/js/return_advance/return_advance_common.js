@@ -24,7 +24,7 @@ class ReturnAPLoadPage {
         $('#creator-detail-span').prop('hidden', false);
         $('#creator-name').text(data?.['full_name']);
         $('#creator-code').text(data?.['code']);
-        $('#creator-department').text(data?.['group']['title']);
+        $('#creator-department').text(data?.['group']?.['title'] ? data?.['group']?.['title'] : '');
         let url = btn_detail.attr('data-url').replace('0', data?.['id']);
         btn_detail.attr('href', url);
     }
@@ -36,6 +36,9 @@ class ReturnAPLoadPage {
                 data: params,
                 url: advancePaymentEle.attr('data-url'),
                 method: 'GET',
+            },
+            templateResult: function (state) {
+                return $(`<span class="badge badge-soft-primary mr-2">${state.data?.['code']}</span><span>${state.data?.['title']}</span>`);
             },
             data: (data ? data : null),
             keyResp: 'advance_payment_list',

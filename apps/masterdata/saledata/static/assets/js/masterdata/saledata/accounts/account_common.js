@@ -203,7 +203,7 @@ class AccountPageFunction {
                 {
                     className: 'w-5 text-center',
                     render: (data, type, row) => {
-                        return `<span class="form-check">
+                        return `<div class="form-check">
                                     <input type="checkbox" class="form-check-input selected_contact"
                                         ${row?.['is_checked']}
                                         data-id="${row?.['id']}"
@@ -330,7 +330,7 @@ class AccountPageFunction {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="form-check">
+                        return `<div class="form-check">
                                     <input ${option === 'detail' ? 'disabled' : ''} type="radio" class="form-check-input" name="shippingaddressRadio" ${row?.['is_default'] ? 'checked' : ''}>
                                 </span>
                                 <span hidden class="shipping_address_country_id">${row?.['country_id']}</span>
@@ -386,7 +386,7 @@ class AccountPageFunction {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="form-check"><input ${option === 'detail' ? 'disabled' : ''} type="radio" class="form-check-input" name="billingaddressRadio" ${row?.['is_default'] ? 'checked' : ''}></span>
+                        return `<div class="form-check"><input ${option === 'detail' ? 'disabled' : ''} type="radio" class="form-check-input" name="billingaddressRadio" ${row?.['is_default'] ? 'checked' : ''}></span>
                                 <span hidden class="billing_address_account_name">${row?.['account_name']}</span>
                                 <span hidden class="billing_address_email">${row?.['email']}</span>
                                 <span hidden class="billing_address_tax_code">${row?.['tax_code']}</span>
@@ -427,7 +427,7 @@ class AccountPageFunction {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="form-check"><input ${option === 'detail' ? 'disabled' : ''} class="radio_select_default_bank_account form-check-input" name="bank_account_default" type="radio" ${row?.['is_default'] ? 'checked' : ''}></span>
+                        return `<div class="form-check"><input ${option === 'detail' ? 'disabled' : ''} class="radio_select_default_bank_account form-check-input" name="bank_account_default" type="radio" ${row?.['is_default'] ? 'checked' : ''}></span>
                                 <span hidden class="bank_country_id">${row?.['bank_country_id']}</span>
                                 <span hidden class="bank_code">${row?.['bank_code']}</span>
                                 <span hidden class="bic_swift_code">${row?.['bic_swift_code']}</span>`
@@ -478,7 +478,7 @@ class AccountPageFunction {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="form-check"><input ${option === 'detail' ? 'disabled' : ''} class="radio_select_default_credit_card form-check-input" name="credit_card_default" type="radio" ${row?.['is_default'] ? 'checked' : ''}></span>
+                        return `<div class="form-check"><input ${option === 'detail' ? 'disabled' : ''} class="radio_select_default_credit_card form-check-input" name="credit_card_default" type="radio" ${row?.['is_default'] ? 'checked' : ''}></span>
                                 <span hidden class="bank_country_id">${row?.['bank_country_id']}</span>
                                 <span hidden class="bank_code">${row?.['bank_code']}</span>
                                 <span hidden class="bic_swift_code">${row?.['bic_swift_code']}</span>`

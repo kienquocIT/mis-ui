@@ -226,7 +226,7 @@ function loadTabTodo() {
                     className: 'wrap-text',
                     data: "date_created",
                     render: (data, type, row)=>{
-                        return $x.fn.displayRelativeTime(data);
+                        return $x.fn.displayRelativeTime(data, {'outputFormat': 'DD/MM/YYYY'});
                     }
                 }, {
                     className: 'text-center',
@@ -239,10 +239,6 @@ function loadTabTodo() {
             drawCallback: function () {
                 dtbMyTaskHDCustom();
             },
-        }).on('draw.dt', function () {
-            tbl.find('tbody').find('tr').each(function () {
-                $(this).after('<tr class="table-row-gap"><td></td></tr>');
-            });
         });
     }
 }

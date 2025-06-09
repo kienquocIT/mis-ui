@@ -38,9 +38,6 @@ $(document).ready(function () {
                     data: 'title',
                     className: 'w-30',
                     render: (data, type, row) => {
-                        if (row.is_default) {
-                             return `<b>${data}</b>`
-                        }
                         return `${data}`
                     }
                 },

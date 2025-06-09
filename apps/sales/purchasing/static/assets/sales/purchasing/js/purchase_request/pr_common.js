@@ -289,7 +289,7 @@ function LoadLineDetailTableAddRow(ele, product_datas=[], disabled='') {
             {
                 className: 'w-10',
                 render: (data, type, row) => {
-                    return `<textarea class="small product-des-detail">${row?.['description'] ? row?.['description'] : ''}</textarea>`
+                    return `<span class="small product-des-detail">${row?.['description'] ? row?.['description'] : ''}</span>`
                 }
             },
             {

@@ -671,12 +671,12 @@ class MenuKMS:
     WORK_SPACE = MenuCommon(
         name='Work space', code='menu_dms_work_space', view_name='', icon='<i class="fas fa-laptop-house"></i>',
         child=[
-            # MenuCommon(
-            #     name='File',
-            #     code='menu_folder_list',
-            #     view_name='FolderList',
-            #     icon='<i class="fas fa-file"></i>',
-            # ),
+            MenuCommon(
+                name='File',
+                code='menu_folder_list',
+                view_name='FolderList',
+                icon='<i class="fas fa-file"></i>',
+            ),
             MenuCommon(
                 name='Document approval',
                 code='menu_document_approval',

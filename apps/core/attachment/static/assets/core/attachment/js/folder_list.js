@@ -100,37 +100,6 @@ $(function () {
             loadInitS2($('#add-folder-box-parent'));
         });
 
-        $btnAdd.on('click', function () {
-            let dataSubmit = {};
-            dataSubmit['title'] = $('#add-folder-title').val();
-            dataSubmit['parent_n'] = $('#add-folder-box-parent').val();
-            WindowControl.showLoading();
-            $.fn.callAjax2(
-                {
-                    'url': $urlFact.attr('data-url'),
-                    'method': 'POST',
-                    'data': dataSubmit,
-                }
-            ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && (data['status'] === 201 || data['status'] === 200)) {
-                            $.fn.notifyB({description: data.message}, 'success');
-                            // refresh folder content
-                            $btnRefresh.click();
-                            setTimeout(() => {
-                                window.location.replace($urlFact.attr('data-url-redirect'));
-                            }, 1000);
-                        }
-                    }, (err) => {
-                        setTimeout(() => {
-                            WindowControl.hideLoading();
-                        }, 1000)
-                        $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
-                    }
-                )
-        });
-
         $btnUpFile.on('click', function () {
             $btnRefresh.click();
         });

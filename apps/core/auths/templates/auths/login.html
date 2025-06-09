@@ -42,11 +42,11 @@
         </style>
         <style>
             #canvas {
-                background-image: url("{% static 'login/back-drop3.jpg' %}");
+                background-image: url("{% static 'login/bg_login_10.jpg' %}");
                 background-repeat: no-repeat;
                 background-position: center;
                 background-size: cover;
-                filter: blur(5px);
+                {#filter: blur(5px);#}
             }
         </style>
     {% endcompress %}
@@ -71,7 +71,7 @@
                                 data-url-select-tenant="{% url 'AuthLoginSelectTenant' %}"
                                 data-url-2fa="{% url 'TwoFAVerifyView' %}"
                         >
-                            <div class="card card-lg card-border">
+                            <div class="card card-border bg-light">
                                 <div class="card-body">
                                     <div class="text-center mb-7 overflow-hidden">
                                         <a class="navbar-brand me-0" href="https://www.bflow.vn">
@@ -271,15 +271,17 @@
                 }
             }
 
-            if (hostData.endsWith(mainDomain)) {
-                const inp$ = $(":input[name=tenant_code]");
-                let tenantCode = hostData.split(mainDomain)[0];
-                if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
+            if (!fixedDomain) {
+                if (hostData.endsWith(mainDomain)) {
+                    const inp$ = $(":input[name=tenant_code]");
+                    let tenantCode = hostData.split(mainDomain)[0];
+                    if (tenantCode.endsWith(".")) tenantCode = tenantCode.split(".")[0];
 
-                if (tenantCode){
-                    inp$.val(tenantCode).attr('readonly', 'readonly');
-                } else {
-                    inp$.focus();
+                    if (tenantCode) {
+                        inp$.val(tenantCode).attr('readonly', 'readonly');
+                    } else {
+                        inp$.focus();
+                    }
                 }
             }
 

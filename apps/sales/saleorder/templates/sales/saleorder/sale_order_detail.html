@@ -46,7 +46,7 @@
         <div class="col-12 col-md-6 col-lg-6">
             <div class="d-flex justify-content-end">
                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                    <button type="button" class="btn btn-outline-secondary" id="btnDeliverySaleOrder" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Delivery' %}" hidden><i class="fas fa-truck"></i></button>
+                    <button type="button" class="btn btn-outline-secondary" id="delivery-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Delivery' %}" hidden><i class="fas fa-truck"></i></button>
                     <button type="button" class="btn btn-outline-secondary" id="print-document" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Print' %}" hidden><i class="fas fa-print"></i></button>
                 </div>
             </div>
@@ -750,6 +750,46 @@
                 </div>
             </div>
 
+            <div
+                class="modal fade" id="deliveryInfoModalCenter" tabindex="-1"
+                role="dialog" aria-labelledby="deliveryInfoModalCenter"
+                aria-hidden="true" data-zone="title"
+        >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b>{% trans 'Delivery information' %}</b></h5>
+                        <button
+                                type="button"
+                                class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                data-bs-dismiss="modal"
+                        ><span class="icon"><i class="far fa-window-close"></i></span></button>
+                    </div>
+                    <div class="modal-body">
+                        <b class="target-code text-primary"></b>
+                        <div class="form-group">
+                            <label class="form-label required" for="estimated_delivery_date">{% trans 'Estimated delivery date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" id="estimated_delivery_date"
+                                       class="form-control date-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="remarks">{% trans 'Note' %}</label>
+                            <textarea class="form-control" rows="4" id="remarks" name="remarks"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="button" class="btn btn-primary" id="btn-delivery">{% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         </div>
     </form>
 {% endblock %}
@@ -808,6 +848,7 @@
         data-new="{% trans "New" %}"
         data-detail="{% trans "Detail" %}"
         data-mixed="{% trans "Mixed" %}"
+        data-required-delivery-date="{% trans 'Estimated delivery date is required' %}"
     >
     <input
         type="text"
@@ -824,6 +865,10 @@
         data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
         data-quotation="{% url "QuotationListAPI" %}"
         data-quotation-detail="{% url "QuotationDetailAPI" 1 %}"
+        data-so-list="{% url 'SaleOrderListAPI' %}"
+        data-create-delivery="{% url 'SaleOrderDetailDeliveryAPI' 1 %}"
+        data-delivery="{% url 'OrderDeliveryList' %}"
+        data-picking="{% url 'OrderPickingList' %}"
     >
 
     <input

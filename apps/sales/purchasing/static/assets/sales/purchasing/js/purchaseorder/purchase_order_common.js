@@ -1776,7 +1776,8 @@ class PODataTableHandle {
     static dataTablePurchaseRequest() {
         let $table = $('#datable-purchase-request');
         let frm = new SetupFormSubmit($table);
-        $table.DataTableDefault({
+        $table.not('.dataTable').DataTableDefault({
+            useDataServer: true,
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
@@ -1800,9 +1801,9 @@ class PODataTableHandle {
                     throw Error('Call data raise errors.')
                 },
             },
-            paging: false,
+            autoWidth: true,
+            scrollX: true,
             info: false,
-            columnDefs: [],
             columns: [
                 {
                     targets: 0,

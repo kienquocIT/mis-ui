@@ -2461,16 +2461,10 @@ class QuotationLoadDataHandle {
             if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get' && form.classList.contains('sale-order')) {
                 if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
                     if (data?.['opportunity']?.['is_deal_close'] === false) {
-                        let btnDelivery = $('#btnDeliverySaleOrder');
-                        if (btnDelivery && btnDelivery.length > 0) {
-                            btnDelivery[0].removeAttribute('hidden');
-                        }
+                        QuotationDeliveryHandle.$btnDeliveryInfo[0].removeAttribute('hidden');
                     }
                 } else {
-                    let btnDelivery = $('#btnDeliverySaleOrder');
-                    if (btnDelivery && btnDelivery.length > 0) {
-                        btnDelivery[0].removeAttribute('hidden');
-                    }
+                    QuotationDeliveryHandle.$btnDeliveryInfo[0].removeAttribute('hidden');
                 }
             }
             // check if finish then remove hidden btnCopy
@@ -6998,6 +6992,70 @@ class shippingHandle {
         }
         return true;
     };
+}
+
+// Delivery
+class QuotationDeliveryHandle {
+    static $btnDeliveryInfo = $('#delivery-info');
+    static $modalDeliveryInfoEle = $('#deliveryInfoModalCenter');
+    static $deliveryEstimatedDateEle = $('#estimated_delivery_date');
+    static $deliveryRemarkEle = $('#remarks');
+    static $btnDelivery = $('#btn-delivery');
+
+    static checkOpenDeliveryInfo(data) {
+        // check CR all cancel then allow delivery
+        WindowControl.showLoading();
+        $.fn.callAjax2({
+                'url': QuotationLoadDataHandle.urlEle.attr('data-so-list'),
+                'method': 'GET',
+                'data': {'document_root_id': data?.['document_root_id']},
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let dataCR = $.fn.switcherResp(resp);
+                if (dataCR) {
+                    if (dataCR.hasOwnProperty('sale_order_list') && Array.isArray(dataCR.sale_order_list)) {
+                        let check = false;
+                        if (dataCR?.['sale_order_list'].length > 0) {
+                            let countCancel = 0;
+                            for (let saleOrder of dataCR?.['sale_order_list']) {
+                                if (saleOrder?.['system_status'] === 4) {
+                                    countCancel++;
+                                }
+                            }
+                            if (countCancel === (dataCR?.['sale_order_list'].length - 1)) {
+                                check = true;
+                            }
+                        }
+                        if (check === true) {
+                            // open modal
+                            QuotationDeliveryHandle.$btnDelivery.attr('data-id', data?.['id']);
+                            let targetCodeEle = QuotationDeliveryHandle.$modalDeliveryInfoEle[0].querySelector('.target-code');
+                            if (targetCodeEle) {
+                                targetCodeEle.innerHTML = data?.['code'] ? data?.['code'] : '';
+                            }
+                            QuotationDeliveryHandle.$modalDeliveryInfoEle.modal('show');
+                        }
+                        if (check === false) {
+                            Swal.fire({
+                                title: "Oops...",
+                                text: $.fn.transEle.attr('data-check-cr'),
+                                icon: "error",
+                                allowOutsideClick: false,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                }
+                            })
+                        }
+                        WindowControl.hideLoading();
+                    }
+                }
+            }
+        )
+        return true;
+    };
+
 }
 
 // Store data

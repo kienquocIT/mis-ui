@@ -62,7 +62,7 @@ $(function () {
                         render: (data, type, row) => {
                             let link = urlsEle.data('link-detail').format_url_with_uuid(row?.['id']);
                             if (row?.['code']) {
-                                if (row?.['is_change'] === true && row?.['document_root_id']) {
+                                if (row?.['is_change'] === true && row?.['document_root_id'] !== row?.['id']) {
                                     return `<div class="row">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                 <a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']} <span class="badge-child badge-child-blue">CR</span></span></a>
@@ -72,7 +72,7 @@ $(function () {
                                                         data-bs-placement="top"
                                                         data-bs-html="true"
                                                         data-bs-content=''
-                                                ><span class="icon"><i class="fas fa-info-circle"></i></span></button>
+                                                ><span class="icon"><i class="fas fa-info-circle text-light"></i></span></button>
                                                 </div>
                                             </div`;
                                 }
@@ -203,42 +203,9 @@ $(function () {
                     $(row).on('click', '.delivery-info', function () {
                         checkOpenDeliveryInfo(data);
                     })
-                    // trigger popover
-                    // let popoverTriggerList = [].slice.call(row.querySelectorAll('.popover-cr'));
-                    // let popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-                    //     return new bootstrap.Popover(popoverTriggerEl)
-                    // })
-                    // append html popover
+                    // append html & trigger popover
                     $(row).on('click', '.popover-cr', function () {
-
-
-                        WindowControl.showLoading();
-                        $.fn.callAjax2({
-                                'url': frm.dataUrl,
-                                'method': 'GET',
-                                'data': {'id': data?.['document_root_id']},
-                                'isDropdown': true,
-                            }
-                        ).then(
-                            (resp) => {
-                                let dataRoots = $.fn.switcherResp(resp);
-                                if (dataRoots) {
-                                    if (dataRoots.hasOwnProperty('sale_order_list') && Array.isArray(dataRoots.sale_order_list)) {
-                                        if (dataRoots?.['sale_order_list'].length === 1) {
-
-                                            let dataRoot = dataRoots?.['sale_order_list'][0];
-                                            let link = urlsEle.data('link-detail').format_url_with_uuid(dataRoot?.['id']);
-                                        let html = `<b>Document root information</b>
-                                                    <div><span>Title: </span><a href="${link}" class="link-primary underline_hover"><span>${dataRoot?.['title']}</span></a></div>
-                                                    <div><span>Code: </span><a href="${link}" class="link-primary underline_hover"><span>${dataRoot?.['code']}</span></a></div>`;
-                                        WindowControl.hideLoading();
-                                        $(this).attr('data-bs-content', html);
-                                        return new bootstrap.Popover(this)
-                                        }
-                                    }
-                                }
-                            }
-                        )
+                        renderPopoverCR(this, data);
                     });
                 },
                 drawCallback: function () {
@@ -248,11 +215,45 @@ $(function () {
             });
         }
 
+        function renderPopoverCR(ele, data) {
+            if (!$(ele).hasClass('popover-rendered')) {
+                WindowControl.showLoading();
+                $.fn.callAjax2({
+                        'url': urlsEle.attr('data-link-list-api'),
+                        'method': 'GET',
+                        'data': {'id': data?.['document_root_id']},
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let dataRoots = $.fn.switcherResp(resp);
+                        if (dataRoots) {
+                            if (dataRoots.hasOwnProperty('sale_order_list') && Array.isArray(dataRoots.sale_order_list)) {
+                                if (dataRoots?.['sale_order_list'].length === 1) {
+                                    let dataRoot = dataRoots?.['sale_order_list'][0];
+                                    let link = urlsEle.data('link-detail').format_url_with_uuid(dataRoot?.['id']);
+                                    let html = `<b>${$.fn.transEle.attr('data-main-document')}</b>
+                                                <div><span>${$.fn.transEle.attr('data-title')}: </span><a href="${link}" class="link-primary underline_hover"><span>${dataRoot?.['title']}</span></a></div>
+                                                <div><span>${$.fn.transEle.attr('data-code')}: </span><a href="${link}" class="link-primary underline_hover"><span>${dataRoot?.['code']}</span></a></div>`;
+                                    $(ele).addClass('popover-rendered');
+                                    $(ele).attr('data-bs-content', html);
+                                    let popover = new bootstrap.Popover(ele);
+                                    popover.show();
+                                }
+                            }
+                            WindowControl.hideLoading();
+                        }
+                    }
+                )
+            }
+            return true;
+        }
+
         function checkOpenDeliveryInfo(data) {
             // check CR all cancel then allow delivery
             WindowControl.showLoading();
             $.fn.callAjax2({
-                    'url': frm.dataUrl,
+                    'url': urlsEle.attr('data-link-list-api'),
                     'method': 'GET',
                     'data': {'document_root_id': data?.['document_root_id']},
                     'isDropdown': true,

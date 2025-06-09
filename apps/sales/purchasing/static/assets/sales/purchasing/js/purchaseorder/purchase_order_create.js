@@ -167,6 +167,7 @@ $(function () {
             } else {
                 POCalculateHandle.calculateMain(tablePurchaseOrderProductAdd, row);
             }
+            POLoadDataHandle.loadChangePaymentTerm();
         });
 
         tablePurchaseOrderProductAdd.on('click', '.table-row-price-option', function () {
@@ -193,6 +194,7 @@ $(function () {
         tablePurchaseOrderProductAdd.on('click', '.del-row', function () {
             deleteRow(this.closest('tr'), tablePurchaseOrderProductAdd);
             POCalculateHandle.calculateTotal(tablePurchaseOrderProductAdd[0]);
+            POLoadDataHandle.loadChangePaymentTerm();
         });
 
         // Action on change data on row of tablePurchaseOrderProductRequest
@@ -217,6 +219,7 @@ $(function () {
                 }
             }
             POCalculateHandle.calculateMain(tablePurchaseOrderProductRequest, row);
+            POLoadDataHandle.loadChangePaymentTerm();
         });
 
         tablePurchaseOrderProductRequest.on('click', '.btn-view-price', function () {
@@ -271,8 +274,6 @@ $(function () {
                 }
                 if ($(this).hasClass('table-row-ratio')) {
                     POLoadDataHandle.loadPaymentValues(this);
-                    let valBeforeEle = row.querySelector('.table-row-value-before-tax');
-                    validatePSValue(valBeforeEle);
                     POLoadDataHandle.loadMinusBalance();
                 }
                 if ($(this).hasClass('table-row-issue-invoice')) {

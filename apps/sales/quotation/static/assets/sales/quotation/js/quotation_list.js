@@ -2,11 +2,11 @@ $(function () {
     $(document).ready(function () {
 
         let transEle = $('#app-trans-factory');
+        let urlsEle = $('#app-url-factory');
 
         function loadDbl() {
             let $table = $('#table_quotation_list')
             let frm = new SetupFormSubmit($table);
-            let changeList = [];
             $table.DataTableDefault({
                 useDataServer: true,
                 ajax: {
@@ -35,10 +35,21 @@ $(function () {
                         targets: 1,
                         width: '5%',
                         render: (data, type, row) => {
-                            let link = $('#quotation-link').data('link-detail').format_url_with_uuid(row?.['id']);
+                            let link = urlsEle.data('link-detail').format_url_with_uuid(row?.['id']);
                             if (row?.['code']) {
-                                if (row?.['is_change'] === true && row?.['document_root_id']) {
-                                    return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']} <span class="badge-child badge-child-blue">CR</span></span></a></div`;
+                                if (row?.['is_change'] === true && row?.['document_root_id'] !== row?.['id']) {
+                                    return `<div class="row">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                <a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']} <span class="badge-child badge-child-blue">CR</span></span></a>
+                                                <button class="btn btn-icon btn-rounded popover-cr" 
+                                                        data-bs-container="body" 
+                                                        data-bs-toggle="popover" 
+                                                        data-bs-placement="top"
+                                                        data-bs-html="true"
+                                                        data-bs-content=''
+                                                ><span class="icon"><i class="fas fa-info-circle text-light"></i></span></button>
+                                                </div>
+                                            </div`;
                                 }
                                 return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']}</span></a></div>`;
                             }
@@ -49,7 +60,7 @@ $(function () {
                         targets: 2,
                         width: '17%',
                         render: (data, type, row) => {
-                            const link = $('#quotation-link').data('link-detail').format_url_with_uuid(row?.['id'])
+                            const link = urlsEle.data('link-detail').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`
                         }
                     },
@@ -103,7 +114,7 @@ $(function () {
                         width: '5%',
                         className: 'action-center',
                         render: (data, type, row) => {
-                            let link = $('#quotation-link').data('link-update').format_url_with_uuid(row?.['id']);
+                            let link = urlsEle.data('link-update').format_url_with_uuid(row?.['id']);
                             let disabled = '';
                             if ([2, 3, 4].includes(row?.['system_status'])) {
                                 disabled = 'disabled';
@@ -117,11 +128,51 @@ $(function () {
                         },
                     }
                 ],
+                rowCallback: (row, data) => {
+                    // append html & trigger popover
+                    $(row).on('click', '.popover-cr', function () {
+                        renderPopoverCR(this, data);
+                    });
+                },
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
                 },
             });
+        }
+
+        function renderPopoverCR(ele, data) {
+            if (!$(ele).hasClass('popover-rendered')) {
+                WindowControl.showLoading();
+                $.fn.callAjax2({
+                        'url': urlsEle.attr('data-link-list-api'),
+                        'method': 'GET',
+                        'data': {'id': data?.['document_root_id']},
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let dataRoots = $.fn.switcherResp(resp);
+                        if (dataRoots) {
+                            if (dataRoots.hasOwnProperty('quotation_list') && Array.isArray(dataRoots.quotation_list)) {
+                                if (dataRoots?.['quotation_list'].length === 1) {
+                                    let dataRoot = dataRoots?.['quotation_list'][0];
+                                    let link = urlsEle.data('link-detail').format_url_with_uuid(dataRoot?.['id']);
+                                    let html = `<b>${$.fn.transEle.attr('data-main-document')}</b>
+                                                <div><span>${$.fn.transEle.attr('data-title')}: </span><a href="${link}" class="link-primary underline_hover"><span>${dataRoot?.['title']}</span></a></div>
+                                                <div><span>${$.fn.transEle.attr('data-code')}: </span><a href="${link}" class="link-primary underline_hover"><span>${dataRoot?.['code']}</span></a></div>`;
+                                    $(ele).addClass('popover-rendered');
+                                    $(ele).attr('data-bs-content', html);
+                                    let popover = new bootstrap.Popover(ele);
+                                    popover.show();
+                                }
+                            }
+                            WindowControl.hideLoading();
+                        }
+                    }
+                )
+            }
+            return true;
         }
 
         loadDbl();

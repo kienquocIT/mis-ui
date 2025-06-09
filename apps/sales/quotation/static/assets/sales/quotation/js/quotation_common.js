@@ -7006,7 +7006,7 @@ class QuotationDeliveryHandle {
         // check CR all cancel then allow delivery
         WindowControl.showLoading();
         $.fn.callAjax2({
-                'url': QuotationLoadDataHandle.urlEle.attr('data-so-list'),
+                'url': QuotationLoadDataHandle.urlEle.attr('data-so-list-api'),
                 'method': 'GET',
                 'data': {'document_root_id': data?.['document_root_id']},
                 'isDropdown': true,

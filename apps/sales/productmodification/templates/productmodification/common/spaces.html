@@ -36,9 +36,12 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-12 col-md-6 col-lg-6 mt-3">
+    <div class="main-space col-12 col-md-6 col-lg-6 mt-3">
         <div class="border rounded p-2 h-100" style="min-height: 89vh">
-            <span class="fw-bold text-green h6">{% trans "Current component" %}</span>
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-green h6">{% trans "Current component" %}</span>
+                <a href="#" class="layout-btn"><i class="bi bi-square-half"></i></a>
+            </div>
             <table class="table nowrap w-100" id="table-product-current-component">
                 <thead class="bg-light">
                     <tr>
@@ -61,9 +64,12 @@
             </button>
         </div>
     </div>
-    <div class="col-12 col-md-6 col-lg-6 mt-3">
+    <div class="main-space col-12 col-md-6 col-lg-6 mt-3">
         <div class="border rounded p-2 h-100" style="min-height: 89vh">
-            <span class="fw-bold text-danger h6">{% trans "Removed component" %}</span>
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-danger h6">{% trans "Removed component" %}</span>
+                <a href="#" class="layout-btn"><i class="bi bi-square-half"></i></a>
+            </div>
             <table class="table nowrap w-100" id="table-product-removed-component">
                 <thead class="bg-light">
                     <tr>

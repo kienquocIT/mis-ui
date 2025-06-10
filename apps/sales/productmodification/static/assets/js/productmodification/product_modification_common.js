@@ -1324,6 +1324,14 @@ class ProductModificationEventHandler {
             ProductModificationPageFunction.LoadTableProductRemovedComponentList()
         })
         // space
+        $('.layout-btn').on('click', function () {
+            if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-12 col-lg-12 mt-3') {
+                $('.main-space').attr('class', 'main-space col-12 col-md-6 col-lg-6 mt-3')
+            }
+            else {
+                $('.main-space').attr('class', 'main-space col-12 col-md-12 col-lg-12 mt-3')
+            }
+        })
         pageElements.$insert_component_btn.on('click', function () {
             ProductModificationPageFunction.LoadTableComponentInserted()
         })

@@ -1751,6 +1751,10 @@ class QuotationLoadDataHandle {
                     listTaxID.push(taxData?.['id']);
                     listTax.push(taxData);
                 }
+                if (!$(taxEle).val()) {
+                    listTaxID.push(null);
+                    listTax.push({});
+                }
             }
         });
         return {"check": listTaxID.every(val => val === listTaxID[0]) ? "same" : "mixed", "list_tax": listTax};

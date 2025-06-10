@@ -71,7 +71,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'title',
-                    className: 'w-35',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         if (!row?.['is_default']) {
                             return `${data}`
@@ -81,7 +81,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'rate',
-                    className: 'w-35',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         if (data) {
                             if (row?.['is_primary']) {
@@ -94,6 +94,38 @@ $(document).ready(function () {
                         }
                     }
                 },
+                {
+                    className: 'text-right w-10',
+                    render: (data, type, row) => {
+                        if (row?.['is_primary']) {
+                            return ""
+                        }
+                        let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-currency"
+                           data-id="${row?.['id']}"
+                           data-code="${row?.['abbreviation']}"
+                           data-title="${row?.['title']}"
+                           data-rate="${row?.['rate']}"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modal-update-currency"
+                           data-bs-placement="top" title=""
+                           >
+                           <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>
+                        </a>`
+                        let delete_btn = `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete"
+                                data-id="${row?.['id']}">
+                            <span class="btn-icon-wrap">
+                                <span class="feather-icon text-danger">
+                                    <i class="bi bi-trash"></i>
+                                </span>
+                            </span>
+                        </a>`
+                        if (!row?.['is_default']) {
+                            return `${edit_btn}${delete_btn}`
+                        }
+
+                        return `${edit_btn}`
+                    }
+                }
             ],
         });
     }
@@ -154,7 +186,7 @@ $(document).ready(function () {
                 {
                     className: 'text-right w-15',
                     render: (data, type, row, meta) => {
-                        return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-tax-category"
+                        let edit_btn =  `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-tax-category"
                                    data-id="${row?.['id']}"
                                    data-code="${row?.['code']}"
                                    data-title="${row?.['title']}"
@@ -169,6 +201,18 @@ $(document).ready(function () {
                                        </span>
                                    </span>
                                 </a>`
+                        let delete_btn = `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete"
+                                data-id="${row?.['id']}">
+                            <span class="btn-icon-wrap">
+                                <span class="feather-icon text-danger">
+                                    <i class="bi bi-trash"></i>
+                                </span>
+                            </span>
+                        </a>`
+                        if (!row?.['is_default']) {
+                            return `${edit_btn}${delete_btn}`
+                        }
+                        return `${edit_btn}`
                     }
                 }
             ],
@@ -283,6 +327,7 @@ $(document).ready(function () {
     loadTaxCategory()
 
     let form_create_currency = $('#form-create-currency')
+    let form_update_currency = $('#form-update-currency')
 
     $(document).on("click", '#sync-from-VCB-button', function () {
         $('#datatable-currency tbody tr td:nth-child(4)').each(function () {
@@ -310,6 +355,14 @@ $(document).ready(function () {
             }
         )
     });
+    $(document).on('click', '.btn-update-currency', function () {
+        let modal = $('#modal-update-currency')
+        modal.find('#currency-code').val($(this).attr('data-code'))
+        modal.find('#currency-title').val($(this).attr('data-title'))
+        modal.find('#currency-selling-rate').val($(this).attr('data-rate'))
+        let raw_url = form_update_currency.attr('data-url-raw')
+        form_update_currency.attr('data-url', raw_url.replace('/0', `/${$(this).attr('data-id')}`))
+    })
 
     new SetupFormSubmit(form_create_currency).validate({
         rules: {
@@ -337,6 +390,36 @@ $(document).ready(function () {
                         $.fn.notifyB({description: "Successfully"}, 'success')
                         $('#modal-new-currency').modal('hide');
                         $('#modal-new-currency form')[0].reset()
+                        loadCurrency()
+                    }
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        }
+    })
+    new SetupFormSubmit(form_update_currency).validate({
+        rules: {
+            code:{
+                required: true,
+            },
+            title: {
+                required: true,
+            }
+        },
+        submitHandler: function (form) {
+            let frm = new SetupFormSubmit($(form));
+            $.fn.callAjax2({
+                'url': frm.dataUrl,
+                'method': frm.dataMethod,
+                'data': frm.dataForm,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        $.fn.notifyB({description: "Successfully"}, 'success')
+                        $('#modal-update-currency').modal('hide');
                         loadCurrency()
                     }
                 },
@@ -390,7 +473,6 @@ $(document).ready(function () {
             )
         }
     })
-
     new SetupFormSubmit(form_update_tax_category).validate({
         rules: {
             code:{

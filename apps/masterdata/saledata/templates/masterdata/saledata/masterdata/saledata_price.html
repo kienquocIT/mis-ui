@@ -89,6 +89,7 @@
                             <th>{% trans "Code" %} / {% trans "Abbreviation" %}</th>
                             <th>{% trans "Name" %}</th>
                             <th>{% trans "Selling rate" %}</th>
+                            <th></th>
                         </tr>
                         </thead>
                     </table>
@@ -290,6 +291,57 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                     <button type="submit" form="form-create-currency"
+                            class="btn btn-primary">{% trans 'Save' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-update-currency" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Currency Detail" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-currency" data-method="PUT"
+                          data-url-raw="{% url "CurrencyDetailAPI" pk=0 %}"
+                          data-url="{% url "CurrencyDetailAPI" pk=0 %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="currency-code"
+                                           class="form-label required">{% trans "Code" %}</label>
+                                    <input readonly disabled class="form-control form-control-line" type="text"
+                                           id="currency-code" oninput="this.value=this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <label for="currency-title"
+                                           class="form-label required">{% trans "Name" %}</label>
+                                    <input readonly disabled class="form-control form-control-line" required type="text"
+                                           id="currency-title">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="currency-selling-rate"
+                                           class="form-label">{% trans "Selling Rate" %}</label>
+                                    <input class="form-control" name="rate" type="number"
+                                              id="currency-selling-rate">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" form="form-update-currency"
                             class="btn btn-primary">{% trans 'Save' %}</button>
                 </div>
             </div>

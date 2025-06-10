@@ -423,6 +423,24 @@ class GRLoadDataHandle {
                     GRLoadDataHandle.loadCallAjaxWareHouse();
                 }
             }
+            if (!dataRow?.['product_data']?.['product_choice'].includes(1)) {
+                Swal.fire({
+                    title: $.fn.transEle.attr('data-warning'),
+                    text: GRLoadDataHandle.transEle.attr('data-no-inventory-choice'),
+                    icon: "warning",
+                    allowOutsideClick: false,
+                    showConfirmButton: true,
+                    confirmButtonText: $.fn.transEle.attr('data-confirm'),
+                    showCancelButton: true,
+                    cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (GRLoadDataHandle.$isNoWHEle[0].checked === false) {
+                            GRLoadDataHandle.loadCallAjaxWareHouse();
+                        }
+                    }
+                })
+            }
         }
         return true;
     };

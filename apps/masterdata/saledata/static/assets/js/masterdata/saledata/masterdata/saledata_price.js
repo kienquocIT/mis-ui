@@ -2,7 +2,7 @@ let term_type_list = [];
 let PercentCount = 0;
 let $transElm = $('#trans-factory');
 $(document).ready(function () {
-
+    const trans_script = $('#trans-script')
     function loadBaseCurrency() {
         let ele = $('#currency_name');
         ele.initSelect2({
@@ -299,18 +299,31 @@ $(document).ready(function () {
                 {
                     className: 'text-right w-10',
                     render: (data, type, row) => {
-                        return `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-tax"
-                                   data-id="${row?.['id']}"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#modal-update-tax"
-                                   data-bs-placement="top" title="" 
-                                   data-bs-original-title="Edit">
-                                   <span class="btn-icon-wrap">
-                                       <span class="feather-icon text-primary">
-                                           <i data-feather="edit"></i>
-                                       </span>
-                                   </span>
-                                </a>`
+                        let edit_btn = `<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover btn-update-tax"
+                           data-id="${row?.['id']}"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modal-update-tax"
+                           data-bs-placement="top" title="" 
+                           data-bs-original-title="Edit">
+                           <span class="btn-icon-wrap">
+                               <span class="feather-icon text-primary">
+                                   <i data-feather="edit"></i>
+                               </span>
+                           </span>
+                        </a>`
+                        let delete_btn = `<a class="btn btn-icon btn-flush-danger btn-rounded flush-soft-hover btn-delete"
+                            data-id="${row?.['id']}">
+                            <span class="btn-icon-wrap">
+                                <span class="feather-icon text-danger">
+                                    <i class="bi bi-trash"></i>
+                                </span>
+                            </span>
+                        </a>`
+                         if (!row?.['is_default']) {
+                            return `${edit_btn}${delete_btn}`
+                        }
+
+                        return `${edit_btn}`
                     }
                 }
             ],
@@ -325,6 +338,51 @@ $(document).ready(function () {
     loadCurrency()
     loadTax()
     loadTaxCategory()
+
+    $(document).on('click', '.btn-delete', function () {
+        const tableCurrent = $(this).closest('table')
+        Swal.fire({
+            html:
+            `<div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div><h5 class="text-danger">${trans_script.attr('data-trans-confirm-delete')}</h5><p>${trans_script.attr('data-trans-notify')}</p>`,
+            customClass: {
+                confirmButton: 'btn btn-outline-secondary text-danger',
+                cancelButton: 'btn btn-outline-secondary text-gray',
+                container:'swal2-has-bg',
+                actions:'w-100'
+            },
+            showCancelButton: true,
+            buttonsStyling: false,
+            confirmButtonText: trans_script.attr('data-trans-delete'),
+            cancelButtonText: trans_script.attr('data-trans-cancel'),
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                let delete_url = tableCurrent.attr('data-url-detail').replace('/0', `/${$(this).attr('data-id')}`)
+                $.fn.callAjax2({
+                    url: delete_url,
+                    data: {},
+                    method: 'DELETE',
+                }).then(
+                    (resp) => {
+                        $.fn.switcherResp(resp);
+                        $.fn.notifyB({'description': 'Delete successfully!'}, 'success');
+                        if (tableCurrent.attr('id') === 'datatable-currency') {
+                            loadCurrency()
+                        }
+                        else if (tableCurrent.attr('id') === 'datatable-tax-category') {
+                            loadTaxCategory()
+                        }
+                        else if (tableCurrent.attr('id') === 'datatable-tax') {
+                            loadTax()
+                        }
+                    },
+                    (errs) => {
+                        $.fn.notifyB({'description': errs.data.errors.detail}, 'failure');
+                    }
+                )
+            }
+        })
+    })
 
     let form_create_currency = $('#form-create-currency')
     let form_update_currency = $('#form-update-currency')

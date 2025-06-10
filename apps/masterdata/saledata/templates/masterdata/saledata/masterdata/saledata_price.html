@@ -31,6 +31,12 @@
     </div>
 {% endblock %}
 {% block pageContent %}
+     <script id="trans-script"
+            data-trans-confirm-delete="{% trans 'Confirm delete ?' %}"
+            data-trans-notify="{% trans 'This action can not be undo!' %}"
+            data-trans-delete="{% trans 'Delete' %}"
+            data-trans-cancel="{% trans 'Cancel' %}"
+    ></script>
     <div class="row">
         <div class="col-12 col-lg-2 col-md-2">
             <ul class="nav nav-pills nav-light flex-column">
@@ -82,6 +88,7 @@
                     <table id="datatable-currency"
                            class="table nowrap w-100"
                            data-url="{% url "CurrencyListAPI" %}"
+                           data-url-detail="{% url "CurrencyDetailAPI" pk=0 %}"
                            data-method="GET">
                         <thead>
                         <tr>

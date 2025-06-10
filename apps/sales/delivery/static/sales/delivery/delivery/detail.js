@@ -1109,6 +1109,7 @@ $(async function () {
                             return `<div class="form-check form-check-lg d-flex align-items-center">
                                         <input
                                             type="radio"
+                                            name="radio-wh"
                                             class="form-check-input table-row-checkbox cl-child"
                                             id="pw-${row?.['id'].replace(/-/g, "")}"
                                             data-id="${row?.['id']}"
@@ -1172,8 +1173,8 @@ $(async function () {
                 ],
                 drawCallback: function () {
                     prodTable.setupCollapse();
-                    prodTable.loadEventRadio($tablePW);
-                    prodTable.loadEventPW();
+                    // prodTable.loadEventRadio($tablePW);
+                    // prodTable.loadEventPW();
                     prodTable.dtbPWHDCustom();
                 },
             })
@@ -1973,6 +1974,17 @@ $(async function () {
                 DeliveryStoreDataHandle.storeData();
             }
         }
+    });
+
+    $tablePW.on('click', '.table-row-checkbox', function () {
+        let row = this.closest('tr');
+        if (row) {
+            let rowIndex = $tablePW.DataTable().row(row).index();
+            let $row = $tablePW.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+            prodTable.loadCheckPW(this, dataRow, row);
+        }
+        return true;
     });
 
     $tablePW.on('click', '.cl-parent', function () {

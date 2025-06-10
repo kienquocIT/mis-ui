@@ -1499,6 +1499,7 @@ class GRDataTableHandle {
                             return `<div class="form-check form-check-lg d-flex align-items-center">
                                     <input 
                                         type="radio" 
+                                        name="radio-po-product"
                                         class="form-check-input table-row-checkbox" 
                                         id="po-pro-${targetID.replace(/-/g, "")}"
                                         data-id="${row?.['id']}"
@@ -1653,6 +1654,7 @@ class GRDataTableHandle {
                         return `<div class="form-check form-check-lg d-flex align-items-center">
                                     <input 
                                         type="radio" 
+                                        name="radio-wh"
                                         class="form-check-input table-row-checkbox"
                                         id="wh-${row?.['warehouse_id'].replace(/-/g, "")}"
                                         data-id="${row?.['warehouse_id']}" 

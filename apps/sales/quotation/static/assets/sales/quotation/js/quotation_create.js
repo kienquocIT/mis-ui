@@ -207,8 +207,7 @@ $(function () {
 
         QuotationDataTableHandle.$tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
             if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
-                let row = $(this)[0].closest('tr');
-
+                let row = this.closest('tr');
                 if ($(this).hasClass('table-row-price')) {
                     $(this).removeClass('text-primary');
                 }
@@ -232,8 +231,8 @@ $(function () {
                             }
                         }
                     }
-                    QuotationLoadDataHandle.loadChangePaymentTerm();
                 }
+                QuotationLoadDataHandle.loadChangePaymentTerm();
                 // Delete all promotion rows
                 deletePromotionRows(QuotationDataTableHandle.$tableProduct, true, false);
                 // Delete all shipping rows

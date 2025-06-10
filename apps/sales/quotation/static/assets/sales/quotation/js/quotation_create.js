@@ -207,8 +207,7 @@ $(function () {
 
         QuotationDataTableHandle.$tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
             if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
-                let row = $(this)[0].closest('tr');
-
+                let row = this.closest('tr');
                 if ($(this).hasClass('table-row-price')) {
                     $(this).removeClass('text-primary');
                 }
@@ -232,8 +231,8 @@ $(function () {
                             }
                         }
                     }
-                    QuotationLoadDataHandle.loadChangePaymentTerm();
                 }
+                QuotationLoadDataHandle.loadChangePaymentTerm();
                 // Delete all promotion rows
                 deletePromotionRows(QuotationDataTableHandle.$tableProduct, true, false);
                 // Delete all shipping rows
@@ -789,6 +788,50 @@ $(function () {
 // IMPORT TABLE
         $('#modal-load-datatable-from-excel .btn-gradient-primary').on('click', function () {
             QuotationLoadDataHandle.loadImport();
+        });
+
+// DELIVERY
+        QuotationDeliveryHandle.$btnDeliveryInfo.on('click', function () {
+            if (QuotationLoadDataHandle.$eleStoreDetail.val()) {
+                let dataDetail = JSON.parse(QuotationLoadDataHandle.$eleStoreDetail.val());
+                QuotationDeliveryHandle.checkOpenDeliveryInfo(dataDetail);
+            }
+        });
+
+        QuotationDeliveryHandle.$btnDelivery.on('click', function () {
+            if (!QuotationDeliveryHandle.$deliveryEstimatedDateEle.val()) {
+                $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-required-delivery-date')}, 'failure');
+                return false;
+            }
+
+            let dataDelivery = {};
+            dataDelivery['estimated_delivery_date'] = moment(QuotationDeliveryHandle.$deliveryEstimatedDateEle.val(), "DD/MM/YYYY").format("YYYY-MM-DD HH:mm:ss");
+            dataDelivery['remarks'] = QuotationDeliveryHandle.$deliveryRemarkEle.val();
+
+            WindowControl.showLoading();
+            $.fn.callAjax2({
+                url: QuotationLoadDataHandle.urlEle.attr('data-create-delivery').replace('1', $(this).attr('data-id')),
+                method: 'POST',
+                data: dataDelivery,
+                urlRedirect: null,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data?.['status'] === 200) {
+                        const config = data?.config
+                        let url_redirect = QuotationLoadDataHandle.urlEle.attr('data-delivery')
+                        if (config?.is_picking && !data?.['is_not_picking'])
+                            url_redirect = QuotationLoadDataHandle.urlEle.attr('data-picking')
+                        setTimeout(() => {
+                            window.location.href = url_redirect
+                        }, 1000);
+                    }
+                },
+                (errs) => {
+                    WindowControl.hideLoading();
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
         });
 
 

@@ -17,7 +17,7 @@ class SetupFormSubmit {
                 if (frm$.length > 0){
                     frm$.find(`:radio[name=${nameRadio}]`).prop('checked', false);
                 }
-                const eleChecked$ = frm$.find(`:radion[name=${nameRadio}][value=${value}]`);
+                const eleChecked$ = frm$.find(`:radio[name=${nameRadio}][value=${value}]`);
                 if (eleChecked$.length > 0) eleChecked$.prop('checked', true);
             }
         } else {
@@ -2222,14 +2222,14 @@ class WFRTControl {
 
     static callWFSubmitForm(_form) {
         let IDRuntime = WFRTControl.getRuntimeWF();
-        let eleStatus = $('#systemStatus');
         let $eleCode = $('#documentCode');
         let currentEmployee = $x.fn.getEmployeeCurrentID();
+        let docData = WFRTControl.getRuntimeDocData();
         // Check CR
-        if (eleStatus.attr('data-status-cr') === '5' && eleStatus.attr('data-inherit') === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {
+        if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {
             let $eleForm = $(`#${globeFormMappedZone}`);
-            let docRootID = eleStatus.attr('data-doc-root-id');
-            let docChangeOrder = eleStatus.attr('data-doc-change-order');
+            let docRootID = docData?.['document_root_id'];
+            let docChangeOrder = docData?.['document_change_order'] + 1;
             if ($eleForm && $eleForm.length > 0 && docRootID) {
                 _form.dataMethod = 'POST';
                 _form.dataUrl = $eleForm.attr('data-url-cr');
@@ -2237,10 +2237,7 @@ class WFRTControl {
                 _form.dataForm['system_status'] = 1;
                 _form.dataForm['is_change'] = true;
                 _form.dataForm['document_root_id'] = docRootID;
-                _form.dataForm['document_change_order'] = 1;
-                if (docChangeOrder) {
-                    _form.dataForm['document_change_order'] = parseInt(docChangeOrder) + 1;
-                }
+                _form.dataForm['document_change_order'] = docChangeOrder;
                 // check next node
                 let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
                 // select cancel/confirm change
@@ -7472,7 +7469,6 @@ class FileControl {
     init(opts = {}) {
         let clsThis = this;
         const config = this.config;
-
         if (!this.ele$.hasClass('dad-file-control-group')) {
             this.ele$.find('.dad-file-control-group').each(function () {
                 new FileControl(
@@ -7500,6 +7496,7 @@ class FileControl {
                     }
                 ),
                 'required': false,
+                'select_folder': !!opts?.['select_folder'],
                 ...opts
             }
             this.init_opts = opts;
@@ -7512,7 +7509,7 @@ class FileControl {
                     dmUploaderEle.dmUploader({
                         ...config,
                         extraData: async function (fileId, fileData) {
-                            return await Swal.fire({
+                            const result = await Swal.fire({
                                 input: "text",
                                 title: groupEle.attr('data-msg-description-file'),
                                 html: fileData.name,
@@ -7522,25 +7519,79 @@ class FileControl {
                                 cancelButtonText: $.fn.transEle.attr('data-cancel'),
                                 showCancelButton: true,
                                 allowOutsideClick: false,
-                                preConfirm: (remark) => {
-                                    return {'remarks': remark}
-                                },
-                            }).then(
-                                async (result) => {
-                                    if (result.isConfirmed) {
-                                        return {
-                                            'state': true,
-                                            'data': result.value,
-                                        }
-                                    } else {
-                                        clsThis.ui_remove_line_file_by_id(fileId);
-                                        return {
-                                            'state': false,
-                                            'data': 'CANCEL',
-                                        }
-                                    }
+                            });
+                            if (!result.isConfirmed) {
+                                clsThis.ui_remove_line_file_by_id(fileId);
+                                return {state: false, data: 'CANCEL'};
+                            }
+                            const remarks = result.value;
+                            const $folderId = opts?.['element_folder'];
+                            // if ($folderId && !$x.fn.checkUUID4($folderId.val())) {
+                            //     await Swal.fire({
+                            //         icon: 'error',
+                            //         title: $.fn.gettext('Folder is empty'),
+                            //         text: $.fn.gettext('Please select folder before upload')
+                            //     });
+                            //     clsThis.ui_remove_line_file_by_id(fileId);
+                            //     return {state: false, data: 'CANCEL'};
+                            // }
+                            // check select folder
+                            if(opts?.['select_folder'] && $folderId.val()){
+                                const fruit = await Swal.fire({
+                                    title: "Select folder",
+                                    showConfirmButton: true,
+                                    html: `<div class="form-group">` +
+                                        `<select class="form-select auto-init-select2" data-url="${
+                                            $('#url-factory').attr('data-folder-api')}" data-method="GET" data-keyResp="folder_list"></select></div>`,
+                                    didOpen: () => {
+                                        $('#swal2-html-container select').initSelect2()
+                                    },
+                                    preConfirm: function() {
+                                        return {folder: $('#swal2-html-container select').val()}
+                                    },
+                                });
+                                if (fruit.isConfirmed) $folderId.val(fruit.value?.['folder']);
+                                else{
+                                    clsThis.ui_remove_line_file_by_id(fileId);
+                                    return {state: false, data: 'CANCEL'};
                                 }
-                            )
+                            }
+                            // return await Swal.fire({
+                            //     input: "text",
+                            //     title: groupEle.attr('data-msg-description-file'),
+                            //     html: fileData.name,
+                            //     inputAttributes: {
+                            //         autocapitalize: "off"
+                            //     },
+                            //     cancelButtonText: $.fn.transEle.attr('data-cancel'),
+                            //     showCancelButton: true,
+                            //     allowOutsideClick: false,
+                            //     preConfirm: (remark) => {
+                            //         return {'remarks': remark}
+                            //     },
+                            // }).then(
+                            //     async (result) => {
+                            //         if (result.isConfirmed) {
+                            //             return {
+                            //                 'state': true,
+                            //                 'data': result.value,
+                            //             }
+                            //         } else {
+                            //             clsThis.ui_remove_line_file_by_id(fileId);
+                            //             return {
+                            //                 'state': false,
+                            //                 'data': 'CANCEL',
+                            //             }
+                            //         }
+                            //     }
+                            // )
+                            return {
+                                state: true,
+                                data: {
+                                    'remarks': remarks,
+                                    'folder': $folderId.val()
+                                }
+                            };
                         },
                         url: $(clsThis.ele$).attr('data-url'),
                         headers: {
@@ -8670,7 +8721,7 @@ class CommentControl {
             let elePushTo = (
                 ele_push_group ? ele_push_group : this.ele_list$
             )
-            ap_or_pre === 'ap' ? elePushTo.append(html$) : elePushTo.prepend(html$);  // API sorting -date_created. : render add new success
+            ap_or_pre === 'ap' ? elePushTo.append(html$) : elePushTo.prepend(html$);  // API sorting -date_created. render add new success
             setTimeout(
                 () => html$.removeClass('comment-item-newest'),
                 2000

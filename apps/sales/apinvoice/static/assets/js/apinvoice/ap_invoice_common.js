@@ -76,7 +76,7 @@ class APInvoicePageFunction {
                     }
                 },
                 {
-                    className: ' w-5',
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
                                     <input type="radio"
@@ -88,7 +88,7 @@ class APInvoicePageFunction {
                 },
                 {
                     data: 'code',
-                    className: ' w-70',
+                    className: 'w-70',
                     render: (data, type, row) => {
                         return `<span class="badge badge-soft-primary mr-2">${row?.['code']}</span><span>${row?.['name']}</span>`
                     }

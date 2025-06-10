@@ -421,7 +421,11 @@ class MenusCRM:
     )
     PRODUCT = MenuCommon(
         name='Product', code='id_menu_product_list', view_name='ProductList',
-        icon='<i class="fas bi bi-nut-fill"></i>',
+        icon='<i class="fa-solid fa-box"></i>',
+    )
+    PRODUCT_MODIFICATION = MenuCommon(
+        name='Product modification', code='id_menu_product_modification', view_name='ProductModificationList',
+        icon='<i class="fa-solid fa-boxes-stacked"></i>',
     )
     OPP_BOM = MenuCommon(
         name='Opportunity BOM', code='menu_project_bom_list', view_name='OpportunityBOMList',
@@ -671,12 +675,12 @@ class MenuKMS:
     WORK_SPACE = MenuCommon(
         name='Work space', code='menu_dms_work_space', view_name='', icon='<i class="fas fa-laptop-house"></i>',
         child=[
-            # MenuCommon(
-            #     name='File',
-            #     code='menu_folder_list',
-            #     view_name='FolderList',
-            #     icon='<i class="fas fa-file"></i>',
-            # ),
+            MenuCommon(
+                name='File',
+                code='menu_folder_list',
+                view_name='FolderList',
+                icon='<i class="fas fa-file"></i>',
+            ),
             MenuCommon(
                 name='Document approval',
                 code='menu_document_approval',
@@ -981,6 +985,7 @@ class SpaceItem:
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.CONTRACT_APPROVAL,
                 MenusCRM.PRODUCT,
+                MenusCRM.PRODUCT_MODIFICATION,
                 MenusCRM.OPP_BOM,
                 MenusCRM.PRICING,
                 MenusCRM.ACCOUNT_PAYABLE,

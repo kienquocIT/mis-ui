@@ -310,9 +310,9 @@ $(function () {
                 }
             }
             let $table = $dtbArea.find('.table_payment_plan');
-            let minWidth = "min-w-1366p";
+            let minWidth = "min-w-2560p";
             if (columns.length > 10) {
-                minWidth = "min-w-2560p";
+                minWidth = "min-w-3440p";
             }
             if (columns.length > 15) {
                 minWidth = "min-w-3440p";

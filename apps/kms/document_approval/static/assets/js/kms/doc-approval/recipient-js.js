@@ -364,5 +364,4 @@ class popup_recipient {
 $('document').ready(function(){
     const recipient = new popup_recipient();
     recipient.run_popup()
-
 });

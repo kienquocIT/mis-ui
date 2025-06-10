@@ -1,0 +1,79 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12">
+        <table class="table nowrap w-100" id="table-current-product-modified">
+            <thead class="bg-secondary-light-5">
+                <tr>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 200px">
+                        <button id="btn-open-modal-product" class="btn btn-xs btn-gradient-primary" type="button" data-bs-toggle="modal" data-bs-target="#select-product-modified-modal">
+                            <span>
+                                <span class="icon">
+                                    <span class="feather-icon"><i class="fa-solid fa-circle-check"></i></span>
+                                </span>
+                                <span>{% trans 'Select modified product' %}</span>
+                            </span>
+                        </button>
+                    </th>
+                    <th style="min-width: 100px">
+                        <button type="button" class="btn btn-xs btn-gradient-primary"
+                                id="btn-modal-picking-product"
+                                data-url="{% url 'CustomerListAPI' %}"
+                                data-bs-toggle="modal"
+                                data-bs-target="#picking-product-modal">
+                            <span>
+                                <span class="icon">
+                                    <span class="feather-icon"><i class="fa-solid fa-ellipsis-vertical"></i></span>
+                                </span>
+                                <span>{% trans 'Select detail' %}</span>
+                            </span>
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 col-md-6 col-lg-6 mt-3">
+        <div class="border rounded p-2 h-100" style="min-height: 89vh">
+            <span class="fw-bold text-green h6">{% trans "Current component" %}</span>
+            <table class="table nowrap w-100" id="table-product-current-component">
+                <thead class="bg-light">
+                    <tr>
+                        <th style="min-width: 50px"></th>
+                        <th style="min-width: 250px">{% trans 'Component' %}</th>
+                        <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                        <th style="min-width: 50px">{% trans 'Remove' %}</th>
+                    </tr>
+                </thead>
+            </table>
+            <button hidden type="button" class="btn btn-xs btn-success mt-2" id="insert-component-btn" data-bs-toggle="offcanvas" data-bs-target="#insert-component-offcanvas">
+                <span>
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <i class="fa-solid fa-plus"></i>
+                        </span>
+                    </span>
+                    <span>{% trans "Insert component" %}</span>
+                </span>
+            </button>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6 mt-3">
+        <div class="border rounded p-2 h-100" style="min-height: 89vh">
+            <span class="fw-bold text-danger h6">{% trans "Removed component" %}</span>
+            <table class="table nowrap w-100" id="table-product-removed-component">
+                <thead class="bg-light">
+                    <tr>
+                        <th style="min-width: 50px"></th>
+                        <th style="min-width: 250px">{% trans 'Component' %}</th>
+                        <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                        <th style="min-width: 50px">{% trans 'Return' %}</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>

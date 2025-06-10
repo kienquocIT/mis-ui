@@ -102,6 +102,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCT_DETAIL_PAGE = BreadcrumbChildren(_('Product Detail'))
     PRODUCT_UPDATE_PAGE = BreadcrumbChildren(_('Product Update'))
 
+    # Product Modification
+    PRODUCT_MODIFICATION_LIST_PAGE = BreadcrumbChildren(_('Product Modification'), 'ProductModificationList')
+    PRODUCT_MODIFICATION_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'ProductModificationCreate')
+    PRODUCT_MODIFICATION_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    PRODUCT_MODIFICATION_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     # Advance
     ADVANCE_PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Advance Payment'), 'AdvancePaymentList')
     ADVANCE_PAYMENT_CREATE_PAGE = BreadcrumbChildren(_('Advance Payment create'), 'AdvancePaymentCreate')
@@ -688,6 +694,13 @@ class BreadcrumbView:
     PRODUCT_CREATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.PRODUCT_CREATE_PAGE]
     PRODUCT_DETAIL_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     PRODUCT_UPDATE_PAGE = PRODUCT_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    PRODUCT_MODIFICATION_LIST_PAGE = [
+        BreadcrumbItem.PRODUCT_MODIFICATION_LIST_PAGE
+    ]
+    PRODUCT_MODIFICATION_CREATE_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [BreadcrumbItem.PRODUCT_MODIFICATION_CREATE_PAGE]
+    PRODUCT_MODIFICATION_DETAIL_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    PRODUCT_MODIFICATION_UPDATE_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     ADVANCE_PAYMENT_LIST_PAGE = [
         BreadcrumbItem.ADVANCE_PAYMENT_LIST_PAGE

@@ -460,3 +460,19 @@ msgstr "Giá trị chuyển đổi"
 #
 msgid "Total"
 msgstr "Tổng cộng"
+
+#
+msgid "Warehouse"
+msgstr "Kho"
+
+#
+msgid "Serial number"
+msgstr "Số serial"
+
+#
+msgid "Component name"
+msgstr "Tên thành phần"
+
+#
+msgid "Description"
+msgstr "Mô tả"

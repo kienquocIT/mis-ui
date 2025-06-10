@@ -322,6 +322,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_SALE_DETAIL = StringUrl('saledata/products-sale')
     PRODUCT_VARIANT_LIST = StringUrl('saledata/products-variants')
 
+    PRODUCT_MODIFICATION_LIST = StringUrl('product-modification/list')
+    PRODUCT_MODIFICATION_DETAIL = StringUrl('product-modification/detail/{pk}')
+
     # advance payment
     CASHOUTFLOW_QUOTATION_LIST = StringUrl('cashoutflow/quotation-list')
     CASHOUTFLOW_SALE_ORDER_LIST = StringUrl('cashoutflow/sale-order-list')
@@ -754,6 +757,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Folder
     FOLDER_LIST = StringUrl('attachment/folder/list')
+    FOLDER_LIST_SHARED_TO_ME = StringUrl('attachment/folder/list-share-to-me')
     FOLDER_DETAIL = StringUrl('attachment/folder')
     FOLDER_UPLOAD_FILE_LIST = StringUrl('attachment/folder-upload-file/list')
 
@@ -901,7 +905,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     JOURNAL_ENTRY_LIST = StringUrl('journal-entry/list')
     JOURNAL_ENTRY_DETAIL = StringUrl('journal-entry/detail/{pk}')
 
-
     # asset/ fixed asset write off
     FIXED_ASSET_WRITE_OFF_LIST = StringUrl('asset/fixed-asset-writeoff/list')
     FIXED_ASSET_WRITE_OFF_DETAIL = StringUrl('asset/fixed-asset-writeoff/detail')
@@ -931,3 +934,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     KMS_CONTENT_GROUP_DETAIL = StringUrl('kms/doc-approval/content-group-detail/{pk}')
     KMS_DOCUMENT_APPROVAL_LIST = StringUrl('kms/doc-approval/list')
     KMS_DOCUMENT_APPROVAL_DETAIL = StringUrl('kms/doc-approval/detail/{pk}')
+
+    # sales/product modification
+    PRODUCT_COMPONENT_LIST = StringUrl('product-modification/product-component-list')
+    PRODUCT_MODIFIED_LIST = StringUrl('product-modification/product-modified-list')
+    WAREHOUSE_LIST_BY_PRODUCT = StringUrl('product-modification/warehouse-list-by-product')
+    PRODUCT_LOT_LIST = StringUrl('product-modification/product-lot-list')
+    PRODUCT_SERIAL_LIST = StringUrl('product-modification/product-serial-list')

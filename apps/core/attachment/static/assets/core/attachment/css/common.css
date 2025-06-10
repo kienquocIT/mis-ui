@@ -1,0 +1,187 @@
+/*reformat css*/
+:root{
+    --back-color: #1a1918;
+}
+#idxPageContent{
+    padding: 0;
+    background: #f7f5f2;
+    overflow: hidden;
+}
+.wrap-search .input-affix-wrapper .input-suffix{
+    top: 15px;
+}
+/*end reformat css*/
+
+/*modal permission css*/
+.form-check-inline .form-check-input{
+    margin-top: 5px;
+}
+.util-btn{
+    display: none;
+}
+#table_group_wrapper .dtb-header-toolbar{
+    display: none!important;
+}
+
+#table_group_wrapper{
+    margin-top: 34px!important;
+}
+
+#table_group_wrapper .dataTables_scrollHead table tr td,
+#table_employee_wrapper .dataTables_scrollHead table tr td{
+    background: #f3f3f3;
+}
+
+.employee-added > div > .chip{
+    margin-right: 7px;
+    margin-bottom: 5px;
+}
+.layout_grid{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
+}
+.layout_grid span.form-label{
+    grid-column: 1 / span 5;
+}
+.layout_grid .form-check:nth-child(5){
+    grid-column: 4 / span 2;
+}
+.layout_grid.l_grid-3 .form-check:nth-child(4){
+    grid-column: 3 / span 3;
+}
+.layout_grid.l_grid-3 .form-check:nth-child(5){
+    grid-column: inherit;
+}
+.special-block .switch_enable,
+.special-block > label,
+.special-block > .form-group{
+    display: inline-block!important;
+}
+.special-block > .switch_enable{
+    vertical-align: -8px;
+}
+.special-block > .form-group{
+    width: calc(100% - 170px)
+}
+.min-w-610p{
+    min-width: 610px;
+}
+@media screen and (min-width: 1025px){
+    .special-block > *{
+        margin-left: 10px;
+    }
+}
+@media screen and (max-width: 1024px){
+    #table_group_wrapper {
+        margin-top: 31px !important;
+    }
+}
+@media screen and (max-width: 768px){
+    #table_group_wrapper {
+        margin-top: 30px !important;
+    }
+}
+@media screen and (max-width: 575px){
+    #table_group_wrapper {
+        margin-top: 29px !important;
+    }
+    .w-30{
+        width: 40%!important;
+    }
+    .w-70{
+        width: 60%!important;
+    }
+
+    .layout_grid span.form-label{
+        grid-column: 1 / span 3;
+    }
+    .layout_grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .layout_grid .form-check:nth-child(5) {
+        grid-column: unset;
+    }
+}
+
+#input_expired[readonly] + .input{
+    background: #f7f7f7;
+}
+/*modal permission css*/
+
+.right_side{
+    background: #fff;
+}
+.left_side{
+    padding: 35px 15px 0 15px;
+}
+.right_side{
+    padding: 15px 15px 0 25px;
+}
+.color-grey-dark-5{
+    color: #524c4c;
+}
+#folder-tree .btn{
+    color: #736c64;
+}
+#folder-tree .btn:hover,
+#folder-tree .btn.btn-active{
+    background: #ebe9e6;
+    color: var(--back-color);
+}
+.btn-files_actions .dropdown-item i{
+    color: var(--back-color)
+}
+.btn_common{
+    padding: 12px;
+    min-width: 140px;
+    height: 76px;
+}
+.btn_common > span{
+    height: auto!important;
+    align-items: start!important;
+    justify-content: start!important
+}
+.btn_common .icon-animate i{
+    transition: transform 200ms ease-out;
+}
+.btn_common.show .icon-animate i{
+    transform:rotate(-45deg);
+}
+.btn.dropdown-toggle:after{
+    content: none!important;
+}
+.rotate90deg{
+    transform: rotate(90deg);
+}
+.swal2-container.swal2-backdrop-show + .select2-container{
+    z-index: 1111;
+}
+.folder_title span:not(.icon){
+    color: #000;
+}
+.folder_title .icon{
+    margin-right: 6px;
+    font-size: 1.5rem;
+    vertical-align: middle;
+    text-shadow: 2px 2px 1px rgb(0 0 0 / 20%);
+}
+.wrap-action{
+    display: flex;
+}
+#main-files-info tbody td{
+    padding-top:0;
+    padding-bottom:0;
+}
+#main-files-info tbody tr:hover td{
+    background-color: #f7f5f2;
+}
+.folder_title{
+    cursor: pointer;
+}
+.layout_grid + .form-switch{
+    margin-left: 8px;
+}
+.layout_grid + .form-switch #apply_to_sub {
+    margin-top: 5px;
+}

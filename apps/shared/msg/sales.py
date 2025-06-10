@@ -93,3 +93,5 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     COF_UPDATE = _('Cash outflow update successfully')
     GOODS_RECOVERY_CREATE = _('Goods recovery create successfully')
     GOODS_RECOVERY_UPDATE = _('Goods recovery update successfully')
+    PRODUCT_MODIFICATION_CREATE = _('Product modification create successfully')
+    PRODUCT_MODIFICATION_UPDATE = _('Product modification update successfully')

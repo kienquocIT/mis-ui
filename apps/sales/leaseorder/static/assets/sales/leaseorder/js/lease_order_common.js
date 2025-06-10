@@ -784,19 +784,6 @@ class LeaseOrderLoadDataHandle {
                 }
             }
         }
-
-        // LeaseOrderDataTableHandle.$tableSProduct.DataTable().rows().every(function () {
-        //     let row = this.node();
-        //     let rowIndex = LeaseOrderDataTableHandle.$tableSProduct.DataTable().row(row).index();
-        //     let $row = LeaseOrderDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
-        //     let dataRow = $row.data();
-        //
-        //     if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
-        //         if (!LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
-        //             LeaseOrderLoadDataHandle.loadAddRowProduct(dataRow);
-        //         }
-        //     }
-        // });
         return true;
     };
 
@@ -5181,7 +5168,7 @@ class LeaseOrderDataTableHandle {
                         }
                         if (row?.['title'] && row?.['code']) {
                             return `<div class="form-check form-check-lg d-flex align-items-center">
-                                        <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
+                                        <input type="radio" name="radio-offset" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
                                         <label class="form-check-label table-row-title" for="s-product-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
                                     </div>`;
                         }
@@ -5239,7 +5226,6 @@ class LeaseOrderDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderDataTableHandle.$tableSOffset);
                 LeaseOrderDataTableHandle.dtbSelectOffsetHDCustom();
             },
         });

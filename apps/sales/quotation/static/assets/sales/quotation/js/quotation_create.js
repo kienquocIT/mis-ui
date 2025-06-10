@@ -210,6 +210,7 @@ $(function () {
                 let row = this.closest('tr');
                 if ($(this).hasClass('table-row-price')) {
                     $(this).removeClass('text-primary');
+                    QuotationLoadDataHandle.loadChangePaymentTerm();
                 }
                 if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-uom') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
@@ -231,8 +232,8 @@ $(function () {
                             }
                         }
                     }
+                    QuotationLoadDataHandle.loadChangePaymentTerm();
                 }
-                QuotationLoadDataHandle.loadChangePaymentTerm();
                 // Delete all promotion rows
                 deletePromotionRows(QuotationDataTableHandle.$tableProduct, true, false);
                 // Delete all shipping rows

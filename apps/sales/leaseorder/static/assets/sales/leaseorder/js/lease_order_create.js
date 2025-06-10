@@ -271,6 +271,7 @@ $(function () {
                 }
                 if ($(this).hasClass('table-row-price')) {
                     $(this).removeClass('text-primary');
+                    LeaseOrderLoadDataHandle.loadChangePaymentTerm();
                 }
                 if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-uom') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
                     // load again table cost

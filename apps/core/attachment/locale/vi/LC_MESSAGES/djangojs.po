@@ -63,3 +63,26 @@ msgstr "Thư mục"
 #
 msgid "Date created"
 msgstr "Ngày tạo"
+
+#
+msgid "Please go to the folder to upload"
+msgstr "Vui lòng đi đến thư mục để tải lên"
+
+#
+msgid "Folder is empty"
+msgstr "Thư mục đang trống"
+
+#
+msgid "Please select folder before upload"
+msgstr "Vui lòng chọn thư mục trước khi upload"
+
+#
+msgid "File"
+msgstr "Tệp"
+
+#
+msgid "Please select employee"
+msgstr "Vui lòng chọn nhân viên"
+#
+msgid "Update successfully"
+msgstr "Cập nhập hoàn tất"

@@ -67,6 +67,13 @@
             data-change="{% trans 'Change' %}"
             data-cancel="{% trans 'Cancel' %}"
     >
+    <input
+            type="hidden" id="app-url-factory"
+            data-link-detail="{% url 'QuotationDetail' 1 %}"
+            data-link-update="{% url 'QuotationUpdate' 1 %}"
+            data-link-list="{% url 'QuotationList' %}"
+            data-link-list-api="{% url 'QuotationListAPI' %}"
+    >
     {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}
 

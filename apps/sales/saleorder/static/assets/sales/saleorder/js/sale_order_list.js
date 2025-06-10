@@ -31,7 +31,6 @@ $(function () {
         });
 
         function loadDbl() {
-            let changeList = [];
             $table.DataTableDefault({
                 useDataServer: true,
                 ajax: {
@@ -41,14 +40,6 @@ $(function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('sale_order_list')) {
-                            // Filter the array and store excluded items
-                            resp.data['sale_order_list'] = resp.data['sale_order_list'].filter(item => {
-                                let condition = item?.['is_change'] === true && item?.['document_root_id'] && item?.['system_status'] !== 3;
-                                if (condition) {
-                                    changeList.push(item);
-                                }
-                                return !condition; // Return true if condition is false (keep the item), false if condition is true (remove the item)
-                            });
                             return resp.data['sale_order_list'] ? resp.data['sale_order_list'] : []
                         }
                         throw Error('Call data raise errors.')
@@ -62,9 +53,6 @@ $(function () {
                         targets: 0,
                         width: '1%',
                         render: (data, type, row, meta) => {
-                            if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] !== 3) {
-                                return ``;
-                            }
                             return `<span class="table-row-order">${(meta.row + 1)}</span>`
                         }
                     },
@@ -74,25 +62,19 @@ $(function () {
                         render: (data, type, row) => {
                             let link = urlsEle.data('link-detail').format_url_with_uuid(row?.['id']);
                             if (row?.['code']) {
-                                if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] === 3) {
-                                    let target = `.cl-${row?.['document_root_id'].replace(/-/g, "")}`;
-                                    return `<div class="d-flex align-items-center">
-                                            <div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']} <span class="badge-child badge-child-blue">CR</span></span></a></div>
-                                            <small><button 
-                                                type="button" 
-                                                class="btn btn-icon btn-xs cl-parent"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="${target}"
-                                                data-bs-placement="top"
-                                                aria-expanded="false"
-                                                aria-controls="newGroup"
-                                            >
-                                                <span class="icon"><small><i class="fas fa-chevron-right mt-2"></i></small></span>
-                                            </button></small>
-                                        </div>`;
-                                }
-                                if (row?.['is_change'] === true && row?.['document_root_id'] && row?.['system_status'] !== 3) {
-                                    return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-secondary">${row?.['code']} <span class="badge-child badge-child-blue">${row?.['document_change_order'] ? row?.['document_change_order'] : 0}</span></span></a></div>`;
+                                if (row?.['is_change'] === true && row?.['document_root_id'] !== row?.['id']) {
+                                    return `<div class="row">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                <a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']} <span class="badge-child badge-child-blue">CR</span></span></a>
+                                                <button class="btn btn-icon btn-rounded popover-cr" 
+                                                        data-bs-container="body" 
+                                                        data-bs-toggle="popover" 
+                                                        data-bs-placement="top"
+                                                        data-bs-html="true"
+                                                        data-bs-content=''
+                                                ><span class="icon"><i class="fas fa-info-circle text-light"></i></span></button>
+                                                </div>
+                                            </div`;
                                 }
                                 return `<div class="row"><a href="${link}" class="link-primary underline_hover"><span class="badge-parent badge-parent-primary">${row?.['code']}</span></a></div>`;
                             }
@@ -221,46 +203,57 @@ $(function () {
                     $(row).on('click', '.delivery-info', function () {
                         checkOpenDeliveryInfo(data);
                     })
+                    // append html & trigger popover
+                    $(row).on('click', '.popover-cr', function () {
+                        renderPopoverCR(this, data);
+                    });
                 },
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
-                    // setup groupChild to groupParent
-                    for (let parent of $table[0].querySelectorAll('.cl-parent')) {
-                        if ($(parent).is('button') && $(parent).attr('data-bs-toggle') === 'collapse') {
-                            let tableDtb = $table.DataTable();
-                            let rowParent = $(parent)[0].closest('tr');
-                            let targetCls = $(parent).attr('data-bs-target');
-                            if (targetCls) {
-                                if ($table[0].querySelectorAll(`${targetCls}`).length <= 0) {
-                                    for (let data of changeList) {
-                                        let classCl = '.cl-' + data?.['document_root_id'].replace(/-/g, "");
-                                        if (classCl === targetCls) {
-                                            let newRow = tableDtb.row.add(data).node();
-                                            $(newRow).addClass(classCl.slice(1));
-                                            $(newRow).addClass('collapse');
-                                            $(newRow).css('background-color', '#eaeaea');
-                                            $(newRow).detach().insertAfter(rowParent);
-                                        }
-                                    }
-                                }
-                            }
-                            // mask money
-                            $.fn.initMaskMoney2();
-                        }
-                    }
-                    $table.on('click', '.cl-parent', function () {
-                        $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
-                    });
                 },
             });
+        }
+
+        function renderPopoverCR(ele, data) {
+            if (!$(ele).hasClass('popover-rendered')) {
+                WindowControl.showLoading();
+                $.fn.callAjax2({
+                        'url': urlsEle.attr('data-link-list-api'),
+                        'method': 'GET',
+                        'data': {'id': data?.['document_root_id']},
+                        'isDropdown': true,
+                    }
+                ).then(
+                    (resp) => {
+                        let dataRoots = $.fn.switcherResp(resp);
+                        if (dataRoots) {
+                            if (dataRoots.hasOwnProperty('sale_order_list') && Array.isArray(dataRoots.sale_order_list)) {
+                                if (dataRoots?.['sale_order_list'].length === 1) {
+                                    let dataRoot = dataRoots?.['sale_order_list'][0];
+                                    let link = urlsEle.data('link-detail').format_url_with_uuid(dataRoot?.['id']);
+                                    let html = `<b>${$.fn.transEle.attr('data-root-document')}</b>
+                                                <div><span>${$.fn.transEle.attr('data-title')}: </span><a href="${link}" class="link-primary underline_hover"><span>${dataRoot?.['title']}</span></a></div>
+                                                <div><span>${$.fn.transEle.attr('data-code')}: </span><a href="${link}" class="link-primary underline_hover"><span>${dataRoot?.['code']}</span></a></div>`;
+                                    $(ele).addClass('popover-rendered');
+                                    $(ele).attr('data-bs-content', html);
+                                    let popover = new bootstrap.Popover(ele);
+                                    popover.show();
+                                }
+                            }
+                            WindowControl.hideLoading();
+                        }
+                    }
+                )
+            }
+            return true;
         }
 
         function checkOpenDeliveryInfo(data) {
             // check CR all cancel then allow delivery
             WindowControl.showLoading();
             $.fn.callAjax2({
-                    'url': frm.dataUrl,
+                    'url': urlsEle.attr('data-link-list-api'),
                     'method': 'GET',
                     'data': {'document_root_id': data?.['document_root_id']},
                     'isDropdown': true,

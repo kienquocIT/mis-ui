@@ -20,3 +20,19 @@ msgstr ""
 #
 msgid "File properties"
 msgstr "Thuộc tính tệp tin"
+
+#
+msgid "My Space"
+msgstr "Không gian của tôi"
+
+#
+msgid "Upload or Create"
+msgstr "Tải hoặc Tạo"
+
+#
+msgid "Create folder"
+msgstr "Tạo thư mục"
+
+#
+msgid "Create subfolders"
+msgstr "Tạo thư mục con"

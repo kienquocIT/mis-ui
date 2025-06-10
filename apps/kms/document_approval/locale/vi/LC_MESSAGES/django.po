@@ -71,7 +71,7 @@ msgstr "Xem xét"
 
 #
 msgid "Share"
-msgstr "Chia sẽ"
+msgstr "Chia sẻ"
 
 #
 msgid "Edit file attributes"

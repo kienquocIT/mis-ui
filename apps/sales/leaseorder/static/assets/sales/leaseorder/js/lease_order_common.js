@@ -75,12 +75,6 @@ class LeaseOrderLoadDataHandle {
         return true;
     };
 
-    static loadCustomCss() {
-        $('.accordion-item').css({
-            'margin-bottom': 0
-        });
-    };
-
     static loadEventCheckbox($area, trigger = false) {
         // Use event delegation for dynamically added elements
         $area.on('click', '.form-check', function (event) {
@@ -390,15 +384,6 @@ class LeaseOrderLoadDataHandle {
             LeaseOrderLoadDataHandle.loadBoxQuotationContact();
             LeaseOrderLoadDataHandle.loadBoxQuotationPaymentTerm();
         }
-    };
-
-    static loadInitDate() {
-        let currentDate = new Date();
-        let day = String(currentDate.getDate()).padStart(2, '0');
-        let month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        let year = currentDate.getFullYear();
-        let formattedDate = `${day}/${month}/${year}`;
-        $('#quotation-create-date-created').val(formattedDate);
     };
 
     static loadStoreSProduct() {
@@ -2631,7 +2616,8 @@ class LeaseOrderLoadDataHandle {
             if (uomTimeEle && $uomEle.length > 0) {
                 let dataUOMTime = SelectDDControl.get_data_from_idx($(uomTimeEle), $(uomTimeEle).val());
                 if (dataUOMTime) {
-                    $uomEle[0].innerHTML = dataUOMTime?.['title'];
+                    // $uomEle[0].innerHTML = dataUOMTime?.['title'];
+                    $uomEle[0].innerHTML = LeaseOrderLoadDataHandle.transEle.attr('data-month');
                 }
             }
             let depreciationStartDateEle = row.querySelector('.table-row-depreciation-start-date');
@@ -3990,7 +3976,7 @@ class LeaseOrderDataTableHandle {
                         return `<div class="row">
                                         <div class="input-group">
                                             <input type="text" class="form-control table-row-quantity-time valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" data-zone="${dataZone}" required>
-                                            <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
+                                            <span class="input-group-text">${LeaseOrderLoadDataHandle.transEle.attr('data-month')}</span>
                                         </div>
                                         <div hidden>
                                             <select 
@@ -4321,7 +4307,7 @@ class LeaseOrderDataTableHandle {
                         return `<div class="row">
                                         <div class="input-group">
                                             <input type="text" class="form-control table-row-quantity-time text-black valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" required readonly>
-                                            <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
+                                            <span class="input-group-text">${LeaseOrderLoadDataHandle.transEle.attr('data-month')}</span>
                                         </div>
                                         <div hidden>
                                             <select 
@@ -4377,7 +4363,7 @@ class LeaseOrderDataTableHandle {
                                                 data-zone="${dataZone}"
                                                 ${readonly}
                                             >
-                                            <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
+                                            <span class="input-group-text">${LeaseOrderLoadDataHandle.transEle.attr('data-month')}</span>
                                         </div>
                                         <button
                                             type="button"
@@ -7213,16 +7199,26 @@ class LeaseOrderIndicatorHandle {
             let value = LeaseOrderIndicatorHandle.evaluateFormula(parse_formula);
             // rate value
             if (indicator?.['code'] === "IN0001") {
-                revenueValue = value
+                revenueValue = value;
             }
             if (value && revenueValue) {
                 if (revenueValue !== 0) {
                     rateValue = ((value / revenueValue) * 100).toFixed(0);
                 }
             }
+
+            // check if indicator is_negative_set_zero is True
+            if (indicator?.['is_negative_set_zero'] === true) {
+                if (value < 0) {
+                    value = 0;
+                    rateValue = 0;
+                }
+            }
+
             // quotation value
             let quotationValue = 0;
             let differenceValue = value;
+
             // check if sale order then get quotation value
             if (formSubmit.attr('data-method') === 'POST') {
                 if (dataDetailCopy?.['lease_indicators_data']) {
@@ -7245,6 +7241,7 @@ class LeaseOrderIndicatorHandle {
                     }
                 }
             }
+
             // append result
             result_list.push({
                 'indicator': indicator?.['id'],
@@ -7355,6 +7352,10 @@ class LeaseOrderIndicatorHandle {
                             functionBody += String(data[lastElement?.['code']]);
                             functionBody += ",";
                         }
+                        if (check === false) {
+                            functionBody += String(0);
+                            functionBody += ",";
+                        }
                     }
                     if (typeof val === 'string') {
                         let leftValue = val.replace(/\s/g, "").toLowerCase();
@@ -7362,6 +7363,10 @@ class LeaseOrderIndicatorHandle {
                         let check = LeaseOrderIndicatorHandle.evaluateFormula(checkExpression);
                         if (check === true) {
                             functionBody += String(data[lastElement?.['code']]);
+                            functionBody += ",";
+                        }
+                        if (check === false) {
+                            functionBody += String(0);
                             functionBody += ",";
                         }
                     }

@@ -1033,6 +1033,14 @@ class POLoadDataHandle {
         return true;
     };
 
+    static loadChangePaymentTerm() {
+        if (POLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
+            PODataTableHandle.$tableInvoice.DataTable().clear().draw();
+            PODataTableHandle.$tablePayment.DataTable().clear().draw();
+        }
+        return true;
+    };
+
     // TABLE PAYMENT STAGE
     static loadAddPaymentStage() {
         let order = PODataTableHandle.$tablePayment[0].querySelectorAll('.table-row-order').length + 1;
@@ -1213,16 +1221,16 @@ class POLoadDataHandle {
                 if ($(ratioEle).val()) {
                     let ratio = parseFloat($(ratioEle).val());
                     if (ratio > 0) {
-                        let valueSO = 0;
-                        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
-                        if (tableProductWrapper) {
-                            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-                            if (tableProductFt) {
-                                let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
-                                let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
-                                if (elePretax && eleDiscount) {
-                                    valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
-                                    valBefore = ratio * valueSO / 100;
+                        let tableWrapper = document.getElementById('datable-purchase-order-product-add_wrapper');
+                        if (POLoadDataHandle.PRDataEle.val()) {
+                            tableWrapper = document.getElementById('datable-purchase-order-product-request_wrapper');
+                        }
+                        if (tableWrapper) {
+                            let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
+                            if (tableFt) {
+                                let elePretaxAmountRaw = tableFt.querySelector('.purchase-order-product-pretax-amount-raw');
+                                if ($(elePretaxAmountRaw).val() && $(ratioEle).val()) {
+                                    valBefore = parseFloat($(elePretaxAmountRaw).val()) * parseFloat($(ratioEle).val()) / 100;
                                 }
                             }
                         }
@@ -1246,7 +1254,6 @@ class POLoadDataHandle {
                 $.fn.initMaskMoney2();
             }
         }
-
         return true;
     };
 
@@ -1776,7 +1783,8 @@ class PODataTableHandle {
     static dataTablePurchaseRequest() {
         let $table = $('#datable-purchase-request');
         let frm = new SetupFormSubmit($table);
-        $table.DataTableDefault({
+        $table.not('.dataTable').DataTableDefault({
+            useDataServer: true,
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
@@ -1800,9 +1808,9 @@ class PODataTableHandle {
                     throw Error('Call data raise errors.')
                 },
             },
-            paging: false,
+            autoWidth: true,
+            scrollX: true,
             info: false,
-            columnDefs: [],
             columns: [
                 {
                     targets: 0,
@@ -3865,14 +3873,16 @@ class POSubmitHandle {
         }
         if (tableWrapper) {
             let tableFt = tableWrapper.querySelector('.dataTables_scrollFoot');
-            let elePretaxAmountRaw = tableFt.querySelector('.purchase-order-product-pretax-amount-raw');
-            let eleTaxesRaw = tableFt.querySelector('.purchase-order-product-taxes-raw');
-            let eleTotalRaw = tableFt.querySelector('.purchase-order-product-total-raw');
-            let finalRevenueBeforeTaxAdd = tableFt.querySelector('.purchase-order-final-revenue-before-tax');
-            _form.dataForm['total_product_pretax_amount'] = parseFloat($(elePretaxAmountRaw).val());
-            _form.dataForm['total_product_tax'] = parseFloat($(eleTaxesRaw).val());
-            _form.dataForm['total_product'] = parseFloat($(eleTotalRaw).val());
-            _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTaxAdd.value);
+            if (tableFt) {
+                let elePretaxAmountRaw = tableFt.querySelector('.purchase-order-product-pretax-amount-raw');
+                let eleTaxesRaw = tableFt.querySelector('.purchase-order-product-taxes-raw');
+                let eleTotalRaw = tableFt.querySelector('.purchase-order-product-total-raw');
+                let finalRevenueBeforeTaxAdd = tableFt.querySelector('.purchase-order-final-revenue-before-tax');
+                _form.dataForm['total_product_pretax_amount'] = parseFloat($(elePretaxAmountRaw).val());
+                _form.dataForm['total_product_tax'] = parseFloat($(eleTaxesRaw).val());
+                _form.dataForm['total_product'] = parseFloat($(eleTotalRaw).val());
+                _form.dataForm['total_product_revenue_before_tax'] = parseFloat(finalRevenueBeforeTaxAdd.value);
+            }
         }
         // payment stage
         _form.dataForm['purchase_order_payment_stage'] = POSubmitHandle.setupDataPaymentStage();
@@ -3918,34 +3928,4 @@ function deleteRow(currentRow, table) {
     let row = table.DataTable().row(rowIndex);
     // Delete current row
     row.remove().draw();
-}
-
-function validatePSValue(ele) {
-    let row = ele.closest('tr');
-    let tablePS = $('#datable-quotation-payment-stage');
-    let eleRatio = row.querySelector('.table-row-ratio');
-    let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
-    if (tableProductWrapper) {
-        let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
-        let elePretax = tableProductFt.querySelector('.quotation-create-product-pretax-amount-raw');
-        let eleDiscount = tableProductFt.querySelector('.quotation-create-product-discount-amount-raw');
-        if (elePretax && eleDiscount) {
-            let valueSO = parseFloat(elePretax.value) - parseFloat(eleDiscount.value);
-            let totalBT = 0;
-            tablePS.DataTable().rows().every(function () {
-                let row = this.node();
-                let eleValueBT = row.querySelector('.table-row-value-before-tax');
-                if (eleValueBT) {
-                    totalBT += $(eleValueBT).valCurrency();
-                }
-            });
-            if (totalBT > valueSO) {
-                $(ele).attr('value', String(0));
-                eleRatio.value = 0;
-                $.fn.notifyB({description: POLoadDataHandle.transEle.attr('data-paid-in-full')}, 'failure');
-                return false;
-            }
-        }
-    }
-    return true;
 }

@@ -11876,5 +11876,9 @@ msgid "Last updated at"
 msgstr "Cập nhật lúc"
 
 #
+msgid "Root document"
+msgstr "Phiếu gốc"
+
+#
 msgid "For product modification"
 msgstr "Cho tháo - lắp sản phẩm"

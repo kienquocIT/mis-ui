@@ -3585,7 +3585,10 @@ class WFRTControl {
             WFRTControl.changePropertiesElementIsZone($(ele$).next('.select2-container').find('.select2-selection'), config)
     }
 
-    static displayRuntimeStatus(status) {
+    static displayRuntimeStatus(status, is_system_auto_create=false) {
+        if (is_system_auto_create) {
+            return `<span class="badge fs-8 bg-blue-light-1">${$.fn.gettext('Create automatically')}</span>`;
+        }
         let sttTxt = {
             0: $.fn.transEle.attr('data-draft'),
             1: $.fn.transEle.attr('data-created'),
@@ -6409,10 +6412,7 @@ class DocumentControl {
                     ).removeClass('hidden');
                 }
                 if (detailData?.['system_auto_create']) {
-                    $breadcrumbCode.append(`<span class="badge-status ml-1">
-                                                <span class="badge badge-blue badge-indicator"></span>
-                                                <span class="small text-blue">${$.fn.gettext('Create automatically')}</span>
-                                            </span>`)
+                    $breadcrumbCode.append(`<span class="badge fs-8 bg-blue-light-1 ml-1">${$.fn.gettext('Create automatically')}</span>`)
                 }
             }
         }

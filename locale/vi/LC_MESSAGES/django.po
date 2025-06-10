@@ -11874,3 +11874,7 @@ msgstr "So với tháng trước"
 #
 msgid "Last updated at"
 msgstr "Cập nhật lúc"
+
+#
+msgid "For product modification"
+msgstr "Cho tháo - lắp sản phẩm"

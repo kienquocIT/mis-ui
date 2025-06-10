@@ -1,56 +1,49 @@
 {% load i18n %}
 
 <div class="row">
-    <div class="col-12 col-md-6 col-lg-6">
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="type">{% trans 'Type' %}</label>
-                    <select class="form-control form-control-line form-select" id="type" required>
-                        <option value="0" selected>{% trans 'For inventory adjustment' %}</option>
+    <div class="col-12 col-md-2 col-lg-2">
+        <div class="form-group">
+            <label class="form-label required" for="type">{% trans 'Type' %}</label>
+            <select class="form-control form-control-line form-select" id="type" required>
+                <option value="0" selected>{% trans 'For inventory adjustment' %}</option>
 {#                        <option value="1">{% trans 'For liquidation' %}</option>#}
-                        <option value="2">{% trans 'For production' %}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="title">{% trans 'Title' %}</label>
-                    <input type="text" class="form-control" id="title" required>
-                </div>
-            </div>
+                <option value="2">{% trans 'For production' %}</option>
+                <option value="3">{% trans 'For product modification' %}</option>
+            </select>
         </div>
     </div>
     <div class="col-12 col-md-6 col-lg-6">
-        <div class="row">
-            <div id="inventory-adjustment-select-space" class="col-12">
-                <div class="form-group">
-                    <label for="box-select-ia" class="form-label required">{% trans 'Select inventory adjustment' %}</label>
-                    <div class="input-group">
-                        <input disabled readonly id="box-select-ia" class="form-control" placeholder="{% trans 'Please click on the button to select' %}">
-                        <button class="btn btn-outline-secondary" id="btn-select-ia" type="button" data-bs-toggle="modal" data-bs-target="#select-ia-modal">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                    </div>
-                </div>
+        <div class="form-group">
+            <label class="form-label required" for="title">{% trans 'Title' %}</label>
+            <input type="text" class="form-control" id="title" required>
+        </div>
+    </div>
+    <div id="inventory-adjustment-select-space" class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="box-select-ia" class="form-label required">{% trans 'Select inventory adjustment' %}</label>
+            <div class="input-group">
+                <input disabled readonly id="box-select-ia" class="form-control" placeholder="{% trans 'Please click on the button to select' %}">
+                <button class="btn btn-outline-secondary" id="btn-select-ia" type="button" data-bs-toggle="modal" data-bs-target="#select-ia-modal">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
             </div>
-            <div hidden id="production-order-select-space" class="col-12">
-                <div class="form-group">
-                    <label for="box-select-production-order" class="form-label required">{% trans 'Select' %} {% trans 'Production order' %} / {% trans 'Work order' %}</label>
-                    <div class="input-group">
-                        <input disabled readonly id="box-select-production-order" class="form-control" placeholder="{% trans 'Please click on the button to select' %}">
-                        <button class="btn btn-outline-secondary" id="btn-select-powo" type="button" data-bs-toggle="modal" data-bs-target="#select-powo-modal">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                    </div>
-                </div>
+        </div>
+    </div>
+    <div hidden id="production-order-select-space" class="col-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            <label for="box-select-production-order" class="form-label required">{% trans 'Select' %} {% trans 'Production order' %} / {% trans 'Work order' %}</label>
+            <div class="input-group">
+                <input disabled readonly id="box-select-production-order" class="form-control" placeholder="{% trans 'Please click on the button to select' %}">
+                <button class="btn btn-outline-secondary" id="btn-select-powo" type="button" data-bs-toggle="modal" data-bs-target="#select-powo-modal">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
             </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label" for="note">{% trans 'Note' %}</label>
-                    <textarea type="text" class="form-control" id="note" name="note"></textarea>
-                </div>
-            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-group">
+            <label class="form-label" for="note">{% trans 'Note' %}</label>
+            <textarea type="text" class="form-control" id="note" name="note"></textarea>
         </div>
     </div>
 </div>

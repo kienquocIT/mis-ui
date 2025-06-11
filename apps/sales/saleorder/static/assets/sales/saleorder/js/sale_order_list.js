@@ -53,7 +53,7 @@ $(function () {
                         targets: 0,
                         width: '1%',
                         render: (data, type, row, meta) => {
-                            return `<span class="table-row-order">${(meta.row + 1)}</span>`
+                            return `<span class="table-row-order">${(meta.row + 1)}</span>`;
                         }
                     },
                     {

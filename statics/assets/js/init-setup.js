@@ -6919,11 +6919,11 @@ class DateTimeControl {
             singleDatePicker: true,
             timepicker: false,
             showDropdowns: true,
-            minYear: 1990,
+            minYear: parseInt(moment().format('YYYY'), 10) - 5,
+            maxYear: parseInt(moment().format('YYYY'), 10) + 5,
             locale: {
                 format: 'DD/MM/YYYY',
             },
-            maxYear: parseInt(moment().format('YYYY'), 10),
             autoApply: true,
             autoUpdateInput: false,
         }).on('apply.daterangepicker', function (ev, picker) {

@@ -15,7 +15,7 @@ $(function () {
         FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.contactSelectEle);
         FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [], {}, null, true);
         $('#quotation-create-date-created').val(DateTimeControl.getCurrentDate("DMY", "/"));
-        LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderLoadDataHandle.$depreciationModal);
+        // LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderLoadDataHandle.$depreciationModal);
         // init dataTable
         LeaseOrderDataTableHandle.dataTableProduct();
         LeaseOrderDataTableHandle.dataTableCost();
@@ -86,6 +86,7 @@ $(function () {
         });
 
         LeaseOrderLoadDataHandle.$btnSaveSelectProduct.on('click', function () {
+            LeaseOrderStoreDataHandle.storeDtbData(1);
             LeaseOrderLoadDataHandle.loadNewProduct();
         });
 

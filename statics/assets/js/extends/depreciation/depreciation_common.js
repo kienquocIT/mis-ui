@@ -302,10 +302,22 @@ class DepreciationControl {
         });
 
         // Find end index (first dict where lease_to falls in range)
-        let endIndex = data.findIndex(item => {
+        // let endIndex = data.findIndex(item => {
+        //     let beginDate = new Date(item.begin.split('/').reverse().join('-'));
+        //     let endDate = new Date(item.end.split('/').reverse().join('-'));
+        //     return leaseToDate >= beginDate && leaseToDate <= endDate;
+        // });
+
+        let endIndex = data.findIndex((item, index) => {
             let beginDate = new Date(item.begin.split('/').reverse().join('-'));
             let endDate = new Date(item.end.split('/').reverse().join('-'));
-            return leaseToDate >= beginDate && leaseToDate <= endDate;
+            if (index === data.length - 1) {
+                // If it's the last item, only check if leaseToDate >= beginDate
+                return leaseToDate >= beginDate;
+            } else {
+                // Otherwise, check if leaseToDate is between beginDate and endDate
+                return leaseToDate >= beginDate && leaseToDate <= endDate;
+            }
         });
 
         // If both start and end indexes are found, return the range

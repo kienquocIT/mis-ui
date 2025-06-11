@@ -11880,5 +11880,9 @@ msgid "Root document"
 msgstr "Phiếu gốc"
 
 #
+msgid "The product has no inventory configuration. Do you want to continue?"
+msgstr "Sản phẩm không có cấu hình lưu kho. Bạn có muốn tiếp tục?"
+
+#
 msgid "For product modification"
 msgstr "Cho tháo - lắp sản phẩm"

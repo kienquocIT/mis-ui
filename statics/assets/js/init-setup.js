@@ -6919,11 +6919,11 @@ class DateTimeControl {
             singleDatePicker: true,
             timepicker: false,
             showDropdowns: true,
-            minYear: 1990,
+            minYear: parseInt(moment().format('YYYY'), 10) - 5,
+            maxYear: parseInt(moment().format('YYYY'), 10) + 5,
             locale: {
                 format: 'DD/MM/YYYY',
             },
-            maxYear: parseInt(moment().format('YYYY'), 10),
             autoApply: true,
             autoUpdateInput: false,
         }).on('apply.daterangepicker', function (ev, picker) {
@@ -8921,12 +8921,12 @@ class DiagramControl {
             let urlDiagram = globeDiagramList;
             if ($btnLog && $btnLog.length > 0) {
                 let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
-                                <div class="offcanvas offcanvas-end w-90" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
+                                <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
                                     <div class="modal-header">
                                         <h5><b>Diagram</b></h5>
                                         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                            <button type="button" class="btn btn-outline-secondary" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reload"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
-                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
+                                            <button type="button" class="btn btn-outline-secondary" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reload">${$.fn.transEle.attr('data-refresh')}</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Close">${$.fn.transEle.attr('data-close')}</button>
                                         </div>
                                     </div>
                                     <div class="offcanvas-body">

@@ -11878,3 +11878,7 @@ msgstr "Cập nhật lúc"
 #
 msgid "Root document"
 msgstr "Phiếu gốc"
+
+#
+msgid "The product has no inventory configuration. Do you want to continue?"
+msgstr "Sản phẩm không có cấu hình lưu kho. Bạn có muốn tiếp tục?"

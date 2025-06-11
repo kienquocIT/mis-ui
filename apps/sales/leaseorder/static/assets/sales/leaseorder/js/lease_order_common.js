@@ -75,12 +75,6 @@ class LeaseOrderLoadDataHandle {
         return true;
     };
 
-    static loadCustomCss() {
-        $('.accordion-item').css({
-            'margin-bottom': 0
-        });
-    };
-
     static loadEventCheckbox($area, trigger = false) {
         // Use event delegation for dynamically added elements
         $area.on('click', '.form-check', function (event) {
@@ -390,15 +384,6 @@ class LeaseOrderLoadDataHandle {
             LeaseOrderLoadDataHandle.loadBoxQuotationContact();
             LeaseOrderLoadDataHandle.loadBoxQuotationPaymentTerm();
         }
-    };
-
-    static loadInitDate() {
-        let currentDate = new Date();
-        let day = String(currentDate.getDate()).padStart(2, '0');
-        let month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        let year = currentDate.getFullYear();
-        let formattedDate = `${day}/${month}/${year}`;
-        $('#quotation-create-date-created').val(formattedDate);
     };
 
     static loadStoreSProduct() {
@@ -799,19 +784,6 @@ class LeaseOrderLoadDataHandle {
                 }
             }
         }
-
-        // LeaseOrderDataTableHandle.$tableSProduct.DataTable().rows().every(function () {
-        //     let row = this.node();
-        //     let rowIndex = LeaseOrderDataTableHandle.$tableSProduct.DataTable().row(row).index();
-        //     let $row = LeaseOrderDataTableHandle.$tableSProduct.DataTable().row(rowIndex);
-        //     let dataRow = $row.data();
-        //
-        //     if (row.querySelector('.table-row-checkbox:checked:not([disabled])')) {
-        //         if (!LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${dataRow?.['id']}"]`)) {
-        //             LeaseOrderLoadDataHandle.loadAddRowProduct(dataRow);
-        //         }
-        //     }
-        // });
         return true;
     };
 
@@ -2060,6 +2032,10 @@ class LeaseOrderLoadDataHandle {
                     listTaxID.push(taxData?.['id']);
                     listTax.push(taxData);
                 }
+                if (!$(taxEle).val()) {
+                    listTaxID.push(null);
+                    listTax.push({});
+                }
             }
         });
         return {"check": listTaxID.every(val => val === listTaxID[0]) ? "same" : "mixed", "list_tax": listTax};
@@ -2631,7 +2607,8 @@ class LeaseOrderLoadDataHandle {
             if (uomTimeEle && $uomEle.length > 0) {
                 let dataUOMTime = SelectDDControl.get_data_from_idx($(uomTimeEle), $(uomTimeEle).val());
                 if (dataUOMTime) {
-                    $uomEle[0].innerHTML = dataUOMTime?.['title'];
+                    // $uomEle[0].innerHTML = dataUOMTime?.['title'];
+                    $uomEle[0].innerHTML = LeaseOrderLoadDataHandle.transEle.attr('data-month');
                 }
             }
             let depreciationStartDateEle = row.querySelector('.table-row-depreciation-start-date');
@@ -3990,7 +3967,7 @@ class LeaseOrderDataTableHandle {
                         return `<div class="row">
                                         <div class="input-group">
                                             <input type="text" class="form-control table-row-quantity-time valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" data-zone="${dataZone}" required>
-                                            <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
+                                            <span class="input-group-text">${LeaseOrderLoadDataHandle.transEle.attr('data-month')}</span>
                                         </div>
                                         <div hidden>
                                             <select 
@@ -4321,7 +4298,7 @@ class LeaseOrderDataTableHandle {
                         return `<div class="row">
                                         <div class="input-group">
                                             <input type="text" class="form-control table-row-quantity-time text-black valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : "0"}" required readonly>
-                                            <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
+                                            <span class="input-group-text">${LeaseOrderLoadDataHandle.transEle.attr('data-month')}</span>
                                         </div>
                                         <div hidden>
                                             <select 
@@ -4377,7 +4354,7 @@ class LeaseOrderDataTableHandle {
                                                 data-zone="${dataZone}"
                                                 ${readonly}
                                             >
-                                            <span class="input-group-text">${row?.['uom_time_data']?.['title'] ? row?.['uom_time_data']?.['title'] : ''}</span>
+                                            <span class="input-group-text">${LeaseOrderLoadDataHandle.transEle.attr('data-month')}</span>
                                         </div>
                                         <button
                                             type="button"
@@ -5195,7 +5172,7 @@ class LeaseOrderDataTableHandle {
                         }
                         if (row?.['title'] && row?.['code']) {
                             return `<div class="form-check form-check-lg d-flex align-items-center">
-                                        <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
+                                        <input type="radio" name="radio-offset" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-product-${row?.['id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
                                         <label class="form-check-label table-row-title" for="s-product-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
                                     </div>`;
                         }
@@ -5253,7 +5230,6 @@ class LeaseOrderDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderDataTableHandle.$tableSOffset);
                 LeaseOrderDataTableHandle.dtbSelectOffsetHDCustom();
             },
         });
@@ -7213,16 +7189,26 @@ class LeaseOrderIndicatorHandle {
             let value = LeaseOrderIndicatorHandle.evaluateFormula(parse_formula);
             // rate value
             if (indicator?.['code'] === "IN0001") {
-                revenueValue = value
+                revenueValue = value;
             }
             if (value && revenueValue) {
                 if (revenueValue !== 0) {
                     rateValue = ((value / revenueValue) * 100).toFixed(0);
                 }
             }
+
+            // check if indicator is_negative_set_zero is True
+            if (indicator?.['is_negative_set_zero'] === true) {
+                if (value < 0) {
+                    value = 0;
+                    rateValue = 0;
+                }
+            }
+
             // quotation value
             let quotationValue = 0;
             let differenceValue = value;
+
             // check if sale order then get quotation value
             if (formSubmit.attr('data-method') === 'POST') {
                 if (dataDetailCopy?.['lease_indicators_data']) {
@@ -7245,6 +7231,7 @@ class LeaseOrderIndicatorHandle {
                     }
                 }
             }
+
             // append result
             result_list.push({
                 'indicator': indicator?.['id'],
@@ -7355,6 +7342,10 @@ class LeaseOrderIndicatorHandle {
                             functionBody += String(data[lastElement?.['code']]);
                             functionBody += ",";
                         }
+                        if (check === false) {
+                            functionBody += String(0);
+                            functionBody += ",";
+                        }
                     }
                     if (typeof val === 'string') {
                         let leftValue = val.replace(/\s/g, "").toLowerCase();
@@ -7362,6 +7353,10 @@ class LeaseOrderIndicatorHandle {
                         let check = LeaseOrderIndicatorHandle.evaluateFormula(checkExpression);
                         if (check === true) {
                             functionBody += String(data[lastElement?.['code']]);
+                            functionBody += ",";
+                        }
+                        if (check === false) {
+                            functionBody += String(0);
                             functionBody += ",";
                         }
                     }

@@ -150,16 +150,9 @@ $(async function () {
                     }
 
                     $tableLot.DataTable().clear().draw();
-                    $tableSerial.DataTable().clear().draw();
-                    if ([1, 2].includes(targetItemData?.['general_traceability_method'])) {
-                        if ($scrollLot && $scrollSerial && $scrollLot.length > 0 && $scrollSerial.length > 0) {
-                            if (targetItemData?.['general_traceability_method'] === 1) {
-                                $scrollLot[0].removeAttribute('hidden');
-                            }
-                            if (targetItemData?.['general_traceability_method'] === 2) {
-                                $scrollSerial[0].removeAttribute('hidden');
-                            }
-                        }
+                    if ($scrollLot && $scrollSerial && $scrollLot.length > 0 && $scrollSerial.length > 0) {
+                        $scrollLot[0].setAttribute('hidden', 'true');
+                        $scrollSerial[0].setAttribute('hidden', 'true');
                     }
                     $canvasPW.offcanvas('show');
                     $btnSave.off().on('click', function () {
@@ -649,12 +642,14 @@ $(async function () {
         };
 
         loadCheckPW(ele, data, row) {
-            if ([1, 2].includes(data?.['product']?.['general_traceability_method'])) {
+            if ([1, 2].includes(data?.['product']?.['general_traceability_method']) && $scrollLot.length > 0 && $scrollSerial.length > 0) {
                 let productWHID = ele.getAttribute('data-id');
                 if (data?.['product']?.['general_traceability_method'] === 1) {
+                    $scrollLot[0].removeAttribute('hidden');
                     prodTable.loadLot(ele, row, data, productWHID);
                 }
                 if (data?.['product']?.['general_traceability_method'] === 2) {
+                    $scrollSerial[0].removeAttribute('hidden');
                     prodTable.loadSerial(ele, row, data, productWHID);
                 }
             }
@@ -827,11 +822,35 @@ $(async function () {
             let isRegis = dataRegisConfig?.['isRegis'];
             let dataSO = dataRegisConfig?.['dataSO'];
             let url = $tableSerial.attr('data-url');
-            let dataParam = {'product_warehouse_id': productWHID, 'serial_status': 0, 'gre_sn_registered__isnull': true};
-            let keyResp = 'warehouse_serial_list';
+
+            let dataCheck = [];
+            $tablePW.DataTable().rows().every(function () {
+                let row = this.node();
+                let rowIndex = $tablePW.DataTable().row(row).index();
+                let $row = $tablePW.DataTable().row(rowIndex);
+                let rowData = $row.data();
+                let checkedEle = row.querySelector('.table-row-checkbox:checked');
+                if (checkedEle) {
+                    if (rowData?.['product_data']?.['general_traceability_method'] === 2) {
+                        if (rowData?.['serial_data']) {
+                            for (let serialData of rowData?.['serial_data']) {
+                                if (serialData?.['product_warehouse_serial_id']) {
+                                    dataCheck.push(serialData?.['product_warehouse_serial_id']);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            let dataParam = {
+                'product_warehouse_id': productWHID,
+                'serial_status': 0,
+                'gre_sn_registered__isnull': true,
+            };
             if ($form.attr('data-method').toLowerCase() === 'get') {
-                dataParam = {'product_warehouse_id': productWHID};
+                dataParam = {'id__in': dataCheck.join(',')}
             }
+            let keyResp = 'warehouse_serial_list';
             if (isRegis === true && dataSO && eleChecked.getAttribute('data-row')) {
                 let dataRow = JSON.parse(eleChecked.getAttribute('data-row'));
                 if (!dataRow?.['is_pw']) {
@@ -842,72 +861,19 @@ $(async function () {
                         'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
                         'sn_registered__serial_status': 0,
                     };
+                    if ($form.attr('data-method').toLowerCase() === 'get') {
+                        dataParam = {'sn_registered_id__in': dataCheck.join(',')}
+                    }
                     keyResp = 'good_registration_serial';
                 } else {
                     isRegis = false;
                 }
             }
-            WindowControl.showLoading();
-            $.fn.callAjax2({
-                    'url': url,
-                    'method': 'GET',
-                    'data': dataParam,
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let dataSerial = $.fn.switcherResp(resp);
-                    if (dataSerial) {
-                        if (dataSerial.hasOwnProperty(keyResp) && Array.isArray(dataSerial?.[keyResp])) {
-                            let dataFn = dataSerial?.[keyResp];
-                            if (isRegis === true) {
-                                dataFn = [];
-                                for (let serial of dataSerial?.[keyResp]) {
-                                    dataFn.push(serial?.['sn_registered']);
-                                }
-                            }
-                            $tableSerial.DataTable().clear().draw();
-                            $tableSerial.DataTable().rows.add(dataFn).draw();
 
-                            let dataCheck = [];
-                            $tablePW.DataTable().rows().every(function () {
-                                let row = this.node();
-                                let rowIndex = $tablePW.DataTable().row(row).index();
-                                let $row = $tablePW.DataTable().row(rowIndex);
-                                let rowData = $row.data();
-
-                                let checkedEle = row.querySelector('.table-row-checkbox:checked');
-                                if (checkedEle) {
-                                    if (rowData?.['product_data']?.['general_traceability_method'] === 2) {
-                                        if (rowData?.['serial_data']) {
-                                            for (let serialData of rowData?.['serial_data']) {
-                                                if (serialData?.['product_warehouse_serial_id']) {
-                                                    dataCheck.push(serialData?.['product_warehouse_serial_id']);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-
-                            $tableSerial.DataTable().rows().every(function () {
-                                let row = this.node();
-                                let rowIndex = $tableSerial.DataTable().row(row).index();
-                                let $row = $tableSerial.DataTable().row(rowIndex);
-                                let rowData = $row.data();
-
-                                let checkEle = row.querySelector('.table-row-checkbox');
-                                if (checkEle) {
-                                    if (dataCheck.includes(rowData?.['id'])) {
-                                        checkEle.checked = true;
-                                    }
-                                }
-                            });
-                        }
-                    }
-                    WindowControl.hideLoading();
-                }
-            )
+            if ($.fn.dataTable.isDataTable($tableSerial)) {
+                $tableSerial.DataTable().destroy();
+            }
+            prodTable.dataTableTableSerial(url, dataParam, keyResp, isRegis, dataCheck);
             return true;
         };
 
@@ -1143,6 +1109,7 @@ $(async function () {
                             return `<div class="form-check form-check-lg d-flex align-items-center">
                                         <input
                                             type="radio"
+                                            name="radio-wh"
                                             class="form-check-input table-row-checkbox cl-child"
                                             id="pw-${row?.['id'].replace(/-/g, "")}"
                                             data-id="${row?.['id']}"
@@ -1206,8 +1173,8 @@ $(async function () {
                 ],
                 drawCallback: function () {
                     prodTable.setupCollapse();
-                    prodTable.loadEventRadio($tablePW);
-                    prodTable.loadEventPW();
+                    // prodTable.loadEventRadio($tablePW);
+                    // prodTable.loadEventPW();
                     prodTable.dtbPWHDCustom();
                 },
             })
@@ -1276,67 +1243,61 @@ $(async function () {
             });
         };
 
-        dataTableTableSerial(data) {
+        dataTableTableSerial(url, dataParam, keyResp, isRegis, dataCheck) {
             let checkAll = $tableSerial[0].querySelector('.table-row-checkbox-all');
             if (checkAll) {
                 checkAll.checked = false;
             }
             $tableSerial.not('.dataTable').DataTableDefault({
-                data: data ? data : [],
-                paging: false,
-                info: false,
+                useDataServer: true,
+                ajax: {
+                    url: url,
+                    type: "GET",
+                    data: dataParam,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty(keyResp)) {
+                            // return resp.data[keyResp] ? resp.data[keyResp] : []
+
+                            let dataFn = resp.data[keyResp] ? resp.data[keyResp] : [];
+                            if (isRegis === true) {
+                                dataFn = [];
+                                for (let serial of resp.data[keyResp]) {
+                                    dataFn.push(serial?.['sn_registered']);
+                                }
+                            }
+                            return dataFn;
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
                 autoWidth: true,
                 scrollX: true,
-                scrollY: "200px",
+                info: false,
                 columns: [
                     {
                         targets: 0,
                         class: 'w-5',
                         render: (data, type, row) => {
                             let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                            if ($form.attr('data-method').toLowerCase() === 'put') {
-                                if (row?.['is_checked'] === true) {
-                                    return `<div class="form-check form-check-lg">
-                                                <input
-                                                    type="checkbox"
-                                                    class="form-check-input table-row-checkbox"
-                                                    data-id="${row?.['id']}"
-                                                    data-row="${dataRow}"
-                                                    checked
-                                                >
-                                            </div>`;
-                                }
-                                return `<div class="form-check form-check-lg">
-                                            <input
-                                                type="checkbox"
-                                                class="form-check-input table-row-checkbox"
-                                                data-id="${row?.['id']}"
-                                                data-row="${dataRow}"
-                                            >
-                                        </div>`;
-                            } else {
-                                if (row?.['is_checked'] === true) {
-                                    return `<div class="form-check form-check-lg">
-                                        <input
-                                            type="checkbox"
-                                            class="form-check-input table-row-checkbox"
-                                            data-id="${row?.['id']}"
-                                            data-row="${dataRow}"
-                                            checked
-                                            disabled
-                                        >
-                                    </div>`;
-                                }
-                                return `<div class="form-check form-check-lg">
-                                        <input
-                                            type="checkbox"
-                                            class="form-check-input table-row-checkbox"
-                                            data-id="${row?.['id']}"
-                                            data-row="${dataRow}"
-                                            disabled
-                                        >
-                                    </div>`;
+                            let checked = '';
+                            let disabled = '';
+                            if ($form.attr('data-method').toLowerCase() === 'get') {
+                                disabled = 'disabled';
                             }
+                            if (dataCheck.includes(row?.['id'])) {
+                                checked = 'checked';
+                            }
+                            return `<div class="form-check form-check-lg">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input table-row-checkbox"
+                                            data-id="${row?.['id']}"
+                                            data-row="${dataRow}"
+                                            ${checked}
+                                            ${disabled}
+                                        >
+                                    </div>`;
                         }
                     },
                     {
@@ -1965,7 +1926,7 @@ $(async function () {
     prodTable.dataTableProductNew();
     prodTable.dataTablePW();
     prodTable.dataTableTableLot();
-    prodTable.dataTableTableSerial();
+    // prodTable.dataTableTableSerial();
     // event
     $tableProductNew.on('click', '.table-row-checkbox', function () {
         let row = this.closest('tr');
@@ -2013,6 +1974,17 @@ $(async function () {
                 DeliveryStoreDataHandle.storeData();
             }
         }
+    });
+
+    $tablePW.on('click', '.table-row-checkbox', function () {
+        let row = this.closest('tr');
+        if (row) {
+            let rowIndex = $tablePW.DataTable().row(row).index();
+            let $row = $tablePW.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+            prodTable.loadCheckPW(this, dataRow, row);
+        }
+        return true;
     });
 
     $tablePW.on('click', '.cl-parent', function () {

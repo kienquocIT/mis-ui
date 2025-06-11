@@ -74,7 +74,7 @@ msgstr "Thư mục đang trống"
 
 #
 msgid "Please select folder before upload"
-msgstr "Vui lòng chọn thư mục trước khi upload"
+msgstr "Vui lòng chọn thư mục trước khi tải lên"
 
 #
 msgid "File"
@@ -86,3 +86,6 @@ msgstr "Vui lòng chọn nhân viên"
 #
 msgid "Update successfully"
 msgstr "Cập nhập hoàn tất"
+#
+msgid "Access list"
+msgstr "Danh sách truy cập"

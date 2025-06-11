@@ -157,10 +157,12 @@
 .swal2-container.swal2-backdrop-show + .select2-container{
     z-index: 1111;
 }
-.folder_title span:not(.icon){
+.folder_title span:not(.icon),
+.file_title span:not(.icon){
     color: #000;
 }
-.folder_title .icon{
+.folder_title .icon,
+.file_title .icon{
     margin-right: 6px;
     font-size: 1.5rem;
     vertical-align: middle;
@@ -184,4 +186,16 @@
 }
 .layout_grid + .form-switch #apply_to_sub {
     margin-top: 5px;
+}
+
+#folder-path a{
+    color: #736c64;
+}
+
+#folder-path a:hover{
+    color: #3a3838;
+    text-decoration: underline;
+}
+#folder-path > *{
+    margin-right: 10px;
 }

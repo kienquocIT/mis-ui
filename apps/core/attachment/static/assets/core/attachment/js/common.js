@@ -122,7 +122,6 @@ class popupPermission {
         const $btn = $('#add_selected');
         const $groupTbl = $('#table_group');
         const $empTbl = $('#table_employee');
-
         $btn.off().on('click', function () {
             $(this).prop('disabled', true)
             const owner_list = {};
@@ -158,7 +157,6 @@ class popupPermission {
                         owner_list[dataEmp[idx].id] = dataEmp[idx]
                         show_list.push(`<div class="chip chip-outline-primary pill chip-pill"><span class="chip-text">${dataEmp[idx].full_name}</span></div>`)
                     }
-
                 });
 
                 if (Object.keys(owner_list).length === 0) {
@@ -304,6 +302,7 @@ class popupPermission {
         $('.employee-added > div').html('')
         // $inp[0]._flatpickr.set('clickOpens', false)
         $inp.prop('readonly', true)
+        $('#sharePerm .modal-title span').text('')
         $('#btn_create').show()
         $('#btn_edit').hide()
     }
@@ -319,14 +318,16 @@ class popupPermission {
 
         // reset form
         const _this = this
-        $('#sharePerm').on('hidden.bs.modal', function (event) {
+        $('#sharePerm').on('hidden.bs.modal', function () {
             _this.clear_form_popup()
         }).on('shown.bs.modal', function (event) {
             const _dataId = $(event.relatedTarget).attr('data-id')
             const _dataType = $(event.relatedTarget).attr('data-type')
+            const _dataTitle = $(event.relatedTarget).closest('tr').find('td:nth-child(2)').text()
             $('input[name="folder"], input[name="id"]', $(this)).val(_dataId)
             $(this).find('input[name="type"]').val(_dataType)
-        })
+            $('#sharePerm .modal-title span').text(_dataTitle)
+        });
     }
 
     constructor() {
@@ -349,85 +350,104 @@ class popupPermission {
             7: '#checkbox_edit_f'
         }
     }
-};
+}
 
 class FilesHandle {
 
     loadTable(data = [], reload_data = false) {
-        const $tbl = $('#main-files-info');
-        const _this = this;
+        const $tbl = $('#main-files-info')
+        const _this = this
 
         if ($tbl.hasClass('dataTable')) {
             if (reload_data) $tbl.DataTable().clear().rows.add(data).draw();
             else $tbl.DataTable().row.add(data).draw();
-        } else $tbl.DataTableDefault({
-            data: data,
-            paging: false,
-            info: false,
-            searching: false,
-            columns: [
-                {
-                    data: 'id', width: '2%', render: (row) => {
-                        return `<input type="checkbox" id="checkbox_id_${row}" value="${row}">`
+        }
+        else{
+            $tbl.DataTableDefault({
+                data: data,
+                paging: false,
+                info: false,
+                searching: false,
+                columns: [
+                    {
+                        data: 'id',
+                        width: '2%',
+                        render: (row) => {
+                            return `<input type="checkbox" id="checkbox_id_${row}" value="${row}">`
+                        }
+                    },
+                    {
+                        data: 'title',
+                        width: '38%',
+                        render: (row, index, data) => {
+                            const type = data?.['file_type'] ? data?.['file_type'] : 'folder'
+                            const icon = icon_map?.[type] ? icon_map[type] : `<i class="bi bi-file-earmark"></i>`
+                            const title = row ? row : data?.file_name
+                            const clsName = type === 'folder' ? 'folder_title' : 'file_title'
+                            return `<a href="#" data-id="${data.id}" class="${clsName}">` +
+                                `<span class="icon text-${$x.fn.randomColor()}">${icon}</span><span class="fw-medium">${title}</span></a>`;
+                        }
+                    },
+                    {
+                        data: 'employee_inherit',
+                        width: '20%',
+                        render: (row) => {
+                            return row?.full_name ? row.full_name : '--'
+                        }
+                    },
+                    {
+                        data: 'date_modified',
+                        width: '10%',
+                        render: (row, index, data) => {
+                            const data_date_created = row ? row : data?.date_created
+                            return row ? moment(data_date_created, 'YYYY-MM-DD').format('DD/MM/YYYY') : '--';
+                        }
+                    },
+                    {
+                        data: 'file_size',
+                        width: '10%',
+                        render: (row) => {
+                            return row ? formatBytes(row) : '--';
+                        }
+                    },
+                    {
+                        data: 'id',
+                        width: '10%',
+                        render: (row, index, data) => {
+                            // row type (folder or file)
+                            let file_type = $.fn.gettext('Folder')
+                            if (data?.file_type && data?.file_size && data?.file_name) file_type = $.fn.gettext('File')
+                            return file_type;
+                        }
+                    },
+                    {
+                        data: 'id',
+                        width: '10%',
+                        render: (row) => {
+                            let type = 'folder'
+                            if (data?.file_type && data?.file_size && data?.file_name) type = 'file'
+                            const btn1 = `<button class="btn btn-icon btn-rounded bg-dark-hover" data-id="${row}" data-bs-toggle="modal" data-bs-target="#sharePerm" data-type="${type}"><span><i class="fa-solid fa-share-nodes"></i></span></button>`;
+                            const btn2 = `<a class="btn btn-icon btn-rounded bg-dark-hover edit-button rotate90deg" ` + `data-id="${row}"><span class="icon"><i class="fa-solid fa-arrow-right-to-bracket"></i></span></a>`;
+                            const btn3 = `<button class="btn btn-icon btn-rounded bg-dark-hover dropdown-toggle" data-bs-toggle="dropdown" id="action_${row}">` + `<span class="icon-animate"><i class="fa-solid fa-ellipsis"></i></span></button>` + `<div class="dropdown-menu" aria-labelledby="action_${row}">` + `<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFolderMdl"><i class="dropdown-icon fas fa-folder-plus text-primary"></i><span>${$.fn.gettext('Access list')}</span></a>` + // `<a class="dropdown-item" href="#" id="upload-file" data-bs-toggle="modal" data-bs-target="#uploadFileMdl"><i class="dropdown-icon fas fa-file-upload text-primary"></i><span class="mt-2">${$.fn.gettext('Delete')}</span></a>` +
+                                `<a class="dropdown-item" href="#" id="upload-folder" data-bs-toggle="modal" data-bs-target="#addFolderMdl"><i class="dropdown-icon fas fa-upload text-primary"></i><span>${'Move'}</span></a></div>`;
+                            return `<div class="wrap-action">${btn1 + btn2 + btn3}</div>`;
+                        }
                     }
+                ],
+                rowCallback: function (row) {
+                    $('a.folder_title', row).off().on('click', function (e) {
+                        e.stopPropagation();
+                        const folderId = $(this).attr('data-id')
+                        _this.get_folder(folderId)
+                        _this.breadcrumb_handle({
+                            'id': folderId,
+                            'title': $('span:nth-child(2)', $(this)).text()
+                        })
+                        $('.tit-crt').html($('span:nth-child(2)', $(this)).text())
+                    })
                 },
-                {
-                    data: 'title', width: '38%', render: (row, index, data) => {
-                        const type = data?.['file_type'] ? data?.['file_type'] : 'folder'
-                        const icon = icon_map?.[type] ? icon_map[type] : `<i class="bi bi-file-earmark"></i>`
-                        const title = row ? row : data?.file_name
-                        return `<a href="#" data-id="${data.id}" class="folder_title">` + `<span class="icon text-${$x.fn.randomColor()}">${icon}</span><span class="fw-medium">${title}</span></a>`;
-                    }
-                },
-                {
-                    data: 'employee_inherit',
-                    width: '20%',
-                    render: (row) => {
-                        return row?.full_name ? row.full_name : '--'
-                    }
-                },
-                {
-                    data: 'date_modified',
-                    width: '10%',
-                    render: (row, index, data) => {
-                        const data_date_created = row ? row : data?.date_created
-                        return row ? moment(data_date_created, 'YYYY-MM-DD').format('DD/MM/YYYY') : '--';
-                    }
-                },
-                {
-                    data: 'file_size',
-                    width: '10%',
-                    render: (row) => {
-                        return row ? formatBytes(row) : '--';
-                    }
-                },
-                {
-                    data: 'id', width: '10%', render: (row, index, data) => {
-                        // row type (folder or file)
-                        let file_type = $.fn.gettext('Folder')
-                        if (data?.file_type && data?.file_size && data?.file_name) file_type = $.fn.gettext('File')
-                        return file_type;
-                    }
-                },
-                {
-                    data: 'id', width: '10%', render: (row) => {
-                        let type = 'folder'
-                        if (data?.file_type && data?.file_size && data?.file_name) type = 'file'
-
-                        const btn1 = `<button class="btn btn-icon btn-rounded bg-dark-hover" data-id="${row}" data-bs-toggle="modal" data-bs-target="#sharePerm" data-type="${type}"><span><i class="fa-solid fa-share-nodes"></i></span></button>`;
-                        const btn2 = `<a class="btn btn-icon btn-rounded bg-dark-hover edit-button rotate90deg" ` + `data-id="${row}"><span class="icon"><i class="fa-solid fa-arrow-right-to-bracket"></i></span></a>`;
-                        const btn3 = `<button class="btn btn-icon btn-rounded bg-dark-hover dropdown-toggle" data-bs-toggle="dropdown" id="action_${row}">` + `<span class="icon-animate"><i class="fa-solid fa-ellipsis"></i></span></button>` + `<div class="dropdown-menu" aria-labelledby="action_${row}">` + `<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFolderMdl"><i class="dropdown-icon fas fa-folder-plus text-primary"></i><span>${$.fn.gettext('Access list')}</span></a>` + // `<a class="dropdown-item" href="#" id="upload-file" data-bs-toggle="modal" data-bs-target="#uploadFileMdl"><i class="dropdown-icon fas fa-file-upload text-primary"></i><span class="mt-2">${$.fn.gettext('Delete')}</span></a>` +
-                            `<a class="dropdown-item" href="#" id="upload-folder" data-bs-toggle="modal" data-bs-target="#addFolderMdl"><i class="dropdown-icon fas fa-upload text-primary"></i><span>${'Move'}</span></a></div>`;
-                        return `<div class="wrap-action">${btn1 + btn2 + btn3}</div>`;
-                    }
-                }
-            ], rowCallback: function (row) {
-                $('a.folder_title', row).off().on('click', function (e) {
-                    e.stopPropagation();
-                    _this.get_folder($(this).attr('data-id'))
-                })
-            },
-        })
+            })
+        }
     }
 
     get_folder(dataId = null) {
@@ -481,7 +501,6 @@ class FilesHandle {
         });
     }
 
-    // const url = $('#url-factory').attr('folder_stm_list')
     action_space_title(){
         const $btnSpace = $('#folder-tree button');
         const $URLFact = $('#url-factory');
@@ -516,6 +535,59 @@ class FilesHandle {
         })
     }
 
+    breadcrumb_handle(data = {}){
+        const _this = this
+        if (Object.keys(data).length){
+            const $listHtml = $('#folder-path');
+            const hasItem = $('a', $listHtml).length;
+            $('a', $listHtml).each(function(e){
+                $(e).removeClass('brc-current')
+            })
+            const aTag = $('<a href="#" class="brc-item brc-current">');
+            aTag.text(data.title)
+            aTag.data('brc', data)
+
+            if(hasItem === 0) {
+                const RootMenu = $('#folder-tree button.btn-active');
+                const Rootxt = $('span.no-transform', RootMenu).text();
+                const RootElm = $('<a href="#" class="brc-item">');
+                RootElm.text(Rootxt)
+                $listHtml.append(RootElm).append('<span>/</span>')
+                RootElm.data('brc', {
+                    "id": RootMenu.attr('data-space'),
+                    "title": Rootxt,
+                })
+                RootElm.on('click', function(){
+                    const rootData = $(this).data('brc');
+                    let url = _this.$urlFact.attr('data-folder-api')
+                    if (rootData.id === 'shared') url = _this.$urlFact.attr('data-folder-share-api')
+                    $.fn.callAjax2({url: url, method: 'get'}
+                    ).then(
+                        (resp) => {
+                            let rep = $.fn.switcherResp(resp);
+                            if (rep && (rep['status'] === 201 || rep['status'] === 200)){
+                                _this.loadTable(rep[rootData.id === 'my' ? 'folder_list' : 'folder_stm_list'], true)
+                                $listHtml.html('')
+                                $('.tit-crt').html('')
+                            }
+                        }
+                    )
+                })
+            }
+            if (hasItem) $listHtml.append('<span>/</span>');
+            $listHtml.append(aTag)
+
+            aTag.on('click', function(){
+                const data = $(this).data('brc')
+                if (data.id === $('#current_folder').val()) return true
+                else{
+                    _this.get_folder(data.id)
+                    $('.tit-crt').html(data.title)
+                }
+            })
+        }
+    }
+
     init() {
         // load select parent_n
         $('#add-folder-box-parent').initSelect2();
@@ -523,7 +595,7 @@ class FilesHandle {
         // on init load folder list
         const _this = this;
         $.fn.callAjax2({
-            'url': $('#url-factory').attr('data-url'), 'method': 'GET', 'data': {'parent_n_id__isnull': true}
+            'url': $('#url-factory').attr('data-url'), 'method': 'GET'
         }).then((resp) => {
             let rep = $.fn.switcherResp(resp);
             if (rep && (rep['status'] === 201 || rep['status'] === 200)) _this.loadTable(rep['folder_list'])
@@ -544,7 +616,12 @@ class FilesHandle {
 
         this.create_folder()
         this.action_space_title()
+        this.breadcrumb_handle()
     };
+
+    constructor() {
+        this.$urlFact = $('#url-factory')
+    }
 };
 
 $(document).ready(function () {

@@ -7556,35 +7556,6 @@ class FileControl {
                                     return {state: false, data: 'CANCEL'};
                                 }
                             }
-                            // return await Swal.fire({
-                            //     input: "text",
-                            //     title: groupEle.attr('data-msg-description-file'),
-                            //     html: fileData.name,
-                            //     inputAttributes: {
-                            //         autocapitalize: "off"
-                            //     },
-                            //     cancelButtonText: $.fn.transEle.attr('data-cancel'),
-                            //     showCancelButton: true,
-                            //     allowOutsideClick: false,
-                            //     preConfirm: (remark) => {
-                            //         return {'remarks': remark}
-                            //     },
-                            // }).then(
-                            //     async (result) => {
-                            //         if (result.isConfirmed) {
-                            //             return {
-                            //                 'state': true,
-                            //                 'data': result.value,
-                            //             }
-                            //         } else {
-                            //             clsThis.ui_remove_line_file_by_id(fileId);
-                            //             return {
-                            //                 'state': false,
-                            //                 'data': 'CANCEL',
-                            //             }
-                            //         }
-                            //     }
-                            // )
                             return {
                                 state: true,
                                 data: {

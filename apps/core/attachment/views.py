@@ -34,6 +34,7 @@ class AttachmentUpload(APIView):
             return resp.auto_return(key_success='file_detail')
         return RespData.resp_400(errors_data={'file': 'Not found'})
 
+
 class PublicAttachmentUpload(APIView):
     parser_classes = [MultiPartParser]
 
@@ -55,6 +56,7 @@ class PublicAttachmentUpload(APIView):
             ).post(data=m)
             return resp.auto_return(key_success='file_detail')
         return RespData.resp_400(errors_data={'file': 'Not found'})
+
 
 class AttachmentDownload(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)

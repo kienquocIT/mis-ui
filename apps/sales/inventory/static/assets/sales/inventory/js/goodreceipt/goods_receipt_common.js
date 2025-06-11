@@ -128,18 +128,6 @@ class GRLoadDataHandle {
         return true;
     };
 
-    static loadCheckRadioDtb(ele) {
-        let tableEle = ele.closest('table');
-        if (tableEle) {
-            let radios = tableEle.querySelectorAll('.form-check-input[type="radio"]');
-            for (let radioEle of radios) {
-                radioEle.checked = false;
-            }
-            ele.checked = true;
-        }
-        return true;
-    };
-
     static loadDatePicker($ele) {
         $ele.daterangepicker({
             singleDatePicker: true,

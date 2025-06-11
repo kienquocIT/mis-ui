@@ -62,7 +62,13 @@ $(function () {
                                 1: 'inventory_adjustment_data',
                                 2: 'production_order_data',
                             }
-                            return `<span class="badge badge-light badge-outline">${row?.[type_code[row?.['goods_receipt_type']]]?.['code']}</span>`;
+                            let type_link = {
+                                0: 'link-detail-po',
+                                1: 'link-detail-ia',
+                                2: 'link-detail-pro',
+                            }
+                            const link = $('#goods-receipt-link').data(type_link[row?.['goods_receipt_type']]).format_url_with_uuid(row?.[type_code[row?.['goods_receipt_type']]]?.['id']);
+                            return `<a href="${link}" class="underline_hover">${row?.[type_code[row?.['goods_receipt_type']]]?.['code']}</a>`
                         }
                     },
                     {

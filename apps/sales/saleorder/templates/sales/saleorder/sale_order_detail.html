@@ -6,17 +6,10 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/JSPlumb/css/jsplumbtoolkit-defaults.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
+
 {% block pageAction %}
-    <a href="{% url 'SaleOrderUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary" id="btn-enable-edit">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </span>
-            </span>
-        </button>
-    </a>
+    {% url 'SaleOrderUpdate' pk=pk as edit_link %}
+    {% include 'extends/systems/page_actions.html' with is_edit=True edit_link=edit_link edit_idx="btn-enable-edit" %}
 {% endblock %}
 
 {% block pageContent %}

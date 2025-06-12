@@ -555,6 +555,34 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadClsGroupToProducts() {
+        QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = QuotationDataTableHandle.$tableProduct.DataTable().row(row).index();
+            let $row = QuotationDataTableHandle.$tableProduct.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+
+            if (dataRow?.['is_group'] !== true) {
+                let $lastGroupRow = $(row).prevAll('.tr-group').first();
+                if ($lastGroupRow.length > 0) {
+                    let lastGroup = $lastGroupRow[0].querySelector('.table-row-group');
+                    if (lastGroup) {
+                        let classGroupDot = lastGroup.getAttribute('data-bs-target');
+                        let dataGroupOrder = lastGroup.getAttribute('data-group-order');
+                        if (classGroupDot) {
+                            let classGroup = classGroupDot.replace(".", "");
+                            row.classList.add('collapse');
+                            row.classList.add(classGroup);
+                            row.classList.add('show');
+                            row.setAttribute('data-group', dataGroupOrder);
+                        }
+                    }
+                }
+            }
+        });
+        return true;
+    };
+
     static decrementGroupString(str) {
         let match = str.match(/(\d+)$/);
         if (match) {
@@ -3185,23 +3213,6 @@ class QuotationDataTableHandle {
                     $(row).find('td:eq(1)').attr('colspan', 2);
                     row.classList.add('tr-group');
                 }
-                if (data?.['is_group'] !== true) {
-                    let $lastGroupRow = $(row).prevAll('.tr-group').first();
-                    if ($lastGroupRow.length > 0) {
-                        let lastGroup = $lastGroupRow[0].querySelector('.table-row-group');
-                        if (lastGroup) {
-                            let classGroupDot = lastGroup.getAttribute('data-bs-target');
-                            let dataGroupOrder = lastGroup.getAttribute('data-group-order');
-                            if (classGroupDot) {
-                                let classGroup = classGroupDot.replace(".", "");
-                                row.classList.add('collapse');
-                                row.classList.add(classGroup);
-                                row.classList.add('show');
-                                row.setAttribute('data-group', dataGroupOrder);
-                            }
-                        }
-                    }
-                }
             },
             drawCallback: function () {
                 QuotationDataTableHandle.dtbProductHDCustom();
@@ -3209,6 +3220,8 @@ class QuotationDataTableHandle {
                     // set again WF runtime
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
+                // set cls of group to products
+                QuotationLoadDataHandle.loadClsGroupToProducts();
             },
         });
     };
@@ -7147,6 +7160,7 @@ class QuotationSubmitHandle {
                 if (groupTitleEle) {
                     rowData['group_title'] = groupTitleEle.value;
                 }
+                rowData['unit_of_measure_id'] = null;
                 result.push(rowData);
             } else if (productEle) { // PRODUCT
                 if ($(productEle).val()) {

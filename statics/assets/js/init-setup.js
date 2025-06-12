@@ -2579,21 +2579,27 @@ class WFRTControl {
                                     <input type="radio" name="next-association" class="form-check-input checkbox-next-association" id="associate-${associate?.['id'].replace(/-/g, "")}" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">
                                     <label class="form-check-label mr-2" for="associate-${associate?.['id'].replace(/-/g, "")}">${associate?.['node_out']?.['title']}</label>
                                 </div>
-                            </div><hr class="bg-black">`;
+                            </div><hr>`;
         }
         return htmlCustom;
     }
 
     static setupHTMLSelectCollab(collabOutForm) {
         let htmlCustom = ``;
-        for (let collab of collabOutForm) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between group-checkbox-next-node-collab">
+        if (Array.isArray(collabOutForm)) {
+            for (let i = 0; i < collabOutForm.length; i++) {
+                let collab = collabOutForm[i];
+                htmlCustom += `<div class="d-flex align-items-center justify-content-between group-checkbox-next-node-collab">
                                 <div class="form-check form-check-lg d-flex align-items-center">
                                     <input type="radio" name="next-node-collab" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
                                     <label class="form-check-label mr-2" for="collab-${collab?.['id'].replace(/-/g, "")}">${collab?.['full_name']}</label>
                                 </div>
                                 <span class="badge badge-secondary badge-outline">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
-                            </div><hr class="bg-black">`;
+                            </div>`;
+                if (i < (collabOutForm.length - 1)) {
+                    htmlCustom += `<hr>`;
+                }
+            }
         }
         return htmlCustom;
     }
@@ -2615,7 +2621,10 @@ class WFRTControl {
                                     <input type="radio" name="save-status" class="form-check-input checkbox-save-status" id="save-type-${status}" data-status="${status}" ${checked}>
                                     <label class="form-check-label" for="save-type-${status}">${statusMapText[status]}</label>
                                 </div>
-                            </div><hr class="bg-black">`;
+                            </div>`;
+            if (status === 0) {
+                htmlCustom += `<hr>`;
+            }
         }
         return htmlCustom;
     }
@@ -2762,7 +2771,7 @@ class WFRTControl {
     static setWFInitialData(app_code, isCR = false) {
         if (app_code) {
             let btn = $('#btnLogShow');
-            btn.removeClass('hidden');
+            // btn.removeClass('hidden');
             let url = btn.attr('data-url-current-wf');
             $.fn.callAjax2({
                 'url': url,

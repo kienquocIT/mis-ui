@@ -2916,7 +2916,7 @@ class PODataTableHandle {
                         }
                         return `<div class="form-check form-check-lg d-flex align-items-center">
                                     <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-reconcile-${row?.['order']}" ${checked}>
-                                    <label class="form-check-label table-row-order" for="s-reconcile-${row?.['order']}">${row?.['term_data']?.['title']}</label>
+                                    <label class="form-check-label table-row-order" for="s-reconcile-${row?.['order']}">${row?.['term_data']?.['title'] ? row?.['term_data']?.['title'] : row?.['remark']}</label>
                                 </div>`;
                     }
                 },

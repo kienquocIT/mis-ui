@@ -148,7 +148,7 @@ class PurchaseRequestUpdate(View):
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_REQUEST
         return {
-                   'input_mapping_properties': input_mapping_properties, 'form_id': 'form-create-pr'
+                   'input_mapping_properties': input_mapping_properties, 'form_id': 'frm-detail-pr'
                }, status.HTTP_200_OK
 
 

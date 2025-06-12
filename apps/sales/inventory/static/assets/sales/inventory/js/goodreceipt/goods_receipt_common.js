@@ -480,6 +480,7 @@ class GRLoadDataHandle {
             let tablePR = GRDataTableHandle.tablePR;
             let elePRChecked = tablePR[0]?.querySelector('.table-row-checkbox:checked');
             if (elePRChecked) {
+                // TH nhap theo PR
                 if (elePRChecked.getAttribute('data-id')) {
                     let idPR = elePRChecked.getAttribute('data-id');
                     let keyCheck = 'purchase_order_request_product_id';
@@ -489,6 +490,17 @@ class GRLoadDataHandle {
                     if (dataStore?.['pr_products_data']) {
                         for (let prProductData of dataStore?.['pr_products_data']) {
                             if (prProductData?.[keyCheck] === idPR) {
+                                dataStore = prProductData;
+                                break;
+                            }
+                        }
+                    }
+                }
+                // TH nhap them khong theo PR
+                if (!elePRChecked.getAttribute('data-id')) {
+                    if (dataStore?.['pr_products_data']) {
+                        for (let prProductData of dataStore?.['pr_products_data']) {
+                            if (prProductData?.['is_stock'] === true) {
                                 dataStore = prProductData;
                                 break;
                             }
@@ -666,15 +678,35 @@ class GRLoadDataHandle {
                 let idWH = eleWHChecked.getAttribute('data-id');
                 let elePRChecked = GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked');
                 if (elePRChecked) {
-                    let idPR = elePRChecked.getAttribute('data-id');
-                    if (dataStore?.['pr_products_data']) {
-                        for (let prProductData of dataStore?.['pr_products_data']) {
-                            if (prProductData?.['purchase_order_request_product_id'] === idPR) {
-                                if (prProductData?.['gr_warehouse_data']) {
-                                    for (let grWHData of prProductData?.['gr_warehouse_data']) {
-                                        if (grWHData?.['warehouse_id'] === idWH) {
-                                            dataStore = grWHData;
-                                            break;
+                    // TH nhap theo PR
+                    if (elePRChecked.getAttribute('data-id')) {
+                        let idPR = elePRChecked.getAttribute('data-id');
+                        if (dataStore?.['pr_products_data']) {
+                            for (let prProductData of dataStore?.['pr_products_data']) {
+                                if (prProductData?.['purchase_order_request_product_id'] === idPR) {
+                                    if (prProductData?.['gr_warehouse_data']) {
+                                        for (let grWHData of prProductData?.['gr_warehouse_data']) {
+                                            if (grWHData?.['warehouse_id'] === idWH) {
+                                                dataStore = grWHData;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // TH nhap them khong theo PR
+                    if (!elePRChecked.getAttribute('data-id')) {
+                        if (dataStore?.['pr_products_data']) {
+                            for (let prProductData of dataStore?.['pr_products_data']) {
+                                if (prProductData?.['is_stock'] === true) {
+                                    if (prProductData?.['gr_warehouse_data']) {
+                                        for (let grWHData of prProductData?.['gr_warehouse_data']) {
+                                            if (grWHData?.['warehouse_id'] === idWH) {
+                                                dataStore = grWHData;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -798,15 +830,35 @@ class GRLoadDataHandle {
                 let idWH = eleWHChecked.getAttribute('data-id');
                 let elePRChecked = GRDataTableHandle.tablePR[0].querySelector('.table-row-checkbox:checked');
                 if (elePRChecked) {
-                    let idPR = elePRChecked.getAttribute('data-id');
-                    if (dataStore?.['pr_products_data']) {
-                        for (let prProductData of dataStore?.['pr_products_data']) {
-                            if (prProductData?.['purchase_order_request_product_id'] === idPR) {
-                                if (prProductData?.['gr_warehouse_data']) {
-                                    for (let grWHData of prProductData?.['gr_warehouse_data']) {
-                                        if (grWHData?.['warehouse_id'] === idWH) {
-                                            dataStore = grWHData;
-                                            break;
+                    // TH nhap theo PR
+                    if (elePRChecked.getAttribute('data-id')) {
+                        let idPR = elePRChecked.getAttribute('data-id');
+                        if (dataStore?.['pr_products_data']) {
+                            for (let prProductData of dataStore?.['pr_products_data']) {
+                                if (prProductData?.['purchase_order_request_product_id'] === idPR) {
+                                    if (prProductData?.['gr_warehouse_data']) {
+                                        for (let grWHData of prProductData?.['gr_warehouse_data']) {
+                                            if (grWHData?.['warehouse_id'] === idWH) {
+                                                dataStore = grWHData;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // TH nhap them khong theo PR
+                    if (!elePRChecked.getAttribute('data-id')) {
+                        if (dataStore?.['pr_products_data']) {
+                            for (let prProductData of dataStore?.['pr_products_data']) {
+                                if (prProductData?.['is_stock'] === true) {
+                                    if (prProductData?.['gr_warehouse_data']) {
+                                        for (let grWHData of prProductData?.['gr_warehouse_data']) {
+                                            if (grWHData?.['warehouse_id'] === idWH) {
+                                                dataStore = grWHData;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -1577,6 +1629,7 @@ class GRDataTableHandle {
                         return `<div class="form-check form-check-lg">
                                     <input 
                                         type="radio" 
+                                        name="radio-pr"
                                         class="form-check-input table-row-checkbox" 
                                         id="pr-${prID.replace(/-/g, "")}"
                                         data-id="${prID}" 

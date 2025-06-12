@@ -502,6 +502,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     KMS_CONTENT_GROUP_LIST = BreadcrumbChildren(_('Content group'), 'ContentGroupList')
     KMS_DOCUMENT_APPROVAL_LIST = BreadcrumbChildren(_('Document approval'), 'KMSDocumentApprovalList')
 
+    # Incoming Document
+    INCOMING_DOCUMENT_LIST = BreadcrumbChildren(_('Incoming document create'), '')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1367,4 +1370,11 @@ class BreadcrumbView:
     KMS_DOCUMENT_APPROVAL_CREATE_PAGE = KMS_DOCUMENT_APPROVAL_LIST + [BreadcrumbItem.BASTION_CREATE]
     KMS_DOCUMENT_APPROVAL_DETAIL_PAGE = KMS_DOCUMENT_APPROVAL_LIST + [BreadcrumbItem.BASTION_DETAIL]
     KMS_DOCUMENT_APPROVAL_UPDATE_PAGE = KMS_DOCUMENT_APPROVAL_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    # incoming document
+    INCOMING_DOCUMENT_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.INCOMING_DOCUMENT_LIST
+    ]
+    INCOMING_DOCUMENT_CREATE = INCOMING_DOCUMENT_LIST + [BreadcrumbItem.BASTION_CREATE]
 

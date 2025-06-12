@@ -423,10 +423,6 @@ class MenusCRM:
         name='Product', code='id_menu_product_list', view_name='ProductList',
         icon='<i class="fa-solid fa-box"></i>',
     )
-    PRODUCT_MODIFICATION = MenuCommon(
-        name='Product modification', code='id_menu_product_modification', view_name='ProductModificationList',
-        icon='<i class="fa-solid fa-boxes-stacked"></i>',
-    )
     OPP_BOM = MenuCommon(
         name='Opportunity BOM', code='menu_project_bom_list', view_name='OpportunityBOMList',
         icon='<i class="fas fa-dice"></i>',
@@ -616,6 +612,10 @@ class MenusInventory:
                 view_name='GoodsRecoveryList',
                 icon='<i class="fas fa-reply"></i>',
             ),
+            MenuCommon(
+                name='Product modification', code='id_menu_product_modification', view_name='ProductModificationList',
+                icon='<i class="fa-solid fa-boxes-stacked"></i>',
+            )
         ],
     )
 
@@ -991,7 +991,6 @@ class SpaceItem:
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.CONTRACT_APPROVAL,
                 MenusCRM.PRODUCT,
-                MenusCRM.PRODUCT_MODIFICATION,
                 MenusCRM.OPP_BOM,
                 MenusCRM.PRICING,
                 MenusCRM.ACCOUNT_PAYABLE,

@@ -1,11 +1,19 @@
 $(document).ready(function () {
     function loadDtb() {
         if (!$.fn.DataTable.isDataTable('#dtbGoodsIssue')) {
-            let $table = $('#dtbGoodsIssue')
-            let frm = new SetupFormSubmit($table);
-            $table.DataTableDefault({
+            let dtb = $('#dtbGoodsIssue')
+            let frm = new SetupFormSubmit(dtb);
+            dtb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
+                scrollX: true,
+                scrollY: '70vh',
+                scrollCollapse: true,
+                reloadCurrency: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                },
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
@@ -27,40 +35,40 @@ $(document).ready(function () {
                     },
                     {
                         className: 'ellipsis-cell-xs w-10',
-                        data: 'code',
                         render: (data, type, row) => {
-                            let link = $table.data('url-detail').format_url_with_uuid(row.id);
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        className: 'w-40',
-                        data: 'title',
+                        className: 'ellipsis-cell-lg w-40',
                         render: (data, type, row) => {
-                            let urlDetail = $table.data('url-detail').format_url_with_uuid(row.id);
-                            return `<a href="${urlDetail}"><span class="text-primary fw-bold">${data}</span></a>`
+                            const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        data: 'goods_issue_type',
                         className: 'w-20',
-                        render: (data) => {
-                            let type_trans = [$table.attr('data-trans-ia'), $table.attr('data-trans-liquidation'), $table.attr('data-trans-production')]
-                            return `<span class="text-muted fst-italic">${type_trans[data]}</span>`
+                        render: (data, type, row) => {
+                            let type_trans = [
+                                dtb.attr('data-trans-ia'),
+                                dtb.attr('data-trans-liquidation'),
+                                dtb.attr('data-trans-production'),
+                                dtb.attr('data-trans-product-modification'),
+                            ]
+                            return `<span class="text-muted fst-italic">${type_trans[row?.['goods_issue_type']]}</span>`
                         }
                     },
                     {
-                        data: 'date_created',
-                        className: 'w-15',
-                        render: (data) => {
-                            return `<p>${moment(data.split(' ')[0], "YYYY-MM-DD").format('DD/MM/YYYY')}</p>`
+                        className: 'ellipsis-cell-sm w-15',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
-                        data: 'system_status',
                         className: 'text-center w-10',
                         render: (data, type, row) => {
-                            return WFRTControl.displayRuntimeStatus(row?.['system_status']);
+                            return WFRTControl.displayRuntimeStatus(row?.['system_status'], row?.['system_auto_create']);
                         }
                     },
                 ],

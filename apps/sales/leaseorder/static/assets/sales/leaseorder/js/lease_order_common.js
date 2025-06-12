@@ -6191,7 +6191,7 @@ class LeaseOrderDataTableHandle {
                             }
                         }
                         return `<div class="form-check form-check-lg d-flex align-items-center">
-                                    <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-invoice-${row?.['order']}" ${checked}>
+                                    <input type="radio" name="radio-invoice" class="form-check-input table-row-checkbox" id="s-invoice-${row?.['order']}" ${checked}>
                                     <label class="form-check-label table-row-order" for="s-invoice-${row?.['order']}">${row?.['order']}</label>
                                 </div>`;
                     }
@@ -6228,7 +6228,6 @@ class LeaseOrderDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                LeaseOrderLoadDataHandle.loadEventRadio(LeaseOrderDataTableHandle.$tableSInvoice);
                 $.fn.initMaskMoney2();
             }
         });

@@ -50,7 +50,6 @@ $(function () {
         });
 
         GRDataTableHandle.tablePOProduct.on('click', '.table-row-checkbox', function () {
-            // GRLoadDataHandle.loadCheckRadioDtb(this);
             GRLoadDataHandle.loadCheckPOProduct(this);
         });
 
@@ -71,7 +70,6 @@ $(function () {
         });
 
         GRDataTableHandle.tablePR.on('click', '.table-row-checkbox', function () {
-            // GRLoadDataHandle.loadCheckRadioDtb(this);
             GRLoadDataHandle.loadCheckPR();
         });
 
@@ -97,7 +95,6 @@ $(function () {
         });
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {
-            // GRLoadDataHandle.loadCheckRadioDtb(this);
             GRLoadDataHandle.loadCheckWH(this);
         });
 

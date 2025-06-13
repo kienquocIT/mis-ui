@@ -5,9 +5,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Select modified product' %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -25,6 +23,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
                 <button type="button" id="accept-product-modified-btn" class="btn btn-primary">{% trans 'Select' %}</button>
             </div>
         </div>
@@ -32,29 +31,27 @@
 </div>
 
 <div class="modal fade" id="picking-product-modal" tabindex="-1" role="dialog" aria-labelledby="picking-product-modal">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{% trans 'Picking modified product' %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title">{% trans 'Picking detail modified product' %}</h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-12">
+                <div class="row h-100">
+                    <div class="col-12 col-md-4 col-lg-4 table-none-space border-right">
                         <table class="table nowrap w-100" id="table-select-warehouse">
                             <thead>
                                 <tr>
                                     <th style="min-width: 50px"></th>
                                     <th style="min-width: 20px"></th>
-                                    <th style="min-width: 200px">{% trans 'Warehouse' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Warehouse' %}</th>
                                     <th style="min-width: 100px">{% trans 'Current quantity' %}</th>
                                 </tr>
                             </thead>
                         </table>
                     </div>
-                    <div class="col-12 mt-3 table-lot-space" hidden>
+                    <div class="col-12 col-md-8 col-lg-8 table-lot-space" hidden>
                         <table class="table nowrap w-100" id="table-select-lot">
                             <thead>
                                 <tr>
@@ -68,7 +65,7 @@
                             </thead>
                         </table>
                     </div>
-                    <div class="col-12 mt-3 table-serial-space" hidden>
+                    <div class="col-12 col-md-8 col-lg-8 table-serial-space" hidden>
                         <table class="table nowrap w-100" id="table-select-serial">
                             <thead>
                                 <tr>
@@ -87,6 +84,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
                 <button type="button" id="accept-picking-product-btn" class="btn btn-primary">{% trans 'Select' %}</button>
             </div>
         </div>
@@ -98,9 +96,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Confirm initial components' %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -114,12 +110,22 @@
                                     <th style="min-width: 50px"></th>
                                 </tr>
                             </thead>
+                            <tbody></tbody>
                         </table>
+                        <button id="btn-add-row-init-component" class="btn btn-sm btn-primary mt-2" type="button">
+                            <span>
+                                <span>{% trans "Add new component" %}</span>
+                                <span class="icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </span>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="confirm-initial-components-btn" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Confirm' %}</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                <button type="button" id="confirm-initial-components-btn" class="btn btn-primary">{% trans 'Confirm' %}</button>
             </div>
         </div>
     </div>
@@ -148,30 +154,28 @@
 </div>
 
 <div class="modal fade" id="picking-component-modal" tabindex="-1" role="dialog" aria-labelledby="picking-component-modal">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans 'Picking component' %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-12">
+                <div class="row h-100">
+                    <div class="col-12 col-md-4 col-lg-4 table-none-space border-right">
                         <table class="table nowrap w-100" id="table-select-component-warehouse">
                             <thead>
                                 <tr>
                                     <th style="min-width: 50px"></th>
                                     <th style="min-width: 20px"></th>
-                                    <th style="min-width: 200px">{% trans 'Warehouse' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Warehouse' %}</th>
                                     <th style="min-width: 100px">{% trans 'Current quantity' %}</th>
                                     <th style="min-width: 100px">{% trans 'Picked quantity' %}</th>
                                 </tr>
                             </thead>
                         </table>
                     </div>
-                    <div class="col-12 mt-3 table-lot-space" hidden>
+                    <div class="col-12 col-md-8 col-lg-8 table-lot-space" hidden>
                         <table class="table nowrap w-100" id="table-select-component-lot">
                             <thead>
                                 <tr>
@@ -186,7 +190,7 @@
                             </thead>
                         </table>
                     </div>
-                    <div class="col-12 mt-3 table-serial-space" hidden>
+                    <div class="col-12 col-md-8 col-lg-8 table-serial-space" hidden>
                         <table class="table nowrap w-100" id="table-select-component-serial">
                             <thead>
                                 <tr>
@@ -205,7 +209,154 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Done' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-part-mapping" tabindex="-1" role="dialog" aria-labelledby="modal-part-mapping">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Product mapping' %}</h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="modal-body" style="overflow-y: auto; max-height: 75vh;">
+                <div class="row">
+                    <div class="col-12 col-md-12 col-lg-6">
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" id="new-product" name="create-product-mapping" checked>
+                            <label class="form-check-label h5" for="new-product">{% trans 'Create a new product' %}</label>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-6">
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" id="existing-product" name="create-product-mapping">
+                            <label class="form-check-label h5" for="existing-product">{% trans 'Match with existing product' %}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3" id="new-product-space">
+                    <span class="text-primary mb-3">{% trans 'These fields are necessary to quickly create a new product' %}. {% trans 'Products will be created once this document is approved' %}</span>
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="product-code">{% trans 'Product code' %}</label>
+                                    <input required class="form-control" id="product-code">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="product-name">{% trans 'Product name' %}</label>
+                                    <input required class="form-control" id="product-name">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label" for="product-des">{% trans 'Description' %}</label>
+                                    <textarea class="form-control" id="product-des"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="product-type">{% trans 'Product type' %}</label>
+                                    <select required class="form-select select2" id="product-type" data-url="{% url 'ProductTypeListAPI' %}"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="product-category">{% trans 'Product category' %}</label>
+                                    <select required class="form-select select2" id="product-category" data-url="{% url 'ProductCategoryListAPI' %}"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="product-uom-group">{% trans 'UOM Group' %}</label>
+                                    <select required class="form-select select2" id="product-uom-group" data-url="{% url 'UnitOfMeasureGroupListAPI' %}"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label" for="product-general-traceability-method">{% trans "Traceability method" %}</label>
+                                    <select id="product-general-traceability-method" class="form-select">
+                                        <option value="0">{% trans "None" %}</option>
+                                        <option value="1">{% trans "Batch/Lot number" %}</option>
+                                        <option value="2">{% trans "Serial number" %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="product-inventory-uom">{% trans 'Inventory UOM' %}</label>
+                                    <select required class="form-select select2" id="product-inventory-uom" data-url="{% url 'UnitOfMeasureListAPI' %}"></select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="product-valuation-method">{% trans 'Valuation method' %}</label>
+                                    <select id="product-valuation-method" class="form-select required">
+                                        <option value="0">{% trans 'FIFO' %}</option>
+                                        <option value="1">{% trans 'Weighted average' %}</option>
+                {#                        <option value="2" disabled>{% trans 'Specific identification method' %}</option>#}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3" hidden id="existing-product-space">
+                    <div class="col-12">
+                        <table class="table nowrap w-100" id="table-select-product-mapping" data-method="GET" data-product-mapping-list-url="{% url 'ProductModifiedListAPI' %}">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 20px"></th>
+                                    <th style="min-width: 200px">{% trans 'Product' %}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label required" for="product-fair-value">{% trans 'Fair value' %}</label>
+                            <input required class="form-control mask-money border-2 border-primary" id="product-fair-value" value="0">
+                            <span class="small text-muted">{% trans 'This value is used as the stock-in value in the Goods Receipt' %}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                <button type="button" id="btn-accept-part-mapping" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Done' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" style="z-index: 99999" id="modal-alert-presave" tabindex="-1" role="dialog" aria-labelledby="modal-alert-presave" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><span class="text-orange"><i class="fa-solid fa-triangle-exclamation"></i> {% trans 'Warning' %}</span></h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <p class="text-primary">
+                            {% trans "When this Product Modification is approved, if there are components that need to be removed, a Goods Receipt will be automatically created with the status set to 'Draft'. You must open and complete it to ensure the items are stocked as intended. The modification process will only be considered complete once the Goods Receipt is approved." %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'OK, I understand' %}</button>
             </div>
         </div>
     </div>

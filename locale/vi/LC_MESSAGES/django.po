@@ -1683,12 +1683,8 @@ msgid "Expense Type"
 msgstr "Loại chi phí"
 
 #
-msgid "UoM Group"
+msgid "UOM Group"
 msgstr "Nhóm Đơn vị tính"
-
-#
-msgid "UoM"
-msgstr "Đơn vị"
 
 #
 msgid "Good receipt create"
@@ -2024,7 +2020,7 @@ msgid "Item name"
 msgstr "Tên mục"
 
 #
-msgid "UoM group"
+msgid "UOM group"
 msgstr "Nhóm Đơn vị tính"
 
 #
@@ -2052,7 +2048,7 @@ msgid "Management By"
 msgstr "Quản lý bởi"
 
 #
-msgid "Default UoM"
+msgid "Default UOM"
 msgstr "Đơn vị tính"
 
 #
@@ -2080,11 +2076,11 @@ msgid "Weight"
 msgstr "Trọng lượng"
 
 #
-msgid "UoM Code"
+msgid "UOM Code"
 msgstr "Mã Đơn vị tính"
 
 #
-msgid "UoM Name"
+msgid "UOM Name"
 msgstr "Tên Đơn vị tính"
 
 #
@@ -7865,7 +7861,7 @@ msgid "I/O value"
 msgstr "Giá trị nhập - xuất"
 
 #
-msgid "Inventory UoM"
+msgid "Inventory UOM"
 msgstr "ĐV lưu kho"
 
 #
@@ -7979,10 +7975,6 @@ msgstr "Vùng chỉnh sửa và vùng bị ẩn phải khác nhau"
 #
 msgid "Picked"
 msgstr "Hàng đã lấy"
-
-#
-msgid "UOM group"
-msgstr "Nhóm đơn vị"
 
 #
 msgid "Edit zone"
@@ -10200,10 +10192,6 @@ msgid "Already"
 msgstr "Đã xong"
 
 #
-msgid "UOM Group"
-msgstr "Nhóm đơn vị tính"
-
-#
 msgid "Confirm delete ?"
 msgstr "Xác nhận xoá dữ liệu này ?"
 
@@ -10212,7 +10200,7 @@ msgid "Related leads"
 msgstr "Lead liên quan"
 
 #
-msgid "Check all ratio in this group again when referenced uom is changed"
+msgid "Check all ratio in this group again when referenced UOM is changed"
 msgstr "Kiểm tra lại các tỉ lệ trong nhóm này khi Đơn vị tham chiếu thay đổi"
 
 #
@@ -11886,3 +11874,43 @@ msgstr "Sản phẩm không có cấu hình lưu kho. Bạn có muốn tiếp t�
 #
 msgid "For product modification"
 msgstr "Cho tháo - lắp sản phẩm"
+
+#
+msgid "Product mapping"
+msgstr "Liên kết sản phẩm"
+
+#
+msgid "Mapping"
+msgstr "Liên kết"
+
+#
+msgid "Create a new product"
+msgstr "Tạo một sản phẩm mới"
+
+#
+msgid "Match with existing product"
+msgstr "Khớp với sản phẩm đang có"
+
+#
+msgid "Fair value"
+msgstr "Giá trị hợp lí"
+
+#
+msgid "OK, I understand"
+msgstr "OK, tôi đã hiểu"
+
+#
+msgid "These fields are necessary to quickly create a new product"
+msgstr "Những trường sau là cần thiết để tạo mới nhanh một sản phẩm"
+
+#
+msgid "Products will be created once this document is approved"
+msgstr "Sản phẩm sẽ được tạo khi phiếu này được duyệt"
+
+#
+msgid "When this Product Modification is approved, if there are components that need to be removed, a Goods Receipt will be automatically created with the status set to 'Draft'. You must open and complete it to ensure the items are stocked as intended. The modification process will only be considered complete once the Goods Receipt is approved."
+msgstr "Khi Phiếu Tháo - Lắp này được duyệt, nếu có các thành phần cần tháo rời, hệ thống sẽ tự động tạo một Phiếu Nhập Kho ở trạng thái 'Nháp'. Bạn cần mở và hoàn thành phiếu này để hàng được nhập kho đúng theo ý muốn. Quá trình tháo - lắp chỉ hoàn tất khi Phiếu Nhập Kho được hoàn tất."
+
+#
+msgid "This value is used as the stock-in value in the Goods Receipt"
+msgstr "Giá trị này được sử dụng để làm giá trị nhập kho trong Phiếu Nhập Kho"

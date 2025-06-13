@@ -626,7 +626,7 @@ class ProductPageFunction {
                     className: 'w-75',
                     'render': (data, type, row) => {
                         return `<input placeholder="${$.fn.gettext('Component name')}" ${option === 'detail' ? 'disabled readonly' : ''} class="form-control form-control-line fw-bold mb-1 component-name" value="${row?.['component_name'] || ''}">
-                                <textarea placeholder="${$.fn.gettext('Description')}..." ${option === 'detail' ? 'disabled readonly' : ''} rows="10" class="form-control component-des">${row?.['component_des'] || ''}</textarea>`;
+                                <textarea placeholder="${$.fn.gettext('Description')}..." ${option === 'detail' ? 'disabled readonly' : ''} rows="5" class="form-control small component-des">${row?.['component_des'] || ''}</textarea>`;
                     }
                 },
                 {

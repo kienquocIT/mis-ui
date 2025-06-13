@@ -5,21 +5,8 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a href="{% url 'QuotationCreate' %}"
-       data-bs-toggle="tooltip"
-       data-bs-placement="top"
-       title="{% trans 'Create Quotation' %}"
-       id="create_quotation_button"
-       data-bs-original-title="Add Quotation">
-            <button type="button" class="btn btn-outline-primary">
-                <span>
-                    <span>{% trans 'Add' %}</span>
-                    <span class="icon">
-                        <i class="fa-solid fa-plus"></i>
-                    </span>
-                </span>
-            </button>
-    </a>
+    {% url 'QuotationCreate' as create_link %}
+    {% include 'extends/systems/page_actions.html' with is_create=True create_link=create_link create_idx="create_quotation_button" %}
 {% endblock %}
 
 {% block pageContent %}

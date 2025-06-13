@@ -423,49 +423,6 @@ $(async function () {
             return true;
         };
 
-        loadEventCheckbox($area, trigger = false) {
-            // Use event delegation for dynamically added elements
-            $area.on('click', '.form-check', function (event) {
-                // Prevent handling if the direct checkbox is clicked
-                if (event.target.classList.contains('form-check-input')) {
-                    return; // Let the checkbox handler handle this
-                }
-
-                // Find the checkbox inside the clicked element
-                let checkbox = this.querySelector('.form-check-input[type="checkbox"]');
-                if (checkbox) {
-                    // Check if the checkbox is disabled
-                    if (checkbox.disabled) {
-                        return; // Exit early if the checkbox is disabled
-                    }
-                    // Prevent the default behavior
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
-
-                    // Toggle the checkbox state manually
-                    checkbox.checked = !checkbox.checked;
-                    // Optional: Trigger a change event if needed
-                    if (trigger === true) {
-                        $(checkbox).trigger('change');
-                    }
-                }
-            });
-
-            // Handle direct clicks on the checkbox itself
-            $area.on('click', '.form-check-input', function (event) {
-                // Prevent the default behavior to avoid double-triggering
-                event.stopPropagation();
-                event.stopImmediatePropagation();
-
-                // Checkbox state is toggled naturally, so no need to modify it
-                if (trigger === true) {
-                    $(this).trigger('change'); // Optional: Trigger change event explicitly
-                }
-            });
-
-            return true;
-        };
-
         loadEventRadio($area) {
             // Use event delegation for dynamically added elements
             if (!$area.data('radio-handler-bound')) {
@@ -1173,8 +1130,6 @@ $(async function () {
                 ],
                 drawCallback: function () {
                     prodTable.setupCollapse();
-                    // prodTable.loadEventRadio($tablePW);
-                    // prodTable.loadEventPW();
                     prodTable.dtbPWHDCustom();
                 },
             })

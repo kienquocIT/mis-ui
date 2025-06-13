@@ -4,7 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework import status
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties, SECURITY_LV
 
 
 def create_quotation(request, url, msg):
@@ -81,6 +81,8 @@ class IncomingDocumentCreate(View):
                 }
             },
             'app_id': 'b9650500-aba7-44e3-b6e0-2542622702a3',
+            'lst_lv': SECURITY_LV,
+
         }
         return ctx, status.HTTP_200_OK
 

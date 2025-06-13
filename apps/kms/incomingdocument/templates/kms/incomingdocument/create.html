@@ -26,13 +26,14 @@
     <form class="form_main" id="frm_document_approval" data-method="POST"
           data-url="{% url 'KMSDocumentApprovalCreateAPI' %}" data-url-redirect="{% url 'KMSDocumentApprovalList' %}">
         {% csrf_token %}
+        <h5 class="mb-3">INCOMING DOCUMENT</h5>
         <div class="row">
-            <div class="col-md-12 col-lg-6 form-group">
+            <div class="col-md-8 col-lg-6 form-group">
                 <label class="form-label required" for="txt_title">{% trans 'Name' %}</label>
                 <input type="text" class="form-control" name="title" id="txt_title" required>
             </div>
 
-            <div class="col-md-12 content_attached mt-2 mb-2">
+            <div class="col-md-8 content_attached mt-2 mb-2">
                 <label class="form-label mt-2" for="table_attached_info">{% trans 'Attached Documents' %}</label>
                 <table class="table nowrap table-advance w-100" id="table_attached_info">
                 </table>
@@ -47,12 +48,12 @@
                 </button>
             </div>
 
-            <div class="col-md-12 form-group mt-4">
+            <div class="col-md-8 form-group mt-4">
                 <label class="form-label" for="add-product-remark">{% trans 'Description' %}</label>
                 <textarea name="remark" class="form-control" id="txtarea_remark" rows="2"></textarea>
             </div>
 
-            <div class="col-md-12 content_recipient mt-2">
+            <div class="col-md-8 content_recipient mt-2">
                 <label class="form-label mt-2" for="table_internal_recipient">{% trans 'Internal Recipient' %}</label>
                 <table class="table nowrap table-advance w-100" id="table_internal_recipient"></table>
                 <button class="btn btn-outline-primary" type="button" id="add_new_recipient" data-bs-toggle="modal"
@@ -67,8 +68,8 @@
             </div>
         </div>
     </form>
-    {% include 'kms/document_approval/extend/offcanvas-attached.html' %}
-    {% include 'kms/document_approval/extend/popup-recipient.html' %}
+    {% include 'kms/incomingdocument/extend/offcanvas-attached.html' %}
+    {% include 'kms/incomingdocument/extend/popup-recipient.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory">

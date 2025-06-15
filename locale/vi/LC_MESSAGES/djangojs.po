@@ -476,3 +476,11 @@ msgstr "Tên thành phần"
 #
 msgid "Description"
 msgstr "Mô tả"
+
+#
+msgid "Created Goods Issue"
+msgstr "Đã tạo phiếu Xuất Hàng"
+
+#
+msgid "Created Goods Receipt"
+msgstr "Đã tạo phiếu Nhập Hàng"

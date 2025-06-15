@@ -40,7 +40,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-50',
+                        className: 'ellipsis-cell-lg w-35',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
@@ -56,6 +56,19 @@ $(document).ready(function () {
                         className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
                             return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-15',
+                        render: (data, type, row) => {
+                            let info = ''
+                            if (row?.['created_goods_issue']) {
+                                info += `<p>${$.fn.gettext('Created Goods Issue')}</p>`
+                            }
+                            if (row?.['created_goods_receipt']) {
+                                info += `<p>${$.fn.gettext('Created Goods Receipt')}</p>`
+                            }
+                            return info
                         }
                     },
                     {

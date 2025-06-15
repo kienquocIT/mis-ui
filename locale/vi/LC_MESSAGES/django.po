@@ -11908,8 +11908,32 @@ msgid "Products will be created once this document is approved"
 msgstr "Sản phẩm sẽ được tạo khi phiếu này được duyệt"
 
 #
-msgid "When this Product Modification is approved, if there are components that need to be removed, a Goods Receipt will be automatically created with the status set to 'Draft'. You must open and complete it to ensure the items are stocked as intended. The modification process will only be considered complete once the Goods Receipt is approved."
-msgstr "Khi Phiếu Tháo - Lắp này được duyệt, nếu có các thành phần cần tháo rời, hệ thống sẽ tự động tạo một Phiếu Nhập Kho ở trạng thái 'Nháp'. Bạn cần mở và hoàn thành phiếu này để hàng được nhập kho đúng theo ý muốn. Quá trình tháo - lắp chỉ hoàn tất khi Phiếu Nhập Kho được hoàn tất."
+msgid "Guide"
+msgstr "Hướng dẫn"
+
+#
+msgid "This Product Modification is approved"
+msgstr "Phiếu Tháo - Lắp này được duyệt"
+
+#
+msgid "If there are components to be added"
+msgstr "Nếu có các thành phần được lắp thêm vào"
+
+#
+msgid "a Goods Issue will be automatically created and approved"
+msgstr "một Phiếu Xuất Kho sẽ tự động được tạo và duyệt"
+
+#
+msgid "If there are components that need to be removed"
+msgstr "Nếu có các thành phần cần tháo rời"
+
+#
+msgid "you must create and finish a Goods Receipt to import these component to stock"
+msgstr "bạn cần tạo và hoàn thành một Phiếu Nhập Kho để nhập hàng vào kho"
+
+#
+msgid "The modification process is only considered complete when all created docs are successfully approved"
+msgstr "Quá trình tháo - lắp chỉ hoàn tất khi các phiếu sinh ra đều được duyệt thành công"
 
 #
 msgid "This value is used as the stock-in value in the Goods Receipt"

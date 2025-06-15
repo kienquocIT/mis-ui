@@ -342,15 +342,53 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><span class="text-orange"><i class="fa-solid fa-triangle-exclamation"></i> {% trans 'Warning' %}</span></h5>
+                <h5 class="modal-title"><span class="text-orange"><i class="fa-solid fa-triangle-exclamation"></i></span> {% trans 'Guide' %}</h5>
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12">
-                        <p class="text-primary">
-                            {% trans "When this Product Modification is approved, if there are components that need to be removed, a Goods Receipt will be automatically created with the status set to 'Draft'. You must open and complete it to ensure the items are stocked as intended. The modification process will only be considered complete once the Goods Receipt is approved." %}
-                        </p>
+                        <div class="hk-wizard hk-wizard-vertical">
+                            <div class="hk-wizard-item hk-wizard-item-finish">
+                                <div class="hk-wizard-item-container">
+                                    <div class="hk-wizard-item-tail"></div>
+                                    <div class="hk-wizard-item-icon">
+                                        <span class="hk-wizard-icon">
+                                            <span role="img" aria-label="check" class="anticon anticon-check hk-wizard-finish-icon">
+                                                <svg viewBox="64 64 896 896" focusable="false" data-icon="check" width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                                                    <path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 00-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"></path>
+                                                </svg>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="hk-wizard-item-content">
+                                        <div class="hk-wizard-item-title fw-bold">{% trans 'This Product Modification is approved' %}</div>
+                                        <div class="hk-wizard-item-description">...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hk-wizard-item">
+                                <div class="hk-wizard-item-container">
+                                    <div class="hk-wizard-item-tail"></div>
+                                    <div class="hk-wizard-item-icon"><span class="hk-wizard-icon">2</span></div>
+                                    <div class="hk-wizard-item-content">
+                                        <div class="hk-wizard-item-title fw-bold">{% trans 'If there are components to be added' %}</div>
+                                        <div class="hk-wizard-item-description">{% trans 'a Goods Issue will be automatically created and approved' %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hk-wizard-item">
+                                <div class="hk-wizard-item-container">
+                                    <div class="hk-wizard-item-tail"></div>
+                                    <div class="hk-wizard-item-icon"><span class="hk-wizard-icon">3</span></div>
+                                    <div class="hk-wizard-item-content">
+                                        <div class="hk-wizard-item-title fw-bold">{% trans 'If there are components that need to be removed' %}</div>
+                                        <div class="hk-wizard-item-description">{% trans 'you must create and finish a Goods Receipt to import these component to stock' %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-primary">{% trans 'The modification process is only considered complete when all created docs are successfully approved' %}</span>
                     </div>
                 </div>
             </div>

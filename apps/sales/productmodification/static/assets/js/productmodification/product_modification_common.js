@@ -75,11 +75,11 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-65',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-primary">${row?.['code'] || ''}</span><br>
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code'] || ''}</span><br>
                                 <a data-bs-toggle="collapse" href=".d1_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d1_${row?.['id']}">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
-                                <span class="text-primary">${row?.['title'] || ''}</span>
+                                <span>${row?.['title'] || ''}</span>
                                 <br><div class="collapse d1_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 },
@@ -151,11 +151,11 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-90',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-primary">${row?.['code']}</span><br>
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br>
                                 <a data-bs-toggle="collapse" href=".d2_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['id']}">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
-                                <span class="text-primary">${row?.['title']}</span>
+                                <span>${row?.['title']}</span>
                                 <br><div class="collapse d2_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 }
@@ -484,17 +484,17 @@ class ProductModificationPageFunction {
                     className: 'w-70',
                     render: (data, type, row) => {
                         if (row?.['product_id']) {
-                            return `<span class="badge badge-sm badge-soft-primary">${row?.['product_code'] || ''}</span><br>
+                            return `<span class="badge badge-sm badge-soft-secondary">${row?.['product_code'] || ''}</span><br>
                                     <a data-bs-toggle="collapse" href=".d2_${row?.['product_id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['product_id']}">
                                         <i class="bi bi-info-circle"></i>
                                     </a>
-                                    <span data-row-type="${row?.['type']}" data-product-id="${row?.['product_id'] || ''}" class="text-primary component-title">${row?.['product_title'] || ''}</span>
+                                    <span data-row-type="${row?.['type']}" data-product-id="${row?.['product_id'] || ''}" class="component-title">${row?.['product_title'] || ''}</span>
                                     <br><div class="collapse d2_${row?.['product_id']}"><span class="small component-des">${row?.['product_des'] || ''}</span></div>`;
                         }
                         return `<a data-bs-toggle="collapse" href=".d3_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d3_${row?.['component_id']}">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
-                                <span class="text-primary component-title" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
+                                <span class="component-title" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
                                 <br><div class="collapse d3_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
                     }
                 },
@@ -560,7 +560,7 @@ class ProductModificationPageFunction {
                                             data-component-code="${comp?.['code'] || ''}"
                                             data-component-name="${comp?.['name'] || ''}"
                                             data-component-des="${comp?.['des'] || ''}">
-                                        <span class="icon"><i class="bi bi-arrow-right"></i></span>
+                                        <span class="icon"><i class="fa-solid fa-right-long"></i></span>
                                     </button>`;
                         }
                         return `<button type="button" class="btn-icon btn-rounded flush-soft-hover btn btn-flush-secondary delete-added-component-btn" ${option === 'detail' ? 'disabled' : ''}>
@@ -602,14 +602,14 @@ class ProductModificationPageFunction {
                     className: 'w-65',
                     render: (data, type, row) => {
                         if (row?.['component_code']) {
-                            return `<span class="badge badge-sm badge-soft-primary">${row?.['component_code'] || ''}</span><br>
-                                    <span class="text-primary component-title" data-component-id="${row?.['component_id']}">${row?.['component_name']}</span><br>
+                            return `<span class="badge badge-sm badge-soft-secondary">${row?.['component_code'] || ''}</span><br>
+                                    <span class="component-title" data-component-id="${row?.['component_id']}">${row?.['component_name']}</span><br>
                                     <span class="small component-des">${row?.['component_des'] || ''}</span>`;
                         }
                         return `<a data-bs-toggle="collapse" href=".d4_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d4_${row?.['component_id']}">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
-                                <span class="text-primary component-title" data-component-id="${row?.['component_id']}">${row?.['component_name']}</span><br>
+                                <span class="component-title" data-component-id="${row?.['component_id']}">${row?.['component_name']}</span><br>
                                 <div class="collapse d4_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
                     }
                 },
@@ -620,31 +620,32 @@ class ProductModificationPageFunction {
                     }
                 },
                 {
-                    className: 'text-center w-5',
+                    className: 'w-5',
                     render: (data, type, row) => {
-                        return `<button type="button"
+                        return `<button class="btn-icon btn-rounded flush-soft-hover btn btn-flush-dark btn-open-modal-mapping"
                                         ${option === 'detail' ? 'disabled' : ''}
-                                        class="btn-icon btn-rounded flush-soft-hover btn btn-flush-success return-component-btn"
-                                        data-component-id="${row?.['component_id'] || ''}"
-                                        data-component-code="${row?.['component_code'] || ''}"
-                                        data-component-name="${row?.['component_name'] || ''}"
-                                        data-component-des="${row?.['component_des'] || ''}"
-                                >
-                                    <span class="icon"><i class="bi bi-arrow-left"></i></span>
-                                </button>`;
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal-part-mapping"
+                                        type="button">
+                                    <span class="icon"><i class="fa-solid fa-link"></i></span>
+                                </button>
+                                <i ${JSON.stringify(row?.['product_mapped_data']) ? '' : 'hidden'} class="fa-solid fa-check text-success is-mapped-icon"></i>
+                                <script class="script-data-mapping">${JSON.stringify(row?.['product_mapped_data']) || ''}</script>`;
                     }
                 },
                 {
                     className: 'text-center w-5',
                     render: (data, type, row) => {
-                        return `<button class="btn btn-outline-light btn-open-modal-mapping"
+                        return `<button type="button"
                                         ${option === 'detail' ? 'disabled' : ''}
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal-part-mapping"
-                                        type="button">
-                                    <i class="fa-regular fa-rectangle-list"></i>
-                                </button>
-                                <script class="script-data-mapping"></script>`;
+                                        class="btn-icon btn-rounded flush-soft-hover btn btn-flush-primary return-component-btn"
+                                        data-component-id="${row?.['component_id'] || ''}"
+                                        data-component-code="${row?.['component_code'] || ''}"
+                                        data-component-name="${row?.['component_name'] || ''}"
+                                        data-component-des="${row?.['component_des'] || ''}"
+                                >
+                                    <span class="icon"><i class="fa-solid fa-left-long"></i></span>
+                                </button>`;
                     }
                 },
             ]
@@ -696,7 +697,12 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-90',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-secondary">${row?.['code']}</span><br><span class="fw-bold">${row?.['title']}</span><br><span class="small">${row?.['description'] || ''}</span>`
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br>
+                                <a data-bs-toggle="collapse" href=".d6_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d6_${row?.['id']}">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <span>${row?.['title']}</span>
+                                <br><div class="collapse d6_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 }
             ]
@@ -1084,7 +1090,10 @@ class ProductModificationPageFunction {
                     'product_title': component_product_data?.['title'] || '',
                     'product_des': component_product_data?.['description'] || '',
                     'general_traceability_method': component_product_data?.['general_traceability_method'],
-                    'product_quantity': item?.['component_quantity']
+                    'product_quantity': item?.['component_quantity'],
+                    'is_mapped': item?.['is_mapped'],
+                    'product_mapped_data': item?.['product_mapped_data'] || {},
+                    'fair_value': item?.['fair_value'],
                 })
             }
             else {
@@ -1094,7 +1103,10 @@ class ProductModificationPageFunction {
                     'component_id': item?.['id'] || '',
                     'component_name': component_text_data?.['title'] || '',
                     'component_des': component_text_data?.['description'] || '',
-                    'component_quantity': item?.['component_quantity']
+                    'component_quantity': item?.['component_quantity'],
+                    'is_mapped': item?.['is_mapped'],
+                    'product_mapped_data': item?.['product_mapped_data'],
+                    'fair_value': item?.['fair_value'],
                 })
             }
         }
@@ -1132,26 +1144,25 @@ class ProductModificationPageFunction {
                     className: 'text-center w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
-                            <input type="radio"
-                            name="product-modified-select"
-                            class="form-check-input product-modified-select"
-                            data-product-id="${row?.['id']}"
-                            data-product-code="${row?.['code']}"
-                            data-product-title="${row?.['title']}"
-                            data-product-description="${row?.['description'] || ''}"
-                            data-product-general-traceability-method="${row?.['general_traceability_method']}"
-                            >
-                        </div>`;
+                                    <input type="radio"
+                                    name="product-mapping-select"
+                                    class="form-check-input product-mapping-select"
+                                    data-product-id="${row?.['id']}"
+                                    data-product-code="${row?.['code']}"
+                                    data-product-title="${row?.['title']}"
+                                    data-product-description="${row?.['description'] || ''}"
+                                    data-product-general-traceability-method="${row?.['general_traceability_method']}">
+                                </div>`;
                     }
                 },
                 {
                     className: 'w-90',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-primary">${row?.['code']}</span><br>
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br>
                                 <a data-bs-toggle="collapse" href=".d5_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d5_${row?.['id']}">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
-                                <span class="text-primary">${row?.['title']}</span>
+                                <span>${row?.['title']}</span>
                                 <br><div class="collapse d5_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 }
@@ -1160,19 +1171,41 @@ class ProductModificationPageFunction {
     }
     static ParseDataMapping() {
         const new_product_space = pageElements.$modal_part_mapping.find('#new-product-space')
-        return {
-            'code': new_product_space.find('#product-code').val(),
-            'title': new_product_space.find('#product-name').val(),
-            'description': new_product_space.find('#product-des').val(),
-            'product_type': new_product_space.find('#product-type').val(),
-            'general_product_category': new_product_space.find('#product-category').val(),
-            'general_uom_group': new_product_space.find('#product-uom-group').val(),
-            'general_traceability_method': new_product_space.find('#product-general-traceability-method').val(),
-            'inventory_uom': new_product_space.find('#product-inventory-uom').val(),
-            'valuation_method': new_product_space.find('#product-valuation-method').val(),
-            'fair_value': new_product_space.find('#product-fair-value').val(),
+        if (pageElements.$modal_part_mapping.find('#new-product').prop('checked')) {
+            if (
+                new_product_space.find('#product-name').val() &&
+                new_product_space.find('#product-type').val() &&
+                new_product_space.find('#product-category').val() &&
+                new_product_space.find('#product-uom-group').val() &&
+                new_product_space.find('#product-general-traceability-method').val() &&
+                new_product_space.find('#product-inventory-uom').val() &&
+                new_product_space.find('#product-valuation-method').val()
+            ) {
+                return {
+                    'type': 'new',
+                    'code': new_product_space.find('#product-code').val(),
+                    'title': new_product_space.find('#product-name').val(),
+                    'description': new_product_space.find('#product-des').val(),
+                    'product_type': new_product_space.find('#product-type').val(),
+                    'general_product_category': new_product_space.find('#product-category').val(),
+                    'general_uom_group': new_product_space.find('#product-uom-group').val(),
+                    'general_traceability_method': new_product_space.find('#product-general-traceability-method').val(),
+                    'inventory_uom': new_product_space.find('#product-inventory-uom').val(),
+                    'valuation_method': new_product_space.find('#product-valuation-method').val(),
+                    'fair_value': pageElements.$modal_part_mapping.find('#product-fair-value').attr('value'),
+                }
+            }
         }
-
+        if (pageElements.$modal_part_mapping.find('#existing-product').prop('checked')) {
+            if (pageElements.$table_select_product_mapping.find('tbody tr .product-mapping-select:checked').attr('data-product-id')) {
+                return {
+                    'type': 'map',
+                    'product_mapped': pageElements.$table_select_product_mapping.find('tbody tr .product-mapping-select:checked').attr('data-product-id'),
+                    'fair_value': pageElements.$modal_part_mapping.find('#product-fair-value').attr('value'),
+                }
+            }
+        }
+        return {}
     }
 }
 
@@ -1217,7 +1250,8 @@ class ProductModificationHandler {
                         'description': $(ele).find('.component-des').text(),
                     },
                     'component_product_id': $(ele).find('.component-title').attr('data-product-id') || null,
-                    'component_quantity': $(ele).find('.component-quantity').val()
+                    'component_quantity': $(ele).find('.component-quantity').val(),
+                    'product_mapped_data': $(ele).find('.script-data-mapping').text() ? JSON.parse($(ele).find('.script-data-mapping').text()) : {},
                 })
             }
         })
@@ -1677,7 +1711,7 @@ class ProductModificationEventHandler {
             let component_des = $(this).attr('data-component-des')
             if (component_quantity > 0) {
                 let data_return = {
-                    'id': component_id,
+                    'component_id': component_id,
                     'component_code': component_code,
                     'component_name': component_name,
                     'component_des': component_des,
@@ -1718,18 +1752,56 @@ class ProductModificationEventHandler {
         $(document).on('change', 'input[name="create-product-mapping"]', function () {
             $('#new-product-space').prop('hidden', !$('#new-product').prop('checked'))
             $('#existing-product-space').prop('hidden', !$('#existing-product').prop('checked'))
-            if ($('#existing-product').prop('checked')) {
-                ProductModificationPageFunction.LoadTableProductMapping()
-            }
         })
         // mapping
         $(document).on('click', '.btn-open-modal-mapping', function () {
             pageVariables.removed_component_row = $(this).closest('tr')
-            let data_removed_component = $(this).closest('tr').find('.script-data-mapping').text() ? JSON.parse($(this).closest('tr').find('.script-data-mapping').text()) : {}
+            const new_product_space = pageElements.$modal_part_mapping.find('#new-product-space')
+            UsualLoadPageFunction.LoadProductType({
+                element: new_product_space.find('#product-type'),
+                data_url: new_product_space.find('#product-type').attr('data-url')
+            })
+            UsualLoadPageFunction.LoadProductCategory({
+                element: new_product_space.find('#product-category'),
+                data_url: new_product_space.find('#product-category').attr('data-url')
+            })
+            UsualLoadPageFunction.LoadUOMGroup({
+                element: new_product_space.find('#product-uom-group'),
+                data_url: new_product_space.find('#product-uom-group').attr('data-url')
+            })
+            UsualLoadPageFunction.LoadUOM({
+                element: new_product_space.find('#product-inventory-uom'),
+                data_params: {'group_id': new_product_space.find('#product-uom-group').val()},
+                data_url: new_product_space.find('#product-inventory-uom').attr('data-url')
+            })
+            ProductModificationPageFunction.LoadTableProductMapping()
         })
         pageElements.$btn_accept_part_mapping.on('click', function () {
             let data_removed_component = ProductModificationPageFunction.ParseDataMapping()
-             pageVariables.removed_component_row.find('.script-data-mapping').text(JSON.stringify(data_removed_component))
+            console.log(data_removed_component)
+            if (Object.keys(data_removed_component).length !== 0) {
+                pageVariables.removed_component_row.find('.script-data-mapping').text(JSON.stringify(data_removed_component))
+                pageVariables.removed_component_row.find('.is-mapped-icon').prop('hidden', false)
+                pageElements.$modal_part_mapping.modal('hide')
+            }
+            else {
+                $.fn.notifyB({description: 'Missing product mapping data'}, 'failure')
+            }
+        })
+        $('#product-uom-group').on('change', function () {
+            const new_product_space = pageElements.$modal_part_mapping.find('#new-product-space')
+            if ($(this).val()) {
+                UsualLoadPageFunction.LoadUOM({
+                    element: new_product_space.find('#product-inventory-uom'),
+                    data_params: {'group_id': new_product_space.find('#product-uom-group').val()},
+                    data_url: new_product_space.find('#product-inventory-uom').attr('data-url')
+                })
+                new_product_space.find('#product-inventory-uom').prop('disabled', false)
+            }
+            else {
+                new_product_space.find('#product-inventory-uom').empty()
+                new_product_space.find('#product-inventory-uom').prop('disabled', true)
+            }
         })
     }
 }

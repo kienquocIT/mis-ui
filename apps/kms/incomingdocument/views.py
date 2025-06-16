@@ -4,7 +4,9 @@ from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework import status
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties, SECURITY_LV
+from rest_framework.views import APIView
+
+from apps.shared import mask_view, ServerAPI, ApiURL, InputMappingProperties, SECURITY_LV, SYSTEM_STATUS
 
 
 def create_quotation(request, url, msg):
@@ -28,7 +30,7 @@ class IncomingDocumentCreate(View):
         auth_require=True,
         template='kms/incomingdocument/create.html',
         menu_active='menu_incoming_document',
-        breadcrumb='INCOMING_DOCUMENT_CREATE',
+        breadcrumb='INCOMING_DOCUMENT_CREATE_PAGE',
         icon_cls='fas fa-file-invoice-dollar',
         icon_bg='bg-violet',
     )
@@ -86,4 +88,68 @@ class IncomingDocumentCreate(View):
         }
         return ctx, status.HTTP_200_OK
 
+
+class IncomingDocumentList(View):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        template='kms/incomingdocument/list.html',
+        menu_active='',
+        breadcrumb='INCOMING_DOCUMENT_LIST'
+    )
+    def get(self, request, *args, **kwargs):
+        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
+
+
+class IncomingDocumentListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.INCOMING_DOCUMENT_LIST).get(params)
+        return resp.auto_return(key_success='incoming_document_list')
+
+
+class IncomingDocumentDetail(View):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        template='kms/incomingdocument/detail.html',
+        menu_active='',
+        breadcrumb='INCOMING_DOCUMENT_DETAIL_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'pk': pk, 'lst_lv': SECURITY_LV}, status.HTTP_200_OK
+
+
+class IncomingDocumentDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.INCOMING_DOCUMENT_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return()
+
+
+class IncomingDocumentEdit(View):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        template='kms/incomingdocument/edit.html',
+        menu_active='',
+        breadcrumb='INCOMING_DOCUMENT_UPDATE_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.INCOMING_DOCUMENT_DATA_MAP
+        return {
+           'pk': pk,
+           'input_mapping_properties': input_mapping_properties,
+           'form_id': 'frm_document_approval',
+           'lst_lv': SECURITY_LV
+        }, status.HTTP_200_OK
 

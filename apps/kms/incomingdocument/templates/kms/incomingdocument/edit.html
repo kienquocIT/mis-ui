@@ -1,16 +1,15 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block title %}
-    {% trans 'Document approval create' %}
+    {% trans 'Incoming Document edit' %}
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'assets/css/kms/doc-approval/recipient-css.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/kms/incoming-doc/recipient-css.css' %}" rel="stylesheet" type="text/css"/>
 
-    <link href="{% static 'assets/css/kms/doc-approval/common.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/kms/incoming-doc/common.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
-
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="frm_document_approval">
         <span>
@@ -21,12 +20,11 @@
         </span>
     </button>
 {% endblock %}
-
 {% block pageContent %}
-    <form class="form_main" id="frm_document_approval" data-method="POST"
-          data-url="{% url 'KMSDocumentApprovalCreateAPI' %}" data-url-redirect="{% url 'KMSDocumentApprovalList' %}">
+    <form class="form_main" id="frm_document_approval" data-method="PUT"
+          data-url="{% url 'IncomingDocumentDetailAPI' data.pk %}">
         {% csrf_token %}
-        <h5 class="mb-3">INCOMING DOCUMENT</h5>
+        <input type="hidden" id="id" name="id">
         <div class="row">
             <div class="col-md-8 col-lg-6 form-group">
                 <label class="form-label required" for="txt_title">{% trans 'Name' %}</label>
@@ -82,6 +80,5 @@
 
     <script src="{% static 'assets/js/kms/incoming-doc/common.js' %}"></script>
     <script src="{% static 'assets/js/kms/incoming-doc/recipient-js.js' %}"></script>
-    <script src="{% static 'assets/js/kms/incoming-doc/create.js' %}"></script>
-
+    <script src="{% static 'assets/js/kms/incoming-doc/edit.js' %}"></script>
 {% endblock %}

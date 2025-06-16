@@ -935,6 +935,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     KMS_DOCUMENT_APPROVAL_LIST = StringUrl('kms/doc-approval/list')
     KMS_DOCUMENT_APPROVAL_DETAIL = StringUrl('kms/doc-approval/detail/{pk}')
 
+    # KMS - Incoming Document
+    INCOMING_DOCUMENT_LIST = StringUrl('kms/incoming-doc/list')
+    INCOMING_DOCUMENT_DETAIL = StringUrl('kms/incoming-doc/detail/{pk}')
+
     # sales/product modification
     PRODUCT_COMPONENT_LIST = StringUrl('product-modification/product-component-list')
     PRODUCT_MODIFIED_LIST = StringUrl('product-modification/product-modified-list')

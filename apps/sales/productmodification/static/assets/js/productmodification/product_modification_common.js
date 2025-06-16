@@ -626,7 +626,7 @@ class ProductModificationPageFunction {
                                         ${option === 'detail' ? 'disabled' : ''}
                                         data-bs-toggle="modal"
                                         data-bs-target="#modal-part-mapping"
-                                        data-mapping="${JSON.stringify(row?.['product_mapped_data']) || ''}"
+                                        data-mapping='${JSON.stringify(row?.['product_mapped_data']) || ''}'
                                         type="button">
                                     <span class="icon"><i class="fa-solid fa-link"></i></span>
                                 </button>

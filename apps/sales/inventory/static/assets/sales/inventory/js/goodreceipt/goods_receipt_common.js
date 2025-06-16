@@ -1455,6 +1455,7 @@ class GRLoadDataHandle {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
                         if (data.hasOwnProperty('product_modification_product_gr') && Array.isArray(data.product_modification_product_gr)) {
+                            GRLoadDataHandle.loadTotal(dataDetail);
                             for (let dataPMPro of data.product_modification_product_gr) {
                                 let isDetail = false;
                                 for (let dataProduct of dataProducts) {
@@ -2068,7 +2069,7 @@ class GRDataTableHandle {
                     targets: 4,
                     width: '9.11458333333%',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-import valid-num" value="${row.quantity_import}" required readonly>`;
+                        return `<input type="text" class="form-control table-row-import valid-num" value="${row?.['quantity_import'] ? row?.['quantity_import'] : 0}" required readonly>`;
                     }
                 },
                 {

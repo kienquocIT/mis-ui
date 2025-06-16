@@ -626,11 +626,11 @@ class ProductModificationPageFunction {
                                         ${option === 'detail' ? 'disabled' : ''}
                                         data-bs-toggle="modal"
                                         data-bs-target="#modal-part-mapping"
+                                        data-mapping="${JSON.stringify(row?.['product_mapped_data']) || ''}"
                                         type="button">
                                     <span class="icon"><i class="fa-solid fa-link"></i></span>
                                 </button>
-                                <i ${JSON.stringify(row?.['product_mapped_data']) ? '' : 'hidden'} class="fa-solid fa-check text-success is-mapped-icon"></i>
-                                <script class="script-data-mapping">${JSON.stringify(row?.['product_mapped_data']) || ''}</script>`;
+                                <i ${JSON.stringify(row?.['product_mapped_data']) ? '' : 'hidden'} class="fa-solid fa-check text-success is-mapped-icon"></i>`;
                     }
                 },
                 {
@@ -1251,7 +1251,7 @@ class ProductModificationHandler {
                     },
                     'component_product_id': $(ele).find('.component-title').attr('data-product-id') || null,
                     'component_quantity': $(ele).find('.component-quantity').val(),
-                    'product_mapped_data': $(ele).find('.script-data-mapping').text() ? JSON.parse($(ele).find('.script-data-mapping').text()) : {},
+                    'product_mapped_data': $(ele).find('.btn-open-modal-mapping').attr('data-mapping') ? JSON.parse($(ele).find('.btn-open-modal-mapping').attr('data-mapping')) : {},
                 })
             }
         })
@@ -1780,7 +1780,7 @@ class ProductModificationEventHandler {
             let data_removed_component = ProductModificationPageFunction.ParseDataMapping()
             console.log(data_removed_component)
             if (Object.keys(data_removed_component).length !== 0) {
-                pageVariables.removed_component_row.find('.script-data-mapping').text(JSON.stringify(data_removed_component))
+                pageVariables.removed_component_row.find('.btn-open-modal-mapping').attr('data-mapping', JSON.stringify(data_removed_component))
                 pageVariables.removed_component_row.find('.is-mapped-icon').prop('hidden', false)
                 pageElements.$modal_part_mapping.modal('hide')
             }

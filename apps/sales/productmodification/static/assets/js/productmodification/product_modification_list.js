@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    function loadARInvoiceList() {
+    function loadPMList() {
         if (!$.fn.DataTable.isDataTable('#datatable_product_modification_list')) {
             let dtb = $('#datatable_product_modification_list');
             let frm = new SetupFormSubmit(dtb);
@@ -40,7 +40,7 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-50',
+                        className: 'ellipsis-cell-lg w-35',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
@@ -59,6 +59,19 @@ $(document).ready(function () {
                         }
                     },
                     {
+                        className: 'ellipsis-cell-sm w-15',
+                        render: (data, type, row) => {
+                            let info = ''
+                            if (row?.['created_goods_issue']) {
+                                info += `<p>${$.fn.gettext('Created Goods Issue')}</p>`
+                            }
+                            if (row?.['created_goods_receipt']) {
+                                info += `<p>${$.fn.gettext('Created Goods Receipt')}</p>`
+                            }
+                            return info
+                        }
+                    },
+                    {
                         className: 'text-center w-10',
                         render: (data, type, row) => {
                             return WFRTControl.displayRuntimeStatus(row?.['system_status']);
@@ -69,31 +82,5 @@ $(document).ready(function () {
         }
     }
 
-    loadARInvoiceList();
-
-    $('#reload-invoice-status-btn').on('click', function () {
-        WindowControl.showLoading();
-        let url_loaded = $('#datatable_ar_invoice_list').attr('data-url') + `?update_status=true`
-        $.fn.callAjax(url_loaded, 'GET').then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    WindowControl.hideLoading();
-                    $.fn.notifyB({description: "Update successfully"}, 'success')
-                    setTimeout(() => {
-                        window.location.replace($('#datatable_ar_invoice_list').attr('data-url-redirect'));
-                        location.reload.bind(location);
-                    }, 1000);
-                }
-            },
-            (errs) => {
-                setTimeout(
-                    () => {
-                        WindowControl.hideLoading();
-                    },
-                    1000
-                )
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            })
-    })
+    loadPMList();
 })

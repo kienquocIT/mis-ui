@@ -94,10 +94,6 @@ msgid "Expense items"
 msgstr "Danh mục phí"
 
 #
-msgid "UoM"
-msgstr "Đơn vị"
-
-#
 msgid "Quantity"
 msgstr "Số lượng"
 

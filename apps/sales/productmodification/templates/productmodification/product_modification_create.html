@@ -3,12 +3,16 @@
 {% load static %}
 {% block title %}{% trans 'Product modification' %}{% endblock %}
 {% block cssHeader %}
-    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <style>
+    .tr-border-left-green {
+        border-left: 4px solid #28a745 !important;
+    }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-create-product-modification">
+    <button data-bs-toggle="modal" data-bs-target="#modal-alert-presave" class="btn btn-outline-primary" type="submit" form="form-create-product-modification">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">

@@ -5,9 +5,9 @@
         <table class="table nowrap w-100" id="table-current-product-modified">
             <thead class="bg-secondary-light-5">
                 <tr>
-                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 30px"></th>
                     <th style="min-width: 200px">
-                        <button id="btn-open-modal-product" class="btn btn-xs btn-gradient-primary" type="button" data-bs-toggle="modal" data-bs-target="#select-product-modified-modal">
+                        <button id="btn-open-modal-product" class="btn btn-xs btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#select-product-modified-modal">
                             <span>
                                 <span class="icon">
                                     <span class="feather-icon"><i class="fa-solid fa-circle-check"></i></span>
@@ -17,7 +17,7 @@
                         </button>
                     </th>
                     <th style="min-width: 100px">
-                        <button type="button" class="btn btn-xs btn-gradient-primary"
+                        <button type="button" class="btn btn-xs btn-primary"
                                 id="btn-modal-picking-product"
                                 data-url="{% url 'CustomerListAPI' %}"
                                 data-bs-toggle="modal"
@@ -36,23 +36,23 @@
     </div>
 </div>
 <div class="row">
-    <div class="main-space col-12 col-md-6 col-lg-6 mt-3">
-        <div class="border rounded p-2 h-100" style="min-height: 89vh">
+    <div class="main-space col-12 col-md-6 col-lg-6 border-right mt-3">
+        <div class="p-2 h-100" style="min-height: 89vh">
             <div class="d-flex justify-content-between align-items-center">
-                <span class="fw-bold text-green h6">{% trans "Current component" %}</span>
+                <span class="h5 text-primary">{% trans "Current component" %}</span>
                 <a href="#" class="layout-btn"><i class="bi bi-square-half"></i></a>
             </div>
             <table class="table nowrap w-100" id="table-product-current-component">
                 <thead class="bg-light">
                     <tr>
-                        <th style="min-width: 50px"></th>
+                        <th style="min-width: 30px"></th>
                         <th style="min-width: 250px">{% trans 'Component' %}</th>
                         <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                        <th style="min-width: 50px">{% trans 'Remove' %}</th>
+                        <th style="min-width: 30px"></th>
                     </tr>
                 </thead>
             </table>
-            <button hidden type="button" class="btn btn-xs btn-success mt-2" id="insert-component-btn" data-bs-toggle="offcanvas" data-bs-target="#insert-component-offcanvas">
+            <button hidden type="button" class="btn btn-xs btn-primary mt-2" id="insert-component-btn" data-bs-toggle="offcanvas" data-bs-target="#insert-component-offcanvas">
                 <span>
                     <span class="icon">
                         <span class="feather-icon">
@@ -65,18 +65,19 @@
         </div>
     </div>
     <div class="main-space col-12 col-md-6 col-lg-6 mt-3">
-        <div class="border rounded p-2 h-100" style="min-height: 89vh">
+        <div class="p-2 h-100" style="min-height: 89vh">
             <div class="d-flex justify-content-between align-items-center">
-                <span class="fw-bold text-danger h6">{% trans "Removed component" %}</span>
+                <span class="h5 text-danger">{% trans "Removed component" %}</span>
                 <a href="#" class="layout-btn"><i class="bi bi-square-half"></i></a>
             </div>
             <table class="table nowrap w-100" id="table-product-removed-component">
                 <thead class="bg-light">
                     <tr>
-                        <th style="min-width: 50px"></th>
+                        <th style="min-width: 30px"></th>
                         <th style="min-width: 250px">{% trans 'Component' %}</th>
                         <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                        <th style="min-width: 50px">{% trans 'Return' %}</th>
+                        <th style="min-width: 100px">{% trans 'Mapping' %}</th>
+                        <th style="min-width: 30px"></th>
                     </tr>
                 </thead>
             </table>

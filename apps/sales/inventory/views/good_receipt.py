@@ -12,6 +12,7 @@ GR_TYPE = (
     (0, GRMsg.TYPE_FOR_PO),
     (1, GRMsg.TYPE_FOR_IA),
     (2, GRMsg.TYPE_FOR_PRODUCT),
+    (3, GRMsg.TYPE_FOR_PM),
 )
 
 

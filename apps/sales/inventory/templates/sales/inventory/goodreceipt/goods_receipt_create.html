@@ -199,7 +199,7 @@
                                                 id="box-good-receipt-product-modified"
                                                 data-url="{% url 'ProductModificationDDListAPI' %}"
                                                 data-method="GET"
-                                                name="product_modification"
+                                                name="product_modification_id"
                                                 data-keyResp="product_modification_dd_list"
                                         >
                                         </select>
@@ -645,7 +645,7 @@
             data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
             data-md-bom="{% url 'BOMOrderListAPI' %}"
             data-md-product="{% url 'ProductForSaleListAPI' %}"
-            data-url-pm-product="{% url 'ProductModificationProductGRListAPI' %}"
+            data-pm-product="{% url 'ProductModificationProductGRListAPI' %}"
     >
 {% endblock %}
 

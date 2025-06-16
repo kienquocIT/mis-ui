@@ -335,7 +335,7 @@ class GRLoadDataHandle {
     static loadCallAjaxPMProduct() {
         WindowControl.showLoading();
         $.fn.callAjax2({
-                'url': GRLoadDataHandle.urlEle.attr('data-url-pm-product'),
+                'url': GRLoadDataHandle.urlEle.attr('data-pm-product'),
                 'method': "GET",
                 'data': {'product_modified_id': GRLoadDataHandle.PMSelectEle.val()},
                 'isDropdown': true,
@@ -426,8 +426,12 @@ class GRLoadDataHandle {
         GRLoadDataHandle.$scrollSerial[0].setAttribute('hidden', 'true');
         GRDataTableHandle.tableWH.DataTable().clear().draw();
         GRDataTableHandle.tablePR.DataTable().clear().draw();
-        if (dataRow?.['pr_products_data'].length > 0) { // If PO have PR
-            GRDataTableHandle.tablePR.DataTable().rows.add(dataRow?.['pr_products_data']).draw();
+        let prProductData = [];
+        if (dataRow?.['pr_products_data']) {
+            prProductData = dataRow?.['pr_products_data'];
+        }
+        if (prProductData.length > 0) { // If PO have PR
+            GRDataTableHandle.tablePR.DataTable().rows.add(prProductData).draw();
             GRLoadDataHandle.$scrollPR[0].removeAttribute('hidden');
         } else { // If PO doesn't have PR
             // Check if product have inventory choice
@@ -1273,6 +1277,7 @@ class GRLoadDataHandle {
             '1': GRLoadDataHandle.transEle.attr('data-for-po'),
             '2': GRLoadDataHandle.transEle.attr('data-for-ia'),
             '3': GRLoadDataHandle.transEle.attr('data-for-production'),
+            '4': GRLoadDataHandle.transEle.attr('data-for-pm'),
         }
         let idAreaShow = String(data?.['goods_receipt_type'] + 1);
         FormElementControl.loadInitS2(GRLoadDataHandle.typeSelectEle, GRLoadDataHandle.dataTypeGr);
@@ -1286,15 +1291,18 @@ class GRLoadDataHandle {
         if (data?.['is_no_warehouse'] === true) {
             GRLoadDataHandle.$isNoWHEle.trigger('click');
         }
-        if (idAreaShow === '1') {  // GR for PO
+        // Cho PO
+        if (idAreaShow === '1') {
             FormElementControl.loadInitS2(GRLoadDataHandle.POSelectEle, [data?.['purchase_order_data']], {'receipt_status__in': [0, 1, 2].join(','), 'system_status': 3});
             FormElementControl.loadInitS2(GRLoadDataHandle.supplierSelectEle, [data?.['supplier_data']]);
             GRLoadDataHandle.loadDataShowPR(data?.['purchase_requests']);
         }
-        if (idAreaShow === '2') {  // GR for IA
+        // Cho IA
+        if (idAreaShow === '2') {
             FormElementControl.loadInitS2(GRLoadDataHandle.IASelectEle, [data?.['inventory_adjustment_data']], {'state': 2});
         }
-        if (idAreaShow === '3') {  // GR for Production
+        // Cho Production
+        if (idAreaShow === '3') {
             if (data?.['production_report_type'] === 0) {
                 FormElementControl.loadInitS2(GRLoadDataHandle.$boxProductionOrder, [data?.['production_order_data']], {'system_status': 3});
             }
@@ -1302,6 +1310,10 @@ class GRLoadDataHandle {
                 FormElementControl.loadInitS2(GRLoadDataHandle.$boxWorkOrder, [data?.['work_order_data']], {'system_status': 3});
             }
             FormElementControl.loadInitS2(GRLoadDataHandle.$boxProductionReport, data?.['production_reports_data']);
+        }
+        // Cho product modification
+        if (idAreaShow === '4') {
+            FormElementControl.loadInitS2(GRLoadDataHandle.PMSelectEle, [data?.['product_modification_data']]);
         }
         GRDataTableHandle.tableLineDetailPO.DataTable().rows.add(data?.['gr_products_data']).draw();
         GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailPO);
@@ -1426,6 +1438,40 @@ class GRLoadDataHandle {
                                 GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
                             }
                         }
+                    }
+                }
+            )
+        }
+        if (typeGR === '4' && GRLoadDataHandle.PMSelectEle.val()) {
+            WindowControl.showLoading();
+            $.fn.callAjax2({
+                    'url': GRLoadDataHandle.urlEle.attr('data-pm-product'),
+                    'method': "GET",
+                    'data': {'product_modified_id': GRLoadDataHandle.PMSelectEle.val()},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('product_modification_product_gr') && Array.isArray(data.product_modification_product_gr)) {
+                            for (let dataPMPro of data.product_modification_product_gr) {
+                                let isDetail = false;
+                                for (let dataProduct of dataProducts) {
+                                    if (dataProduct?.['product_modification_product_id'] === dataPMPro?.['product_modification_product_id']) {
+                                        dataProduct['gr_remain_quantity'] = dataPMPro?.['gr_remain_quantity'];
+                                        isDetail = true;
+                                        break;
+                                    }
+                                }
+                                if (isDetail === false) {
+                                    dataProducts.push(dataPMPro);
+                                }
+                            }
+                            GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+                            GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
+                        }
+                        WindowControl.hideLoading();
                     }
                 }
             )
@@ -1560,8 +1606,8 @@ class GRDataTableHandle {
                         if (row?.['production_order_id']) {  // PRODUCTION
                             targetID = row?.['production_order_id'];
                         }
-                        if (row?.['product_modified_product_id']) {  // PRODUCT MODIFICATION
-                            targetID = row?.['product_modified_product_id'];
+                        if (row?.['product_modification_product_id']) {  // PRODUCT MODIFICATION
+                            targetID = row?.['product_modification_product_id'];
                         }
                         if (targetID) {
                             return `<div class="form-check form-check-lg d-flex align-items-center">
@@ -1619,7 +1665,6 @@ class GRDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                // GRLoadDataHandle.loadEventRadio(GRDataTableHandle.tablePOProduct);
                 GRDataTableHandle.dtbPOProductHDCustom();
             },
         });
@@ -2605,8 +2650,10 @@ class GRStoreDataHandle {
             let $row = tablePO.DataTable().row(rowIndex);
             let rowData = $row.data();
             let isPR = false;
-            if (rowData?.['pr_products_data'].length > 0) {
-                isPR = true;
+            if (rowData?.['pr_products_data']) {
+                if (rowData?.['pr_products_data'].length > 0) {
+                    isPR = true;
+                }
             }
             let checked = row.querySelector('.table-row-checkbox:checked');
             if (checked) {
@@ -2668,7 +2715,7 @@ class GRSubmitHandle {
 
     static setupDataShowLineDetail(is_submit = false) {
         let result = [];
-        if (GRLoadDataHandle.POSelectEle.val() || GRLoadDataHandle.IASelectEle.val() || GRLoadDataHandle.$boxProductionOrder.val() || GRLoadDataHandle.$boxWorkOrder.val()) {
+        if (GRLoadDataHandle.POSelectEle.val() || GRLoadDataHandle.IASelectEle.val() || GRLoadDataHandle.$boxProductionOrder.val() || GRLoadDataHandle.$boxWorkOrder.val() || GRLoadDataHandle.PMSelectEle.val()) {
             let table = GRDataTableHandle.tablePOProduct;
             let order = 0;
             table.DataTable().rows().every(function () {

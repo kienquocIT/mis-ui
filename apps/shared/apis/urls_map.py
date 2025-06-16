@@ -941,3 +941,5 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_LIST_BY_PRODUCT = StringUrl('product-modification/warehouse-list-by-product')
     PRODUCT_LOT_LIST = StringUrl('product-modification/product-lot-list')
     PRODUCT_SERIAL_LIST = StringUrl('product-modification/product-serial-list')
+    PRODUCT_MODIFIED_DROPDOWN_LIST = StringUrl('product-modification/dropdown/list')
+    PRODUCT_MODIFIED_PRODUCT_GR_LIST = StringUrl('product-modification/product-modification-product-gr/list')

@@ -5,6 +5,7 @@ class GRLoadDataHandle {
     static POSelectEle = $('#box-good-receipt-purchase-order');
     static supplierSelectEle = $('#box-good-receipt-supplier');
     static IASelectEle = $('#box-good-receipt-inventory-adjustment');
+    static PMSelectEle = $('#box-good-receipt-product-modified');
     static $boxTypeReport = $('#box-report-type');
     static $btnSR = $('#btn-save-production-report');
     static $boxProductionOrder = $('#box-production-order');
@@ -20,6 +21,10 @@ class GRLoadDataHandle {
     static transEle = $('#app-trans-factory');
     static urlEle = $('#url-factory');
     static dataTypeGr = [
+        {
+            'id': 4,
+            'title': GRLoadDataHandle.transEle.attr('data-for-pm')
+        },
         {
             'id': 3,
             'title': GRLoadDataHandle.transEle.attr('data-for-production')
@@ -192,6 +197,11 @@ class GRLoadDataHandle {
                 GRDataTableHandle.tablePR[0].querySelector('.th-custom').innerHTML = GRLoadDataHandle.transEle.attr('data-production-report');
             }
         }
+        if (type === "4") {
+            if (!GRLoadDataHandle.PMSelectEle.val()) {
+                FormElementControl.loadInitS2(GRLoadDataHandle.PMSelectEle, [], {}, null, false, {'res1': 'code', 'res2': 'title'});
+            }
+        }
         GRDataTableHandle.dataTableGoodReceiptPOProduct();
         GRDataTableHandle.dataTableGoodReceiptPR();
         GRDataTableHandle.dataTableGoodReceiptWH();
@@ -278,7 +288,6 @@ class GRLoadDataHandle {
     };
 
     static loadChangePO($ele) {
-        // GRLoadDataHandle.loadMoreInformation($ele);
         GRDataTableHandle.tableLineDetailPO.DataTable().clear().draw();
         GRCalculateHandle.calculateTotal(GRDataTableHandle.tableLineDetailPO[0]);
         GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
@@ -310,13 +319,6 @@ class GRLoadDataHandle {
                         if (data) {
                             if (data.hasOwnProperty('purchase_order_product_gr') && Array.isArray(data.purchase_order_product_gr)) {
                                 let dataValid = data.purchase_order_product_gr;
-                                // for (let dataPOPro of data.purchase_order_product_gr) {
-                                //     if (dataPOPro?.['product_data'].hasOwnProperty('product_choice') && Array.isArray(dataPOPro?.['product_data']?.['product_choice'])) {
-                                //         if (dataPOPro?.['product_data']?.['product_choice'].includes(1)) {  // has choice allow inventory
-                                //             dataValid.push(dataPOPro);
-                                //         }
-                                //     }
-                                // }
                                 GRLoadDataHandle.initPOProductEle.val(JSON.stringify(dataValid));
                                 GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                                 GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataValid).draw();
@@ -327,6 +329,29 @@ class GRLoadDataHandle {
                 )
             }
         }
+        return true;
+    };
+
+    static loadCallAjaxPMProduct() {
+        WindowControl.showLoading();
+        $.fn.callAjax2({
+                'url': GRLoadDataHandle.urlEle.attr('data-url-pm-product'),
+                'method': "GET",
+                'data': {'product_modified_id': GRLoadDataHandle.PMSelectEle.val()},
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('product_modification_product_gr') && Array.isArray(data.product_modification_product_gr)) {
+                        GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+                        GRDataTableHandle.tablePOProduct.DataTable().rows.add(data?.['product_modification_product_gr']).draw();
+                    }
+                    WindowControl.hideLoading();
+                }
+            }
+        )
         return true;
     };
 
@@ -1535,6 +1560,9 @@ class GRDataTableHandle {
                         if (row?.['production_order_id']) {  // PRODUCTION
                             targetID = row?.['production_order_id'];
                         }
+                        if (row?.['product_modified_product_id']) {  // PRODUCT MODIFICATION
+                            targetID = row?.['product_modified_product_id'];
+                        }
                         if (targetID) {
                             return `<div class="form-check form-check-lg d-flex align-items-center">
                                     <input 
@@ -2683,6 +2711,7 @@ class GRSubmitHandle {
                             'ia_item_id',
                             'production_order_id',
                             'work_order_id',
+                            'product_modification_product_id',
                             'product_id',
                             'product_data',
                             'uom_id',
@@ -2910,6 +2939,15 @@ class GRSubmitHandle {
                         }
                     }
                     _form.dataForm['production_reports_data'] = dataList;
+                }
+            }
+        }
+        if (type === '4') {
+            if (GRLoadDataHandle.PMSelectEle.val()) {
+                _form.dataForm['product_modification_id'] = GRLoadDataHandle.PMSelectEle.val();
+                let data = SelectDDControl.get_data_from_idx(GRLoadDataHandle.PMSelectEle, GRLoadDataHandle.PMSelectEle.val());
+                if (data) {
+                    _form.dataForm['product_modification_data'] = data;
                 }
             }
         }

@@ -3,6 +3,7 @@ from apps.sales.productmodification.views import (
     ProductModificationList, ProductModificationCreate, ProductModificationDetail, ProductModificationUpdate,
     ProductModificationListAPI, ProductModificationDetailAPI, WarehouseListByProductAPI, ProductSerialListAPI,
     ProductModifiedListAPI, ProductComponentListAPI, ComponentInsertedListAPI, ProductLotListAPI,
+    ProductModificationDDListAPI, ProductModificationProductGRListAPI,
 )
 
 urlpatterns = [
@@ -19,4 +20,10 @@ urlpatterns = [
     path('product-lot-list/api', ProductLotListAPI.as_view(), name='ProductLotListAPI'),
     path('product-serial-list/api', ProductSerialListAPI.as_view(), name='ProductSerialListAPI'),
     path('product-inserted-list/api', ComponentInsertedListAPI.as_view(), name='ComponentInsertedListAPI'),
+    path('dropdown/api', ProductModificationDDListAPI.as_view(), name='ProductModificationDDListAPI'),
+    path(
+        'product-modification-product-gr/api',
+        ProductModificationProductGRListAPI.as_view(),
+        name='ProductModificationProductGRListAPI'
+    ),
 ]

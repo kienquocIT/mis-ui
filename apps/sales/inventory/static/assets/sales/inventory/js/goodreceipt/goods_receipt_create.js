@@ -227,6 +227,13 @@ $(function () {
             $('#btn-edit-product-good-receipt').click();
         });
 
+        // PRODUCT MODIFICATION BEGIN
+        GRLoadDataHandle.PMSelectEle.on('change', function () {
+            GRLoadDataHandle.loadClearModal();
+            GRLoadDataHandle.loadCallAjaxPMProduct();
+            $('#btn-edit-product-good-receipt').click();
+        });
+
 // SUBMIT FORM
         SetupFormSubmit.validate(GRLoadDataHandle.$form, {
             rules: {

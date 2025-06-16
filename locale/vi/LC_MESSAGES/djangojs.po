@@ -418,8 +418,8 @@ msgid "Export to Excel"
 msgstr "Xuất dữ liệu ra Excel"
 
 #
-msgid "Auto-generate mode if blank"
-msgstr "Chế độ tự sinh mã nếu để trống"
+msgid "Auto-generate if blank (based on config)"
+msgstr "Chế độ tự sinh (theo cấu hình) nếu để trống"
 
 #
 msgid "Default"
@@ -476,3 +476,11 @@ msgstr "Tên thành phần"
 #
 msgid "Description"
 msgstr "Mô tả"
+
+#
+msgid "Created Goods Issue"
+msgstr "Đã tạo phiếu Xuất Hàng"
+
+#
+msgid "Created Goods Receipt"
+msgstr "Đã tạo phiếu Nhập Hàng"

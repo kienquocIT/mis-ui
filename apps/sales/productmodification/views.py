@@ -84,9 +84,7 @@ class ProductModificationUpdate(View):
         menu_active='menu_product_modification_detail',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
         return {
-            'invoice_signs': resp.result[0] if len(resp.result) > 0 else '',
             'form_id': 'form-detail-product-modification',
         }, status.HTTP_200_OK
 

@@ -3591,7 +3591,10 @@ class WFRTControl {
             WFRTControl.changePropertiesElementIsZone($(ele$).next('.select2-container').find('.select2-selection'), config)
     }
 
-    static displayRuntimeStatus(status) {
+    static displayRuntimeStatus(status, is_system_auto_create=false) {
+        if (is_system_auto_create) {
+            return `<span class="badge fs-8 bg-blue-light-1">${$.fn.gettext('Create automatically')}</span>`;
+        }
         let sttTxt = {
             0: $.fn.transEle.attr('data-draft'),
             1: $.fn.transEle.attr('data-created'),
@@ -6415,10 +6418,7 @@ class DocumentControl {
                     ).removeClass('hidden');
                 }
                 if (detailData?.['system_auto_create']) {
-                    $breadcrumbCode.append(`<span class="badge-status ml-1">
-                                                <span class="badge badge-blue badge-indicator"></span>
-                                                <span class="small text-blue">${$.fn.gettext('Create automatically')}</span>
-                                            </span>`)
+                    $breadcrumbCode.append(`<span class="badge fs-8 bg-blue-light-1 ml-1">${$.fn.gettext('Create automatically')}</span>`)
                 }
             }
         }
@@ -7535,15 +7535,13 @@ class FileControl {
                             }
                             const remarks = result.value;
                             const $folderId = opts?.['element_folder'];
-                            // if ($folderId && !$x.fn.checkUUID4($folderId.val())) {
-                            //     await Swal.fire({
-                            //         icon: 'error',
-                            //         title: $.fn.gettext('Folder is empty'),
-                            //         text: $.fn.gettext('Please select folder before upload')
-                            //     });
-                            //     clsThis.ui_remove_line_file_by_id(fileId);
-                            //     return {state: false, data: 'CANCEL'};
-                            // }
+
+                            const finalExtend = {
+                                state: true,
+                                data: {
+                                    'remarks': remarks
+                                }
+                            };
                             // check select folder
                             if(opts?.['select_folder'] && $folderId.val()){
                                 const fruit = await Swal.fire({
@@ -7564,43 +7562,9 @@ class FileControl {
                                     clsThis.ui_remove_line_file_by_id(fileId);
                                     return {state: false, data: 'CANCEL'};
                                 }
+                                finalExtend.data.folder = $folderId.val()
                             }
-                            // return await Swal.fire({
-                            //     input: "text",
-                            //     title: groupEle.attr('data-msg-description-file'),
-                            //     html: fileData.name,
-                            //     inputAttributes: {
-                            //         autocapitalize: "off"
-                            //     },
-                            //     cancelButtonText: $.fn.transEle.attr('data-cancel'),
-                            //     showCancelButton: true,
-                            //     allowOutsideClick: false,
-                            //     preConfirm: (remark) => {
-                            //         return {'remarks': remark}
-                            //     },
-                            // }).then(
-                            //     async (result) => {
-                            //         if (result.isConfirmed) {
-                            //             return {
-                            //                 'state': true,
-                            //                 'data': result.value,
-                            //             }
-                            //         } else {
-                            //             clsThis.ui_remove_line_file_by_id(fileId);
-                            //             return {
-                            //                 'state': false,
-                            //                 'data': 'CANCEL',
-                            //             }
-                            //         }
-                            //     }
-                            // )
-                            return {
-                                state: true,
-                                data: {
-                                    'remarks': remarks,
-                                    'folder': $folderId.val()
-                                }
-                            };
+                            return finalExtend
                         },
                         url: $(clsThis.ele$).attr('data-url'),
                         headers: {

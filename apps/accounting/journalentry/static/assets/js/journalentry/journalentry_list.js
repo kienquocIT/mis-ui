@@ -60,9 +60,7 @@ $(document).ready(function() {
                     {
                         className: 'text-center w-15',
                         render: (data, type, row) => {
-                            let text = [$.fn.gettext('Create manually'), $.fn.gettext('Create automatically')][Number(row?.['system_auto_create'])]
-                            let color = ['text-primary', 'text-blue'][Number(row?.['system_auto_create'])]
-                            return `<span class="${color}">${text}</span>`
+                            return WFRTControl.displayRuntimeStatus(row?.['system_status'], row?.['system_auto_create']);
                         }
                     },
                 ]

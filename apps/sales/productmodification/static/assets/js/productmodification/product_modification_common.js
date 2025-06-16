@@ -21,6 +21,7 @@ class ProductModificationPageElements {
         this.$accept_picking_product_btn = $('#accept-picking-product-btn')
         // space
         this.$table_current_product_modified = $('#table-current-product-modified')
+        this.$btn_add_row_init_component = $('#btn-add-row-init-component')
         this.$confirm_initial_components_modal = $('#confirm-initial-components-modal')
         this.$confirm_initial_components_table = $('#confirm-initial-components-table')
         this.$confirm_initial_components_btn = $('#confirm-initial-components-btn')
@@ -31,6 +32,10 @@ class ProductModificationPageElements {
         this.$table_select_component_warehouse = $('#table-select-component-warehouse')
         this.$table_select_component_lot = $('#table-select-component-lot')
         this.$table_select_component_serial = $('#table-select-component-serial')
+        // mapping
+        this.$modal_part_mapping = $('#modal-part-mapping')
+        this.$table_select_product_mapping = $('#table-select-product-mapping')
+        this.$btn_accept_part_mapping = $('#btn-accept-part-mapping')
     }
 }
 const pageElements = new ProductModificationPageElements()
@@ -41,10 +46,10 @@ const pageElements = new ProductModificationPageElements()
 class ProductModificationPageVariables {
     constructor() {
         this.current_product_modified = {}
-        this.init_component = []
         this.component_inserted_id_list = new Set()
         this.current_component = {}
         this.current_component_row = null
+        this.removed_component_row = null
     }
 }
 const pageVariables = new ProductModificationPageVariables()
@@ -70,7 +75,12 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-65',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-primary">${row?.['code'] || ''}</span><br><span class="fw-bold text-primary">${row?.['title'] || ''}</span><br><span class="small">${row?.['description'] || ''}</span>`
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code'] || ''}</span><br>
+                                <a data-bs-toggle="collapse" href=".d1_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d1_${row?.['id']}">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <span>${row?.['title'] || ''}</span>
+                                <br><div class="collapse d1_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 },
                 {
@@ -83,13 +93,13 @@ class ProductModificationPageFunction {
             initComplete: function () {
                 if (warehouse_code) {
                     if (lot_number) {
-                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-blue">${warehouse_code}</span><br><span>Lot: ${lot_number}</span>`)
+                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Lot: ${lot_number}</span>`)
                     }
                     else if (serial_number) {
-                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-blue">${warehouse_code}</span><br><span>Serial: ${serial_number}</span>`)
+                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Serial: ${serial_number}</span>`)
                     }
                     else {
-                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-blue">${warehouse_code}</span>`)
+                        pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`<span class="badge badge-sm badge-soft-blue">${warehouse_code}</span>`)
                     }
                 }
             }
@@ -101,7 +111,7 @@ class ProductModificationPageFunction {
             useDataServer: true,
             rowIdx: true,
             scrollX: true,
-            scrollY: '60vh',
+            scrollY: '55vh',
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
@@ -141,7 +151,12 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-90',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-primary">${row?.['code']}</span><br><span class="fw-bold text-primary">${row?.['title']}</span><br><span class="small">${row?.['description'] || ''}</span>`
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br>
+                                <a data-bs-toggle="collapse" href=".d2_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['id']}">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <span>${row?.['title']}</span>
+                                <br><div class="collapse d2_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 }
             ]
@@ -171,8 +186,7 @@ class ProductModificationPageFunction {
             {
                 className: 'w-60',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-sm badge-blue warehouse-code">${row?.['warehouse_data']?.['code'] || ''}</span>
-                            <span>${row?.['warehouse_data']?.['title'] || ''}</span>`
+                    return `<span class="badge badge-sm badge-soft-blue warehouse-code">${row?.['warehouse_data']?.['code'] || ''}</span> <span>${row?.['warehouse_data']?.['title'] || ''}</span>`
                 }
             },
             {
@@ -185,10 +199,12 @@ class ProductModificationPageFunction {
         pageElements.$table_select_warehouse.DataTable().clear().destroy()
         if (url) {
             pageElements.$table_select_warehouse.DataTableDefault({
+                styleDom: 'hide-foot',
                 useDataServer: true,
                 rowIdx: true,
+                paging: false,
                 scrollX: true,
-                scrollY: '15vh',
+                scrollY: '63vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
@@ -207,10 +223,12 @@ class ProductModificationPageFunction {
         }
         else {
             pageElements.$table_select_warehouse.DataTableDefault({
+                styleDom: 'hide-foot',
                 useDataServer: false,
                 rowIdx: true,
+                paging: false,
                 scrollX: true,
-                scrollY: '15vh',
+                scrollY: '63vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 data: [],
@@ -270,7 +288,7 @@ class ProductModificationPageFunction {
                 useDataServer: true,
                 rowIdx: true,
                 scrollX: true,
-                scrollY: '25vh',
+                scrollY: '63vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
@@ -292,7 +310,7 @@ class ProductModificationPageFunction {
                 useDataServer: false,
                 rowIdx: true,
                 scrollX: true,
-                scrollY: '25vh',
+                scrollY: '63vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 data: [],
@@ -364,7 +382,7 @@ class ProductModificationPageFunction {
                 useDataServer: true,
                 rowIdx: true,
                 scrollX: true,
-                scrollY: '25vh',
+                scrollY: '63vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
@@ -386,7 +404,7 @@ class ProductModificationPageFunction {
                 useDataServer: false,
                 rowIdx: true,
                 scrollX: true,
-                scrollY: '25vh',
+                scrollY: '63vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 data: [],
@@ -401,7 +419,7 @@ class ProductModificationPageFunction {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '60vh',
+            scrollY: '55vh',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -414,21 +432,23 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-75',
                     render: (data, type, row) => {
-                        return `<span class="fw-bold init-component-title" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
-                                <br><span class="small init-component-des">${row?.['component_des'] || ''}</span>`
+                        return `<input placeholder="${$.fn.gettext('Component name')}"
+                                       class="form-control form-control-line fw-bold mb-1 init-component-title"
+                                       value="${row?.['component_name'] || ''}">
+                                <textarea placeholder="${$.fn.gettext('Description')}..." rows="5" class="form-control small init-component-des">${row?.['component_des'] || ''}</textarea>`
                     }
                 },
                 {
                     className: 'w-15',
                     render: (data, type, row) => {
-                        return `<input class="form-control fs-5 init-component-quantity" type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
+                        return `<input class="form-control fs-5 init-component-quantity" type="number" min="1" value="${row?.['component_quantity'] || ''}">`;
                     }
                 },
                 {
                     className: 'text-center w-5',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn-icon btn-rounded flush-soft-hover btn btn-flush-danger delete-init-component-btn">
-                                    <span class="icon"><i class="fa-solid fa-trash-can text-danger"></i></span>
+                        return `<button type="button" class="btn-icon btn-rounded flush-soft-hover btn btn-flush-secondary delete-init-component-btn">
+                                    <span class="icon"><i class="fa-regular fa-trash-can"></i></span>
                                 </button>`;
                     }
                 },
@@ -436,7 +456,8 @@ class ProductModificationPageFunction {
             initComplete: function () {
                 pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
                     if (data_list[index]?.['is_added_component']) {
-                        $(ele).addClass('bg-success-light-5 is_added_component')
+                        $(ele).addClass('is_added_component');
+                        $(ele).find('td').first().css('border-left', '4px solid #d1f2e0');
                     }
                 })
             }
@@ -449,7 +470,7 @@ class ProductModificationPageFunction {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '65vh',
+            scrollY: '63vh',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -460,19 +481,25 @@ class ProductModificationPageFunction {
                     }
                 },
                 {
-                    className: 'w-60',
+                    className: 'w-70',
                     render: (data, type, row) => {
                         if (row?.['product_id']) {
-                            return `<span class="badge badge-sm badge-secondary">${row?.['product_code'] || ''}</span>
-                                    <br><span data-row-type="${row?.['type']}" data-product-id="${row?.['product_id'] || ''}" class="fw-bold component-title">${row?.['product_title'] || ''}</span>
-                                    <br><span class="small component-des">${row?.['product_des'] || ''}</span>`;
+                            return `<span class="badge badge-sm badge-soft-secondary">${row?.['product_code'] || ''}</span><br>
+                                    <a data-bs-toggle="collapse" href=".d2_${row?.['product_id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['product_id']}">
+                                        <i class="bi bi-info-circle"></i>
+                                    </a>
+                                    <span data-row-type="${row?.['type']}" data-product-id="${row?.['product_id'] || ''}" class="component-title">${row?.['product_title'] || ''}</span>
+                                    <br><div class="collapse d2_${row?.['product_id']}"><span class="small component-des">${row?.['product_des'] || ''}</span></div>`;
                         }
-                        return `<span class="fw-bold component-title" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
-                                <br><span class="small component-des">${row?.['component_des'] || ''}</span>`
+                        return `<a data-bs-toggle="collapse" href=".d3_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d3_${row?.['component_id']}">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <span class="component-title" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
+                                <br><div class="collapse d3_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
                     }
                 },
                 {
-                    className: 'w-30',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         if (row?.['product_id']) {
                             let picking_component_btn = `
@@ -490,7 +517,7 @@ class ProductModificationPageFunction {
                             `;
                             return `
                                 <div class="input-group">
-                                    <input class="form-control fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['product_quantity'] || 0}">
+                                    <input class="form-control component-quantity" disabled readonly type="number" min="1" value="${row?.['product_quantity'] || 0}">
                                     ${picking_component_btn}
                                 </div>
                                 <script class="data-component-none-detail">${JSON.stringify(row?.['component_product_none_detail'] || [])}</script>
@@ -498,7 +525,7 @@ class ProductModificationPageFunction {
                                 <script class="data-component-sn-detail">${JSON.stringify(row?.['component_product_sn_detail'] || [])}</script>
                             `;
                         }
-                        return `<input class="form-control fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
+                        return `<input class="form-control component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
                     }
                 },
                 {
@@ -506,8 +533,8 @@ class ProductModificationPageFunction {
                     render: (data, type, row) => {
                         if (row?.['type'] !== 'new') {
                             if (row?.['is_added_component']) {
-                                return `<button type="button" class="btn-icon btn-rounded flush-soft-hover btn btn-flush-danger delete-added-component-btn" ${option === 'detail' ? 'disabled' : ''}>
-                                            <span class="icon"><i class="fa-solid fa-trash-can text-danger"></i></span>
+                                return `<button type="button" class="btn-icon btn-rounded flush-soft-hover btn btn-flush-secondary delete-added-component-btn" ${option === 'detail' ? 'disabled' : ''}>
+                                            <span class="icon"><i class="fa-regular fa-trash-can"></i></span>
                                         </button>`;
                             }
                             let comp = {}
@@ -533,11 +560,11 @@ class ProductModificationPageFunction {
                                             data-component-code="${comp?.['code'] || ''}"
                                             data-component-name="${comp?.['name'] || ''}"
                                             data-component-des="${comp?.['des'] || ''}">
-                                        <span class="icon"><i class="bi bi-arrow-right-circle"></i></span>
+                                        <span class="icon"><i class="fa-solid fa-right-long"></i></span>
                                     </button>`;
                         }
-                        return `<button type="button" class="btn-icon btn-rounded flush-soft-hover btn btn-flush-danger delete-added-component-btn" ${option === 'detail' ? 'disabled' : ''}>
-                                    <span class="icon"><i class="fa-solid fa-trash-can text-danger"></i></span>
+                        return `<button type="button" class="btn-icon btn-rounded flush-soft-hover btn btn-flush-secondary delete-added-component-btn" ${option === 'detail' ? 'disabled' : ''}>
+                                    <span class="icon"><i class="fa-regular fa-trash-can"></i></span>
                                 </button>`;
                     }
                 },
@@ -545,7 +572,8 @@ class ProductModificationPageFunction {
             initComplete: function () {
                 pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
                     if (data_list[index]?.['is_added_component']) {
-                        $(ele).addClass('bg-success-light-5 is_added_component')
+                        $(ele).addClass('is_added_component');
+                        $(ele).find('td').first().css('border-left', '4px solid #d1f2e0');
                         $(ele).find('.component-title').attr('data-row-type', 'new')
                         pageVariables.component_inserted_id_list.add($(ele).find('.component-title').attr('data-product-id'))
                     }
@@ -560,7 +588,7 @@ class ProductModificationPageFunction {
             reloadCurrency: true,
             paging: false,
             scrollX: true,
-            scrollY: '65vh',
+            scrollY: '63vh',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -571,18 +599,38 @@ class ProductModificationPageFunction {
                     }
                 },
                 {
-                    className: 'w-70',
+                    className: 'w-65',
                     render: (data, type, row) => {
                         if (row?.['component_code']) {
-                            return `<span class="badge badge-sm badge-secondary">${row?.['component_code'] || ''}</span><br><span class="fw-bold component-title" data-component-id="${row?.['component_id']}">${row?.['component_name']}</span><br><span class="small component-des">${row?.['component_des'] || ''}</span>`;
+                            return `<span class="badge badge-sm badge-soft-secondary">${row?.['component_code'] || ''}</span><br>
+                                    <span class="component-title" data-component-id="${row?.['component_id']}">${row?.['component_name']}</span><br>
+                                    <span class="small component-des">${row?.['component_des'] || ''}</span>`;
                         }
-                        return `<span class="fw-bold component-title" data-component-id="${row?.['component_id']}">${row?.['component_name']}</span><br><span class="small component-des">${row?.['component_des'] || ''}</span>`
+                        return `<a data-bs-toggle="collapse" href=".d4_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d4_${row?.['component_id']}">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <span class="component-title" data-component-id="${row?.['component_id']}">${row?.['component_name']}</span><br>
+                                <div class="collapse d4_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
                     }
                 },
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return `<input class="form-control fs-5 component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
+                        return `<input class="form-control component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">`;
+                    }
+                },
+                {
+                    className: 'w-5',
+                    render: (data, type, row) => {
+                        return `<button class="btn-icon btn-rounded flush-soft-hover btn btn-flush-dark btn-open-modal-mapping"
+                                        ${option === 'detail' ? 'disabled' : ''}
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal-part-mapping"
+                                        data-mapping='${JSON.stringify(row?.['product_mapped_data']) || ''}'
+                                        type="button">
+                                    <span class="icon"><i class="fa-solid fa-link"></i></span>
+                                </button>
+                                <i ${JSON.stringify(row?.['product_mapped_data']) ? '' : 'hidden'} class="fa-solid fa-check text-success is-mapped-icon"></i>`;
                     }
                 },
                 {
@@ -590,13 +638,13 @@ class ProductModificationPageFunction {
                     render: (data, type, row) => {
                         return `<button type="button"
                                         ${option === 'detail' ? 'disabled' : ''}
-                                        class="btn-icon btn-rounded flush-soft-hover btn btn-flush-success return-component-btn"
+                                        class="btn-icon btn-rounded flush-soft-hover btn btn-flush-primary return-component-btn"
                                         data-component-id="${row?.['component_id'] || ''}"
                                         data-component-code="${row?.['component_code'] || ''}"
                                         data-component-name="${row?.['component_name'] || ''}"
                                         data-component-des="${row?.['component_des'] || ''}"
                                 >
-                                    <span class="icon"><i class="bi bi-arrow-left-circle"></i></span>
+                                    <span class="icon"><i class="fa-solid fa-left-long"></i></span>
                                 </button>`;
                     }
                 },
@@ -610,7 +658,7 @@ class ProductModificationPageFunction {
             useDataServer: true,
             rowIdx: true,
             scrollX: true,
-            scrollY: '65vh',
+            scrollY: '63vh',
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
@@ -649,7 +697,12 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-90',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-secondary">${row?.['code']}</span><br><span class="fw-bold">${row?.['title']}</span><br><span class="small">${row?.['description'] || ''}</span>`
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br>
+                                <a data-bs-toggle="collapse" href=".d6_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d6_${row?.['id']}">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <span>${row?.['title']}</span>
+                                <br><div class="collapse d6_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 }
             ]
@@ -682,19 +735,19 @@ class ProductModificationPageFunction {
                 }
             },
             {
-                className: 'w-60',
+                className: 'w-50',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-sm badge-blue">${row?.['warehouse_data']?.['code'] || ''}</span> <span>${row?.['warehouse_data']?.['title'] || ''}</span>`
+                    return `<span class="badge badge-sm badge-soft-blue">${row?.['warehouse_data']?.['code'] || ''}</span> <span>${row?.['warehouse_data']?.['title'] || ''}</span>`
                 }
             },
             {
-                className: 'w-20',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<span>${row?.['stock_amount']}</span>`
                 }
             },
             {
-                className: '',
+                className: 'w-15',
                 render: (data, type, row) => {
                     return `<input disabled readonly type="number" min="0" max="${row?.['stock_amount'] || ''}" class="form-control none-picked-quantity" value="0">`
                 }
@@ -703,10 +756,12 @@ class ProductModificationPageFunction {
         pageElements.$table_select_component_warehouse.DataTable().clear().destroy()
         if (url) {
             pageElements.$table_select_component_warehouse.DataTableDefault({
+                styleDom: 'hide-foot',
                 useDataServer: true,
                 rowIdx: true,
+                paging: false,
                 scrollX: true,
-                scrollY: '15vh',
+                scrollY: '63vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
@@ -756,10 +811,12 @@ class ProductModificationPageFunction {
         }
         else {
             pageElements.$table_select_component_warehouse.DataTableDefault({
+                styleDom: 'hide-foot',
                 useDataServer: false,
                 rowIdx: true,
+                paging: false,
                 scrollX: true,
-                scrollY: '15vh',
+                scrollY: '63vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 data: [],
@@ -846,7 +903,7 @@ class ProductModificationPageFunction {
                 useDataServer: true,
                 rowIdx: true,
                 scrollX: true,
-                scrollY: '25vh',
+                scrollY: '63vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
@@ -878,7 +935,7 @@ class ProductModificationPageFunction {
                 useDataServer: false,
                 rowIdx: true,
                 scrollX: true,
-                scrollY: '25vh',
+                scrollY: '63vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 data: [],
@@ -948,7 +1005,7 @@ class ProductModificationPageFunction {
                 useDataServer: true,
                 rowIdx: true,
                 scrollX: true,
-                scrollY: '25vh',
+                scrollY: '63vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 ajax: {
@@ -978,7 +1035,7 @@ class ProductModificationPageFunction {
                 useDataServer: false,
                 rowIdx: true,
                 scrollX: true,
-                scrollY: '25vh',
+                scrollY: '63vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 data: [],
@@ -1033,21 +1090,122 @@ class ProductModificationPageFunction {
                     'product_title': component_product_data?.['title'] || '',
                     'product_des': component_product_data?.['description'] || '',
                     'general_traceability_method': component_product_data?.['general_traceability_method'],
-                    'product_quantity': item?.['component_quantity']
+                    'product_quantity': item?.['component_quantity'],
+                    'is_mapped': item?.['is_mapped'],
+                    'product_mapped_data': item?.['product_mapped_data'] || {},
+                    'fair_value': item?.['fair_value'],
                 })
             }
             else {
                 let component_text_data = item?.['component_text_data']
                 parsed_removed_component_data.push({
                     'order': item?.['order'],
-                    'id': item?.['id'] || '',
+                    'component_id': item?.['id'] || '',
                     'component_name': component_text_data?.['title'] || '',
                     'component_des': component_text_data?.['description'] || '',
-                    'component_quantity': item?.['component_quantity']
+                    'component_quantity': item?.['component_quantity'],
+                    'is_mapped': item?.['is_mapped'],
+                    'product_mapped_data': item?.['product_mapped_data'],
+                    'fair_value': item?.['fair_value'],
                 })
             }
         }
         return parsed_removed_component_data
+    }
+    // mapping
+    static LoadTableProductMapping() {
+        pageElements.$table_select_product_mapping.DataTable().clear().destroy()
+        pageElements.$table_select_product_mapping.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            scrollX: true,
+            scrollY: '45vh',
+            scrollCollapse: true,
+            reloadCurrency: true,
+            ajax: {
+                url: pageElements.$table_select_product_mapping.attr('data-product-mapping-list-url'),
+                type: 'GET',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        return resp.data['product_modified_list'] ? resp.data['product_modified_list'] : [];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    className: 'text-center w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'text-center w-5',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                                    <input type="radio"
+                                    name="product-mapping-select"
+                                    class="form-check-input product-mapping-select"
+                                    data-product-id="${row?.['id']}"
+                                    data-product-code="${row?.['code']}"
+                                    data-product-title="${row?.['title']}"
+                                    data-product-description="${row?.['description'] || ''}"
+                                    data-product-general-traceability-method="${row?.['general_traceability_method']}">
+                                </div>`;
+                    }
+                },
+                {
+                    className: 'w-90',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br>
+                                <a data-bs-toggle="collapse" href=".d5_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d5_${row?.['id']}">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <span>${row?.['title']}</span>
+                                <br><div class="collapse d5_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                    }
+                }
+            ]
+        });
+    }
+    static ParseDataMapping() {
+        const new_product_space = pageElements.$modal_part_mapping.find('#new-product-space')
+        if (pageElements.$modal_part_mapping.find('#new-product').prop('checked')) {
+            if (
+                new_product_space.find('#product-name').val() &&
+                new_product_space.find('#product-type').val() &&
+                new_product_space.find('#product-category').val() &&
+                new_product_space.find('#product-uom-group').val() &&
+                new_product_space.find('#product-general-traceability-method').val() &&
+                new_product_space.find('#product-inventory-uom').val() &&
+                new_product_space.find('#product-valuation-method').val()
+            ) {
+                return {
+                    'type': 'new',
+                    'code': new_product_space.find('#product-code').val(),
+                    'title': new_product_space.find('#product-name').val(),
+                    'description': new_product_space.find('#product-des').val(),
+                    'product_type': new_product_space.find('#product-type').val(),
+                    'general_product_category': new_product_space.find('#product-category').val(),
+                    'general_uom_group': new_product_space.find('#product-uom-group').val(),
+                    'general_traceability_method': new_product_space.find('#product-general-traceability-method').val(),
+                    'inventory_uom': new_product_space.find('#product-inventory-uom').val(),
+                    'valuation_method': new_product_space.find('#product-valuation-method').val(),
+                    'fair_value': pageElements.$modal_part_mapping.find('#product-fair-value').attr('value'),
+                }
+            }
+        }
+        if (pageElements.$modal_part_mapping.find('#existing-product').prop('checked')) {
+            if (pageElements.$table_select_product_mapping.find('tbody tr .product-mapping-select:checked').attr('data-product-id')) {
+                return {
+                    'type': 'map',
+                    'product_mapped': pageElements.$table_select_product_mapping.find('tbody tr .product-mapping-select:checked').attr('data-product-id'),
+                    'fair_value': pageElements.$modal_part_mapping.find('#product-fair-value').attr('value'),
+                }
+            }
+        }
+        return {}
     }
 }
 
@@ -1092,7 +1250,8 @@ class ProductModificationHandler {
                         'description': $(ele).find('.component-des').text(),
                     },
                     'component_product_id': $(ele).find('.component-title').attr('data-product-id') || null,
-                    'component_quantity': $(ele).find('.component-quantity').val()
+                    'component_quantity': $(ele).find('.component-quantity').val(),
+                    'product_mapped_data': $(ele).find('.btn-open-modal-mapping').attr('data-mapping') ? JSON.parse($(ele).find('.btn-open-modal-mapping').attr('data-mapping')) : {},
                 })
             }
         })
@@ -1274,26 +1433,25 @@ class ProductModificationEventHandler {
 
                 Promise.all([product_component_list_ajax]).then(
                     (results) => {
-                        pageVariables.init_component = results[0]?.['component_list_data'] || []
                         pageElements.$confirm_initial_components_modal.modal('show')
-                        ProductModificationPageFunction.LoadTableProductConfirmInitComponentList(pageVariables.init_component)
+                        ProductModificationPageFunction.LoadTableProductConfirmInitComponentList(results[0]?.['component_list_data'] || [])
                     }
                 )
 
                 if (pageVariables.current_product_modified?.['general_traceability_method'] === '0') {
                     pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`
-                        <span class="badge badge-sm badge-blue">${warehouse_code}</span>
+                        <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span>
                     `)
                 }
 
                 if (pageVariables.current_product_modified?.['general_traceability_method'] === '1') {
                     pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`
-                        <span class="badge badge-sm badge-blue">${warehouse_code}</span><br><span>Lot: ${lot_number}</span>
+                        <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Lot: ${lot_number}</span>
                     `)
                 }
                 if (pageVariables.current_product_modified?.['general_traceability_method'] === '2') {
                     pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`
-                        <span class="badge badge-sm badge-blue">${warehouse_code}</span><br><span>Serial: ${serial_number}</span>
+                        <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Serial: ${serial_number}</span>
                     `)
                 }
                 pageElements.$picking_product_modal.modal('hide')
@@ -1301,29 +1459,57 @@ class ProductModificationEventHandler {
             }
         })
         $(document).on('click', '.delete-init-component-btn', function () {
-            let rowId = $(this).closest('tr').find('.init-component-title').attr('data-component-id')
-            pageVariables.init_component = pageVariables.init_component.filter(item => item?.['component_id'] !== rowId)
             UsualLoadPageFunction.DeleteTableRow(
                 pageElements.$confirm_initial_components_table,
                 parseInt($(this).closest('tr').find('td:first-child').text())
             )
         })
-        $(document).on('change', '.init-component-quantity', function () {
-            let rowId = $(this).closest('tr').find('.init-component-title').attr('data-component-id');
-            let quantity = $(this).val() || 0;
-
-            pageVariables.init_component.forEach(item => {
-                if (item?.['component_id'] === rowId) {
-                    item['component_quantity'] = Number(quantity);
-                }
-            });
+        pageElements.$btn_add_row_init_component.on('click', function () {
+            UsualLoadPageFunction.AddTableRow(pageElements.$confirm_initial_components_table, {'component_quantity': 1})
+            const container = $('#confirm-initial-components-table_wrapper .dataTables_scrollBody')[0]
+            container.scrollTop = container.scrollHeight
         })
         pageElements.$confirm_initial_components_btn.on('click', function () {
             pageVariables.component_inserted_id_list = new Set()
-            ProductModificationPageFunction.LoadTableProductCurrentComponentList(pageVariables.init_component)
+            let has_error = false
+            let init_component = []
+            pageElements.$confirm_initial_components_table.find('tbody tr').each(function (index, ele) {
+                let component_order = index + 1
+                let component_id = 'component_order_' + (component_order).toString()
+                let component_name = $(ele).find('.init-component-title').val() || ''
+                let component_des = $(ele).find('.init-component-des').val() || ''
+                let component_quantity = $(ele).find('.init-component-quantity').val() || ''
+                if (component_name && Number(component_quantity) > 0) {
+                    init_component.push({
+                        "component_order": component_order,
+                        "component_id": component_id,
+                        "component_name": component_name,
+                        "component_des": component_des,
+                        "component_quantity": component_quantity,
+                    })
+                }
+                else {
+                    $.fn.notifyB({description: `Missing component information at row ${component_order}`}, 'failure');
+                    has_error = true
+                    return false
+                }
+            })
+
+            if (has_error) return
+
+            ProductModificationPageFunction.LoadTableProductCurrentComponentList(init_component)
             ProductModificationPageFunction.LoadTableProductRemovedComponentList()
+            pageElements.$confirm_initial_components_modal.modal('hide')
         })
         // space
+        $('.layout-btn').on('click', function () {
+            if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-12 col-lg-12 mt-3') {
+                $('.main-space').attr('class', 'main-space col-12 col-md-6 col-lg-6 mt-3')
+            }
+            else {
+                $('.main-space').attr('class', 'main-space col-12 col-md-12 col-lg-12 mt-3')
+            }
+        })
         pageElements.$insert_component_btn.on('click', function () {
             ProductModificationPageFunction.LoadTableComponentInserted()
         })
@@ -1345,7 +1531,8 @@ class ProductModificationEventHandler {
                 )
                 let row_added = pageElements.$table_product_current_component.find('tbody tr:last-child')
                 row_added.find('.component-quantity').focus()
-                row_added.addClass('bg-success-light-5 is_added_component')
+                row_added.addClass('is_added_component');
+                row_added.find('td').first().css('border-left', '4px solid #d1f2e0');
             } else {
                 pageVariables.component_inserted_id_list.delete(rowId)
                 pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
@@ -1387,6 +1574,13 @@ class ProductModificationEventHandler {
             let product_id = $(this).attr('data-product-id')
             let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}&product_id=${product_id}`
             ProductModificationPageFunction.LoadTableComponentWarehouseByProduct(url, $(this).attr('data-product-general-traceability-method'))
+
+            if ($(this).attr('data-product-general-traceability-method') === '0') {
+                pageElements.$table_select_component_warehouse.closest('.table-none-space').attr('class', 'col-12 col-md-12 col-lg-12 table-none-space border-right')
+            }
+            else {
+                pageElements.$table_select_component_warehouse.closest('.table-none-space').attr('class', 'col-12 col-md-4 col-lg-4 table-none-space border-right')
+            }
         })
         $(document).on("change", '.product-warehouse-component-select', function () {
             pageElements.$table_select_component_lot.closest('.table-lot-space').prop('hidden', pageVariables.current_component?.['general_traceability_method'] !== '1')
@@ -1517,7 +1711,7 @@ class ProductModificationEventHandler {
             let component_des = $(this).attr('data-component-des')
             if (component_quantity > 0) {
                 let data_return = {
-                    'id': component_id,
+                    'component_id': component_id,
                     'component_code': component_code,
                     'component_name': component_name,
                     'component_des': component_des,
@@ -1553,6 +1747,60 @@ class ProductModificationEventHandler {
                         parseInt($(this).closest('tr').find('td:first-child').text())
                     )
                 }
+            }
+        })
+        $(document).on('change', 'input[name="create-product-mapping"]', function () {
+            $('#new-product-space').prop('hidden', !$('#new-product').prop('checked'))
+            $('#existing-product-space').prop('hidden', !$('#existing-product').prop('checked'))
+        })
+        // mapping
+        $(document).on('click', '.btn-open-modal-mapping', function () {
+            pageVariables.removed_component_row = $(this).closest('tr')
+            const new_product_space = pageElements.$modal_part_mapping.find('#new-product-space')
+            UsualLoadPageFunction.LoadProductType({
+                element: new_product_space.find('#product-type'),
+                data_url: new_product_space.find('#product-type').attr('data-url')
+            })
+            UsualLoadPageFunction.LoadProductCategory({
+                element: new_product_space.find('#product-category'),
+                data_url: new_product_space.find('#product-category').attr('data-url')
+            })
+            UsualLoadPageFunction.LoadUOMGroup({
+                element: new_product_space.find('#product-uom-group'),
+                data_url: new_product_space.find('#product-uom-group').attr('data-url')
+            })
+            UsualLoadPageFunction.LoadUOM({
+                element: new_product_space.find('#product-inventory-uom'),
+                data_params: {'group_id': new_product_space.find('#product-uom-group').val()},
+                data_url: new_product_space.find('#product-inventory-uom').attr('data-url')
+            })
+            ProductModificationPageFunction.LoadTableProductMapping()
+        })
+        pageElements.$btn_accept_part_mapping.on('click', function () {
+            let data_removed_component = ProductModificationPageFunction.ParseDataMapping()
+            console.log(data_removed_component)
+            if (Object.keys(data_removed_component).length !== 0) {
+                pageVariables.removed_component_row.find('.btn-open-modal-mapping').attr('data-mapping', JSON.stringify(data_removed_component))
+                pageVariables.removed_component_row.find('.is-mapped-icon').prop('hidden', false)
+                pageElements.$modal_part_mapping.modal('hide')
+            }
+            else {
+                $.fn.notifyB({description: 'Missing product mapping data'}, 'failure')
+            }
+        })
+        $('#product-uom-group').on('change', function () {
+            const new_product_space = pageElements.$modal_part_mapping.find('#new-product-space')
+            if ($(this).val()) {
+                UsualLoadPageFunction.LoadUOM({
+                    element: new_product_space.find('#product-inventory-uom'),
+                    data_params: {'group_id': new_product_space.find('#product-uom-group').val()},
+                    data_url: new_product_space.find('#product-inventory-uom').attr('data-url')
+                })
+                new_product_space.find('#product-inventory-uom').prop('disabled', false)
+            }
+            else {
+                new_product_space.find('#product-inventory-uom').empty()
+                new_product_space.find('#product-inventory-uom').prop('disabled', true)
             }
         })
     }

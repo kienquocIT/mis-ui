@@ -2151,12 +2151,17 @@ class GRDataTableHandle {
                     targets: 6,
                     width: '7.8125%',
                     render: (data, type, row) => {
+                        let readonly = '';
+                        if (GRLoadDataHandle.PMSelectEle.val()) {
+                            readonly = 'readonly';
+                        }
                         return `<div class="row">
                                 <select 
                                     class="form-control table-row-tax"
                                     data-url="${GRDataTableHandle.taxInitEle.attr('data-url')}"
                                     data-method="${GRDataTableHandle.taxInitEle.attr('data-method')}"
                                     data-keyResp="tax_list"
+                                    ${readonly}
                                 >
                                 </select>
                                 <input

@@ -577,27 +577,6 @@ $(async function () {
             return finalData;
         };
 
-        loadEventPW() {
-            $tablePW.DataTable().rows().every(function () {
-                let row = this.node();
-                let data = this.data();
-
-                // Find the checkbox only once
-                let checkbox = row.querySelector('.form-check');
-                if (checkbox) {
-                    // Remove any previously bound event listeners to avoid duplication
-                    checkbox.replaceWith(checkbox.cloneNode(true)); // Clear all event listeners
-                    checkbox = row.querySelector('.table-row-checkbox'); // Reassign the reference
-
-                    // Add the event listener
-                    checkbox.addEventListener('click', function () {
-                        prodTable.loadCheckPW(checkbox, data, row); // Pass necessary parameters
-                    });
-                }
-            });
-            return true;
-        };
-
         loadCheckPW(ele, data, row) {
             if ([1, 2].includes(data?.['product']?.['general_traceability_method']) && $scrollLot.length > 0 && $scrollSerial.length > 0) {
                 let productWHID = ele.getAttribute('data-id');
@@ -650,7 +629,34 @@ $(async function () {
             let isRegis = dataRegisConfig?.['isRegis'];
             let dataSO = dataRegisConfig?.['dataSO'];
             let url = $tableLot.attr('data-url');
+
+            let dataCheck = {};
+            let dataCheckID = [];
+            $tablePW.DataTable().rows().every(function () {
+                let row = this.node();
+                let rowIndex = $tablePW.DataTable().row(row).index();
+                let $row = $tablePW.DataTable().row(rowIndex);
+                let rowData = $row.data();
+
+                let checkedEle = row.querySelector('.table-row-checkbox:checked');
+                if (checkedEle) {
+                    if (rowData?.['product_data']?.['general_traceability_method'] === 1) {
+                        if (rowData?.['lot_data']) {
+                            for (let lotData of rowData?.['lot_data']) {
+                                if (lotData?.['quantity_delivery'] > 0) {
+                                    dataCheck[lotData?.['product_warehouse_lot_id']] = lotData?.['quantity_delivery'];
+                                    dataCheckID.push(lotData?.['product_warehouse_lot_id']);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
             let dataParam = {'product_warehouse_id': productWHID};
+            if ($form.attr('data-method').toLowerCase() === 'get') {
+                dataParam = {'id__in': dataCheckID.join(',')}
+            }
             let keyResp = 'warehouse_lot_list';
             if (isRegis === true && dataSO && eleChecked.getAttribute('data-row')) {
                 let dataRow = JSON.parse(eleChecked.getAttribute('data-row'));
@@ -661,70 +667,19 @@ $(async function () {
                         'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
                         'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
                     };
+                    if ($form.attr('data-method').toLowerCase() === 'get') {
+                        dataParam = {'lot_registered_id__in': dataCheckID.join(',')}
+                    }
                     keyResp = 'gre_item_prd_wh_lot_list';
                 } else {
                     isRegis = false;
                 }
             }
-            WindowControl.showLoading();
-            $.fn.callAjax2({
-                    'url': url,
-                    'method': 'GET',
-                    'data': dataParam,
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let dataLot = $.fn.switcherResp(resp);
-                    if (dataLot) {
-                        if (dataLot.hasOwnProperty(keyResp) && Array.isArray(dataLot?.[keyResp])) {
-                            let dataFn = dataLot?.[keyResp];
-                            if (isRegis === true) {
-                                dataFn = [];
-                                for (let lot of dataLot?.[keyResp]) {
-                                    dataFn.push(lot?.['lot_registered']);
-                                }
-                            }
-                            $tableLot.DataTable().clear().draw();
-                            $tableLot.DataTable().rows.add(dataFn).draw();
 
-                            let dataCheck = {};
-                            $tablePW.DataTable().rows().every(function () {
-                                let row = this.node();
-                                let rowIndex = $tablePW.DataTable().row(row).index();
-                                let $row = $tablePW.DataTable().row(rowIndex);
-                                let rowData = $row.data();
-
-                                let checkedEle = row.querySelector('.table-row-checkbox:checked');
-                                if (checkedEle) {
-                                    if (rowData?.['product_data']?.['general_traceability_method'] === 1) {
-                                        if (rowData?.['lot_data']) {
-                                            for (let lotData of rowData?.['lot_data']) {
-                                                if (lotData?.['quantity_delivery'] > 0) {
-                                                    dataCheck[lotData?.['product_warehouse_lot_id']] = lotData?.['quantity_delivery'];
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-
-                            $tableLot.DataTable().rows().every(function () {
-                                let row = this.node();
-                                let rowIndex = $tableLot.DataTable().row(row).index();
-                                let $row = $tableLot.DataTable().row(rowIndex);
-                                let rowData = $row.data();
-
-                                if (dataCheck.hasOwnProperty(rowData?.['id'])) {
-                                    rowData['quantity_delivery'] = dataCheck?.[rowData?.['id']];
-                                    $tableLot.DataTable().row(rowIndex).data(rowData).draw();
-                                }
-                            });
-                        }
-                    }
-                    WindowControl.hideLoading();
-                }
-            )
+            if ($.fn.dataTable.isDataTable($tableLot)) {
+                $tableLot.DataTable().destroy();
+            }
+            prodTable.dataTableTableLot(url, dataParam, keyResp, isRegis, dataCheck);
             return true;
         };
 
@@ -1006,7 +961,7 @@ $(async function () {
                 info: false,
                 autoWidth: true,
                 scrollX: true,
-                scrollY: "200px",
+                scrollY: "250px",
                 columns: [
                     {
                         targets: 0,
@@ -1135,14 +1090,32 @@ $(async function () {
             })
         };
 
-        dataTableTableLot(data) {
+        dataTableTableLot(url, dataParam, keyResp, isRegis, dataCheck) {
             $tableLot.not('.dataTable').DataTableDefault({
-                data: data ? data : [],
-                paging: false,
-                info: false,
+                useDataServer: true,
+                ajax: {
+                    url: url,
+                    type: "GET",
+                    data: dataParam,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty(keyResp)) {
+                            let dataFn = resp.data[keyResp] ? resp.data[keyResp] : [];
+                            if (isRegis === true) {
+                                dataFn = [];
+                                for (let lot of resp.data[keyResp]) {
+                                    dataFn.push(lot?.['lot_registered']);
+                                }
+                            }
+                            return dataFn;
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
                 autoWidth: true,
                 scrollX: true,
-                scrollY: "200px",
+                scrollY: "250px",
+                info: false,
                 columns: [
                     {
                         targets: 0,
@@ -1188,7 +1161,11 @@ $(async function () {
                             if ($form.attr('data-method').toLowerCase() === 'get') {
                                 disabled = 'disabled';
                             }
-                            return `<input class="form-control table-row-quantity-delivery" type="number" value="${row?.['quantity_delivery'] ? row?.['quantity_delivery'] : 0}" ${disabled}>`;
+                            let quantityDeli = row?.['quantity_delivery'] ? row?.['quantity_delivery'] : 0;
+                            if (dataCheck.hasOwnProperty(row?.['id'])) {
+                                quantityDeli = dataCheck?.[row?.['id']];
+                            }
+                            return `<input class="form-control table-row-quantity-delivery" type="number" value="${quantityDeli}" ${disabled}>`;
                         }
                     },
                 ],
@@ -1212,8 +1189,6 @@ $(async function () {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty(keyResp)) {
-                            // return resp.data[keyResp] ? resp.data[keyResp] : []
-
                             let dataFn = resp.data[keyResp] ? resp.data[keyResp] : [];
                             if (isRegis === true) {
                                 dataFn = [];
@@ -1228,6 +1203,7 @@ $(async function () {
                 },
                 autoWidth: true,
                 scrollX: true,
+                scrollY: "250px",
                 info: false,
                 columns: [
                     {
@@ -1880,8 +1856,6 @@ $(async function () {
     // init Dtb
     prodTable.dataTableProductNew();
     prodTable.dataTablePW();
-    prodTable.dataTableTableLot();
-    // prodTable.dataTableTableSerial();
     // event
     $tableProductNew.on('click', '.table-row-checkbox', function () {
         let row = this.closest('tr');

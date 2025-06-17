@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    $.fn.InitAutoGenerateCodeField({param_app_code: 'product', param_ele_code_id: 'product-code'})
     ProductModificationEventHandler.InitPageEven()
     UsualLoadPageFunction.LoadDate({element: pageElements.$created_date, auto_load: true, empty: false})
     ProductModificationPageFunction.LoadTableCurrentProductModified()

@@ -187,6 +187,28 @@
                         </div>
                     </div>
                 </div>
+                <div class="row custom-area" id="custom-area-4" hidden>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-good-receipt-product-modified">{% trans 'product modification' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-good-receipt-product-modified"
+                                                data-url="{% url 'ProductModificationDDListAPI' %}"
+                                                data-method="GET"
+                                                name="product_modification_id"
+                                                data-keyResp="product_modification_dd_list"
+                                        >
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="d-flex justify-content-end">
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-sm" id="btn-collapse" data-bs-toggle="collapse" data-bs-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo"><span class="icon"><i class="fas fa-angle-double-up collapse-icon"></i></span></button>
@@ -572,6 +594,7 @@
             data-for-po="{% trans 'For purchase order' %}"
             data-for-ia="{% trans 'For inventory adjustment' %}"
             data-for-production="{% trans 'For production' %}"
+            data-for-pm="{% trans 'For product modification' %}"
             data-ia-quantity-valid="{% trans 'Please enter sufficient quantity' %}"
             data-stock="{% trans 'Stock' %}"
             data-for-pro="{% trans 'General production' %}"
@@ -622,6 +645,7 @@
             data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
             data-md-bom="{% url 'BOMOrderListAPI' %}"
             data-md-product="{% url 'ProductForSaleListAPI' %}"
+            data-pm-product="{% url 'ProductModificationProductGRListAPI' %}"
     >
 {% endblock %}
 

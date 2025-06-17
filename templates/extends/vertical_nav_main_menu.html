@@ -49,7 +49,7 @@
                                     {% if item.child|length > 0 %}
                                         {% for item_child in item.child %}
                                             <a
-                                                    class="dropdown-item space-item {% if base.space_current_detail.code == item_child.code %} text-primary {% endif %}"
+                                                    class="dropdown-item space-item d-flex align-items-center gap-2 {% if base.space_current_detail.code == item_child.code %} text-primary {% endif %}"
                                                     data-space-code="{{ item_child.code }}"
                                                     data-space-name="{{ item_child.name }}"
                                                     href="#"

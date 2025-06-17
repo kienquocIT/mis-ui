@@ -61,11 +61,13 @@ $(function () {
                                 0: 'purchase_order_data',
                                 1: 'inventory_adjustment_data',
                                 2: 'production_order_data',
+                                3: 'product_modification_data',
                             }
                             let type_link = {
                                 0: 'link-detail-po',
                                 1: 'link-detail-ia',
                                 2: 'link-detail-pro',
+                                3: 'link-detail-pm',
                             }
                             const link = $('#goods-receipt-link').data(type_link[row?.['goods_receipt_type']]).format_url_with_uuid(row?.[type_code[row?.['goods_receipt_type']]]?.['id']);
                             return `<a href="${link}" class="underline_hover">${row?.[type_code[row?.['goods_receipt_type']]]?.['code']}</a>`

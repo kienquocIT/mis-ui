@@ -227,6 +227,13 @@ $(function () {
             $('#btn-edit-product-good-receipt').click();
         });
 
+        // PRODUCT MODIFICATION BEGIN
+        GRLoadDataHandle.PMSelectEle.on('change', function () {
+            GRLoadDataHandle.loadClearModal();
+            GRLoadDataHandle.loadCallAjaxPMProduct();
+            $('#btn-edit-product-good-receipt').click();
+        });
+
 // SUBMIT FORM
         SetupFormSubmit.validate(GRLoadDataHandle.$form, {
             rules: {
@@ -257,6 +264,8 @@ $(function () {
                 'production_order_data',
                 'work_order_id',
                 'work_order_data',
+                'product_modification_id',
+                'product_modification_data',
                 'supplier_id',
                 'supplier_data',
                 'purchase_requests',

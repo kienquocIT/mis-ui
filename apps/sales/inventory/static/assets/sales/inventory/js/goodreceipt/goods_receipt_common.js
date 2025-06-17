@@ -199,7 +199,7 @@ class GRLoadDataHandle {
         }
         if (type === "4") {
             if (!GRLoadDataHandle.PMSelectEle.val()) {
-                FormElementControl.loadInitS2(GRLoadDataHandle.PMSelectEle, [], {}, null, false, {'res1': 'code', 'res2': 'title'});
+                FormElementControl.loadInitS2(GRLoadDataHandle.PMSelectEle, [], {'created_goods_receipt': false}, null, false, {'res1': 'code', 'res2': 'title'});
             }
         }
         GRDataTableHandle.dataTableGoodReceiptPOProduct();
@@ -1320,7 +1320,7 @@ class GRLoadDataHandle {
         }
         // Cho product modification
         if (idAreaShow === '4') {
-            FormElementControl.loadInitS2(GRLoadDataHandle.PMSelectEle, [data?.['product_modification_data']]);
+            FormElementControl.loadInitS2(GRLoadDataHandle.PMSelectEle, [data?.['product_modification_data']], {'created_goods_receipt': false});
         }
         GRDataTableHandle.tableLineDetailPO.DataTable().rows.add(data?.['gr_products_data']).draw();
         GRLoadDataHandle.loadDataRowTable(GRDataTableHandle.tableLineDetailPO);
@@ -1463,13 +1463,24 @@ class GRLoadDataHandle {
                     if (data) {
                         if (data.hasOwnProperty('product_modification_product_gr') && Array.isArray(data.product_modification_product_gr)) {
                             GRLoadDataHandle.loadTotal(dataDetail);
+                            if (dataProducts.length === 1) {
+                                if (!dataProducts[0]?.['product_modification_product_id']) {
+                                    GRLoadDataHandle.loadTotal(dataDetail);
+                                    GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+                                    GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
+                                    WindowControl.hideLoading();
+                                    return true;
+                                }
+                            }
                             for (let dataPMPro of data.product_modification_product_gr) {
                                 let isDetail = false;
                                 for (let dataProduct of dataProducts) {
-                                    if (dataProduct?.['product_modification_product_id'] === dataPMPro?.['product_modification_product_id']) {
-                                        dataProduct['gr_remain_quantity'] = dataPMPro?.['gr_remain_quantity'];
-                                        isDetail = true;
-                                        break;
+                                    if (dataProduct?.['product_modification_product_id']) {
+                                        if (dataProduct?.['product_modification_product_id'] === dataPMPro?.['product_modification_product_id']) {
+                                            dataProduct['gr_remain_quantity'] = dataPMPro?.['gr_remain_quantity'];
+                                            isDetail = true;
+                                            break;
+                                        }
                                     }
                                 }
                                 if (isDetail === false) {
@@ -1616,6 +1627,9 @@ class GRDataTableHandle {
                         }
                         if (row?.['product_modification_product_id']) {  // PRODUCT MODIFICATION
                             targetID = row?.['product_modification_product_id'];
+                        }
+                        if (GRLoadDataHandle.PMSelectEle.val() && !row?.['product_modification_product_id']) {
+                            targetID = row?.['product_data']?.['id'];
                         }
                         if (targetID) {
                             return `<div class="form-check form-check-lg d-flex align-items-center">

@@ -11886,3 +11886,7 @@ msgstr "Sản phẩm không có cấu hình lưu kho. Bạn có muốn tiếp t�
 #
 msgid "For product modification"
 msgstr "Cho tháo - lắp sản phẩm"
+
+#
+msgid "INCOMING DOCUMENT"
+msgstr "TÀI LIỆU ĐẾN"

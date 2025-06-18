@@ -946,6 +946,9 @@ $(function () {
                 'is_change',
                 'document_root_id',
                 'document_change_order',
+                'currency_exchange_id',
+                'currency_exchange_data',
+                'currency_exchange_rate',
             ]
             if (is_sale_order === true) {
                 submitFields = [
@@ -1004,6 +1007,9 @@ $(function () {
                     'is_recurrence_template',
                     'is_recurring',
                     'recurrence_task_id',
+                    'currency_exchange_id',
+                    'currency_exchange_data',
+                    'currency_exchange_rate',
                 ]
             }
             if (_form.dataForm) {

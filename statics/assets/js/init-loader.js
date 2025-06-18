@@ -215,11 +215,9 @@ $.fn.extend({
                 } else {
                     inputElement.map((idx, item) => {
                         clsMaskMoney2.applyMaskMoney($(item), 'input');
-                        MaskMoney2.appendTextExchangeMoney($(item));
                     });
                     spanElement.map((idx, item) => {
                         clsMaskMoney2.applyMaskMoney($(item), 'display');
-                        MaskMoney2.appendTextExchangeMoney($(item));
                     });
                 }
             });

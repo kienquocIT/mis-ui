@@ -2994,7 +2994,7 @@ class QuotationDataTableHandle {
                                     <div class="input-group-price">
                                         <input 
                                             type="text" 
-                                            class="form-control mask-money table-row-price" 
+                                            class="form-control mask-money table-row-price valid-num" 
                                             value="${row?.['product_unit_price']}"
                                             data-return-type="number"
                                             data-zone="${dataZone}"
@@ -3298,25 +3298,25 @@ class QuotationDataTableHandle {
                         if (row?.['shipping_id']) {
                             disabled = 'disabled'  // shipping
                         }
-                        return `<div class="row">
-                                        <div class="input-group input-group-price">
-                                            <input 
-                                                type="text" 
-                                                class="form-control mask-money table-row-price disabled-custom-show" 
-                                                value="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"
-                                                data-return-type="number"
-                                                data-zone="${dataZone}"
-                                            >
-                                            <button
-                                                type="button"
-                                                class="btn btn-icon btn-outline-light btn-select-cost"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#selectCostModal"
-                                                data-zone="${dataZone}"
-                                                ${disabled}
-                                            ><i class="fas fa-ellipsis-h"></i>
-                                            </button>
-                                        </div>
+                        return `<div class="d-flex mt-5">
+                                    <div class="input-group input-group-price">
+                                        <input 
+                                            type="text" 
+                                            class="form-control mask-money table-row-price disabled-custom-show valid-num" 
+                                            value="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"
+                                            data-return-type="number"
+                                            data-zone="${dataZone}"
+                                        >
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-select-cost"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#selectCostModal"
+                                        data-zone="${dataZone}"
+                                        ${disabled}
+                                    ><i class="fas fa-ellipsis-h"></i>
+                                    </button>
                                 </div>`;
                     }
                 },

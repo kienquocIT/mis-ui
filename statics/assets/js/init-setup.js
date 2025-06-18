@@ -282,14 +282,16 @@ class MaskMoney2 {
     }
 
     static initCurrencyExchange() {
-        let $currencyExchangeEle = $('#currency_exchange');
+        let $currencyExchangeEle = $('#currency_exchange_id');
         let $currencyExchangeEleRateEle = $('#currency_exchange_rate');
-        if ($currencyExchangeEle.length > 0 && $currencyExchangeEleRateEle.length > 0) {
+        let $currencyCompanyTextEle = $('#currency_company_text');
+        if ($currencyExchangeEle.length > 0 && $currencyExchangeEleRateEle.length > 0 && $currencyCompanyTextEle.length > 0) {
             DocumentControl.getCompanyCurrencyFull().then((configData) => {
                 if (configData?.['master_data_currency']) {
                     configData['master_data_currency']['abbreviation'] = configData?.['master_data_currency']?.['code'];
                 }
                 FormElementControl.loadInitS2($currencyExchangeEle, [configData?.['master_data_currency']]);
+                $currencyCompanyTextEle.html(configData?.['master_data_currency']?.['abbreviation']);
             })
             $currencyExchangeEle.on('change', function () {
                 let dataSelected = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
@@ -298,6 +300,21 @@ class MaskMoney2 {
             });
         }
         return true;
+    }
+
+    static setupSubmitCurrencyExchange() {
+        let dataSubmit = {};
+        let $currencyExchangeEle = $('#currency_exchange_id');
+        let $currencyExchangeEleRateEle = $('#currency_exchange_rate');
+        if ($currencyExchangeEle.length > 0 && $currencyExchangeEleRateEle.length > 0) {
+            if ($currencyExchangeEle.val() && $currencyExchangeEleRateEle.val()) {
+                let dataSelected = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
+                dataSubmit['currency_exchange_id'] = $currencyExchangeEle.val();
+                dataSubmit['currency_exchange_data'] = dataSelected;
+                dataSubmit['currency_exchange_rate'] = parseFloat($currencyExchangeEleRateEle.val());
+            }
+        }
+        return dataSubmit;
     }
 
     static appendTextExchangeMoney($item) {
@@ -339,7 +356,7 @@ class MaskMoney2 {
             }
 
             // Check currency exchange
-            let $currencyExchangeEle = $('#currency_exchange');
+            let $currencyExchangeEle = $('#currency_exchange_id');
             if ($currencyExchangeEle) {
                 let dataSelected = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
                 if (dataSelected?.['abbreviation']) {
@@ -384,10 +401,12 @@ class MaskMoney2 {
         switch (inputOrDisplay) {
             case 'input':
                 $($ele).val(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('value')));
+                MaskMoney2.appendTextExchangeMoney($($ele));
                 this.applyMaskMoneyExchange($($ele), $($ele).attr('value'));
                 break
             case 'display':
                 $($ele).text(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('data-init-money')));
+                MaskMoney2.appendTextExchangeMoney($($ele));
                 this.applyMaskMoneyExchange($($ele), $($ele).attr('data-init-money'));
                 break
             default:
@@ -2333,6 +2352,13 @@ class WFRTControl {
         let $eleCode = $('#documentCode');
         let currentEmployee = $x.fn.getEmployeeCurrentID();
         let docData = WFRTControl.getRuntimeDocData();
+        // Check currency
+        let dataCurrency = MaskMoney2.setupSubmitCurrencyExchange();
+        if (Object.keys(dataCurrency).length !== 0) {
+            _form.dataForm['currency_exchange_id'] = dataCurrency?.['currency_exchange_id'];
+            _form.dataForm['currency_exchange_data'] = dataCurrency?.['currency_exchange_data'];
+            _form.dataForm['currency_exchange_rate'] = dataCurrency?.['currency_exchange_rate'];
+        }
         // Check CR
         if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {
             let $eleForm = $(`#${globeFormMappedZone}`);

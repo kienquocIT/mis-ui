@@ -5,10 +5,11 @@
 <div class="row">
     <div class="d-flex justify-content-end">
         <div class="form-group w-5">
-            <label class="form-label" for="currency_exchange">{% trans 'Currency' %}</label>
+            <label class="form-label" for="currency_exchange_id">{% trans 'Currency' %}</label>
             <select
                     class="form-select"
-                    id="currency_exchange"
+                    id="currency_exchange_id"
+                    name="currency_exchange_id"
                     data-url="{% url "CurrencyListAPI" %}"
                     data-method="GET"
                     data-keyResp="currency_list"
@@ -18,8 +19,8 @@
         <div class="form-group w-10">
             <label class="form-label" for="currency_exchange_rate">{% trans 'Exchange rate' %}</label>
             <div class="input-group">
-                <input type="text" class="form-control" id="currency_exchange_rate" value="1">
-                <span class="input-group-text">VND</span>
+                <input type="number" class="form-control" id="currency_exchange_rate" name="currency_exchange_rate" value="1">
+                <span class="input-group-text" id="currency_company_text"></span>
             </div>
 
         </div>

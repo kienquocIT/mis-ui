@@ -2990,8 +2990,8 @@ class QuotationDataTableHandle {
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
-                        return `<div class="row">
-                                    <div class="input-group input-group-price">
+                        return `<div class="d-flex mt-5">
+                                    <div class="input-group-price">
                                         <input 
                                             type="text" 
                                             class="form-control mask-money table-row-price" 
@@ -2999,16 +2999,16 @@ class QuotationDataTableHandle {
                                             data-return-type="number"
                                             data-zone="${dataZone}"
                                         >
-                                        <button
-                                            type="button"
-                                            class="btn btn-icon btn-outline-light btn-select-price"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#selectPriceModal"
-                                            data-zone="${dataZone}"
-                                            disabled
-                                        ><i class="fas fa-ellipsis-h"></i>
-                                        </button>
                                     </div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-select-price"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#selectPriceModal"
+                                        data-zone="${dataZone}"
+                                        disabled
+                                    ><i class="fas fa-ellipsis-h"></i>
+                                    </button>
                                 </div>`;
                     }
                 },

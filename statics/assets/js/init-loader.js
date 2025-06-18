@@ -213,8 +213,14 @@ $.fn.extend({
                 if ($eleSelected && selectType) {
                     clsMaskMoney2.applyMaskMoney($($eleSelected), selectType)
                 } else {
-                    inputElement.map((idx, item) => clsMaskMoney2.applyMaskMoney($(item), 'input'));
-                    spanElement.map((idx, item) => clsMaskMoney2.applyMaskMoney($(item), 'display'));
+                    inputElement.map((idx, item) => {
+                        clsMaskMoney2.applyMaskMoney($(item), 'input');
+                        MaskMoney2.appendTextExchangeMoney($(item));
+                    });
+                    spanElement.map((idx, item) => {
+                        clsMaskMoney2.applyMaskMoney($(item), 'display');
+                        MaskMoney2.appendTextExchangeMoney($(item));
+                    });
                 }
             });
         }

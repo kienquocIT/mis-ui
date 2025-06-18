@@ -1,0 +1,27 @@
+{% load i18n string_utils %}
+
+{% random_str 10 True as id_modal %}
+
+<div class="row">
+    <div class="d-flex justify-content-end">
+        <div class="form-group w-5">
+            <label class="form-label" for="currency_exchange">{% trans 'Currency' %}</label>
+            <select
+                    class="form-select"
+                    id="currency_exchange"
+                    data-url="{% url "CurrencyListAPI" %}"
+                    data-method="GET"
+                    data-keyResp="currency_list"
+                    data-keyText="abbreviation"
+            ></select>
+        </div>
+        <div class="form-group w-10">
+            <label class="form-label" for="currency_exchange_rate">{% trans 'Exchange rate' %}</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="currency_exchange_rate" value="1">
+                <span class="input-group-text">VND</span>
+            </div>
+
+        </div>
+    </div>
+</div>

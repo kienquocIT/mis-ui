@@ -281,6 +281,37 @@ class MaskMoney2 {
         $($ele).attr('value', parseFloat(MaskMoney2._beforeParseFloatAndLimit($($ele).val())));
     }
 
+    static initCurrencyExchange() {
+        let $currencyExchangeEle = $('#currency_exchange');
+        let $currencyExchangeEleRateEle = $('#currency_exchange_rate');
+        if ($currencyExchangeEle.length > 0 && $currencyExchangeEleRateEle.length > 0) {
+            DocumentControl.getCompanyCurrencyFull().then((configData) => {
+                if (configData?.['master_data_currency']) {
+                    configData['master_data_currency']['abbreviation'] = configData?.['master_data_currency']?.['code'];
+                }
+                FormElementControl.loadInitS2($currencyExchangeEle, [configData?.['master_data_currency']]);
+            })
+            $currencyExchangeEle.on('change', function () {
+                let dataSelected = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
+                $currencyExchangeEleRateEle.val(dataSelected?.['rate']);
+                $.fn.initMaskMoney2();
+            });
+        }
+        return true;
+    }
+
+    static appendTextExchangeMoney($item) {
+        let $next = $item.next('.mask-money-exchange');
+        if ($next.length === 0) {
+            let hidden = '';
+            if ($item.hasClass('hidden') || $item.attr('hidden') !== undefined) {
+                hidden = 'hidden';
+            }
+            $item.after(`<span class="form-text text-muted mask-money-exchange ${hidden}"></span>`);
+        }
+        return true;
+    }
+
     constructor(configData) {
         this.configData = configData;
     }
@@ -305,6 +336,26 @@ class MaskMoney2 {
                 if (suffix) {
                     suffix = suffix.replace(suffix.trim(), other_abbreviation)
                 }
+            }
+
+            // Check currency exchange
+            let $currencyExchangeEle = $('#currency_exchange');
+            if ($currencyExchangeEle) {
+                let dataSelected = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
+                if (dataSelected?.['abbreviation']) {
+                    if (prefix) {
+                        prefix = dataSelected?.['abbreviation'];
+                    }
+                    if (suffix) {
+                        suffix = dataSelected?.['abbreviation'];
+                    }
+                }
+            }
+            if (prefix) {
+                prefix = prefix.replace(/\s+/g, '');
+            }
+            if (suffix) {
+                suffix = suffix.replace(/\s+/g, '');
             }
 
             let parsedFloatData = parseFloat(MaskMoney2._beforeParseFloatAndLimit(strAttrValue));
@@ -333,14 +384,70 @@ class MaskMoney2 {
         switch (inputOrDisplay) {
             case 'input':
                 $($ele).val(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('value')));
+                this.applyMaskMoneyExchange($($ele), $($ele).attr('value'));
                 break
             case 'display':
                 $($ele).text(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('data-init-money')));
+                this.applyMaskMoneyExchange($($ele), $($ele).attr('data-init-money'));
                 break
             default:
                 if ($.fn.isDebug() === true) throw Error('strData must be required!')
         }
     }
+
+    applyConfigExchange(strAttrValue) {
+        let strDataParsed = parseFloat(strAttrValue);
+        let $currencyExchangeEleRateEle = $('#currency_exchange_rate');
+        if (strAttrValue !== null && Number.isFinite(strDataParsed) && $currencyExchangeEleRateEle.length > 0) {
+            // Exchange to company currency
+            if ($currencyExchangeEleRateEle.val()) {
+                strDataParsed = strDataParsed * parseFloat($currencyExchangeEleRateEle.val());
+            }
+            strAttrValue = (strDataParsed >= 0 ? strDataParsed : strDataParsed * (-1)).toString();
+
+            // apply mask-money config
+            let prefix = this.configData?.['prefix'];
+            let suffix = this.configData?.['suffix'];
+            let decimal = this.configData?.['decimal'];
+            let thousand = this.configData?.['thousands'];
+            let precision = parseInt(this.configData?.['precision']);
+
+            if (prefix) {
+                prefix = prefix.replace(/\s+/g, '');
+            }
+            if (suffix) {
+                suffix = suffix.replace(/\s+/g, '');
+            }
+
+            let parsedFloatData = parseFloat(MaskMoney2._beforeParseFloatAndLimit(strAttrValue));
+            if (Number.isInteger(precision)) parsedFloatData = parseFloat(parsedFloatData.toFixed(precision));
+            if (Number.isFinite(parsedFloatData)) {
+                let result = '';
+                let arrData = parsedFloatData.toString().split(".");
+                if (arrData[0].length > 0) {
+                    let rs = [];
+                    arrData[0].split("").reverse().map((item, idx, {length}) => {
+                        rs.push(item);
+                        if (idx !== length - 1 && idx !== 0 && (idx + 1) % 3 === 0) rs.push(thousand ? thousand : "");
+                    });
+                    if (arrData.length === 2 && arrData[1].length > 0) {
+                        result = rs.reverse().join("") + (decimal ? decimal : ".") + arrData[1];
+                    } else result = rs.reverse().join("");
+                }
+                // return (prefix ? prefix : "") + result + (suffix ? suffix : "");
+                return strDataParsed >= 0 ? (prefix ? prefix : "") + result + (suffix ? suffix : "") :  '(' + (prefix ? prefix : "") + result + (suffix ? suffix : "") + ')';
+            }
+        }
+    }
+
+    applyMaskMoneyExchange($ele, value) {
+        let $next = $ele.next('.mask-money-exchange');
+        if ($next.length > 0) {
+            $next.text(this.applyConfigExchange(value));
+        }
+        return true;
+    }
+
 }
 
 class UrlGatewayReverse {
@@ -1944,6 +2051,7 @@ class ListeningEventController {
         this.dropdownInAccordion();
         this.formatEle();
         ListeningEventController.listenImageLoad();
+        MaskMoney2.initCurrencyExchange();
     }
 }
 

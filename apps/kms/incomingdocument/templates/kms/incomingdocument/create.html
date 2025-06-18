@@ -159,7 +159,7 @@
             </div>
         </div>
     </form>
-    {% include 'kms/incomingdocument/extend/popup-recipient.html' %}
+    {% include 'kms/document_approval/extend/popup-recipient.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory">
@@ -172,7 +172,7 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
     <script src="{% static 'assets/js/kms/incoming-doc/common.js' %}"></script>
+    <script src="{% static 'assets/js/kms/incoming-doc/recipient-js.js' %}"></script>
     <script src="{% static 'assets/js/kms/incoming-doc/create.js' %}"></script>
-{#    <script src="{% static 'assets/js/kms/incoming-doc/recipient-js.js' %}"></script>#}
 
 {% endblock %}

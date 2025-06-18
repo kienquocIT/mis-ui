@@ -47,8 +47,8 @@ class IncomingDocDtbHandle {
 }
 
 // Load Editor
-class loadEditor{
-    init(){
+class loadEditor {
+    init() {
         const $textArea = $('#textarea_remark');
         $textArea.tinymce({
             height: 500,

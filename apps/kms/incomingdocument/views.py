@@ -6,7 +6,8 @@ from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, InputMappingProperties, SECURITY_LV, SYSTEM_STATUS
+from apps.shared import mask_view, ServerAPI, ApiURL, InputMappingProperties, SECURITY_LV, SYSTEM_STATUS, SaleMsg
+from apps.shared.msg import KMSMsg
 
 
 def create_quotation(request, url, msg):
@@ -111,6 +112,17 @@ class IncomingDocumentListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.INCOMING_DOCUMENT_LIST).get(params)
         return resp.auto_return(key_success='incoming_document_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.INCOMING_DOCUMENT_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = KMSMsg.INCOMING_DOC_CREATE
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
 
 
 class IncomingDocumentDetail(View):

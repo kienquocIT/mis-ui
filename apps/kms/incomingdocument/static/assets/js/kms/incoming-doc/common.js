@@ -7,6 +7,8 @@ class IncomingDocElements {
         this.$docTypeEle = $('#select-box-doc_type')
         this.$contentGroupEle = $('#select-box-content_group')
         this.$effectiveDateEle = $('#kms_effective_date')
+        this.$expiredDateEle = $('#kms_expired_date')
+        this.$securityLevelEle = $('#kms_security_level')
         this.$folderEle = $('#kms_folder')
     }
 }
@@ -27,11 +29,15 @@ class IncomingDocLoadDataHandle {
     }
     static combineData(formEle) {
         let frm = new SetupFormSubmit($(formEle));
-        frm.dataForm['title'] = pageElements.$titleEle.val()
-        frm.dataForm['description'] = pageElements.$descriptionEle.val() || null
-        frm.dataForm['sender'] = pageElements.$senderEle.val()
-        frm.dataForm['effective_date'] = moment(pageElements.$effectiveDateEle.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
-        return frm
+        let parsedEffectiveDate = moment(pageElements.$effectiveDateEle.val(), "DD/MM/YYYY", true);
+        let parsedExpiredDate = moment(pageElements.$expiredDateEle.val(), "DD/MM/YYYY", true);
+        frm.dataForm['title'] = pageElements.$titleEle.val();
+        frm.dataForm['remark'] = pageElements.$descriptionEle.val() || null;
+        frm.dataForm['sender'] = pageElements.$senderEle.val();
+        frm.dataForm['effective_date'] = parsedEffectiveDate.isValid() ? parsedEffectiveDate.format('YYYY-MM-DD') : null;
+        frm.dataForm['expired_date'] = parsedExpiredDate.isValid() ? parsedExpiredDate.format('YYYY-MM-DD') : null;
+        frm.dataForm['security_level'] = pageElements.$securityLevelEle.val();
+        return frm;
     }
 }
 

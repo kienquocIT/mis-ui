@@ -34,6 +34,8 @@ class IncomingDocLoadDataHandle {
         frm.dataForm['title'] = pageElements.$titleEle.val();
         frm.dataForm['remark'] = pageElements.$descriptionEle.val() || null;
         frm.dataForm['sender'] = pageElements.$senderEle.val();
+        frm.dataForm['document_type'] = pageElements.$docTypeEle.val();
+        frm.dataForm['content_group'] = pageElements.$contentGroupEle.val();
         frm.dataForm['effective_date'] = parsedEffectiveDate.isValid() ? parsedEffectiveDate.format('YYYY-MM-DD') : null;
         frm.dataForm['expired_date'] = parsedExpiredDate.isValid() ? parsedExpiredDate.format('YYYY-MM-DD') : null;
         frm.dataForm['security_level'] = pageElements.$securityLevelEle.val();

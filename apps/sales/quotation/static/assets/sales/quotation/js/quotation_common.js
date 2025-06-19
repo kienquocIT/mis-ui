@@ -3299,7 +3299,7 @@ class QuotationDataTableHandle {
                             disabled = 'disabled'  // shipping
                         }
                         return `<div class="d-flex mt-5">
-                                    <div class="input-group input-group-price">
+                                    <div class="input-group-price">
                                         <input 
                                             type="text" 
                                             class="form-control mask-money table-row-price disabled-custom-show valid-num" 
@@ -5852,6 +5852,7 @@ class indicatorHandle {
         } else {
             QuotationDataTableHandle.dataTableSaleOrderIndicator(result_list);
         }
+        $.fn.initMaskMoney2();
     };
 
     static evaluateFormula(formulaText) {

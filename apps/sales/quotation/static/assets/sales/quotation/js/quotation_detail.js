@@ -14,6 +14,7 @@ $(function () {
                 if (data) {
                     $x.fn.renderCodeBreadcrumb(data);
                     $.fn.compareStatusShowPageAction(data);
+                    MaskMoney2.initCurrencyExchange(data);
                     // store && load data detail
                     QuotationLoadDataHandle.$eleStoreDetail.val(JSON.stringify(data));
                     QuotationLoadDataHandle.loadDetailQuotation(data);

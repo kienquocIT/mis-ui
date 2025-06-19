@@ -65,7 +65,7 @@ class popupPermission {
                         _this.get_employee(params, is_all)
                     } else _this.load_employee_list([], is_all)
                     if (is_all) $('tbody tr td input:not([value="all_com"])', $table).prop('checked', false)
-                })
+                });
             },
         })
     }
@@ -274,7 +274,7 @@ class popupPermission {
                 is_apply_sub: _data['apply_to_sub'],
             }
 
-            // folder_perm_list: folder_perm,
+            // folder_perm_list: folder_perm
             if (_data.expiration_date) temp_data.exp_date = _data.exp_date
 
             if (_data.id && $x.fn.checkUUID4(_data.id)) temp_data.id = _data.id
@@ -350,21 +350,21 @@ class popupPermission {
             7: '#checkbox_edit_f'
         }
     }
-}
+};
 
 class FilesHandle {
 
-    loadTable(data = [], reload_data = false) {
+    loadTable(data_tbl = [], reload_data = false) {
         const $tbl = $('#main-files-info')
         const _this = this
 
         if ($tbl.hasClass('dataTable')) {
-            if (reload_data) $tbl.DataTable().clear().rows.add(data).draw();
-            else $tbl.DataTable().row.add(data).draw();
+            if (reload_data) $tbl.DataTable().clear().rows.add(data_tbl).draw();
+            else $tbl.DataTable().row.add(data_tbl).draw();
         }
         else{
             $tbl.DataTableDefault({
-                data: data,
+                data: data_tbl,
                 paging: false,
                 info: false,
                 searching: false,
@@ -372,8 +372,9 @@ class FilesHandle {
                     {
                         data: 'id',
                         width: '2%',
-                        render: (row) => {
-                            return `<input type="checkbox" id="checkbox_id_${row}" value="${row}">`
+                        render: (row, index, data) => {
+                            const type = data?.['file_type'] !== undefined ? data['file_type'] : 'folder'
+                            return `<input type="checkbox" id="checkbox_id_${row}" value="${row}" data-type="${type}">`
                         }
                     },
                     {
@@ -391,8 +392,8 @@ class FilesHandle {
                     {
                         data: 'employee_inherit',
                         width: '20%',
-                        render: (row) => {
-                            return row?.full_name ? row.full_name : '--'
+                        render: (row, index, data) => {
+                            return row?.full_name ? row.full_name : data?.employee_created ? data.employee_created.full_name : '--';
                         }
                     },
                     {
@@ -423,27 +424,62 @@ class FilesHandle {
                     {
                         data: 'id',
                         width: '10%',
-                        render: (row) => {
+                        render: (row, index, data) => {
                             let type = 'folder'
                             if (data?.file_type && data?.file_size && data?.file_name) type = 'file'
-                            const btn1 = `<button class="btn btn-icon btn-rounded bg-dark-hover" data-id="${row}" data-bs-toggle="modal" data-bs-target="#sharePerm" data-type="${type}"><span><i class="fa-solid fa-share-nodes"></i></span></button>`;
+                            const btn1 = `<button type="button" class="btn btn-icon btn-rounded bg-dark-hover" data-id="${row}" data-bs-toggle="modal" data-bs-target="#sharePerm" data-type="${type}"><span><i class="fa-solid fa-share-nodes"></i></span></button>`;
                             const btn2 = `<a class="btn btn-icon btn-rounded bg-dark-hover edit-button rotate90deg" ` + `data-id="${row}"><span class="icon"><i class="fa-solid fa-arrow-right-to-bracket"></i></span></a>`;
-                            const btn3 = `<button class="btn btn-icon btn-rounded bg-dark-hover dropdown-toggle" data-bs-toggle="dropdown" id="action_${row}">` + `<span class="icon-animate"><i class="fa-solid fa-ellipsis"></i></span></button>` + `<div class="dropdown-menu" aria-labelledby="action_${row}">` + `<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFolderMdl"><i class="dropdown-icon fas fa-folder-plus text-primary"></i><span>${$.fn.gettext('Access list')}</span></a>` + // `<a class="dropdown-item" href="#" id="upload-file" data-bs-toggle="modal" data-bs-target="#uploadFileMdl"><i class="dropdown-icon fas fa-file-upload text-primary"></i><span class="mt-2">${$.fn.gettext('Delete')}</span></a>` +
-                                `<a class="dropdown-item" href="#" id="upload-folder" data-bs-toggle="modal" data-bs-target="#addFolderMdl"><i class="dropdown-icon fas fa-upload text-primary"></i><span>${'Move'}</span></a></div>`;
+                            const btn3 = `<button type="button" class="btn btn-icon btn-rounded bg-dark-hover dropdown-toggle" data-bs-toggle="dropdown" id="action_${row}">` + `<span class="icon-animate"><i class="fa-solid fa-ellipsis"></i></span></button>` + `<div class="dropdown-menu" aria-labelledby="action_${row}">` + `<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFolderMdl"><i class="dropdown-icon fas fa-folder-plus text-primary"></i><span>${$.fn.gettext('Access list')}</span></a>` + // `<a class="dropdown-item" href="#" id="upload-file" data-bs-toggle="modal" data-bs-target="#uploadFileMdl"><i class="dropdown-icon fas fa-file-upload text-primary"></i><span class="mt-2">${$.fn.gettext('Delete')}</span></a>` +
+                                `<a class="dropdown-item" href="#" id="update-folder"><i class="dropdown-icon fas fa-upload text-primary"></i><span>${'Move'}</span></a></div>`;
                             return `<div class="wrap-action">${btn1 + btn2 + btn3}</div>`;
                         }
                     }
                 ],
-                rowCallback: function (row) {
+                rowCallback: function (row, data) {
+                    // click on title
                     $('a.folder_title', row).off().on('click', function (e) {
                         e.stopPropagation();
                         const folderId = $(this).attr('data-id')
+                        _this.$loading.show()
                         _this.get_folder(folderId)
                         _this.breadcrumb_handle({
                             'id': folderId,
                             'title': $('span:nth-child(2)', $(this)).text()
                         })
                         $('.tit-crt').html($('span:nth-child(2)', $(this)).text())
+                    })
+
+                    // checked to select
+                    $('input[id*="checkbox_id_"]', row).off().on('change', function () {
+                        const isCheck = $(this).prop('checked');
+                        const $actSlc = $('.action-slc')
+                        if (isCheck){
+                            $actSlc.addClass('active');
+                            $(this).closest('tr').addClass('selected')
+                        }
+                        else{
+                             if($('input[id*="checkbox_id_"]:checked', $tbl).length === 0)
+                                 $actSlc.removeClass('active')
+                            $(this).closest('tr').removeClass('selected')
+                        }
+                    })
+
+                    // open modal update folder
+                    $('#update-folder', row).off().on('click', function(){
+                        const $flMd = $('#addFolderMdl')
+                        const $crtFolder = $('#current_folder')
+                        $('#add-folder-title', $flMd).prop('disabled',true)
+                            .val(data.title)
+                        const folderParent = $crtFolder.val() ? {
+                            "id": $crtFolder.val(),
+                            "title": $('.tit-crt').text()
+                        } : null;
+                        if (folderParent)
+                            $('#add-folder-box-parent', $flMd).append(`<option value="${folderParent.id}" selected>${
+                                folderParent.title}</option>`)
+                        $('#folder_id', $flMd).val(data.id)
+                        $flMd.modal('show')
+
                     })
                 },
             })
@@ -453,7 +489,7 @@ class FilesHandle {
     get_folder(dataId = null) {
         const _this = this;
         $.fn.callAjax2({
-            'url': $('#url-factory').attr('data-url-detail').format_url_with_uuid(dataId), 'method': 'GET',
+            'url': this.$urlFact.attr('data-url-detail').format_url_with_uuid(dataId), 'method': 'GET',
         }).then((resp) => {
             let rep = $.fn.switcherResp(resp);
             if (rep && (rep['status'] === 201 || rep['status'] === 200)) {
@@ -472,27 +508,41 @@ class FilesHandle {
 
     create_folder() {
         const $btnAdd = $('#btn-add-folder');
-        const _this = this
+        const _this = this;
+        const $crtFolder = $('#current_folder');
+
         $btnAdd.on('click', function () {
             let dataSubmit = {
-                'title': $('#add-folder-title').val()
+                'title': $('#add-folder-title').val(),
+                'is_owner': true,
             };
+            const id = $('#folder_id').val()
             const parent = $('#add-folder-box-parent').val();
             if (parent) dataSubmit['parent_n'] = parent;
+            if (id) dataSubmit['id'] = id
+            const url = id ? _this.$urlFact.attr('data-url-detail').format_url_with_uuid(id) : _this.$urlFact.attr('data-folder-api');
             $.fn.callAjax2({
-                'url': $('#url-factory').attr('data-url'),
-                'method': 'POST',
+                'url': url,
+                'method': id ? 'PUT' : 'POST',
                 'data': dataSubmit,
             }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
-                    if (!parent) _this.loadTable({
-                        'id': data.id,
-                        'title': data.title,
-                        'date_created': data.date_created,
-                        'employee_inherit': data.employee_inherit
-                    })
+                    if ((!parent || parent === $crtFolder.val()) && !id){
+                        // nếu là form create và là thư mục root hoặc parent = current thì add vào table
+                        _this.loadTable({
+                            'id': data.id,
+                            'title': data.title,
+                            'date_created': data.date_created,
+                            'employee_inherit': data.employee_inherit
+                        })
+                    }
+                    if (id && parent !== $crtFolder.val()){
+                        // nếu là update và parent != current thì xóa row đó ra khỏi current
+                        const idx = $(`#main-files-info input[id="checkbox_id_${id}"]`).closest('tr').index()
+                        $('#main-files-info').DataTable().row(idx).remove().draw()
+                    }
                     $('#addFolderMdl').modal('hide');
                 }
             }, (err) => {
@@ -503,10 +553,9 @@ class FilesHandle {
 
     action_space_title(){
         const $btnSpace = $('#folder-tree button');
-        const $URLFact = $('#url-factory');
         const urlMap = {
-            "my": $URLFact.attr('data-folder-api'),
-            "shared": $URLFact.attr('data-folder-share-api')
+            "my": this.$urlFact.attr('data-folder-my'),
+            "shared": this.$urlFact.attr('data-folder-share-api')
         }
         const _this = this
 
@@ -522,10 +571,13 @@ class FilesHandle {
                 (resp) => {
                     let rep = $.fn.switcherResp(resp);
                     if (rep && (rep['status'] === 201 || rep['status'] === 200)){
-                        const keyLst = btnKey === 'my' ? 'folder_list' : 'folder_stm_list';
+                        const keyLst = btnKey === 'my' ? 'folder_mf_list' : 'folder_stm_list';
                         _this.loadTable(rep[keyLst], true)
                     }
                     else _this.loadTable([], true)
+                    $('#folder-path').html('')
+                    $('.tit-crt').text('')
+                    $('.btn_cancel_slt').trigger('click');
                 },
                 (error) => {
                     $.fn.notifyB({'description': error.data.errors?.detail}, 'failure')
@@ -559,16 +611,16 @@ class FilesHandle {
                 })
                 RootElm.on('click', function(){
                     const rootData = $(this).data('brc');
-                    let url = _this.$urlFact.attr('data-folder-api')
+                    let url = _this.$urlFact.attr('data-folder-my')
                     if (rootData.id === 'shared') url = _this.$urlFact.attr('data-folder-share-api')
                     $.fn.callAjax2({url: url, method: 'get'}
                     ).then(
                         (resp) => {
                             let rep = $.fn.switcherResp(resp);
                             if (rep && (rep['status'] === 201 || rep['status'] === 200)){
-                                _this.loadTable(rep[rootData.id === 'my' ? 'folder_list' : 'folder_stm_list'], true)
-                                $listHtml.html('')
-                                $('.tit-crt').html('')
+                                _this.loadTable(rep[rootData.id === 'my' ? 'folder_mf_list' : 'folder_stm_list'], true)
+                                $listHtml.add($('.tit-crt')).html('');
+                                $('#current_folder').val('')
                             }
                         }
                     )
@@ -584,22 +636,80 @@ class FilesHandle {
                     _this.get_folder(data.id)
                     $('.tit-crt').html(data.title)
                 }
+                $(this).nextAll().remove();
+                // reset and uncheck table
+                $('.btn_cancel_slt').trigger('click');
             })
         }
     }
 
+    delete_folder(id){
+        $.fn.callAjax2({
+            'url': this.$urlFact.attr('data-folder-my'),
+            'method': 'delete',
+            'data': {'ids': id}
+        }).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data['status'] === 204){
+                $('#main-files-info').DataTable().rows('.selected').remove().draw();
+                $('.action-slc').removeClass('active');
+            }
+        })
+    }
+
+    delete_file(ids){
+        $.fn.callAjax2({
+            'url': this.$urlFact.attr('data-file-edit'),
+            'method': 'delete',
+            'data': {'ids': ids}
+        }).then((resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data['status'] === 204){
+                $('#main-files-info').DataTable().rows('.selected').remove().draw();
+                $('.action-slc').removeClass('active');
+            }
+        })
+    }
+
+    action_bar(){
+        const $btnDel = $('.btn_delete_slt')
+        const $btnCal = $('.btn_cancel_slt')
+        const $folderTbl = $('#main-files-info')
+        const _this = this
+        $btnDel.off().on('click', () => {
+            const delete_folder = [];
+            const delete_file = [];
+            $('input[id*="checkbox_id_"]:checked', $folderTbl).each(function(){
+                const type = $(this).attr('data-type');
+                const _val = $(this).val()
+                if(type === 'folder') delete_folder.push(_val)
+                else delete_file.push(_val)
+            });
+            if (delete_folder.length) _this.delete_folder(delete_folder);
+            if (delete_file.length) _this.delete_file(delete_file);
+        });
+
+        $btnCal.on('click', () => {
+            $('.action-slc').removeClass('active')
+            $('input[id*="checkbox_id_"]:checked', $folderTbl).prop('checked', false)
+        })
+    }
+
     init() {
         // load select parent_n
-        $('#add-folder-box-parent').initSelect2();
+        $('#add-folder-box-parent').initSelect2({
+            allowClear: true,
+        });
 
         // on init load folder list
         const _this = this;
         $.fn.callAjax2({
-            'url': $('#url-factory').attr('data-url'), 'method': 'GET'
+            'url': this.$urlFact.attr('data-folder-my'), 'method': 'GET'
         }).then((resp) => {
             let rep = $.fn.switcherResp(resp);
-            if (rep && (rep['status'] === 201 || rep['status'] === 200)) _this.loadTable(rep['folder_list'])
-        }, (error) => $.fn.notifyB({'description': error.data.errors?.detail}, 'failure'))
+            if (rep && (rep['status'] === 201 || rep['status'] === 200)) _this.loadTable(rep['folder_mf_list'])
+        }, (error) => $.fn.notifyB({
+            'description': error.data.errors?.detail}, 'failure'))
 
         // valid folder clicked before click upload file
         $('#upload-file').off().on('click', function (e) {
@@ -614,15 +724,32 @@ class FilesHandle {
             $('#attachment .dm-uploader input[type="file"]').trigger('click')
         });
 
+        // reset modals
+        this.$elmMdFdr.on('hidden.bs.modal', function(){
+            $('#add-folder-title').val('').prop('disabled', false)
+            $('#folder_id').val('')
+            $('#add-folder-box-parent').val('').trigger('change')
+        });
+
+
         this.create_folder()
         this.action_space_title()
         this.breadcrumb_handle()
+        this.action_bar()
     };
 
     constructor() {
         this.$urlFact = $('#url-factory')
+        this.$elmMdFdr = $('#addFolderMdl')
+        this.$loading = $('#refresh-container')
     }
 };
+
+function triggerAfterUpload(data={}){
+    if (Object.keys(data).length){
+        $('#main-files-info').DataTable().row.add(data).draw();
+    }
+}
 
 $(document).ready(function () {
 
@@ -633,4 +760,12 @@ $(document).ready(function () {
     // run modal
     const modalPermission = new popupPermission();
     modalPermission.init()
+
+    // init loading upload file
+    new $x.cls.file($('#attachment')).init({
+        'name': 'attachment',
+        'select_folder': false,
+        'element_folder': $('#current_folder'),
+        'CB_after_upload': triggerAfterUpload,
+    });
 });

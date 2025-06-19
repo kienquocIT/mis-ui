@@ -52,6 +52,19 @@ msgstr "Chủ sở hữu"
 #
 msgid "Date modified"
 msgstr "Ngày sửa đổi"
+
 #
 msgid "Apply to subfolders"
 msgstr "Áp dụng cho thư mục con"
+
+#
+msgid "Workspace"
+msgstr "Không gian làm việc"
+
+#
+msgid "My space"
+msgstr "Không gian của tôi"
+
+#
+msgid "My file"
+msgstr "Tệp của tôi"

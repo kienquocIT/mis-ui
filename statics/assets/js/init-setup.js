@@ -312,8 +312,11 @@ class MaskMoney2 {
                     $currencyExchangeEle.trigger('change');
                 });
 
-
-            })
+            });
+            if (window.location.href.includes('/detail/')) {
+                $currencyExchangeEle.attr('readonly', 'true');
+                $currencyExchangeEleRateEle.attr('readonly', 'true');
+            }
         }
         return true;
     }
@@ -344,7 +347,7 @@ class MaskMoney2 {
             if ($item.hasClass('hidden') || $item.attr('hidden') !== undefined) {
                 hidden = 'hidden';
             }
-            if (!$item.hasClass('no-show-exchange')) {
+            if (!$item.hasClass('no-exchange-show')) {
                 $item.after(`<span class="form-text text-muted mask-money-exchange ml-1 ${hidden}"></span>`);
             }
         }

@@ -50,7 +50,6 @@ $(function () {
         });
 
         GRDataTableHandle.tablePOProduct.on('click', '.table-row-checkbox', function () {
-            GRLoadDataHandle.loadCheckRadioDtb(this);
             GRLoadDataHandle.loadCheckPOProduct(this);
         });
 
@@ -71,7 +70,6 @@ $(function () {
         });
 
         GRDataTableHandle.tablePR.on('click', '.table-row-checkbox', function () {
-            GRLoadDataHandle.loadCheckRadioDtb(this);
             GRLoadDataHandle.loadCheckPR();
         });
 
@@ -97,7 +95,6 @@ $(function () {
         });
 
         GRDataTableHandle.tableWH.on('click', '.table-row-checkbox', function () {
-            GRLoadDataHandle.loadCheckRadioDtb(this);
             GRLoadDataHandle.loadCheckWH(this);
         });
 
@@ -230,6 +227,13 @@ $(function () {
             $('#btn-edit-product-good-receipt').click();
         });
 
+        // PRODUCT MODIFICATION BEGIN
+        GRLoadDataHandle.PMSelectEle.on('change', function () {
+            GRLoadDataHandle.loadClearModal();
+            GRLoadDataHandle.loadCallAjaxPMProduct();
+            $('#btn-edit-product-good-receipt').click();
+        });
+
 // SUBMIT FORM
         SetupFormSubmit.validate(GRLoadDataHandle.$form, {
             rules: {
@@ -260,6 +264,8 @@ $(function () {
                 'production_order_data',
                 'work_order_id',
                 'work_order_data',
+                'product_modification_id',
+                'product_modification_data',
                 'supplier_id',
                 'supplier_data',
                 'purchase_requests',

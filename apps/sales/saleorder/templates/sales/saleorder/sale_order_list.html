@@ -7,8 +7,7 @@
 
 {% block pageAction %}
     {% url 'SaleOrderCreate' as create_link %}
-    {% trans 'Create Sale Order' as create_title %}
-    {% include 'extends/systems/page_actions.html' with is_create=True create_link=create_link create_idx="create_sale_order_button" create_title=create_title %}
+    {% include 'extends/systems/page_actions.html' with is_create=True create_link=create_link create_idx="create_sale_order_button" %}
 {% endblock %}
 
 {% block pageContent %}

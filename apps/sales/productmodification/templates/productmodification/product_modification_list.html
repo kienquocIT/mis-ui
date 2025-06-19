@@ -34,14 +34,17 @@
                    data-url-redirect="{% url 'ProductModificationList' %}"
                    data-url="{% url 'ProductModificationListAPI' %}"
                    data-url-detail="{% url 'ProductModificationDetail' '0' %}"
+                   data-url-gis-detail="{% url 'GoodsIssueDetail' '0' %}"
+                   data-url-gr-detail="{% url 'GoodsReceiptDetail' '0' %}"
             >
                 <thead>
                 <tr>
                     <th style="min-width: 50px"></th>
-                    <th style="min-width: 100px">{% trans "Code" %}</th>
+                    <th style="min-width: 150px">{% trans "Code" %}</th>
                     <th style="min-width: 300px">{% trans "Name" %}</th>
                     <th style="min-width: 150px">{% trans "Employee created" %}</th>
                     <th style="min-width: 150px">{% trans "Date created" %}</th>
+                    <th style="min-width: 200px">{% trans "State" %}</th>
                     <th style="min-width: 80px">{% trans "System status" %}</th>
                 </tr>
                 </thead>

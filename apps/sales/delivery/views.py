@@ -160,7 +160,7 @@ class OrderDeliveryList(View):
         breadcrumb='ORDER_DELIVERY_LIST_PAGE',
         menu_active='menu_order_delivery_list',
         icon_cls='fas fa-truck',
-        icon_bg='bg-neon',
+        icon_bg='bg-gold',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -212,7 +212,7 @@ class OrderDeliveryDetail(View):
         breadcrumb='ORDER_DELIVERY_DETAIL_PAGE',
         menu_active='menu_order_delivery_list',
         icon_cls='fas fa-truck',
-        icon_bg='bg-neon',
+        icon_bg='bg-gold',
     )
     def get(self, request, *args, pk, **kwargs):
         is_lead, lead, person_list = check_config_lead(request.user, 'delivery')
@@ -235,7 +235,7 @@ class OrderDeliveryEdit(View):
         breadcrumb='ORDER_DELIVERY_EDIT_PAGE',
         menu_active='menu_order_delivery_list',
         icon_cls='fas fa-truck',
-        icon_bg='bg-neon',
+        icon_bg='bg-gold',
     )
     def get(self, request, *args, pk, **kwargs):
         input_mapping_properties = InputMappingProperties.DELIVERY_ORDER_DELIVERY

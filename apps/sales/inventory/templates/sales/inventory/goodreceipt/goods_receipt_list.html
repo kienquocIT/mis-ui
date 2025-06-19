@@ -5,21 +5,8 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a href="{% url 'GoodsReceiptCreate' %}"
-       data-bs-toggle="tooltip"
-       data-bs-placement="top"
-       title="{% trans 'Create Goods Receipt' %}"
-       id="create_goods_receipt_button"
-       data-bs-original-title="Add Goods Receipt">
-            <button type="button" class="btn btn-outline-primary">
-                <span>
-                    <span>{% trans 'Add' %}</span>
-                    <span class="icon">
-                        <i class="fa-solid fa-plus"></i>
-                    </span>
-                </span>
-            </button>
-    </a>
+    {% url 'GoodsReceiptCreate' as create_link %}
+    {% include 'extends/systems/page_actions.html' with is_create=True create_link=create_link create_idx="create_goods_receipt_button" %}
 {% endblock %}
 
 {% block pageContent %}
@@ -58,6 +45,10 @@
             data-link-detail="{% url 'GoodsReceiptDetail' 1 %}"
             data-link-update="{% url 'GoodsReceiptUpdate' 1 %}"
             data-link-list="{% url 'GoodsReceiptList' %}"
+            data-link-detail-po="{% url 'PurchaseOrderDetail' 1 %}"
+            data-link-detail-ia="{% url 'InventoryAdjustmentDetail' 1 %}"
+            data-link-detail-pro="{% url 'ProductionOrderDetail' 1 %}"
+            data-link-detail-pm="{% url 'ProductModificationDetail' 1 %}"
     >
     <input
             type="text"

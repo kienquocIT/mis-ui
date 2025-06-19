@@ -723,7 +723,7 @@ $.fn.extend({
                 if (function_number_data.filter((item) => {return item?.['app_code'] === param_app_code}).length === 1) {
                     const code_ele = $(`#${param_ele_code_id}`)
                     code_ele.addClass('auto-code-field')
-                    code_ele.attr('placeholder', $.fn.gettext('Auto-generate mode if blank'))
+                    code_ele.attr('placeholder', $.fn.gettext('Auto-generate if blank (based on config)'))
                     code_ele.prop('required', false)
                     code_ele.closest('.form-group').find('label').removeClass('required')
                 }

@@ -2,23 +2,23 @@
 <!-- Main Menu -->
 <div data-simplebar class="nicescroll-bar">
     <div class="menu-content-wrap">
-        <div class="menu-group mb-3">
-            <ul class="navbar-nav flex-column">
-                <li class="nav-item">
-                    <a
-                            class="nav-link" href="#"
-                            data-bs-toggle="modal" data-bs-target="#modalSearchMenu"
-                    >
-                    <span class="nav-icon-wrap">
-                        <span class="svg-icon menu-child-icon">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </span>
-                    </span>
-                        <span class="nav-link-text">{% trans 'Menu finder' %}</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
+{#        <div class="menu-group mb-3">#}
+{#            <ul class="navbar-nav flex-column">#}
+{#                <li class="nav-item">#}
+{#                    <a#}
+{#                            class="nav-link" href="#"#}
+{#                            data-bs-toggle="modal" data-bs-target="#modalSearchMenu"#}
+{#                    >#}
+{#                    <span class="nav-icon-wrap">#}
+{#                        <span class="svg-icon menu-child-icon">#}
+{#                            <i class="fa-solid fa-magnifying-glass"></i>#}
+{#                        </span>#}
+{#                    </span>#}
+{#                        <span class="nav-link-text">{% trans 'Menu finder' %}</span>#}
+{#                    </a>#}
+{#                </li>#}
+{#            </ul>#}
+{#        </div>#}
         <div class="menu-group mb-3">
             <div class="nav-header">
                 <span class="d-block mb-2">Spaces</span>
@@ -49,7 +49,7 @@
                                     {% if item.child|length > 0 %}
                                         {% for item_child in item.child %}
                                             <a
-                                                    class="dropdown-item space-item {% if base.space_current_detail.code == item_child.code %} text-primary {% endif %}"
+                                                    class="dropdown-item space-item d-flex align-items-center gap-2 {% if base.space_current_detail.code == item_child.code %} text-primary {% endif %}"
                                                     data-space-code="{{ item_child.code }}"
                                                     data-space-name="{{ item_child.name }}"
                                                     href="#"
@@ -68,6 +68,23 @@
                                 </div>
                             </div>
                         </div>
+            </div>
+            <div class="ml-1">
+                <ul class="navbar-nav flex-column">
+                    <li class="nav-item">
+                        <a
+                                class="nav-link" href="#"
+                                data-bs-toggle="modal" data-bs-target="#modalSearchMenu"
+                        >
+                        <span class="nav-icon-wrap">
+                            <span class="svg-icon menu-child-icon">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </span>
+                        </span>
+                            <span class="nav-link-text">{% trans 'Menu finder' %}</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="menu-group">

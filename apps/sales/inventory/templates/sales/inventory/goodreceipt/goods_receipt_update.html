@@ -5,15 +5,9 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
+
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_good_receipt_create">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
-            </span>
-        </span>
-    </button>
+    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='frm_good_receipt_create' %}
 {% endblock %}
 
 {% block pageContent %}
@@ -187,6 +181,28 @@
                                         <button type="button" class="btn btn-outline-primary" id="btn-edit-production-report" data-bs-toggle="modal" data-bs-target="#productionReportModal">
                                             <span><span class="icon"><i class="far fa-edit"></i></span><span>{% trans 'Select production report' %}</span></span>
                                         </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row custom-area" id="custom-area-4" hidden>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="row">
+                                <div class="col-12 col-md-8 col-lg-8">
+                                    <div class="form-group">
+                                        <label class="form-label required" for="box-good-receipt-product-modified">{% trans 'product modification' %}</label>
+                                        <select
+                                                class="form-select"
+                                                id="box-good-receipt-product-modified"
+                                                data-url="{% url 'ProductModificationDDListAPI' %}"
+                                                data-method="GET"
+                                                name="product_modification_id"
+                                                data-keyResp="product_modification_dd_list"
+                                        >
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -578,6 +594,7 @@
             data-for-po="{% trans 'For purchase order' %}"
             data-for-ia="{% trans 'For inventory adjustment' %}"
             data-for-production="{% trans 'For production' %}"
+            data-for-pm="{% trans 'For product modification' %}"
             data-ia-quantity-valid="{% trans 'Please enter sufficient quantity' %}"
             data-stock="{% trans 'Stock' %}"
             data-for-pro="{% trans 'General production' %}"
@@ -587,6 +604,7 @@
             data-required-product="{% trans "Product is required" %}"
             data-edit="{% trans "Edit" %}"
             data-add="{% trans "New" %}"
+            data-no-inventory-choice="{% trans "The product has no inventory configuration. Do you want to continue?" %}"
     >
     <input
             type="text"
@@ -627,6 +645,8 @@
             data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
             data-md-bom="{% url 'BOMOrderListAPI' %}"
             data-md-product="{% url 'ProductForSaleListAPI' %}"
+            data-md-warehouse="{% url 'WareHouseListAPI' %}?interact=1"
+            data-pm-product="{% url 'ProductModificationProductGRListAPI' %}"
     >
 {% endblock %}
 

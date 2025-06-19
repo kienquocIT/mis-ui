@@ -13,24 +13,20 @@
 {% parse_bool is_edit as e_is %}
 {% parse_link edit_link as e_link %}
 {% parse_str edit_idx as e_idx %}
+{% parse_str edit_attr as e_attr %}
+{% if edit_title %} {% parse_str edit_title as e_title %} {% else %} {% trans 'Edit' as e_title %} {% endif %}
 
 {% if c_is == '1' %}
     <a
             href="{{ c_link }}"
-            {% if 'data-bs-toggle' not in c_attr %}
-                data-bs-toggle="tooltip"
-                data-bs-placement="bottom"
-                title="{{ c_title }}"
-            {% endif %}
             id="{{ c_idx }}"
-            {{ c_attr|safe }}
     >
-        <button class="btn btn-outline-primary">
+        <button class="btn btn-primary">
                 <span>
-                    <span>{% trans 'Add' %}</span>
                     <span class="icon">
                         <i class="fa-solid fa-plus"></i>
                     </span>
+                    <span>{% trans 'Add' %}</span>
                 </span>
         </button>
     </a>
@@ -48,25 +44,28 @@
 {% endif %}
 
 {% if s_is == '1' %}
-    <button class="btn btn-outline-primary btn-saving-form" type="submit" form="{{ s_frm }}" data-status-submit="1">
+    <button class="btn btn-primary" type="submit" form="{{ s_frm }}">
     <span>
-        <span>{% trans 'Save' %}</span>
         <span class="icon">
             <i class="fa-solid fa-floppy-disk"></i>
         </span>
+        <span>{% trans 'Save' %}</span>
     </span>
     </button>
 {% endif %}
 
 
 {% if e_is == '1' %}
-    <a href="{{ e_link }}">
-        <button class="btn btn-outline-primary" id="{{ e_idx }}">
+    <a
+            href="{{ e_link }}"
+            id="{{ e_idx }}"
+    >
+        <button class="btn btn-primary">
             <span>
-                <span>{% trans 'Edit' %}</span>
                 <span class="icon">
                     <i class="fa-regular fa-pen-to-square"></i>
                 </span>
+                <span>{% trans 'Edit' %}</span>
             </span>
         </button>
     </a>

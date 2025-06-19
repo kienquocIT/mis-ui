@@ -5,21 +5,8 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a href="{% url 'PurchaseOrderCreate' %}"
-       data-bs-toggle="tooltip"
-       data-bs-placement="top"
-       title="{% trans 'Create Purchase Order' %}"
-       id="create_purchase_order_button"
-       data-bs-original-title="Add Purchase Order">
-            <button type="button" class="btn btn-outline-primary">
-                <span>
-                    <span>{% trans 'Add' %}</span>
-                    <span class="icon">
-                        <i class="fa-solid fa-plus"></i>
-                    </span>
-                </span>
-            </button>
-    </a>
+    {% url 'PurchaseOrderCreate' as create_link %}
+    {% include 'extends/systems/page_actions.html' with is_create=True create_link=create_link create_idx="create_purchase_order_button" %}
 {% endblock %}
 
 {% block pageContent %}

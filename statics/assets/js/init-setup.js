@@ -2579,21 +2579,27 @@ class WFRTControl {
                                     <input type="radio" name="next-association" class="form-check-input checkbox-next-association" id="associate-${associate?.['id'].replace(/-/g, "")}" data-detail="${JSON.stringify(associate).replace(/"/g, "&quot;")}">
                                     <label class="form-check-label mr-2" for="associate-${associate?.['id'].replace(/-/g, "")}">${associate?.['node_out']?.['title']}</label>
                                 </div>
-                            </div><hr class="bg-black">`;
+                            </div><hr>`;
         }
         return htmlCustom;
     }
 
     static setupHTMLSelectCollab(collabOutForm) {
         let htmlCustom = ``;
-        for (let collab of collabOutForm) {
-            htmlCustom += `<div class="d-flex align-items-center justify-content-between group-checkbox-next-node-collab">
+        if (Array.isArray(collabOutForm)) {
+            for (let i = 0; i < collabOutForm.length; i++) {
+                let collab = collabOutForm[i];
+                htmlCustom += `<div class="d-flex align-items-center justify-content-between group-checkbox-next-node-collab">
                                 <div class="form-check form-check-lg d-flex align-items-center">
                                     <input type="radio" name="next-node-collab" class="form-check-input checkbox-next-node-collab" id="collab-${collab?.['id'].replace(/-/g, "")}" data-id="${collab?.['id']}">
                                     <label class="form-check-label mr-2" for="collab-${collab?.['id'].replace(/-/g, "")}">${collab?.['full_name']}</label>
                                 </div>
                                 <span class="badge badge-secondary badge-outline">${collab?.['group']?.['title'] ? collab?.['group']?.['title'] : ''}</span>
-                            </div><hr class="bg-black">`;
+                            </div>`;
+                if (i < (collabOutForm.length - 1)) {
+                    htmlCustom += `<hr>`;
+                }
+            }
         }
         return htmlCustom;
     }
@@ -2615,7 +2621,10 @@ class WFRTControl {
                                     <input type="radio" name="save-status" class="form-check-input checkbox-save-status" id="save-type-${status}" data-status="${status}" ${checked}>
                                     <label class="form-check-label" for="save-type-${status}">${statusMapText[status]}</label>
                                 </div>
-                            </div><hr class="bg-black">`;
+                            </div>`;
+            if (status === 0) {
+                htmlCustom += `<hr>`;
+            }
         }
         return htmlCustom;
     }
@@ -2762,7 +2771,7 @@ class WFRTControl {
     static setWFInitialData(app_code, isCR = false) {
         if (app_code) {
             let btn = $('#btnLogShow');
-            btn.removeClass('hidden');
+            // btn.removeClass('hidden');
             let url = btn.attr('data-url-current-wf');
             $.fn.callAjax2({
                 'url': url,
@@ -3582,7 +3591,10 @@ class WFRTControl {
             WFRTControl.changePropertiesElementIsZone($(ele$).next('.select2-container').find('.select2-selection'), config)
     }
 
-    static displayRuntimeStatus(status) {
+    static displayRuntimeStatus(status, is_system_auto_create=false) {
+        if (is_system_auto_create) {
+            return `<span class="badge fs-8 bg-blue-light-1">${$.fn.gettext('Create automatically')}</span>`;
+        }
         let sttTxt = {
             0: $.fn.transEle.attr('data-draft'),
             1: $.fn.transEle.attr('data-created'),
@@ -6406,10 +6418,7 @@ class DocumentControl {
                     ).removeClass('hidden');
                 }
                 if (detailData?.['system_auto_create']) {
-                    $breadcrumbCode.append(`<span class="badge-status ml-1">
-                                                <span class="badge badge-blue badge-indicator"></span>
-                                                <span class="small text-blue">${$.fn.gettext('Create automatically')}</span>
-                                            </span>`)
+                    $breadcrumbCode.append(`<span class="badge fs-8 bg-blue-light-1 ml-1">${$.fn.gettext('Create automatically')}</span>`)
                 }
             }
         }
@@ -6919,11 +6928,11 @@ class DateTimeControl {
             singleDatePicker: true,
             timepicker: false,
             showDropdowns: true,
-            minYear: 1990,
+            minYear: parseInt(moment().format('YYYY'), 10) - 5,
+            maxYear: parseInt(moment().format('YYYY'), 10) + 5,
             locale: {
                 format: 'DD/MM/YYYY',
             },
-            maxYear: parseInt(moment().format('YYYY'), 10),
             autoApply: true,
             autoUpdateInput: false,
         }).on('apply.daterangepicker', function (ev, picker) {
@@ -7526,15 +7535,13 @@ class FileControl {
                             }
                             const remarks = result.value;
                             const $folderId = opts?.['element_folder'];
-                            // if ($folderId && !$x.fn.checkUUID4($folderId.val())) {
-                            //     await Swal.fire({
-                            //         icon: 'error',
-                            //         title: $.fn.gettext('Folder is empty'),
-                            //         text: $.fn.gettext('Please select folder before upload')
-                            //     });
-                            //     clsThis.ui_remove_line_file_by_id(fileId);
-                            //     return {state: false, data: 'CANCEL'};
-                            // }
+
+                            const finalExtend = {
+                                state: true,
+                                data: {
+                                    'remarks': remarks
+                                }
+                            };
                             // check select folder
                             if(opts?.['select_folder'] && $folderId.val()){
                                 const fruit = await Swal.fire({
@@ -7555,14 +7562,9 @@ class FileControl {
                                     clsThis.ui_remove_line_file_by_id(fileId);
                                     return {state: false, data: 'CANCEL'};
                                 }
+                                finalExtend.data.folder = $folderId.val()
                             }
-                            return {
-                                state: true,
-                                data: {
-                                    'remarks': remarks,
-                                    'folder': $folderId.val()
-                                }
-                            };
+                            return finalExtend
                         },
                         url: $(clsThis.ele$).attr('data-url'),
                         headers: {
@@ -8897,12 +8899,12 @@ class DiagramControl {
             let urlDiagram = globeDiagramList;
             if ($btnLog && $btnLog.length > 0) {
                 let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
-                                <div class="offcanvas offcanvas-end w-90" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
+                                <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
                                     <div class="modal-header">
                                         <h5><b>Diagram</b></h5>
                                         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                            <button type="button" class="btn btn-outline-secondary" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reload"><span class="icon"><i class="fas fa-redo-alt"></i></span></button>
-                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Close"><span class="icon"><i class="fas fa-times"></i></span></button>
+                                            <button type="button" class="btn btn-outline-secondary" id="btnRefreshDiagram" data-url="${urlDiagram}" data-method="GET" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reload">${$.fn.transEle.attr('data-refresh')}</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Close">${$.fn.transEle.attr('data-close')}</button>
                                         </div>
                                     </div>
                                     <div class="offcanvas-body">

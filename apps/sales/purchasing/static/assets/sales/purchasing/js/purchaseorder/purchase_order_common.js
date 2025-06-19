@@ -116,35 +116,6 @@ class POLoadDataHandle {
         return true;
     };
 
-    static loadInitProduct() {
-        let finalData = [];
-        let ele = PODataTableHandle.productInitEle;
-        let url = ele.attr('data-url');
-        let method = ele.attr('data-method');
-        $.fn.callAjax2({
-                'url': url,
-                'method': method,
-                'isDropdown': true,
-            }
-        ).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    if (data.hasOwnProperty('product_sale_list') && Array.isArray(data.product_sale_list)) {
-                        for (let product of data.product_sale_list) {
-                            if (product.hasOwnProperty('product_choice') && Array.isArray(product?.['product_choice'])) {
-                                if (product?.['product_choice'].includes(2)) {  // product allow purchase
-                                    finalData.push(product);
-                                }
-                            }
-                        }
-                        ele.val(JSON.stringify(finalData));
-                    }
-                }
-            }
-        )
-    };
-
     static loadBoxProduct($ele, dataProduct = {}) {
         let dataDD = []
         if (PODataTableHandle.productInitEle.val()) {
@@ -157,7 +128,7 @@ class POLoadDataHandle {
             data: dataDD,
         });
         // add css to select2_rendered
-        POLoadDataHandle.loadCssS2($ele, '260px');
+        POLoadDataHandle.loadCssS2($ele, '200px');
     };
 
     static loadDataProductSelect(ele, is_change_item = true) {
@@ -2272,6 +2243,7 @@ class PODataTableHandle {
             columns: [  // 25,325,325,150,175,325,150,270,25 (1920p)
                 {
                     targets: 0,
+                    width: '1%',
                     render: (data, type, row) => {
                         let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
                         return `<span class="table-row-order" id="${row.id}" data-row="${dataRow}">${row?.['order']}</span>`
@@ -2279,6 +2251,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 1,
+                    width: '20%',
                     render: (data, type, row) => {
                         if (row?.['is_shipping'] === true) {
                             return `<input type="text" class="form-control table-row-shipping" value="${row?.['shipping_title'] ? row?.['shipping_title'] : ''}" required>`;
@@ -2298,6 +2271,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
+                    width: '15%',
                     render: (data, type, row) => {
                         let readonly = "readonly";
                         if (row?.['is_shipping'] === true) {
@@ -2314,6 +2288,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 3,
+                    width: '5%',
                     render: () => {
                         return `<div class="row">
                                     <select 
@@ -2329,6 +2304,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 4,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                     <input type="text" class="form-control valid-num table-row-quantity-order-actual valid-num" value="${row?.['product_quantity_order_actual']}" required>
@@ -2337,6 +2313,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 5,
+                    width: '20%',
                     render: (data, type, row) => {
                         return `<input 
                                     type="text" 
@@ -2348,6 +2325,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 6,
+                    width: '10%',
                     render: (data, type, row) => {
                         return `<div class="row">
                                 <select 
@@ -2375,6 +2353,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 7,
+                    width: '15%',
                     render: (data, type, row) => {
                         return `<div class="row subtotal-area">
                                     <p><span class="mask-money table-row-subtotal" data-init-money="${parseFloat(row?.['product_subtotal_price'] ? row?.['product_subtotal_price'] : '0')}"></span></p>
@@ -2389,6 +2368,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 8,
+                    width: '1%',
                     render: () => {
                         return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row"><span class="icon"><i class="fa-regular fa-trash-can"></i></span></button>`
                     }
@@ -2936,7 +2916,7 @@ class PODataTableHandle {
                         }
                         return `<div class="form-check form-check-lg d-flex align-items-center">
                                     <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-reconcile-${row?.['order']}" ${checked}>
-                                    <label class="form-check-label table-row-order" for="s-reconcile-${row?.['order']}">${row?.['term_data']?.['title']}</label>
+                                    <label class="form-check-label table-row-order" for="s-reconcile-${row?.['order']}">${row?.['term_data']?.['title'] ? row?.['term_data']?.['title'] : row?.['remark']}</label>
                                 </div>`;
                     }
                 },

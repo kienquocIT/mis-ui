@@ -555,6 +555,31 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadClsGroupToProducts() {
+        let order = "";
+        let cls = "";
+        QuotationDataTableHandle.$tableProduct.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = QuotationDataTableHandle.$tableProduct.DataTable().row(row).index();
+            let $row = QuotationDataTableHandle.$tableProduct.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+
+            if (dataRow?.['is_group'] === true && dataRow?.['group_order']) {
+                order = dataRow?.['group_order'];
+                cls = "group-" + String(order);
+            }
+            if (dataRow?.['is_group'] !== true) {
+                if (cls && order) {
+                    row.classList.add('collapse');
+                    row.classList.add(cls);
+                    row.classList.add('show');
+                    row.setAttribute('data-group', order);
+                }
+            }
+        });
+        return true;
+    };
+
     static decrementGroupString(str) {
         let match = str.match(/(\d+)$/);
         if (match) {
@@ -606,8 +631,9 @@ class QuotationLoadDataHandle {
         // ReCalculate Total
         QuotationCalculateCaseHandle.updateTotal(QuotationDataTableHandle.$tableProduct[0]);
         let TotalOrder = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-order').length;
-        let TotalGroup = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-group').length;
-        let order = (TotalOrder - TotalGroup) + 1;
+        // let TotalGroup = QuotationDataTableHandle.$tableProduct[0].querySelectorAll('.table-row-group').length;
+        // let order = (TotalOrder - TotalGroup) + 1;
+        let order = TotalOrder + 1;
         let dataUOM = {};
         let dataTax = {};
         if (data?.['sale_information']?.['default_uom']?.['id']) {
@@ -1751,6 +1777,10 @@ class QuotationLoadDataHandle {
                     listTaxID.push(taxData?.['id']);
                     listTax.push(taxData);
                 }
+                if (!$(taxEle).val()) {
+                    listTaxID.push(null);
+                    listTax.push({});
+                }
             }
         });
         return {"check": listTaxID.every(val => val === listTaxID[0]) ? "same" : "mixed", "list_tax": listTax};
@@ -2564,39 +2594,6 @@ class QuotationLoadDataHandle {
         tableExpense.DataTable().clear().draw();
         // load table product
         tableProduct.DataTable().rows.add(products_data).draw();
-        tableProduct.DataTable().rows().every(function () {
-            let row = this.node();
-            let eleGroup = row.querySelector('.table-row-group');
-            let eleProduct = row.querySelector('.table-row-item');
-
-            let rowIndex = tableProduct.DataTable().row(row).index();
-            let $row = tableProduct.DataTable().row(rowIndex);
-            let dataRow = $row.data();
-
-            // load collapse Group
-            if (eleGroup) {
-                let eleGroupEdit = row.querySelector('.table-row-group-title-edit');
-                let areaGroupShow = row.querySelector('.area-group-show');
-                if (eleGroupEdit && areaGroupShow) {
-                    let groupShow = areaGroupShow.querySelector('.table-row-group-title-show');
-                    if (groupShow) {
-                        areaGroupShow.classList.remove('hidden');
-                        eleGroupEdit.setAttribute('hidden', 'true');
-                    }
-                }
-                $(row).find('td:eq(1)').attr('colspan', 2);
-            }
-            if (eleProduct) {
-                let dataGroup = dataRow?.['group_order'];
-                if (dataGroup) {
-                    let classGroup = 'group-' + dataGroup;
-                    row.classList.add('collapse');
-                    row.classList.add(classGroup);
-                    row.classList.add('show');
-                    row.setAttribute('data-group', dataGroup);
-                }
-            }
-        });
         // load table cost
         if (costs_data) {
             tableCost.DataTable().rows.add(costs_data).draw();
@@ -2843,8 +2840,7 @@ class QuotationDataTableHandle {
                                         data-group-order="${row?.['group_order']}"
                                     >
                                         <span class="icon"><i class="fas fa-chevron-down"></i></span>
-                                    </button>
-                                    <span class="table-row-order ml-2" hidden>${row?.['order']}</span>`;
+                                    </button>`;
                         }
                         return `<span class="table-row-order ml-2">${row?.['order']}</span>`;
                     }
@@ -3181,23 +3177,6 @@ class QuotationDataTableHandle {
                     $(row).find('td:eq(1)').attr('colspan', 2);
                     row.classList.add('tr-group');
                 }
-                if (data?.['is_group'] !== true) {
-                    let $lastGroupRow = $(row).prevAll('.tr-group').first();
-                    if ($lastGroupRow.length > 0) {
-                        let lastGroup = $lastGroupRow[0].querySelector('.table-row-group');
-                        if (lastGroup) {
-                            let classGroupDot = lastGroup.getAttribute('data-bs-target');
-                            let dataGroupOrder = lastGroup.getAttribute('data-group-order');
-                            if (classGroupDot) {
-                                let classGroup = classGroupDot.replace(".", "");
-                                row.classList.add('collapse');
-                                row.classList.add(classGroup);
-                                row.classList.add('show');
-                                row.setAttribute('data-group', dataGroupOrder);
-                            }
-                        }
-                    }
-                }
             },
             drawCallback: function () {
                 QuotationDataTableHandle.dtbProductHDCustom();
@@ -3205,6 +3184,8 @@ class QuotationDataTableHandle {
                     // set again WF runtime
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                 }
+                // set cls of group to products
+                QuotationLoadDataHandle.loadClsGroupToProducts();
             },
         });
     };
@@ -4787,7 +4768,7 @@ class QuotationDataTableHandle {
                             }
                         }
                         return `<div class="form-check form-check-lg d-flex align-items-center">
-                                    <input type="radio" name="row-checkbox" class="form-check-input table-row-checkbox" id="s-invoice-${row?.['order']}" ${checked}>
+                                    <input type="radio" name="radio-invoice" class="form-check-input table-row-checkbox" id="s-invoice-${row?.['order']}" ${checked}>
                                     <label class="form-check-label table-row-order" for="s-invoice-${row?.['order']}">${row?.['order']}</label>
                                 </div>`;
                     }
@@ -4824,7 +4805,6 @@ class QuotationDataTableHandle {
                 },
             ],
             drawCallback: function () {
-                QuotationLoadDataHandle.loadEventRadio(QuotationDataTableHandle.$tableSInvoice);
                 $.fn.initMaskMoney2();
             }
         });
@@ -7062,7 +7042,6 @@ class QuotationDeliveryHandle {
 class QuotationStoreDataHandle {
 
     static storeDtbData(type) {
-        let dataJSON = {};
         let datas = [];
         let $table = null;
         if (type === 1) {
@@ -7085,19 +7064,33 @@ class QuotationStoreDataHandle {
             datas = QuotationSubmitHandle.setupDataInvoice();
             $table = QuotationDataTableHandle.$tableInvoice;
         }
+        let dataJSON = {};
+        let dataGrJSON = {};
         if (datas.length > 0 && $table) {
             for (let data of datas) {
-                if (!dataJSON.hasOwnProperty(String(data?.['order']))) {
-                    dataJSON[String(data?.['order'])] = data;
+                if (data?.['order']) {
+                    if (!dataJSON.hasOwnProperty(String(data?.['order']))) {
+                        dataJSON[String(data?.['order'])] = data;
+                    }
+                }
+                if (data?.['group_order']) {
+                    if (!dataGrJSON.hasOwnProperty(String(data?.['group_order']))) {
+                        dataGrJSON[String(data?.['group_order'])] = data;
+                    }
                 }
             }
             $table.DataTable().rows().every(function () {
                 let row = this.node();
                 let rowIndex = $table.DataTable().row(row).index();
                 let orderEle = row.querySelector('.table-row-order');
+                let groupEle = row.querySelector('.table-row-group');
                 if (orderEle) {
                     let key = orderEle.innerHTML;
                     $table.DataTable().row(rowIndex).data(dataJSON?.[key]);
+                }
+                if (groupEle) {
+                    let key = groupEle.getAttribute('data-group-order');
+                    $table.DataTable().row(rowIndex).data(dataGrJSON?.[key]);
                 }
             });
             if (type === 1) {
@@ -7144,6 +7137,7 @@ class QuotationSubmitHandle {
                 if (groupTitleEle) {
                     rowData['group_title'] = groupTitleEle.value;
                 }
+                rowData['unit_of_measure_id'] = null;
                 result.push(rowData);
             } else if (productEle) { // PRODUCT
                 if ($(productEle).val()) {

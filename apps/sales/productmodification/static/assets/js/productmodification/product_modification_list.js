@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    function loadARInvoiceList() {
+    function loadPMList() {
         if (!$.fn.DataTable.isDataTable('#datatable_product_modification_list')) {
             let dtb = $('#datatable_product_modification_list');
             let frm = new SetupFormSubmit(dtb);
@@ -33,14 +33,14 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-xs w-5',
+                        className: 'ellipsis-cell-sm w-5',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-50',
+                        className: 'ellipsis-cell-lg w-35',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
@@ -59,6 +59,19 @@ $(document).ready(function () {
                         }
                     },
                     {
+                        className: 'ellipsis-cell-sm w-15',
+                        render: (data, type, row) => {
+                            let info = ''
+                            if (row?.['created_goods_issue']) {
+                                info += `<a target="_blank" href="${dtb.attr('data-url-gis-detail').replace('0', row?.['goods_issue_mapped'])}"><p>${$.fn.gettext('Created Goods Issue')} <i class="fa-solid fa-up-right-from-square"></i></p></a>`
+                            }
+                            // if (row?.['created_goods_receipt']) {
+                            //     info += `<a target="_blank" href="${dtb.attr('data-url-gr-detail').replace('0', row?.['goods_receipt_mapped'])}"><p>${$.fn.gettext('Created Goods Receipt')} <i class="fa-solid fa-up-right-from-square"></i></p></a>`
+                            // }
+                            return info
+                        }
+                    },
+                    {
                         className: 'text-center w-10',
                         render: (data, type, row) => {
                             return WFRTControl.displayRuntimeStatus(row?.['system_status']);
@@ -69,31 +82,5 @@ $(document).ready(function () {
         }
     }
 
-    loadARInvoiceList();
-
-    $('#reload-invoice-status-btn').on('click', function () {
-        WindowControl.showLoading();
-        let url_loaded = $('#datatable_ar_invoice_list').attr('data-url') + `?update_status=true`
-        $.fn.callAjax(url_loaded, 'GET').then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    WindowControl.hideLoading();
-                    $.fn.notifyB({description: "Update successfully"}, 'success')
-                    setTimeout(() => {
-                        window.location.replace($('#datatable_ar_invoice_list').attr('data-url-redirect'));
-                        location.reload.bind(location);
-                    }, 1000);
-                }
-            },
-            (errs) => {
-                setTimeout(
-                    () => {
-                        WindowControl.hideLoading();
-                    },
-                    1000
-                )
-                $.fn.notifyB({description: errs.data.errors}, 'failure');
-            })
-    })
+    loadPMList();
 })

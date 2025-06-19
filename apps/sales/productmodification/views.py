@@ -84,9 +84,7 @@ class ProductModificationUpdate(View):
         menu_active='menu_product_modification_detail',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
         return {
-            'invoice_signs': resp.result[0] if len(resp.result) > 0 else '',
             'form_id': 'form-detail-product-modification',
         }, status.HTTP_200_OK
 
@@ -193,3 +191,26 @@ class ComponentInsertedListAPI(APIView):
         # đều load sản phẩm nên dùng chung URL với product modified
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_MODIFIED_LIST).get(params)
         return resp.auto_return(key_success='component_inserted_list')
+
+
+class ProductModificationDDListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_MODIFIED_DROPDOWN_LIST).get(params)
+        return resp.auto_return(key_success='product_modification_dd_list')
+
+
+class ProductModificationProductGRListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PRODUCT_MODIFIED_PRODUCT_GR_LIST).get(data)
+        return resp.auto_return(key_success='product_modification_product_gr')

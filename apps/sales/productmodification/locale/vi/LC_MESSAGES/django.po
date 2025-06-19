@@ -46,8 +46,8 @@ msgid "Select modified product"
 msgstr "Chọn sản phẩm tháo - lắp"
 
 #
-msgid "Picking modified product"
-msgstr "Lấy sản phẩm tháo - lắp"
+msgid "Picking detail modified product"
+msgstr "Lấy cụ thể sản phẩm tháo - lắp"
 
 #
 msgid "Current component"

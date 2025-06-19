@@ -42,16 +42,11 @@
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
+
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="delivery_form">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
-            </span>
-        </span>
-    </button>
+    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='delivery_form' %}
 {% endblock %}
+
 {% block pageContent %}
     <form id="delivery_form" data-url="{% url 'OrderDeliveryDetailAPI' data.pk %}" data-method="PUT" method="post"
           novalidate data-url-redirect="{% url 'OrderDeliveryList' %}">

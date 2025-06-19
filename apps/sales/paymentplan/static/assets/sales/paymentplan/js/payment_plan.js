@@ -29,13 +29,13 @@ $(function () {
                             </tbody>
                         </table>`;
         let staticHeaders = {
-            0: 'Document',
-            1: 'Partner',
-            2: 'Installment',
+            0: $transFact.attr('data-document'),
+            1: $transFact.attr('data-partner'),
+            2: $transFact.attr('data-installment'),
             // 3: 'Invoice planed date',
-            4: 'Invoice',
-            5: 'Over due',
-            6: 'Balance due',
+            4: $transFact.attr('data-invoice'),
+            5: $transFact.attr('data-over-due'),
+            6: $transFact.attr('data-balance-due'),
         };
 
         function loadDbl(data, columns) {
@@ -184,7 +184,7 @@ $(function () {
         function renderCustom(key) {
             if (key === "0") {
                 return {
-                    width: '5%',
+                    width: '3%',
                     render: (data, type, row) => {
                         let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order_data']?.['id']);
                         let title = row?.['sale_order_data']?.['code'] ? row?.['sale_order_data']?.['code'] : '';
@@ -198,7 +198,7 @@ $(function () {
             }
             if (key === "1") {
                 return {
-                    width: '5%',
+                    width: '3%',
                     render: (data, type, row) => {
                         let link = $urlFact.data('account-detail').format_url_with_uuid(row?.['customer_data']?.['id']);
                         let title = row?.['customer_data']?.['code'] ? row?.['customer_data']?.['code'] : '';
@@ -263,7 +263,7 @@ $(function () {
             }
             if (key === "5") {
                 return {
-                    width: '5%',
+                    width: '3%',
                     render: (data, type, row) => {
                         if (row?.['due_date']) {
                             let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
@@ -310,7 +310,10 @@ $(function () {
                 }
             }
             let $table = $dtbArea.find('.table_payment_plan');
-            let minWidth = "min-w-2560p";
+            let minWidth = "min-w-1440p";
+            if (columns.length > 7) {
+                minWidth = "min-w-2560p";
+            }
             if (columns.length > 10) {
                 minWidth = "min-w-3440p";
             }

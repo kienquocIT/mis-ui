@@ -14,7 +14,7 @@
     <form id="frm_folder" method="post" class="h-100">
         {% csrf_token %}
         <div class="d-flex align-items-stretch h-100 w-100">
-            <div class="w-md-15 d-block left_side">
+            <div class="d-block left_side">
                 <h4 class="h4 font-weight-bold pl-3 color-grey-dark-5">Home</h4>
                 <div class="mt-5" id="folder-tree">
                     <button class="btn btn-flush-primary flush-soft-hover rounded-5 w-100 btn-active"
@@ -37,7 +37,10 @@
                     </button>
                 </div>
             </div>
-            <div class="w-md-85 d-block right_side">
+            <div class="d-block right_side">
+                <div class="hamburger-menu">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
                 <div class="wrap-search w-60">
                     <div class="input-group">
                         <span class="input-affix-wrapper">
@@ -101,7 +104,7 @@
                         </div>
 {#                        <div class="selected-div"></div>#}
                     </div>
-                    <table class="table nowrap w-100" id="main-files-info">
+                    <table class="table nowrap w-100 min-w-1500p" id="main-files-info">
                         <thead>
                         <tr>
                             <th>#</th>
@@ -116,6 +119,7 @@
                     </table>
                 </div>
             </div>
+            <div class="side_overlay"></div>
         </div>
 
         <div class="modal-area">

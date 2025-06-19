@@ -368,6 +368,8 @@ class FilesHandle {
                 paging: false,
                 info: false,
                 searching: false,
+                autoWidth: true,
+                scrollX: true,
                 columns: [
                     {
                         data: 'id',
@@ -730,6 +732,11 @@ class FilesHandle {
             $('#folder_id').val('')
             $('#add-folder-box-parent').val('').trigger('change')
         });
+
+        // click toggle menu on mobile
+        $('.hamburger-menu, .side_overlay, #folder-tree > .btn').off().on('click', function(){
+            $(this).closest('.align-items-stretch').toggleClass('active-menu')
+        })
 
 
         this.create_folder()

@@ -1503,10 +1503,16 @@ class ProductModificationEventHandler {
         })
         // space
         $('.layout-btn').on('click', function () {
-            if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-12 col-lg-12 mt-3') {
+            if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-12 col-lg-12 border-right mt-3') {
+                $('.main-space').attr('class', 'main-space col-12 col-md-6 col-lg-6 border-right mt-3')
+            }
+            else if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-12 col-lg-12 mt-3') {
                 $('.main-space').attr('class', 'main-space col-12 col-md-6 col-lg-6 mt-3')
             }
-            else {
+            else if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-6 col-lg-6 border-right mt-3') {
+                $('.main-space').attr('class', 'main-space col-12 col-md-12 col-lg-12 border-right mt-3')
+            }
+            else if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-6 col-lg-6 mt-3') {
                 $('.main-space').attr('class', 'main-space col-12 col-md-12 col-lg-12 mt-3')
             }
         })

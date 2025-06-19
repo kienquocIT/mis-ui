@@ -63,11 +63,11 @@ $(document).ready(function () {
                         render: (data, type, row) => {
                             let info = ''
                             if (row?.['created_goods_issue']) {
-                                info += `<p>${$.fn.gettext('Created Goods Issue')}</p>`
+                                info += `<a target="_blank" href="${dtb.attr('data-url-gis-detail').replace('0', row?.['goods_issue_mapped'])}"><p>${$.fn.gettext('Created Goods Issue')} <i class="fa-solid fa-up-right-from-square"></i></p></a>`
                             }
-                            if (row?.['created_goods_receipt']) {
-                                info += `<p>${$.fn.gettext('Created Goods Receipt')}</p>`
-                            }
+                            // if (row?.['created_goods_receipt']) {
+                            //     info += `<a target="_blank" href="${dtb.attr('data-url-gr-detail').replace('0', row?.['goods_receipt_mapped'])}"><p>${$.fn.gettext('Created Goods Receipt')} <i class="fa-solid fa-up-right-from-square"></i></p></a>`
+                            // }
                             return info
                         }
                     },

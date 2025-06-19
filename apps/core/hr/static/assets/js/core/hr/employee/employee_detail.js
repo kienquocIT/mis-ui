@@ -12,8 +12,14 @@ $(function () {
             EmployeeLoadPage.loadUserList(employeeData.user);
             EmployeeLoadPage.loadGroupList(employeeData.group);
             EmployeeLoadPage.loadRoleList(employeeData.role);
-            EmployeeLoadPage.loadDob(employeeData.dob);
-            EmployeeLoadPage.loadDateJoined(employeeData.date_joined, false);
+            EmployeeLoadPage.dateJoinedEle.val('');
+            if (employeeData?.['date_joined']) {
+                EmployeeLoadPage.dateJoinedEle.val(moment(employeeData?.['date_joined']).format('DD/MM/YYYY'));
+            }
+            EmployeeLoadPage.dobEle.val('');
+            if (employeeData?.['dob']) {
+                EmployeeLoadPage.dobEle.val(moment(employeeData?.['dob']).format('DD/MM/YYYY'));
+            }
 
             let avatarEle = $('#employee-avatar-img-input');
             if (employeeData.avatar_img) {
@@ -28,6 +34,10 @@ $(function () {
     $(document).ready(function () {
         $x.fn.showLoadingPage();
         HandlePlanAppNew.editEnabled = false;
+        // date picker
+        $('.date-picker').each(function () {
+            DateTimeControl.initDatePicker(this);
+        });
         Promise.all(
             [
                 getAllAppOfTenant(),

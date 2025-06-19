@@ -27,7 +27,7 @@ msgstr "Không gian của tôi"
 
 #
 msgid "Upload or Create"
-msgstr "Tải hoặc Tạo"
+msgstr "Tải lên hoặc Tạo"
 
 #
 msgid "Create folder"
@@ -36,3 +36,35 @@ msgstr "Tạo thư mục"
 #
 msgid "Create subfolders"
 msgstr "Tạo thư mục con"
+
+#
+msgid "Share with me"
+msgstr "Được chia sẻ với tôi"
+
+#
+msgid "See"
+msgstr "Xem"
+
+#
+msgid "Owner"
+msgstr "Chủ sở hữu"
+
+#
+msgid "Date modified"
+msgstr "Ngày sửa đổi"
+
+#
+msgid "Apply to subfolders"
+msgstr "Áp dụng cho thư mục con"
+
+#
+msgid "Workspace"
+msgstr "Không gian làm việc"
+
+#
+msgid "My space"
+msgstr "Không gian của tôi"
+
+#
+msgid "My file"
+msgstr "Tệp của tôi"

@@ -360,7 +360,7 @@ var jampack = function () {
     /*Refresh Init Js*/
     var refreshMe = '.refresh';
     $(document).on("click", refreshMe, function (e) {
-        var panelToRefresh = $(this).closest('.card').find('.refresh-container');
+        var panelToRefresh = $(this).closest('.card-refresh').find('.refresh-container');
         var loadingAnim = panelToRefresh.find('.la-anim-1');
         panelToRefresh.show();
         setTimeout(function () {

@@ -41,7 +41,9 @@
                 <div class="wrap-search w-60">
                     <div class="input-group">
                         <span class="input-affix-wrapper">
-                            <input type="text" class="form-control min-h-55p" placeholder="{% trans 'Search' %}">
+                            <label for="add-folder-title" for="search_folder"></label>
+                            <input type="text" class="form-control min-h-55p" placeholder="{% trans 'Search' %}"
+                            id="search_folder">
                             <span class="input-suffix"><i class="fas fa-search"></i></span>
                         </span>
                     </div>
@@ -76,9 +78,29 @@
                         <span class="mt-3 font-weight-bold font-3">{% trans 'Create folder' %}</span>
                     </button>
                 </div>
-                <div class="d-flex align-items-center mb-3 breadcrumb_file" id="folder-path"></div>
+                <div class="clearfix"></div>
+                <div class="d-flex align-items-center mb-2 breadcrumb_file mt-4" id="folder-path">
+                </div>
+                <div class="clearfix"></div>
+                <h5 class="tit-crt mb-4"></h5>
                 <input type="hidden" id="current_folder" value="root">
-                <div class="w-100">
+                <div class="w-100 card card-refresh">
+                    <div class="refresh-container" style="display: none">
+                        <div class="loader-pendulums"></div>
+                    </div>
+                    <div class="action-slc">
+                        <div class="wrap-act">
+                            <button class="btn btn-icon btn-flush-primary flush-soft-hover btn-rounded btn_cancel_slt"
+                                    type="button">
+                                <span class="icon"><i class="fa-solid fa-xmark"></i></span>
+                            </button>
+                            <button class="btn btn-icon btn-flush-primary flush-soft-hover btn-rounded btn_delete_slt"
+                                    type="button">
+                                <span class="icon"><i class="fa-solid fa-trash-can"></i></span>
+                            </button>
+                        </div>
+{#                        <div class="selected-div"></div>#}
+                    </div>
                     <table class="table nowrap w-100" id="main-files-info">
                         <thead>
                         <tr>
@@ -105,14 +127,10 @@
                             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
                         <div class="modal-body">
+                            <input type="hidden" name="id" id="folder_id">
                             <div class="form-group">
                                 <label class="form-label required" for="add-folder-title">{% trans 'Title' %}</label>
-                                <input
-                                        type="text" class="form-control"
-                                        name="title"
-                                        id="add-folder-title"
-                                        required
-                                >
+                                <input type="text" class="form-control" name="title" id="add-folder-title">
                             </div>
                             <div class="form-group">
                                 <label class="form-label" for="add-folder-box-parent">{% trans 'Parent folder' %}</label>
@@ -123,6 +141,7 @@
                                     data-method="GET"
                                     name="parent_n"
                                     data-keyResp="folder_list"
+                                    data-params="{'pro':'{{data.list_from_app|escape}}'}"
                                 ></select>
                             </div>
                         </div>
@@ -138,7 +157,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">{% trans 'Upload file' %}</h5>
+                            <h5 class="modal-title">{% trans 'Share' %} "<span></span>"</h5>
                             <button type="button"
                                     class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
                                     data-bs-dismiss="modal">
@@ -161,13 +180,13 @@
                                                 {% trans 'Employee' %}
                                             </label>
                                         </div>
-{#                                        <div class="form-check form-check-inline">#}
-{#                                            <input type="radio" id="radio_group" class="form-check-input"#}
-{#                                                   name="kind" value="2">#}
-{#                                            <label title="Group" for="radio_group" class="form-check-label">#}
-{#                                                {% trans 'Group' %}#}
-{#                                            </label>#}
-{#                                        </div>#}
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" id="radio_group" class="form-check-input"
+                                                   name="kind" value="2">
+                                            <label title="Group" for="radio_group" class="form-check-label">
+                                                {% trans 'Group' %}
+                                            </label>
+                                        </div>
                                     </div>
                                     <div class="col-md-12 mt-3">
                                         <div class="w-100 d-flex align-items-start">
@@ -217,7 +236,6 @@
                                     <div class="clearfix"></div>
                                     <div class="col-md-12 employee-added mt-2 mb-2">
                                         <div class="d-flex justify-content-start flex-wrap border min-h-35p w-100 p-2">
-
                                         </div>
                                     </div>
                                     <div class="col-md-12 mt-4 mb-3">
@@ -290,14 +308,14 @@
 {#                                                        {% trans 'Create subfolders' %}#}
 {#                                                    </label>#}
 {#                                                </div>#}
-{#                                                <div class="form-check form-check-inline">#}
-{#                                                    <input type="checkbox" id="folder_delete" class="form-check-input"#}
-{#                                                           value="5" name="folder_delete">#}
-{#                                                    <label title="Delete" for="folder_delete"#}
-{#                                                           class="form-check-label">#}
-{#                                                        {% trans 'Delete' %}#}
-{#                                                    </label>#}
-{#                                                </div>#}
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" id="folder_delete" class="form-check-input"
+                                                           value="5" name="folder_delete">
+                                                    <label title="Delete" for="folder_delete"
+                                                           class="form-check-label">
+                                                        {% trans 'Delete' %}
+                                                    </label>
+                                                </div>
 {#                                                <div class="form-check form-check-inline">#}
 {#                                                    <input type="checkbox" id="folder_share" class="form-check-input"#}
 {#                                                           value="6" name="folder_share">#}
@@ -329,7 +347,7 @@
 {#                                                        {% trans 'Download' %}#}
 {#                                                    </label>#}
 {#                                                </div>#}
-{#                                                <div class="form-check form-check-inline hidden">#}
+{#                                                <div class="form-check form-check-inline">#}
 {#                                                    <input type="checkbox" id="checkbox_edit_f_attr"#}
 {#                                                           class="form-check-input"#}
 {#                                                           value="3" name="perm_e_f_attr">#}
@@ -345,7 +363,7 @@
 {#                                                        {% trans 'Share' %}#}
 {#                                                    </label>#}
 {#                                                </div>#}
-{#                                                <div class="form-check form-check-inline hidden">#}
+{#                                                <div class="form-check form-check-inline">#}
 {#                                                    <input type="checkbox" id="checkbox_upload_ver"#}
 {#                                                           class="form-check-input"#}
 {#                                                           value="5" name="perm_upload">#}
@@ -354,7 +372,7 @@
 {#                                                        {% trans 'Upload version' %}#}
 {#                                                    </label>#}
 {#                                                </div>#}
-{#                                                <div class="form-check form-check-inline hidden">#}
+{#                                                <div class="form-check form-check-inline">#}
 {#                                                    <input type="checkbox" id="checkbox_duplicate"#}
 {#                                                           class="form-check-input"#}
 {#                                                           value="6" name="perm_dublicate">#}
@@ -363,14 +381,14 @@
 {#                                                        {% trans 'Duplicate' %}#}
 {#                                                    </label>#}
 {#                                                </div>#}
-{#                                                <div class="form-check form-check-inline">#}
-{#                                                    <input type="checkbox" id="checkbox_edit_f" class="form-check-input"#}
-{#                                                           value="7" name="perm_e_f">#}
-{#                                                    <label title="Edit file" for="checkbox_edit_f"#}
-{#                                                           class="form-check-label">#}
-{#                                                        {% trans 'Edit file' %}#}
-{#                                                    </label>#}
-{#                                                </div>#}
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" id="checkbox_edit_f" class="form-check-input"
+                                                           value="7" name="perm_e_f">
+                                                    <label title="Edit file" for="checkbox_edit_f"
+                                                           class="form-check-label">
+                                                        {% trans 'Edit file' %}
+                                                    </label>
+                                                </div>
                                             </div>
 {#                                            <div class="form-check form-switch">#}
 {#                                                <input type="checkbox" id="apply_to_sub" class="form-check-input"#}
@@ -383,17 +401,19 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6"></div>
-                                    <div class="col-lg-6 col-md-12 special-block">
+                                    <div class="col-lg-6 col-md-12 special-block d-flex justify-content-center align-items-center">
                                         <div class="switch_enable">
                                             <div class="form-check form-switch">
+                                                <label for="enabled_switch"></label>
                                                 <input type="checkbox" id="enabled_switch" class="form-check-input">
                                             </div>
                                         </div>
-                                        <span for="input_expired" class="form-label">
+                                        <span class="form-label">
                                             {% trans 'Expiration date' %}
                                         </span>
                                         <div class="form-group">
                                             <div class="input-affix-wrapper">
+                                                <label for="expiration_date"></label>
                                                 <input type="text" class="form-control pl-2" name="expiration_date"
                                                        id="input_expired" readonly>
                                                 <span class="input-suffix"><i
@@ -419,11 +439,11 @@
     <input
         type="text"
         id="url-factory"
+        data-file-edit="{% url 'AttachmentEditAPI' %}"
         data-folder-api="{% url 'FolderListAPI' %}"
-        data-folder-share-api="{% url 'FolderListSharedAPI' %}"
-        data-url="{% url 'FolderListAPI' %}"
         data-url-detail="{% url 'FolderDetailAPI' 1 %}"
-        data-url-redirect="{% url 'FolderList' %}"
+        data-folder-my="{% url 'FolderMyFileListAPI' %}"
+        data-folder-share-api="{% url 'FolderListSharedAPI' %}"
     >
     <div id="attachment">{% include 'extends/files/all.html' %}</div>
     {{ data.employee_current|json_script:'employee_current' }}
@@ -438,13 +458,4 @@
 
     <script src="{% static 'assets/core/attachment/js/common.js' %}"></script>
 {#    <script src="{% static 'assets/core/attachment/js/folder_list.js' %}"></script>#}
-
-    <script>
-        new $x.cls.file($('#attachment')).init({
-            'name': 'attachment',
-            'select_folder': false,
-            'element_folder': $('#current_folder')
-        });
-    </script>
-
 {% endblock %}

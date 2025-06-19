@@ -64,6 +64,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # files
     FILE_UPLOAD = StringUrl('attachment/upload')
+    FILE_EDIT = StringUrl('attachment/edit')
     PUBLIC_FILE_UPLOAD = StringUrl('attachment/public-upload')
     FILE_UNUSED = StringUrl('attachment/unused')
     FILE_UPLOAD_WEB_BUILDER = StringUrl('attachment/web-builder/upload')
@@ -757,6 +758,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Folder
     FOLDER_LIST = StringUrl('attachment/folder/list')
+    FOLDER_MY_FILE_LIST = StringUrl('attachment/folder/list-my-space')
     FOLDER_LIST_SHARED_TO_ME = StringUrl('attachment/folder/list-share-to-me')
     FOLDER_DETAIL = StringUrl('attachment/folder')
     FOLDER_UPLOAD_FILE_LIST = StringUrl('attachment/folder-upload-file/list')

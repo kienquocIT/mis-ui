@@ -10,15 +10,45 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12">
-                        <table class="table nowrap w-100" id="table-select-product-modified" data-method="GET" data-product-modified-list-url="{% url 'ProductModifiedListAPI' %}">
-                            <thead>
-                                <tr>
-                                    <th style="min-width: 50px"></th>
-                                    <th style="min-width: 20px"></th>
-                                    <th style="min-width: 200px">{% trans 'Product' %}</th>
-                                </tr>
-                            </thead>
-                        </table>
+                        <ul class="nav nav-tabs nav-icon nav-light">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#tab_product">
+                                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-box"></i></span></span>
+                                    <span class="nav-link-text">{% trans 'Product' %}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab_product_modification">
+                                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-boxes-stacked"></i></span></span>
+                                    <span class="nav-link-text">{% trans 'Modified product' %}</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="tab_product">
+                                <table class="table nowrap w-100" id="table-select-product-modified" data-method="GET" data-product-modified-list-url="{% url 'ProductModifiedListAPI' %}">
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width: 50px"></th>
+                                            <th style="min-width: 20px"></th>
+                                            <th style="min-width: 200px">{% trans 'Product' %}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="tab_product_modification">
+                                <table class="table nowrap w-100" id="table-select-product-modified-before" data-method="GET" data-product-modified-before-list-url="{% url 'ProductModifiedBeforeListAPI' %}">
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width: 50px"></th>
+                                            <th style="min-width: 20px"></th>
+                                            <th style="min-width: 100px">{% trans 'Modified number' %}</th>
+                                            <th style="min-width: 200px">{% trans 'Product' %}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

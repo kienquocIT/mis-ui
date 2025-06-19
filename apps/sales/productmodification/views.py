@@ -127,6 +127,19 @@ class ProductModifiedListAPI(APIView):
         return resp.auto_return(key_success='product_modified_list')
 
 
+class ProductModifiedBeforeListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_MODIFIED_BEFORE_LIST).get(params)
+        return resp.auto_return(key_success='product_modified_before_list')
+
+
 class ProductComponentListAPI(APIView):
     permission_classes = [IsAuthenticated]  # noqa
 
@@ -138,6 +151,19 @@ class ProductComponentListAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_COMPONENT_LIST).get(params)
         return resp.auto_return(key_success='product_component_list')
+
+
+class LatestComponentListAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.LATEST_COMPONENT_LIST).get(params)
+        return resp.auto_return(key_success='latest_component_list')
 
 
 class WarehouseListByProductAPI(APIView):

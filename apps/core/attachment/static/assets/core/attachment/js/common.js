@@ -185,9 +185,9 @@ class popupPermission {
     }
 
     switch_kind() {
-        const $elmGroupData = $('#recipient_form input[name="group_access"]');
-        const $elmEmpData = $('#recipient_form input[name="employee_access"]');
-        $('#recipient_form input[name="kind"]').on('change', function () {
+        const $elmGroupData = $('#frm_folder input[name="group_access"]');
+        const $elmEmpData = $('#frm_folder input[name="employee_access"]');
+        $('#frm_folder input[name="kind"]').on('change', function () {
             if (this.value === 'employee') $elmGroupData.data('group', [])
             else {
                 $elmEmpData.data('employee', [])
@@ -311,7 +311,7 @@ class popupPermission {
         this.load_group_list()
         this.load_employee_list([])
         this.add_new_recipient()
-        // this.switch_kind()
+        this.switch_kind()
         // this.btn_perm()
         // this.init_date_exp()
         this.save_popup()

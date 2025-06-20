@@ -2,6 +2,7 @@
 class IncomingDocElements {
     constructor() {
         this.$titleEle = $('#txt_title')
+        this.$attachFilesEle = $('#attachment')
         this.$descriptionEle = $('#textarea_remark')
         this.$senderEle = $('#sender')
         this.$docTypeEle = $('#select-box-doc_type')
@@ -27,18 +28,36 @@ class IncomingDocLoadDataHandle {
             DateTimeControl.initDatePicker(this);
         });
     }
-    static combineData(formEle) {
-        let frm = new SetupFormSubmit($(formEle));
+
+    static extractFileInfo($li) {
+        return $li.data('file-id');
+    }
+
+    static buildAttachedList() {
+        const fileItems = [];
+        pageElements.$attachFilesEle.find('.dm-uploader-result-list li').each(function () {
+            const fileInfo = IncomingDocLoadDataHandle.extractFileInfo($(this));
+            fileItems.push(fileInfo);
+        });
         let parsedEffectiveDate = moment(pageElements.$effectiveDateEle.val(), "DD/MM/YYYY", true);
         let parsedExpiredDate = moment(pageElements.$expiredDateEle.val(), "DD/MM/YYYY", true);
+
+        return [{
+            sender: pageElements.$senderEle.val(),
+            document_type: pageElements.$docTypeEle.val(),
+            content_group: pageElements.$contentGroupEle.val(),
+            effective_date: parsedEffectiveDate.isValid() ? parsedEffectiveDate.format('YYYY-MM-DD') : null,
+            expired_date: parsedExpiredDate.isValid() ? parsedExpiredDate.format('YYYY-MM-DD') : null,
+            security_level: pageElements.$securityLevelEle.val(),
+            attachment: fileItems
+        }]
+    }
+
+    static combineData(formEle) {
+        let frm = new SetupFormSubmit($(formEle));
         frm.dataForm['title'] = pageElements.$titleEle.val();
         frm.dataForm['remark'] = pageElements.$descriptionEle.val() || null;
-        frm.dataForm['sender'] = pageElements.$senderEle.val();
-        frm.dataForm['document_type'] = pageElements.$docTypeEle.val();
-        frm.dataForm['content_group'] = pageElements.$contentGroupEle.val();
-        frm.dataForm['effective_date'] = parsedEffectiveDate.isValid() ? parsedEffectiveDate.format('YYYY-MM-DD') : null;
-        frm.dataForm['expired_date'] = parsedExpiredDate.isValid() ? parsedExpiredDate.format('YYYY-MM-DD') : null;
-        frm.dataForm['security_level'] = pageElements.$securityLevelEle.val();
+        frm.dataForm['attached_list'] = IncomingDocLoadDataHandle.buildAttachedList();
         return frm;
     }
 }

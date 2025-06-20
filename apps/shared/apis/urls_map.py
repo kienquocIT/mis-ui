@@ -633,6 +633,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_AVAILABLE_PRODUCT_DETAIL = StringUrl('report/warehouse-available-product-detail')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')
     PO_REPORT_LIST = StringUrl('report/po-report/list')
+    REPORT_LEASE_LIST = StringUrl('report/lease/list')
 
     # Final Acceptance
     FINAL_ACCEPTANCE_LIST = StringUrl('acceptance/final-acceptance/list')

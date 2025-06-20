@@ -10,7 +10,7 @@ from apps.sales.report.views import (
     BudgetReportCompanyListAPI, PaymentListForBudgetReportAPI, BudgetReportGroupListAPI, GetQRCodeSerialInfoAPI,
     GetQRCodeLotInfoAPI,
     ReportInventoryAskAPI, ReportProductListAPIRDashBoard, AdvanceFilterListAPI, AdvanceFilterDetailAPI,
-    WarehouseAvailableProductDetailAPI
+    WarehouseAvailableProductDetailAPI, ReportLeaseList, ReportLeaseListAPI
 )
 
 urlpatterns = [
@@ -28,6 +28,8 @@ urlpatterns = [
     path('api/cashflow', ReportCashflowListAPI.as_view(), name='ReportCashflowListAPI'),
     path('general', ReportGeneralList.as_view(), name='ReportGeneralList'),
     path('api/general', ReportGeneralListAPI.as_view(), name='ReportGeneralListAPI'),
+    path('lease', ReportLeaseList.as_view(), name='ReportLeaseList'),
+    path('api/lease', ReportLeaseListAPI.as_view(), name='ReportLeaseListAPI'),
 
     # report inventory
     path('inventory-detail', ReportInventoryDetailList.as_view(), name='ReportInventoryDetailList'),

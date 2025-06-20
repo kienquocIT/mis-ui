@@ -744,6 +744,12 @@ class MenusReport:
                 view_name='BudgetReportList',
                 icon='<i class="fas bi bi-dot"></i>',
             ),
+            MenuCommon(
+                name='Lease report',
+                code='menu_report_lease_list',
+                view_name='ReportLeaseList',
+                icon='<i class="fas bi bi-dot"></i>',
+            ),
         ],
     )
     INVENTORY_REPORT = MenuCommon(

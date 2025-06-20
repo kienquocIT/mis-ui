@@ -1,9 +1,10 @@
 // Declare elements in Page
 class IncomingDocElements {
     constructor() {
-        this.$titleEle = $('#txt_title')
-        this.$attachFilesEle = $('#attachment')
+        this.$titleEle = $('#txt_create_title')
         this.$descriptionEle = $('#textarea_remark')
+
+        // attached document
         this.$senderEle = $('#sender')
         this.$docTypeEle = $('#select-box-doc_type')
         this.$contentGroupEle = $('#select-box-content_group')
@@ -11,6 +12,10 @@ class IncomingDocElements {
         this.$expiredDateEle = $('#kms_expired_date')
         this.$securityLevelEle = $('#kms_security_level')
         this.$folderEle = $('#kms_folder')
+        this.$attachFilesEle = $('#attachment')
+
+        // internal recipient
+        this.$tableInternalRecipient = $('#table_internal_recipient')
     }
 }
 const pageElements = new IncomingDocElements();
@@ -26,6 +31,63 @@ class IncomingDocLoadDataHandle {
         // init date
         $('.date-picker').each(function () {
             DateTimeControl.initDatePicker(this);
+        });
+    }
+
+    static initInternalRecipientTable(data) {
+        const $tbl = pageElements.$tableInternalRecipient;
+        if ($tbl.hasClass('dataTable')) {
+            $tbl.DataTable().clear().rows.add(data).draw();
+            return;
+        }
+        $tbl.DataTableDefault({
+            data: data,
+            paging: false,
+            info: false,
+            searching: false,
+            columns: [
+                {
+                    data: 'id',
+                    render: (row, index, data) => {
+                        if (!$x.fn.checkUUID4(row)) data.id = $x.cls.util.generateUUID4();
+                        const key = data?.kind === 1 ? 'employee_access' : 'group_access';
+                        const data_loop = data[key] || [];
+                        return Object.values(data_loop).map(val => {
+                            const name = data.kind === 1 ? val.full_name : val?.title;
+                            return `<div class="chip recipient-chip chip-outline-primary pill chip-pill mr-2">
+                                        <span class="chip-text">${name}</span>
+                                    </div>`;
+                        }).join('');
+                    }
+                },
+                {
+                    data: 'title',
+                    render: (row) => row
+                },
+                {
+                    data: 'id',
+                    render: (row) => {
+                        return `<div class="actions-btn text-center">
+                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button"
+                               title="Edit" href="#" data-id="${row}" data-action="edit">
+                               <span class="btn-icon-wrap"><i class="fa-solid fa-pen"></i></span></a>
+                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
+                               title="Delete" href="#" data-id="${row}" data-action="delete">
+                               <span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>
+                        </div>`;
+                    }
+                }
+            ],
+            rowCallback: function (row, data, index) {
+                $('.actions-btn a.delete-btn', row).off().on('click', function (e) {
+                    e.stopPropagation();
+                    $tbl.DataTable().row(row).remove().draw(false);
+                });
+                $('.actions-btn a.edit-button', row).off().on('click', function (e) {
+                    e.stopPropagation();
+                    $('#modal-recipient').trigger('modal.Recipient.edit', [{row_index: index}]);
+                });
+            }
         });
     }
 
@@ -53,11 +115,16 @@ class IncomingDocLoadDataHandle {
         }]
     }
 
+    static getInternalRecipients() {
+        return $('#table_internal_recipient').DataTable().data().toArray();
+    }
+
     static combineData(formEle) {
         let frm = new SetupFormSubmit($(formEle));
         frm.dataForm['title'] = pageElements.$titleEle.val();
         frm.dataForm['remark'] = pageElements.$descriptionEle.val() || null;
         frm.dataForm['attached_list'] = IncomingDocLoadDataHandle.buildAttachedList();
+        frm.dataForm['internal_recipient'] = IncomingDocLoadDataHandle.getInternalRecipients();
         return frm;
     }
 }

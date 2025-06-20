@@ -22,9 +22,9 @@
 {% block pageContent %}
     <div class="row">
         <div class="col-12">
-            <table class="table nowrap w-100 min-w-1500p" data-method="get"
+            <table class="table nowrap w-100" data-method="get"
                    data-url="{% url 'IncomingDocumentListAPI' %}"
-                   data-url-detail="{% url 'IncomingDocumentDetail' 1 %}" id="tbl_document_approval">
+                   data-url-detail="{% url 'IncomingDocumentDetail' 0 %}" id="tbl_incoming_document">
                 <thead>
                 <tr>
                     <th></th>
@@ -33,16 +33,14 @@
                     <th>{% trans 'Name' %}</th>
                     <th>{% trans 'Sender' %}</th>
                     <th>{% trans 'Incoming date' %}</th>
-                    <th>{% trans 'System status' %}</th>
                 </tr>
                 </thead>
             </table>
         </div>
     </div>
 {% endblock %}
-{% block dataHiddenGroup %}
-    {{ data.stt_sys | json_script:'stt_sys' }}
-{% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/kms/incoming-doc/list.js' %}"></script>
 {% endblock %}
+
+

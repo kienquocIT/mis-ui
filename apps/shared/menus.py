@@ -684,7 +684,7 @@ class MenuKMS:
             MenuCommon(
                 name='Incoming document',
                 code='menu_incoming_document',
-                view_name='IncomingDocumentCreate',
+                view_name='IncomingDocumentList',
                 icon='<i class="fas fa-file-import"></i>',
             ),
         ],

@@ -503,7 +503,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     KMS_DOCUMENT_APPROVAL_LIST = BreadcrumbChildren(_('Document approval'), 'KMSDocumentApprovalList')
 
     # Incoming Document
-    INCOMING_DOCUMENT_LIST = BreadcrumbChildren(_('Incoming document create'), '')
+    INCOMING_DOCUMENT_LIST = BreadcrumbChildren(_('Incoming document'), 'IncomingDocumentList')
 
 
 class BreadcrumbView:

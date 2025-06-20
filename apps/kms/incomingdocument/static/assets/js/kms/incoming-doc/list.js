@@ -1,76 +1,64 @@
-$('document').ready(function(){
-    const $tb = $('#tbl_incoming_document')
-    $tb.DataTableDefault({
-        useDataServer: true,
-        rowIndex: true,
-        autoWidth: true,
-        scrollX: true,
-        ajax: {
-            url: $tb.attr('data-url'),
-            type: 'GET',
-            dataSrc: "data.incoming_document_list"
-        },
-        columns: [
-            {
-                width: '5%',
-                render: (row) => {
-                    return ""
-                }
-            },
-            {
-                data: 'management_number',
-                width: '16%',
-                render: (row) => {
-                    return row ? row : '--'
-                }
-            },
-            {
-                data: 'original_number',
-                width: '16%',
-                render: (row, index, data) => {
-                    const url = $tb.attr('data-url-detail').format_url_with_uuid(data.id)
-                    return row ? `<a href="${url}" target="blank">${row}</a>` : '--'
-                }
-            },
-            {
-                data: 'name',
-                width: '21%',
-                render: (row) => {
-                    return row ? row : '--'
-                }
-            },
-            {
-                data: 'sender',
-                width: '16%',
-                render: (row) => {
-                    return row ? row : '--'
-                }
-            },
-            {
-                data: 'incoming_date',
-                width: '16%',
-                render: (row) => {
-                    return row ? row : '--'
-                }
-            },
-            {
-                data: 'system_status',
-                width: '10%',
-                render: (row) =>{
-                    if (!row) row = 1
-                    let sttTxt = JSON.parse($('#stt_sys').text())
-                    const sttData = [
-                        "soft-light",
-                        "soft-primary",
-                        "soft-info",
-                        "soft-success",
-                        "soft-danger",
-                    ]
-                    return `<span class="badge badge-${sttData[row]}">${sttTxt[row][1]}</span>`;
-                }
-            }
-        ],
-        rowCallback: function(row, data){
-        },
-    })
+$('document').ready(function () {
+    function loadIncomingDocumentList() {
+        if (!$.fn.DataTable.isDataTable('#tbl_incoming_document')) {
+            const $tb = $('#tbl_incoming_document')
+            $tb.DataTableDefault({
+                useDataServer: true,
+                rowIdx: true,
+                scrollX: true,
+                scrollY: '70vh',
+                scrollCollapse: true,
+                reloadCurrency: true,
+                fixedColumns: {
+                    leftColumns: 2,
+                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                },
+                ajax: {
+                    url: $tb.attr('data-url'),
+                    type: 'GET',
+                    dataSrc: "data.incoming_document_list"
+                },
+                columns: [
+                    {
+                        className: "w-5",
+                        render: () => {
+                            return ""
+                        }
+                    },
+                    {
+                        className: "w-10",
+                        render: (data, type, row) => {
+                            return row?.['code'] || '--'
+                        }
+                    },
+                    {
+                        className: "w-10",
+                        render: () => {
+                            return ""
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-lg w-30', render: (data, type, row) => {
+                            const link = $tb.attr('data-url-detail').replace('0', row?.['id']);
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
+                        }
+                    },
+                    {
+                        className: "w-30",
+                        render: (data, type, row) => {
+                            return row?.['sender'] || ''
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-15',
+                        render: (data, type, row) => {
+                            return moment(row?.['date_created']).format('DD/MM/YYYY');
+                        }
+                    },
+                ],
+            })
+        }
+    }
+
+    loadIncomingDocumentList();
 });

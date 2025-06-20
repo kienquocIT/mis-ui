@@ -64,6 +64,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # files
     FILE_UPLOAD = StringUrl('attachment/upload')
+    FILE_EDIT = StringUrl('attachment/edit')
     PUBLIC_FILE_UPLOAD = StringUrl('attachment/public-upload')
     FILE_UNUSED = StringUrl('attachment/unused')
     FILE_UPLOAD_WEB_BUILDER = StringUrl('attachment/web-builder/upload')
@@ -757,6 +758,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Folder
     FOLDER_LIST = StringUrl('attachment/folder/list')
+    FOLDER_MY_FILE_LIST = StringUrl('attachment/folder/list-my-space')
     FOLDER_LIST_SHARED_TO_ME = StringUrl('attachment/folder/list-share-to-me')
     FOLDER_DETAIL = StringUrl('attachment/folder')
     FOLDER_UPLOAD_FILE_LIST = StringUrl('attachment/folder-upload-file/list')
@@ -937,7 +939,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # sales/product modification
     PRODUCT_COMPONENT_LIST = StringUrl('product-modification/product-component-list')
+    LATEST_COMPONENT_LIST = StringUrl('product-modification/latest-component-list')
     PRODUCT_MODIFIED_LIST = StringUrl('product-modification/product-modified-list')
+    PRODUCT_MODIFIED_BEFORE_LIST = StringUrl('product-modification/product-modified-before-list')
     WAREHOUSE_LIST_BY_PRODUCT = StringUrl('product-modification/warehouse-list-by-product')
     PRODUCT_LOT_LIST = StringUrl('product-modification/product-lot-list')
     PRODUCT_SERIAL_LIST = StringUrl('product-modification/product-serial-list')

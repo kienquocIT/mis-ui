@@ -6928,7 +6928,7 @@ class DateTimeControl {
             singleDatePicker: true,
             timepicker: false,
             showDropdowns: true,
-            minYear: parseInt(moment().format('YYYY'), 10) - 5,
+            minYear: parseInt(moment().format('YYYY'), 10) - 50,
             maxYear: parseInt(moment().format('YYYY'), 10) + 5,
             locale: {
                 format: 'DD/MM/YYYY',
@@ -7580,7 +7580,11 @@ class FileControl {
                                 clsThis.ui_on_click_remove(eleItem);
                                 clsThis.ui_on_click_download(eleItem);
                                 clsThis.ui_add_id(fileData.id);
-                            } else {
+                                if (opts?.CB_after_upload){
+                                    opts.CB_after_upload(fileData)
+                                }
+                            }
+                            else {
                                 Swal.fire({
                                     icon: 'error',
                                     title: clsThis.ele$.attr('data-msg-upload-exception'),
@@ -7619,7 +7623,8 @@ class FileControl {
                             // resolve exist data
                             if (Array.isArray(opts.data) && opts.data.length > 0) {
                                 opts.data.map((item) => clsThis.ui_load_file_data(item))
-                            } else {
+                            }
+                            else {
                                 clsThis.ele$.find('.dm-uploader-no-files').show();
                             }
 

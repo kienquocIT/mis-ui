@@ -7,8 +7,10 @@ $(document).ready(function () {
     EmployeeLoadPage.loadUserList();
     EmployeeLoadPage.loadGroupList();
     EmployeeLoadPage.loadRoleList();
-    EmployeeLoadPage.loadDob();
-    EmployeeLoadPage.loadDateJoined(null, true);
+    // date picker
+    $('.date-picker').each(function () {
+        DateTimeControl.initDatePicker(this);
+    });
 
     callAppList().then((result) => {
         renderAppList(result);

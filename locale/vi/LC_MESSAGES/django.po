@@ -11940,5 +11940,9 @@ msgid "This value is used as the stock-in value in the Goods Receipt"
 msgstr "Giá trị này được sử dụng để làm giá trị nhập kho trong Phiếu Nhập Kho"
 
 #
-msgid "INCOMING DOCUMENT"
-msgstr "TÀI LIỆU ĐẾN"
+msgid "Modified product"
+msgstr "Sản phẩm đã làm Tháo - Lắp"
+
+#
+msgid "Modified number"
+msgstr "Mã định danh"

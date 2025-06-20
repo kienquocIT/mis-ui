@@ -99,13 +99,13 @@
                     <div class="col-12 col-md-12 col-lg-4">
                         <div class="form-group">
                             <label for="employee-dob" class="form-label">{% trans 'Date of birth' %}</label>
-                            <input class="form-control" type="text" id="employee-dob" {% if li_content_head_disabled == True %} disabled readonly {% endif %}/>
+                            <input class="form-control date-picker" type="text" id="employee-dob" {% if li_content_head_disabled == True %} disabled readonly {% endif %}/>
                         </div>
                     </div>
                     <div class="col-12 col-md-12 col-lg-4">
                         <div class="form-group">
                             <label for="employee-date-joined" class="form-label required">{% trans 'Date Joined' %}</label>
-                            <input class="form-control" type="text" id="employee-date-joined"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
+                            <input class="form-control date-picker" type="text" id="employee-date-joined"{% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
                         </div>
                     </div>
                     <div class="col-12 col-md-12 col-lg-4">

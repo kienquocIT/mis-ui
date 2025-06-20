@@ -6928,7 +6928,7 @@ class DateTimeControl {
             singleDatePicker: true,
             timepicker: false,
             showDropdowns: true,
-            minYear: parseInt(moment().format('YYYY'), 10) - 5,
+            minYear: parseInt(moment().format('YYYY'), 10) - 50,
             maxYear: parseInt(moment().format('YYYY'), 10) + 5,
             locale: {
                 format: 'DD/MM/YYYY',

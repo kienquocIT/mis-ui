@@ -9,7 +9,10 @@ $(function () {
     function renderDetailForUpdate(employeeData) {
         if (employeeData && typeof employeeData === 'object') {
             $x.fn.renderCodeBreadcrumb(employeeData);
-            $('#employee-code').val(employeeData.code)
+            EmployeeLoadPage.codeEle.val(employeeData.code)
+            if (EmployeeLoadPage.codeEle.val()) {
+                EmployeeLoadPage.codeEle.attr('readonly', 'true');
+            }
             EmployeeLoadPage.firstNameEle.val(employeeData.first_name);
             EmployeeLoadPage.lastNameEle.val(employeeData.last_name);
             EmployeeLoadPage.emailEle.val(employeeData.email);
@@ -19,8 +22,13 @@ $(function () {
             EmployeeLoadPage.loadUserList(employeeData?.user);
             EmployeeLoadPage.loadGroupList(employeeData.group);
             EmployeeLoadPage.loadRoleList(employeeData.role);
-            EmployeeLoadPage.loadDob(employeeData.dob);
-            EmployeeLoadPage.loadDateJoined(employeeData.date_joined, false);
+            if (employeeData?.['date_joined']) {
+                EmployeeLoadPage.dateJoinedEle.val(moment(employeeData?.['date_joined']).format('DD/MM/YYYY'));
+            }
+            EmployeeLoadPage.dobEle.val('');
+            if (employeeData?.['dob']) {
+                EmployeeLoadPage.dobEle.val(moment(employeeData?.['dob']).format('DD/MM/YYYY'));
+            }
 
             EmployeeLoadPage.isActive.prop('checked', employeeData?.is_active || false);
             EmployeeLoadPage.isAdminEle.prop('checked', employeeData?.['is_admin_company'] || false);
@@ -46,6 +54,10 @@ $(function () {
         $x.fn.showLoadingPage();
         HandlePlanAppNew.editEnabled = true;
         HandlePlanAppNew.hasSpaceChoice = true;
+        // date picker
+        $('.date-picker').each(function () {
+            DateTimeControl.initDatePicker(this);
+        });
         Promise.all(
             [
                 getAllAppOfTenant(),

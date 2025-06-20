@@ -13,6 +13,7 @@ class ProductModificationPageElements {
         this.$btn_modal_picking_product = $('#btn-modal-picking-product')
         this.$select_product_modified_modal = $('#select-product-modified-modal')
         this.$table_select_product_modified = $('#table-select-product-modified')
+        this.$table_select_product_modified_before = $('#table-select-product-modified-before')
         this.$accept_product_modified_btn = $('#accept-product-modified-btn')
         this.$picking_product_modal = $('#picking-product-modal')
         this.$table_select_warehouse = $('#table-select-warehouse')
@@ -105,13 +106,13 @@ class ProductModificationPageFunction {
             }
         });
     }
-    static LoadTableProductModified() {
+    static LoadTableProductRaw() {
         pageElements.$table_select_product_modified.DataTable().clear().destroy()
         pageElements.$table_select_product_modified.DataTableDefault({
             useDataServer: true,
             rowIdx: true,
             scrollX: true,
-            scrollY: '55vh',
+            scrollY: '50vh',
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
@@ -159,6 +160,82 @@ class ProductModificationPageFunction {
                                 <br><div class="collapse d2_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 }
+            ]
+        });
+    }
+    static LoadTableProductModifiedBefore() {
+        pageElements.$table_select_product_modified_before.DataTable().clear().destroy()
+        pageElements.$table_select_product_modified_before.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            scrollX: true,
+            scrollY: '50vh',
+            scrollCollapse: true,
+            reloadCurrency: true,
+            ajax: {
+                url: pageElements.$table_select_product_modified_before.attr('data-product-modified-before-list-url'),
+                type: 'GET',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        return resp.data['product_modified_before_list'] ? resp.data['product_modified_before_list'] : [];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    className: 'text-center w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'text-center w-5',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                            <input type="radio"
+                                name="product-modified-select"
+                                class="form-check-input product-modified-select"
+                                data-product-id="${row?.['id']}"
+                                data-product-code="${row?.['code']}"
+                                data-product-title="${row?.['title']}"
+                                data-product-description="${row?.['description'] || ''}"
+                                data-product-general-traceability-method="${row?.['general_traceability_method']}"
+                                data-prd-wh="${row?.['product_warehouse_id'] || ''}"
+                                data-prd-wh-lot="${row?.['product_warehouse_lot_id'] || ''}"
+                                data-prd-wh-serial="${row?.['product_warehouse_serial_id'] || ''}"
+                                data-modified-number="${row?.['modified_number'] || ''}"
+                                data-serial-number="${row?.['serial_number'] || ''}"
+                                data-lot-number="${row?.['lot_number'] || ''}"
+                                data-warehouse-data='${JSON.stringify(row?.['warehouse_data'])}'
+                            >
+                        </div>`;
+                    }
+                },
+                {
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        if (row?.['serial_number']) {
+                            return `<span class="text-primary fw-bold">${row?.['modified_number']}</span><br><span class="small">Serial: ${row?.['serial_number'] || ''}</span>`
+                        }
+                        if (row?.['lot_number']) {
+                            return `<span class="text-primary fw-bold">${row?.['modified_number']}</span><br><span class="small">Lot: ${row?.['lot_number'] || ''}</span>`
+                        }
+                        return ''
+                    }
+                },
+                {
+                    className: 'w-70',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br>
+                                <a data-bs-toggle="collapse" href=".d2_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['id']}">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <span>${row?.['title']}</span>
+                                <br><div class="collapse d2_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                    }
+                },
             ]
         });
     }
@@ -483,32 +560,26 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-70',
                     render: (data, type, row) => {
-                        if (row?.['product_id']) {
-                            return `<span class="badge badge-sm badge-soft-secondary">${row?.['product_code'] || ''}</span><br>
-                                    <a data-bs-toggle="collapse" href=".d2_${row?.['product_id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['product_id']}">
-                                        <i class="bi bi-info-circle"></i>
-                                    </a>
-                                    <span data-row-type="${row?.['type']}" data-product-id="${row?.['product_id'] || ''}" class="component-title">${row?.['product_title'] || ''}</span>
-                                    <br><div class="collapse d2_${row?.['product_id']}"><span class="small component-des">${row?.['product_des'] || ''}</span></div>`;
-                        }
-                        return `<a data-bs-toggle="collapse" href=".d3_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d3_${row?.['component_id']}">
+                        let product_code = `<span class="badge badge-sm badge-soft-secondary">${row?.['component_code'] || ''}</span>${row?.['component_code'] ? '<br>' : ''}`;
+                        return `${product_code}
+                                <a data-bs-toggle="collapse" href=".d3_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d3_${row?.['component_id']}">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
-                                <span class="component-title" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
+                                <span class="component-title" data-type="${row?.['type']}" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
                                 <br><div class="collapse d3_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
                     }
                 },
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        if (row?.['product_id']) {
+                        if (row?.['type'] === '1') {
                             let picking_component_btn = `
                                 <button type="button"
                                         class="btn btn-outline-secondary btn-modal-picking-component"
-                                        data-product-id="${row?.['product_id'] || ''}"
-                                        data-product-code="${row?.['product_code'] || ''}"
-                                        data-product-title="${row?.['product_title'] || ''}"
-                                        data-product-description="${row?.['product_des'] || ''}"
+                                        data-product-id="${row?.['component_id'] || ''}"
+                                        data-product-code="${row?.['component_code'] || ''}"
+                                        data-product-title="${row?.['component_name'] || ''}"
+                                        data-product-description="${row?.['component_des'] || ''}"
                                         data-product-general-traceability-method="${row?.['general_traceability_method']}"
                                         data-bs-toggle="modal"
                                         data-bs-target="#picking-component-modal">
@@ -517,7 +588,7 @@ class ProductModificationPageFunction {
                             `;
                             return `
                                 <div class="input-group">
-                                    <input class="form-control component-quantity" disabled readonly type="number" min="1" value="${row?.['product_quantity'] || 0}">
+                                    <input class="form-control component-quantity" disabled readonly type="number" min="1" value="${row?.['component_quantity'] || 0}">
                                     ${picking_component_btn}
                                 </div>
                                 <script class="data-component-none-detail">${JSON.stringify(row?.['component_product_none_detail'] || [])}</script>
@@ -531,35 +602,19 @@ class ProductModificationPageFunction {
                 {
                     className: 'text-center w-5',
                     render: (data, type, row) => {
-                        if (row?.['type'] !== 'new') {
+                        if (row?.['row_type'] !== 'new_added') {
                             if (row?.['is_added_component']) {
                                 return `<button type="button" class="btn-icon btn-rounded flush-soft-hover btn btn-flush-secondary delete-added-component-btn" ${option === 'detail' ? 'disabled' : ''}>
                                             <span class="icon"><i class="fa-regular fa-trash-can"></i></span>
                                         </button>`;
                             }
-                            let comp = {}
-                            if (row?.['product_id']) {
-                                comp = {
-                                    'id': row?.['product_id'],
-                                    'code': row?.['product_code'],
-                                    'name': row?.['product_title'],
-                                    'des': row?.['product_des'],
-                                }
-                            }
-                            else {
-                                comp = {
-                                    'id': row?.['component_id'],
-                                    'name': row?.['component_name'],
-                                    'des': row?.['component_des'],
-                                }
-                            }
                             return `<button type="button"
                                             ${option === 'detail' ? 'disabled' : ''}
                                             class="btn-icon btn-rounded flush-soft-hover btn btn-flush-danger remove-component-btn"
-                                            data-component-id="${comp?.['id'] || ''}"
-                                            data-component-code="${comp?.['code'] || ''}"
-                                            data-component-name="${comp?.['name'] || ''}"
-                                            data-component-des="${comp?.['des'] || ''}">
+                                            data-component-id="${row?.['component_id'] || ''}"
+                                            data-component-code="${row?.['component_code'] || ''}"
+                                            data-component-name="${row?.['component_name'] || ''}"
+                                            data-component-des="${row?.['component_des'] || ''}">
                                         <span class="icon"><i class="fa-solid fa-right-long"></i></span>
                                     </button>`;
                         }
@@ -574,7 +629,7 @@ class ProductModificationPageFunction {
                     if (data_list[index]?.['is_added_component']) {
                         $(ele).addClass('is_added_component');
                         $(ele).find('td').first().css('border-left', '4px solid #d1f2e0');
-                        $(ele).find('.component-title').attr('data-row-type', 'new')
+                        $(ele).find('.component-title').attr('data-row-type', 'new_added')
                         pageVariables.component_inserted_id_list.add($(ele).find('.component-title').attr('data-product-id'))
                     }
                 })
@@ -601,16 +656,13 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-65',
                     render: (data, type, row) => {
-                        if (row?.['component_code']) {
-                            return `<span class="badge badge-sm badge-soft-secondary">${row?.['component_code'] || ''}</span><br>
-                                    <span class="component-title" data-component-id="${row?.['component_id']}">${row?.['component_name']}</span><br>
-                                    <span class="small component-des">${row?.['component_des'] || ''}</span>`;
-                        }
-                        return `<a data-bs-toggle="collapse" href=".d4_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d4_${row?.['component_id']}">
+                        let product_code = `<span class="badge badge-sm badge-soft-secondary">${row?.['component_code'] || ''}</span>${row?.['component_code'] ? '<br>' : ''}`;
+                        return `${product_code}
+                                <a data-bs-toggle="collapse" href=".d4_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d4_${row?.['component_id']}">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
-                                <span class="component-title" data-component-id="${row?.['component_id']}">${row?.['component_name']}</span><br>
-                                <div class="collapse d4_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
+                                <span class="component-title" data-type="${row?.['type']}" data-component-id="${row?.['component_id']}">${row?.['component_name'] || ''}</span>
+                                <br><div class="collapse d4_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
                     }
                 },
                 {
@@ -1051,16 +1103,17 @@ class ProductModificationPageFunction {
             if (Object.keys(item?.['component_product_data']).length !== 0) {
                 let component_product_data = item?.['component_product_data']
                 parsed_current_component_data.push({
+                    'type': '1',
                     'order': item?.['order'],
-                    'product_id': component_product_data?.['id'] || '',
-                    'product_code': component_product_data?.['code'] || '',
-                    'product_title': component_product_data?.['title'] || '',
-                    'product_des': component_product_data?.['description'] || '',
+                    'component_id': component_product_data?.['id'] || '',
+                    'component_code': component_product_data?.['code'] || '',
+                    'component_name': component_product_data?.['title'] || '',
+                    'component_des': component_product_data?.['description'] || '',
                     'general_traceability_method': component_product_data?.['general_traceability_method'],
                     'component_product_none_detail': item?.['component_product_none_detail'] || [],
                     'component_product_lot_detail': item?.['component_product_lot_detail'] || [],
                     'component_product_sn_detail': item?.['component_product_sn_detail'] || [],
-                    'product_quantity': item?.['component_quantity'],
+                    'component_quantity': item?.['component_quantity'],
                     'is_added_component': item?.['is_added_component'],
                 })
             }
@@ -1085,12 +1138,12 @@ class ProductModificationPageFunction {
                 let component_product_data = item?.['component_product_data']
                 parsed_removed_component_data.push({
                     'order': item?.['order'],
-                    'product_id': component_product_data?.['id'] || '',
-                    'product_code': component_product_data?.['code'] || '',
-                    'product_title': component_product_data?.['title'] || '',
-                    'product_des': component_product_data?.['description'] || '',
+                    'component_id': component_product_data?.['id'] || '',
+                    'component_code': component_product_data?.['code'] || '',
+                    'component_name': component_product_data?.['title'] || '',
+                    'component_des': component_product_data?.['description'] || '',
                     'general_traceability_method': component_product_data?.['general_traceability_method'],
-                    'product_quantity': item?.['component_quantity'],
+                    'component_quantity': item?.['component_quantity'],
                     'is_mapped': item?.['is_mapped'],
                     'product_mapped_data': item?.['product_mapped_data'] || {},
                     'fair_value': item?.['fair_value'],
@@ -1226,11 +1279,11 @@ class ProductModificationHandler {
         pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
             if ($(this).find('.dataTables_empty').length === 0) {
                 current_component_data.push({
-                    'component_text_data': {
-                        'title': $(ele).find('.component-title').attr('data-product-id') || $(ele).find('.component-title').text(),
-                        'description': $(ele).find('.component-des').text(),
+                    'component_text_data': $(ele).find('.component-title').attr('data-type') === '1' ? {} : {
+                        'title': $(ele).find('.component-title').text() || '',
+                        'description': $(ele).find('.component-des').text() || '',
                     },
-                    'component_product_id': $(ele).find('.component-title').attr('data-product-id') || null,
+                    'component_product_id': $(ele).find('.component-title').attr('data-type') === '1' ? $(ele).find('.component-title').attr('data-component-id') : null,
                     'component_product_none_detail': $(ele).find('.data-component-none-detail').text() ? JSON.parse($(ele).find('.data-component-none-detail').text()) : [],
                     'component_product_lot_detail': $(ele).find('.data-component-lot-detail').text() ? JSON.parse($(ele).find('.data-component-lot-detail').text()) : [],
                     'component_product_sn_detail': $(ele).find('.data-component-sn-detail').text() ? JSON.parse($(ele).find('.data-component-sn-detail').text()) : [],
@@ -1276,7 +1329,7 @@ class ProductModificationHandler {
                     pageElements.$created_date.val(data?.['date_created'] ? DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", data?.['date_created']) : '')
                     pageVariables.current_product_modified = data?.['prd_wh_data']?.['product']
                     pageVariables.current_product_modified['warehouse_id'] = data?.['prd_wh_data']?.['warehouse']?.['id']
-                    pageVariables.current_product_modified['product_id'] = data?.['prd_wh_data']?.['product']?.['id']
+                    pageVariables.current_product_modified['id'] = data?.['prd_wh_data']?.['product']?.['id']
                     pageVariables.current_product_modified['serial_id'] = data?.['prd_wh_serial_data']?.['id']
                     pageVariables.current_product_modified['lot_id'] = data?.['prd_wh_lot_data']?.['id']
                     ProductModificationPageFunction.LoadTableCurrentProductModified(
@@ -1320,10 +1373,11 @@ class ProductModificationEventHandler {
     static InitPageEven() {
         // info
         pageElements.$btn_open_modal_product.on('click', function () {
-            ProductModificationPageFunction.LoadTableProductModified()
+            ProductModificationPageFunction.LoadTableProductRaw()
+            ProductModificationPageFunction.LoadTableProductModifiedBefore()
         })
         pageElements.$accept_product_modified_btn.on('click', function () {
-            const $checkedEle = pageElements.$table_select_product_modified.find('.product-modified-select:checked').first()
+            const $checkedEle = pageElements.$select_product_modified_modal.find('.nav-link[href="#tab_product"]').hasClass('active') ? pageElements.$table_select_product_modified.find('.product-modified-select:checked').first() : pageElements.$table_select_product_modified_before.find('.product-modified-select:checked').first()
             if ($checkedEle.length > 0) {
                 pageVariables.current_product_modified = {
                     'id': $checkedEle.attr('data-product-id'),
@@ -1332,8 +1386,86 @@ class ProductModificationEventHandler {
                     'description': $checkedEle.attr('data-product-description'),
                     'general_traceability_method': $checkedEle.attr('data-product-general-traceability-method'),
                 }
-                ProductModificationPageFunction.LoadTableCurrentProductModified([pageVariables.current_product_modified])
+                // nếu có modified number
+                const warehouse_data = $checkedEle.attr('data-warehouse-data') ? JSON.parse($checkedEle.attr('data-warehouse-data')) : {}
+                let warehouse_code = warehouse_data?.['code'] || ''
+                let serial_number = $checkedEle.attr('data-serial-number') || ''
+                let lot_number = $checkedEle.attr('data-lot-number') || ''
+                ProductModificationPageFunction.LoadTableCurrentProductModified([pageVariables.current_product_modified], warehouse_code, serial_number, lot_number)
                 pageElements.$select_product_modified_modal.modal('hide')
+
+                if ($checkedEle.attr('data-modified-number')) {
+                    const warehouse_data = $checkedEle.attr('data-warehouse-data') ? JSON.parse($checkedEle.attr('data-warehouse-data')) : {}
+
+                    pageVariables.current_product_modified['warehouse_id'] = warehouse_data?.['id']
+
+                    if (pageVariables.current_product_modified?.['general_traceability_method'] === '0') {
+                        // do nothing
+                    }
+                    if (pageVariables.current_product_modified?.['general_traceability_method'] === '1') {
+                        pageVariables.current_product_modified['lot_id'] = $checkedEle.attr('data-prd-wh-lot')
+                    }
+                    if (pageVariables.current_product_modified?.['general_traceability_method'] === '2') {
+                        pageVariables.current_product_modified['serial_id'] = $checkedEle.attr('data-prd-wh-serial')
+                    }
+
+                    let product_id = pageVariables.current_product_modified?.['id']
+                    let latest_component_list_ajax = $.fn.callAjax2({
+                        url: pageElements.$script_url.attr('data-url-latest-component-list'),
+                        data: {'product_warehouse__product_id': product_id, 'modified_number': $checkedEle.attr('data-modified-number') || ''},
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data && typeof data === 'object' && data.hasOwnProperty('latest_component_list')) {
+                                return data?.['latest_component_list'][0];
+                            }
+                        },
+                        (errs) => {
+                            $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        }
+                    )
+
+                    Promise.all([latest_component_list_ajax]).then(
+                        (results) => {
+                            let current_component_data = results[0]?.['current_component_data'] || []
+                            let parsed_current_component_data = []
+                            for (let i= 0; i < (current_component_data || []).length; i++) {
+                                let item = current_component_data[i]
+                                if (Object.keys(item?.['component_product_data']).length !== 0) {
+                                    let component_product_data = item?.['component_product_data']
+                                    parsed_current_component_data.push({
+                                        'order': item?.['order'],
+                                        'component_id': component_product_data?.['id'] || '',
+                                        // 'component_code': component_product_data?.['code'] || '',
+                                        // coi như 1 SP mới chứa các component
+                                        'component_code': '',
+                                        'component_name': component_product_data?.['title'] || '',
+                                        'component_des': component_product_data?.['description'] || '',
+                                        'component_quantity': item?.['component_quantity'],
+                                    })
+                                }
+                                else {
+                                    let component_text_data = item?.['component_text_data']
+                                    parsed_current_component_data.push({
+                                        'order': item?.['order'],
+                                        'component_id': item?.['component_id'] || '',
+                                        'component_name': component_text_data?.['title'] || '',
+                                        'component_des': component_text_data?.['description'] || '',
+                                        'component_quantity': item?.['component_quantity']
+                                    })
+                                }
+                            }
+
+                            ProductModificationPageFunction.LoadTableProductCurrentComponentList(
+                                parsed_current_component_data
+                            )
+                            ProductModificationPageFunction.LoadTableProductRemovedComponentList()
+                        }
+                    )
+
+                    pageElements.$insert_component_btn.prop('hidden', false)
+                }
             }
             else {
                 $.fn.notifyB({description: 'Nothing is selected'}, 'failure')
@@ -1376,7 +1508,6 @@ class ProductModificationEventHandler {
                 flag = false
             }
             else {
-                pageVariables.current_product_modified['product_id'] = $checked_prd_wh.attr('data-warehouse-id')
                 pageVariables.current_product_modified['warehouse_id'] = $checked_prd_wh.attr('data-warehouse-id')
                 warehouse_code = $checked_prd_wh.closest('tr').find('.warehouse-code').text()
             }
@@ -1384,7 +1515,6 @@ class ProductModificationEventHandler {
             if (pageVariables.current_product_modified?.['general_traceability_method'] === '0') {
                 // do nothing
             }
-
             if (pageVariables.current_product_modified?.['general_traceability_method'] === '1') {
                 const $checked_lot = pageElements.$table_select_lot.find('.lot-select:checked').first()
 
@@ -1398,7 +1528,6 @@ class ProductModificationEventHandler {
                     lot_number = $checked_lot.closest('tr').find('.lot-number').text()
                 }
             }
-
             if (pageVariables.current_product_modified?.['general_traceability_method'] === '2') {
                 const $checked_serial = pageElements.$table_select_serial.find('.serial-select:checked').first()
 
@@ -1443,7 +1572,6 @@ class ProductModificationEventHandler {
                         <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span>
                     `)
                 }
-
                 if (pageVariables.current_product_modified?.['general_traceability_method'] === '1') {
                     pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`
                         <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Lot: ${lot_number}</span>
@@ -1474,24 +1602,27 @@ class ProductModificationEventHandler {
             let has_error = false
             let init_component = []
             pageElements.$confirm_initial_components_table.find('tbody tr').each(function (index, ele) {
-                let component_order = index + 1
-                let component_id = 'component_order_' + (component_order).toString()
-                let component_name = $(ele).find('.init-component-title').val() || ''
-                let component_des = $(ele).find('.init-component-des').val() || ''
-                let component_quantity = $(ele).find('.init-component-quantity').val() || ''
-                if (component_name && Number(component_quantity) > 0) {
-                    init_component.push({
-                        "component_order": component_order,
-                        "component_id": component_id,
-                        "component_name": component_name,
-                        "component_des": component_des,
-                        "component_quantity": component_quantity,
-                    })
-                }
-                else {
-                    $.fn.notifyB({description: `Missing component information at row ${component_order}`}, 'failure');
-                    has_error = true
-                    return false
+                if ($(this).find('.dataTables_empty').length === 0) {
+                    let component_order = index + 1
+                    let component_id = 'component_order_' + (component_order).toString()
+                    let component_name = $(ele).find('.init-component-title').val() || ''
+                    let component_des = $(ele).find('.init-component-des').val() || ''
+                    let component_quantity = $(ele).find('.init-component-quantity').val() || ''
+                    if (component_name && Number(component_quantity) > 0) {
+                        init_component.push({
+                            "type": 0,
+                            "component_order": component_order,
+                            "component_id": component_id,
+                            "component_code": '',
+                            "component_name": component_name,
+                            "component_des": component_des,
+                            "component_quantity": component_quantity,
+                        })
+                    } else {
+                        $.fn.notifyB({description: `Missing component information at row ${component_order}`}, 'failure');
+                        has_error = true
+                        return false
+                    }
                 }
             })
 
@@ -1526,13 +1657,13 @@ class ProductModificationEventHandler {
                 UsualLoadPageFunction.AddTableRow(
                     pageElements.$table_product_current_component,
                     {
-                        'type': 'new',
-                        'product_id': $(this).attr('data-product-id'),
-                        'product_code': $(this).attr('data-product-code'),
-                        'product_title': $(this).attr('data-product-title'),
-                        'product_des': $(this).attr('data-product-description'),
+                        'row_type': 'new_added',
+                        'component_id': $(this).attr('data-product-id'),
+                        'component_code': $(this).attr('data-product-code'),
+                        'component_name': $(this).attr('data-product-title'),
+                        'component_des': $(this).attr('data-product-description'),
                         'general_traceability_method': $(this).attr('data-product-general-traceability-method'),
-                        'product_quantity': 0
+                        'component_quantity': 0
                     }
                 )
                 let row_added = pageElements.$table_product_current_component.find('tbody tr:last-child')
@@ -1542,7 +1673,7 @@ class ProductModificationEventHandler {
             } else {
                 pageVariables.component_inserted_id_list.delete(rowId)
                 pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
-                    if ($(ele).find('.component-title').attr('data-row-type') === 'new' && $(ele).find('.component-title').attr('data-product-id') === rowId) {
+                    if ($(ele).find('.component-title').attr('data-row-type') === 'new_added' && $(ele).find('.component-title').attr('data-product-id') === rowId) {
                         UsualLoadPageFunction.DeleteTableRow(
                             pageElements.$table_product_current_component,
                             parseInt($(ele).find('td:first-child').text())

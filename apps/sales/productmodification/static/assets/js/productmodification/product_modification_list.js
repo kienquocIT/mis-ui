@@ -40,14 +40,14 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-35',
+                        className: 'ellipsis-cell-lg w-45',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        className: 'ellipsis-cell-sm w-15',
+                        className: 'ellipsis-cell-sm w-20',
                         render: (data, type, row) => {
                             return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
@@ -56,19 +56,6 @@ $(document).ready(function () {
                         className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
                             return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
-                        }
-                    },
-                    {
-                        className: 'ellipsis-cell-sm w-15',
-                        render: (data, type, row) => {
-                            let info = ''
-                            if (row?.['created_goods_issue']) {
-                                info += `<a target="_blank" href="${dtb.attr('data-url-gis-detail').replace('0', row?.['goods_issue_mapped'])}"><p>${$.fn.gettext('Created Goods Issue')} <i class="fa-solid fa-up-right-from-square"></i></p></a>`
-                            }
-                            // if (row?.['created_goods_receipt']) {
-                            //     info += `<a target="_blank" href="${dtb.attr('data-url-gr-detail').replace('0', row?.['goods_receipt_mapped'])}"><p>${$.fn.gettext('Created Goods Receipt')} <i class="fa-solid fa-up-right-from-square"></i></p></a>`
-                            // }
-                            return info
                         }
                     },
                     {

@@ -17,6 +17,7 @@ class EmployeeLoadPage {
     static userSelectEle = $('#select-box-user');
     static dobEle = $('#employee-dob');
     static dateJoinedEle = $('#employee-date-joined');
+    static codeEle = $('#employee-code');
     static firstNameEle = $('#employee-first-name');
     static lastNameEle = $('#employee-last-name');
     static emailEle = $('#employee-email');
@@ -108,8 +109,16 @@ class EmployeeLoadPage {
         // frm.dataForm['is_active'] = frm.dataForm['is_active'] === 'on';
         // frm.dataForm['is_admin_company'] = frm.dataForm['is_admin_company'] === 'on';
         // frm.dataForm['plan_app'] = new HandlePlanApp().combinesData();
-        frm.dataForm['date_joined'] = moment($('#employee-date-joined').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
-        frm.dataForm['dob'] = $('#employee-dob').val() ? moment($('#employee-dob').val(), 'DD/MM/YYYY').format('YYYY-MM-DD') : null
+        frm.dataForm['date_joined'] = null;
+        frm.dataForm['dob'] = null;
+        if (EmployeeLoadPage.dateJoinedEle.val()) {
+            frm.dataForm['date_joined'] = moment(EmployeeLoadPage.dateJoinedEle.val(),
+                'DD/MM/YYYY').format('YYYY-MM-DD hh:mm:ss')
+        }
+        if (EmployeeLoadPage.dobEle.val()) {
+            frm.dataForm['dob'] = moment(EmployeeLoadPage.dobEle.val(),
+                'DD/MM/YYYY').format('YYYY-MM-DD')
+        }
         frm.dataForm['role'] = EmployeeLoadPage.roleSelectEle.val()
 
         if (!frm.dataForm['user']) frm.dataForm['user'] = null;

@@ -282,21 +282,30 @@ class MaskMoney2 {
     }
 
     static initCurrencyExchange(docData = {}) {
+        let $currencyAllowEle = $('#currency_allow');
         let $currencyCompanyEle = $('#currency_company_id');
         let $currencyExchangeEle = $('#currency_exchange_id');
         let $currencyExchangeEleRateEle = $('#currency_exchange_rate');
 
-        if ($currencyCompanyEle.length > 0 && $currencyExchangeEle.length > 0 && $currencyExchangeEleRateEle.length > 0) {
+        if ($currencyAllowEle.length > 0 && $currencyCompanyEle.length > 0 && $currencyExchangeEle.length > 0 && $currencyExchangeEleRateEle.length > 0) {
             DocumentControl.getCompanyCurrencyConfig().then((configCurrencyData) => {
                 let clsMaskMoney2 = new MaskMoney2(configCurrencyData);
-
+                // Set event on click to allow/ not allow currency exchange
+                $currencyAllowEle.on('click', function () {
+                    $currencyExchangeEle.attr('disabled', true);
+                    if ($currencyAllowEle.is(':checked')) {
+                        $currencyExchangeEle.removeAttr('disabled');
+                    }
+                    $.fn.initMaskMoney2();
+                });
+                // Set event on change currency then load rate and apply maskMoney
                 $currencyExchangeEle.on('change', function () {
                     let dataSelected = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
                     $currencyExchangeEleRateEle.attr('value', dataSelected?.['rate']);
                     $currencyExchangeEleRateEle.val(clsMaskMoney2.applyConfigExchange(dataSelected?.['rate'], false));
                     $.fn.initMaskMoney2();
                 });
-
+                // Get currency company then set as default currency
                 DocumentControl.getCompanyCurrencyFull().then((configData) => {
                     if (configData?.['master_data_currency']) {
                         configData['master_data_currency']['abbreviation'] = configData?.['master_data_currency']?.['code'];
@@ -349,6 +358,17 @@ class MaskMoney2 {
             }
             if (!$item.hasClass('no-exchange-show')) {
                 $item.after(`<span class="form-text text-muted mask-money-exchange ml-1 ${hidden}"></span>`);
+            }
+        }
+        if ($next.length > 0) {
+            let $currencyAllowEle = $('#currency_allow');
+            if ($currencyAllowEle.length > 0) {
+                if ($currencyAllowEle.is(':checked')) {
+                    $next.removeAttr('hidden');
+                }
+                if (!$currencyAllowEle.is(':checked')) {
+                    $next.attr('hidden', true);
+                }
             }
         }
         return true;
@@ -423,21 +443,14 @@ class MaskMoney2 {
 
     applyMaskMoney($ele, inputOrDisplay) {
         // inputOrDisplay choice in ['input', 'display']
-        let $next = $ele.next('.mask-money-exchange');
         switch (inputOrDisplay) {
             case 'input':
                 $($ele).val(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('value')));
-                MaskMoney2.appendTextExchangeMoney($($ele));
-                if ($next.length > 0) {
-                    this.applyMaskMoneyExchange($next, $($ele).attr('value'), 'display');
-                }
+                this.runAllowExchange($($ele), $($ele).attr('value'), inputOrDisplay);
                 break
             case 'display':
                 $($ele).text(this.applyConfig($($ele).attr('data-other-abbreviation'), $($ele).attr('data-init-money')));
-                MaskMoney2.appendTextExchangeMoney($($ele));
-                if ($next.length > 0) {
-                    this.applyMaskMoneyExchange($next, $($ele).attr('data-init-money'), 'display');
-                }
+                this.runAllowExchange($($ele), $($ele).attr('data-init-money'), inputOrDisplay);
                 break
             default:
                 if ($.fn.isDebug() === true) throw Error('strData must be required!')
@@ -448,7 +461,6 @@ class MaskMoney2 {
         let strDataParsed = parseFloat(strAttrValue);
         let $currencyExchangeEleRateEle = $('#currency_exchange_rate');
         if (strAttrValue !== null && Number.isFinite(strDataParsed) && $currencyExchangeEleRateEle.length > 0) {
-            // Exchange to company currency
             if (isExchange === true) {
                 let $currencyExchangeEle = $('#currency_exchange_id');
                 if ($currencyExchangeEle.length > 0) {
@@ -503,6 +515,20 @@ class MaskMoney2 {
                 break
             default:
                 if ($.fn.isDebug() === true) throw Error('strData must be required!')
+        }
+        return true;
+    }
+
+    runAllowExchange($ele, value, inputOrDisplay) {
+        let $currencyAllowEle = $('#currency_allow');
+        if ($currencyAllowEle.length > 0) {
+            MaskMoney2.appendTextExchangeMoney($($ele));
+            if ($currencyAllowEle.is(':checked')) {
+                let $next = $ele.next('.mask-money-exchange');
+                if ($next.length > 0) {
+                    this.applyMaskMoneyExchange($next, value, inputOrDisplay);
+                }
+            }
         }
         return true;
     }

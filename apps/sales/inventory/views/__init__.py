@@ -5,4 +5,3 @@ from .goods_issue import *
 from .goods_return import *
 from .goods_detail import *
 from .goods_registration import *
-from .productmodification import *

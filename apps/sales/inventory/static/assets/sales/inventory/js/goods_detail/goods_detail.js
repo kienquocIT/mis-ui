@@ -62,6 +62,7 @@ $(document).ready(function () {
             rowIdx: true,
             useDataServer: true,
             scrollX: true,
+            scrollY: '70vh',
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {
@@ -103,79 +104,76 @@ $(document).ready(function () {
                 },
                 {
                     data: 'product_data',
-
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-secondary">${data?.['code']}</span><br><span class="text-muted">${data?.['title']}</span>`;
+                        return `<span class="badge badge-sm badge-soft-secondary">${data?.['code']}</span><br>
+                                <a data-bs-toggle="collapse" href=".d1_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d1_${row?.['id']}">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <span>${data?.['title']}</span>
+                                <br><div class="collapse d1_${row?.['id']}"><span class="small">${data?.['description'] || ''}</span></div>`;
                     }
                 },
                 {
                     data: 'goods_receipt_data',
-
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue gr-code">${data?.['code']}</span>`;
-                    }
-                },
-                {
-                    data: 'purchase_request_data',
-
-                    render: (data, type, row) => {
-                        return `<span class="badge badge-soft-primary pr-code">${data?.['code'] ? data?.['code'] : ''}</span>`;
+                        return `<span class="gr-code">${data?.['code']}</span>` + (row?.['purchase_request_data']?.['code'] ? ` (<span class="pr-code">${row?.['purchase_request_data']?.['code']}</span>)` : '');
                     }
                 },
                 {
                     data: 'goods_receipt_data',
-
                     render: (data, type, row) => {
                         if (data?.['date_approved']) {
-                            return `<span>${moment(data?.['date_approved'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
+                            return `<span>📅 ${moment(data?.['date_approved'].split(' ')[0]).format('DD/MM/YYYY')}</span>`;
                         }
                         return ``
                     }
                 },
                 {
                     data: 'goods_receipt_data',
-
                     render: (data, type, row) => {
                         return `<span class="text-muted">${data?.['pic']?.['fullname']}</span>`;
                     }
                 },
                 {
                     data: 'warehouse_data',
-
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-secondary">${data?.['code']}</span><br><span class="text-muted">${data?.['title']}</span>`;
+                        return `<span class="badge badge-sm badge-soft-secondary">${data?.['code']}</span>
+                                <br><span>${data?.['title']}</span>`;
                     }
                 },
                 {
                     data: 'receipt_quantity',
-
                     render: (data, type, row) => {
                         return `${data}`;
                     }
                 },
                 {
                     data: '',
-
                     render: (data, type, row) => {
                         if (row?.['product_data']?.['general_traceability_method'] === 1) {
-                            return `<i class="text-blue fas fa-bookmark"></i>&nbsp;<span class="text-blue fw-bold">${row?.['lot_data']?.['lot_number']}</span>`;
+                            return `<span title="LOT" class="text-blue small fw-bold">${row?.['lot_data']?.['lot_number']}</span>`;
                         }
                         else if (row?.['product_data']?.['general_traceability_method'] === 2) {
+                            let icon = row?.['status'] ? '<i class="fa-solid fa-check-double"></i>' : '<i class="fa-solid fa-circle-exclamation"></i>'
                             let color = row?.['status'] ? 'success' : 'warning'
                             return `
                                 <a href="#" data-bs-toggle="tooltip" title="${row?.['status'] ? $trans_script.attr('data-trans-done') : $trans_script.attr('data-trans-not-yet')}">
-                                    <button type="button"
+                                   <button type="button"
                                             data-bs-toggle="modal"
                                             data-bs-target="#modal-serial"
-                                            class="btn btn-${color} btn-xs btn-open-modal-serial w-100"
+                                            class="btn btn-${color} btn-sm btn-open-modal-serial w-100"
                                             data-status="${row?.['status']}"
                                             data-quantity-import="${row?.['receipt_quantity']}"
                                             data-product-id="${row?.['product_data']?.['id']}"
                                             data-warehouse-id="${row?.['warehouse_data']?.['id']}"
                                             data-goods-receipt-id="${row?.['goods_receipt_data']?.['id']}"
-                                            data-purchase-request-id="${row?.['purchase_request_data']?.['id'] ? row?.['purchase_request_data']?.['id'] : ''}"
-                                    >
-                                        <span class="row-status">${$trans_script.attr('data-trans-detail')}</span>
+                                            data-purchase-request-id="${row?.['purchase_request_data']?.['id'] ? row?.['purchase_request_data']?.['id'] : ''}">
+                                        <span>
+                                            <span>${$trans_script.attr('data-trans-detail')}</span>
+                                            <span class="icon">
+                                                <span class="feather-icon">${icon}</span>
+                                            </span>
+                                        </span>
                                     </button>
                                 </a>
                             `;
@@ -314,7 +312,10 @@ $(document).ready(function () {
                     data: '',
                     className: 'text-center',
                     render: (data, type, row) => {
-                        if (row?.['id'] && !row?.['is_delete']) {
+                        if (row?.['goods_receipt_id'] !== params?.['goods_receipt_id']) {
+                            return `<span class="small">${$trans_script.attr('data-trans-for-pm')}</span>`
+                        }
+                        if (row?.['id'] && !row?.['serial_status']) {
                             return `<button type="button" class="btn-edit btn btn-icon btn-flush-primary flush-hover btn-xs">
                                         <span class="icon"><i class="bi bi-pencil-square"></i></span>
                                     </button>
@@ -323,7 +324,7 @@ $(document).ready(function () {
                                     </button>
                             `;
                         }
-                        if (row?.['is_delete']) {
+                        if (row?.['serial_status']) {
                             return `<span class="small sn-is-delete">${$trans_script.attr('data-trans-delivered')}</span>`
                         }
                         return `<button class="btn-del-sn-row btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;

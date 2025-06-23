@@ -11950,3 +11950,7 @@ msgstr "Mã định danh"
 #
 msgid "GR code"
 msgstr "Mã Nhập Hàng"
+
+#
+msgid "referred by product modification"
+msgstr "tham chiếu từ phiếu tháo - lắp"

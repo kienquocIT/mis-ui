@@ -312,7 +312,10 @@ $(document).ready(function () {
                     data: '',
                     className: 'text-center',
                     render: (data, type, row) => {
-                        if (row?.['id'] && !row?.['is_delete']) {
+                        if (row?.['goods_receipt_id'] !== params?.['goods_receipt_id']) {
+                            return `<span class="small">${$trans_script.attr('data-trans-for-pm')}</span>`
+                        }
+                        if (row?.['id'] && !row?.['serial_status']) {
                             return `<button type="button" class="btn-edit btn btn-icon btn-flush-primary flush-hover btn-xs">
                                         <span class="icon"><i class="bi bi-pencil-square"></i></span>
                                     </button>
@@ -321,7 +324,7 @@ $(document).ready(function () {
                                     </button>
                             `;
                         }
-                        if (row?.['is_delete']) {
+                        if (row?.['serial_status']) {
                             return `<span class="small sn-is-delete">${$trans_script.attr('data-trans-delivered')}</span>`
                         }
                         return `<button class="btn-del-sn-row btn text-danger btn-link btn-animated" type="button" title="Delete row"><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;

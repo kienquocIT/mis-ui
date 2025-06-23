@@ -565,14 +565,14 @@ class ProductModificationPageFunction {
                                 <a data-bs-toggle="collapse" href=".d3_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d3_${row?.['component_id']}">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
-                                <span class="component-title" data-type="${row?.['type']}" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
+                                <span class="component-title" data-row-type="${row?.['row_type'] || ''}" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
                                 <br><div class="collapse d3_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
                     }
                 },
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        if (row?.['type'] === '1') {
+                        if (row?.['row_type'] === 'new_added') {
                             let picking_component_btn = `
                                 <button type="button"
                                         class="btn btn-outline-secondary btn-modal-picking-component"
@@ -630,7 +630,7 @@ class ProductModificationPageFunction {
                         $(ele).addClass('is_added_component');
                         $(ele).find('td').first().css('border-left', '4px solid #d1f2e0');
                         $(ele).find('.component-title').attr('data-row-type', 'new_added')
-                        pageVariables.component_inserted_id_list.add($(ele).find('.component-title').attr('data-product-id'))
+                        pageVariables.component_inserted_id_list.add($(ele).find('.component-title').attr('data-component-id'))
                     }
                 })
             }
@@ -661,7 +661,7 @@ class ProductModificationPageFunction {
                                 <a data-bs-toggle="collapse" href=".d4_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d4_${row?.['component_id']}">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
-                                <span class="component-title" data-type="${row?.['type']}" data-component-id="${row?.['component_id']}">${row?.['component_name'] || ''}</span>
+                                <span class="component-title" data-component-id="${row?.['component_id']}">${row?.['component_name'] || ''}</span>
                                 <br><div class="collapse d4_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
                     }
                 },
@@ -1279,11 +1279,11 @@ class ProductModificationHandler {
         pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
             if ($(this).find('.dataTables_empty').length === 0) {
                 current_component_data.push({
-                    'component_text_data': $(ele).find('.component-title').attr('data-type') === '1' ? {} : {
+                    'component_text_data': $(ele).find('.component-title').attr('data-row-type') === 'new_added' ? {} : {
                         'title': $(ele).find('.component-title').text() || '',
                         'description': $(ele).find('.component-des').text() || '',
                     },
-                    'component_product_id': $(ele).find('.component-title').attr('data-type') === '1' ? $(ele).find('.component-title').attr('data-component-id') : null,
+                    'component_product_id': $(ele).find('.component-title').attr('data-row-type') === 'new_added' ? $(ele).find('.component-title').attr('data-component-id') : null,
                     'component_product_none_detail': $(ele).find('.data-component-none-detail').text() ? JSON.parse($(ele).find('.data-component-none-detail').text()) : [],
                     'component_product_lot_detail': $(ele).find('.data-component-lot-detail').text() ? JSON.parse($(ele).find('.data-component-lot-detail').text()) : [],
                     'component_product_sn_detail': $(ele).find('.data-component-sn-detail').text() ? JSON.parse($(ele).find('.data-component-sn-detail').text()) : [],
@@ -1299,10 +1299,10 @@ class ProductModificationHandler {
             if ($(this).find('.dataTables_empty').length === 0) {
                 removed_component_data.push({
                     'component_text_data': {
-                        'title': $(ele).find('.component-title').attr('data-product-id') || $(ele).find('.component-title').text(),
-                        'description': $(ele).find('.component-des').text(),
+                        'title': $(ele).find('.component-title').text() || '',
+                        'description': $(ele).find('.component-des').text() || '',
                     },
-                    'component_product_id': $(ele).find('.component-title').attr('data-product-id') || null,
+                    'component_product_id': null,
                     'component_quantity': $(ele).find('.component-quantity').val(),
                     'product_mapped_data': $(ele).find('.btn-open-modal-mapping').attr('data-mapping') ? JSON.parse($(ele).find('.btn-open-modal-mapping').attr('data-mapping')) : {},
                 })
@@ -1673,7 +1673,7 @@ class ProductModificationEventHandler {
             } else {
                 pageVariables.component_inserted_id_list.delete(rowId)
                 pageElements.$table_product_current_component.find('tbody tr').each(function (index, ele) {
-                    if ($(ele).find('.component-title').attr('data-row-type') === 'new_added' && $(ele).find('.component-title').attr('data-product-id') === rowId) {
+                    if ($(ele).find('.component-title').attr('data-row-type') === 'new_added' && $(ele).find('.component-title').attr('data-component-id') === rowId) {
                         UsualLoadPageFunction.DeleteTableRow(
                             pageElements.$table_product_current_component,
                             parseInt($(ele).find('td:first-child').text())
@@ -1686,7 +1686,7 @@ class ProductModificationEventHandler {
             container.scrollTop = container.scrollHeight
         })
         $(document).on('click', '.delete-added-component-btn', function () {
-            let rowId = $(this).closest('tr').find('.component-title').attr('data-product-id')
+            let rowId = $(this).closest('tr').find('.component-title').attr('data-component-id')
             pageVariables.component_inserted_id_list.delete(rowId)
             UsualLoadPageFunction.DeleteTableRow(
                 pageElements.$table_product_current_component,
@@ -1754,7 +1754,7 @@ class ProductModificationEventHandler {
             pageElements.$table_select_component_lot.find('tr .lot-picked-quantity').prop('disabled', true).prop('readonly', true)
             $(this).closest('tr').find('.lot-picked-quantity').prop('disabled', false).prop('readonly', false)
         })
-        $(document).on("change", ".lot-picked-quantity", function () {
+        $(document).on("change", '.lot-picked-quantity', function () {
             let row = $(this).closest("tr");
             let lot_id_list_raw = pageVariables.current_component_row.find(".data-component-lot-detail").text();
             let lot_id_list = lot_id_list_raw ? JSON.parse(lot_id_list_raw) : [];

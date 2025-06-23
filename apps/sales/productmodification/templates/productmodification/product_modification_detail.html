@@ -12,14 +12,16 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <button data-bs-toggle="modal" data-bs-target="#modal-alert-presave" class="btn btn-outline-primary" type="submit" form="form-detail-product-modification">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
+    <a href="{% url 'ProductModificationUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
             </span>
-        </span>
-    </button>
+        </button>
+    </a>
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
@@ -37,16 +39,16 @@
         data-url="{% url 'ProductModificationDetailAPI' pk=pk %}"
     >
         {% csrf_token %}
-        {% include 'sales/inventory/productmodification/common/information.html' %}
-        {% include 'sales/inventory/productmodification/common/spaces.html' %}
+        {% include 'productmodification/common/information.html' %}
+        {% include 'productmodification/common/spaces.html' %}
     </form>
 {% endblock %}
 {% block modalData %}
-    {% include 'sales/inventory/productmodification/common/modals.html' %}
+    {% include 'productmodification/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
-    <script src="{% static "assets/sales/inventory/js/productmodification/product_modification_common.js" %}"></script>
-    <script src="{% static "assets/sales/inventory/js/productmodification/product_modification_update.js" %}"></script>
+    <script src="{% static "assets/js/productmodification/product_modification_common.js" %}"></script>
+    <script src="{% static "assets/js/productmodification/product_modification_detail.js" %}"></script>
 {% endblock %}

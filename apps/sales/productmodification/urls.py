@@ -1,5 +1,5 @@
 from django.urls import path
-from apps.sales.inventory.views.productmodification import (
+from apps.sales.productmodification.views import (
     ProductModificationList, ProductModificationCreate, ProductModificationDetail, ProductModificationUpdate,
     ProductModificationListAPI, ProductModificationDetailAPI, WarehouseListByProductAPI, ProductSerialListAPI,
     ProductModifiedListAPI, ProductComponentListAPI, ComponentInsertedListAPI, ProductLotListAPI,
@@ -24,5 +24,9 @@ urlpatterns = [
     path('product-serial-list/api', ProductSerialListAPI.as_view(), name='ProductSerialListAPI'),
     path('product-inserted-list/api', ComponentInsertedListAPI.as_view(), name='ComponentInsertedListAPI'),
     path('dropdown/api', ProductModificationDDListAPI.as_view(), name='ProductModificationDDListAPI'),
-    path('product-modification-product-gr/api', ProductModificationProductGRListAPI.as_view(), name='ProductModificationProductGRListAPI'),
+    path(
+        'product-modification-product-gr/api',
+        ProductModificationProductGRListAPI.as_view(),
+        name='ProductModificationProductGRListAPI'
+    ),
 ]

@@ -14,7 +14,7 @@ from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg
 class ProductModificationList(View):
     @mask_view(
         auth_require=True,
-        template='sales/inventory/productmodification/product_modification_list.html',
+        template='productmodification/product_modification_list.html',
         breadcrumb='PRODUCT_MODIFICATION_LIST_PAGE',
         menu_active='id_menu_product_modification',
     )
@@ -51,7 +51,7 @@ class ProductModificationCreate(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/inventory/productmodification/product_modification_create.html',
+        template='productmodification/product_modification_create.html',
         breadcrumb='PRODUCT_MODIFICATION_CREATE_PAGE',
         menu_active='menu_product_modification_list',
     )
@@ -66,7 +66,7 @@ class ProductModificationDetail(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/inventory/productmodification/product_modification_detail.html',
+        template='productmodification/product_modification_detail.html',
         breadcrumb='PRODUCT_MODIFICATION_DETAIL_PAGE',
         menu_active='menu_product_modification_detail',
     )
@@ -79,7 +79,7 @@ class ProductModificationUpdate(View):
 
     @mask_view(
         auth_require=True,
-        template='sales/inventory/productmodification/product_modification_update.html',
+        template='productmodification/product_modification_update.html',
         breadcrumb='PRODUCT_MODIFICATION_UPDATE_PAGE',
         menu_active='menu_product_modification_detail',
     )

@@ -3,6 +3,7 @@
 {% load static %}
 {% block title %}{% trans 'Product modification' %}{% endblock %}
 {% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
     <style>
     .tr-border-left-green {
         border-left: 4px solid #28a745 !important;
@@ -12,16 +13,14 @@
 {% block jsHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="{% url 'ProductModificationUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary" id="btn-enable-edit">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </span>
+    <button data-bs-toggle="modal" data-bs-target="#modal-alert-presave" class="btn btn-outline-primary" type="submit" form="form-create-product-modification">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
             </span>
-        </button>
-    </a>
+        </span>
+    </button>
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
@@ -33,22 +32,24 @@
     ></script>
     <script id="trans-url"
     ></script>
-    <form id="form-detail-product-modification"
-        data-method="PUT"
-        data-url-redirect="{% url "ProductModificationDetail" pk=pk %}"
-        data-url="{% url 'ProductModificationDetailAPI' pk=pk %}"
+    <form id="form-create-product-modification"
+          data-url="{% url 'ProductModificationListAPI' %}"
+          data-method="POST"
+          data-url-redirect="{% url "ProductModificationList" %}"
     >
         {% csrf_token %}
-        {% include 'sales/inventory/productmodification/common/information.html' %}
-        {% include 'sales/inventory/productmodification/common/spaces.html' %}
+        {% include 'productmodification/common/information.html' %}
+        {% include 'productmodification/common/spaces.html' %}
     </form>
 {% endblock %}
 {% block modalData %}
-    {% include 'sales/inventory/productmodification/common/modals.html' %}
+    {% include 'productmodification/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
-    <script src="{% static "assets/sales/inventory/js/productmodification/product_modification_common.js" %}"></script>
-    <script src="{% static "assets/sales/inventory/js/productmodification/product_modification_detail.js" %}"></script>
+    <script src="{% static "assets/js/productmodification/product_modification_common.js" %}"></script>
+    <script src="{% static "assets/js/productmodification/product_modification_create.js" %}"></script>
 {% endblock %}

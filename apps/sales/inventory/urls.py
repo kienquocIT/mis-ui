@@ -27,17 +27,8 @@ from apps.sales.inventory.views import (
     WorkOrderListAPIForGIS, WorkOrderDetailAPIForGIS, GoodsIssueProductListAPI,
     GoodsDetailListImportDBAPI, GoodsDetailSerialDataAPI
 )
-from apps.sales.inventory.views.goods_recovery import (
-    GoodsRecoveryCreate, GoodsRecoveryList, GoodsRecoveryListAPI,
+from apps.sales.inventory.views.goods_recovery import GoodsRecoveryCreate, GoodsRecoveryList, GoodsRecoveryListAPI, \
     GoodsRecoveryDetail, GoodsRecoveryDetailAPI, GoodsRecoveryUpdate, GoodsRecoveryLeaseGenerateListAPI
-)
-from apps.sales.inventory.views.productmodification import (
-    ProductModificationList, ProductModificationDetail,
-    ProductModificationCreate, ProductModificationUpdate, ProductModificationListAPI, ProductModificationDetailAPI,
-    ProductModifiedListAPI, LatestComponentListAPI, ProductComponentListAPI, ProductModifiedBeforeListAPI,
-    ProductModificationProductGRListAPI, ProductModificationDDListAPI, ComponentInsertedListAPI, ProductSerialListAPI,
-    ProductLotListAPI, WarehouseListByProductAPI
-)
 
 urlpatterns = [
     # good receipt
@@ -195,23 +186,4 @@ urlpatterns += [
     path('none-gre-item-available-quantity/list/api', NoneGReItemAvailableQuantityAPI.as_view(),
          name='NoneGReItemAvailableQuantityAPI'),
     path('goods-regis-borrow/api/list', GoodsRegisBorrowListAPI.as_view(), name='GoodsRegisBorrowListAPI'),
-] + [
-    # MAIN
-    path('product-modification/list', ProductModificationList.as_view(), name='ProductModificationList'),
-    path('product-modification/create', ProductModificationCreate.as_view(), name='ProductModificationCreate'),
-    path('product-modification/detail/<str:pk>', ProductModificationDetail.as_view(), name='ProductModificationDetail'),
-    path('product-modification/update/<str:pk>', ProductModificationUpdate.as_view(), name='ProductModificationUpdate'),
-    path('product-modification/list/api', ProductModificationListAPI.as_view(), name='ProductModificationListAPI'),
-    path('product-modification/detail/api/<str:pk>', ProductModificationDetailAPI.as_view(), name='ProductModificationDetailAPI'),
-    # RELATED
-    path('product-modification/product-modified-list/api', ProductModifiedListAPI.as_view(), name='ProductModifiedListAPI'),
-    path('product-modification/product-modified-before-list/api', ProductModifiedBeforeListAPI.as_view(), name='ProductModifiedBeforeListAPI'),
-    path('product-modification/product-component-list/api', ProductComponentListAPI.as_view(), name='ProductComponentListAPI'),
-    path('product-modification/latest-component-list/api', LatestComponentListAPI.as_view(), name='LatestComponentListAPI'),
-    path('product-modification/warehouse-list-by-product/api', WarehouseListByProductAPI.as_view(), name='WarehouseListByProductAPI'),
-    path('product-modification/product-lot-list/api', ProductLotListAPI.as_view(), name='ProductLotListAPI'),
-    path('product-modification/product-serial-list/api', ProductSerialListAPI.as_view(), name='ProductSerialListAPI'),
-    path('product-modification/product-inserted-list/api', ComponentInsertedListAPI.as_view(), name='ComponentInsertedListAPI'),
-    path('product-modification/dropdown/api', ProductModificationDDListAPI.as_view(), name='ProductModificationDDListAPI'),
-    path('product-modification/product-modification-product-gr/api', ProductModificationProductGRListAPI.as_view(), name='ProductModificationProductGRListAPI'),
 ]

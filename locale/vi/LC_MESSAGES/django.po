@@ -11946,3 +11946,7 @@ msgstr "Sản phẩm đã làm Tháo - Lắp"
 #
 msgid "Modified number"
 msgstr "Mã định danh"
+
+#
+msgid "GR code"
+msgstr "Mã Nhập Hàng"

@@ -109,25 +109,34 @@
 }
 /*modal permission css*/
 
-.right_side{
-    background: #fff;
-}
 .left_side{
     padding: 35px 15px 0 15px;
 }
 .right_side{
+    background: #fff;
     padding: 15px 15px 0 25px;
+    overflow: hidden;
+    overflow-y: auto;
 }
 .color-grey-dark-5{
     color: #524c4c;
 }
-#folder-tree .btn{
+#folder-tree .btn,
+.btn_delete_slt, .btn_cancel_slt{
     color: #736c64;
 }
 #folder-tree .btn:hover,
 #folder-tree .btn.btn-active{
     background: #ebe9e6;
     color: var(--back-color);
+}
+.btn_delete_slt:hover::before,
+.btn_cancel_slt:hover::before{
+    background: #ebe9e6!important;
+}
+.btn_delete_slt:hover .icon,
+.btn_cancel_slt:hover .icon{
+    color: var(--back-color)!important;
 }
 .btn-files_actions .dropdown-item i{
     color: var(--back-color)
@@ -157,14 +166,16 @@
 .swal2-container.swal2-backdrop-show + .select2-container{
     z-index: 1111;
 }
-.folder_title span:not(.icon){
+.folder_title span:not(.icon),
+.file_title span:not(.icon){
     color: #000;
 }
-.folder_title .icon{
+.folder_title .icon,
+.file_title .icon{
     margin-right: 6px;
     font-size: 1.5rem;
     vertical-align: middle;
-    text-shadow: 2px 2px 1px rgb(0 0 0 / 20%);
+    text-shadow: 1px 1px 2px rgb(0 0 0 / 20%);
 }
 .wrap-action{
     display: flex;
@@ -184,4 +195,46 @@
 }
 .layout_grid + .form-switch #apply_to_sub {
     margin-top: 5px;
+}
+
+#folder-path a{
+    color: #736c64;
+}
+
+#folder-path a:hover{
+    color: #3a3838;
+    text-decoration: underline;
+}
+#folder-path > *{
+    margin-right: 10px;
+}
+.action-slc{
+    min-height: 42px;
+    border-radius: 20px;
+}
+.action-slc .wrap-act{
+    padding:2px;
+    display: none;
+}
+.action-slc.active,
+#main-files-info tbody tr.active td{
+    background: #f7f5f2;
+}
+.action-slc.active .wrap-act{
+    display: block;
+}
+.tit-crt{
+    font-weight: 600;
+    min-height: 24px;
+}
+.breadcrumb_file{
+    min-height: 24px;
+}
+.card{
+    border: 0;
+    box-shadow: unset;
+}
+
+#enabled_switch {
+    margin-top: 0.3em;
 }

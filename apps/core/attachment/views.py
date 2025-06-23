@@ -34,6 +34,20 @@ class AttachmentUpload(APIView):
             return resp.auto_return(key_success='file_detail')
         return RespData.resp_400(errors_data={'file': 'Not found'})
 
+
+class AttachmentEditAPI(APIView):
+    @mask_view(
+        login_require=True,
+        is_api=True
+    )
+    def delete(self, request, *args, **kwargs):
+        if 'ids' in request.data:
+            data = {'id_list': request.data['ids']}
+            resp = ServerAPI(user=request.user, url=ApiURL.FILE_EDIT).delete(data)
+            return resp.auto_return(status_success=status.HTTP_204_NO_CONTENT)
+        return RespData.resp_400(errors_data={'File': 'Data error'})
+
+
 class PublicAttachmentUpload(APIView):
     parser_classes = [MultiPartParser]
 
@@ -55,6 +69,7 @@ class PublicAttachmentUpload(APIView):
             ).post(data=m)
             return resp.auto_return(key_success='file_detail')
         return RespData.resp_400(errors_data={'file': 'Not found'})
+
 
 class AttachmentDownload(APIView):
     @mask_view(login_require=True, auth_require=True, is_api=True)
@@ -176,6 +191,39 @@ class FolderListAPI(APIView):
         )
 
 
+class FolderMyFileListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.FOLDER_MY_FILE_LIST).get(data)
+        return resp.auto_return(key_success='folder_mf_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return create_common(
+            request=request,
+            url=ApiURL.FOLDER_LIST,
+            msg=CoreMsg.FOLDER_CREATE
+        )
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def delete(self, request, *args, **kwargs):
+        if 'ids' in request.data:
+            data = {'id_list': request.data['ids']}
+            resp = ServerAPI(user=request.user, url=ApiURL.FOLDER_MY_FILE_LIST).delete(data)
+            return resp.auto_return(status_success=status.HTTP_204_NO_CONTENT)
+        return RespData.resp_400(errors_data={'folder': 'Data error'})
+
+
 class FolderListSharedAPI(APIView):
     @mask_view(
         auth_require=True,
@@ -219,6 +267,14 @@ class FolderDetailAPI(APIView):
             pk=pk,
             msg=CoreMsg.FOLDER_UPDATE
         )
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def delete(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.FOLDER_DETAIL.push_id(pk)).delete()
+        return resp.auto_return(status_success=status.HTTP_204_NO_CONTENT)
 
 
 class FolderUploadFileList(APIView):

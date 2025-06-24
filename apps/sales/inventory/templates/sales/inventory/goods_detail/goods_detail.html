@@ -28,6 +28,7 @@
     <script id="trans-url"
             data-trans-all="{% trans 'Default all' %}"
             data-trans-delivered="{% trans 'is not in stock' %}"
+            data-trans-for-pm="{% trans 'referred by product modification' %}"
             data-trans-done="{% trans 'Done' %}"
             data-trans-not-yet="{% trans 'Not yet' %}"
             data-trans-detail="{% trans 'Detail' %}"
@@ -97,10 +98,9 @@
             <table class="table nowrap w-100" data-method="GET" data-url="{% url 'GoodsDetailAPI' %}" id="goods-detail-main-table">
                 <thead>
                     <tr>
-                        <th style="min-width: 50px"></th>
-                        <th style="min-width: 200px">{% trans 'Product' %}</th>
-                        <th style="min-width: 120px">{% trans 'Goods receipt' %}</th>
-                        <th style="min-width: 100px">{% trans 'Purchase request' %}</th>
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 300px">{% trans 'Product' %}</th>
+                        <th style="min-width: 150px">{% trans 'GR code' %} ({% trans 'PR code' %})</th>
                         <th style="min-width: 100px">{% trans 'Date' %}</th>
                         <th style="min-width: 180px">{% trans 'PIC' %}</th>
                         <th style="min-width: 150px">{% trans 'Warehouse' %}</th>

@@ -822,6 +822,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LEASE_ORDER_DETAIL = StringUrl('leaseorder')
     LEASE_ORDER_RECURRENCE_LIST = StringUrl('leaseorder/lease-order-recurrence/list')
     LEASE_ORDER_DROPDOWN_LIST = StringUrl('leaseorder/dropdown/list')
+    LEASE_ORDER_COST_LIST = StringUrl('leaseorder/cost/list')
 
     # CONSULTING
     CONSULTING_LIST = StringUrl('consulting/list')

@@ -157,6 +157,7 @@
     <input
             type="text" id="app-url-factory"
             data-report-lease-api="{% url 'ReportLeaseListAPI' %}"
+            data-lo-cost-api="{% url 'LeaseOrderCostListAPI' %}"
             data-lo-detail="{% url 'LeaseOrderDetail' 1 %}"
             data-customer-detail="{% url 'AccountDetail' 1 %}"
     >
@@ -167,6 +168,11 @@
             data-filter-so="{% trans 'Sale order' %}"
             data-filter-lo="{% trans 'Lease order' %}"
             data-filter="{% trans 'Filter' %}"
+            data-asset-type-1="{% trans "Goods" %}"
+            data-asset-type-2="{% trans "Tool" %}"
+            data-asset-type-3="{% trans "Fixed asset" %}"
+            data-month="{% trans "Month" %}"
+
     >
     <input
             type="text"

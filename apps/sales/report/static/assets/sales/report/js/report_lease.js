@@ -6,9 +6,15 @@ $(function () {
         let boxStart = $('#report-lease-lease-from');
         let boxEnd = $('#report-lease-lease-to');
         let $table = $('#table_report_lease_list');
+        let $tableDetail = $('#table-lease-detail');
         let $urlFact = $('#app-url-factory');
         let $transFact = $('#app-trans-factory');
         let eleFiscalYear = $('#data-fiscal-year');
+        let dataAssetType = {
+            1: $transFact.attr('data-asset-type-1'),
+            2: $transFact.attr('data-asset-type-2'),
+            3: $transFact.attr('data-asset-type-3'),
+        }
 
         function loadDbl(dataParams = {}) {
             $table.not('.dataTable').DataTableDefault({
@@ -40,7 +46,16 @@ $(function () {
                         width: '10%',
                         render: (data, type, row) => {
                             let link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order']?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover">${row?.['lease_order']?.['code']}</a>`;
+                            return `<div class="d-flex justify-content-between align-items-center">
+                                        <a href="${link}" class="link-primary underline_hover">${row?.['lease_order']?.['code']}</a>
+                                        <button
+                                            type="button"
+                                            class="btn btn-icon btn-lease-detail"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#leaseDetailModal"
+                                        ><i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                    </div>`;
                         }
                     },
                     {
@@ -145,6 +160,106 @@ $(function () {
                     headerToolbar$.append($group);
                 }
             }
+        }
+
+        function loadDtbDetail(dataParams = {}) {
+            $tableDetail.not('.dataTable').DataTableDefault({
+                useDataServer: true,
+                ajax: {
+                    url: $urlFact.attr('data-lo-cost-api'),
+                    data: dataParams,
+                    type: "GET",
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('lease_order_cost')) {
+                            return resp.data['lease_order_cost'] ? resp.data['lease_order_cost'] : []
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
+                autoWidth: true,
+                scrollX: true,
+                columns: [
+                    {
+                        targets: 0,
+                        render: (data, type, row) => {
+                            if (row?.['asset_type']) {
+                                return `<span>${dataAssetType?.[row?.['asset_type']]}</span>`;
+                            }
+                            return ``;
+                        }
+                    },
+                    {
+                        targets: 1,
+                        render: (data, type, row) => {
+                            let txt = '';
+                            if (row?.['asset_type'] === 1 && row?.['offset_data']?.['id']) {
+                                txt = row?.['offset_data']?.['title'];
+                            }
+                            if (row?.['asset_type'] === 2 && row?.['tool_data']?.['id']) {
+                                txt = row?.['tool_data']?.['title'];
+                            }
+                            if (row?.['asset_type'] === 3 && row?.['asset_data']?.['id']) {
+                                txt = row?.['asset_data']?.['title'];
+                            }
+                            return `<span class="table-row-offset">${txt}</span>`;
+                        }
+                    },
+                    {
+                        targets: 2,
+                        render: (data, type, row) => {
+                            if (row?.['product_lease_start_date']) {
+                                return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['product_lease_start_date'])}</span>`;
+                            }
+                            return ``;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        render: (data, type, row) => {
+                            if (row?.['product_lease_end_date']) {
+                                return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['product_lease_end_date'])}</span>`;
+                            }
+                            return ``;
+                        }
+                    },
+                    {
+                        targets: 4,
+                        render: (data, type, row) => {
+                            return `<span class="mask-money" data-init-money="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"></span>`;
+                        }
+                    },
+                    {
+                        targets: 5,
+                        render: (data, type, row) => {
+                            return `<span class="mask-money" data-init-money="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"></span>`;
+                        }
+                    },
+                    {
+                        targets: 6,
+                        render: (data, type, row) => {
+                            return `<span>${row?.['product_depreciation_time']}${$transFact.attr('data-month')}</span>`;
+                        }
+                    },
+                ],
+                drawCallback: function () {
+                    $.fn.initMaskMoney2();
+                },
+            });
+        }
+
+        function loadModalDetail(ele) {
+            let row = ele.closest('tr');
+            let rowIndex = $table.DataTable().row(row).index();
+            let $row = $table.DataTable().row(rowIndex);
+            let rowData = $row.data();
+            if (rowData?.['lease_order']?.['id']) {
+                if ($.fn.dataTable.isDataTable($tableDetail)) {
+                    $tableDetail.DataTable().destroy();
+                }
+                loadDtbDetail({'lease_order_id': rowData?.['lease_order']?.['id']});
+            }
+            return true;
         }
 
         function loadCssToDtb(tableID) {
@@ -307,6 +422,10 @@ $(function () {
         // Events
         boxGroup.on('change', function() {
             FormElementControl.loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
+        });
+
+        $table.on('click', '.btn-lease-detail', function () {
+            loadModalDetail(this);
         });
 
         $('#btn-apply-filter').on('click', function () {

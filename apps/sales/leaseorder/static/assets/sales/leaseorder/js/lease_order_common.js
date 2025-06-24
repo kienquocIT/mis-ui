@@ -968,10 +968,12 @@ class LeaseOrderLoadDataHandle {
             let rowTarget = target.closest('tr');
             if (rowTarget) {
                 let itemEle = rowTarget.querySelector('.table-row-item');
+                let uomEle = rowTarget.querySelector('.table-row-uom');
                 let assetDataEle = rowTarget.querySelector('.table-row-asset-data');
                 let offsetShowEle = rowTarget.querySelector('.table-row-offset-show');
                 let quantityEle = rowTarget.querySelector('.table-row-quantity');
-                if (itemEle && assetDataEle && offsetShowEle && quantityEle) {
+                if (itemEle && uomEle && assetDataEle && offsetShowEle && quantityEle) {
+                    let uomData = [];
                     let assetData = [];
                     let titles = [];
 
@@ -989,28 +991,12 @@ class LeaseOrderLoadDataHandle {
                                 });
                             }
                             titles.push(storeID[key]?.['data']?.['title']);
+                            if (storeID[key]?.['data']?.['product_data']?.['sale_information']?.['default_uom']?.['id']) {
+                                uomData = [storeID[key]?.['data']?.['product_data']?.['sale_information']?.['default_uom']];
+                            }
                         }
                     }
-
-                    // for (let checkedEle of LeaseOrderDataTableHandle.$tableSAsset[0].querySelectorAll('.table-row-checkbox:checked')) {
-                    //     let row = checkedEle.closest('tr');
-                    //     if (row) {
-                    //         let rowIndex = LeaseOrderDataTableHandle.$tableSAsset.DataTable().row(row).index();
-                    //         let $row = LeaseOrderDataTableHandle.$tableSAsset.DataTable().row(rowIndex);
-                    //         let rowData = $row.data();
-                    //         let itemData = SelectDDControl.get_data_from_idx($(itemEle), $(itemEle).val());
-                    //         if (itemData?.['id']) {
-                    //             assetData.push({
-                    //                 "product_id": itemData?.['id'],
-                    //                 "product_data": itemData,
-                    //                 "asset_id": rowData?.['id'],
-                    //                 "asset_data": rowData,
-                    //                 "product_quantity": 1,
-                    //             });
-                    //         }
-                    //         titles.push(rowData?.['title']);
-                    //     }
-                    // }
+                    FormElementControl.loadInitS2($(uomEle), uomData);
                     $(assetDataEle).val(JSON.stringify(assetData));
                     $(offsetShowEle).val(titles.join(", "));
                     $(quantityEle).val(assetData.length);

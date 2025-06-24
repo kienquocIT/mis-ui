@@ -2954,11 +2954,13 @@ class WFRTControl {
                         if (window.location.href.includes('/detail/')) {
                             WFRTControl.checkAllowEditZones(actionMySelf);
                             WFRTControl.activeSetZoneHiddenMySelf(runtimeData['zones_hidden_myself']);
-                            if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === $x.fn.getEmployeeCurrentID()) {
+                            if (docData?.['system_status'] === 3) {
                                 // Bật nút CR & Cancel
-                                let appAllowCR = ["quotation.quotation", "saleorder.saleorder"];
-                                if (appAllowCR.includes(runtimeData?.['app_code'])) {
-                                    WFRTControl.setBtnWFAfterFinishDetail();
+                                if (docData?.['employee_inherit']?.['id'] === $x.fn.getEmployeeCurrentID()) {
+                                    let appAllowCR = ["quotation.quotation", "saleorder.saleorder"];
+                                    if (appAllowCR.includes(runtimeData?.['app_code'])) {
+                                        WFRTControl.setBtnWFAfterFinishDetail();
+                                    }
                                 }
                                 // Bật nút in
                                 let $btnPrint = $('#print-document');

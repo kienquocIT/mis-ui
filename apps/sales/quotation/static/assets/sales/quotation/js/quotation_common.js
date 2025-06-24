@@ -2400,7 +2400,7 @@ class QuotationLoadDataHandle {
     // LOAD DATA DETAIL
     static loadDetailQuotation(data, is_copy = false) {
         let form = QuotationLoadDataHandle.$form[0];
-        if (data?.['title'] && is_copy === false) {
+        if (data?.['title']) {
             $('#title').val(data?.['title']);
         }
         //

@@ -735,8 +735,7 @@ class QuotationLoadDataHandle {
                                                         <label class="form-check-label" for="price-${priceData?.['id'].replace(/-/g, "")}">${priceData?.['title']}</label>
                                                     </div>
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <span class="mask-money mr-2" data-init-money="${parseFloat(priceData?.['value'])}"></span>
-                                                        <span class="mr-2">/</span>
+                                                        <div class="mr-2"><span class="mask-money" data-init-money="${parseFloat(priceData?.['value'])}"></span></div>
                                                         <span class="badge badge-light">${priceData?.['uom']?.['title']}</span>
                                                     </div>
                                                 </div>`;
@@ -2702,6 +2701,9 @@ class QuotationLoadDataHandle {
         for (let ele of table[0].querySelectorAll('.input-group-price')) {
             ele.setAttribute('disabled', 'true');
         }
+        for (let ele of table[0].querySelectorAll('.btn-select-price')) {
+            ele.setAttribute('disabled', 'true');
+        }
         for (let ele of table[0].querySelectorAll('.input-group-expense-purchase-product')) {
             ele.setAttribute('disabled', 'true');
         }
@@ -2990,7 +2992,7 @@ class QuotationDataTableHandle {
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
-                        return `<div class="d-flex mt-5">
+                        return `<div class="d-flex">
                                     <div class="input-group-price">
                                         <input 
                                             type="text" 
@@ -3002,7 +3004,7 @@ class QuotationDataTableHandle {
                                     </div>
                                     <button
                                         type="button"
-                                        class="btn btn-icon btn-select-price"
+                                        class="btn btn-icon btn-outline-light btn-sm btn-select-price"
                                         data-bs-toggle="modal"
                                         data-bs-target="#selectPriceModal"
                                         data-zone="${dataZone}"
@@ -3298,7 +3300,7 @@ class QuotationDataTableHandle {
                         if (row?.['shipping_id']) {
                             disabled = 'disabled'  // shipping
                         }
-                        return `<div class="d-flex mt-5">
+                        return `<div class="d-flex">
                                     <div class="input-group-price">
                                         <input 
                                             type="text" 
@@ -3310,7 +3312,7 @@ class QuotationDataTableHandle {
                                     </div>
                                     <button
                                         type="button"
-                                        class="btn btn-icon btn-select-cost"
+                                        class="btn btn-icon btn-outline-light btn-sm btn-select-cost"
                                         data-bs-toggle="modal"
                                         data-bs-target="#selectCostModal"
                                         data-zone="${dataZone}"

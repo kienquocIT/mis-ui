@@ -3,14 +3,14 @@
 {% random_str 10 True as id_modal %}
 
 <div class="d-flex justify-content-end align-items-center">
-    <div class="row">
+    <div class="row border border-dashed border-light rounded-5">
         <div class="col-12 col-md-2 col-lg-2">
             <div class="form-check form-switch form-switch-lg mt-5">
                 <input type="checkbox" class="form-check-input mt-2" id="currency_allow">
                 <label class="form-check-label" for="currency_allow"></label>
             </div>
         </div>
-        <div class="col-12 col-md-4 col-lg-4">
+        <div class="col-12 col-md-3 col-lg-3">
             <div class="form-group hidden">
                 <label class="form-label" for="currency_company_id">{% trans 'Currency' %}</label>
                 <select
@@ -38,7 +38,7 @@
                 ></select>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-6">
+        <div class="col-12 col-md-7 col-lg-7">
             <div class="form-group">
                 <label class="form-label" for="currency_exchange_rate">{% trans 'Exchange rate' %}</label>
                 <input type="text" class="form-control mask-money-exchange" id="currency_exchange_rate" name="currency_exchange_rate" value="1" readonly>

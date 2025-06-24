@@ -296,13 +296,18 @@ class MaskMoney2 {
                     if ($currencyAllowEle.is(':checked')) {
                         $currencyExchangeEle.removeAttr('disabled');
                     }
+                    if (!$currencyAllowEle.is(':checked')) {
+                        let dataCompany = SelectDDControl.get_data_from_idx($currencyCompanyEle, $currencyCompanyEle.val());
+                        FormElementControl.loadInitS2($currencyExchangeEle, [dataCompany]);
+                        $currencyExchangeEle.trigger('change');
+                    }
                     $.fn.initMaskMoney2();
                 });
                 // Set event on change currency then load rate and apply maskMoney
                 $currencyExchangeEle.on('change', function () {
-                    let dataSelected = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
-                    $currencyExchangeEleRateEle.attr('value', dataSelected?.['rate']);
-                    $currencyExchangeEleRateEle.val(clsMaskMoney2.applyConfigExchange(dataSelected?.['rate'], false));
+                    let dataExchange = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
+                    $currencyExchangeEleRateEle.attr('value', dataExchange?.['rate']);
+                    $currencyExchangeEleRateEle.val(clsMaskMoney2.applyConfigExchange(dataExchange?.['rate'], false));
                     $.fn.initMaskMoney2();
                 });
                 // Get currency company then set as default currency
@@ -313,10 +318,10 @@ class MaskMoney2 {
                     }
                     FormElementControl.loadInitS2($currencyCompanyEle, [configData?.['master_data_currency']]);
                     FormElementControl.loadInitS2($currencyExchangeEle, [configData?.['master_data_currency']]);
-
                     if (docData?.['currency_exchange_data'] && docData?.['currency_exchange_rate']) {
+                        $currencyAllowEle.trigger('click');
+                        $currencyAllowEle.attr('disabled', 'true');
                         FormElementControl.loadInitS2($currencyExchangeEle, [docData?.['currency_exchange_data']]);
-                        $currencyExchangeEleRateEle.val(clsMaskMoney2.applyConfigExchange(docData?.['currency_exchange_rate'], false));
                     }
                     $currencyExchangeEle.trigger('change');
                 });
@@ -508,7 +513,8 @@ class MaskMoney2 {
     applyMaskMoneyExchange($ele, value, inputOrDisplay) {
         switch (inputOrDisplay) {
             case 'input':
-                $ele.val(this.applyConfigExchange(value));
+                $ele.text(this.applyConfigExchange(value));
+                // $ele.html(`<span class="fs-5 mr-1">~</span>${this.applyConfigExchange(value)}`);
                 break
             case 'display':
                 $ele.text(this.applyConfigExchange(value));

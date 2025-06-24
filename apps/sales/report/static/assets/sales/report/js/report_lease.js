@@ -61,7 +61,7 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if (row?.['lease_from']) {
                                 return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_from'])}</span>`;
@@ -71,7 +71,7 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if (row?.['lease_to']) {
                                 return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_to'])}</span>`;
@@ -81,7 +81,7 @@ $(function () {
                     },
                     {
                         targets: 4,
-                        width: '5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if (row?.['lease_status'] === 1) {
                                 return `<span>Finish</span>`;
@@ -91,21 +91,21 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '13%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
                         targets: 6,
-                        width: '13%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
                         targets: 7,
-                        width: '13%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }
@@ -158,30 +158,6 @@ $(function () {
             }
         }
 
-        function loadTotal() {
-            let newRevenue = 0;
-            let newGrossProfit = 0;
-            let newNetIncome = 0;
-            $table.DataTable().rows().every(function () {
-                let row = this.node();
-                let rowRevenue = row?.querySelector('.table-row-revenue')?.getAttribute('data-init-money');
-                let rowGrossProfit = row?.querySelector('.table-row-gross-profit')?.getAttribute('data-init-money');
-                let rowNetIncome = row?.querySelector('.table-row-net-income')?.getAttribute('data-init-money');
-                if (rowRevenue) {
-                    newRevenue += parseFloat(rowRevenue);
-                }
-                if (rowGrossProfit) {
-                    newGrossProfit += parseFloat(rowGrossProfit);
-                }
-                if (rowNetIncome) {
-                    newNetIncome += parseFloat(rowNetIncome);
-                }
-            });
-            eleRevenue.attr('data-init-money', String(newRevenue));
-            eleGrossProfit.attr('data-init-money', String(newGrossProfit));
-            eleNetIncome.attr('data-init-money', String(newNetIncome));
-        }
-
         function storeLoadInitByDataFiscalYear() {
             $.fn.callAjax2({
                     'url': eleFiscalYear.attr('data-url'),
@@ -218,7 +194,6 @@ $(function () {
                                                 if (data.hasOwnProperty('report_revenue_list') && Array.isArray(data.report_revenue_list)) {
                                                     $table.DataTable().clear().draw();
                                                     $table.DataTable().rows.add(data.report_revenue_list).draw();
-                                                    loadTotal();
                                                 }
                                             }
                                         }

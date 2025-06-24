@@ -5492,14 +5492,21 @@ class LeaseOrderDataTableHandle {
                     targets: 6,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-lease-time">${row?.['lease_time'] ? row?.['lease_time'] : ''}</span>`;
+                        let $leaseStartDateEle = $('#lease_start_date');
+                        let $leaseEndDateEle = $('#lease_end_date');
+                        if ($leaseStartDateEle.val() && $leaseEndDateEle.val()) {
+                            return `<span class="table-row-lease-time">${row?.['lease_time'] ? row?.['lease_time'] : ''}</span>`;
+                        }
+                        return ``;
                     }
                 },
                 {
                     targets: 7,
                     width: '10%',
                     render: (data, type, row) => {
-                        if (row?.['lease_allocated']) {
+                        let $leaseStartDateEle = $('#lease_start_date');
+                        let $leaseEndDateEle = $('#lease_end_date');
+                        if ($leaseStartDateEle.val() && $leaseEndDateEle.val() && row?.['lease_allocated']) {
                             return `<span class="mask-money table-row-lease-allocated" data-init-money="${parseFloat(row?.['lease_allocated'] ? row?.['lease_allocated'] : '0')}"></span>`;
                         }
                         return ``;
@@ -5509,7 +5516,9 @@ class LeaseOrderDataTableHandle {
                     targets: 8,
                     width: '10%',
                     render: (data, type, row) => {
-                        if (row?.['lease_accumulative_allocated']) {
+                        let $leaseStartDateEle = $('#lease_start_date');
+                        let $leaseEndDateEle = $('#lease_end_date');
+                        if ($leaseStartDateEle.val() && $leaseEndDateEle.val() && row?.['lease_accumulative_allocated']) {
                             return `<span class="mask-money table-row-lease-accumulative-allocated" data-init-money="${parseFloat(row?.['lease_accumulative_allocated'] ? row?.['lease_accumulative_allocated'] : '0')}"></span>`;
                         }
                         return ``;

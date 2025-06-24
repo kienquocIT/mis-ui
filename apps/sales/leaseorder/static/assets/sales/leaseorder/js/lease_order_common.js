@@ -975,7 +975,6 @@ class LeaseOrderLoadDataHandle {
                 if (itemEle && uomEle && assetDataEle && offsetShowEle && quantityEle) {
                     let uomData = [];
                     let assetData = [];
-                    let titles = [];
 
                     if (LeaseOrderLoadDataHandle.$assetsCheckedEle.val()) {
                         let storeID = JSON.parse(LeaseOrderLoadDataHandle.$assetsCheckedEle.val());
@@ -990,7 +989,6 @@ class LeaseOrderLoadDataHandle {
                                     "product_quantity": 1,
                                 });
                             }
-                            titles.push(storeID[key]?.['data']?.['title']);
                             if (storeID[key]?.['data']?.['product_data']?.['sale_information']?.['default_uom']?.['id']) {
                                 uomData = [storeID[key]?.['data']?.['product_data']?.['sale_information']?.['default_uom']];
                             }
@@ -998,7 +996,6 @@ class LeaseOrderLoadDataHandle {
                     }
                     FormElementControl.loadInitS2($(uomEle), uomData);
                     $(assetDataEle).val(JSON.stringify(assetData));
-                    $(offsetShowEle).val(titles.join(", "));
                     $(quantityEle).val(assetData.length);
                 }
             }
@@ -4105,7 +4102,11 @@ class LeaseOrderDataTableHandle {
                         if (data?.['asset_type'] === 3) {
                             let titles = [];
                             for (let assetData of data?.['asset_data'] ? data?.['asset_data'] : []) {
-                                titles.push(assetData?.['asset_data']?.['title']);
+                                let title = assetData?.['asset_data']?.['title'];
+                                if (assetData?.['asset_data']?.['product_data']?.['sale_information']?.['default_uom']?.['id']) {
+                                    title += "(" + assetData?.['asset_data']?.['product_data']?.['sale_information']?.['default_uom']?.['title'] + ")"
+                                }
+                                titles.push(title);
                             }
                             $(offsetShowEle).val(titles.join("\n"));
                         }

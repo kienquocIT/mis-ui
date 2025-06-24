@@ -456,7 +456,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Accounting
     CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of accounts'), 'ChartOfAccountsList')
-    DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE = BreadcrumbChildren(_('Default account determination'), 'DefaultAccountDeterminationList')
+    DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE = BreadcrumbChildren(_('Default account determination'),
+                                                                 'DefaultAccountDeterminationList')
 
     # Journal entry
     JOURNAL_ENTRY_LIST_PAGE = BreadcrumbChildren(_('Journal entry'), 'JournalEntryList')
@@ -464,7 +465,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     JOURNAL_ENTRY_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     JOURNAL_ENTRY_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
-    #Consulting
+    # Consulting
     CONSULTING_LIST_PAGE = BreadcrumbChildren(_('Consulting list'), 'ConsultingList')
     CONSULTING_CREATE_PAGE = BreadcrumbChildren(_('Consulting create'), 'ConsultingCreate')
 
@@ -701,7 +702,8 @@ class BreadcrumbView:
     PRODUCT_MODIFICATION_LIST_PAGE = [
         BreadcrumbItem.PRODUCT_MODIFICATION_LIST_PAGE
     ]
-    PRODUCT_MODIFICATION_CREATE_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [BreadcrumbItem.PRODUCT_MODIFICATION_CREATE_PAGE]
+    PRODUCT_MODIFICATION_CREATE_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [
+        BreadcrumbItem.PRODUCT_MODIFICATION_CREATE_PAGE]
     PRODUCT_MODIFICATION_DETAIL_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     PRODUCT_MODIFICATION_UPDATE_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 

@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL, InputMappingProperties, SECURITY_LV, SYSTEM_STATUS, SaleMsg
-from apps.shared.msg import KMSMsg
+from apps.shared.msg import KMSMsg, BaseMsg
 
 
 def create_quotation(request, url, msg):
@@ -130,7 +130,7 @@ class IncomingDocumentDetail(View):
         login_require=True,
         auth_require=True,
         template='kms/incomingdocument/detail.html',
-        menu_active='',
+        menu_active='menu_incoming_document',
         breadcrumb='INCOMING_DOCUMENT_DETAIL_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
@@ -147,13 +147,28 @@ class IncomingDocumentDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.INCOMING_DOCUMENT_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return()
 
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(
+            user=request.user,
+            url=ApiURL.INCOMING_DOCUMENT_DETAIL.fill_key(pk=pk)
+        ).put(request.data)
+        if resp.state:
+            resp.result['message'] = f'{KMSMsg.INCOMING_DOCUMENT} {BaseMsg.UPDATE} {BaseMsg.SUCCESS}'
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
 
 class IncomingDocumentEdit(View):
     @mask_view(
         login_require=True,
         auth_require=True,
         template='kms/incomingdocument/edit.html',
-        menu_active='',
+        menu_active='menu_incoming_document',
         breadcrumb='INCOMING_DOCUMENT_UPDATE_PAGE',
     )
     def get(self, request, pk, *args, **kwargs):
@@ -161,7 +176,7 @@ class IncomingDocumentEdit(View):
         return {
            'pk': pk,
            'input_mapping_properties': input_mapping_properties,
-           'form_id': 'frm_document_approval',
+           'form_id': 'frm_incoming_document',
            'lst_lv': SECURITY_LV
         }, status.HTTP_200_OK
 

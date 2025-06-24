@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block title %}
-    {% trans 'Incoming document detail' %}
+    {% trans 'Incoming Document Detail' %}
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
@@ -23,35 +23,101 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form class="form_main" id="frm_document_approval" data-method="POST"
+    <form class="form_main" id="frm_incoming_document" data-method="POST"
           data-url="{% url 'IncomingDocumentDetailAPI' data.pk %}">
         {% csrf_token %}
         <input type="hidden" name="id" id="id">
-        <div class="row">
-            <div class="col-md-8 col-lg-6 form-group">
-                <label class="form-label required" for="txt_title">{% trans 'Name' %}</label>
-                <input type="text" class="form-control" name="title" id="txt_title" required>
+        <div class="row" style="height: 100vh;">
+            <div class="col-12 col-md-8 col-lg-8" style="overflow-y: auto; height: 100vh; padding-right: 1rem;">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="txt_title">{% trans 'Name' %}</label>
+                            <input type="text" class="form-control" name="title" id="txt_create_title" required>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="add-product-remark">{% trans 'Description' %}</label>
+                            <textarea name="remark" class="form-control" id="textarea_remark" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label mt-2"
+                               for="table_internal_recipient">{% trans 'Internal Recipient' %}</label>
+                        <table class="table nowrap table-advance w-100" id="table_internal_recipient"></table>
+                    </div>
+                </div>
             </div>
-
-            <div class="col-md-8 content_attached mt-2 mb-2">
-                <label class="form-label mt-2" for="table_attached_info">{% trans 'Attached Documents' %}</label>
-                <table class="table nowrap table-advance w-100" id="table_attached_info">
-                </table>
-            </div>
-
-            <div class="col-md-8 form-group mt-4">
-                <label class="form-label" for="add-product-remark">{% trans 'Description' %}</label>
-                <textarea name="remark" class="form-control" id="txtarea_remark" rows="2"></textarea>
-            </div>
-
-            <div class="col-md-8 content_recipient mt-2">
-                <label class="form-label mt-2" for="table_internal_recipient">{% trans 'Internal Recipient' %}</label>
-                <table class="table nowrap table-advance w-100" id="table_internal_recipient"></table>
+            <div class="col-12 col-md-4 col-lg-4" id="attached-document-form"
+                 style="border-left: 1px solid #dee2e6; padding-left: 1rem;">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="txt_title">{% trans 'Sender' %}</label>
+                            <input type="text" class="form-control" name="sender" id="sender">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="document_type">{% trans 'Document type' %}</label>
+                            <input type="text" class="form-control" name="document_type" id="id_document_type">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="content_group">{% trans 'Content group' %}</label>
+                            <input type="text" class="form-control" name="content_group" id="id_content_group">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="kms_effective_date">{% trans 'Effective date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input class="form-control pl-2 date-picker" id="kms_effective_date" type="text"
+                                       name="effective_date"/>
+                                <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="kms_expired_date">{% trans 'Expired date' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input class="form-control pl-2 date-picker" id="kms_expired_date" type="text"
+                                       name="expired_date"/>
+                                <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="security_level">{% trans 'Security level' %}</label>
+                            <input type="text" class="form-control" name="security_level" id="id_security_level">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label mt-2"
+                                   for="table_attached_info">{% trans 'Attached Documents' %}</label>
+                            <table class="table nowrap table-advance w-100" id="table_attached_info">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>File Name</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
-    {% include 'kms/incomingdocument/extend/offcanvas-attached.html' %}
-    {% include 'kms/incomingdocument/extend/popup-recipient.html' %}
+{% endblock %}
+{% block modalData %}
+    {% include 'kms/document_approval/extend/popup-recipient.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
 {% endblock %}
@@ -60,7 +126,7 @@
     {% if base.language %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
-    <script src="{% static 'assets/js/kms/incoming-doc/recipient-js.js' %}"></script>
+    <script src="{% static 'assets/js/kms/doc-approval/recipient-js.js' %}"></script>
     <script src="{% static 'assets/js/kms/incoming-doc/common.js' %}"></script>
     <script src="{% static 'assets/js/kms/incoming-doc/detail.js' %}"></script>
 

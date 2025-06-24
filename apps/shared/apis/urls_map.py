@@ -59,8 +59,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     BUILDER_PAGE_DETAIL_CLONE = StringUrl('site/config/page/{pk}/clone')
     BUILDER_PAGE_VIEWER = StringUrl('site/config/page/{company_id}/{path_sub}/viewer')
     BUILDER_PAGE_TENANT_GETTER = StringUrl('site/config/page/company-get/{company_sub_domain}')
-    BUILDER_PAGE_TEMPLATE =  StringUrl('site/config/templates')
-    BUILDER_PAGE_TEMPLATE_DETAIL =  StringUrl('site/config/template/{pk}')
+    BUILDER_PAGE_TEMPLATE = StringUrl('site/config/templates')
+    BUILDER_PAGE_TEMPLATE_DETAIL = StringUrl('site/config/template/{pk}')
 
     # files
     FILE_UPLOAD = StringUrl('attachment/upload')
@@ -844,7 +844,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Cash outflow
     FINANCIAL_CASHOUTFLOW_LIST = StringUrl('financial-cashflow/cashoutflows')
     FINANCIAL_CASHOUTFLOW_DETAIL = StringUrl('financial-cashflow/cashoutflow/{pk}')
-    ADVANCE_FOR_SUPPLIER_LIST_FOR_CASHOUTFLOW = StringUrl('financial-cashflow/advance-for-supplier-for-cashoutflow/list')
+    ADVANCE_FOR_SUPPLIER_LIST_FOR_CASHOUTFLOW = StringUrl(
+        'financial-cashflow/advance-for-supplier-for-cashoutflow/list')
     AP_INVOICE_LIST_FOR_CASHOUTFLOW = StringUrl('financial-cashflow/ap-invoice-for-cashoutflow/list')
 
     # Recon
@@ -853,8 +854,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     AR_INVOICE_LIST_FOR_RECON = StringUrl('financial-reconciliation/ar-invoice-for-recon/list')
     CIF_LIST_FOR_RECON = StringUrl('financial-reconciliation/cash-inflow-for-recon/list')
 
-    #PARTNER CENTER
-    #LIST
+    # PARTNER CENTER
+    # LIST
     PARTNER_CENTER_LIST_DATA_OBJ_LIST = StringUrl('partner-center/data-obj-list')
     LIST_LIST = StringUrl('partner-center/list/list')
     LIST_DETAIL = StringUrl('partner-center/list/detail')
@@ -900,7 +901,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/warehouse-account-determination/list')
     WAREHOUSE_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/warehouse-account-determination/detail/{pk}')
     PRODUCT_TYPE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-type-account-determination/list')
-    PRODUCT_TYPE_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/product-type-account-determination/detail/{pk}')
+    PRODUCT_TYPE_ACCOUNT_DETERMINATION_DETAIL = StringUrl(
+        'accounting-setting/product-type-account-determination/detail/{pk}')
     PRODUCT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-account-determination/list')
     PRODUCT_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/product-account-determination/detail/{pk}')
 

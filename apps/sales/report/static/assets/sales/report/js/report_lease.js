@@ -182,6 +182,7 @@ $(function () {
                 columns: [
                     {
                         targets: 0,
+                        width: '10%',
                         render: (data, type, row) => {
                             if (row?.['asset_type']) {
                                 return `<span>${dataAssetType?.[row?.['asset_type']]}</span>`;
@@ -191,6 +192,7 @@ $(function () {
                     },
                     {
                         targets: 1,
+                        width: '15%',
                         render: (data, type, row) => {
                             let txt = '';
                             if (row?.['asset_type'] === 1 && row?.['offset_data']?.['id']) {
@@ -207,6 +209,7 @@ $(function () {
                     },
                     {
                         targets: 2,
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['product_lease_start_date']) {
                                 return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['product_lease_start_date'])}</span>`;
@@ -216,6 +219,7 @@ $(function () {
                     },
                     {
                         targets: 3,
+                        width: '15%',
                         render: (data, type, row) => {
                             if (row?.['product_lease_end_date']) {
                                 return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['product_lease_end_date'])}</span>`;
@@ -225,18 +229,21 @@ $(function () {
                     },
                     {
                         targets: 4,
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money" data-init-money="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"></span>`;
                         }
                     },
                     {
                         targets: 5,
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money" data-init-money="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"></span>`;
                         }
                     },
                     {
                         targets: 6,
+                        width: '15%',
                         render: (data, type, row) => {
                             return `<span>${row?.['product_depreciation_time']}${$transFact.attr('data-month')}</span>`;
                         }
@@ -244,8 +251,21 @@ $(function () {
                 ],
                 drawCallback: function () {
                     $.fn.initMaskMoney2();
+                    dtbDetailHDCustom();
                 },
             });
+        }
+
+        function dtbDetailHDCustom() {
+            let wrapper$ = $tableDetail.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
         }
 
         function loadModalDetail(ele) {

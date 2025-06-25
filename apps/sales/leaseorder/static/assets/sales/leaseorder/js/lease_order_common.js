@@ -968,12 +968,13 @@ class LeaseOrderLoadDataHandle {
             let rowTarget = target.closest('tr');
             if (rowTarget) {
                 let itemEle = rowTarget.querySelector('.table-row-item');
+                let uomEle = rowTarget.querySelector('.table-row-uom');
                 let assetDataEle = rowTarget.querySelector('.table-row-asset-data');
                 let offsetShowEle = rowTarget.querySelector('.table-row-offset-show');
                 let quantityEle = rowTarget.querySelector('.table-row-quantity');
-                if (itemEle && assetDataEle && offsetShowEle && quantityEle) {
+                if (itemEle && uomEle && assetDataEle && offsetShowEle && quantityEle) {
+                    let uomData = [];
                     let assetData = [];
-                    let titles = [];
 
                     if (LeaseOrderLoadDataHandle.$assetsCheckedEle.val()) {
                         let storeID = JSON.parse(LeaseOrderLoadDataHandle.$assetsCheckedEle.val());
@@ -988,31 +989,13 @@ class LeaseOrderLoadDataHandle {
                                     "product_quantity": 1,
                                 });
                             }
-                            titles.push(storeID[key]?.['data']?.['title']);
+                            if (storeID[key]?.['data']?.['product_data']?.['sale_information']?.['default_uom']?.['id']) {
+                                uomData = [storeID[key]?.['data']?.['product_data']?.['sale_information']?.['default_uom']];
+                            }
                         }
                     }
-
-                    // for (let checkedEle of LeaseOrderDataTableHandle.$tableSAsset[0].querySelectorAll('.table-row-checkbox:checked')) {
-                    //     let row = checkedEle.closest('tr');
-                    //     if (row) {
-                    //         let rowIndex = LeaseOrderDataTableHandle.$tableSAsset.DataTable().row(row).index();
-                    //         let $row = LeaseOrderDataTableHandle.$tableSAsset.DataTable().row(rowIndex);
-                    //         let rowData = $row.data();
-                    //         let itemData = SelectDDControl.get_data_from_idx($(itemEle), $(itemEle).val());
-                    //         if (itemData?.['id']) {
-                    //             assetData.push({
-                    //                 "product_id": itemData?.['id'],
-                    //                 "product_data": itemData,
-                    //                 "asset_id": rowData?.['id'],
-                    //                 "asset_data": rowData,
-                    //                 "product_quantity": 1,
-                    //             });
-                    //         }
-                    //         titles.push(rowData?.['title']);
-                    //     }
-                    // }
+                    FormElementControl.loadInitS2($(uomEle), uomData);
                     $(assetDataEle).val(JSON.stringify(assetData));
-                    $(offsetShowEle).val(titles.join(", "));
                     $(quantityEle).val(assetData.length);
                 }
             }
@@ -4119,7 +4102,11 @@ class LeaseOrderDataTableHandle {
                         if (data?.['asset_type'] === 3) {
                             let titles = [];
                             for (let assetData of data?.['asset_data'] ? data?.['asset_data'] : []) {
-                                titles.push(assetData?.['asset_data']?.['title']);
+                                let title = assetData?.['asset_data']?.['title'];
+                                if (assetData?.['asset_data']?.['product_data']?.['sale_information']?.['default_uom']?.['id']) {
+                                    title += "(" + assetData?.['asset_data']?.['product_data']?.['sale_information']?.['default_uom']?.['title'] + ")"
+                                }
+                                titles.push(title);
                             }
                             $(offsetShowEle).val(titles.join("\n"));
                         }
@@ -5505,14 +5492,21 @@ class LeaseOrderDataTableHandle {
                     targets: 6,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<span class="table-row-lease-time">${row?.['lease_time'] ? row?.['lease_time'] : ''}</span>`;
+                        let $leaseStartDateEle = $('#lease_start_date');
+                        let $leaseEndDateEle = $('#lease_end_date');
+                        if ($leaseStartDateEle.val() && $leaseEndDateEle.val()) {
+                            return `<span class="table-row-lease-time">${row?.['lease_time'] ? row?.['lease_time'] : ''}</span>`;
+                        }
+                        return ``;
                     }
                 },
                 {
                     targets: 7,
                     width: '10%',
                     render: (data, type, row) => {
-                        if (row?.['lease_allocated']) {
+                        let $leaseStartDateEle = $('#lease_start_date');
+                        let $leaseEndDateEle = $('#lease_end_date');
+                        if ($leaseStartDateEle.val() && $leaseEndDateEle.val() && row?.['lease_allocated']) {
                             return `<span class="mask-money table-row-lease-allocated" data-init-money="${parseFloat(row?.['lease_allocated'] ? row?.['lease_allocated'] : '0')}"></span>`;
                         }
                         return ``;
@@ -5522,7 +5516,9 @@ class LeaseOrderDataTableHandle {
                     targets: 8,
                     width: '10%',
                     render: (data, type, row) => {
-                        if (row?.['lease_accumulative_allocated']) {
+                        let $leaseStartDateEle = $('#lease_start_date');
+                        let $leaseEndDateEle = $('#lease_end_date');
+                        if ($leaseStartDateEle.val() && $leaseEndDateEle.val() && row?.['lease_accumulative_allocated']) {
                             return `<span class="mask-money table-row-lease-accumulative-allocated" data-init-money="${parseFloat(row?.['lease_accumulative_allocated'] ? row?.['lease_accumulative_allocated'] : '0')}"></span>`;
                         }
                         return ``;

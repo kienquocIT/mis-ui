@@ -11966,3 +11966,31 @@ msgstr "tham chiếu từ phiếu tháo - lắp"
 #
 msgid "Exchange rate"
 msgstr "Tỉ giá"
+
+#
+msgid "Lease report"
+msgstr "Báo cáo cho thuê"
+
+#
+msgid "Lease order code"
+msgstr "Mã đơn cho thuê"
+
+#
+msgid "Lease order name"
+msgstr "Tên đơn cho thuê"
+
+#
+msgid "Lease status"
+msgstr "Trạng thái cho thuê"
+
+#
+msgid "Prepare for lease"
+msgstr "Chuẩn bị cho thuê"
+
+#
+msgid "Currently for lease"
+msgstr "Đang cho thuê"
+
+#
+msgid "Lease expires"
+msgstr "Hết hạn cho thuê"

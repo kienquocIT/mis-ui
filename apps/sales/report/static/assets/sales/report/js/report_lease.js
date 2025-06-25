@@ -10,6 +10,11 @@ $(function () {
         let $urlFact = $('#app-url-factory');
         let $transFact = $('#app-trans-factory');
         let eleFiscalYear = $('#data-fiscal-year');
+        let dataStatusLease = {
+            1: $transFact.attr('data-status-lease-1'),
+            2: $transFact.attr('data-status-lease-2'),
+            3: $transFact.attr('data-status-lease-3'),
+        }
         let dataAssetType = {
             1: $transFact.attr('data-asset-type-1'),
             2: $transFact.attr('data-asset-type-2'),
@@ -98,10 +103,10 @@ $(function () {
                         targets: 4,
                         width: '10%',
                         render: (data, type, row) => {
-                            if (row?.['lease_status'] === 1) {
-                                return `<span>Finish</span>`;
+                            if (row?.['lease_status']) {
+                                return `<span>${dataStatusLease[row?.['lease_status']]}</span>`;
                             }
-                            return `<span>Ongoing</span>`;
+                            return ``;
                         }
                     },
                     {

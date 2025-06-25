@@ -35,6 +35,13 @@ $(function () {
         $('.date-picker').each(function () {
             DateTimeControl.initDatePicker(this);
         });
+        // attachment
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
+            new $x.cls.file($('#attachment')).init({
+                name: 'attachment',
+                enable_edit: true,
+            });
+        }
 
         // get WF initial zones
         let appCode = 'quotation';
@@ -946,6 +953,13 @@ $(function () {
                 'is_change',
                 'document_root_id',
                 'document_change_order',
+                'attachment',
+                'is_currency_exchange',
+                'currency_company_id',
+                'currency_company_data',
+                'currency_exchange_id',
+                'currency_exchange_data',
+                'currency_exchange_rate',
             ]
             if (is_sale_order === true) {
                 submitFields = [
@@ -1004,6 +1018,7 @@ $(function () {
                     'is_recurrence_template',
                     'is_recurring',
                     'recurrence_task_id',
+                    'attachment',
                 ]
             }
             if (_form.dataForm) {

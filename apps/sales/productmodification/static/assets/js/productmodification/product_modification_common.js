@@ -76,12 +76,14 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-65',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code'] || ''}</span><br>
-                                <a data-bs-toggle="collapse" href=".d1_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d1_${row?.['id']}">
-                                    <i class="bi bi-info-circle"></i>
-                                </a>
-                                <span>${row?.['title'] || ''}</span>
-                                <br><div class="collapse d1_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                        return `<div class="d-flex align-items-center">
+                                    <a data-bs-toggle="collapse" href=".d1_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d1_${row?.['id']}">
+                                        <i class="bi bi-info-circle"></i>
+                                    </a>
+                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code'] || ''}</span>
+                                    <span class="ml-1">${row?.['title'] || ''}</span>
+                                </div>
+                                <div class="collapse d1_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 },
                 {
@@ -152,12 +154,14 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-90',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br>
-                                <a data-bs-toggle="collapse" href=".d2_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['id']}">
-                                    <i class="bi bi-info-circle"></i>
-                                </a>
-                                <span>${row?.['title']}</span>
-                                <br><div class="collapse d2_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                        return `<div class="d-flex align-items-center">
+                                    <a data-bs-toggle="collapse" href=".d2_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['id']}">
+                                        <i class="bi bi-info-circle"></i>
+                                    </a>
+                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span>
+                                    <span class="ml-1">${row?.['title']}</span>
+                                </div>
+                                <div class="collapse d2_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 }
             ]
@@ -228,12 +232,14 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-70',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br>
-                                <a data-bs-toggle="collapse" href=".d2_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['id']}">
-                                    <i class="bi bi-info-circle"></i>
-                                </a>
-                                <span>${row?.['title']}</span>
-                                <br><div class="collapse d2_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                        return `<div class="d-flex align-items-center">
+                                    <a data-bs-toggle="collapse" href=".d2_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['id']}">
+                                        <i class="bi bi-info-circle"></i>
+                                    </a>
+                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span>
+                                    <span class="ml-1">${row?.['title']}</span>
+                                </div>
+                                <div class="collapse d2_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 },
             ]
@@ -406,14 +412,14 @@ class ProductModificationPageFunction {
             {
                 className: 'w-5',
                 render: (data, type, row) => {
-                    return `<div class="form-check">
+                    return !row?.['use_for_modification'] ? `<div class="form-check">
                                 <input type="radio" name="serial-select"
                                        class="form-check-input serial-select"
                                        ${row?.['id'] === pageVariables.current_product_modified?.['serial_id'] ? 'checked' : ''}
                                        data-serial-id="${row?.['id'] || ''}"
                                        data-sn="${row?.['serial_number'] || ''}"
                                 >
-                            </div>`;
+                            </div>` : `<span title="${$.fn.gettext('modified by Product Modification')}"><i class="fa-solid fa-circle-info"></i></span>`
                 }
             },
             {
@@ -560,13 +566,15 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-70',
                     render: (data, type, row) => {
-                        let product_code = `<span class="badge badge-sm badge-soft-secondary">${row?.['component_code'] || ''}</span>${row?.['component_code'] ? '<br>' : ''}`;
-                        return `${product_code}
-                                <a data-bs-toggle="collapse" href=".d3_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d3_${row?.['component_id']}">
-                                    <i class="bi bi-info-circle"></i>
-                                </a>
-                                <span class="component-title" data-row-type="${row?.['row_type'] || ''}" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
-                                <br><div class="collapse d3_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
+                        let product_code = `<span class="badge badge-sm badge-soft-secondary ml-1">${row?.['component_code'] || ''}</span>`;
+                        return `<div class="d-flex align-items-center">
+                                    <a data-bs-toggle="collapse" href=".d3_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d3_${row?.['component_id']}">
+                                        <i class="bi bi-info-circle"></i>
+                                    </a>
+                                    ${product_code}
+                                    <span class="component-title ml-1" data-row-type="${row?.['row_type'] || ''}" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
+                                </div>
+                                <div class="collapse d3_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
                     }
                 },
                 {
@@ -656,13 +664,15 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-65',
                     render: (data, type, row) => {
-                        let product_code = `<span class="badge badge-sm badge-soft-secondary">${row?.['component_code'] || ''}</span>${row?.['component_code'] ? '<br>' : ''}`;
-                        return `${product_code}
-                                <a data-bs-toggle="collapse" href=".d4_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d4_${row?.['component_id']}">
-                                    <i class="bi bi-info-circle"></i>
-                                </a>
-                                <span class="component-title" data-component-id="${row?.['component_id']}">${row?.['component_name'] || ''}</span>
-                                <br><div class="collapse d4_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
+                        let product_code = `<span class="badge badge-sm badge-soft-secondary ml-1">${row?.['component_code'] || ''}</span>`;
+                        return `<div class="d-flex align-items-center">
+                                    <a data-bs-toggle="collapse" href=".d4_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d4_${row?.['component_id']}">
+                                        <i class="bi bi-info-circle"></i>
+                                    </a>
+                                    ${product_code}
+                                    <span class="component-title ml-1" data-component-id="${row?.['component_id']}">${row?.['component_name'] || ''}</span>
+                                </div>
+                                <div class="collapse d4_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
                     }
                 },
                 {
@@ -749,12 +759,14 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-90',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br>
-                                <a data-bs-toggle="collapse" href=".d6_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d6_${row?.['id']}">
-                                    <i class="bi bi-info-circle"></i>
-                                </a>
-                                <span>${row?.['title']}</span>
-                                <br><div class="collapse d6_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                        return `<div class="d-flex align-items-center">
+                                    <a data-bs-toggle="collapse" href=".d6_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d6_${row?.['id']}">
+                                        <i class="bi bi-info-circle"></i>
+                                    </a>
+                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span>
+                                    <span class="ml-1">${row?.['title']}</span>
+                                </div>
+                                <div class="collapse d6_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 }
             ]
@@ -1211,12 +1223,14 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-90',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-secondary">${row?.['code']}</span><br>
-                                <a data-bs-toggle="collapse" href=".d5_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d5_${row?.['id']}">
-                                    <i class="bi bi-info-circle"></i>
-                                </a>
-                                <span>${row?.['title']}</span>
-                                <br><div class="collapse d5_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                        return `<div class="d-flex align-items-center">
+                                    <a data-bs-toggle="collapse" href=".d5_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d5_${row?.['id']}">
+                                        <i class="bi bi-info-circle"></i>
+                                    </a>
+                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span>
+                                    <span class="ml-1">${row?.['title']}</span>
+                                </div>
+                                <div class="collapse d5_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 }
             ]
@@ -1512,10 +1526,10 @@ class ProductModificationEventHandler {
                 warehouse_code = $checked_prd_wh.closest('tr').find('.warehouse-code').text()
             }
 
-            if (pageVariables.current_product_modified?.['general_traceability_method'] === '0') {
+            if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 0) {
                 // do nothing
             }
-            if (pageVariables.current_product_modified?.['general_traceability_method'] === '1') {
+            if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 1) {
                 const $checked_lot = pageElements.$table_select_lot.find('.lot-select:checked').first()
 
                 if ($checked_lot.length === 0) {
@@ -1528,7 +1542,7 @@ class ProductModificationEventHandler {
                     lot_number = $checked_lot.closest('tr').find('.lot-number').text()
                 }
             }
-            if (pageVariables.current_product_modified?.['general_traceability_method'] === '2') {
+            if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 2) {
                 const $checked_serial = pageElements.$table_select_serial.find('.serial-select:checked').first()
 
                 if ($checked_serial.length === 0) {
@@ -1567,17 +1581,17 @@ class ProductModificationEventHandler {
                     }
                 )
 
-                if (pageVariables.current_product_modified?.['general_traceability_method'] === '0') {
+                if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 0) {
                     pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`
                         <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span>
                     `)
                 }
-                if (pageVariables.current_product_modified?.['general_traceability_method'] === '1') {
+                if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 1) {
                     pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`
                         <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Lot: ${lot_number}</span>
                     `)
                 }
-                if (pageVariables.current_product_modified?.['general_traceability_method'] === '2') {
+                if (Number(pageVariables.current_product_modified?.['general_traceability_method']) === 2) {
                     pageElements.$table_current_product_modified.find('tbody tr .prd-modified-text-detail').html(`
                         <span class="badge badge-sm badge-soft-blue">${warehouse_code}</span><br><span>Serial: ${serial_number}</span>
                     `)

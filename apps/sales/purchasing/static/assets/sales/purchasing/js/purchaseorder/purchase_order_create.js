@@ -33,8 +33,8 @@ $(function () {
             DateTimeControl.initDatePicker(this);
         });
 
-        // file
-        if (formSubmit.attr('data-method').toLowerCase() === 'post') {
+        // attachment
+        if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
             new $x.cls.file($('#attachment')).init({
                 name: 'attachment',
                 enable_edit: true,

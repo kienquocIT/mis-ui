@@ -15,10 +15,14 @@ $(function () {
                     $x.fn.renderCodeBreadcrumb(data);
                     $.fn.compareStatusShowPageAction(data);
                     POLoadDataHandle.loadDetailPage(data);
-                    // file
+                    // attachment
+                    let enable_edit = true;
+                    if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                        enable_edit = false;
+                    }
                     new $x.cls.file($('#attachment')).init({
                         name: 'attachment',
-                        enable_edit: true,
+                        enable_edit: enable_edit,
                         enable_download: true,
                         data: data?.['attachment'],
                     });

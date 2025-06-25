@@ -115,9 +115,9 @@ class RecoveryLoadDataHandle {
 
     static loadInit() {
         RecoveryLoadDataHandle.$date.val(DateTimeControl.getCurrentDate("DMY", "/")).trigger('change');
-        RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxStatus, RecoveryLoadDataHandle.dataStatus);
-        RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxCustomer);
-        RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxLeaseOrder, [], {'system_status': 3});
+        FormElementControl.loadInitS2(RecoveryLoadDataHandle.$boxStatus, RecoveryLoadDataHandle.dataStatus);
+        FormElementControl.loadInitS2(RecoveryLoadDataHandle.$boxCustomer);
+        FormElementControl.loadInitS2(RecoveryLoadDataHandle.$boxLeaseOrder, [], {'system_status': 3}, null, false, {'res1': 'code', 'res2': 'title'});
         RecoveryLoadDataHandle.loadEventRadio(RecoveryLoadDataHandle.$depreciationModal);
         // dtb
         RecoveryDataTableHandle.dataTableProduct();
@@ -303,7 +303,7 @@ class RecoveryLoadDataHandle {
             let depreciationMethodEle = row.querySelector('.table-row-depreciation-method');
             let $methodEle = $('#depreciation_method');
             if (depreciationMethodEle && $methodEle.length > 0) {
-                RecoveryLoadDataHandle.loadInitS2($methodEle, RecoveryLoadDataHandle.dataDepreciationMethod, {}, RecoveryLoadDataHandle.$depreciationModal);
+                FormElementControl.loadInitS2($methodEle, RecoveryLoadDataHandle.dataDepreciationMethod, {}, RecoveryLoadDataHandle.$depreciationModal);
                 if ($(depreciationMethodEle).val()) {
                     $methodEle.val(parseInt($(depreciationMethodEle).val())).trigger('change');
                 }
@@ -610,10 +610,10 @@ class RecoveryLoadDataHandle {
             RecoveryLoadDataHandle.$date.val('');
         }
         if (data?.['customer_data']) {
-            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxCustomer, [data?.['customer_data']]);
+            FormElementControl.loadInitS2(RecoveryLoadDataHandle.$boxCustomer, [data?.['customer_data']]);
         }
         if (data?.['lease_order_data']) {
-            RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxLeaseOrder, [data?.['lease_order_data']]);
+            FormElementControl.loadInitS2(RecoveryLoadDataHandle.$boxLeaseOrder, [data?.['lease_order_data']]);
         }
         RecoveryDataTableHandle.$tableDelivery.DataTable().rows.add(data?.['recovery_delivery_data']).draw();
         RecoveryLoadDataHandle.loadLineDetail();
@@ -906,21 +906,21 @@ class RecoveryDataTableHandle {
                     if (data?.['tool_data']) {
                         dataS2 = [data?.['tool_data']];
                     }
-                    RecoveryLoadDataHandle.loadInitS2($(toolEle), dataS2);
+                    FormElementControl.loadInitS2($(toolEle), dataS2);
                 }
                 if (assetEle) {
                     let dataS2 = [];
                     if (data?.['asset_data']) {
                         dataS2 = [data?.['asset_data']];
                     }
-                    RecoveryLoadDataHandle.loadInitS2($(assetEle), dataS2);
+                    FormElementControl.loadInitS2($(assetEle), dataS2);
                 }
                 if (uomTimeEle) {
                     let dataS2 = [];
                     if (data?.['uom_time_data']) {
                         dataS2 = [data?.['uom_time_data']];
                     }
-                    RecoveryLoadDataHandle.loadInitS2($(uomTimeEle), dataS2);
+                    FormElementControl.loadInitS2($(uomTimeEle), dataS2);
                 }
                 if (depreciationDataEle) {
                     $(depreciationDataEle).val(JSON.stringify(data?.['depreciation_data'] ? data?.['depreciation_data'] : []));
@@ -1105,7 +1105,7 @@ class RecoveryDataTableHandle {
                     if (data?.['offset_data']) {
                         dataS2 = [data?.['offset_data']];
                     }
-                    RecoveryLoadDataHandle.loadInitS2($(itemEle), dataS2);
+                    FormElementControl.loadInitS2($(itemEle), dataS2);
                     $(itemEle).attr('data-product-id', data?.['offset_data']?.['id']);
                 }
             },

@@ -735,8 +735,7 @@ class QuotationLoadDataHandle {
                                                         <label class="form-check-label" for="price-${priceData?.['id'].replace(/-/g, "")}">${priceData?.['title']}</label>
                                                     </div>
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <span class="mask-money mr-2" data-init-money="${parseFloat(priceData?.['value'])}"></span>
-                                                        <span class="mr-2">/</span>
+                                                        <div class="mr-2"><span class="mask-money" data-init-money="${parseFloat(priceData?.['value'])}"></span></div>
                                                         <span class="badge badge-light">${priceData?.['uom']?.['title']}</span>
                                                     </div>
                                                 </div>`;
@@ -2060,7 +2059,7 @@ class QuotationLoadDataHandle {
                                                             <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="cost-${costData?.['warehouse']?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costData?.['unit_cost'])}" data-wh="${JSON.stringify(costData?.['warehouse']).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checked}>
                                                             <label class="form-check-label" for="cost-${costData?.['warehouse']?.['id'].replace(/-/g, "")}">${costData?.['warehouse']?.['title']}</label>
                                                         </div>
-                                                        <span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span>
+                                                        <div><span class="mask-money" data-init-money="${parseFloat(costData?.['unit_cost'])}"></span></div>
                                                     </div>`;
                                     }
                                 } else {
@@ -2072,14 +2071,14 @@ class QuotationLoadDataHandle {
                                                         <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="cost-bom-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costBom'])}" data-wh="${JSON.stringify({'id': 'bom'}).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checkedBom}>
                                                         <label class="form-check-label" for="cost-bom-${dataDetail?.['id'].replace(/-/g, "")}">${QuotationLoadDataHandle.transEle.attr('data-cost-bom')}</label>
                                                     </div>
-                                                    <span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costBom'])}"></span>
+                                                    <div><span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costBom'])}"></span></div>
                                                 </div>`;
                                 htmlCostList += `<div class="d-flex justify-content-between">
                                                     <div class="form-check form-check-lg">
                                                         <input type="radio" name="row-price-option" class="form-check-input table-row-price-option" id="cost-standard-${dataDetail?.['id'].replace(/-/g, "")}" data-value="${parseFloat(costBomStandardData?.['costStandard'])}" data-wh="${JSON.stringify({'id': 'standard'}).replace(/"/g, "&quot;")}" data-zone="${dataZone}" ${checkedStandard}>
                                                         <label class="form-check-label" for="cost-standard-${dataDetail?.['id'].replace(/-/g, "")}">${QuotationLoadDataHandle.transEle.attr('data-cost-standard')}</label>
                                                     </div>
-                                                    <span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costStandard'])}"></span>
+                                                    <div><span class="mask-money" data-init-money="${parseFloat(costBomStandardData?.['costStandard'])}"></span></div>
                                                 </div>`;
                                 $(modalBody).append(`${htmlCostList}`);
                             }
@@ -2702,6 +2701,9 @@ class QuotationLoadDataHandle {
         for (let ele of table[0].querySelectorAll('.input-group-price')) {
             ele.setAttribute('disabled', 'true');
         }
+        for (let ele of table[0].querySelectorAll('.btn-select-price')) {
+            ele.setAttribute('disabled', 'true');
+        }
         for (let ele of table[0].querySelectorAll('.input-group-expense-purchase-product')) {
             ele.setAttribute('disabled', 'true');
         }
@@ -2990,25 +2992,25 @@ class QuotationDataTableHandle {
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
-                        return `<div class="row">
-                                    <div class="input-group input-group-price">
+                        return `<div class="d-flex">
+                                    <div class="input-group-price">
                                         <input 
                                             type="text" 
-                                            class="form-control mask-money table-row-price" 
+                                            class="form-control mask-money table-row-price valid-num" 
                                             value="${row?.['product_unit_price']}"
                                             data-return-type="number"
                                             data-zone="${dataZone}"
                                         >
-                                        <button
-                                            type="button"
-                                            class="btn btn-icon btn-outline-light btn-select-price"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#selectPriceModal"
-                                            data-zone="${dataZone}"
-                                            disabled
-                                        ><i class="fas fa-ellipsis-h"></i>
-                                        </button>
                                     </div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-outline-light btn-sm btn-select-price"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#selectPriceModal"
+                                        data-zone="${dataZone}"
+                                        disabled
+                                    ><i class="fas fa-ellipsis-h"></i>
+                                    </button>
                                 </div>`;
                     }
                 },
@@ -3298,25 +3300,25 @@ class QuotationDataTableHandle {
                         if (row?.['shipping_id']) {
                             disabled = 'disabled'  // shipping
                         }
-                        return `<div class="row">
-                                        <div class="input-group input-group-price">
-                                            <input 
-                                                type="text" 
-                                                class="form-control mask-money table-row-price disabled-custom-show" 
-                                                value="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"
-                                                data-return-type="number"
-                                                data-zone="${dataZone}"
-                                            >
-                                            <button
-                                                type="button"
-                                                class="btn btn-icon btn-outline-light btn-select-cost"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#selectCostModal"
-                                                data-zone="${dataZone}"
-                                                ${disabled}
-                                            ><i class="fas fa-ellipsis-h"></i>
-                                            </button>
-                                        </div>
+                        return `<div class="d-flex">
+                                    <div class="input-group-price">
+                                        <input 
+                                            type="text" 
+                                            class="form-control mask-money table-row-price disabled-custom-show valid-num" 
+                                            value="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"
+                                            data-return-type="number"
+                                            data-zone="${dataZone}"
+                                        >
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-icon btn-outline-light btn-sm btn-select-cost"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#selectCostModal"
+                                        data-zone="${dataZone}"
+                                        ${disabled}
+                                    ><i class="fas fa-ellipsis-h"></i>
+                                    </button>
                                 </div>`;
                     }
                 },
@@ -5852,6 +5854,7 @@ class indicatorHandle {
         } else {
             QuotationDataTableHandle.dataTableSaleOrderIndicator(result_list);
         }
+        $.fn.initMaskMoney2();
     };
 
     static evaluateFormula(formulaText) {
@@ -7971,7 +7974,10 @@ class QuotationSubmitHandle {
             }
 
         }
-
+        // attachment
+        if (_form.dataForm.hasOwnProperty('attachment')) {
+          _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);
+        }
         // recurrence
         let urlParams = $x.fn.getManyUrlParameters(['recurrence_task_id']);
         if (urlParams?.['recurrence_task_id']) {

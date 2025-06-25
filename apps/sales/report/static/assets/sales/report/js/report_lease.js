@@ -1,24 +1,38 @@
 $(function () {
     $(document).ready(function () {
 
-        let boxGroup = $('#box-report-revenue-group');
-        let boxEmployee = $('#box-report-revenue-employee');
-        let boxStart = $('#report-revenue-date-from');
-        let boxEnd = $('#report-revenue-date-to');
-        let eleRevenue = $('#report-revenue-revenue');
-        let eleGrossProfit = $('#report-revenue-gross-profit');
-        let eleNetIncome = $('#report-revenue-net-income');
-        let $table = $('#table_report_revenue_list');
+        let boxGroup = $('#box-report-lease-group');
+        let boxEmployee = $('#box-report-lease-employee');
+        let boxStart = $('#report-lease-lease-from');
+        let boxEnd = $('#report-lease-lease-to');
+        let $table = $('#table_report_lease_list');
+        let $tableDetail = $('#table-lease-detail');
         let $urlFact = $('#app-url-factory');
         let $transFact = $('#app-trans-factory');
         let eleFiscalYear = $('#data-fiscal-year');
+        let dataAssetType = {
+            1: $transFact.attr('data-asset-type-1'),
+            2: $transFact.attr('data-asset-type-2'),
+            3: $transFact.attr('data-asset-type-3'),
+        }
 
-        function loadDbl(data) {
-            $table.DataTableDefault({
-                data: data ? data : [],
+        function loadDbl(dataParams = {}) {
+            $table.not('.dataTable').DataTableDefault({
+                useDataServer: true,
+                ajax: {
+                    url: $urlFact.attr('data-report-lease-api'),
+                    type: "GET",
+                    data: dataParams,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('report_lease_list')) {
+                            return resp.data['report_lease_list'] ? resp.data['report_lease_list'] : []
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
                 autoWidth: true,
                 scrollX: true,
-                pageLength: 50,
                 columns: [
                     {
                         targets: 0,
@@ -31,72 +45,82 @@ $(function () {
                         targets: 1,
                         width: '10%',
                         render: (data, type, row) => {
-                            let link = $urlFact.attr('data-opp-detail').format_url_with_uuid(row?.['opportunity']?.['id']);
-                            return `<a href="${link}" target="_blank" class="link-primary underline_hover">${row?.['opportunity']?.['title'] ? row?.['opportunity']?.['title'] : ''}</a>`;
+                            let link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order']?.['id']);
+                            return `<div class="d-flex justify-content-between align-items-center">
+                                        <a href="${link}" class="link-primary underline_hover">${row?.['lease_order']?.['code']}</a>
+                                        <button
+                                            type="button"
+                                            class="btn btn-icon btn-lease-detail"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#leaseDetailModal"
+                                        ><i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                    </div>`;
                         }
                     },
                     {
-                        targets: 2,
+                        targets: 1,
                         width: '10%',
                         render: (data, type, row) => {
-                            let text = "";
-                            if (row?.['sale_order']?.['title']) {
-                                text = $transFact.attr('data-filter-so');
-                            }
-                            if (row?.['lease_order']?.['title']) {
-                                text = $transFact.attr('data-filter-lo');
-                            }
-                            return `<span>${text}</span>`;
+                            let link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order']?.['id']);
+                            return `<a href="${link}" class="link-primary underline_hover">${row?.['lease_order']?.['title']}</a>`;
+                        }
+                    },
+                    {
+                        targets: 1,
+                        width: '10%',
+                        render: (data, type, row) => {
+                            let link = $urlFact.data('customer-detail').format_url_with_uuid(row?.['customer']?.['id']);
+                            return `<a href="${link}" class="link-primary underline_hover">${row?.['customer']?.['title']}</a>`;
                         }
                     },
                     {
                         targets: 3,
                         width: '10%',
                         render: (data, type, row) => {
-                            let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order']?.['id']);
-                            let title = row?.['sale_order']?.['title'] ? row?.['sale_order']?.['title'] : '';
-                            if (row?.['lease_order']?.['id'] && row?.['lease_order']?.['title']) {
-                                link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order']?.['id']);
-                                title = row?.['lease_order']?.['title'] ? row?.['lease_order']?.['title'] : '';
+                            if (row?.['lease_from']) {
+                                return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_from'])}</span>`;
                             }
-                            return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
+                            return ``;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        width: '10%',
+                        render: (data, type, row) => {
+                            if (row?.['lease_to']) {
+                                return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['lease_to'])}</span>`;
+                            }
+                            return ``;
                         }
                     },
                     {
                         targets: 4,
-                        width: '5%',
+                        width: '10%',
                         render: (data, type, row) => {
-                            if (row?.['date_approved']) {
-                                return `<p>${moment(row?.['date_approved'] ? row?.['date_approved'] : '').format('DD/MM/YYYY')}</p>`;
-                            } else {
-                                return `<p></p>`;
+                            if (row?.['lease_status'] === 1) {
+                                return `<span>Finish</span>`;
                             }
+                            return `<span>Ongoing</span>`;
                         }
                     },
                     {
                         targets: 5,
-                        width: '15%',
-                        render: (data, type, row) => {
-                            return `<p>${row?.['customer']?.['title'] ? row?.['customer']?.['title'] : ''}</p>`;
-                        }
-                    },
-                    {
-                        targets: 6,
-                        width: '13%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
-                        targets: 7,
-                        width: '13%',
+                        targets: 6,
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
-                        targets: 8,
-                        width: '13%',
+                        targets: 7,
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
                         }
@@ -105,7 +129,6 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
-                    loadTotal();
                     // add css to Dtb
                     dtbHDCustom();
                 },
@@ -139,6 +162,130 @@ $(function () {
             }
         }
 
+        function loadDtbDetail(dataParams = {}) {
+            $tableDetail.not('.dataTable').DataTableDefault({
+                useDataServer: true,
+                ajax: {
+                    url: $urlFact.attr('data-lo-cost-api'),
+                    data: dataParams,
+                    type: "GET",
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('lease_order_cost')) {
+                            return resp.data['lease_order_cost'] ? resp.data['lease_order_cost'] : []
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
+                autoWidth: true,
+                scrollX: true,
+                columns: [
+                    {
+                        targets: 0,
+                        width: '10%',
+                        render: (data, type, row) => {
+                            if (row?.['asset_type']) {
+                                return `<span>${dataAssetType?.[row?.['asset_type']]}</span>`;
+                            }
+                            return ``;
+                        }
+                    },
+                    {
+                        targets: 1,
+                        width: '15%',
+                        render: (data, type, row) => {
+                            let txt = '';
+                            if (row?.['asset_type'] === 1 && row?.['offset_data']?.['id']) {
+                                txt = row?.['offset_data']?.['title'];
+                            }
+                            if (row?.['asset_type'] === 2 && row?.['tool_data']?.['id']) {
+                                txt = row?.['tool_data']?.['title'];
+                            }
+                            if (row?.['asset_type'] === 3 && row?.['asset_data']?.['id']) {
+                                txt = row?.['asset_data']?.['title'];
+                            }
+                            return `<span class="table-row-offset">${txt}</span>`;
+                        }
+                    },
+                    {
+                        targets: 2,
+                        width: '15%',
+                        render: (data, type, row) => {
+                            if (row?.['product_lease_start_date']) {
+                                return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['product_lease_start_date'])}</span>`;
+                            }
+                            return ``;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        width: '15%',
+                        render: (data, type, row) => {
+                            if (row?.['product_lease_end_date']) {
+                                return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['product_lease_end_date'])}</span>`;
+                            }
+                            return ``;
+                        }
+                    },
+                    {
+                        targets: 4,
+                        width: '15%',
+                        render: (data, type, row) => {
+                            return `<span class="mask-money" data-init-money="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"></span>`;
+                        }
+                    },
+                    {
+                        targets: 5,
+                        width: '15%',
+                        render: (data, type, row) => {
+                            let netValue = DepreciationControl.getNetValue({
+                                "data_depreciation": row?.['depreciation_data'],
+                                "current_date": DateTimeControl.getCurrentDate("DMY", "/")
+                            })
+                            return `<span class="mask-money table-row-net-value" data-init-money="${netValue ? netValue : 0}"></span>`;
+                        }
+                    },
+                    {
+                        targets: 6,
+                        width: '15%',
+                        render: (data, type, row) => {
+                            return `<span>${row?.['product_depreciation_time']}${$transFact.attr('data-month')}</span>`;
+                        }
+                    },
+                ],
+                drawCallback: function () {
+                    $.fn.initMaskMoney2();
+                    dtbDetailHDCustom();
+                },
+            });
+        }
+
+        function dtbDetailHDCustom() {
+            let wrapper$ = $tableDetail.closest('.dataTables_wrapper');
+            let $theadEle = wrapper$.find('thead');
+            if ($theadEle.length > 0) {
+                for (let thEle of $theadEle[0].querySelectorAll('th')) {
+                    if (!$(thEle).hasClass('border-right')) {
+                        $(thEle).addClass('border-right');
+                    }
+                }
+            }
+        }
+
+        function loadModalDetail(ele) {
+            let row = ele.closest('tr');
+            let rowIndex = $table.DataTable().row(row).index();
+            let $row = $table.DataTable().row(rowIndex);
+            let rowData = $row.data();
+            if (rowData?.['lease_order']?.['id']) {
+                if ($.fn.dataTable.isDataTable($tableDetail)) {
+                    $tableDetail.DataTable().destroy();
+                }
+                loadDtbDetail({'lease_order_id': rowData?.['lease_order']?.['id']});
+            }
+            return true;
+        }
+
         function loadCssToDtb(tableID) {
             let tableIDWrapper = tableID + '_wrapper';
             let tableWrapper = document.getElementById(tableIDWrapper);
@@ -148,30 +295,6 @@ $(function () {
                     headerToolbar.classList.add('hidden');
                 }
             }
-        }
-
-        function loadTotal() {
-            let newRevenue = 0;
-            let newGrossProfit = 0;
-            let newNetIncome = 0;
-            $table.DataTable().rows().every(function () {
-                let row = this.node();
-                let rowRevenue = row?.querySelector('.table-row-revenue')?.getAttribute('data-init-money');
-                let rowGrossProfit = row?.querySelector('.table-row-gross-profit')?.getAttribute('data-init-money');
-                let rowNetIncome = row?.querySelector('.table-row-net-income')?.getAttribute('data-init-money');
-                if (rowRevenue) {
-                    newRevenue += parseFloat(rowRevenue);
-                }
-                if (rowGrossProfit) {
-                    newGrossProfit += parseFloat(rowGrossProfit);
-                }
-                if (rowNetIncome) {
-                    newNetIncome += parseFloat(rowNetIncome);
-                }
-            });
-            eleRevenue.attr('data-init-money', String(newRevenue));
-            eleGrossProfit.attr('data-init-money', String(newGrossProfit));
-            eleNetIncome.attr('data-init-money', String(newNetIncome));
         }
 
         function storeLoadInitByDataFiscalYear() {
@@ -210,7 +333,6 @@ $(function () {
                                                 if (data.hasOwnProperty('report_revenue_list') && Array.isArray(data.report_revenue_list)) {
                                                     $table.DataTable().clear().draw();
                                                     $table.DataTable().rows.add(data.report_revenue_list).draw();
-                                                    loadTotal();
                                                 }
                                             }
                                         }
@@ -303,7 +425,7 @@ $(function () {
             FormElementControl.loadInitS2(boxGroup, [], {}, null, true);
             FormElementControl.loadInitS2(boxEmployee, [], {}, null, true);
             loadDbl();
-            storeLoadInitByDataFiscalYear();
+            // storeLoadInitByDataFiscalYear();
         }
 
         initData();
@@ -326,64 +448,28 @@ $(function () {
             FormElementControl.loadInitS2(boxEmployee, [], {'group_id__in': boxGroup.val().join(',')}, null, true);
         });
 
+        $table.on('click', '.btn-lease-detail', function () {
+            loadModalDetail(this);
+        });
+
         $('#btn-apply-filter').on('click', function () {
             let dataParams = {};
-            let listViewBy = [];
-            let listDate = [];
             if (boxGroup.val() && boxGroup.val().length > 0) {
                 dataParams['employee_inherit__group_id__in'] = boxGroup.val().join(',');
-                let listTxt = getListTxtMultiSelect2(boxGroup);
-                for (let txt of listTxt) {
-                    listViewBy.push(txt);
-                }
             }
             if (boxEmployee.val() && boxEmployee.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = boxEmployee.val().join(',');
-                let listTxt = getListTxtMultiSelect2(boxEmployee);
-                for (let txt of listTxt) {
-                    listViewBy.push(txt);
-                }
             }
-            loadFilter(listViewBy, $('#card-filter-vb'));
             if (boxStart.val()) {
-                let dateStart = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxStart.val());
-                dataParams['date_approved__gte'] = formatStartDate(dateStart);
-                listDate.push(boxStart.val());
+                dataParams['lease_from__gte'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxStart.val());
             }
             if (boxEnd.val()) {
-                let dateEnd = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxEnd.val());
-                dataParams['date_approved__lte'] = formatEndDate(dateEnd);
-                listDate.push(boxEnd.val());
+                dataParams['lease_to__lte'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxEnd.val());
             }
-            const appliedAdvanceFilter = $('.filter-item').find('input[type="radio"]:checked')
-            if(appliedAdvanceFilter.length > 0) {
-                dataParams['advance_filter_id'] = $(appliedAdvanceFilter[0]).attr('id')
+            if ($.fn.dataTable.isDataTable($table)) {
+                $table.DataTable().destroy();
             }
-            loadFilter(listDate, $('#card-filter-date'));
-            WindowControl.showLoading();
-            $.fn.callAjax2({
-                    'url': $table.attr('data-url'),
-                    'method': $table.attr('data-method'),
-                    'data': dataParams,
-                    isLoading: true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('report_revenue_list') && Array.isArray(data.report_revenue_list)) {
-                            $table.DataTable().clear().draw();
-                            $table.DataTable().rows.add(data.report_revenue_list).draw();
-                            loadTotal();
-                            WindowControl.hideLoading();
-                        }
-                    }
-                }
-            )
-        });
-
-        $('#btn-cancel-vb, #btn-cancel-date').on('click', function () {
-            this.closest('.dropdown-menu').classList.remove('show');
+            loadDbl(dataParams);
         });
 
 

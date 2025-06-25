@@ -518,3 +518,28 @@ class AdvanceFilterDetailAPI(APIView):
             resp.result['message'] = BaseMsg.SUCCESS
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+# REPORT LEASE
+class ReportLeaseList(View):
+
+    @mask_view(
+        auth_require=True,
+        template='sales/report/report_lease.html',
+        menu_active='menu_report_lease_list',
+        breadcrumb='REPORT_LEASE_LIST_PAGE',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class ReportLeaseListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.REPORT_LEASE_LIST).get(data)
+        return resp.auto_return(key_success='report_lease_list')

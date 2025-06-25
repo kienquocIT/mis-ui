@@ -61,7 +61,7 @@ $(document).ready(function () {
                     {
                         className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
-                            return row?.['created_goods_receipt'] ? `<span class="small text-success">${$.fn.gettext('GR completed')}</span>` : `<span class="small text-blue">${$.fn.gettext('GR is pending')}</span>`;
+                            return row?.['created_goods_receipt'] ? `<span class="small text-success">${$.fn.gettext('GR completed')} <i class="fa-solid fa-check"></i></span>` : `<span class="small text-blue">${$.fn.gettext('GR is pending')}</span>`;
                         }
                     },
                     {

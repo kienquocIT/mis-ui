@@ -35,6 +35,13 @@ $(function () {
         $('.date-picker').each(function () {
             DateTimeControl.initDatePicker(this);
         });
+        // attachment
+        if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
+            new $x.cls.file($('#attachment')).init({
+                name: 'attachment',
+                enable_edit: true,
+            });
+        }
 
         // get WF initial zones
         let appCode = 'quotation';

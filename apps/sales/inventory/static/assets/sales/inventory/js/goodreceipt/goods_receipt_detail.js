@@ -15,10 +15,14 @@ $(function () {
                     $.fn.compareStatusShowPageAction(data);
                     $('#data-detail-page').val(JSON.stringify(data));
                     GRLoadDataHandle.loadDetailPage(data);
-                    // file
+                    // attachment
+                    let enable_edit = true;
+                    if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                        enable_edit = false;
+                    }
                     new $x.cls.file($('#attachment')).init({
                         name: 'attachment',
-                        enable_edit: true,
+                        enable_edit: enable_edit,
                         enable_download: true,
                         data: data?.['attachment'],
                     });

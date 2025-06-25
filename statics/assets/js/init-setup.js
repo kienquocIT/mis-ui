@@ -282,7 +282,7 @@ class MaskMoney2 {
     }
 
     static initCurrencyExchange(docData = {}) {
-        let $currencyAllowEle = $('#currency_allow');
+        let $currencyAllowEle = $('#is_currency_exchange');
         let $currencyCompanyEle = $('#currency_company_id');
         let $currencyExchangeEle = $('#currency_exchange_id');
         let $currencyExchangeEleRateEle = $('#currency_exchange_rate');
@@ -318,9 +318,10 @@ class MaskMoney2 {
                     }
                     FormElementControl.loadInitS2($currencyCompanyEle, [configData?.['master_data_currency']]);
                     FormElementControl.loadInitS2($currencyExchangeEle, [configData?.['master_data_currency']]);
-                    if (docData?.['currency_exchange_data'] && docData?.['currency_exchange_rate']) {
-                        $currencyAllowEle.trigger('click');
-                        $currencyAllowEle.attr('disabled', 'true');
+                    if (docData?.['is_currency_exchange'] && docData?.['currency_exchange_data'] && docData?.['currency_exchange_rate']) {
+                        if (docData?.['is_currency_exchange'] === true) {
+                            $currencyAllowEle.trigger('click');
+                        }
                         FormElementControl.loadInitS2($currencyExchangeEle, [docData?.['currency_exchange_data']]);
                     }
                     $currencyExchangeEle.trigger('change');
@@ -328,6 +329,7 @@ class MaskMoney2 {
 
             });
             if (window.location.href.includes('/detail/')) {
+                $currencyAllowEle.attr('disabled', 'true');
                 $currencyExchangeEle.attr('readonly', 'true');
                 $currencyExchangeEleRateEle.attr('readonly', 'true');
             }
@@ -337,13 +339,15 @@ class MaskMoney2 {
 
     static setupSubmitCurrencyExchange() {
         let dataSubmit = {};
+        let $currencyAllowEle = $('#is_currency_exchange');
         let $currencyCompanyEle = $('#currency_company_id');
         let $currencyExchangeEle = $('#currency_exchange_id');
         let $currencyExchangeEleRateEle = $('#currency_exchange_rate');
-        if ($currencyCompanyEle.length > 0 && $currencyExchangeEle.length > 0 && $currencyExchangeEleRateEle.length > 0) {
+        if ($currencyAllowEle.length > 0 && $currencyCompanyEle.length > 0 && $currencyExchangeEle.length > 0 && $currencyExchangeEleRateEle.length > 0) {
             if ($currencyCompanyEle.val() && $currencyExchangeEle.val() && $currencyExchangeEleRateEle.val()) {
                 let dataCompany = SelectDDControl.get_data_from_idx($currencyCompanyEle, $currencyCompanyEle.val());
                 let dataExchange = SelectDDControl.get_data_from_idx($currencyExchangeEle, $currencyExchangeEle.val());
+                dataSubmit['is_currency_exchange'] = $currencyAllowEle[0].checked;
                 dataSubmit['currency_company_id'] = $currencyCompanyEle.val();
                 dataSubmit['currency_company_data'] = dataCompany;
                 dataSubmit['currency_exchange_id'] = $currencyExchangeEle.val();
@@ -366,7 +370,7 @@ class MaskMoney2 {
             }
         }
         if ($next.length > 0) {
-            let $currencyAllowEle = $('#currency_allow');
+            let $currencyAllowEle = $('#is_currency_exchange');
             if ($currencyAllowEle.length > 0) {
                 if ($currencyAllowEle.is(':checked')) {
                     $next.removeAttr('hidden');
@@ -526,7 +530,7 @@ class MaskMoney2 {
     }
 
     runAllowExchange($ele, value, inputOrDisplay) {
-        let $currencyAllowEle = $('#currency_allow');
+        let $currencyAllowEle = $('#is_currency_exchange');
         if ($currencyAllowEle.length > 0) {
             MaskMoney2.appendTextExchangeMoney($($ele));
             if ($currencyAllowEle.is(':checked')) {

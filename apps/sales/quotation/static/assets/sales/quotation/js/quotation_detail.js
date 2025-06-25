@@ -25,6 +25,17 @@ $(function () {
                     if (!$form.hasClass('sale-order')) { // QUOTATION PAGES
                         $('#data-copy-quotation-detail').val(JSON.stringify(data));
                     }
+                    // attachment
+                    let enable_edit = true;
+                    if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                        enable_edit = false;
+                    }
+                    new $x.cls.file($('#attachment')).init({
+                        name: 'attachment',
+                        enable_edit: enable_edit,
+                        enable_download: true,
+                        data: data?.['attachment'],
+                    });
 
                     // init workflow
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);

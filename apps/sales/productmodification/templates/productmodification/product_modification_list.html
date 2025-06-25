@@ -19,13 +19,6 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <script id="script-url"
-    ></script>
-{#    <div class="row">#}
-{#        <div class="col-12">#}
-{#            <button id="reload-invoice-status-btn" type="button" class="btn-sm btn btn-gradient-primary">{% trans 'Reload invoice status' %}</button>#}
-{#        </div>#}
-{#    </div>#}
     <div class="row">
         <div class="col-12">
             <table id="datatable_product_modification_list"
@@ -44,6 +37,7 @@
                     <th style="min-width: 300px">{% trans "Name" %}</th>
                     <th style="min-width: 150px">{% trans "Employee created" %}</th>
                     <th style="min-width: 150px">{% trans "Date created" %}</th>
+                    <th style="min-width: 100px">{% trans "State" %}</th>
                     <th style="min-width: 80px">{% trans "System status" %}</th>
                 </tr>
                 </thead>

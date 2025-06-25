@@ -67,7 +67,7 @@
             </div>
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
-                    <label for="general-uom-group" class="form-label required">{% trans "UoM Group" %}</label>
+                    <label for="general-uom-group" class="form-label required">{% trans "UOM Group" %}</label>
                     <select id="general-uom-group" class="form-select" data-method="GET"
                             data-url="{% url "UnitOfMeasureGroupListAPI" %}"
                             data-url-detail="{% url "UnitOfMeasureGroupDetailAPI" pk=0 %}"></select>
@@ -178,7 +178,7 @@
                 <div class="row">
                     <div class="col-12 col-md-12 col-lg-6">
                         <div class="form-group">
-                            <label for="sale-uom" class="form-label required">{% trans "Default UoM" %}</label>
+                            <label for="sale-uom" class="form-label required">{% trans "UOM" %}</label>
                             <select id="sale-uom" class="form-select" data-method="GET"
                                     data-url="{% url "UnitOfMeasureListAPI" %}"></select>
                         </div>
@@ -250,7 +250,7 @@
         <div hidden class="row mt-5">
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
-                    <label for="inventory-uom" class="form-label required">{% trans "UoM Name" %}</label>
+                    <label for="inventory-uom" class="form-label required">{% trans "UOM" %}</label>
                     <select id="inventory-uom" class="form-select" data-method="GET"
                             data-url="{% url 'UnitOfMeasureListAPI' %}">
                     </select>
@@ -332,7 +332,7 @@
         <div hidden class="row mt-5">
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
-                    <label for="purchase-uom" class="form-label required">{% trans "Default UoM" %}</label>
+                    <label for="purchase-uom" class="form-label required">{% trans "UOM" %}</label>
                     <select id="purchase-uom" class="form-select" data-method="GET"
                             data-url="{% url "UnitOfMeasureListAPI" %}"></select>
                 </div>

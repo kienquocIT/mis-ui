@@ -403,13 +403,13 @@ form="promo_form"
 @mask_view(is_notify_key=False)
 def view(...)
 ```
-
-## 8. Cách áp dụng WF cho chức năng:
+---
+## 8. CÁCH ÁP DỤNG WORKFLOW CHO CHỨC NĂNG:
 
 ```js
 # QUAN TRỌNG: (search trong source code theo các keyword để hiểu rõ hơn)
 
-Bước 1: Page create/update:
+BƯỚC 1: Page create/update:
     Thêm WFRTControl.callWFSubmitForm(_form) vào function sunmitForm 
     (với _form = new SetupFormSubmit($eleForm))
     VD: $form.submit(function (e) {
@@ -421,7 +421,7 @@ Bước 1: Page create/update:
     Thêm WFRTControl.setWFInitialData(modelName) khi init page
     VD: WFRTControl.setWFInitialData('leaverequest');
         
-Bước 2: Page detail/update:
+BƯỚC 2: Page detail/update:
       Thêm  $x.fn.renderCodeBreadcrumb(data), 
       $.fn.compareStatusShowPageAction(data),
       WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
@@ -442,7 +442,7 @@ Bước 2: Page detail/update:
             }
         )
 
-Bước 3: views.py:
+BƯỚC 3: views.py:
     Thêm 'form_id' vào data render page update
     Thêm 'input_mapping_properties' vào data render page update
     VD:
@@ -461,9 +461,56 @@ Bước 3: views.py:
               }
               return ctx, status.HTTP_200_OK
 
-Bước 4: apps/core/home/utils.py (Tham khảo các chức năng khác)
+BƯỚC 4: apps/core/home/utils.py (Tham khảo các chức năng khác)
     Thêm urls detail chức năng để redirect từ noti & tab todo trang chủ
 ```
+---
+
+---
+## CÁCH ÁP DỤNG ATTACHMENT CHO CHỨC NĂNG:
+
+```js
+BƯỚC 1:
+- Thêm extend html của attachment vào các trang html chức năng (create/update/detail.html):
+Lưu ý: phải dùng id="attachment"
+VD:
+<div id="attachment">{% include 'extends/files/all.html' %}</div>
+
+BƯỚC 2:
+
+- Trang tạo thêm js để init attachment khi $(document).ready(function () {}
+VD:
+$(document).ready(function () {
+    new $x.cls.file($('#attachment')).init({
+          name: 'attachment',
+          enable_edit: true,
+      });
+}
+
+- Trang detail thêm js để load lại data attachment của phiếu khi tạo:
+VD:
+new $x.cls.file($('#attachment')).init({
+   enable_download: true,
+   data: data?.['attachment'],
+});
+
+- Trang update thêm js để load lại data attachment của phiếu khi tạo:
+VD:
+new $x.cls.file($('#attachment')).init({
+   name: 'attachment',
+   enable_edit: enable_edit,
+   enable_download: true,
+   data: data?.['attachment'],
+});
+
+BƯỚC 3: Thêm func submit attachment khi submit form của chức năng:
+VD:
+if (_form.dataForm.hasOwnProperty('attachment')) {
+ _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);
+}
+
+```
+---
 
 9. Mọi z-index đều nhỏ hơn 9999
 

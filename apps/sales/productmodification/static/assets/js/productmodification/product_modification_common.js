@@ -83,7 +83,7 @@ class ProductModificationPageFunction {
                                     <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code'] || ''}</span>
                                     <span class="ml-1">${row?.['title'] || ''}</span>
                                 </div>
-                                <div class="collapse d1_${row?.['id']}"><span class="small">${row?.['description'] || ''}sssss</span></div>`
+                                <div class="collapse d1_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 },
                 {

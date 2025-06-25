@@ -48,7 +48,7 @@ $(function () {
                 if (data) {
                     if (data?.['customer']?.['id']) {
                         data['customer']['name'] = data?.['customer']?.['title'] ? data?.['customer']?.['title'] : "";
-                        RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxCustomer, [data?.['customer']]);
+                        FormElementControl.loadInitS2(RecoveryLoadDataHandle.$boxCustomer, [data?.['customer']]);
                     }
                     WindowControl.showLoading();
                     $.fn.callAjax2({

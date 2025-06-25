@@ -11938,3 +11938,11 @@ msgstr "Quá trình tháo - lắp chỉ hoàn tất khi các phiếu sinh ra đ�
 #
 msgid "This value is used as the stock-in value in the Goods Receipt"
 msgstr "Giá trị này được sử dụng để làm giá trị nhập kho trong Phiếu Nhập Kho"
+
+#
+msgid "Wait for picking"
+msgstr "Chờ lấy hàng để giao"
+
+#
+msgid "Ready to delivery"
+msgstr "Sẵn sàng để giao"

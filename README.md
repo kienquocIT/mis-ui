@@ -409,7 +409,7 @@ def view(...)
 ```js
 # QUAN TRỌNG: (search trong source code theo các keyword để hiểu rõ hơn)
 
-1/ Page create/update:
+Bước 1: Page create/update:
     Thêm WFRTControl.callWFSubmitForm(_form) vào function sunmitForm 
     (với _form = new SetupFormSubmit($eleForm))
     VD: $form.submit(function (e) {
@@ -421,7 +421,7 @@ def view(...)
     Thêm WFRTControl.setWFInitialData(modelName) khi init page
     VD: WFRTControl.setWFInitialData('leaverequest');
         
-2/ Page detail/update:
+Bước 2: Page detail/update:
       Thêm  $x.fn.renderCodeBreadcrumb(data), 
       $.fn.compareStatusShowPageAction(data),
       WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
@@ -442,7 +442,7 @@ def view(...)
             }
         )
 
-3/ views.py:
+Bước 3: views.py:
     Thêm 'form_id' vào data render page update
     Thêm 'input_mapping_properties' vào data render page update
     VD:
@@ -461,7 +461,7 @@ def view(...)
               }
               return ctx, status.HTTP_200_OK
 
-4/ apps/core/home/utils.py (Tham khảo các chức năng khác)
+Bước 4: apps/core/home/utils.py (Tham khảo các chức năng khác)
     Thêm urls detail chức năng để redirect từ noti & tab todo trang chủ
 ```
 

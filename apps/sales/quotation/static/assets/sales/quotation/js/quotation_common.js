@@ -7971,7 +7971,10 @@ class QuotationSubmitHandle {
             }
 
         }
-
+        // attachment
+        if (_form.dataForm.hasOwnProperty('attachment')) {
+          _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);
+        }
         // recurrence
         let urlParams = $x.fn.getManyUrlParameters(['recurrence_task_id']);
         if (urlParams?.['recurrence_task_id']) {

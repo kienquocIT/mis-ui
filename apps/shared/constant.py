@@ -56,9 +56,9 @@ PICKING_STATE = (
 )
 # Delivery
 DELIVERY_STATE = (
-    (0, _('Wait')),
-    (1, _('Ready')),
-    (2, _('Done'))
+    (0, _('Wait for picking')),
+    (1, _('Ready to delivery')),
+    (2, _('Delivered'))
 )
 
 # Workflow

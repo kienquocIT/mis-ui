@@ -40,14 +40,14 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-45',
+                        className: 'ellipsis-cell-lg w-40',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        className: 'ellipsis-cell-sm w-20',
+                        className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
                             return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
@@ -56,6 +56,12 @@ $(document).ready(function () {
                         className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
                             return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return row?.['created_goods_receipt'] ? `<span class="small text-success">${$.fn.gettext('GR completed')}</span>` : `<span class="small text-blue">${$.fn.gettext('GR is pending')}</span>`;
                         }
                     },
                     {

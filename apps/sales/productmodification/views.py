@@ -1,9 +1,3 @@
-import hashlib
-import uuid
-import time
-import base64
-import requests
-import json
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -53,7 +47,7 @@ class ProductModificationCreate(View):
         auth_require=True,
         template='productmodification/product_modification_create.html',
         breadcrumb='PRODUCT_MODIFICATION_CREATE_PAGE',
-        menu_active='menu_product_modification_list',
+        menu_active='',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -68,7 +62,7 @@ class ProductModificationDetail(View):
         auth_require=True,
         template='productmodification/product_modification_detail.html',
         breadcrumb='PRODUCT_MODIFICATION_DETAIL_PAGE',
-        menu_active='menu_product_modification_detail',
+        menu_active='',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -81,7 +75,7 @@ class ProductModificationUpdate(View):
         auth_require=True,
         template='productmodification/product_modification_update.html',
         breadcrumb='PRODUCT_MODIFICATION_UPDATE_PAGE',
-        menu_active='menu_product_modification_detail',
+        menu_active='',
     )
     def get(self, request, *args, **kwargs):
         return {

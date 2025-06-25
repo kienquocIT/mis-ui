@@ -9866,7 +9866,7 @@ msgstr "Đơn cho thuê"
 
 #
 msgid "Asset type"
-msgstr "Loại tài sản"
+msgstr "Loại cho thuê"
 
 #
 msgid "Please select asset type"
@@ -11994,3 +11994,7 @@ msgstr "Đang cho thuê"
 #
 msgid "Lease expires"
 msgstr "Hết hạn cho thuê"
+
+#
+msgid "Original product"
+msgstr "Hàng hóa gốc"

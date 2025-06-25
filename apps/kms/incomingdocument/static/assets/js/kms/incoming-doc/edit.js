@@ -42,12 +42,13 @@ function fillFormFields(data, $form) {
     const matchedOption = pageElements.$securityLevelEle.find('option').filter(function () {
         return $(this).text().trim() === levelLabel.trim();
     }).first();
-    const attachments = data.attached_list?.[0]?.attachment || [];
     const recipients = data.internal_recipient || [];
 
     // Populate form fields with the extracted data
     pageElements.$titleEle.val(data.title);
-    pageElements.$descriptionEle.val(data.remark.replace(/<[^>]*>?/gm, ''));
+    if (data.remark !== null) {
+        pageElements.$descriptionEle.val(data.remark.replace(/<[^>]*>?/gm, ''));
+    }
     pageElements.$senderEle.val(data.attached_list?.[0]?.sender || '');
     loadSelectOptions(pageElements.$docTypeEle).then(() => {
         pageElements.$docTypeEle.val(documentTypeId).trigger('change');
@@ -60,7 +61,6 @@ function fillFormFields(data, $form) {
     if (matchedOption.length > 0) {
         pageElements.$securityLevelEle.val(matchedOption.val()).trigger('change');
     }
-    // IncomingDocLoadDataHandle.loadAttachment(attachments, 'edit');
     IncomingDocLoadDataHandle.initInternalRecipientTable(recipients);
 }
 
@@ -80,14 +80,13 @@ $(document).ready(function () {
             WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             $x.fn.renderCodeBreadcrumb(data);
             $.fn.compareStatusShowPageAction(data);
-            fillFormFields(data, $formSubmit);
-
             new $x.cls.file($('#attachment')).init({
                 name: 'attachment',
                 enable_edit: true,
                 enable_download: true,
                 data: data?.['attachment'],
             });
+            fillFormFields(data, $formSubmit);
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     );

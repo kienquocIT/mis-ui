@@ -12,7 +12,6 @@ class IncomingDocElements {
         this.$expiredDateEle = $('#kms_expired_date')
         this.$securityLevelEle = $('#kms_security_level')
         this.$folderEle = $('#kms_folder')
-        this.$attachFilesEle = $('#attachment')
 
         // internal recipient
         this.$tableInternalRecipient = $('#table_internal_recipient')
@@ -33,15 +32,6 @@ class IncomingDocLoadDataHandle {
             DateTimeControl.initDatePicker(this);
         });
     }
-
-    // static loadAttachment(data, option) {
-    //     new $x.cls.file(pageElements.$attachFilesEle).init({
-    //         name: 'attachment',
-    //         data: data || [],
-    //         enable_edit: option !=='detail',
-    //         enable_download: option === 'detail'
-    //     });
-    // }
 
     static initInternalRecipientTable(data) {
         const $tbl = pageElements.$tableInternalRecipient;
@@ -100,16 +90,8 @@ class IncomingDocLoadDataHandle {
         });
     }
 
-    static extractFileInfo($li) {
-        return $li.data('file-id');
-    }
 
     static buildAttachedList() {
-        const fileItems = [];
-        pageElements.$attachFilesEle.find('.dm-uploader-result-list li').each(function () {
-            const fileInfo = IncomingDocLoadDataHandle.extractFileInfo($(this));
-            fileItems.push(fileInfo);
-        });
         let parsedEffectiveDate = moment(pageElements.$effectiveDateEle.val(), "DD/MM/YYYY", true);
         let parsedExpiredDate = moment(pageElements.$expiredDateEle.val(), "DD/MM/YYYY", true);
 
@@ -120,20 +102,16 @@ class IncomingDocLoadDataHandle {
             effective_date: parsedEffectiveDate.isValid() ? parsedEffectiveDate.format('YYYY-MM-DD') : null,
             expired_date: parsedExpiredDate.isValid() ? parsedExpiredDate.format('YYYY-MM-DD') : null,
             security_level: pageElements.$securityLevelEle.val(),
-            // attachment: fileItems
         }]
     }
 
-    static getInternalRecipients() {
-        return $('#table_internal_recipient').DataTable().data().toArray();
-    }
 
     static combineData(formEle) {
         let frm = new SetupFormSubmit($(formEle));
         frm.dataForm['title'] = pageElements.$titleEle.val();
         frm.dataForm['remark'] = pageElements.$descriptionEle.val() || null;
         frm.dataForm['attached_list'] = IncomingDocLoadDataHandle.buildAttachedList();
-        frm.dataForm['internal_recipient'] = IncomingDocLoadDataHandle.getInternalRecipients();
+        frm.dataForm['internal_recipient'] = pageElements.$tableInternalRecipient.DataTable().data().toArray();
         if (frm.dataForm.hasOwnProperty('attachment')) {
           frm.dataForm['attachment'] = $x.cls.file.get_val(frm.dataForm?.['attachment'], []);
         }

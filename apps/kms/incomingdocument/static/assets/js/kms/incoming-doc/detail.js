@@ -4,7 +4,6 @@ function fillFormFields(data, $form) {
     const formattedEffectiveDay = isoEffectiveDay ? moment(isoEffectiveDay).format('DD/MM/YYYY') : '';
     const isoExpiredDay = data.attached_list?.[0]?.expired_date || '';
     const formattedExpiredDay = isoExpiredDay ? moment(isoExpiredDay).format('DD/MM/YYYY') : '';
-    const attachments = data.attached_list?.[0]?.attachment || [];
     const recipients = data.internal_recipient || [];
 
     // Populate form fields with the extracted data
@@ -18,7 +17,6 @@ function fillFormFields(data, $form) {
     pageElements.$effectiveDateEle.val(formattedEffectiveDay);
     pageElements.$expiredDateEle.val(formattedExpiredDay);
     pageElements.$securityLevelEle.val(data.attached_list?.[0]?.security_level || '');
-    // IncomingDocLoadDataHandle.loadAttachment(data?.['attachment'], 'detail');
     IncomingDocLoadDataHandle.initInternalRecipientTable(recipients);
 }
 
@@ -49,14 +47,13 @@ $(document).ready(function () {
             WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             $x.fn.renderCodeBreadcrumb(data);
             $.fn.compareStatusShowPageAction(data);
-
-            fillFormFields(data, $form);
-            setFormReadonly($form);
-
             new $x.cls.file($('#attachment')).init({
+                enable_edit: false,
                 enable_download: true,
                 data: data?.['attachment'],
             });
+            fillFormFields(data, $form);
+            setFormReadonly($form);
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     );

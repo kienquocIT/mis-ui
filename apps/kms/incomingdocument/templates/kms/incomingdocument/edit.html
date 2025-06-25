@@ -11,7 +11,6 @@
     <link href="{% static 'assets/css/kms/doc-approval/recipient-css.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/kms/doc-approval/common.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
-
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="frm_edit_incoming_document">
         <span>
@@ -22,7 +21,6 @@
         </span>
     </button>
 {% endblock %}
-
 {% block pageContent %}
     <form id="frm_edit_incoming_document"
           data-method="PUT"
@@ -64,7 +62,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-4 col-lg-4" id="attached-document-form" style="border-left: 1px solid #dee2e6; padding-left: 1rem;">
+            <div class="col-12 col-md-4 col-lg-4" id="attached-document-form"
+                 style="border-left: 1px solid #dee2e6; padding-left: 1rem;">
                 <div class="row">
                     <form data-method="post" id="form_attached" method="post">
                         <div class="col-12">
@@ -139,14 +138,14 @@
                             </div>
                         </div>
                         <div class="col-12">
-                        <div class="form-group content_attached">
-                            <label class="form-label mt-2"
-                                   for="table_attached_info">{% trans 'Attachment files' %}</label>
-                            <div id="attachment" class="{{ addClass }}">
-                                {% include 'extends/files/all.html' %}
+                            <div class="form-group content_attached">
+                                <label class="form-label mt-2"
+                                       for="table_attached_info">{% trans 'Attachment files' %}</label>
+                                <div id="attachment" class="{{ addClass }}">
+                                    {% include 'extends/files/all.html' %}
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </form>
                 </div>
             </div>

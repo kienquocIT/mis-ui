@@ -1,9 +1,8 @@
 $(document).ready(function () {
-    new $x.cls.file($('#attachment')).init({'name': 'attachment'});
     WFRTControl.setWFInitialData('kmsincomingdocument');
-
     IncomingDocLoadDataHandle.initPage();
     IncomingDocLoadDataHandle.initInternalRecipientTable();
+    IncomingDocLoadDataHandle.loadAttachment(null,"create");
     const remark = new loadEditor();
     remark.init();
 

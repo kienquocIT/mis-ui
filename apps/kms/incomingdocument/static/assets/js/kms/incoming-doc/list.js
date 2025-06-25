@@ -26,9 +26,11 @@ $('document').ready(function () {
                         }
                     },
                     {
-                        className: "w-10",
+                        className: "ellipsis-cell-lg w-10",
                         render: (data, type, row) => {
-                            return row?.['code'] || '--'
+                            const link = $tb.attr('data-url-detail').replace('0', row?.['id']);
+                            const code = row?.['code'] || '--';
+                            return `<a href="${link}" class="link-primary underline_hover" title="${code}">${code}</a>`;
                         }
                     },
                     {

@@ -60,14 +60,14 @@
                     </div>
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label" for="document_type">{% trans 'Document type' %}</label>
-                            <input type="text" class="form-control" name="document_type" id="id_document_type">
+                            <label class="form-label" for="select-box-doc_type">{% trans 'Document type' %}</label>
+                            <input type="text" class="form-control" name="document_type" id="select-box-doc_type">
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label" for="content_group">{% trans 'Content group' %}</label>
-                            <input type="text" class="form-control" name="content_group" id="id_content_group">
+                            <label class="form-label" for="select-box-content_group">{% trans 'Content group' %}</label>
+                            <input type="text" class="form-control" name="content_group" id="select-box-content_group">
                         </div>
                     </div>
                     <div class="col-12">
@@ -92,23 +92,32 @@
                     </div>
                     <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label" for="security_level">{% trans 'Security level' %}</label>
-                            <input type="text" class="form-control" name="security_level" id="id_security_level">
+                            <label class="form-label" for="kms_security_level">{% trans 'Security level' %}</label>
+                            <input type="text" class="form-control" name="security_level" id="kms_security_level">
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
+                            <label class="form-label" for="kms_folder">{% trans 'Folder' %}</label>
+                            <select class="form-select" id="kms_folder" name="folder" data-allowClear="true"
+                                    data-keyResp="folder_list"
+                                    data-url="{% url 'FolderListAPI' %}">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="txt_title">{% trans 'Tag' %}</label>
+                            <input type="text" class="form-control" name="title" id="tag">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group content_attached">
                             <label class="form-label mt-2"
-                                   for="table_attached_info">{% trans 'Attached Documents' %}</label>
-                            <table class="table nowrap table-advance w-100" id="table_attached_info">
-                                <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>File Name</th>
-                                </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+                                   for="table_attached_info">{% trans 'Attachment files' %}</label>
+                            <div id="attachment" class="{{ addClass }}">
+                                {% include 'extends/files/all.html' %}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block title %}
-    {% trans 'Incoming Document edit' %}
+    {% trans 'Document approval create' %}
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
@@ -11,8 +11,9 @@
     <link href="{% static 'assets/css/kms/doc-approval/recipient-css.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/kms/doc-approval/common.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
+
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_incoming_document">
+    <button class="btn btn-outline-primary" type="submit" form="frm_edit_incoming_document">
         <span>
             <span>{% trans 'Save' %}</span>
             <span class="icon">
@@ -21,11 +22,14 @@
         </span>
     </button>
 {% endblock %}
+
 {% block pageContent %}
-    <form class="form_main" id="frm_incoming_document" data-method="PUT"
-          data-url="{% url 'IncomingDocumentDetailAPI' data.pk %}">
+    <form id="frm_edit_incoming_document"
+          data-method="PUT"
+          data-url="{% url 'IncomingDocumentDetailAPI' data.pk %}"
+          data-url-redirect="{% url 'IncomingDocumentList' %}">
         {% csrf_token %}
-        <input type="hidden" id="id" name="id">
+        <h5 class="mb-3">{% trans 'INCOMING DOCUMENT' %}</h5>
         <div class="row" style="height: 100vh;">
             <div class="col-12 col-md-8 col-lg-8" style="overflow-y: auto; height: 100vh; padding-right: 1rem;">
                 <div class="row">
@@ -74,7 +78,7 @@
                                 <label class="form-label" for="select-box-doc_type">{% trans 'Document type' %}</label>
                                 <select class="form-select" id="select-box-doc_type"
                                         data-url="{% url 'DocumentTypeConfigListAPI' %}"
-                                        name="id_document_type" data-keyResp="document_type_list">
+                                        name="document_type" data-keyResp="document_type_list">
                                 </select>
                             </div>
                         </div>
@@ -84,7 +88,7 @@
                                        for="select-box-content_group">{% trans 'Content group' %}</label>
                                 <select class="form-select" id="select-box-content_group"
                                         data-url="{% url 'ContentGroupListAPI' %}"
-                                        name="id_content_group" data-keyResp="content_group_list">
+                                        name="content_group" data-keyResp="content_group_list">
                                 </select>
                             </div>
                         </div>
@@ -137,7 +141,7 @@
                         <div class="col-12">
                         <div class="form-group content_attached">
                             <label class="form-label mt-2"
-                                   for="table_attached_info"></label>
+                                   for="table_attached_info">{% trans 'Attachment files' %}</label>
                             <div id="attachment" class="{{ addClass }}">
                                 {% include 'extends/files/all.html' %}
                             </div>
@@ -160,6 +164,7 @@
     {% if base.language %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
     <script src="{% static 'assets/js/kms/incoming-doc/common.js' %}"></script>
     <script src="{% static 'assets/js/kms/doc-approval/recipient-js.js' %}"></script>

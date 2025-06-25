@@ -64,7 +64,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-4 col-lg-4" id="attached-document-form" style="border-left: 1px solid #dee2e6; padding-left: 1rem;">
+            <div class="col-12 col-md-4 col-lg-4" id="attached-document-form"
+                 style="border-left: 1px solid #dee2e6; padding-left: 1rem;">
                 <div class="row">
                     <form data-method="post" id="form_attached" method="post">
                         <div class="col-12">
@@ -139,14 +140,14 @@
                             </div>
                         </div>
                         <div class="col-12">
-                        <div class="form-group content_attached">
-                            <label class="form-label mt-2"
-                                   for="table_attached_info"></label>
-                            <div id="attachment" class="{{ addClass }}">
-                                {% include 'extends/files/all.html' %}
+                            <div class="form-group content_attached">
+                                <label class="form-label mt-2"
+                                       for="table_attached_info">{% trans 'Attachment files' %}</label>
+                                <div id="attachment" class="{{ addClass }}">
+                                    {% include 'extends/files/all.html' %}
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </form>
                 </div>
             </div>

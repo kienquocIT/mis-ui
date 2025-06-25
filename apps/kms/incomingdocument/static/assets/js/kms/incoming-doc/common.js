@@ -34,6 +34,15 @@ class IncomingDocLoadDataHandle {
         });
     }
 
+    static loadAttachment(data, option) {
+        new $x.cls.file(pageElements.$attachFilesEle).init({
+            name: 'attachment',
+            data: data || null,
+            enable_edit: option !=='detail',
+            enable_download: option === 'detail'
+        });
+    }
+
     static initInternalRecipientTable(data) {
         const $tbl = pageElements.$tableInternalRecipient;
         if ($tbl.hasClass('dataTable')) {
@@ -127,11 +136,6 @@ class IncomingDocLoadDataHandle {
         frm.dataForm['internal_recipient'] = IncomingDocLoadDataHandle.getInternalRecipients();
         return frm;
     }
-}
-
-// DataTable
-class IncomingDocDtbHandle {
-
 }
 
 // Load Editor

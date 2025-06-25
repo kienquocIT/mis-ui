@@ -44,7 +44,7 @@ function fillFormFields(data, $form) {
     }).first();
     const attachments = data.attached_list?.[0]?.attachment || [];
     const recipients = data.internal_recipient || [];
-    debugger
+
     // Populate form fields with the extracted data
     pageElements.$titleEle.val(data.title);
     pageElements.$descriptionEle.val(data.remark.replace(/<[^>]*>?/gm, ''));
@@ -60,8 +60,8 @@ function fillFormFields(data, $form) {
     if (matchedOption.length > 0) {
         pageElements.$securityLevelEle.val(matchedOption.val()).trigger('change');
     }
-    IncomingDocLoadDataHandle.loadAttachment(attachments, 'edit');
-    pageElements.$tableInternalRecipient.DataTable().data().toArray();
+    // IncomingDocLoadDataHandle.loadAttachment(attachments, 'edit');
+    IncomingDocLoadDataHandle.initInternalRecipientTable(recipients);
 }
 
 $(document).ready(function () {
@@ -69,7 +69,6 @@ $(document).ready(function () {
 
     // init page
     IncomingDocLoadDataHandle.initPage();
-    IncomingDocLoadDataHandle.initInternalRecipientTable();
 
     // load available data in form
     $.fn.callAjax2({
@@ -82,6 +81,13 @@ $(document).ready(function () {
             $x.fn.renderCodeBreadcrumb(data);
             $.fn.compareStatusShowPageAction(data);
             fillFormFields(data, $formSubmit);
+
+            new $x.cls.file($('#attachment')).init({
+                name: 'attachment',
+                enable_edit: true,
+                enable_download: true,
+                data: data?.['attachment'],
+            });
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     );

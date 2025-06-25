@@ -5,21 +5,26 @@ function fillFormFields(data, $form) {
     const isoExpiredDay = data.attached_list?.[0]?.expired_date || '';
     const formattedExpiredDay = isoExpiredDay ? moment(isoExpiredDay).format('DD/MM/YYYY') : '';
     const attachments = data.attached_list?.[0]?.attachment || [];
+    const recipients = data.internal_recipient || [];
 
     // Populate form fields with the extracted data
     pageElements.$titleEle.val(data.title);
-    pageElements.$descriptionEle.val(data.remark.replace(/<[^>]*>?/gm, ''));
+    if (data.remark !== null) {
+        pageElements.$descriptionEle.val(data.remark.replace(/<[^>]*>?/gm, ''));
+    }
     pageElements.$senderEle.val(data.attached_list?.[0]?.sender || '');
     pageElements.$docTypeEle.val(data.attached_list?.[0]?.document_type?.title || '');
     pageElements.$contentGroupEle.val(data.attached_list?.[0]?.content_group?.title || '');
     pageElements.$effectiveDateEle.val(formattedEffectiveDay);
     pageElements.$expiredDateEle.val(formattedExpiredDay);
     pageElements.$securityLevelEle.val(data.attached_list?.[0]?.security_level || '');
-    IncomingDocLoadDataHandle.loadAttachment(attachments, 'detail');
+    // IncomingDocLoadDataHandle.loadAttachment(data?.['attachment'], 'detail');
+    IncomingDocLoadDataHandle.initInternalRecipientTable(recipients);
 }
 
 function setFormReadonly($form) {
     $form.find('input, textarea').attr('readonly', true);
+    $form.find('table').css('pointer-events', 'none').addClass('readonly-table');
     $form.find('select, input[type=checkbox], input[type=radio], input[type=text]').attr('disabled', true);
     if (typeof tinymce !== 'undefined') {
         tinymce.editors.forEach(function (editor) {
@@ -47,6 +52,11 @@ $(document).ready(function () {
 
             fillFormFields(data, $form);
             setFormReadonly($form);
+
+            new $x.cls.file($('#attachment')).init({
+                enable_download: true,
+                data: data?.['attachment'],
+            });
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     );

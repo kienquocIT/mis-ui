@@ -34,14 +34,14 @@ class IncomingDocLoadDataHandle {
         });
     }
 
-    static loadAttachment(data, option) {
-        new $x.cls.file(pageElements.$attachFilesEle).init({
-            name: 'attachment',
-            data: data || null,
-            enable_edit: option !=='detail',
-            enable_download: option === 'detail'
-        });
-    }
+    // static loadAttachment(data, option) {
+    //     new $x.cls.file(pageElements.$attachFilesEle).init({
+    //         name: 'attachment',
+    //         data: data || [],
+    //         enable_edit: option !=='detail',
+    //         enable_download: option === 'detail'
+    //     });
+    // }
 
     static initInternalRecipientTable(data) {
         const $tbl = pageElements.$tableInternalRecipient;
@@ -120,7 +120,7 @@ class IncomingDocLoadDataHandle {
             effective_date: parsedEffectiveDate.isValid() ? parsedEffectiveDate.format('YYYY-MM-DD') : null,
             expired_date: parsedExpiredDate.isValid() ? parsedExpiredDate.format('YYYY-MM-DD') : null,
             security_level: pageElements.$securityLevelEle.val(),
-            attachment: fileItems
+            // attachment: fileItems
         }]
     }
 
@@ -134,6 +134,9 @@ class IncomingDocLoadDataHandle {
         frm.dataForm['remark'] = pageElements.$descriptionEle.val() || null;
         frm.dataForm['attached_list'] = IncomingDocLoadDataHandle.buildAttachedList();
         frm.dataForm['internal_recipient'] = IncomingDocLoadDataHandle.getInternalRecipients();
+        if (frm.dataForm.hasOwnProperty('attachment')) {
+          frm.dataForm['attachment'] = $x.cls.file.get_val(frm.dataForm?.['attachment'], []);
+        }
         return frm;
     }
 }

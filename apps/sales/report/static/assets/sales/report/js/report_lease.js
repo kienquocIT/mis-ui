@@ -238,7 +238,11 @@ $(function () {
                         targets: 5,
                         width: '15%',
                         render: (data, type, row) => {
-                            return `<span class="mask-money" data-init-money="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"></span>`;
+                            let netValue = DepreciationControl.getNetValue({
+                                "data_depreciation": row?.['depreciation_data'],
+                                "current_date": DateTimeControl.getCurrentDate("DMY", "/")
+                            })
+                            return `<span class="mask-money table-row-net-value" data-init-money="${netValue ? netValue : 0}"></span>`;
                         }
                     },
                     {

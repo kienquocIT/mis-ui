@@ -971,9 +971,11 @@ class LeaseOrderLoadDataHandle {
             let rowTarget = target.closest('tr');
             if (rowTarget) {
                 let itemEle = rowTarget.querySelector('.table-row-item');
+                let uomEle = rowTarget.querySelector('.table-row-uom');
                 let toolDataEle = rowTarget.querySelector('.table-row-tool-data');
                 let quantityEle = rowTarget.querySelector('.table-row-quantity');
-                if (itemEle && toolDataEle && quantityEle) {
+                if (itemEle && uomEle && toolDataEle && quantityEle) {
+                    let uomData = [];
                     let toolData = [];
                     let quantity = 0;
                     for (let checkedEle of LeaseOrderDataTableHandle.$tableSTool[0].querySelectorAll('.table-row-checkbox:checked')) {
@@ -994,8 +996,12 @@ class LeaseOrderLoadDataHandle {
                                 });
                                 quantity += parseFloat($(quantitySEle).val());
                             }
+                            if (rowData?.['product_data']?.['sale_information']?.['default_uom']?.['id']) {
+                                uomData = [rowData?.['product_data']?.['sale_information']?.['default_uom']];
+                            }
                         }
                     }
+                    FormElementControl.loadInitS2($(uomEle), uomData);
                     $(toolDataEle).val(JSON.stringify(toolData));
                     $(quantityEle).val(quantity);
                 }
@@ -4136,7 +4142,11 @@ class LeaseOrderDataTableHandle {
                         if (data?.['asset_type'] === 2) {
                             let titles = [];
                             for (let toolData of data?.['tool_data'] ? data?.['tool_data'] : []) {
-                                titles.push(toolData?.['tool_data']?.['title']);
+                                let title = toolData?.['tool_data']?.['title'];
+                                if (toolData?.['tool_data']?.['product_data']?.['sale_information']?.['default_uom']?.['id']) {
+                                    title += "(" + toolData?.['tool_data']?.['product_data']?.['sale_information']?.['default_uom']?.['title'] + ")"
+                                }
+                                titles.push(title);
                             }
                             $(offsetShowEle).val(titles.join("\n"));
                         }

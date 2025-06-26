@@ -107,6 +107,7 @@ $(function () {
 
         LeaseOrderLoadDataHandle.$btnSaveSelectTool.on('click', function () {
             LeaseOrderLoadDataHandle.loadTool(this);
+            LeaseOrderStoreDataHandle.storeDtbData(1);
         });
 
         LeaseOrderDataTableHandle.$tableSAsset.on('click', '.table-row-checkbox', function () {

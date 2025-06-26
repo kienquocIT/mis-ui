@@ -972,11 +972,9 @@ class LeaseOrderLoadDataHandle {
             if (rowTarget) {
                 let itemEle = rowTarget.querySelector('.table-row-item');
                 let toolDataEle = rowTarget.querySelector('.table-row-tool-data');
-                let offsetShowEle = rowTarget.querySelector('.table-row-offset-show');
                 let quantityEle = rowTarget.querySelector('.table-row-quantity');
-                if (itemEle && toolDataEle && offsetShowEle && quantityEle) {
+                if (itemEle && toolDataEle && quantityEle) {
                     let toolData = [];
-                    let titles = [];
                     let quantity = 0;
                     for (let checkedEle of LeaseOrderDataTableHandle.$tableSTool[0].querySelectorAll('.table-row-checkbox:checked')) {
                         let row = checkedEle.closest('tr');
@@ -996,11 +994,9 @@ class LeaseOrderLoadDataHandle {
                                 });
                                 quantity += parseFloat($(quantitySEle).val());
                             }
-                            titles.push(rowData?.['title']);
                         }
                     }
                     $(toolDataEle).val(JSON.stringify(toolData));
-                    $(offsetShowEle).val(titles.join(", "));
                     $(quantityEle).val(quantity);
                 }
             }
@@ -1016,9 +1012,8 @@ class LeaseOrderLoadDataHandle {
                 let itemEle = rowTarget.querySelector('.table-row-item');
                 let uomEle = rowTarget.querySelector('.table-row-uom');
                 let assetDataEle = rowTarget.querySelector('.table-row-asset-data');
-                let offsetShowEle = rowTarget.querySelector('.table-row-offset-show');
                 let quantityEle = rowTarget.querySelector('.table-row-quantity');
-                if (itemEle && uomEle && assetDataEle && offsetShowEle && quantityEle) {
+                if (itemEle && uomEle && assetDataEle && quantityEle) {
                     let uomData = [];
                     let assetData = [];
 
@@ -4140,8 +4135,8 @@ class LeaseOrderDataTableHandle {
                         }
                         if (data?.['asset_type'] === 2) {
                             let titles = [];
-                            for (let assetData of data?.['tool_data'] ? data?.['tool_data'] : []) {
-                                titles.push(assetData?.['tool_data']?.['title']);
+                            for (let toolData of data?.['tool_data'] ? data?.['tool_data'] : []) {
+                                titles.push(toolData?.['tool_data']?.['title']);
                             }
                             $(offsetShowEle).val(titles.join("\n"));
                         }

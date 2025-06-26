@@ -9180,6 +9180,16 @@ class DiagramControl {
         let htmlPrefix = DiagramControl.loadPrefixSuffix(data_diagram?.['prefix'], sttTxt, diaTxt, sttMapBadge);
         // main doc
         let docData = data_diagram?.['doc_data'];
+        let htmlBody = `<div class="row"><small>${$.fn.transEle.attr('data-code')}: ${docData?.['code']}</small></div>
+                        <div class="row"><small>${$.fn.transEle.attr('data-quantity')}: ${docData?.['quantity']}</small></div>
+                        <div class="row"><small>${$.fn.transEle.attr('data-total')}: <span class="mask-money" data-init-money="${parseFloat(docData?.['total'] ? docData?.['total'] : '0')}"></span></small></div>
+                        <div class="row"><small>${$.fn.transEle.attr('data-reference')}: ${docData?.['reference'] ? docData?.['reference'] : ''}</small></div>`;
+                    if (docData?.['customer_data']?.['id']) {
+                        htmlBody += `<div class="row"><small>${$.fn.transEle.attr('data-customer')}: ${docData?.['customer_data']?.['title'] ? docData?.['customer_data']?.['title'] : ''}</small></div>`;
+                    }
+                    if (docData?.['supplier_data']?.['id']) {
+                        htmlBody += `<div class="row"><small>${$.fn.transEle.attr('data-supplier')}: ${docData?.['supplier_data']?.['title'] ? docData?.['supplier_data']?.['title'] : ''}</small></div>`;
+                    }
         let htmlMain = `<div class="card">
                                 <div class="card-header bg-primary">
                                     <h6 class="text-white">${diaTxt[data_diagram?.['app_code']]}</h6>
@@ -9193,10 +9203,7 @@ class DiagramControl {
                                         </div>
                                         <div class="card-body">
                                             <div class="mb-5">
-                                                <div class="row"><small>${$.fn.transEle.attr('data-code')}: ${docData?.['code']}</small></div>
-                                                <div class="row"><small>${$.fn.transEle.attr('data-quantity')}: ${docData?.['quantity']}</small></div>
-                                                <div class="row"><small>${$.fn.transEle.attr('data-total')}: <span class="mask-money" data-init-money="${parseFloat(docData?.['total'] ? docData?.['total'] : '0')}"></span></small></div>
-                                                <div class="row"><small>${$.fn.transEle.attr('data-reference')}: ${docData?.['reference'] ? docData?.['reference'] : ''}</small></div>
+                                                ${htmlBody}
                                             </div>
                                         </div>
                                         <div class="card-footer text-muted d-flex justify-content-between">
@@ -9223,6 +9230,16 @@ class DiagramControl {
             let htmlChild = "";
             // if (data_pre_suf[key].length > 0) {
                 for (let data_record of data_pre_suf[key]) {
+                    let htmlBody = `<div class="row"><small>${$.fn.transEle.attr('data-code')}: ${data_record?.['code']}</small></div>
+                                    <div class="row"><small>${$.fn.transEle.attr('data-quantity')}: ${data_record?.['quantity']}</small></div>
+                                    <div class="row"><small>${$.fn.transEle.attr('data-total')}: <span class="mask-money" data-init-money="${parseFloat(data_record?.['total'] ? data_record?.['total'] : '0')}"></span></small></div>
+                                    <div class="row"><small>${$.fn.transEle.attr('data-reference')}: ${data_record?.['reference'] ? data_record?.['reference'] : ''}</small></div>`;
+                    if (data_record?.['customer_data']?.['id']) {
+                        htmlBody += `<div class="row"><small>${$.fn.transEle.attr('data-customer')}: ${data_record?.['customer_data']?.['title'] ? data_record?.['customer_data']?.['title'] : ''}</small></div>`;
+                    }
+                    if (data_record?.['supplier_data']?.['id']) {
+                        htmlBody += `<div class="row"><small>${$.fn.transEle.attr('data-supplier')}: ${data_record?.['supplier_data']?.['title'] ? data_record?.['supplier_data']?.['title'] : ''}</small></div>`;
+                    }
                     htmlChild += `<div class="card border-green clone" data-drag="1" title="card-1" id="control-1">
                                         <div class="card-header card-header-wth-text">
                                             <div>
@@ -9231,10 +9248,7 @@ class DiagramControl {
                                         </div>
                                         <div class="card-body">
                                             <div class="mb-5">
-                                                <div class="row"><small>${$.fn.transEle.attr('data-code')}: ${data_record?.['code']}</small></div>
-                                                <div class="row"><small>${$.fn.transEle.attr('data-quantity')}: ${data_record?.['quantity']}</small></div>
-                                                <div class="row"><small>${$.fn.transEle.attr('data-total')}: <span class="mask-money" data-init-money="${parseFloat(data_record?.['total'] ? data_record?.['total'] : '0')}"></span></small></div>
-                                                <div class="row"><small>${$.fn.transEle.attr('data-reference')}: ${data_record?.['reference'] ? data_record?.['reference'] : ''}</small></div>
+                                                ${htmlBody}
                                             </div>
                                         </div>
                                         <div class="card-footer text-muted d-flex justify-content-between">

@@ -200,8 +200,8 @@ $(function () {
                         width: '15%',
                         render: (data, type, row) => {
                             let txt = '';
-                            if (row?.['asset_type'] === 1 && row?.['offset_to_asset_data']?.['id']) {
-                                txt = row?.['offset_to_asset_data']?.['title'];
+                            if (row?.['asset_type'] === 1 && row?.['offset_to_asset_tool_data']?.['id']) {
+                                txt = row?.['offset_to_asset_tool_data']?.['title'];
                             }
                             if (row?.['asset_type'] === 2 && row?.['tool_data']?.['id']) {
                                 txt = row?.['tool_data']?.['title'];
@@ -246,7 +246,14 @@ $(function () {
                         targets: 5,
                         width: '15%',
                         render: (data, type, row) => {
-                            return `<span class="mask-money" data-init-money="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"></span>`;
+                            let origin_cost = row?.['product_cost_price'] ? row?.['product_cost_price'] : 0;
+                            if (row?.['asset_type'] === 1 && row?.['offset_to_asset_tool_data']?.['unit_price']) {
+                                origin_cost = row?.['offset_to_asset_tool_data']?.['unit_price'];
+                            }
+                            if (row?.['asset_type'] === 1 && row?.['offset_to_asset_tool_data']?.['origin_cost']) {
+                                origin_cost = row?.['offset_to_asset_tool_data']?.['origin_cost'];
+                            }
+                            return `<span class="mask-money" data-init-money="${origin_cost}"></span>`;
                         }
                     },
                     {
@@ -257,9 +264,9 @@ $(function () {
                                 "data_depreciation": row?.['depreciation_data'],
                                 "current_date": DateTimeControl.getCurrentDate("DMY", "/")
                             })
-                            if (row?.['asset_type'] === 1 && row?.['offset_to_asset_data']?.['depreciation_data']) {
+                            if (row?.['asset_type'] === 1 && row?.['offset_to_asset_tool_data']?.['depreciation_data']) {
                                 netValue = DepreciationControl.getNetValue({
-                                    "data_depreciation": row?.['offset_to_asset_data']?.['depreciation_data'],
+                                    "data_depreciation": row?.['offset_to_asset_tool_data']?.['depreciation_data'],
                                     "current_date": DateTimeControl.getCurrentDate("DMY", "/")
                                 })
                             }

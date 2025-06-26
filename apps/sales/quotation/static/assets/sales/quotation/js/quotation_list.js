@@ -114,17 +114,19 @@ $(function () {
                         width: '5%',
                         className: 'action-center',
                         render: (data, type, row) => {
-                            let link = urlsEle.data('link-update').format_url_with_uuid(row?.['id']);
-                            let disabled = '';
-                            if ([2, 3, 4].includes(row?.['system_status'])) {
-                                disabled = 'disabled';
-                            }
-                            return `<div class="dropdown">
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
-                                    <div role="menu" class="dropdown-menu">
-                                        <a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit"></i><span>${transEle.attr('data-edit')}</span></a>
-                                    </div>
-                                </div>`;
+                            // let link = urlsEle.data('link-update').format_url_with_uuid(row?.['id']);
+                            // let disabled = '';
+                            // if ([2, 3, 4].includes(row?.['system_status'])) {
+                            //     disabled = 'disabled';
+                            // }
+                            // return `<div class="dropdown">
+                            //         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
+                            //         <div role="menu" class="dropdown-menu">
+                            //             <a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit"></i><span>${transEle.attr('data-edit')}</span></a>
+                            //         </div>
+                            //     </div>`;
+
+                            return DTBControl.addCommonAction({"data-edit": urlsEle.data('link-update')}, row);
                         },
                     }
                 ],
@@ -132,6 +134,32 @@ $(function () {
                     // append html & trigger popover
                     $(row).on('click', '.popover-cr', function () {
                         renderPopoverCR(this, data);
+                    });
+                    // add event to .action-delete
+                    $(row).on('click', '.action-delete', function (e) {
+                        WindowControl.showLoading();
+                        $.fn.callAjax2(
+                            {
+                                'url': urlsEle.attr('data-link-detail-api').format_url_with_uuid(data?.['id']),
+                                'method': 'DELETE',
+                            }
+                        ).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                                    $.fn.notifyB({description: data.message}, 'success');
+                                    setTimeout(() => {
+                                        WindowControl.hideLoading();
+                                        window.location.reload();
+                                    }, 2000);
+                                }
+                            }, (err) => {
+                                setTimeout(() => {
+                                    WindowControl.hideLoading();
+                                }, 1000)
+                                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+                            }
+                        )
                     });
                 },
                 drawCallback: function () {

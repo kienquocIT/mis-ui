@@ -35,3 +35,6 @@ class BaseMsg:
     FINISH = _('Finish')
     APPROVED = _('Approved')
     CANCEL = _('Cancel')
+    CREATE_OK = _('Create successfully')
+    UPDATE_OK = _('Update successfully')
+    DELETE_OK = _('Delete successfully')

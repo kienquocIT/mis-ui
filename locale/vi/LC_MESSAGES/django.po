@@ -11998,3 +11998,15 @@ msgstr "Hết hạn cho thuê"
 #
 msgid "Original product"
 msgstr "Hàng hóa gốc"
+
+#
+msgid "Create successfully"
+msgstr "Tạo thành công"
+
+#
+msgid "Update successfully"
+msgstr "Cập nhật thành công"
+
+#
+msgid "Delete successfully"
+msgstr "Xóa thành công"

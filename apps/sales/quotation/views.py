@@ -8,21 +8,30 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
 from apps.shared.constant import SYSTEM_STATUS
+from apps.shared.msg import BaseMsg
 
 
-def create_quotation(request, url, msg):
+def create_quotation(request, url):
     resp = ServerAPI(user=request.user, url=url).post(request.data)
     if resp.state:
-        resp.result['message'] = msg
+        resp.result['message'] = BaseMsg.CREATE_OK
         return resp.result, status.HTTP_201_CREATED
     return resp.auto_return()
 
 
-def update_quotation(request, url, pk, msg):
+def update_quotation(request, url, pk):
     resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
     if resp.state:
-        resp.result['message'] = msg
+        resp.result['message'] = BaseMsg.UPDATE_OK
         return resp.result, status.HTTP_201_CREATED
+    return resp.auto_return()
+
+
+def delete_quotation(request, url, pk):
+    resp = ServerAPI(user=request.user, url=url.push_id(pk)).delete(request.data)
+    if resp.state:
+        resp.result['message'] = BaseMsg.DELETE_OK
+        return resp.result, status.HTTP_200_OK
     return resp.auto_return()
 
 
@@ -121,7 +130,6 @@ class QuotationListAPI(APIView):
         return create_quotation(
             request=request,
             url=ApiURL.QUOTATION_LIST,
-            msg=SaleMsg.QUOTATION_CREATE
         )
 
 
@@ -187,7 +195,17 @@ class QuotationDetailAPI(APIView):
             request=request,
             url=ApiURL.QUOTATION_DETAIL,
             pk=pk,
-            msg=SaleMsg.QUOTATION_UPDATE
+        )
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def delete(self, request, *args, pk, **kwargs):
+        return delete_quotation(
+            request=request,
+            url=ApiURL.QUOTATION_DETAIL,
+            pk=pk,
         )
 
 
@@ -258,7 +276,6 @@ class QuotationIndicatorListAPI(APIView):
         return create_quotation(
             request=request,
             url=ApiURL.QUOTATION_INDICATOR_LIST,
-            msg=SaleMsg.QUOTATION_INDICATOR_CREATE
         )
 
 
@@ -281,7 +298,6 @@ class QuotationIndicatorDetailAPI(APIView):
             request=request,
             url=ApiURL.QUOTATION_INDICATOR_DETAIL,
             pk=pk,
-            msg=SaleMsg.QUOTATION_INDICATOR_UPDATE
         )
 
 
@@ -296,5 +312,4 @@ class QuotationIndicatorRestoreAPI(APIView):
             request=request,
             url=ApiURL.QUOTATION_INDICATOR_RESTORE,
             pk=pk,
-            msg=SaleMsg.QUOTATION_INDICATOR_RESTORE
         )

@@ -490,6 +490,7 @@ $(document).ready(function () {
 - Trang detail thêm js để load lại data attachment của phiếu khi tạo:
 VD:
 new $x.cls.file($('#attachment')).init({
+   enable_edit: false,
    enable_download: true,
    data: data?.['attachment'],
 });

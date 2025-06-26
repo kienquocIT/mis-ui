@@ -10,6 +10,11 @@ $(function () {
         let $urlFact = $('#app-url-factory');
         let $transFact = $('#app-trans-factory');
         let eleFiscalYear = $('#data-fiscal-year');
+        let dataStatusLease = {
+            1: $transFact.attr('data-status-lease-1'),
+            2: $transFact.attr('data-status-lease-2'),
+            3: $transFact.attr('data-status-lease-3'),
+        }
         let dataAssetType = {
             1: $transFact.attr('data-asset-type-1'),
             2: $transFact.attr('data-asset-type-2'),
@@ -59,7 +64,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 1,
+                        targets: 2,
                         width: '10%',
                         render: (data, type, row) => {
                             let link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order']?.['id']);
@@ -67,7 +72,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 1,
+                        targets: 3,
                         width: '10%',
                         render: (data, type, row) => {
                             let link = $urlFact.data('customer-detail').format_url_with_uuid(row?.['customer']?.['id']);
@@ -75,7 +80,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 3,
+                        targets: 4,
                         width: '10%',
                         render: (data, type, row) => {
                             if (row?.['lease_from']) {
@@ -85,7 +90,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 3,
+                        targets: 5,
                         width: '10%',
                         render: (data, type, row) => {
                             if (row?.['lease_to']) {
@@ -95,31 +100,31 @@ $(function () {
                         }
                     },
                     {
-                        targets: 4,
+                        targets: 6,
                         width: '10%',
                         render: (data, type, row) => {
-                            if (row?.['lease_status'] === 1) {
-                                return `<span>Finish</span>`;
+                            if (row?.['lease_status']) {
+                                return `<span>${dataStatusLease[row?.['lease_status']]}</span>`;
                             }
-                            return `<span>Ongoing</span>`;
+                            return ``;
                         }
                     },
                     {
-                        targets: 5,
+                        targets: 7,
                         width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-revenue" data-init-money="${parseFloat(row?.['revenue'])}"></span>`;
                         }
                     },
                     {
-                        targets: 6,
+                        targets: 8,
                         width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-gross-profit" data-init-money="${parseFloat(row?.['gross_profit'])}"></span>`;
                         }
                     },
                     {
-                        targets: 7,
+                        targets: 9,
                         width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money table-row-net-income" data-init-money="${parseFloat(row?.['net_income'])}"></span>`;
@@ -195,8 +200,8 @@ $(function () {
                         width: '15%',
                         render: (data, type, row) => {
                             let txt = '';
-                            if (row?.['asset_type'] === 1 && row?.['offset_data']?.['id']) {
-                                txt = row?.['offset_data']?.['title'];
+                            if (row?.['asset_type'] === 1 && row?.['offset_to_asset_data']?.['id']) {
+                                txt = row?.['offset_to_asset_data']?.['title'];
                             }
                             if (row?.['asset_type'] === 2 && row?.['tool_data']?.['id']) {
                                 txt = row?.['tool_data']?.['title'];
@@ -211,6 +216,16 @@ $(function () {
                         targets: 2,
                         width: '15%',
                         render: (data, type, row) => {
+                            if (row?.['asset_type'] === 1 && row?.['offset_data']?.['id']) {
+                                return `<span class="table-row-offset">${row?.['offset_data']?.['title']}</span>`;
+                            }
+                            return ``;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        width: '15%',
+                        render: (data, type, row) => {
                             if (row?.['product_lease_start_date']) {
                                 return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['product_lease_start_date'])}</span>`;
                             }
@@ -218,7 +233,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 3,
+                        targets: 4,
                         width: '15%',
                         render: (data, type, row) => {
                             if (row?.['product_lease_end_date']) {
@@ -228,14 +243,14 @@ $(function () {
                         }
                     },
                     {
-                        targets: 4,
+                        targets: 5,
                         width: '15%',
                         render: (data, type, row) => {
                             return `<span class="mask-money" data-init-money="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"></span>`;
                         }
                     },
                     {
-                        targets: 5,
+                        targets: 6,
                         width: '15%',
                         render: (data, type, row) => {
                             let netValue = DepreciationControl.getNetValue({
@@ -246,7 +261,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 6,
+                        targets: 7,
                         width: '15%',
                         render: (data, type, row) => {
                             return `<span>${row?.['product_depreciation_time']}${$transFact.attr('data-month')}</span>`;

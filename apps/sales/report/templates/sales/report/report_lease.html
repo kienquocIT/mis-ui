@@ -129,6 +129,7 @@
                                 <tr class="bg-light">
                                     <th>{% trans 'Asset type' %}</th>
                                     <th>{% trans 'Offset item' %}</th>
+                                    <th>{% trans 'Original product' %}</th>
                                     <th>{% trans 'Start lease' %}</th>
                                     <th>{% trans 'End lease' %}</th>
                                     <th>{% trans 'Original cost' %}</th>
@@ -168,6 +169,9 @@
             data-filter-so="{% trans 'Sale order' %}"
             data-filter-lo="{% trans 'Lease order' %}"
             data-filter="{% trans 'Filter' %}"
+            data-status-lease-1="{% trans "Prepare for lease" %}"
+            data-status-lease-2="{% trans "Currently for lease" %}"
+            data-status-lease-3="{% trans "Lease expires" %}"
             data-asset-type-1="{% trans "Goods" %}"
             data-asset-type-2="{% trans "Tool" %}"
             data-asset-type-3="{% trans "Fixed asset" %}"

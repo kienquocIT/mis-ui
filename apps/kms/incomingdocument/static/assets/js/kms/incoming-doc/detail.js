@@ -44,9 +44,9 @@ $(document).ready(function () {
     }).then(
         (resp) => {
             const data = $.fn.switcherResp(resp);
-            WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             $x.fn.renderCodeBreadcrumb(data);
             $.fn.compareStatusShowPageAction(data);
+            WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             new $x.cls.file($('#attachment')).init({
                 enable_edit: false,
                 enable_download: true,

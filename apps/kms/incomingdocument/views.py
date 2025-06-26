@@ -175,6 +175,7 @@ class IncomingDocumentEdit(View):
         input_mapping_properties = InputMappingProperties.INCOMING_DOCUMENT_DATA_MAP
         return {
            'pk': pk,
+           'data': {'doc_id': pk},
            'input_mapping_properties': input_mapping_properties,
            'form_id': 'frm_edit_incoming_document',
            'lst_lv': SECURITY_LV

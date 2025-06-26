@@ -65,10 +65,15 @@ function fillFormFields(data, $form) {
 }
 
 $(document).ready(function () {
+    WFRTControl.setWFInitialData('kmsincomingdocument');
     let $formSubmit = $('#frm_edit_incoming_document');
 
     // init page
     IncomingDocLoadDataHandle.initPage();
+
+    // init remark
+    const remark = new loadEditor();
+    remark.init();
 
     // load available data in form
     $.fn.callAjax2({
@@ -77,9 +82,9 @@ $(document).ready(function () {
     }).then(
         (resp) => {
             const data = $.fn.switcherResp(resp);
-            WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             $x.fn.renderCodeBreadcrumb(data);
             $.fn.compareStatusShowPageAction(data);
+            WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             new $x.cls.file($('#attachment')).init({
                 name: 'attachment',
                 enable_edit: true,

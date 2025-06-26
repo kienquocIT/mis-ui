@@ -257,6 +257,12 @@ $(function () {
                                 "data_depreciation": row?.['depreciation_data'],
                                 "current_date": DateTimeControl.getCurrentDate("DMY", "/")
                             })
+                            if (row?.['asset_type'] === 1 && row?.['offset_to_asset_data']?.['depreciation_data']) {
+                                netValue = DepreciationControl.getNetValue({
+                                    "data_depreciation": row?.['offset_to_asset_data']?.['depreciation_data'],
+                                    "current_date": DateTimeControl.getCurrentDate("DMY", "/")
+                                })
+                            }
                             return `<span class="mask-money table-row-net-value" data-init-money="${netValue ? netValue : 0}"></span>`;
                         }
                     },

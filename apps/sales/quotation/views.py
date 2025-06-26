@@ -6,33 +6,8 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties, BaseView
 from apps.shared.constant import SYSTEM_STATUS
-from apps.shared.msg import BaseMsg
-
-
-def create_quotation(request, url):
-    resp = ServerAPI(user=request.user, url=url).post(request.data)
-    if resp.state:
-        resp.result['message'] = BaseMsg.CREATE_OK
-        return resp.result, status.HTTP_201_CREATED
-    return resp.auto_return()
-
-
-def update_quotation(request, url, pk):
-    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
-    if resp.state:
-        resp.result['message'] = BaseMsg.UPDATE_OK
-        return resp.result, status.HTTP_201_CREATED
-    return resp.auto_return()
-
-
-def delete_quotation(request, url, pk):
-    resp = ServerAPI(user=request.user, url=url.push_id(pk)).delete(request.data)
-    if resp.state:
-        resp.result['message'] = BaseMsg.DELETE_OK
-        return resp.result, status.HTTP_200_OK
-    return resp.auto_return()
 
 
 class QuotationList(View):
@@ -127,7 +102,7 @@ class QuotationListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_quotation(
+        return BaseView.run_create(
             request=request,
             url=ApiURL.QUOTATION_LIST,
         )
@@ -191,7 +166,7 @@ class QuotationDetailAPI(APIView):
         is_api=True
     )
     def put(self, request, *args, pk, **kwargs):
-        return update_quotation(
+        return BaseView.run_update(
             request=request,
             url=ApiURL.QUOTATION_DETAIL,
             pk=pk,
@@ -202,7 +177,7 @@ class QuotationDetailAPI(APIView):
         is_api=True
     )
     def delete(self, request, *args, pk, **kwargs):
-        return delete_quotation(
+        return BaseView.run_delete(
             request=request,
             url=ApiURL.QUOTATION_DETAIL,
             pk=pk,
@@ -273,7 +248,7 @@ class QuotationIndicatorListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_quotation(
+        return BaseView.run_create(
             request=request,
             url=ApiURL.QUOTATION_INDICATOR_LIST,
         )
@@ -294,7 +269,7 @@ class QuotationIndicatorDetailAPI(APIView):
         is_api=True
     )
     def put(self, request, *args, pk, **kwargs):
-        return update_quotation(
+        return BaseView.run_update(
             request=request,
             url=ApiURL.QUOTATION_INDICATOR_DETAIL,
             pk=pk,
@@ -308,7 +283,7 @@ class QuotationIndicatorRestoreAPI(APIView):
         is_api=True
     )
     def put(self, request, *args, pk, **kwargs):
-        return update_quotation(
+        return BaseView.run_update(
             request=request,
             url=ApiURL.QUOTATION_INDICATOR_RESTORE,
             pk=pk,

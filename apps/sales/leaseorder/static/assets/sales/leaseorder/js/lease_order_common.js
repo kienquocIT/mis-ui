@@ -8332,8 +8332,8 @@ class LeaseOrderSubmitHandle {
                     }
                 }
                 let eleOffset = row.querySelector('.table-row-offset');
-                if (eleOffset) {
-                    if ($(eleOffset).val()) {
+                if (assetType && eleOffset) {
+                    if ($(assetType).val() === '1' && $(eleOffset).val()) {
                         let dataOffset = SelectDDControl.get_data_from_idx($(eleOffset), $(eleOffset).val());
                         if (dataOffset) {
                             rowData['offset_id'] = dataOffset?.['id'];
@@ -8342,14 +8342,14 @@ class LeaseOrderSubmitHandle {
                     }
                 }
                 let toolDataEle = row.querySelector('.table-row-tool-data');
-                if (toolDataEle) {
-                    if ($(toolDataEle).val()) {
+                if (assetType && toolDataEle) {
+                    if ($(assetType).val() === '2' && $(toolDataEle).val()) {
                         rowData['tool_data'] = JSON.parse($(toolDataEle).val());
                     }
                 }
                 let assetDataEle = row.querySelector('.table-row-asset-data');
-                if (assetDataEle) {
-                    if ($(assetDataEle).val()) {
+                if (assetType && assetDataEle) {
+                    if ($(assetType).val() === '3' && $(assetDataEle).val()) {
                         rowData['asset_data'] = JSON.parse($(assetDataEle).val());
                     }
                 }

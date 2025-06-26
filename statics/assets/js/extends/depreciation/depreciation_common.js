@@ -140,19 +140,21 @@ class DepreciationControl {
             let beginMonthFirstData = parseInt(firstData?.['begin'].split("/")[1]);
             let beginYearFirstData = parseInt(firstData?.['begin'].split("/")[2]);
 
-            let endDayFirstData = parseInt(firstData?.['end'].split("/")[0]);
+            // let endDayFirstData = parseInt(firstData?.['end'].split("/")[0]);
 
             if (beginMonth === beginMonthFirstData && beginYear === beginYearFirstData && beginDayFirstData < beginDay) {
                 let daysOfMonth = DepreciationControl.getDaysOfMonth(firstData?.['begin']);
                 let daysOfFirstData = firstData?.['accumulative_month'] * daysOfMonth;
                 let perDayDepreciation = firstData?.['depreciation_value'] / daysOfFirstData;
                 let daysBetween = DepreciationControl.getDaysBetween(firstData?.['begin'], start_date);
-                if (daysBetween === beginDay) {
-                    daysBetween = daysBetween - 1;
-                }
-                if (endDayFirstData === beginDay) {
-                    daysBetween = daysBetween - 1;
-                }
+                daysBetween = daysBetween - 1;
+
+                // if (daysBetween === beginDay) {
+                //     daysBetween = daysBetween - 1;
+                // }
+                // if (endDayFirstData === beginDay) {
+                //     daysBetween = daysBetween - 1;
+                // }
                 let daysBetweenDepreciation = perDayDepreciation * daysBetween;
                 firstData['lease_allocated'] =  firstData?.['depreciation_value'] - daysBetweenDepreciation;
             }

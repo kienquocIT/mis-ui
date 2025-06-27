@@ -77,7 +77,7 @@ $(function () {
         ],
     });
 
-    tb.on('click', '.btn-delete', function (e) {
+    tb.on('click', '.action-delete', function (e) {
         WindowControl.showLoading();
         $.fn.callAjax2(
             {

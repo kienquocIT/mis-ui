@@ -18,6 +18,18 @@ $(function () {
                     LeaseOrderLoadDataHandle.loadDataTablesAndDropDowns(data);
                     LeaseOrderIndicatorHandle.loadIndicator();
 
+                    // attachment
+                    let enable_edit = true;
+                    if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                        enable_edit = false;
+                    }
+                    new $x.cls.file($('#attachment')).init({
+                        name: 'attachment',
+                        enable_edit: enable_edit,
+                        enable_download: true,
+                        data: data?.['attachment'],
+                    });
+
                     // init workflow
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                     // get WF initial zones for change

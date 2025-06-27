@@ -33,8 +33,8 @@ $(function () {
             DateTimeControl.initDatePicker(this);
         });
 
-        // file
-        if (formSubmit.attr('data-method').toLowerCase() === 'post') {
+        // attachment
+        if (POLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
             new $x.cls.file($('#attachment')).init({
                 name: 'attachment',
                 enable_edit: true,
@@ -315,6 +315,12 @@ $(function () {
 
         PODataTableHandle.$tablePayment.on('click', '.btn-select-reconcile', function () {
             POLoadDataHandle.loadModalSReconcile(this);
+        });
+
+        PODataTableHandle.$tablePayment.on('click', '.del-row', function () {
+            deleteRow(this.closest('tr'), PODataTableHandle.$tablePayment);
+            reOrderSTT(PODataTableHandle.$tablePayment);
+            POStoreDataHandle.storeDtbData(3);
         });
 
         POLoadDataHandle.$btnSaveReconcile.on('click', function () {

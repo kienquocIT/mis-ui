@@ -631,6 +631,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_AVAILABLE_PRODUCT_DETAIL = StringUrl('report/warehouse-available-product-detail')
     REPORT_GENERAL_LIST = StringUrl('report/general/list')
     PO_REPORT_LIST = StringUrl('report/po-report/list')
+    REPORT_LEASE_LIST = StringUrl('report/lease/list')
 
     # Final Acceptance
     FINAL_ACCEPTANCE_LIST = StringUrl('acceptance/final-acceptance/list')
@@ -818,6 +819,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LEASE_ORDER_DETAIL = StringUrl('leaseorder')
     LEASE_ORDER_RECURRENCE_LIST = StringUrl('leaseorder/lease-order-recurrence/list')
     LEASE_ORDER_DROPDOWN_LIST = StringUrl('leaseorder/dropdown/list')
+    LEASE_ORDER_COST_LIST = StringUrl('leaseorder/cost/list')
 
     # CONSULTING
     CONSULTING_LIST = StringUrl('consulting/list')

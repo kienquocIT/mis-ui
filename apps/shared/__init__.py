@@ -8,3 +8,4 @@ from .components import ConditionFormset
 from .utils import *
 from .constant import *
 from .templates_map_workflow import *
+from .extends import BaseView

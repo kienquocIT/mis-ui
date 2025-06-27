@@ -37,6 +37,13 @@ $(function () {
         $('.date-picker').each(function () {
             DateTimeControl.initDatePicker(this);
         });
+        // attachment
+        if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
+            new $x.cls.file($('#attachment')).init({
+                name: 'attachment',
+                enable_edit: true,
+            });
+        }
 
         // get WF initial zones
         WFRTControl.setWFInitialData('leaseorder');
@@ -94,8 +101,13 @@ $(function () {
             LeaseOrderLoadDataHandle.loadOffset(this);
         });
 
+        LeaseOrderDataTableHandle.$tableSTool.on('click', '.table-row-checkbox', function () {
+            LeaseOrderLoadDataHandle.loadStoreCheckTool(this);
+        });
+
         LeaseOrderLoadDataHandle.$btnSaveSelectTool.on('click', function () {
             LeaseOrderLoadDataHandle.loadTool(this);
+            LeaseOrderStoreDataHandle.storeDtbData(1);
         });
 
         LeaseOrderDataTableHandle.$tableSAsset.on('click', '.table-row-checkbox', function () {
@@ -1083,6 +1095,7 @@ $(function () {
                 'is_recurrence_template',
                 'is_recurring',
                 'recurrence_task_id',
+                'attachment',
             ]
             if (_form.dataForm) {
                 for (let key in _form.dataForm) {

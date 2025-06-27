@@ -16,7 +16,7 @@ $(function () {
             DateTimeControl.initDatePicker(this);
         });
 
-        // file
+        // attachment
         if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
             new $x.cls.file($('#attachment')).init({
                 name: 'attachment',

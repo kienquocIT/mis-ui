@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties, BaseView
 from apps.shared.msg import SOMsg, AppMsg
 from apps.shared.constant import SYSTEM_STATUS
 
@@ -46,22 +46,6 @@ DIAGRAM_APP = {
     "delivery.orderdeliverysub": AppMsg.APP_DELIVERY,
     "inventory.goodsreturn": AppMsg.APP_GOODS_RETURN,
 }
-
-
-def create_lease_order(request, url, msg):
-    resp = ServerAPI(user=request.user, url=url).post(request.data)
-    if resp.state:
-        resp.result['message'] = msg
-        return resp.result, status.HTTP_201_CREATED
-    return resp.auto_return()
-
-
-def update_lease_order(request, url, pk, msg):
-    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
-    if resp.state:
-        resp.result['message'] = msg
-        return resp.result, status.HTTP_201_CREATED
-    return resp.auto_return()
 
 
 class LeaseOrderList(View):
@@ -129,10 +113,9 @@ class LeaseOrderListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_lease_order(
+        return BaseView.run_create(
             request=request,
             url=ApiURL.LEASE_ORDER_LIST,
-            msg=SaleMsg.LEASE_ORDER_CREATE
         )
 
 
@@ -210,11 +193,10 @@ class LeaseOrderDetailAPI(APIView):
         is_api=True
     )
     def put(self, request, *args, pk, **kwargs):
-        return update_lease_order(
+        return BaseView.run_update(
             request=request,
             url=ApiURL.LEASE_ORDER_DETAIL,
             pk=pk,
-            msg=SaleMsg.LEASE_ORDER_UPDATE
         )
 
 
@@ -287,3 +269,15 @@ class LeaseOrderAssetList(View):
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class LeaseOrderCostListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.LEASE_ORDER_COST_LIST).get(data)
+        return resp.auto_return(key_success='lease_order_cost')

@@ -60,6 +60,7 @@
             data-link-update="{% url 'QuotationUpdate' 1 %}"
             data-link-list="{% url 'QuotationList' %}"
             data-link-list-api="{% url 'QuotationListAPI' %}"
+            data-link-detail-api="{% url 'QuotationDetailAPI' 1 %}"
     >
     {{ data.stt_sys|json_script:'stt_sys' }}
 {% endblock %}

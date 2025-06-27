@@ -132,6 +132,7 @@
                             </div>
                         </div>
                     </div>
+                    {% include 'extends/currency/all.html' %}
 
 
                     <div class="row">
@@ -161,6 +162,12 @@
                                         <span class="nav-link-text">{% trans 'Logistics' %}</span>
                                     </a>
                                 </li>
+                                <li class="nav-item tab-attachment">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                                        <span class="nav-icon-wrap mr-1"><i class="fas fa-paperclip"></i></span>
+                                        <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
@@ -169,7 +176,7 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-product"
-                                            class="table nowrap min-w-1440p w-100 mb-5"
+                                            class="table nowrap min-w-1366p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr class="bg-light">
@@ -443,6 +450,9 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="tab-pane fade" id="tab_attachment">
+                                <div id="attachment">{% include 'extends/files/all.html' %}</div>
+                            </div>
                         </div>
                         <div class="hidden">
                             <textarea id="quotation-tinymce">...</textarea>
@@ -485,7 +495,7 @@
                     role="dialog" aria-labelledby="quotationModalCenter"
                     aria-hidden="true"
             >
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">{% trans 'Select Quotation' %}</h5>

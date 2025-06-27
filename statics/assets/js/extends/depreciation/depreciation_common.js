@@ -71,9 +71,6 @@ class DepreciationControl {
 
             if (currentEndDateObj > endDateObj) {
                 if (currentStartDateObj < endDateObj) {
-                    let daysOdd = DepreciationControl.calDaysBetween(currentStartDateObj, endDateObj);
-                    let daysEven = DepreciationControl.calDaysBetween(currentStartDateObj, currentEndDateObj);
-                    // depreciationValue = depreciationValue * (daysOdd + 1) / (daysEven + 1);
                     /*
                     Kiểm tra nếu là tháng cuối (ngày kết thúc của tháng bằng ngày kết thúc khấu hao)
                     thì khấu hao gán bằng giá trị đầu để khấu hao hết về 0
@@ -132,50 +129,76 @@ class DepreciationControl {
         let {data_depreciation, start_date, end_date} = opts;
         let matchingRange = DepreciationControl.findMatchingRange(start_date, end_date, data_depreciation);
         if (matchingRange.length > 0) {
-            // Get firstData to handle
+            // Xu ly du lieu thang dau tien
             let firstData = matchingRange[0];
             firstData['lease_allocated'] =  firstData?.['depreciation_value'];
             let beginDay = parseInt(start_date.split("/")[0]);
+            let beginMonth = parseInt(start_date.split("/")[1]);
+            let beginYear = parseInt(start_date.split("/")[2]);
+
             let beginDayFirstData = parseInt(firstData?.['begin'].split("/")[0]);
-            if (beginDayFirstData < beginDay) {
+            let beginMonthFirstData = parseInt(firstData?.['begin'].split("/")[1]);
+            let beginYearFirstData = parseInt(firstData?.['begin'].split("/")[2]);
+
+            // let endDayFirstData = parseInt(firstData?.['end'].split("/")[0]);
+
+            if (beginMonth === beginMonthFirstData && beginYear === beginYearFirstData && beginDayFirstData < beginDay) {
                 let daysOfMonth = DepreciationControl.getDaysOfMonth(firstData?.['begin']);
                 let daysOfFirstData = firstData?.['accumulative_month'] * daysOfMonth;
                 let perDayDepreciation = firstData?.['depreciation_value'] / daysOfFirstData;
                 let daysBetween = DepreciationControl.getDaysBetween(firstData?.['begin'], start_date);
+                daysBetween = daysBetween - 1;
+
+                // if (daysBetween === beginDay) {
+                //     daysBetween = daysBetween - 1;
+                // }
+                // if (endDayFirstData === beginDay) {
+                //     daysBetween = daysBetween - 1;
+                // }
                 let daysBetweenDepreciation = perDayDepreciation * daysBetween;
                 firstData['lease_allocated'] =  firstData?.['depreciation_value'] - daysBetweenDepreciation;
-
             }
             firstData['lease_time'] = start_date;
             firstData['lease_accumulative_allocated'] = firstData?.['lease_allocated'];
-            // Get lastData to handle
+            // Xu ly du lieu thang cuoi cung
             let lastData = matchingRange.at(-1);
-            lastData['lease_allocated'] =  lastData?.['depreciation_value'];
-            let endDay = parseInt(end_date.split("/")[0]);
-            let beginDayEndData = parseInt(lastData?.['begin'].split("/")[0]);
-            if (beginDayEndData < endDay) {
-                let daysOfMonth = DepreciationControl.getDaysOfMonth(lastData?.['begin']);
-                let daysOfFirstData = lastData?.['accumulative_month'] * daysOfMonth;
-                let perDayDepreciation = lastData?.['depreciation_value'] / daysOfFirstData;
-                let daysBetween = DepreciationControl.getDaysBetween(lastData?.['begin'], end_date);
-                lastData['lease_allocated'] =  perDayDepreciation * daysBetween;
-
+            let endDateTarget = end_date;
+            let depreciationEndDateObj = DepreciationControl.parseToDateObj(lastData?.['end']);
+            let leaseEndDateObj = DepreciationControl.parseToDateObj(end_date);
+            if (depreciationEndDateObj < leaseEndDateObj) {
+                endDateTarget = lastData?.['end'];
             }
-            lastData['lease_time'] = end_date;
+            lastData['lease_time'] = endDateTarget;
+            if (matchingRange.length > 1) {
+                lastData['lease_allocated'] = lastData?.['depreciation_value'];
+                let endDay = parseInt(end_date.split("/")[0]);
+                let endMonth = parseInt(end_date.split("/")[1]);
+                let endYear = parseInt(end_date.split("/")[2]);
 
-            // If only one record then set lease_accumulative_allocated = lease_allocated
+                let beginDayEndData = parseInt(lastData?.['begin'].split("/")[0]);
+                let beginMonthEndData = parseInt(lastData?.['begin'].split("/")[1]);
+                let beginYearEndData = parseInt(lastData?.['begin'].split("/")[2]);
+
+                if (endMonth === beginMonthEndData && endYear === beginYearEndData && beginDayEndData < endDay) {
+                    let daysOfMonth = DepreciationControl.getDaysOfMonth(lastData?.['begin']);
+                    let daysOfFirstData = lastData?.['accumulative_month'] * daysOfMonth;
+                    let perDayDepreciation = lastData?.['depreciation_value'] / daysOfFirstData;
+                    let daysBetween = DepreciationControl.getDaysBetween(lastData?.['begin'], endDateTarget);
+                    lastData['lease_allocated'] = perDayDepreciation * daysBetween;
+                }
+            }
+            // Neu chi co 1 record thi set lease_accumulative_allocated = lease_allocated
             if (matchingRange.length === 1) {
                 matchingRange[0]['lease_accumulative_allocated'] = matchingRange[0]?.['lease_allocated'];
                 return matchingRange;
             }
-            // Loop through matchingRange and handle records between firstData and lastData
+            // Chay vong lap xu ly du lieu giua firstData va lastData
             for (let i = 1; i < matchingRange.length; i++) {
                 if (i < (matchingRange.length - 1)) {
                     matchingRange[i]['lease_allocated'] = matchingRange[i]?.['depreciation_value'];
                 }
                 matchingRange[i]["lease_accumulative_allocated"] = matchingRange[i - 1]?.["lease_accumulative_allocated"] + matchingRange[i]?.["lease_allocated"];
             }
-
 
         }
         return matchingRange;

@@ -19,22 +19,6 @@ $(function () {
                 autoWidth: true,
                 scrollX: true,
                 pageLength: 50,
-                // cusFilter: [
-                //     {
-                //         dataUrl: $urlFact.attr('data-filter_so'),
-                //         keyResp: 'sale_order_list',
-                //         keyText: 'title',
-                //         keyParam: "sale_order_id",
-                //         placeholder: $transFact.attr('data-filter-so'),
-                //     },
-                //     {
-                //         dataUrl: $urlFact.attr('data-filter_customer'),
-                //         keyResp: 'account_sale_list',
-                //         keyText: 'name',
-                //         keyParam: "sale_order__customer_id",
-                //         placeholder: $transFact.attr('data-filter-customer'),
-                //     },
-                // ],
                 columns: [
                     {
                         targets: 0,

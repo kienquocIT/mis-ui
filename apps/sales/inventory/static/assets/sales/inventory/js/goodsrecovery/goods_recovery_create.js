@@ -2,23 +2,9 @@ $(function () {
 
     $(document).ready(function () {
 
-        // run datetimepicker
+        // date picker
         $('.date-picker').each(function () {
-            $(this).daterangepicker({
-                singleDatePicker: true,
-                timepicker: false,
-                showDropdowns: false,
-                minYear: 2023,
-                locale: {
-                    format: 'DD/MM/YYYY',
-                },
-                maxYear: parseInt(moment().format('YYYY'), 10),
-                autoApply: true,
-                autoUpdateInput: false,
-            }).on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY')).trigger('change');
-            });
-            $(this).val('').trigger('change');
+            DateTimeControl.initDatePicker(this);
         });
 
         // file
@@ -48,7 +34,7 @@ $(function () {
                 if (data) {
                     if (data?.['customer']?.['id']) {
                         data['customer']['name'] = data?.['customer']?.['title'] ? data?.['customer']?.['title'] : "";
-                        RecoveryLoadDataHandle.loadInitS2(RecoveryLoadDataHandle.$boxCustomer, [data?.['customer']]);
+                        FormElementControl.loadInitS2(RecoveryLoadDataHandle.$boxCustomer, [data?.['customer']]);
                     }
                     WindowControl.showLoading();
                     $.fn.callAjax2({

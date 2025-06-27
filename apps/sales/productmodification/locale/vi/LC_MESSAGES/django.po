@@ -31,23 +31,23 @@ msgstr "Thêm thành phần mới"
 
 #
 msgid "This table is for reference only - used to preload data for 'Product modification'."
-msgstr "Bảng này có tính chất tham khảo - dùng để tải trước dữ liệu trong chúc năng 'Tháo - lắp thết bị'."
+msgstr "Bảng này có tính chất tham khảo - dùng để tải trước dữ liệu trong chúc năng 'Ráp-Rã thiết bị'."
 
 #
 msgid "Product modification"
-msgstr "Tháo - lắp thiết bị"
+msgstr "Ráp-Rã thiết bị"
 
 #
 msgid "Product Modification"
-msgstr "Tháo - lắp thiết bị"
+msgstr "Ráp-Rã thiết bị"
 
 #
 msgid "Select modified product"
-msgstr "Chọn sản phẩm tháo - lắp"
+msgstr "Chọn sản phẩm ráp-rã"
 
 #
 msgid "Picking detail modified product"
-msgstr "Lấy cụ thể sản phẩm tháo - lắp"
+msgstr "Lấy cụ thể sản phẩm ráp-rã"
 
 #
 msgid "Current component"

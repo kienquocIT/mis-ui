@@ -323,9 +323,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_SALE_DETAIL = StringUrl('saledata/products-sale')
     PRODUCT_VARIANT_LIST = StringUrl('saledata/products-variants')
 
-    PRODUCT_MODIFICATION_LIST = StringUrl('product-modification/list')
-    PRODUCT_MODIFICATION_DETAIL = StringUrl('product-modification/detail/{pk}')
-
     # advance payment
     CASHOUTFLOW_QUOTATION_LIST = StringUrl('cashoutflow/quotation-list')
     CASHOUTFLOW_SALE_ORDER_LIST = StringUrl('cashoutflow/sale-order-list')
@@ -938,6 +935,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     KMS_DOCUMENT_APPROVAL_DETAIL = StringUrl('kms/doc-approval/detail/{pk}')
 
     # sales/product modification
+    PRODUCT_MODIFICATION_LIST = StringUrl('product-modification/list')
+    PRODUCT_MODIFICATION_DETAIL = StringUrl('product-modification/detail/{pk}')
     PRODUCT_COMPONENT_LIST = StringUrl('product-modification/product-component-list')
     LATEST_COMPONENT_LIST = StringUrl('product-modification/latest-component-list')
     PRODUCT_MODIFIED_LIST = StringUrl('product-modification/product-modified-list')
@@ -947,3 +946,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_SERIAL_LIST = StringUrl('product-modification/product-serial-list')
     PRODUCT_MODIFIED_DROPDOWN_LIST = StringUrl('product-modification/dropdown/list')
     PRODUCT_MODIFIED_PRODUCT_GR_LIST = StringUrl('product-modification/product-modification-product-gr/list')
+
+    # sales/equipment loan
+    EQUIPMENT_LOAN_LIST = StringUrl('equipment-loan/list')
+    EQUIPMENT_LOAN_DETAIL = StringUrl('equipment-loan/detail/{pk}')
+    LOAN_PRODUCT_LIST = StringUrl('equipment-loan/loan-product-list')

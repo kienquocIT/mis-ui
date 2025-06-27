@@ -615,6 +615,10 @@ class MenusInventory:
             MenuCommon(
                 name='Product modification', code='id_menu_product_modification', view_name='ProductModificationList',
                 icon='<i class="fa-solid fa-boxes-stacked"></i>',
+            ),
+            MenuCommon(
+                name='Equipment loan', code='id_menu_equipment_loan', view_name='EquipmentLoanList',
+                icon='<i class="fa-solid fa-boxes-packing"></i>',
             )
         ],
     )

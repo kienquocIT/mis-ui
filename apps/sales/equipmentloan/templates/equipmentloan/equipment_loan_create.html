@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Equipment loan' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button class="btn btn-outline-primary" type="submit" form="form-create-equipment-loan">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-warehouse-list-by-product="{% url 'ELWarehouseListByProductAPI' %}?interact=1"
+            data-url-lot-list-by-warehouse="{% url 'ELProductLotListAPI' %}"
+            data-url-serial-list-by-warehouse="{% url 'ELProductSerialListAPI' %}"
+    ></script>
+    <script id="trans-url"
+    ></script>
+    <form id="form-create-equipment-loan"
+          data-method="POST"
+          data-url="{% url 'EquipmentLoanListAPI' %}"
+          data-url-redirect="{% url "EquipmentLoanList" %}"
+    >
+        {% csrf_token %}
+        {% include 'equipmentloan/common/information.html' %}
+    </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'equipmentloan/common/modals.html' %}
+{% endblock %}
+{% block jsFooter %}
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static "assets/js/equipmentloan/equipment_loan_common.js" %}"></script>
+    <script src="{% static "assets/js/equipmentloan/equipment_loan_create.js" %}"></script>
+{% endblock %}

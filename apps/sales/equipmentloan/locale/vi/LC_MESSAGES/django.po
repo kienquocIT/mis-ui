@@ -18,13 +18,21 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
-msgid "modified by Product Modification"
-msgstr "đã chỉnh sửa bởi Ráp-Rã Sản phẩm"
+msgid "Equipment loan"
+msgstr "Cho mượn hàng"
 
 #
-msgid "GR completed"
-msgstr "Đã nhập kho xong"
+msgid "Equipment Loan"
+msgstr "Cho mượn hàng"
 
 #
-msgid "GR is pending"
-msgstr "Đang chờ nhập kho"
+msgid "Loan date"
+msgstr "Ngày mượn"
+
+#
+msgid "Return date"
+msgstr "Ngày hoàn trả"
+
+#
+msgid "Pick detail"
+msgstr "Lấy cụ thể"

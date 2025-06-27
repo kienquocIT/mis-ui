@@ -1,10 +1,10 @@
 $(document).ready(function () {
     function loadPMList() {
-        if (!$.fn.DataTable.isDataTable('#datatable_product_modification_list')) {
-            let dtb = $('#datatable_product_modification_list');
+        if (!$.fn.DataTable.isDataTable('#datatable_equipment_loan_list')) {
+            let dtb = $('#datatable_equipment_loan_list');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
-                useDataServer: true,
+                // useDataServer: true,
                 rowIdx: true,
                 scrollX: true,
                 scrollY: '70vh',
@@ -14,17 +14,18 @@ $(document).ready(function () {
                     leftColumns: 2,
                     rightColumns: window.innerWidth <= 768 ? 0 : 1
                 },
-                ajax: {
-                    url: frm.dataUrl,
-                    type: frm.dataMethod,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            return resp.data['product_modification_list'] ? resp.data['product_modification_list'] : [];
-                        }
-                        return [];
-                    },
-                },
+                data: [],
+                // ajax: {
+                //     url: frm.dataUrl,
+                //     type: frm.dataMethod,
+                //     dataSrc: function (resp) {
+                //         let data = $.fn.switcherResp(resp);
+                //         if (data) {
+                //             return resp.data['equipment_loan_list'] ? resp.data['equipment_loan_list'] : [];
+                //         }
+                //         return [];
+                //     },
+                // },
                 columns: [
                     {
                         className: 'w-5',
@@ -40,14 +41,14 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-40',
+                        className: 'ellipsis-cell-lg w-45',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        className: 'ellipsis-cell-sm w-15',
+                        className: 'ellipsis-cell-sm w-20',
                         render: (data, type, row) => {
                             return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
@@ -56,15 +57,6 @@ $(document).ready(function () {
                         className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
                             return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
-                        }
-                    },
-                    {
-                        className: 'ellipsis-cell-sm w-10',
-                        render: (data, type, row) => {
-                            if (row?.['system_status'] === 3) {
-                                return row?.['created_goods_receipt'] ? `<span class="small text-success">${$.fn.gettext('GR completed')} <i class="fa-solid fa-check"></i></span>` : `<span class="small text-blue">${$.fn.gettext('GR is pending')}</span>`;
-                            }
-                            return ''
                         }
                     },
                     {

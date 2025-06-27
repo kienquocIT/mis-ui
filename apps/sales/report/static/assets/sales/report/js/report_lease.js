@@ -171,13 +171,21 @@ $(function () {
             $tableDetail.not('.dataTable').DataTableDefault({
                 useDataServer: true,
                 ajax: {
-                    url: $urlFact.attr('data-lo-cost-api'),
+                    url: $urlFact.attr('data-delivery-product-lease-api'),
                     data: dataParams,
                     type: "GET",
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
-                        if (data && resp.data.hasOwnProperty('lease_order_cost')) {
-                            return resp.data['lease_order_cost'] ? resp.data['lease_order_cost'] : []
+                        if (data && resp.data.hasOwnProperty('delivery_product_lease')) {
+                            let dataFn = [];
+                            for (let deliveryProduct of resp.data['delivery_product_lease']) {
+                                if (deliveryProduct?.['tool_asset_data']) {
+                                    for (let dataToolAsset of deliveryProduct?.['tool_asset_data']) {
+                                        dataFn.push(dataToolAsset);
+                                    }
+                                }
+                            }
+                            return dataFn;
                         }
                         throw Error('Call data raise errors.')
                     },
@@ -200,9 +208,6 @@ $(function () {
                         width: '15%',
                         render: (data, type, row) => {
                             let txt = '';
-                            if (row?.['asset_type'] === 1 && row?.['offset_to_asset_tool_data']?.['id']) {
-                                txt = row?.['offset_to_asset_tool_data']?.['title'];
-                            }
                             if (row?.['asset_type'] === 2 && row?.['tool_data']?.['id']) {
                                 txt = row?.['tool_data']?.['title'];
                             }
@@ -216,7 +221,7 @@ $(function () {
                         targets: 2,
                         width: '15%',
                         render: (data, type, row) => {
-                            if (row?.['asset_type'] === 1 && row?.['offset_data']?.['id']) {
+                            if (row?.['offset_data']?.['id']) {
                                 return `<span class="table-row-offset">${row?.['offset_data']?.['title']}</span>`;
                             }
                             return ``;
@@ -224,7 +229,7 @@ $(function () {
                     },
                     {
                         targets: 3,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if (row?.['product_lease_start_date']) {
                                 return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['product_lease_start_date'])}</span>`;
@@ -234,7 +239,7 @@ $(function () {
                     },
                     {
                         targets: 4,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if (row?.['product_lease_end_date']) {
                                 return `<span>${DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", row?.['product_lease_end_date'])}</span>`;
@@ -244,21 +249,24 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
-                            let origin_cost = row?.['product_cost_price'] ? row?.['product_cost_price'] : 0;
-                            if (row?.['asset_type'] === 1 && row?.['offset_to_asset_tool_data']?.['unit_price']) {
-                                origin_cost = row?.['offset_to_asset_tool_data']?.['unit_price'];
+                            if (row?.['lease_status']) {
+                                return `<span>${dataStatusLease[row?.['lease_status']]}</span>`;
                             }
-                            if (row?.['asset_type'] === 1 && row?.['offset_to_asset_tool_data']?.['origin_cost']) {
-                                origin_cost = row?.['offset_to_asset_tool_data']?.['origin_cost'];
-                            }
-                            return `<span class="mask-money" data-init-money="${origin_cost}"></span>`;
+                            return ``;
                         }
                     },
                     {
                         targets: 6,
-                        width: '15%',
+                        width: '10%',
+                        render: (data, type, row) => {
+                            return `<span class="mask-money" data-init-money="${row?.['product_cost'] ? row?.['product_cost'] : 0}"></span>`;
+                        }
+                    },
+                    {
+                        targets: 7,
+                        width: '10%',
                         render: (data, type, row) => {
                             let netValue = DepreciationControl.getNetValue({
                                 "data_depreciation": row?.['depreciation_data'],
@@ -274,10 +282,10 @@ $(function () {
                         }
                     },
                     {
-                        targets: 7,
-                        width: '15%',
+                        targets: 8,
+                        width: '10%',
                         render: (data, type, row) => {
-                            return `<span>${row?.['product_depreciation_time']}${$transFact.attr('data-month')}</span>`;
+                            return `<span>${row?.['product_depreciation_time']} ${$transFact.attr('data-month')}</span>`;
                         }
                     },
                 ],
@@ -309,7 +317,10 @@ $(function () {
                 if ($.fn.dataTable.isDataTable($tableDetail)) {
                     $tableDetail.DataTable().destroy();
                 }
-                loadDtbDetail({'lease_order_id': rowData?.['lease_order']?.['id']});
+                loadDtbDetail({
+                    'delivery_sub__order_delivery__lease_order_id': rowData?.['lease_order']?.['id'],
+                    'delivery_sub__system_status': 3,
+                });
             }
             return true;
         }

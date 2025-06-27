@@ -469,6 +469,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_LIST = StringUrl('delivery')
     DELIVERY_SUB_LIST = StringUrl('delivery/sub')
     DELIVERY_FOR_RECOVERY_LIST = StringUrl('delivery/for-recovery')
+    DELIVERY_PRODUCT_LEASE_LIST = StringUrl('delivery/product-lease')
+
     # Opportunity detail
     OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk}')
     OPPORTUNITY_DETAIL_GET_CREATE_FROM_OPP = StringUrl('opportunity/{pk}/create-from-opp')
@@ -822,7 +824,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LEASE_ORDER_DETAIL = StringUrl('leaseorder')
     LEASE_ORDER_RECURRENCE_LIST = StringUrl('leaseorder/lease-order-recurrence/list')
     LEASE_ORDER_DROPDOWN_LIST = StringUrl('leaseorder/dropdown/list')
-    LEASE_ORDER_COST_LIST = StringUrl('leaseorder/cost/list')
 
     # CONSULTING
     CONSULTING_LIST = StringUrl('consulting/list')

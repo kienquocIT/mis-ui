@@ -269,15 +269,3 @@ class LeaseOrderAssetList(View):
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
-
-
-class LeaseOrderCostListAPI(APIView):
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        data = request.query_params.dict()
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.LEASE_ORDER_COST_LIST).get(data)
-        return resp.auto_return(key_success='lease_order_cost')

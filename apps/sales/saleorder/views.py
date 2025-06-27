@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties
+from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties, BaseView
 from apps.shared.msg import SOMsg, AppMsg
 from apps.shared.constant import SYSTEM_STATUS
 
@@ -51,22 +51,6 @@ DIAGRAM_APP = {
     "delivery.orderdeliverysub": AppMsg.APP_DELIVERY,
     "inventory.goodsreturn": AppMsg.APP_GOODS_RETURN,
 }
-
-
-def create_sale_order(request, url, msg):
-    resp = ServerAPI(user=request.user, url=url).post(request.data)
-    if resp.state:
-        resp.result['message'] = msg
-        return resp.result, status.HTTP_201_CREATED
-    return resp.auto_return()
-
-
-def update_sale_order(request, url, pk, msg):
-    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
-    if resp.state:
-        resp.result['message'] = msg
-        return resp.result, status.HTTP_201_CREATED
-    return resp.auto_return()
 
 
 class SaleOrderList(View):
@@ -139,10 +123,9 @@ class SaleOrderListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_sale_order(
+        return BaseView.run_create(
             request=request,
             url=ApiURL.SALE_ORDER_LIST,
-            msg=SaleMsg.SALE_ORDER_CREATE
         )
 
 
@@ -222,11 +205,10 @@ class SaleOrderDetailAPI(APIView):
         is_api=True
     )
     def put(self, request, *args, pk, **kwargs):
-        return update_sale_order(
+        return BaseView.run_update(
             request=request,
             url=ApiURL.SALE_ORDER_DETAIL,
             pk=pk,
-            msg=SaleMsg.SALE_ORDER_UPDATE
         )
 
 
@@ -312,10 +294,9 @@ class SaleOrderIndicatorListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_sale_order(
+        return BaseView.run_create(
             request=request,
             url=ApiURL.SALE_ORDER_INDICATOR_LIST,
-            msg=SaleMsg.SALE_ORDER_INDICATOR_CREATE
         )
 
 
@@ -334,11 +315,10 @@ class SaleOrderIndicatorDetailAPI(APIView):
         is_api=True
     )
     def put(self, request, *args, pk, **kwargs):
-        return update_sale_order(
+        return BaseView.run_update(
             request=request,
             url=ApiURL.SALE_ORDER_INDICATOR_DETAIL,
             pk=pk,
-            msg=SaleMsg.SALE_ORDER_INDICATOR_UPDATE
         )
 
 
@@ -349,11 +329,10 @@ class SaleOrderIndicatorRestoreAPI(APIView):
         is_api=True
     )
     def put(self, request, *args, pk, **kwargs):
-        return update_sale_order(
+        return BaseView.run_update(
             request=request,
             url=ApiURL.SALE_ORDER_INDICATOR_RESTORE,
             pk=pk,
-            msg=SaleMsg.SALE_ORDER_INDICATOR_RESTORE
         )
 
 

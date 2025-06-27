@@ -44,6 +44,7 @@ class LeaseOrderLoadDataHandle {
     ];
 
     static $productsCheckedEle = $('#products-checked');
+    static $toolsCheckedEle = $('#tools-checked');
     static $assetsCheckedEle = $('#assets-checked');
 
     static loadInitS2($ele, data = [], dataParams = {}, $modal = null, isClear = false, customRes = {}) {
@@ -469,30 +470,75 @@ class LeaseOrderLoadDataHandle {
         return true;
     };
 
+    static loadStoreSTool(ele) {
+        let dataSelected = {};
+        let row = ele.closest('tr');
+        if (row) {
+            let rowIndex = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(row).index();
+            let $row = LeaseOrderDataTableHandle.$tableProduct.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+            if (dataRow?.['tool_data']) {
+                for (let toolData of dataRow?.['tool_data']) {
+                    if (toolData?.['tool_data']?.['id']) {
+                        dataSelected[toolData?.['tool_data']?.['id']] = {
+                            "type": "selected",
+                            "data": toolData?.['tool_data'],
+                        };
+                    }
+
+                }
+            }
+        }
+        LeaseOrderLoadDataHandle.$toolsCheckedEle.val(JSON.stringify(dataSelected));
+        return true;
+    };
+
+    static loadStoreCheckTool(ele) {
+        let row = ele.closest('tr');
+        let rowIndex = LeaseOrderDataTableHandle.$tableSTool.DataTable().row(row).index();
+        let $row = LeaseOrderDataTableHandle.$tableSTool.DataTable().row(rowIndex);
+        let dataRow = $row.data();
+
+        if (dataRow) {
+            if (LeaseOrderLoadDataHandle.$toolsCheckedEle.val()) {
+                let storeID = JSON.parse(LeaseOrderLoadDataHandle.$toolsCheckedEle.val());
+                if (typeof storeID === 'object') {
+                    if (ele.checked === true) {
+                        if (!storeID?.[dataRow?.['id']]) {
+                            storeID[dataRow?.['id']] = {
+                                "type": "current",
+                                "data": dataRow,
+                            };
+                        }
+                    }
+                    if (ele.checked === false) {
+                        if (storeID?.[dataRow?.['id']]) {
+                            delete storeID?.[dataRow?.['id']];
+                        }
+                    }
+                    LeaseOrderLoadDataHandle.$toolsCheckedEle.val(JSON.stringify(storeID));
+                }
+            } else {
+                let dataStore = {};
+                if (ele.checked === true) {
+                    dataStore[dataRow?.['id']] = {
+                        "type": "current",
+                        "data": dataRow,
+                    };
+                }
+                LeaseOrderLoadDataHandle.$toolsCheckedEle.val(JSON.stringify(dataStore));
+            }
+        }
+        return true;
+    };
+
     static loadModalSTool(ele) {
-        let fnData = [];
         let row = ele.closest('tr');
         LeaseOrderDataTableHandle.$tableSTool.DataTable().clear().draw();
         if (row) {
-            WindowControl.showLoading();
-            $.fn.callAjax2({
-                    'url': LeaseOrderLoadDataHandle.urlEle.attr('data-md-tool'),
-                    'method': 'GET',
-                    // 'data': {"status": 0},
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('instrument_tool_for_lease_list') && Array.isArray(data.instrument_tool_for_lease_list)) {
-                            fnData = data?.['instrument_tool_for_lease_list'];
-                            LeaseOrderDataTableHandle.$tableSTool.DataTable().rows.add(fnData).draw();
-                            WindowControl.hideLoading();
-                        }
-                    }
-                }
-            )
+            LeaseOrderLoadDataHandle.loadStoreSTool(ele);
+            LeaseOrderDataTableHandle.$tableSTool.DataTable().destroy();
+            LeaseOrderDataTableHandle.dataTableSelectTool();
         }
         return true;
     };
@@ -925,12 +971,12 @@ class LeaseOrderLoadDataHandle {
             let rowTarget = target.closest('tr');
             if (rowTarget) {
                 let itemEle = rowTarget.querySelector('.table-row-item');
+                let uomEle = rowTarget.querySelector('.table-row-uom');
                 let toolDataEle = rowTarget.querySelector('.table-row-tool-data');
-                let offsetShowEle = rowTarget.querySelector('.table-row-offset-show');
                 let quantityEle = rowTarget.querySelector('.table-row-quantity');
-                if (itemEle && toolDataEle && offsetShowEle && quantityEle) {
+                if (itemEle && uomEle && toolDataEle && quantityEle) {
+                    let uomData = [];
                     let toolData = [];
-                    let titles = [];
                     let quantity = 0;
                     for (let checkedEle of LeaseOrderDataTableHandle.$tableSTool[0].querySelectorAll('.table-row-checkbox:checked')) {
                         let row = checkedEle.closest('tr');
@@ -950,11 +996,13 @@ class LeaseOrderLoadDataHandle {
                                 });
                                 quantity += parseFloat($(quantitySEle).val());
                             }
-                            titles.push(rowData?.['title']);
+                            if (rowData?.['product_data']?.['sale_information']?.['default_uom']?.['id']) {
+                                uomData = [rowData?.['product_data']?.['sale_information']?.['default_uom']];
+                            }
                         }
                     }
+                    FormElementControl.loadInitS2($(uomEle), uomData);
                     $(toolDataEle).val(JSON.stringify(toolData));
-                    $(offsetShowEle).val(titles.join(", "));
                     $(quantityEle).val(quantity);
                 }
             }
@@ -970,9 +1018,8 @@ class LeaseOrderLoadDataHandle {
                 let itemEle = rowTarget.querySelector('.table-row-item');
                 let uomEle = rowTarget.querySelector('.table-row-uom');
                 let assetDataEle = rowTarget.querySelector('.table-row-asset-data');
-                let offsetShowEle = rowTarget.querySelector('.table-row-offset-show');
                 let quantityEle = rowTarget.querySelector('.table-row-quantity');
-                if (itemEle && uomEle && assetDataEle && offsetShowEle && quantityEle) {
+                if (itemEle && uomEle && assetDataEle && quantityEle) {
                     let uomData = [];
                     let assetData = [];
 
@@ -4094,8 +4141,12 @@ class LeaseOrderDataTableHandle {
                         }
                         if (data?.['asset_type'] === 2) {
                             let titles = [];
-                            for (let assetData of data?.['tool_data'] ? data?.['tool_data'] : []) {
-                                titles.push(assetData?.['tool_data']?.['title']);
+                            for (let toolData of data?.['tool_data'] ? data?.['tool_data'] : []) {
+                                let title = toolData?.['tool_data']?.['title'];
+                                if (toolData?.['tool_data']?.['product_data']?.['sale_information']?.['default_uom']?.['id']) {
+                                    title += "(" + toolData?.['tool_data']?.['product_data']?.['sale_information']?.['default_uom']?.['title'] + ")"
+                                }
+                                titles.push(title);
                             }
                             $(offsetShowEle).val(titles.join("\n"));
                         }
@@ -5222,43 +5273,40 @@ class LeaseOrderDataTableHandle {
         });
     };
 
-    static dataTableSelectTool(data) {
+    static dataTableSelectTool() {
         LeaseOrderDataTableHandle.$tableSTool.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
+            useDataServer: true,
+            ajax: {
+                url: LeaseOrderLoadDataHandle.urlEle.attr('data-md-tool'),
+                type: "GET",
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && resp.data.hasOwnProperty('instrument_tool_for_lease_list')) {
+                        return resp.data['instrument_tool_for_lease_list'] ? resp.data['instrument_tool_for_lease_list'] : []
+                    }
+                    throw Error('Call data raise errors.')
+                },
+            },
             autoWidth: true,
             scrollX: true,
-            scrollY: "400px",
             columns: [
                 {
                     targets: 0,
                     render: (data, type, row) => {
                         let dataZone = "lease_products_data";
                         let clsZoneReadonly = '';
-                        let disabled = '';
                         let checked = '';
-                        let targetEle = LeaseOrderDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${LeaseOrderLoadDataHandle.$btnSaveSelectTool.attr('data-product-id')}"]`);
-                        if (targetEle) {
-                            let targetRow = targetEle.closest('tr');
-                            if (targetRow) {
-                                let toolDataEle = targetRow.querySelector('.table-row-tool-data');
-                                if (toolDataEle) {
-                                    if ($(toolDataEle).val()) {
-                                        let toolData = JSON.parse($(toolDataEle).val());
-                                        for (let tool of toolData) {
-                                            if (tool?.['tool_id'] === row?.['id']) {
-                                                checked = 'checked';
-                                                break;
-                                            }
-                                        }
-                                    }
+                        if (LeaseOrderLoadDataHandle.$toolsCheckedEle.val()) {
+                            let storeID = JSON.parse(LeaseOrderLoadDataHandle.$toolsCheckedEle.val());
+                            if (typeof storeID === 'object') {
+                                if (storeID?.[row?.['id']]) {
+                                    checked = 'checked';
                                 }
                             }
                         }
                         if (row?.['tool_id']) {
                             return `<div class="form-check form-check-lg d-flex align-items-center">
-                                        <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-tool-${row?.['tool_id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
+                                        <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-tool-${row?.['tool_id'].replace(/-/g, "")}" ${checked} data-zone="${dataZone}">
                                         <label class="form-check-label table-row-title" for="s-tool-${row?.['tool_id'].replace(/-/g, "")}">${row?.['title'] ? row?.['title'] : ''}</label>
                                     </div>`;
                         }
@@ -5372,7 +5420,6 @@ class LeaseOrderDataTableHandle {
                     render: (data, type, row) => {
                         let dataZone = "lease_products_data";
                         let clsZoneReadonly = '';
-                        let disabled = '';
                         let checked = '';
                         if (LeaseOrderLoadDataHandle.$assetsCheckedEle.val()) {
                             let storeID = JSON.parse(LeaseOrderLoadDataHandle.$assetsCheckedEle.val());
@@ -5384,7 +5431,7 @@ class LeaseOrderDataTableHandle {
                         }
                         if (row?.['asset_id']) {
                             return `<div class="form-check form-check-lg d-flex align-items-center">
-                                        <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-asset-${row?.['asset_id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
+                                        <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-asset-${row?.['asset_id'].replace(/-/g, "")}" ${checked} data-zone="${dataZone}">
                                         <label class="form-check-label table-row-title" for="s-asset-${row?.['asset_id'].replace(/-/g, "")}">${row?.['title'] ? row?.['title'] : ''}</label>
                                     </div>`;
                         }
@@ -8332,8 +8379,8 @@ class LeaseOrderSubmitHandle {
                     }
                 }
                 let eleOffset = row.querySelector('.table-row-offset');
-                if (eleOffset) {
-                    if ($(eleOffset).val()) {
+                if (assetType && eleOffset) {
+                    if ($(assetType).val() === '1' && $(eleOffset).val()) {
                         let dataOffset = SelectDDControl.get_data_from_idx($(eleOffset), $(eleOffset).val());
                         if (dataOffset) {
                             rowData['offset_id'] = dataOffset?.['id'];
@@ -8342,14 +8389,14 @@ class LeaseOrderSubmitHandle {
                     }
                 }
                 let toolDataEle = row.querySelector('.table-row-tool-data');
-                if (toolDataEle) {
-                    if ($(toolDataEle).val()) {
+                if (assetType && toolDataEle) {
+                    if ($(assetType).val() === '2' && $(toolDataEle).val()) {
                         rowData['tool_data'] = JSON.parse($(toolDataEle).val());
                     }
                 }
                 let assetDataEle = row.querySelector('.table-row-asset-data');
-                if (assetDataEle) {
-                    if ($(assetDataEle).val()) {
+                if (assetType && assetDataEle) {
+                    if ($(assetType).val() === '3' && $(assetDataEle).val()) {
                         rowData['asset_data'] = JSON.parse($(assetDataEle).val());
                     }
                 }

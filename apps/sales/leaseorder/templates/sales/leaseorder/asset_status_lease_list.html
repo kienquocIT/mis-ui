@@ -23,8 +23,8 @@
                 <th>{% trans 'Type' %}</th>
                 <th>{% trans 'Quantity' %}</th>
                 <th>{% trans 'Leased' %}</th>
-                <th>{% trans 'Contract name' %}</th>
                 <th>{% trans 'Contract code' %}</th>
+                <th>{% trans 'Contract name' %}</th>
                 <th>{% trans 'Lease from' %}</th>
                 <th>{% trans 'Lease to' %}</th>
                 <th>{% trans 'Customer name' %}</th>
@@ -76,6 +76,8 @@
             type="text" id="app-urls-factory"
             data-asset-status-lease="{% url 'AssetStatusLeaseListAPI' %}"
             data-tool-status-lease="{% url 'ToolStatusLeaseListAPI' %}"
+            data-lo-detail="{% url 'LeaseOrderDetail' 1 %}"
+            data-customer-detail="{% url 'AccountDetail' 1 %}"
 
     >
     <input

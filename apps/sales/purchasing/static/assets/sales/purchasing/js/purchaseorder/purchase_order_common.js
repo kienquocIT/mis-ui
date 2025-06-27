@@ -2545,7 +2545,11 @@ class PODataTableHandle {
                     targets: 11,
                     width: '1%',
                     render: () => {
-                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="sale_order_payment_stage" hidden><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
+                        let hidden = '';
+                        if (PODataTableHandle.$tableInvoice.DataTable().data().count() !== 0) {
+                            hidden = 'hidden';
+                        }
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row" data-zone="sale_order_payment_stage" ${hidden}><span class="icon"><i class="far fa-trash-alt"></i></span></button>`;
                     }
                 },
             ],
@@ -3908,4 +3912,20 @@ function deleteRow(currentRow, table) {
     let row = table.DataTable().row(rowIndex);
     // Delete current row
     row.remove().draw();
+}
+
+function reOrderSTT(table) {
+    let order = 1;
+    let itemCount = table[0].querySelectorAll('.table-row-order').length;
+    if (itemCount === 0) {
+        table.DataTable().clear().draw();
+    } else {
+        for (let eleOrder of table[0].querySelectorAll('.table-row-order')) {
+            eleOrder.innerHTML = order;
+            order++
+            if (order > itemCount) {
+                break;
+            }
+        }
+    }
 }

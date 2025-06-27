@@ -317,6 +317,12 @@ $(function () {
             POLoadDataHandle.loadModalSReconcile(this);
         });
 
+        PODataTableHandle.$tablePayment.on('click', '.del-row', function () {
+            deleteRow(this.closest('tr'), PODataTableHandle.$tablePayment);
+            reOrderSTT(PODataTableHandle.$tablePayment);
+            POStoreDataHandle.storeDtbData(3);
+        });
+
         POLoadDataHandle.$btnSaveReconcile.on('click', function () {
             POLoadDataHandle.loadSaveSReconcile();
         });

@@ -101,8 +101,13 @@ $(function () {
             LeaseOrderLoadDataHandle.loadOffset(this);
         });
 
+        LeaseOrderDataTableHandle.$tableSTool.on('click', '.table-row-checkbox', function () {
+            LeaseOrderLoadDataHandle.loadStoreCheckTool(this);
+        });
+
         LeaseOrderLoadDataHandle.$btnSaveSelectTool.on('click', function () {
             LeaseOrderLoadDataHandle.loadTool(this);
+            LeaseOrderStoreDataHandle.storeDtbData(1);
         });
 
         LeaseOrderDataTableHandle.$tableSAsset.on('click', '.table-row-checkbox', function () {

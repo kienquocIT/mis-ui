@@ -20,6 +20,10 @@ $(function () {
             2: $transFact.attr('data-asset-type-2'),
             3: $transFact.attr('data-asset-type-3'),
         }
+        let dataStatusAsset = {
+            0: $transFact.attr('data-status-recovered'),
+            2: $transFact.attr('data-status-leased'),
+        }
 
         function loadDbl(dataParams = {}) {
             $table.not('.dataTable').DataTableDefault({
@@ -178,12 +182,20 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('delivery_product_lease')) {
                             let dataFn = [];
+                            let dataRaw = [];
+                            let checkList = [];
                             for (let deliveryProduct of resp.data['delivery_product_lease']) {
                                 if (deliveryProduct?.['tool_asset_data']) {
                                     for (let dataToolAsset of deliveryProduct?.['tool_asset_data']) {
-                                        dataFn.push(dataToolAsset);
+                                        dataRaw.push(dataToolAsset);
                                     }
                                 }
+                            }
+                            for (let dataR of dataRaw) {
+                                if (!checkList.includes(dataR?.['id'])) {
+                                    dataFn.push(dataR);
+                                }
+                                checkList.push(dataR?.['id']);
                             }
                             return dataFn;
                         }
@@ -249,23 +261,27 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '10%',
+                        width: '5%',
                         render: (data, type, row) => {
-                            if (row?.['lease_status']) {
-                                return `<span>${dataStatusLease[row?.['lease_status']]}</span>`;
-                            }
-                            return ``;
+                            return `<span>${row?.['quantity']}</span>`;
                         }
                     },
                     {
                         targets: 6,
+                        width: '5%',
+                        render: (data, type, row) => {
+                            return `<span>${row?.['quantity_leased']}</span>`;
+                        }
+                    },
+                    {
+                        targets: 7,
                         width: '10%',
                         render: (data, type, row) => {
                             return `<span class="mask-money" data-init-money="${row?.['product_cost'] ? row?.['product_cost'] : 0}"></span>`;
                         }
                     },
                     {
-                        targets: 7,
+                        targets: 8,
                         width: '10%',
                         render: (data, type, row) => {
                             let netValue = DepreciationControl.getNetValue({
@@ -282,7 +298,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 8,
+                        targets: 9,
                         width: '10%',
                         render: (data, type, row) => {
                             return `<span>${row?.['product_depreciation_time']} ${$transFact.attr('data-month')}</span>`;

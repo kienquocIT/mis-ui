@@ -46,9 +46,7 @@ function fillFormFields(data, $form) {
 
     // Populate form fields with the extracted data
     pageElements.$titleEle.val(data.title);
-    if (data.remark !== null) {
-        pageElements.$descriptionEle.val(data.remark.replace(/<[^>]*>?/gm, ''));
-    }
+    pageElements.$descriptionEle.val(data.remark.replace(/<[^>]*>?/gm, ''));
     pageElements.$senderEle.val(data.attached_list?.[0]?.sender || '');
     loadSelectOptions(pageElements.$docTypeEle).then(() => {
         pageElements.$docTypeEle.val(documentTypeId).trigger('change');

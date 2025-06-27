@@ -109,7 +109,7 @@ class IncomingDocLoadDataHandle {
     static combineData(formEle) {
         let frm = new SetupFormSubmit($(formEle));
         frm.dataForm['title'] = pageElements.$titleEle.val();
-        frm.dataForm['remark'] = pageElements.$descriptionEle.val() || null;
+        frm.dataForm['remark'] = pageElements.$descriptionEle.val() ||'';
         frm.dataForm['attached_list'] = IncomingDocLoadDataHandle.buildAttachedList();
         frm.dataForm['internal_recipient'] = pageElements.$tableInternalRecipient.DataTable().data().toArray();
         if (frm.dataForm.hasOwnProperty('attachment')) {

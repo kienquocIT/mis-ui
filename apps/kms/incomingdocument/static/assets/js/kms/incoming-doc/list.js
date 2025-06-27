@@ -54,7 +54,7 @@ $('document').ready(function () {
                     {
                         className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
-                            return moment(row?.['date_created']).format('DD/MM/YYYY');
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                 ],

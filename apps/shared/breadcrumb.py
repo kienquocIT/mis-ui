@@ -506,6 +506,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Incoming Document
     INCOMING_DOCUMENT_LIST = BreadcrumbChildren(_('Incoming document'), 'IncomingDocumentList')
 
+    # Shift
+    MASTER_DATA_SHIFT_PAGE = BreadcrumbChildren(_('Master data shift'), 'ShiftMasterDataList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1378,3 +1381,9 @@ class BreadcrumbView:
     INCOMING_DOCUMENT_CREATE_PAGE = INCOMING_DOCUMENT_LIST + [BreadcrumbItem.BASTION_CREATE]
     INCOMING_DOCUMENT_DETAIL_PAGE = INCOMING_DOCUMENT_LIST + [BreadcrumbItem.BASTION_DETAIL]
     INCOMING_DOCUMENT_UPDATE_PAGE = INCOMING_DOCUMENT_LIST + [BreadcrumbItem.BASTION_UPDATE]
+
+    # shift
+    MASTER_DATA_SHIFT_PAGE = [
+        BreadcrumbItem.MASTER_DATA_SHIFT_PAGE
+    ]
+

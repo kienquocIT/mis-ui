@@ -132,7 +132,8 @@
                                     <th>{% trans 'Original product' %}</th>
                                     <th>{% trans 'Start lease' %}</th>
                                     <th>{% trans 'End lease' %}</th>
-                                    <th>{% trans 'Lease status' %}</th>
+                                    <th>{% trans 'Quantity' %}</th>
+                                    <th>{% trans 'Leased' %}</th>
                                     <th>{% trans 'Original cost' %}</th>
                                     <th>{% trans 'Net value' %}</th>
                                     <th>{% trans 'Depreciation time' %}</th>
@@ -176,6 +177,8 @@
             data-asset-type-1="{% trans "Goods" %}"
             data-asset-type-2="{% trans "Tool" %}"
             data-asset-type-3="{% trans "Fixed asset" %}"
+            data-status-recovered="{% trans "Recovered" %}"
+            data-status-leased="{% trans "Leased" %}"
             data-month="{% trans "Month" %}"
 
     >

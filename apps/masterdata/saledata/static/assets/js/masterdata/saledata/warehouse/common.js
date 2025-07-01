@@ -97,7 +97,6 @@ class WarehouseLoadPage {
                 $('#checkBinLocation').prop('checked', detail?.['is_bin_location']);
                 $('.bin-location-area').prop('hidden', !detail?.['is_bin_location']);
                 $('#checkVirtual').prop('checked', detail?.['is_virtual']);
-                $('#hidden-place').prop('hidden', !detail?.['is_agency_location']);
 
                 $('#inputActive').prop('checked', detail.is_active);
                 $('#warehouseAddress').val(detail.full_address);

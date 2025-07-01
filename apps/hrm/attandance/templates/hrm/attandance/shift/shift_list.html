@@ -1,3 +1,54 @@
-<head>
-  <title>Hello World</title>
-</head>
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Shift information' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <!-- Title -->
+        <h6 class="mb-3">{% trans 'Shift information' %}</h6>
+        <!-- Add button -->
+        <div class="col-12 mt-4 mb-3">
+            <a
+                    href="#" data-bs-toggle="modal"
+                    data-bs-target="#create_shift_modal_forms"
+                    id="create_shift_button"
+            >
+                <button class="btn btn-outline-primary">
+                    <span>
+                        <span class="icon">
+                            <i class="fa-solid fa-plus"></i>
+                        </span>
+                        <span>{% trans 'Add new shift' %}</span>
+                    </span>
+                </button>
+            </a>
+        </div>
+        <!-- Table -->
+        <div class="col-12 mt-2">
+            <table class="table nowrap w-100" data-method="get"
+                   data-url="{% url 'IncomingDocumentListAPI' %}"
+                   data-url-detail="{% url 'IncomingDocumentDetail' 0 %}" id="tbl_incoming_document">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans 'Code' %}</th>
+                    <th>{% trans 'Shift name' %}</th>
+                    <th>{% trans 'Description' %}</th>
+                    <th>{% trans '' %}</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
+    {% include 'hrm/attandance/shift/shift_create.html' %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/hrm/attandance/shift/shift_list.js' %}"></script>
+{% endblock %}

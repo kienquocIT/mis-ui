@@ -1,0 +1,292 @@
+{% load i18n %}
+<div class="modal fade" id="create_shift_modal_forms" tabindex="-1" role="dialog"
+     aria-labelledby="create_shift_modal_forms" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Add new shift' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="icon">
+                            <i class="fas fa-times"></i>
+                        </span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form
+                        id="modal_create_shift"
+                        data-method="POST"
+                        {#                            data-url="{% url 'ShiftListAPI' %}"#}
+                        {#                            data-url-redirect="{% url 'ShiftList' %}"#}
+                >
+                    {% csrf_token %}
+                    <div class="row">
+                        <!-- Title -->
+                        <div class="col-12">
+                            <div class="form-group d-flex align-items-center">
+                                <label class="form-label me-2 mb-0" for="shift_name" style="min-width: 80px;">
+                                    {% trans 'Name' %}
+                                </label>
+                                <input type="text" class="form-control" name="title" id="shift_name"
+                                       style="max-width: 300px;">
+                            </div>
+                        </div>
+                        <!-- Table -->
+                        <div class="col-12">
+                            <table class="table table-bordered text-center align-middle">
+                                <thead class="table-success">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Time</th>
+                                    <th>Grace start</th>
+                                    <th>Grace end</th>
+                                    <th>Threshold late / Leave early</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Check in</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_hh_checkin" placeholder="HH" min="0" max="23">
+                                            <strong>:</strong>
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_mm_checkin" placeholder="mm" min="0" max="59">
+                                            <span><i class="fa-regular fa-clock"></i></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_hh_checkin" placeholder="HH" min="0" max="23">
+                                            <strong>:</strong>
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_mm_checkin" placeholder="mm" min="0" max="59">
+                                            <span><i class="fa-regular fa-clock"></i></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_hh_checkin" placeholder="HH" min="0" max="23">
+                                            <strong>:</strong>
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_mm_checkin" placeholder="mm" min="0" max="59">
+                                            <span><i class="fa-regular fa-clock"></i></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" name="threshold_checkin" class="form-control me-2"
+                                                   placeholder="Minute">
+                                            <strong class="whitespace-nowrap">Minute</strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Break in (check out 1st half shift)</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_hh_checkin" placeholder="HH" min="0" max="23">
+                                            <strong>:</strong>
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_mm_checkin" placeholder="mm" min="0" max="59">
+                                            <span><i class="fa-regular fa-clock"></i></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_hh_checkin" placeholder="HH" min="0" max="23">
+                                            <strong>:</strong>
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_mm_checkin" placeholder="mm" min="0" max="59">
+                                            <span><i class="fa-regular fa-clock"></i></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_hh_checkin" placeholder="HH" min="0" max="23">
+                                            <strong>:</strong>
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_mm_checkin" placeholder="mm" min="0" max="59">
+                                            <span><i class="fa-regular fa-clock"></i></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" name="threshold_checkin" class="form-control me-2"
+                                                   placeholder="Minute">
+                                            <strong class="whitespace-nowrap">Minute</strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Break out (check in 2nd half shift)</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_hh_checkin" placeholder="HH" min="0" max="23">
+                                            <strong>:</strong>
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_mm_checkin" placeholder="mm" min="0" max="59">
+                                            <span><i class="fa-regular fa-clock"></i></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_hh_checkin" placeholder="HH" min="0" max="23">
+                                            <strong>:</strong>
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_mm_checkin" placeholder="mm" min="0" max="59">
+                                            <span><i class="fa-regular fa-clock"></i></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_hh_checkin" placeholder="HH" min="0" max="23">
+                                            <strong>:</strong>
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_mm_checkin" placeholder="mm" min="0" max="59">
+                                            <span><i class="fa-regular fa-clock"></i></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" name="threshold_checkin" class="form-control me-2"
+                                                   placeholder="Minute">
+                                            <strong class="whitespace-nowrap">Minute</strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Check out</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_hh_checkin" placeholder="HH" min="0" max="23">
+                                            <strong>:</strong>
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_mm_checkin" placeholder="mm" min="0" max="59">
+                                            <span><i class="fa-regular fa-clock"></i></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_hh_checkin" placeholder="HH" min="0" max="23">
+                                            <strong>:</strong>
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_mm_checkin" placeholder="mm" min="0" max="59">
+                                            <span><i class="fa-regular fa-clock"></i></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_hh_checkin" placeholder="HH" min="0" max="23">
+                                            <strong>:</strong>
+                                            <input type="number" class="form-control form-control-sm time-input"
+                                                   name="time_mm_checkin" placeholder="mm" min="0" max="59">
+                                            <span><i class="fa-regular fa-clock"></i></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" name="threshold_checkin" class="form-control me-2"
+                                                   placeholder="Minute">
+                                            <strong class="whitespace-nowrap">Minute</strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Working Day -->
+                    <div class="row d-flex align-content-center justify-content-between">
+                        <div class="col-2">
+                            <label class="form-label me-3 mb-0" for="working_day" style="min-width: 100px;">
+                                {% trans 'Working day' %}
+                            </label>
+                        </div>
+                        <div class="col-10">
+                            <div class="border rounded p-2 d-flex align-content-center justify-content-between">
+                                <div class="form-check form-check-lg">
+                                    <input type="checkbox" id="checkbox_mon" class="form-check-input"
+                                           name="working_days[]"
+                                           value="2">
+                                    <label title="Monday" for="checkbox_mon" class="form-check-label">
+                                        {% trans 'Mon' %}
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-lg">
+                                    <input type="checkbox" id="checkbox_tue" class="form-check-input"
+                                           name="working_days[]"
+                                           value="3">
+                                    <label title="Tuesday" for="checkbox_tue" class="form-check-label">
+                                        {% trans 'Tue' %}
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-lg">
+                                    <input type="checkbox" id="checkbox_wed" class="form-check-input"
+                                           name="working_days[]"
+                                           value="4">
+                                    <label title="Wednesday" for="checkbox_wed" class="form-check-label">
+                                        {% trans 'Wed' %}
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-lg">
+                                    <input type="checkbox" id="checkbox_thu" class="form-check-input"
+                                           name="working_days[]"
+                                           value="5">
+                                    <label title="Thursday" for="checkbox_thu" class="form-check-label">
+                                        {% trans 'Thu' %}
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-lg">
+                                    <input type="checkbox" id="checkbox_fri" class="form-check-input"
+                                           name="working_days[]"
+                                           value="6">
+                                    <label title="Friday" for="checkbox_fri" class="form-check-label">
+                                        {% trans 'Fri' %}
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-lg">
+                                    <input type="checkbox" id="checkbox_sat" class="form-check-input"
+                                           name="working_days[]"
+                                           value="7">
+                                    <label title="Saturday" for="checkbox_sat" class="form-check-label">
+                                        {% trans 'Sat' %}
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-lg">
+                                    <input type="checkbox" id="checkbox_sun" class="form-check-input"
+                                           name="working_days[]"
+                                           value="8">
+                                    <label title="Sunday" for="checkbox_sat" class="form-check-label">
+                                        {% trans 'Sun' %}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="submit" class="btn btn-primary" form="form-create_shift">
+                    {% trans 'Save' %}
+                    <i class="fa-regular fa-floppy-disk me-1"></i>
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                    <i class="fa-solid fa-arrow-right-to-bracket fa-rotate-180"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -358,6 +358,7 @@ $(async function () {
                                 }
                             }
                         }
+                        warehouseID = $eleWH.val();
                         for (let data of dataPW) {
                             let finalRate = 1;
                             if (data?.['uom'] && prod?.['uom_data']) {
@@ -384,20 +385,22 @@ $(async function () {
                             if ($form.attr('data-method').toLowerCase() === 'get' || detailData?.['state'] === 1) {
                                 disabled = 'disabled';
                             }
-                            htmlStock += `<div class="row mb-1 align-items-center">
+                            if (data?.['warehouse']?.['id'] === warehouseID) {
+                                htmlStock += `<div class="row mb-1 align-items-center">
                                             <div class="col-12 col-md-6 col-lg-6">${badgeStock}</div>
-                                            <div class="col-12 col-md-6 col-lg-6"><span class="badge badge-pink badge-outline pw-available" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}">${available}</span></div>
+                                            <div class="col-12 col-md-6 col-lg-6"><span class="badge badge-pink badge-outline pw-available" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}">${available ? available : '0'}</span></div>
                                         </div>`;
-                            htmlPick += `<div class="row mb-1 align-items-center">
+                                htmlPick += `<div class="row mb-1 align-items-center">
                                             <div class="col-12 col-md-6 col-lg-6"><div>${badgeStock}</div></div>
                                             <div class="col-12 col-md-6 col-lg-6"><input class="form-control so-quantity-pick" type="number" value="${pickingData?.['picked_quantity'] ? pickingData?.['picked_quantity'] : 0}" data-so="${JSON.stringify(so).replace(/"/g, "&quot;")}" data-so-id="${so?.['id']}" ${disabled}></div>                                   
                                         </div>`;
+                            }
                         }
                     }
 
                     let areaTitle = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-warehouse')}:</b><p class="picking-warehouse" data-warehouse="${JSON.stringify(dataWH).replace(/"/g, "&quot;")}">${warehouseTitle}</p></div>`;
                     let areaUOM = `<div class="d-flex mb-3 border-bottom"><b class="mr-2">${$elmTrans.attr('data-uom')}:</b><p class="picking-uom" data-uom="${JSON.stringify(dataUOM).replace(/"/g, "&quot;")}">${prod?.['uom_data']?.['title']}</p></div>`;
-                    let areaStock = `<b class="mr-2">${$elmTrans.attr('data-available')}:</b>${htmlStock}`;
+                    let areaStock = `<b class="mr-2">${$elmTrans.attr('data-available')}:</b>${htmlStock ? htmlStock : '0'}`;
                     let areaView = `<div class="dropdown-divider"></div><div class="text-right">
                                     <a href="${link}" target="_blank" class="link-primary underline_hover">
                                         <span>${$elmTrans.attr('data-view-detail')}</span>
@@ -437,21 +440,7 @@ $(async function () {
                 {
                     width: '20%',
                     render: (data, type, row) => {
-                        return `<div class="d-flex justify-content-start">
-                                    <div class="dropdown">
-                                        <button 
-                                            type="button" 
-                                            class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover"
-                                            data-bs-toggle="dropdown"
-                                            aria-haspopup="true"
-                                            aria-expanded="false" data-product-id="${row?.['product_data']?.['id']}"
-                                        >
-                                            <span class="icon"><i class="fas fa-info-circle text-blue"></i></span>
-                                         </button>
-                                        <div role="menu" class="dropdown-menu w-300p mt-2 dropdown-menu-stock"></div>
-                                    </div>
-                                    <p class="mt-2 table-row-product" data-id="${row?.['product_data']?.['id']}">${row?.['product_data']?.['title']}</p>
-                                </div>`;
+                        return `<p class="mt-2 table-row-product" data-id="${row?.['product_data']?.['id']}">${row?.['product_data']?.['title']}</p>`;
                     }
                 },
                 {
@@ -487,13 +476,27 @@ $(async function () {
                         if ($form.attr('data-method').toLowerCase() === 'get' || detailData?.['state'] === 1) {
                             isDisabled = 'disabled';
                         }
-                        return `<div class="row area-pick">
-                                    <div class="col-xs-12 col-sm-6">
-                                        <input class="form-control table-row-quantity-pick" type="number" id="prod_row-${meta.row}" 
-                                        value="${data?.['picked_quantity']}" ${isDisabled}/>
+                        return `<div class="d-flex justify-content-between">
+                                    <div class="row area-pick">
+                                        <div class="col-xs-12 col-sm-6">
+                                            <input class="form-control table-row-quantity-pick" type="number" id="prod_row-${meta.row}" 
+                                            value="${data?.['picked_quantity']}" ${isDisabled}/>
+                                        </div>
                                     </div>
-                                </div><input class="form-control table-row-quantity-pick" type="number" id="prod_row-${meta.row}" 
-                                        value="${data?.['picked_quantity']}" hidden>`;
+                                    <div class="dropdown">
+                                        <button 
+                                            type="button" 
+                                            class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover"
+                                            data-bs-toggle="dropdown"
+                                            aria-haspopup="true"
+                                            aria-expanded="false" data-product-id="${row?.['product_data']?.['id']}"
+                                        >
+                                            <span class="icon"><i class="fas fa-info-circle text-blue"></i></span>
+                                         </button>
+                                        <div role="menu" class="dropdown-menu w-300p mt-2 dropdown-menu-stock"></div>
+                                    </div>
+                                </div>
+                                <input class="form-control table-row-quantity-pick" type="number" id="prod_row-${meta.row}" value="${data?.['picked_quantity']}" hidden>`;
                     }
                 },
             ],
@@ -642,28 +645,33 @@ $(async function () {
         }
         pickingData.products = prodSub
         for (let product of pickingData.products) {
-            product['picking_data'] = setupPickingData(product?.['product_id']);
+            let pickData = setupPickingData(product?.['product_id']);
+            if (pickData.length === 0) {
+                product['done'] = 0;
+            }
+            product['picking_data'] = pickData;
         }
 
         //call ajax to update picking
         WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
         $.fn.callAjax2({
             'url': _form.dataUrl, 'method': _form.dataMethod, 'data': pickingData
-        })
-            .then((resp) => {
-                const data = $.fn.switcherResp(resp);
-                const description = (_form.dataMethod.toLowerCase() === 'put') ? data.detail : data.message;
-                if (data) {
-                    $.fn.notifyB({description: description}, 'success')
-                    $.fn.redirectUrl($($form).attr('data-url-redirect'), 3000);
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                    $.fn.notifyB({description: data.message}, 'success');
+                    if (_form?.resetForm) $(_form.formElm)[0].reset()
+                    setTimeout(() => {
+                        window.location.replace(_form.dataUrlRedirect);
+                    }, 2000);
                 }
-            }, (errs) => {
-                if (errs.data.errors.hasOwnProperty('detail')) {
-                    $.fn.notifyB({description: String(errs.data.errors['detail'])}, 'failure')
-                }
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+            }, (err) => {
+                setTimeout(() => {
+                    WindowControl.hideLoading();
+                }, 1000)
+                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+            }
+        )
     })
 }, (jQuery));

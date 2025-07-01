@@ -197,7 +197,7 @@ class SaleOrderDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_DETAIL.push_id(pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return()
 
     @mask_view(
@@ -307,7 +307,7 @@ class SaleOrderIndicatorDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_INDICATOR_DETAIL.push_id(pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_INDICATOR_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return()
 
     @mask_view(

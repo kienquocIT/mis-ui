@@ -59,16 +59,22 @@ $(function () {
                         targets: 5,
                         width: '10%',
                         render: (data, type, row) => {
-                            let link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order_data']?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover">${row?.['lease_order_data']?.['code']}</a>`;
+                            if (row?.['lease_order_data']?.['id']) {
+                                let link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order_data']?.['id']);
+                                return `<a href="${link}" class="link-primary underline_hover">${row?.['lease_order_data']?.['code']}</a>`;
+                            }
+                            return `<span>--</span>`;
                         }
                     },
                     {
                         targets: 6,
                         width: '8%',
                         render: (data, type, row) => {
-                            let link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order_data']?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover">${row?.['lease_order_data']?.['title']}</a>`;
+                            if (row?.['lease_order_data']?.['id']) {
+                                let link = $urlFact.data('lo-detail').format_url_with_uuid(row?.['lease_order_data']?.['id']);
+                                return `<a href="${link}" class="link-primary underline_hover">${row?.['lease_order_data']?.['title']}</a>`;
+                            }
+                            return `<span>--</span>`;
                         }
                     },
                     {
@@ -95,8 +101,11 @@ $(function () {
                         targets: 9,
                         width: '10%',
                         render: (data, type, row) => {
-                            let link = $urlFact.data('customer-detail').format_url_with_uuid(row?.['lease_order_data']?.['customer']?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover">${row?.['lease_order_data']?.['customer']?.['title']}</a>`;
+                            if (row?.['lease_order_data']?.['customer']?.['id']) {
+                                let link = $urlFact.data('customer-detail').format_url_with_uuid(row?.['lease_order_data']?.['customer']?.['id']);
+                                return `<a href="${link}" class="link-primary underline_hover">${row?.['lease_order_data']?.['customer']?.['title']}</a>`;
+                            }
+                            return `<span>--</span>`;
                         }
                     },
                     {

@@ -132,6 +132,8 @@
                                     <th>{% trans 'Original product' %}</th>
                                     <th>{% trans 'Start lease' %}</th>
                                     <th>{% trans 'End lease' %}</th>
+                                    <th>{% trans 'Quantity' %}</th>
+                                    <th>{% trans 'Leased' %}</th>
                                     <th>{% trans 'Original cost' %}</th>
                                     <th>{% trans 'Net value' %}</th>
                                     <th>{% trans 'Depreciation time' %}</th>
@@ -158,7 +160,7 @@
     <input
             type="text" id="app-url-factory"
             data-report-lease-api="{% url 'ReportLeaseListAPI' %}"
-            data-lo-cost-api="{% url 'LeaseOrderCostListAPI' %}"
+            data-delivery-product-lease-api="{% url 'DeliveryProductLeaseListAPI' %}"
             data-lo-detail="{% url 'LeaseOrderDetail' 1 %}"
             data-customer-detail="{% url 'AccountDetail' 1 %}"
     >
@@ -175,6 +177,8 @@
             data-asset-type-1="{% trans "Goods" %}"
             data-asset-type-2="{% trans "Tool" %}"
             data-asset-type-3="{% trans "Fixed asset" %}"
+            data-status-recovered="{% trans "Recovered" %}"
+            data-status-leased="{% trans "Leased" %}"
             data-month="{% trans "Month" %}"
 
     >

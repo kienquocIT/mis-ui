@@ -818,7 +818,12 @@ class RecoveryDataTableHandle {
                     render: (data, type, row) => {
                         let value = 0;
                         if (row?.['tool_data']?.['id']) {
-                            value = row?.['tool_data']?.['unit_price'] ? row?.['tool_data']?.['unit_price'] : 0;
+                            if (row?.['tool_data']?.['unit_price']) {
+                                value = row?.['tool_data']?.['unit_price'] ? row?.['tool_data']?.['unit_price'] : 0;
+                            }
+                            if (row?.['tool_data']?.['origin_cost']) {
+                                value = row?.['tool_data']?.['origin_cost'] ? row?.['tool_data']?.['origin_cost'] : 0;
+                            }
                         }
                         if (row?.['asset_data']?.['id']) {
                             value = row?.['asset_data']?.['origin_cost'] ? row?.['asset_data']?.['origin_cost'] : 0;

@@ -102,6 +102,15 @@ class TaxDetailAPI(APIView):
         resp = ServerAPI(user=request.user, url=ApiURL.TAX_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='tax')
 
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.TAX_DETAIL.fill_key(pk=pk)).delete(
+            request.data)
+        return resp.auto_return(key_success='tax')
+
 
 class TaxCategoryDetailAPI(APIView):
     @mask_view(
@@ -119,6 +128,15 @@ class TaxCategoryDetailAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.TAX_CATEGORY_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='tax')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.TAX_CATEGORY_DETAIL.fill_key(pk=pk)).delete(
+            request.data)
+        return resp.auto_return(key_success='tax_category')
 
 
 class CurrencyListAPI(APIView):
@@ -158,6 +176,14 @@ class CurrencyDetailAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.CURRENCY_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return(key_success='tax')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def delete(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.CURRENCY_DETAIL.fill_key(pk=pk)).delete(request.data)
+        return resp.auto_return(key_success='currency')
 
 
 class SyncSellingRateWithVCB(APIView):

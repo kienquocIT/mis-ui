@@ -3,25 +3,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, InputMappingProperties, PermCheck
-from apps.shared.msg import GRMsg
+from apps.shared import mask_view, ServerAPI, ApiURL, BaseView
 from apps.shared.constant import SYSTEM_STATUS
-
-
-def create_goods_recovery(request, url, msg):
-    resp = ServerAPI(user=request.user, url=url).post(request.data)
-    if resp.state:
-        resp.result['message'] = msg
-        return resp.result, status.HTTP_201_CREATED
-    return resp.auto_return()
-
-
-def update_goods_recovery(request, url, pk, msg):
-    resp = ServerAPI(user=request.user, url=url.push_id(pk)).put(request.data)
-    if resp.state:
-        resp.result['message'] = msg
-        return resp.result, status.HTTP_201_CREATED
-    return resp.auto_return()
 
 
 class GoodsRecoveryList(View):
@@ -67,10 +50,9 @@ class GoodsRecoveryListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_goods_recovery(
+        return BaseView.run_create(
             request=request,
             url=ApiURL.GOODS_RECOVERY_LIST,
-            msg=SaleMsg.GOODS_RECOVERY_CREATE
         )
 
 
@@ -117,11 +99,10 @@ class GoodsRecoveryDetailAPI(APIView):
         is_api=True
     )
     def put(self, request, *args, pk, **kwargs):
-        return update_goods_recovery(
+        return BaseView.run_update(
             request=request,
             url=ApiURL.GOODS_RECOVERY_DETAIL,
             pk=pk,
-            msg=SaleMsg.GOODS_RECOVERY_UPDATE
         )
 
 

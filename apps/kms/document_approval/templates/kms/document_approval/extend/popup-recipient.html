@@ -4,12 +4,12 @@
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans "Share" %}<span></span>{% trans 'to' %}</h5>
+                    <h5 class="modal-title">{% trans "Share " %}<span></span>{% trans 'to' %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="overflow: auto; max-height: 80vh">
                     <form id="recipient_form">
                         <input type="hidden" name="id">
                         <input type="hidden" name="group_access">
@@ -82,7 +82,6 @@
                             <div class="clearfix"></div>
                             <div class="col-md-12 employee-added mt-2 mb-2">
                                 <div class="d-flex justify-content-start flex-wrap border min-h-35p w-100 p-2">
-
                                 </div>
                             </div>
                             <div class="col-md-12 mt-4 mb-3">

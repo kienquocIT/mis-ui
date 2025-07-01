@@ -10,7 +10,7 @@ __all__ = [
     'DeliveryConfigDetail', 'DeliveryConfigDetailAPI', 'OrderPickingList', 'OrderPickingListAPI', 'OrderPickingDetail',
     'OrderPickingDetailAPI', 'OrderDeliveryList', 'OrderDeliveryListAPI', 'OrderDeliveryDetail',
     'OrderDeliveryDetailAPI', 'OrderDeliveryEdit', 'OrderPickingEdit',
-    'OrderDeliveryCreate',
+    'OrderDeliveryCreate', 'DeliveryForRecoveryListAPI', 'DeliveryProductLeaseListAPI',
 ]
 
 from apps.shared.constant import DELIVERY_STATE, SYSTEM_STATUS
@@ -276,3 +276,15 @@ class DeliveryForRecoveryListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_FOR_RECOVERY_LIST).get(data)
         return resp.auto_return(key_success='delivery_for_recovery_list')
+
+
+class DeliveryProductLeaseListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.DELIVERY_PRODUCT_LEASE_LIST).get(data)
+        return resp.auto_return(key_success='delivery_product_lease')

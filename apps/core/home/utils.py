@@ -260,6 +260,11 @@ PLAN_APP_OF_KMS = {
             list_view_name='KMSDocumentApprovalList', detail_view_name='KMSDocumentApprovalDetail'
         ).data,
     },
+    'incomingdocument': {
+        'kmsincomingdocument': ReverseUrlCommon(
+            list_view_name='IncomingDocumentList', detail_view_name='IncomingDocumentDetail'
+        ).data,
+    },
 }
 
 PLAN_APP_MAP_VIEW = {

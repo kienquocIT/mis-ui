@@ -685,6 +685,12 @@ class MenuKMS:
                 view_name='KMSDocumentApprovalList',
                 icon='<i class="fa-solid fa-file-circle-check"></i>',
             ),
+            MenuCommon(
+                name='Incoming document',
+                code='menu_incoming_document',
+                view_name='IncomingDocumentList',
+                icon='<i class="fas fa-file-import"></i>',
+            ),
         ],
     )
     MY_SPACE = MenuCommon(

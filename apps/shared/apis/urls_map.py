@@ -59,8 +59,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     BUILDER_PAGE_DETAIL_CLONE = StringUrl('site/config/page/{pk}/clone')
     BUILDER_PAGE_VIEWER = StringUrl('site/config/page/{company_id}/{path_sub}/viewer')
     BUILDER_PAGE_TENANT_GETTER = StringUrl('site/config/page/company-get/{company_sub_domain}')
-    BUILDER_PAGE_TEMPLATE =  StringUrl('site/config/templates')
-    BUILDER_PAGE_TEMPLATE_DETAIL =  StringUrl('site/config/template/{pk}')
+    BUILDER_PAGE_TEMPLATE = StringUrl('site/config/templates')
+    BUILDER_PAGE_TEMPLATE_DETAIL = StringUrl('site/config/template/{pk}')
 
     # files
     FILE_UPLOAD = StringUrl('attachment/upload')
@@ -466,6 +466,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_LIST = StringUrl('delivery')
     DELIVERY_SUB_LIST = StringUrl('delivery/sub')
     DELIVERY_FOR_RECOVERY_LIST = StringUrl('delivery/for-recovery')
+    DELIVERY_PRODUCT_LEASE_LIST = StringUrl('delivery/product-lease')
+
     # Opportunity detail
     OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk}')
     OPPORTUNITY_DETAIL_GET_CREATE_FROM_OPP = StringUrl('opportunity/{pk}/create-from-opp')
@@ -819,7 +821,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     LEASE_ORDER_DETAIL = StringUrl('leaseorder')
     LEASE_ORDER_RECURRENCE_LIST = StringUrl('leaseorder/lease-order-recurrence/list')
     LEASE_ORDER_DROPDOWN_LIST = StringUrl('leaseorder/dropdown/list')
-    LEASE_ORDER_COST_LIST = StringUrl('leaseorder/cost/list')
 
     # CONSULTING
     CONSULTING_LIST = StringUrl('consulting/list')
@@ -843,7 +844,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Cash outflow
     FINANCIAL_CASHOUTFLOW_LIST = StringUrl('financial-cashflow/cashoutflows')
     FINANCIAL_CASHOUTFLOW_DETAIL = StringUrl('financial-cashflow/cashoutflow/{pk}')
-    ADVANCE_FOR_SUPPLIER_LIST_FOR_CASHOUTFLOW = StringUrl('financial-cashflow/advance-for-supplier-for-cashoutflow/list')
+    ADVANCE_FOR_SUPPLIER_LIST_FOR_CASHOUTFLOW = StringUrl(
+        'financial-cashflow/advance-for-supplier-for-cashoutflow/list')
     AP_INVOICE_LIST_FOR_CASHOUTFLOW = StringUrl('financial-cashflow/ap-invoice-for-cashoutflow/list')
 
     # Recon
@@ -852,8 +854,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     AR_INVOICE_LIST_FOR_RECON = StringUrl('financial-reconciliation/ar-invoice-for-recon/list')
     CIF_LIST_FOR_RECON = StringUrl('financial-reconciliation/cash-inflow-for-recon/list')
 
-    #PARTNER CENTER
-    #LIST
+    # PARTNER CENTER
+    # LIST
     PARTNER_CENTER_LIST_DATA_OBJ_LIST = StringUrl('partner-center/data-obj-list')
     LIST_LIST = StringUrl('partner-center/list/list')
     LIST_DETAIL = StringUrl('partner-center/list/detail')
@@ -899,7 +901,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     WAREHOUSE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/warehouse-account-determination/list')
     WAREHOUSE_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/warehouse-account-determination/detail/{pk}')
     PRODUCT_TYPE_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-type-account-determination/list')
-    PRODUCT_TYPE_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/product-type-account-determination/detail/{pk}')
+    PRODUCT_TYPE_ACCOUNT_DETERMINATION_DETAIL = StringUrl(
+        'accounting-setting/product-type-account-determination/detail/{pk}')
     PRODUCT_ACCOUNT_DETERMINATION_LIST = StringUrl('accounting-setting/product-account-determination/list')
     PRODUCT_ACCOUNT_DETERMINATION_DETAIL = StringUrl('accounting-setting/product-account-determination/detail/{pk}')
 
@@ -948,6 +951,10 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_SERIAL_LIST = StringUrl('product-modification/product-serial-list')
     PRODUCT_MODIFIED_DROPDOWN_LIST = StringUrl('product-modification/dropdown/list')
     PRODUCT_MODIFIED_PRODUCT_GR_LIST = StringUrl('product-modification/product-modification-product-gr/list')
+
+    # KMS - Incoming Document
+    INCOMING_DOCUMENT_LIST = StringUrl('kms/incoming-doc/list')
+    INCOMING_DOCUMENT_DETAIL = StringUrl('kms/incoming-doc/detail/{pk}')
 
     # sales/equipment loan
     EQUIPMENT_LOAN_LIST = StringUrl('equipment-loan/list')

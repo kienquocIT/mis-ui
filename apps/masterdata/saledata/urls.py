@@ -56,8 +56,8 @@ from apps.masterdata.saledata.views.warehouse import (
 from apps.masterdata.saledata.views.meetingschedule import MeetingScheduleMasterdataList, MeetingRoomListAPI, \
     MeetingRoomDetailAPI
 from apps.masterdata.saledata.views.invoice_sign import InvoiceSignList, InvoiceSignListAPI
-from apps.masterdata.saledata.views.inventory_interact_config import (
-    InventoryInteractConfigList, InventoryInteractConfigListAPI, InventoryInteractConfigDetailAPI
+from apps.masterdata.saledata.views.warehouse_config import (
+    WarehouseConfigList, WarehouseConfigListAPI, InventoryInteractConfigDetailAPI
 )
 
 
@@ -376,8 +376,8 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    path('inventory-import-config', InventoryInteractConfigList.as_view(), name='InventoryInteractConfigList'),
-    path('inventory-import-config/api', InventoryInteractConfigListAPI.as_view(), name='InventoryInteractConfigListAPI'),
+    path('inventory-import-config', WarehouseConfigList.as_view(), name='WarehouseConfigList'),
+    path('inventory-import-config/api', WarehouseConfigListAPI.as_view(), name='WarehouseConfigListAPI'),
     path('inventory-import-config/api/<str:pk>', InventoryInteractConfigDetailAPI.as_view(), name='InventoryInteractConfigDetailAPI'),
 ]
 

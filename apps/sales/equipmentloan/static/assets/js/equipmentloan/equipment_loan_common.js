@@ -122,7 +122,7 @@ class EquipmentLoanPageFunction {
                                         </a>
                                         <span class="badge badge-sm badge-light ml-1 loan-product-code">${row?.['product_data']?.['code'] || ''}</span>
                                     </span>
-                                    <select class="form-select select2 loan-product"></select>
+                                    <select ${option === 'detail' ? 'disabled readonly' : ''} class="form-select select2 loan-product"></select>
                                 </div>
                                 <div class="collapse"><span class="small">${row?.['product_data']?.['description'] || ''}</span></div>`
                     }
@@ -156,6 +156,20 @@ class EquipmentLoanPageFunction {
                     }
                 },
             ],
+            initComplete: function () {
+                pageElements.$table_line_detail.find('tbody tr').each(function (index, ele) {
+                    $(ele).find('.loan-product-code').text(data_list[index]?.['loan_product_data']?.['code'])
+                    UsualLoadPageFunction.LoadProduct({
+                        element: $(ele).find('.loan-product'),
+                        data: data_list[index]?.['loan_product_data'],
+                        data_url: pageElements.$table_line_detail.attr('data-url-loan-product-list')
+                    })
+                    $(ele).find('.loan-quantity').val(data_list[index]?.['loan_quantity'])
+                    $(ele).find('.data-none-detail').text(JSON.stringify(data_list[index]?.['loan_product_none_detail']))
+                    $(ele).find('.data-lot-detail').text(JSON.stringify(data_list[index]?.['loan_product_lot_detail']))
+                    $(ele).find('.data-sn-detail').text(JSON.stringify(data_list[index]?.['loan_product_sn_detail']))
+                })
+            }
         })
     }
     static LoadTableWarehouseByProduct(url='', general_traceability_method='') {
@@ -172,6 +186,7 @@ class EquipmentLoanPageFunction {
                     return `<div class="form-check">
                             <input type="radio" name="product-warehouse-select"
                                    class="form-check-input product-warehouse-select"
+                                   data-product-warehouse-id="${row?.['id'] || ''}"
                                    data-warehouse-id="${row?.['warehouse_data']?.['id'] || ''}"
                             >
                         </div>`;
@@ -486,9 +501,9 @@ class EquipmentLoanHandler {
 
         frm.dataForm['title'] = pageElements.$title.val()
         frm.dataForm['account_mapped'] = pageElements.$account.attr('data-id')
-        frm.dataForm['document_date'] = moment(pageElements.$document_date.val(), 'DD/MM/YYYY').parse('YYYY-MM-DD')
-        frm.dataForm['loan_date'] = moment(pageElements.$loan_date.val(), 'DD/MM/YYYY').parse('YYYY-MM-DD')
-        frm.dataForm['return_date'] = moment(pageElements.$return_date.val(), 'DD/MM/YYYY').parse('YYYY-MM-DD')
+        frm.dataForm['document_date'] = moment(pageElements.$document_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['loan_date'] = moment(pageElements.$loan_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['return_date'] = moment(pageElements.$return_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
         let equipment_loan_item_list = []
         pageElements.$table_line_detail.find('tbody tr').each(function (index, ele) {
             if ($(this).find('.dataTables_empty').length === 0) {
@@ -513,12 +528,18 @@ class EquipmentLoanHandler {
                 if (data) {
                     data = data['equipment_loan_detail'];
 
-                    // console.log(data)
+                    console.log(data)
 
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
 
                     pageElements.$title.val(data?.['title'])
+                    pageElements.$account.val(data?.['account_mapped_data']?.['name'])
+                    pageElements.$account.attr('data-id', data?.['account_mapped_data']?.['id'])
+                    pageElements.$document_date.val(moment(data?.['document_date'], 'YYYY/MM/DD').format('DD/MM/YYYY'))
+                    pageElements.$loan_date.val(moment(data?.['loan_date'], 'YYYY/MM/DD').format('DD/MM/YYYY'))
+                    pageElements.$return_date.val(moment(data?.['return_date'], 'YYYY/MM/DD').format('DD/MM/YYYY'))
+                    EquipmentLoanPageFunction.LoadLineDetailTable(data?.['equipment_loan_item_list'], option)
 
                     $.fn.initMaskMoney2();
 
@@ -537,6 +558,9 @@ class EquipmentLoanHandler {
  */
 class EquipmentLoanEventHandler {
     static InitPageEven() {
+        pageElements.$account_select_btn.on('click', function () {
+            EquipmentLoanPageFunction.LoadAccountTable()
+        })
         pageElements.$accept_select_account_btn.on('click', function () {
             let selected_obj = null
             $('input[name="account-selected-radio"]').each(async function () {
@@ -620,7 +644,7 @@ class EquipmentLoanEventHandler {
             let sum_picked_quantity = 0
             pageElements.$table_select_warehouse.find('tbody tr').each(function (index, ele) {
                 component_none_list.push({
-                    'warehouse_id': $(ele).find('.product-warehouse-select').attr('data-warehouse-id'),
+                    'product_warehouse_id': $(ele).find('.product-warehouse-select').attr('data-product-warehouse-id'),
                     'picked_quantity': parseFloat($(ele).find('.none-picked-quantity').val()) || 0
                 })
                 sum_picked_quantity += parseFloat($(ele).find('.none-picked-quantity').val()) || 0

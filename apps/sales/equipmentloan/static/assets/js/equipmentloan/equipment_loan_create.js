@@ -3,7 +3,6 @@ $(document).ready(function () {
     UsualLoadPageFunction.LoadDate({element: pageElements.$document_date, auto_load: true, empty: false})
     UsualLoadPageFunction.LoadDate({element: pageElements.$loan_date, empty: true})
     UsualLoadPageFunction.LoadDate({element: pageElements.$return_date, empty: true})
-    EquipmentLoanPageFunction.LoadAccountTable()
     EquipmentLoanPageFunction.LoadLineDetailTable()
 
     WFRTControl.setWFInitialData('equipmentloan')

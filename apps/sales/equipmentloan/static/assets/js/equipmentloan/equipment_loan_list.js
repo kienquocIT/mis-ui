@@ -4,7 +4,7 @@ $(document).ready(function () {
             let dtb = $('#datatable_equipment_loan_list');
             let frm = new SetupFormSubmit(dtb);
             dtb.DataTableDefault({
-                // useDataServer: true,
+                useDataServer: true,
                 rowIdx: true,
                 scrollX: true,
                 scrollY: '70vh',
@@ -14,18 +14,17 @@ $(document).ready(function () {
                     leftColumns: 2,
                     rightColumns: window.innerWidth <= 768 ? 0 : 1
                 },
-                data: [],
-                // ajax: {
-                //     url: frm.dataUrl,
-                //     type: frm.dataMethod,
-                //     dataSrc: function (resp) {
-                //         let data = $.fn.switcherResp(resp);
-                //         if (data) {
-                //             return resp.data['equipment_loan_list'] ? resp.data['equipment_loan_list'] : [];
-                //         }
-                //         return [];
-                //     },
-                // },
+                ajax: {
+                    url: frm.dataUrl,
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            return resp.data['equipment_loan_list'] ? resp.data['equipment_loan_list'] : [];
+                        }
+                        return [];
+                    },
+                },
                 columns: [
                     {
                         className: 'w-5',

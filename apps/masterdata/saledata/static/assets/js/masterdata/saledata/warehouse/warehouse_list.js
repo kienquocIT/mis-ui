@@ -56,14 +56,14 @@ $(document).ready(function () {
                     },
                 }, {
                     data: 'title',
-                    className: 'w-30',
+                    className: 'w-25',
                     render: (data, type, row) => {
                         const link = urlEle.attr('data-url-detail').replace('0', row.id);
                         return `<a href="${link}"><span class="text-primary"><b>${row.title}</b></span></a>`
                     },
                 }, {
                     data: 'remarks',
-                    className: 'w-30',
+                    className: 'w-25',
                     render: (data) => {
                         return `<p class="">${data}</p>`;
                     },
@@ -71,7 +71,13 @@ $(document).ready(function () {
                     data: 'is_dropship',
                     className: 'text-center w-10',
                     render: (data) => {
-                        return data ? `<i class="text-primary bi bi-check-square-fill"></i>` : '';
+                        return data ? `<i class="fa-solid fa-check"></i>` : '';
+                    },
+                }, {
+                    data: 'is_virtual',
+                    className: 'text-center w-10',
+                    render: (data) => {
+                        return data ? `<i class="fa-solid fa-check"></i>` : '';
                     },
                 }, {
                     data: 'is_active',

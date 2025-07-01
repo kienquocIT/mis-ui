@@ -1,4 +1,4 @@
 $(document).ready(function () {
-    ProductModificationEventHandler.InitPageEven()
-    ProductModificationHandler.LoadDetailProductModification('detail')
+    EquipmentLoanEventHandler.InitPageEven()
+    EquipmentLoanHandler.LoadDetailEquipmentLoan('detail')
 })

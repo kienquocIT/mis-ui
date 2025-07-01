@@ -7165,8 +7165,16 @@ msgid "Select save status"
 msgstr "Chọn trạng thái lưu"
 
 #
-msgid "Inventory interact config"
+msgid "Warehouse config"
+msgstr "Cấu hình kho"
+
+#
+msgid "Warehouse interact config"
 msgstr "Cấu hình tương tác kho"
+
+#
+msgid "Virtual warehouse config"
+msgstr "Cấu hình kho ảo"
 
 #
 msgid "Can interact in these warehouses"
@@ -12010,3 +12018,11 @@ msgstr "Cập nhật thành công"
 #
 msgid "Delete successfully"
 msgstr "Xóa thành công"
+
+#
+msgid "Virtual warehouse"
+msgstr "Kho ảo"
+
+#
+msgid "Select virtual warehouse for 'Equipment Loan'"
+msgstr "Chọn kho ảo cho chức năng 'Cho mượn hàng'"

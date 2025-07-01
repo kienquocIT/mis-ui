@@ -350,7 +350,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     INVOICE_SIGN_PAGE = BreadcrumbChildren(_('Invoice sign'), 'InvoiceSignList')
 
-    INVENTORY_INTERACT_CONFIG = BreadcrumbChildren(_('Inventory interact config'), 'InventoryInteractConfigList')
+    INVENTORY_INTERACT_CONFIG = BreadcrumbChildren(_('Warehouse config'), 'WarehouseConfigList')
 
     REVENUE_PLAN_CONFIG_PAGE = BreadcrumbChildren(_('Revenue plan config'), 'RevenuePlanConfigList')
 

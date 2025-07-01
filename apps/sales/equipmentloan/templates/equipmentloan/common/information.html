@@ -6,14 +6,14 @@
             <div class="col-12">
                 <div class="form-group">
                     <label class="form-label required" for="title">{% trans "Name" %}</label>
-                    <input class="form-control" type="text" id="title">
+                    <input required class="form-control" type="text" id="title">
                 </div>
             </div>
             <div class="col-12">
                 <div class="form-group">
                     <label class="form-label required" for="account">{% trans "Account" %}</label>
                     <div style="display: flex;">
-                        <input disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="account">
+                        <input required disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="account">
                         <button type="button" class="btn btn-xs btn-primary btn-animated ml-1" id="account-select-btn" data-bs-toggle="modal" data-bs-target="#account-select-modal">
                             <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Select account' %}</span></span>
                         </button>

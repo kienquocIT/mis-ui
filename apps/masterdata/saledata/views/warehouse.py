@@ -47,7 +47,8 @@ class WareHouseDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_DETAIL.fill_key(pk=pk)).get()
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_DETAIL.fill_key(pk=pk)).get(params)
         return resp.auto_return(key_success='warehouse_detail')
 
     @mask_view(

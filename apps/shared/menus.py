@@ -269,9 +269,9 @@ class MenusCoreConfigurations:
                 icon='<i class="fas fa-gavel"></i>',
             ),
             MenuCommon(
-                name='Inventory interact config', code='menu_inventory_interact_config',
-                view_name='InventoryInteractConfigList',
-                icon='<i class="fas fa-solid fa-arrow-right-to-bracket"></i>'
+                name='Warehouse config', code='menu_warehouse_config',
+                view_name='WarehouseConfigList',
+                icon='<i class="fas fas fa-warehouse"></i>'
             )
         ]
     )

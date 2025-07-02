@@ -91,7 +91,7 @@ class GoodsRecoveryDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RECOVERY_DETAIL.push_id(pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.GOODS_RECOVERY_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return()
 
     @mask_view(

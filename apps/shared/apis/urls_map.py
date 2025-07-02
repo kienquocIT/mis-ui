@@ -956,3 +956,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # KMS - Incoming Document
     INCOMING_DOCUMENT_LIST = StringUrl('kms/incoming-doc/list')
     INCOMING_DOCUMENT_DETAIL = StringUrl('kms/incoming-doc/detail/{pk}')
+
+    # Masterdata - Shift
+    SHIFT_LIST = StringUrl('hrm/attendance/shift/list')

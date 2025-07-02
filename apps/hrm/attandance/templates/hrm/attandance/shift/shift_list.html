@@ -4,51 +4,66 @@
     {% trans 'Shift information' %}
 {% endblock %}
 {% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
 {% endblock %}
 {% block pageAction %}
 {% endblock %}
 {% block pageContent %}
     <div class="row">
-        <!-- Title -->
-        <h6 class="mb-3">{% trans 'Shift information' %}</h6>
-        <!-- Add button -->
-        <div class="col-12 mt-4 mb-3">
-            <a
-                    href="#" data-bs-toggle="modal"
-                    data-bs-target="#create_shift_modal_forms"
-                    id="create_shift_button"
-            >
-                <button class="btn btn-outline-primary">
-                    <span>
-                        <span class="icon">
-                            <i class="fa-solid fa-plus"></i>
-                        </span>
-                        <span>{% trans 'Add new shift' %}</span>
-                    </span>
-                </button>
-            </a>
+        <div class="col-12 col-lg-2 col-md-2">
+            <ul class="nav flex-column nav-light nav-pills nav vertical">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_shift">
+                        <span class="nav-link-text">{% trans 'Shift information' %}</span>
+                    </a>
+                </li>
+            </ul>
         </div>
-        <!-- Table -->
-        <div class="col-12 mt-2">
-            <table class="table nowrap w-100" data-method="get"
-                   data-url="{% url 'IncomingDocumentListAPI' %}"
-                   data-url-detail="{% url 'IncomingDocumentDetail' 0 %}" id="tbl_incoming_document">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>{% trans 'Code' %}</th>
-                    <th>{% trans 'Shift name' %}</th>
-                    <th>{% trans 'Description' %}</th>
-                    <th>{% trans '' %}</th>
-                </tr>
-                </thead>
-            </table>
+        <div class="col-12 col-lg-10 col-md-10">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab_shift">
+                    <div class="row">
+                        <div class="col-12">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#modal-create-shift"
+                               id="create_shift_button">
+                                <button class="btn btn-outline-primary">
+                                    <span>
+                                        <span class="icon">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </span>
+                                        <span>{% trans 'Add new shift' %}</span>
+                                    </span>
+                                </button>
+                            </a>
+                        </div>
+                        <div class="col-12 mt-5">
+                            <table class="table nowrap w-100" data-method="GET"
+                                   data-url="{% url 'IncomingDocumentListAPI' %}"
+                                   data-url-detail="{% url 'IncomingDocumentDetail' 0 %}" id="tbl_incoming_document">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>{% trans 'Code' %}</th>
+                                        <th>{% trans 'Shift name' %}</th>
+                                        <th>{% trans 'Description' %}</th>
+                                        <th>{% trans '' %}</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
 {% block modalData %}
-    {% include 'hrm/attandance/shift/shift_create.html' %}
+    {% include 'hrm/attandance/shift/shift_create_modal.html' %}
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static 'assets/js/hrm/attandance/shift/shift_common.js' %}"></script>
+    <script src="{% static 'assets/js/hrm/attandance/shift/shift_create.js' %}"></script>
     <script src="{% static 'assets/js/hrm/attandance/shift/shift_list.js' %}"></script>
 {% endblock %}

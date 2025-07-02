@@ -108,6 +108,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCT_MODIFICATION_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     PRODUCT_MODIFICATION_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    # Equipment loan
+    EQUIPMENT_LOAN_LIST_PAGE = BreadcrumbChildren(_('Equipment Loan'), 'EquipmentLoanList')
+    EQUIPMENT_LOAN_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'EquipmentLoanCreate')
+    EQUIPMENT_LOAN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    EQUIPMENT_LOAN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     # Advance
     ADVANCE_PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Advance Payment'), 'AdvancePaymentList')
     ADVANCE_PAYMENT_CREATE_PAGE = BreadcrumbChildren(_('Advance Payment create'), 'AdvancePaymentCreate')
@@ -344,7 +350,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     INVOICE_SIGN_PAGE = BreadcrumbChildren(_('Invoice sign'), 'InvoiceSignList')
 
-    INVENTORY_INTERACT_CONFIG = BreadcrumbChildren(_('Inventory interact config'), 'InventoryInteractConfigList')
+    INVENTORY_INTERACT_CONFIG = BreadcrumbChildren(_('Warehouse config'), 'WarehouseConfigList')
 
     REVENUE_PLAN_CONFIG_PAGE = BreadcrumbChildren(_('Revenue plan config'), 'RevenuePlanConfigList')
 
@@ -709,6 +715,14 @@ class BreadcrumbView:
         BreadcrumbItem.PRODUCT_MODIFICATION_CREATE_PAGE]
     PRODUCT_MODIFICATION_DETAIL_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     PRODUCT_MODIFICATION_UPDATE_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    EQUIPMENT_LOAN_LIST_PAGE = [
+        BreadcrumbItem.EQUIPMENT_LOAN_LIST_PAGE
+    ]
+    EQUIPMENT_LOAN_CREATE_PAGE = EQUIPMENT_LOAN_LIST_PAGE + [
+        BreadcrumbItem.EQUIPMENT_LOAN_CREATE_PAGE]
+    EQUIPMENT_LOAN_DETAIL_PAGE = EQUIPMENT_LOAN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    EQUIPMENT_LOAN_UPDATE_PAGE = EQUIPMENT_LOAN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     ADVANCE_PAYMENT_LIST_PAGE = [
         BreadcrumbItem.ADVANCE_PAYMENT_LIST_PAGE

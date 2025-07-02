@@ -2220,7 +2220,7 @@ msgid "Created date"
 msgstr "Ngày Tạo"
 
 #
-msgid "Return date"
+msgid "Return advance date"
 msgstr "Ngày hoàn ứng"
 
 #
@@ -7165,8 +7165,16 @@ msgid "Select save status"
 msgstr "Chọn trạng thái lưu"
 
 #
-msgid "Inventory interact config"
+msgid "Warehouse config"
+msgstr "Cấu hình kho"
+
+#
+msgid "Warehouse interact config"
 msgstr "Cấu hình tương tác kho"
+
+#
+msgid "Virtual warehouse config"
+msgstr "Cấu hình kho ảo"
 
 #
 msgid "Can interact in these warehouses"
@@ -11873,7 +11881,7 @@ msgstr "Sản phẩm không có cấu hình lưu kho. Bạn có muốn tiếp t�
 
 #
 msgid "For product modification"
-msgstr "Cho tháo - lắp sản phẩm"
+msgstr "Cho ráp-rã sản phẩm"
 
 #
 msgid "Product mapping"
@@ -11913,7 +11921,7 @@ msgstr "Hướng dẫn"
 
 #
 msgid "This Product Modification is approved"
-msgstr "Phiếu Tháo - Lắp này được duyệt"
+msgstr "Phiếu Ráp-Rã này được duyệt"
 
 #
 msgid "If there are components to be added"
@@ -11933,7 +11941,7 @@ msgstr "bạn cần tạo và hoàn thành một Phiếu Nhập Kho để nhập
 
 #
 msgid "The modification process is only considered complete when all created docs are successfully approved"
-msgstr "Quá trình tháo - lắp chỉ hoàn tất khi các phiếu sinh ra đều được duyệt thành công"
+msgstr "Quá trình ráp-rã chỉ hoàn tất khi các phiếu sinh ra đều được duyệt thành công"
 
 #
 msgid "This value is used as the stock-in value in the Goods Receipt"
@@ -11949,7 +11957,7 @@ msgstr "Sẵn sàng để giao"
 
 #
 msgid "Modified product"
-msgstr "Sản phẩm đã làm Tháo - Lắp"
+msgstr "Sản phẩm đã làm Ráp-Rã"
 
 #
 msgid "Modified number"
@@ -11961,7 +11969,7 @@ msgstr "Mã Nhập Hàng"
 
 #
 msgid "referred by product modification"
-msgstr "tham chiếu từ phiếu tháo - lắp"
+msgstr "tham chiếu từ phiếu ráp-rã"
 
 #
 msgid "Exchange rate"
@@ -12010,3 +12018,11 @@ msgstr "Cập nhật thành công"
 #
 msgid "Delete successfully"
 msgstr "Xóa thành công"
+
+#
+msgid "Virtual warehouse"
+msgstr "Kho ảo"
+
+#
+msgid "Select virtual warehouse for 'Equipment Loan'"
+msgstr "Chọn kho ảo cho chức năng 'Cho mượn hàng'"

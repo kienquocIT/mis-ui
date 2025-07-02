@@ -158,7 +158,7 @@ class QuotationDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_DETAIL.push_id(pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return()
 
     @mask_view(
@@ -261,7 +261,7 @@ class QuotationIndicatorDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_INDICATOR_DETAIL.push_id(pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_INDICATOR_DETAIL.fill_key(pk=pk)).get()
         return resp.auto_return()
 
     @mask_view(

@@ -3,27 +3,13 @@
 {% block title %}{% trans 'Goods Transfer Create' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
     <style>
-        .custom-scroll {
-            position: relative;
-            margin: auto;
+        .mask-money {
+            text-align: right; !important;
         }
-        .table-wrap {
-            width: 100%;
-            overflow: auto;
-        }
-        .fixed_header {
-            width: 100%;
-            margin: auto;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-        .table-wrap .fixed_header thead {
-            position: sticky;
-            top: 0;
-            z-index: 999;
+        table .select2-selection__rendered {
+            max-width: 250px;
         }
     </style>
 {% endblock %}
@@ -67,13 +53,14 @@
         {% include 'sales/inventory/goods_transfer/common/information.html' %}
         {% include 'sales/inventory/goods_transfer/common/tabs.html' %}
     </form>
+{% endblock %}
+{% block modalData %}
     {% include 'sales/inventory/goods_transfer/common/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_transfer/common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goods_transfer/create.js' %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>

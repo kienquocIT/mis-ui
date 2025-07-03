@@ -116,15 +116,15 @@ class EquipmentLoanPageFunction {
                     className: 'w-75',
                     render: (data, type, row) => {
                         return `<div class="input-group">
-                                    <span class="input-group-text" id="basic-addon1">
-                                        <a class="icon-collapse" data-bs-toggle="collapse" href="" role="button" aria-expanded="false" aria-controls="">
+                                    <span class="input-group-text" style="width: 100px">
+                                        <a class="icon-collapse" data-bs-toggle="collapse" href=".${row?.['loan_product_data']?.['id']}" role="button" aria-expanded="false" aria-controls=".${row?.['loan_product_data']?.['id']}">
                                             <i class="bi bi-info-circle"></i>
                                         </a>
-                                        <span class="badge badge-sm badge-light ml-1 loan-product-code">${row?.['product_data']?.['code'] || ''}</span>
+                                        <span class="badge badge-sm badge-light ml-1 loan-product-code">${row?.['loan_product_data']?.['code'] || ''}</span>
                                     </span>
                                     <select ${option === 'detail' ? 'disabled readonly' : ''} class="form-select select2 loan-product"></select>
                                 </div>
-                                <div class="collapse"><span class="small">${row?.['product_data']?.['description'] || ''}</span></div>`
+                                <div class="collapse ${row?.['loan_product_data']?.['id']}"><span class="small">${row?.['loan_product_data']?.['description'] || ''}</span></div>`
                     }
                 },
                 {
@@ -134,23 +134,22 @@ class EquipmentLoanPageFunction {
                                     <input disabled readonly type="number" min="0" class="form-control loan-quantity">
                                     <button type='button' ${option === 'detail' ? 'disabled' : ''}
                                             class="btn btn-outline-secondary btn-xs btn-pick-detail"
-                                            disabled
                                             data-bs-toggle="modal"
                                             data-bs-target="#picking-product-modal">
                                         <span class="icon"><i class="fa-solid fa-ellipsis"></i></span>
                                     </button>
                                 </div>
-                                <script class="data-none-detail">${JSON.stringify(row?.['product_none_detail'] || [])}</script>
-                                <script class="data-lot-detail">${JSON.stringify(row?.['product_lot_detail'] || [])}</script>
-                                <script class="data-sn-detail">${JSON.stringify(row?.['product_sn_detail'] || [])}</script>`
+                                <script class="data-none-detail"></script>
+                                <script class="data-lot-detail"></script>
+                                <script class="data-sn-detail"></script>`
                     }
                 },
                 {
                     className: 'w-5 text-right',
                     'render': () => {
-                        return `<button type='button' ${option === 'detail' ? 'disabled' : ''}
-                                        class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs btn-del-line-detail"
-                                        >
+                        return `<button type='button'
+                                        ${option === 'detail' ? 'disabled' : ''}
+                                        class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs btn-del-line-detail">
                                     <span class="icon"><i class="fas fa-trash"></i></span>
                                 </button>`;
                     }

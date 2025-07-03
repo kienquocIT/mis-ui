@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="row mt-5">
+<div class="row mt-5 mb-5">
     <div class="col-12">
         <ul class="nav nav-tabs nav-icon nav-light" id="tab-select">
             <li class="nav-item">
@@ -19,41 +19,38 @@
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_line_detail">
                 <div class="row">
-                    <div class="col-12" style="position: relative; overflow: auto; width: 100%;">
+                    <div class="col-12">
                         <table id="tab_line_detail_datatable" class="table nowrap w-100">
                             <thead>
-                            <tr>
-                                <th style="min-width: 50px"></th>
-                                <th class="required" style="min-width: 230px">{% trans 'From warehouse' %}</th>
-                                <th class="required" style="min-width: 300px">{% trans 'Product' %}</th>
-                                <th style="min-width: 100px">{% trans 'UOM' %}</th>
-                                <th style="min-width: 280px" id="tr_so" hidden>
-                                    {% trans 'Project sale order' %}
-                                    <i class="fas fa-info-circle icon-info"
-                                       data-bs-toggle="tooltip"
-                                       data-bs-placement="right"
-                                       data-bs-original-title="{% trans 'None-project products if sale order is null' %}"></i>
-                                </th>
-                                <th class="required" style="min-width: 200px">
-                                    {% trans 'Quantity' %}
-                                    <i class="fas fa-info-circle icon-info"
-                                       data-bs-toggle="tooltip"
-                                       data-bs-placement="right"
-                                       data-bs-original-title="{% trans 'Click the button besides input element to select (for serial/lot product) of enter number for default product.' %}"></i>
-                                </th>
-                                <th class="required" style="min-width: 230px">{% trans 'To warehouse' %}</th>
-                                <th style="min-width: 280px">{% trans 'Cost' %}</th>
-                                <th style="min-width: 280px">{% trans 'Subtotal price' %}</th>
-                                <th class="text-center" style="min-width: 100px">{% trans 'Action' %}</th>
-                            </tr>
+                                <tr>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 250px">{% trans 'Source warehouse' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Product' %}</th>
+                                    <th style="min-width: 250px">
+                                        {% trans 'Project sale order' %}
+                                        <i class="fas fa-info-circle icon-info"
+                                           data-bs-toggle="tooltip"
+                                           data-bs-placement="right"
+                                           data-bs-original-title="{% trans 'None-project products if sale order is null' %}"></i>
+                                    </th>
+
+                                    <th style="min-width: 150px">
+                                        {% trans 'Quantity' %}
+                                        <i class="fas fa-info-circle icon-info"
+                                           data-bs-toggle="tooltip"
+                                           data-bs-placement="right"
+                                           data-bs-original-title="{% trans 'Click the button besides input element to select (for serial/lot product) of enter number for default product.' %}"></i>
+                                    </th>
+                                    <th style="min-width: 100px">{% trans 'UOM' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Destination warehouse' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Cost' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Subtotal price' %}</th>
+                                    <th style="min-width: 50px"></th>
+                                </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
-                    </div>
-                </div>
-                <div class="row mt-5">
-                    <div class="col-7">
-                        <button class="btn btn-outline-primary btn-sm" type="button" id="btn-add-row-line-detail">
+                        <button class="btn btn-primary btn-sm mt-2" type="button" id="btn-add-row-line-detail">
                             <span>
                                 <span class="icon">
                                     <span class="feather-icon"><i class="bi bi-plus-lg"></i></span>

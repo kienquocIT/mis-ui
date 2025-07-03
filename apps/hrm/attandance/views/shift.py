@@ -34,6 +34,7 @@ class ShiftMasterDataListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
+        print("ARSENAL IS THE CHAMPION")
         resp = ServerAPI(user=request.user, url=ApiURL.SHIFT_LIST).post(request.data)
         return resp.auto_return(key_success="shift_list")
 

@@ -1,3 +1,6 @@
+/**
+ * Khai báo các Element
+ */
 class ShiftElement {
     constructor() {
         this.$titleEle = $('#shift_name');
@@ -22,76 +25,109 @@ class ShiftElement {
         this.$checkoutGraceEnd = $('#checkout_gr_end');
         this.$checkoutThreshold = $('#checkout_threshold');
 
-        this.workingDayCheckboxIds = {
-            'checkbox_mon': 2,
-            'checkbox_tue': 3,
-            'checkbox_wed': 4,
-            'checkbox_thu': 5,
-            'checkbox_fri': 6,
-            'checkbox_sat': 7,
-            'checkbox_sun': 8,
-        };
+        this.workingDayCheckboxIds = [
+            '#checkbox_mon',
+            '#checkbox_tue',
+            '#checkbox_wed',
+            '#checkbox_thu',
+            '#checkbox_fri',
+            '#checkbox_sat',
+            '#checkbox_sun'
+        ]
     }
 
     getSelectedWorkingDay() {
         const selectedDays = [];
-        for (const [id, val] of Object.entries(this.workingDayCheckboxIds)) {
-            if ($('#' + id).is(':checked')) {
-                selectedDays.push(val);
-            }
+        for (let i = 0; i < this.workingDayCheckboxIds.length; i++) {
+            const selector = this.workingDayCheckboxIds[i];
+            const isChecked = $(selector).prop('checked');
+            selectedDays.push(isChecked);
         }
         return selectedDays;
     }
 }
 const pageElements = new ShiftElement();
 
+/**
+ * Các hàm load page và hàm hỗ trợ
+ */
+class ShiftPageFunction {
+    static autoFillGraceTime(baseInput, startInput, endInput, diffMinutes = 30) {
+        const time = moment(baseInput.val(), 'HH:mm', true);
+        if (time.isValid()) {
+            if (startInput.val() === '' && endInput.val() === '') {
+                startInput.val(time.clone().subtract(diffMinutes, 'minutes').format('HH:mm'));
+                endInput.val(time.clone().add(diffMinutes, 'minutes').format('HH:mm'));
+            }
+        } else {
+            startInput.val('');
+            endInput.val('');
+        }
+    }
+}
+
+/**
+ * Khai báo các hàm chính
+ */
 class ShiftLoadDataHandle {
     static initPage() {
         // init time
         $('.time-input').each(function () {
-            UsualLoadPageFunction.LoadTime({element: $(this)});
+            UsualLoadPageFunction.LoadTime({element: $(this), minute_increment: 5});
         });
     }
 
     static combineData(formEle) {
         let frm = new SetupFormSubmit($(formEle));
-        let parsedCheckinTime = moment(pageElements.$checkinTime.val(), "HH:mm", true);
-        let parsedCheckinGraceStart = moment(pageElements.$checkinGraceStart.val(), "HH:mm", true);
-        let parsedCheckinGraceEnd = moment(pageElements.$checkinGraceEnd.val(), "HH:mm", true);
-
-        let parsedBreakInTime = moment(pageElements.$breakinTime.val(), "HH:mm", true);
-        let parsedBreakInGraceStart = moment(pageElements.$breakinGraceStart.val(), "HH:mm", true);
-        let parsedBreakInGraceEnd = moment(pageElements.$breakinGraceEnd.val(), "HH:mm", true);
-
-        let parsedBreakOutTime = moment(pageElements.$breakoutTime.val(), "HH:mm", true);
-        let parsedBreakOutGraceStart = moment(pageElements.$breakoutGraceStart.val(), "HH:mm", true);
-        let parsedBreakOutGraceEnd = moment(pageElements.$breakoutGraceEnd.val(), "HH:mm", true);
-
-        let parsedCheckoutTime = moment(pageElements.$checkoutTime.val(), "HH:mm", true);
-        let parsedCheckoutGraceStart = moment(pageElements.$checkoutGraceStart.val(), "HH:mm", true);
-        let parsedCheckoutGraceEnd = moment(pageElements.$checkoutGraceEnd.val(), "HH:mm", true);
-
         frm.dataForm['title'] = pageElements.$titleEle.val();
-        frm.dataForm['checkin_time'] = parsedCheckinTime.isValid() ? parsedCheckinTime.format("HH:mm") : null;
-        frm.dataForm['checkin_gr_start'] = parsedCheckinGraceStart.isValid() ? parsedCheckinGraceStart.format("HH:mm") : null;
-        frm.dataForm['checkin_gr_end'] = parsedCheckinGraceEnd.isValid() ? parsedCheckinGraceEnd.format("HH:mm") : null;
-        frm.dataForm['checkin_threshold'] = parseInt(pageElements.$checkinThreshold.val(), 10);
+        frm.dataForm['checkin_time'] = pageElements.$checkinTime.val();
+        frm.dataForm['checkin_gr_start'] = pageElements.$checkinGraceStart.val();
+        frm.dataForm['checkin_gr_end'] = pageElements.$checkinGraceEnd.val();
+        frm.dataForm['checkin_threshold'] = parseFloat(pageElements.$checkinThreshold.val());
 
-        frm.dataForm['break_in_time'] = parsedBreakInTime.isValid() ? parsedBreakInTime.format("HH:mm") : null;
-        frm.dataForm['break_in_gr_start'] = parsedBreakInGraceStart.isValid() ? parsedBreakInGraceStart.format("HH:mm") : null;
-        frm.dataForm['break_in_gr_end'] = parsedBreakInGraceEnd.isValid() ? parsedBreakInGraceEnd.format("HH:mm") : null;
-        frm.dataForm['break_in_threshold'] = parseInt(pageElements.$breakinThreshold.val(), 10);
+        frm.dataForm['break_in_time'] = pageElements.$breakinTime.val();
+        frm.dataForm['break_in_gr_start'] = pageElements.$breakinGraceStart.val();
+        frm.dataForm['break_in_gr_end'] = pageElements.$breakinGraceEnd.val();
+        frm.dataForm['break_in_threshold'] = parseFloat(pageElements.$breakinThreshold.val());
 
-        frm.dataForm['break_out_time'] = parsedBreakOutTime.isValid() ? parsedBreakOutTime.format("HH:mm") : null;
-        frm.dataForm['break_out_gr_start'] = parsedBreakOutGraceStart.isValid() ? parsedBreakOutGraceStart.format("HH:mm") : null;
-        frm.dataForm['break_out_gr_end'] = parsedBreakOutGraceEnd.isValid() ? parsedBreakOutGraceEnd.format("HH:mm") : null;
-        frm.dataForm['break_out_threshold'] = parseInt(pageElements.$breakoutThreshold.val(), 10);
+        frm.dataForm['break_out_time'] = pageElements.$breakoutTime.val();
+        frm.dataForm['break_out_gr_start'] = pageElements.$breakoutGraceStart.val();
+        frm.dataForm['break_out_gr_end'] = pageElements.$breakoutGraceEnd.val();
+        frm.dataForm['break_out_threshold'] = parseFloat(pageElements.$breakoutThreshold.val());
 
-        frm.dataForm['checkout_time'] = parsedCheckoutTime.isValid() ? parsedCheckoutTime.format("HH:mm") : null;
-        frm.dataForm['checkout_gr_start'] = parsedCheckoutGraceStart.isValid() ? parsedCheckoutGraceStart.format("HH:mm") : null;
-        frm.dataForm['checkout_gr_end'] = parsedCheckoutGraceEnd.isValid() ? parsedCheckoutGraceEnd.format("HH:mm") : null;
-        frm.dataForm['checkout_threshold'] = parseInt(pageElements.$checkoutThreshold.val(), 10);
+        frm.dataForm['checkout_time'] = pageElements.$checkoutTime.val();
+        frm.dataForm['checkout_gr_start'] = pageElements.$checkoutGraceStart.val();
+        frm.dataForm['checkout_gr_end'] = pageElements.$checkoutGraceEnd.val();
+        frm.dataForm['checkout_threshold'] = parseFloat(pageElements.$checkoutThreshold.val());
 
-        frm.dataForm['working_days'] = pageElements.getSelectedWorkingDay();
+        frm.dataForm['working_day_list'] = pageElements.getSelectedWorkingDay();
+        return frm;
+    }
+}
+
+/**
+ * Khai báo các Event
+ */
+class ShiftLoadEventHandler {
+    static InitPageEvent() {
+        $('#checkin_time').on('change', function () {
+            ShiftPageFunction.autoFillGraceTime($('#checkin_time'), $('#checkin_gr_start'), $('#checkin_gr_end'));
+        })
+        $('#breakin_time').on('change', function () {
+            ShiftPageFunction.autoFillGraceTime($('#breakin_time'), $('#breakin_gr_start'), $('#breakin_gr_end'));
+        })
+        $('#breakout_time').on('change', function () {
+            ShiftPageFunction.autoFillGraceTime($('#breakout_time'), $('#breakout_gr_start'), $('#breakout_gr_end'));
+        })
+        $('#checkout_time').on('change', function () {
+            ShiftPageFunction.autoFillGraceTime($('#checkout_time'), $('#checkout_gr_start'), $('#checkout_gr_end'));
+        })
+
+        $(document).on("click", '.applyBtn', function () {
+            ShiftPageFunction.autoFillGraceTime($('#checkin_time'), $('#checkin_gr_start'), $('#checkin_gr_end'));
+            ShiftPageFunction.autoFillGraceTime($('#breakin_time'), $('#breakin_gr_start'), $('#breakin_gr_end'));
+            ShiftPageFunction.autoFillGraceTime($('#breakout_time'), $('#breakout_gr_start'), $('#breakout_gr_end'));
+            ShiftPageFunction.autoFillGraceTime($('#checkout_time'), $('#checkout_gr_start'), $('#checkout_gr_end'));
+        })
     }
 }

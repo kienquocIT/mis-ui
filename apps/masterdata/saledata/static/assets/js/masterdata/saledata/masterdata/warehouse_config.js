@@ -264,7 +264,7 @@ $(document).ready(function () {
 
     equipment_loan_virtual_warehouse.on('change', function () {
         $.fn.callAjax2({
-            'url': equipment_loan_virtual_warehouse.attr('data-url-update').replace('0', equipment_loan_virtual_warehouse.val()) + `?use_for=1`,
+            'url': equipment_loan_virtual_warehouse.val() ? equipment_loan_virtual_warehouse.attr('data-url-update') + `?use_for=1&warehouse_id=${equipment_loan_virtual_warehouse.val()}` : equipment_loan_virtual_warehouse.attr('data-url-update') + `?use_for=1`,
             'method': 'GET'
         }).then((resp) => {
             let data = $.fn.switcherResp(resp);

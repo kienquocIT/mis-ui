@@ -524,7 +524,7 @@ class ProductModificationPageFunction {
                         return `<input placeholder="${$.fn.gettext('Component name')}"
                                        class="form-control form-control-line fw-bold mb-1 init-component-title"
                                        value="${row?.['component_name'] || ''}">
-                                <textarea placeholder="${$.fn.gettext('Description')}..." rows="5" class="form-control small init-component-des">${row?.['component_des'] || ''}</textarea>`
+                                <textarea placeholder="${$.fn.gettext('Description')}..." rows="3" class="form-control small init-component-des">${row?.['component_des'] || ''}</textarea>`
                     }
                 },
                 {

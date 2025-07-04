@@ -11,11 +11,6 @@ $(document).ready(function () {
                 title: {
                     required: true,
                 },
-                full_address: {
-                    required: function () {
-                        return !$('#checkDropShip').is(':checked');
-                    },
-                }
             },
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));

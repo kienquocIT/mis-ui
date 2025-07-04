@@ -7361,12 +7361,12 @@ msgid "Click the button besides input element to select (for serial/lot product)
 msgstr "Click vào nút bên cạnh ô nhập để lựa chọn chi tiết (cho sản phẩm serial/lot) hoặc nhập (cho sản phẩm mặc định)."
 
 #
-msgid "From warehouse"
-msgstr "Từ kho"
+msgid "Source warehouse"
+msgstr "Kho ban đầu"
 
 #
-msgid "To warehouse"
-msgstr "Đến kho"
+msgid "Destination warehouse"
+msgstr "Kho điều chuyển đến"
 
 #
 msgid "Stock quantity"

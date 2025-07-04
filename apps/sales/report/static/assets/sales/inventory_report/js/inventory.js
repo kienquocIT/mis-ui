@@ -624,7 +624,7 @@ $(document).ready(function () {
                                     "period_mapped": item?.['period_mapped'],
                                     "sub_period_order": item?.['sub_period_order'],
                                     "stock_activities": item?.['stock_activities'][i],
-                                    "for_balance": item?.['for_balance']
+                                    "for_balance_init": item?.['for_balance_init']
                                 })
                             }
                         }
@@ -822,7 +822,7 @@ $(document).ready(function () {
                                     "period_mapped": item?.['period_mapped'],
                                     "sub_period_order": item?.['sub_period_order'],
                                     "stock_activities": item?.['stock_activities'][i],
-                                    "for_balance": item?.['for_balance']
+                                    "for_balance_init": item?.['for_balance_init']
                                 })
                             }
                         }

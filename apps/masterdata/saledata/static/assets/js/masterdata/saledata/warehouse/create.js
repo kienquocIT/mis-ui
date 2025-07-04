@@ -10,11 +10,6 @@ $(document).ready(function () {
         rules: {
             title: {
                 required: true,
-            },
-            full_address: {
-                required: function () {
-                    return !$('#checkDropShip').is(':checked');
-                },
             }
         },
         submitHandler: function (form) {

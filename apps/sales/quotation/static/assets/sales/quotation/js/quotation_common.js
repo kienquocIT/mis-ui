@@ -251,7 +251,7 @@ class QuotationLoadDataHandle {
             if (dataSelected) {
                 // load contact
                 if (dataSelected?.['contact_list']) {
-                    FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, dataSelected?.['contact_list']);
+                    FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, dataSelected?.['contact_list'], {'account_name_id': QuotationLoadDataHandle.customerSelectEle.val()});
                     for (let contact of dataSelected?.['contact_list']) {
                         if (contact?.['is_owner'] === true) {
                             QuotationLoadDataHandle.contactSelectEle.val(contact?.['id']).trigger('change');
@@ -2468,7 +2468,7 @@ class QuotationLoadDataHandle {
             QuotationLoadDataHandle.loadBoxQuotationCustomer(data?.['customer_data']);
         }
         if (data?.['contact_data']) {
-            FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, [data?.['contact_data']]);
+            FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, [data?.['contact_data']], {'account_name_id': QuotationLoadDataHandle.customerSelectEle.val()});
         }
         if (data?.['payment_term_data']) {
             FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);

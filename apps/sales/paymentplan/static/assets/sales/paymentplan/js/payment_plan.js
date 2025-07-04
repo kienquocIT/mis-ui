@@ -155,7 +155,7 @@ $(function () {
                 if (!$('#btn-open-filter').length) {
                     let $group = $(`<div class="btn-filter">
                                         <div class="d-flex justify-content-end align-items-center">
-                                            <div class="btn-group dropdown ml-1" data-bs-toggle="tooltip" title="${$transFact.attr('data-filter')}">
+                                            <div class="btn-group dropdown ml-1" data-bs-toggle="tooltip" title="${$.fn.transEle.attr('data-filter')}">
                                                 <button type="button" class="btn btn-light ml-1" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
                                                     <span><span class="icon"><i class="fas fa-filter"></i></span></span>
                                                 </button>

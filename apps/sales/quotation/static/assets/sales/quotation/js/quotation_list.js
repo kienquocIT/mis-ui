@@ -1,17 +1,22 @@
 $(function () {
     $(document).ready(function () {
 
+        let $table = $('#table_quotation_list')
         let transEle = $('#app-trans-factory');
         let urlsEle = $('#app-url-factory');
+        let $isDeleteEle = $('#is_delete');
+        let $employeeEle = $('#employee_dd');
+        let $fromEle = $('#date_from');
+        let $toEle = $('#date_to');
 
-        function loadDbl() {
-            let $table = $('#table_quotation_list')
+        function loadDbl(dataParams) {
             let frm = new SetupFormSubmit($table);
             $table.DataTableDefault({
                 useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
+                    data: dataParams,
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('quotation_list')) {
@@ -165,8 +170,24 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
+                    dtbHDCustom();
                 },
             });
+        }
+
+        function dtbHDCustom() {
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+            if (headerToolbar$.length > 0) {
+                if (!$('#btn-open-filter').length) {
+                    let $group = $(`<div class="btn-filter">
+                                        <button type="button" class="btn btn-light btn-sm ml-1" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                            <span><span class="icon"><i class="fas fa-filter"></i></span><span>${$.fn.transEle.attr('data-filter')}</span></span>
+                                        </button>
+                                    </div>`);
+                    headerToolbar$.append($group);
+                }
+            }
         }
 
         function renderPopoverCR(ele, data) {
@@ -203,7 +224,36 @@ $(function () {
             return true;
         }
 
-        loadDbl();
+        function initPage() {
+            FormElementControl.loadInitS2($employeeEle);
+            // init date picker
+            $('.date-picker').each(function () {
+                DateTimeControl.initDatePicker(this);
+            });
+
+            loadDbl();
+        }
+
+        initPage();
+
+        $('#btn-apply-filter').on('click', function () {
+            let dataParams = {};
+            dataParams['is_delete'] = $isDeleteEle[0].checked;
+            if ($employeeEle.val() && $employeeEle.val().length > 0) {
+                dataParams['employee_inherit_id__in'] = $employeeEle.val().join(',');
+            }
+            if ($fromEle.val()) {
+                dataParams['date_approved__gte'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $fromEle.val());
+            }
+            if ($toEle.val()) {
+                dataParams['date_approved__lte'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $toEle.val());
+            }
+            if ($.fn.dataTable.isDataTable($table)) {
+                $table.DataTable().destroy();
+            }
+            loadDbl(dataParams);
+        });
+
 
     });
 });

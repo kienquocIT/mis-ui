@@ -188,7 +188,6 @@ class ProductModificationPageFunction {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
-                        console.log(resp.data['product_modified_before_list'])
                         return resp.data['product_modified_before_list'] ? resp.data['product_modified_before_list'] : [];
                     }
                     return [];
@@ -211,7 +210,7 @@ class ProductModificationPageFunction {
                                 data-product-id="${row?.['id']}"
                                 data-product-code="${row?.['code']}"
                                 data-product-title="${row?.['title']}"
-                                data-product-description="${row?.['description'] || ''}"
+                                data-product-description="${row?.['new_description'] || row?.['description'] || ''}"
                                 data-product-general-traceability-method="${row?.['general_traceability_method']}"
                                 data-prd-wh="${row?.['product_warehouse_id'] || ''}"
                                 data-prd-wh-lot="${row?.['product_warehouse_lot_id'] || ''}"
@@ -233,7 +232,7 @@ class ProductModificationPageFunction {
                         if (row?.['lot_number']) {
                             return `<span class="text-primary fw-bold">${row?.['modified_number']}</span><br><span class="small">Lot: ${row?.['lot_number'] || ''}</span>`
                         }
-                        return ''
+                        return `<span class="text-primary fw-bold">${row?.['modified_number']}</span>`
                     }
                 },
                 {
@@ -246,7 +245,7 @@ class ProductModificationPageFunction {
                                     <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span>
                                     <span class="ml-1">${row?.['title']}</span>
                                 </div>
-                                <div class="collapse d2_${row?.['modified_number']}"><span class="small">${row?.['new_description'] || ''}</span></div>`
+                                <div class="collapse d2_${row?.['modified_number']}"><span class="small">${row?.['new_description'] || row?.['description'] || ''}</span></div>`
                     }
                 },
             ]

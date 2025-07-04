@@ -456,7 +456,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Accounting
     CHART_OF_ACCOUNTS_LIST_PAGE = BreadcrumbChildren(_('Chart of accounts'), 'ChartOfAccountsList')
-    DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE = BreadcrumbChildren(_('Default account determination'), 'DefaultAccountDeterminationList')
+    DEFAULT_ACCOUNT_DETERMINATION_LIST_PAGE = BreadcrumbChildren(_('Default account determination'),
+                                                                 'DefaultAccountDeterminationList')
 
     # Journal entry
     JOURNAL_ENTRY_LIST_PAGE = BreadcrumbChildren(_('Journal entry'), 'JournalEntryList')
@@ -464,7 +465,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     JOURNAL_ENTRY_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     JOURNAL_ENTRY_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
-    #Consulting
+    # Consulting
     CONSULTING_LIST_PAGE = BreadcrumbChildren(_('Consulting list'), 'ConsultingList')
     CONSULTING_CREATE_PAGE = BreadcrumbChildren(_('Consulting create'), 'ConsultingCreate')
 
@@ -501,6 +502,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     KMS_DOC_TYPE_LIST = BreadcrumbChildren(_('Document type'), 'DocumentTypeConfigList')
     KMS_CONTENT_GROUP_LIST = BreadcrumbChildren(_('Content group'), 'ContentGroupList')
     KMS_DOCUMENT_APPROVAL_LIST = BreadcrumbChildren(_('Document approval'), 'KMSDocumentApprovalList')
+
+    # Incoming Document
+    INCOMING_DOCUMENT_LIST = BreadcrumbChildren(_('Incoming document'), 'IncomingDocumentList')
 
 
 class BreadcrumbView:
@@ -698,7 +702,8 @@ class BreadcrumbView:
     PRODUCT_MODIFICATION_LIST_PAGE = [
         BreadcrumbItem.PRODUCT_MODIFICATION_LIST_PAGE
     ]
-    PRODUCT_MODIFICATION_CREATE_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [BreadcrumbItem.PRODUCT_MODIFICATION_CREATE_PAGE]
+    PRODUCT_MODIFICATION_CREATE_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [
+        BreadcrumbItem.PRODUCT_MODIFICATION_CREATE_PAGE]
     PRODUCT_MODIFICATION_DETAIL_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     PRODUCT_MODIFICATION_UPDATE_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
@@ -1298,7 +1303,6 @@ class BreadcrumbView:
     INSTRUMENT_TOOL_DETAIL_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_DETAIL]
     INSTRUMENT_TOOL_UPDATE_PAGE = INSTRUMENT_TOOL_LIST + [BreadcrumbItem.BASTION_UPDATE]
 
-
     CHART_OF_ACCOUNTS_LIST_PAGE = [
         BreadcrumbItem.CHART_OF_ACCOUNTS_LIST_PAGE
     ]
@@ -1310,7 +1314,6 @@ class BreadcrumbView:
     JOURNAL_ENTRY_CREATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     JOURNAL_ENTRY_DETAIL_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     JOURNAL_ENTRY_UPDATE_PAGE = JOURNAL_ENTRY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
-
 
     INSTRUMENT_TOOL_WRITE_OFF_LIST = [
         BreadcrumbItem.HOME_PAGE,
@@ -1343,7 +1346,6 @@ class BreadcrumbView:
         BreadcrumbItem.PAYMENT_PLAN_LIST_PAGE
     ]
 
-
     KMS_DOC_TYPE_LIST = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.KMS_DOC_TYPE_LIST
@@ -1368,3 +1370,11 @@ class BreadcrumbView:
     KMS_DOCUMENT_APPROVAL_DETAIL_PAGE = KMS_DOCUMENT_APPROVAL_LIST + [BreadcrumbItem.BASTION_DETAIL]
     KMS_DOCUMENT_APPROVAL_UPDATE_PAGE = KMS_DOCUMENT_APPROVAL_LIST + [BreadcrumbItem.BASTION_UPDATE]
 
+    # incoming document
+    INCOMING_DOCUMENT_LIST = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.INCOMING_DOCUMENT_LIST
+    ]
+    INCOMING_DOCUMENT_CREATE_PAGE = INCOMING_DOCUMENT_LIST + [BreadcrumbItem.BASTION_CREATE]
+    INCOMING_DOCUMENT_DETAIL_PAGE = INCOMING_DOCUMENT_LIST + [BreadcrumbItem.BASTION_DETAIL]
+    INCOMING_DOCUMENT_UPDATE_PAGE = INCOMING_DOCUMENT_LIST + [BreadcrumbItem.BASTION_UPDATE]

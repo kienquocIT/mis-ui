@@ -258,7 +258,6 @@ class popup_recipient {
                     document_permission_list: file_perm
                 }
             if (_data.expiration_date) temp_data.expiration_date = _data.expiration_date
-
             if (_data.id && $x.fn.checkUUID4(_data.id)){
                 temp_data.id = _data.id
                 $('#table_internal_recipient').DataTable().row(_dataIdx).data(temp_data).draw()

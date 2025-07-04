@@ -1,7 +1,6 @@
 $(document).ready(function () {
     let frm = $('#frmUpdate');
     let pk = $.fn.getPkDetail();
-    WarehouseLoadPage.loadAgency();
 
     WarehouseLoadPage.loadDetail(frm, pk, 'update');
 
@@ -12,16 +11,6 @@ $(document).ready(function () {
                 title: {
                     required: true,
                 },
-                agency: {
-                    required: function () {
-                        return $('#checkAgencyLocation').is(':checked');
-                    },
-                },
-                full_address: {
-                    required: function () {
-                        return !$('#checkDropShip').is(':checked');
-                    },
-                }
             },
             submitHandler: function (form) {
                 let frm = new SetupFormSubmit($(form));

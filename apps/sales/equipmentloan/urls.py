@@ -1,0 +1,19 @@
+from django.urls import path
+from apps.sales.equipmentloan.views import (
+    EquipmentLoanList, EquipmentLoanCreate, EquipmentLoanDetail, EquipmentLoanUpdate,
+    EquipmentLoanListAPI, EquipmentLoanDetailAPI,
+    LoanProductListAPI, ELWarehouseListByProductAPI, ELProductLotListAPI, ELProductSerialListAPI
+)
+
+urlpatterns = [
+    path('list', EquipmentLoanList.as_view(), name='EquipmentLoanList'),
+    path('create', EquipmentLoanCreate.as_view(), name='EquipmentLoanCreate'),
+    path('detail/<str:pk>', EquipmentLoanDetail.as_view(), name='EquipmentLoanDetail'),
+    path('update/<str:pk>', EquipmentLoanUpdate.as_view(), name='EquipmentLoanUpdate'),
+    path('list/api', EquipmentLoanListAPI.as_view(), name='EquipmentLoanListAPI'),
+    path('detail/api/<str:pk>', EquipmentLoanDetailAPI.as_view(), name='EquipmentLoanDetailAPI'),
+    path('loan-product-list/api', LoanProductListAPI.as_view(), name='LoanProductListAPI'),
+    path('warehouse-list-by-product/api', ELWarehouseListByProductAPI.as_view(), name='ELWarehouseListByProductAPI'),
+    path('product-lot-list/api', ELProductLotListAPI.as_view(), name='ELProductLotListAPI'),
+    path('product-serial-list/api', ELProductSerialListAPI.as_view(), name='ELProductSerialListAPI'),
+]

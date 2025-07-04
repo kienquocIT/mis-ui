@@ -2,7 +2,6 @@ $(document).ready(function () {
     WarehouseLoadPage.loadCities();
     WarehouseLoadPage.loadDistrict();
     WarehouseLoadPage.loadWard();
-    WarehouseLoadPage.loadAgency();
 
     eventPage();
 
@@ -11,16 +10,6 @@ $(document).ready(function () {
         rules: {
             title: {
                 required: true,
-            },
-            agency: {
-                required: function () {
-                    return $('#checkAgencyLocation').is(':checked');
-                },
-            },
-            full_address: {
-                required: function () {
-                    return !$('#checkDropShip').is(':checked');
-                },
             }
         },
         submitHandler: function (form) {

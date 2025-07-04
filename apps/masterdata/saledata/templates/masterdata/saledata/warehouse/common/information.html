@@ -1,67 +1,48 @@
 {% load i18n %}
 
-<div class="row mb-5">
+<div class="row d-flex justify-content-center align-items-end">
     <div class="col-12 col-md-6 col-lg-6">
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="inpTitle">{% trans 'Name' %}</label>
-                    <input type="text" class="form-control" name="title" id="inpTitle">
-                </div>
-            </div>
-            <div class="col-12 mb-3">
-                <div class="form-check form-switch">
-                    <input type="checkbox" class="form-check-input" id="inputActive" checked name="is_active">
-                    <label for="inputActive" class="form-label">{% trans 'Active' %}</label>
-                </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-4">
-                <div class="form-group form-check">
-                    <input type="checkbox" id="checkDropShip" class="form-check-input">
-                    <label class="form-label" for="checkDropShip">{% trans 'Dropship' %}</label>
-                </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-                <div class="form-group form-check">
-                    <input type="checkbox" id="checkAgencyLocation" class="form-check-input">
-                    <label class="form-label" for="checkAgencyLocation">{% trans 'Agency/Partner Location' %}</label>
-                </div>
-            </div>
+        <div class="form-group">
+            <label class="form-label required" for="inpTitle">{% trans 'Name' %}</label>
+            <input type="text" class="form-control" name="title" id="inpTitle">
         </div>
     </div>
-    <div class="col-12 col-md-6 col-lg-6">
-        <div class="row">
-            <div class="col-12" hidden id="hidden-place">
-                <div class="form-group">
-                    <label class="form-label required" for="boxSelectAgency">{% trans 'Agency' %}/{% trans 'Partner' %}</label>
-                    <select id="boxSelectAgency"
-                            class="form-select"
-                            name="agency"
-                            data-method="GET"
-                            data-url="{% url 'AccountForSaleListAPI' %}"
-                            data-keyResp="account_sale_list"
-                            data-keyText="name"
-                    ></select>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label" for="inpRemarks">{% trans 'Description' %}</label>
-                    <textarea class="form-control" name="remarks" id="inpRemarks"></textarea>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="warehouseAddress">{% trans "Warehouse Address" %}</label>
-                    <textarea data-bs-toggle="modal"
-                          data-bs-target="#modalWarehouseAddress"
-                          class="form-control text-primary"
-                          name="full_address"
-                          readonly
-                          placeholder="{% trans 'Click to edit' %}"
-                          id="warehouseAddress"></textarea>
-                </div>
-            </div>
+    <div class="col-12 col-md-2 col-lg-2">
+        <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" id="inputActive" checked name="is_active">
+            <label for="inputActive" class="form-label">{% trans 'Active' %}</label>
+        </div>
+    </div>
+    <div class="col-12 col-md-2 col-lg-2">
+        <div class="form-check">
+            <input type="checkbox" id="checkDropShip" class="form-check-input">
+            <label class="form-label" for="checkDropShip">{% trans 'Dropship' %}</label>
+        </div>
+    </div>
+    <div class="col-12 col-md-2 col-lg-2">
+        <div class="form-check">
+            <input type="checkbox" id="checkVirtual" class="form-check-input">
+            <label class="form-label" for="checkVirtual">{% trans 'Virtual warehouse' %}</label>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="form-group">
+            <label class="form-label" for="warehouseAddress">{% trans "Warehouse Address" %}</label>
+            <textarea data-bs-toggle="modal"
+                  data-bs-target="#modalWarehouseAddress"
+                  class="form-control text-primary"
+                  name="full_address"
+                  readonly
+                  placeholder="{% trans 'Click to edit' %}"
+                  id="warehouseAddress"></textarea>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="form-group">
+            <label class="form-label" for="inpRemarks">{% trans 'Description' %}</label>
+            <textarea class="form-control" name="remarks" id="inpRemarks"></textarea>
         </div>
     </div>
 </div>

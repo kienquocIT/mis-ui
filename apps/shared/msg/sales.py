@@ -95,3 +95,5 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     GOODS_RECOVERY_UPDATE = _('Goods recovery update successfully')
     PRODUCT_MODIFICATION_CREATE = _('Product modification create successfully')
     PRODUCT_MODIFICATION_UPDATE = _('Product modification update successfully')
+    EQUIPMENT_LOAN_CREATE = _('Equipment loan create successfully')
+    EQUIPMENT_LOAN_UPDATE = _('Equipment loan update successfully')

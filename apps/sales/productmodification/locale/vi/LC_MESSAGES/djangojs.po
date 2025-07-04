@@ -19,7 +19,7 @@ msgstr ""
 
 #
 msgid "modified by Product Modification"
-msgstr "đã chỉnh sửa bởi Tháo - Lắp Sản phẩm"
+msgstr "đã chỉnh sửa bởi Ráp-Rã Sản phẩm"
 
 #
 msgid "GR completed"

@@ -5,23 +5,23 @@ from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI, MDConfigMsg, PermCheck
 
 
-class InventoryInteractConfigList(View):
+class WarehouseConfigList(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
-        template='masterdata/saledata/masterdata/inventory_interact_config.html',
+        template='masterdata/saledata/masterdata/warehouse_config.html',
         breadcrumb='INVENTORY_INTERACT_CONFIG',
-        menu_active='menu_inventory_interact_config',
+        menu_active='menu_warehouse_config',
     )
     def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST + '?is_virtual=1').get()
         return {
-            'wh_list': resp.result
+            'virtual_warehouse_list': resp.result
         }, status.HTTP_200_OK
 
 
-class InventoryInteractConfigListAPI(APIView):
+class WarehouseConfigListAPI(APIView):
     permission_classes = [IsAuthenticated] # noqa
 
     @mask_view(
@@ -30,15 +30,15 @@ class InventoryInteractConfigListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_INTERACT_LIST).get(params)
-        return resp.auto_return(key_success='inventory_interact_config_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_INTERACT_LIST).get(params)
+        return resp.auto_return(key_success='warehouse_interact_config_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_INTERACT_LIST).post(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_INTERACT_LIST).post(request.data)
         return resp.auto_return()
 
 
@@ -48,5 +48,5 @@ class InventoryInteractConfigDetailAPI(APIView):
         is_api=True,
     )
     def delete(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_INTERACT_DETAIL.fill_key(pk=pk)).delete()
+        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_INTERACT_DETAIL.fill_key(pk=pk)).delete()
         return resp.auto_return(key_success='result')

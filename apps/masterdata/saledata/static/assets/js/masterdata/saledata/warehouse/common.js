@@ -1,4 +1,4 @@
-let [cityEle, districtEle, wardEle, agencyEle] = [$('#warehouseCity'), $('#warehouseDistrict'), $('#warehouseWard'), $('#boxSelectAgency')];
+let [cityEle, districtEle, wardEle] = [$('#warehouseCity'), $('#warehouseDistrict'), $('#warehouseWard')];
 
 class WarehouseLoadPage {
     static loadCities(cityData) {
@@ -30,15 +30,6 @@ class WarehouseLoadPage {
             data: (wardData ? wardData : null),
             keyResp: 'wards',
         });
-    }
-
-    static loadAgency(data) {
-        agencyEle.initSelect2({
-            data: data,
-            dataParams: {
-                'account_types_mapped__account_type_order': 2
-            }
-        })
     }
 
     static getFormData() {
@@ -79,12 +70,11 @@ class WarehouseLoadPage {
             'city': cityEle.val(),
             'district': districtEle.val(),
             'ward': wardEle.val(),
-            'agency': $('#checkAgencyLocation').prop('checked') ? agencyEle.val() : null,
             'full_address': $('#warehouseAddress').val(),
             'is_active': $('#inputActive').is(':checked'),
             'is_dropship': $('#checkDropShip').prop('checked'),
             'is_bin_location': $('#checkBinLocation').prop('checked'),
-            'is_agency_location': $('#checkAgencyLocation').prop('checked'),
+            'is_virtual': $('#checkVirtual').prop('checked'),
             'shelf_data_new': shelf_data_new,
             'shelf_data_update': shelf_data_update
         }
@@ -106,9 +96,7 @@ class WarehouseLoadPage {
                 $('#checkDropShip').prop('checked', detail?.['is_dropship']);
                 $('#checkBinLocation').prop('checked', detail?.['is_bin_location']);
                 $('.bin-location-area').prop('hidden', !detail?.['is_bin_location']);
-                $('#checkAgencyLocation').prop('checked', detail?.['is_agency_location']);
-                $('#hidden-place').prop('hidden', !detail?.['is_agency_location']);
-                WarehouseLoadPage.loadAgency(detail.agency);
+                $('#checkVirtual').prop('checked', detail?.['is_virtual']);
 
                 $('#inputActive').prop('checked', detail.is_active);
                 $('#warehouseAddress').val(detail.full_address);
@@ -174,10 +162,6 @@ function eventPage() {
         else {
             $('#warehouseAddress').closest('.form-group').find('label').addClass('required')
         }
-    })
-
-    $('#checkAgencyLocation').on('change', function () {
-        $('#hidden-place').prop('hidden', !$(this).is(':checked'));
     })
 
     $('#checkBinLocation').on('change', function () {

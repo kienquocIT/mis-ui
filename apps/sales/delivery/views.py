@@ -141,8 +141,11 @@ class OrderPickingDetailAPI(APIView):
         is_api=True,
     )
     def put(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_PICKING_DETAIL.fill_key(pk=pk)).put(request.data)
-        return resp.auto_return()
+        return BaseView.run_update(
+            request=request,
+            url=ApiURL.DELIVERY_PICKING_DETAIL,
+            pk=pk,
+        )
 
 
 class OrderDeliveryList(View):
@@ -251,7 +254,7 @@ class OrderDeliveryDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SUB_LIST.push_id(pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.DELIVERY_SUB_LIST.fill_key(pk=pk)).get()
         return resp.auto_return()
 
     @mask_view(

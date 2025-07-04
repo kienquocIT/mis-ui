@@ -387,12 +387,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/list')
-    QUOTATION_DETAIL = StringUrl('quotation')
+    QUOTATION_DETAIL = StringUrl('quotation/{pk}')
     QUOTATION_EXPENSE_LIST = StringUrl('quotation/quotation-expense-list/lists')
     QUOTATION_CONFIG = StringUrl('quotation/config')
     QUOTATION_INDICATOR_LIST = StringUrl('quotation/indicators')
-    QUOTATION_INDICATOR_DETAIL = StringUrl('quotation/indicator')
-    QUOTATION_INDICATOR_RESTORE = StringUrl('quotation/indicator-restore')
+    QUOTATION_INDICATOR_DETAIL = StringUrl('quotation/indicator/{pk}')
+    QUOTATION_INDICATOR_RESTORE = StringUrl('quotation/indicator-restore/{pk}')
 
     # Bidding
     BIDDING_LIST = StringUrl('bidding/list')
@@ -421,12 +421,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # sale order
     SALE_ORDER_LIST = StringUrl('saleorder/list')
-    SALE_ORDER_DETAIL = StringUrl('saleorder')
+    SALE_ORDER_DETAIL = StringUrl('saleorder/{pk}')
     SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
     SALE_ORDER_CONFIG = StringUrl('saleorder/config')
     SALE_ORDER_INDICATOR_LIST = StringUrl('saleorder/indicators')
-    SALE_ORDER_INDICATOR_DETAIL = StringUrl('saleorder/indicator')
-    SALE_ORDER_INDICATOR_RESTORE = StringUrl('saleorder/indicator-restore')
+    SALE_ORDER_INDICATOR_DETAIL = StringUrl('saleorder/indicator/{pk}')
+    SALE_ORDER_INDICATOR_RESTORE = StringUrl('saleorder/indicator-restore/{pk}')
     PRODUCT_LIST_SALE_ORDER = StringUrl('saleorder/product/list/{pk}')
     SALE_ORDER_PRODUCT_WO_LIST = StringUrl('saleorder/sale-order-product-wo/list')
     SALE_ORDER_RECURRENCE_LIST = StringUrl('saleorder/sale-order-recurrence/list')
@@ -464,7 +464,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_SALEORDER_CALL = StringUrl('delivery/sale-order/{pk}')
     DELIVERY_LEASEORDER_CALL = StringUrl('delivery/lease-order/{pk}')
     DELIVERY_LIST = StringUrl('delivery')
-    DELIVERY_SUB_LIST = StringUrl('delivery/sub')
+    DELIVERY_SUB_LIST = StringUrl('delivery/sub/{pk}')
     DELIVERY_FOR_RECOVERY_LIST = StringUrl('delivery/for-recovery')
     DELIVERY_PRODUCT_LEASE_LIST = StringUrl('delivery/product-lease')
 
@@ -498,7 +498,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PURCHASE_REQUEST_LIST = StringUrl('purchasing/purchase-request/list')
     PURCHASE_REQUEST_DETAIL = StringUrl('purchasing/purchase-request/{pk}')
     PURCHASE_ORDER_LIST = StringUrl('purchasing/purchase-order/list')
-    PURCHASE_ORDER_DETAIL = StringUrl('purchasing/purchase-order')
+    PURCHASE_ORDER_DETAIL = StringUrl('purchasing/purchase-order/{pk}')
     PURCHASE_ORDER_DETAIL_PK = StringUrl('purchasing/purchase-order/{pk}')
     PURCHASE_REQUEST_LIST_FOR_PQR = StringUrl('purchasing/purchase-request-for-pqr/list')
     PURCHASE_REQUEST_PRODUCT_LIST = StringUrl('purchasing/purchase-request-product/list')
@@ -541,7 +541,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # Goods receipt
     GOODS_RECEIPT_LIST = StringUrl('inventory/goods-receipt/list')
-    GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt')
+    GOODS_RECEIPT_DETAIL = StringUrl('inventory/goods-receipt/{pk}')
     GOODS_RECEIPT_DETAIL_PK = StringUrl('inventory/goods-receipt/{pk}')
 
     GOODS_DETAIL_LIST = StringUrl('inventory/goods-detail/list')
@@ -818,7 +818,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Lease order
     LEASE_ORDER_CONFIG = StringUrl('leaseorder/config')
     LEASE_ORDER_LIST = StringUrl('leaseorder/list')
-    LEASE_ORDER_DETAIL = StringUrl('leaseorder')
+    LEASE_ORDER_DETAIL = StringUrl('leaseorder/{pk}')
     LEASE_ORDER_RECURRENCE_LIST = StringUrl('leaseorder/lease-order-recurrence/list')
     LEASE_ORDER_DROPDOWN_LIST = StringUrl('leaseorder/dropdown/list')
 
@@ -868,7 +868,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Goods recovery
     GOODS_RECOVERY_LIST = StringUrl('inventory/goods-recovery/list')
     GOODS_RECOVERY_LEASE_GENERATE_LIST = StringUrl('inventory/goods-recovery-lease-generate/list')
-    GOODS_RECOVERY_DETAIL = StringUrl('inventory/goods-recovery')
+    GOODS_RECOVERY_DETAIL = StringUrl('inventory/goods-recovery/{pk}')
 
     # Advance Filter
     ADVANCE_FILTER_LIST = StringUrl('report/advance-filter/list')

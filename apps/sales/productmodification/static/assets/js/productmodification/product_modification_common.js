@@ -188,6 +188,7 @@ class ProductModificationPageFunction {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
+                        console.log(resp.data['product_modified_before_list'])
                         return resp.data['product_modified_before_list'] ? resp.data['product_modified_before_list'] : [];
                     }
                     return [];
@@ -239,13 +240,13 @@ class ProductModificationPageFunction {
                     className: 'w-70',
                     render: (data, type, row) => {
                         return `<div class="d-flex align-items-center">
-                                    <a data-bs-toggle="collapse" href=".d2_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['id']}">
+                                    <a data-bs-toggle="collapse" href=".d2_${row?.['modified_number']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['modified_number']}">
                                         <i class="bi bi-info-circle"></i>
                                     </a>
                                     <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span>
                                     <span class="ml-1">${row?.['title']}</span>
                                 </div>
-                                <div class="collapse d2_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                                <div class="collapse d2_${row?.['modified_number']}"><span class="small">${row?.['new_description'] || ''}</span></div>`
                     }
                 },
             ]
@@ -1353,6 +1354,7 @@ class ProductModificationHandler {
                     pageVariables.current_product_modified['id'] = data?.['prd_wh_data']?.['product']?.['id']
                     pageVariables.current_product_modified['serial_id'] = data?.['prd_wh_serial_data']?.['id']
                     pageVariables.current_product_modified['lot_id'] = data?.['prd_wh_lot_data']?.['id']
+                    pageVariables.current_product_modified['new_description'] = data?.['new_description']
                     ProductModificationPageFunction.LoadTableCurrentProductModified(
                         [pageVariables.current_product_modified],
                         data?.['prd_wh_data']?.['warehouse']?.['code'],

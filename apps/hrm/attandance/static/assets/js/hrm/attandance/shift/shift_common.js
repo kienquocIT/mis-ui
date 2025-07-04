@@ -77,31 +77,31 @@ class ShiftLoadDataHandle {
         });
     }
 
-    static combineData(formEle) {
-        let frm = new SetupFormSubmit($(formEle));
-        frm.dataForm['title'] = pageElements.$titleEle.val();
-        frm.dataForm['checkin_time'] = pageElements.$checkinTime.val();
-        frm.dataForm['checkin_gr_start'] = pageElements.$checkinGraceStart.val();
-        frm.dataForm['checkin_gr_end'] = pageElements.$checkinGraceEnd.val();
-        frm.dataForm['checkin_threshold'] = parseFloat(pageElements.$checkinThreshold.val());
+    static combineDataForm() {
+        let dataForm = {};
+        dataForm['title'] = pageElements.$titleEle.val();
+        dataForm['checkin_time'] = pageElements.$checkinTime.val();
+        dataForm['checkin_gr_start'] = pageElements.$checkinGraceStart.val();
+        dataForm['checkin_gr_end'] = pageElements.$checkinGraceEnd.val();
+        dataForm['checkin_threshold'] = parseFloat(pageElements.$checkinThreshold.val());
 
-        frm.dataForm['break_in_time'] = pageElements.$breakinTime.val();
-        frm.dataForm['break_in_gr_start'] = pageElements.$breakinGraceStart.val();
-        frm.dataForm['break_in_gr_end'] = pageElements.$breakinGraceEnd.val();
-        frm.dataForm['break_in_threshold'] = parseFloat(pageElements.$breakinThreshold.val());
+        dataForm['break_in_time'] = pageElements.$breakinTime.val();
+        dataForm['break_in_gr_start'] = pageElements.$breakinGraceStart.val();
+        dataForm['break_in_gr_end'] = pageElements.$breakinGraceEnd.val();
+        dataForm['break_in_threshold'] = parseFloat(pageElements.$breakinThreshold.val());
 
-        frm.dataForm['break_out_time'] = pageElements.$breakoutTime.val();
-        frm.dataForm['break_out_gr_start'] = pageElements.$breakoutGraceStart.val();
-        frm.dataForm['break_out_gr_end'] = pageElements.$breakoutGraceEnd.val();
-        frm.dataForm['break_out_threshold'] = parseFloat(pageElements.$breakoutThreshold.val());
+        dataForm['break_out_time'] = pageElements.$breakoutTime.val();
+        dataForm['break_out_gr_start'] = pageElements.$breakoutGraceStart.val();
+        dataForm['break_out_gr_end'] = pageElements.$breakoutGraceEnd.val();
+        dataForm['break_out_threshold'] = parseFloat(pageElements.$breakoutThreshold.val());
 
-        frm.dataForm['checkout_time'] = pageElements.$checkoutTime.val();
-        frm.dataForm['checkout_gr_start'] = pageElements.$checkoutGraceStart.val();
-        frm.dataForm['checkout_gr_end'] = pageElements.$checkoutGraceEnd.val();
-        frm.dataForm['checkout_threshold'] = parseFloat(pageElements.$checkoutThreshold.val());
+        dataForm['checkout_time'] = pageElements.$checkoutTime.val();
+        dataForm['checkout_gr_start'] = pageElements.$checkoutGraceStart.val();
+        dataForm['checkout_gr_end'] = pageElements.$checkoutGraceEnd.val();
+        dataForm['checkout_threshold'] = parseFloat(pageElements.$checkoutThreshold.val());
 
-        frm.dataForm['working_day_list'] = pageElements.getSelectedWorkingDay();
-        return frm;
+        dataForm['working_day_list'] = pageElements.getSelectedWorkingDay();
+        return dataForm;
     }
 }
 
@@ -123,11 +123,48 @@ class ShiftLoadEventHandler {
             ShiftPageFunction.autoFillGraceTime($('#checkout_time'), $('#checkout_gr_start'), $('#checkout_gr_end'));
         })
 
-        $(document).on("click", '.applyBtn', function () {
+        $(document).on('click', '.applyBtn', function () {
             ShiftPageFunction.autoFillGraceTime($('#checkin_time'), $('#checkin_gr_start'), $('#checkin_gr_end'));
             ShiftPageFunction.autoFillGraceTime($('#breakin_time'), $('#breakin_gr_start'), $('#breakin_gr_end'));
             ShiftPageFunction.autoFillGraceTime($('#breakout_time'), $('#breakout_gr_start'), $('#breakout_gr_end'));
             ShiftPageFunction.autoFillGraceTime($('#checkout_time'), $('#checkout_gr_start'), $('#checkout_gr_end'));
+        })
+
+        $(document).on("click", "#create_shift_button", function () {
+            $('#shift-modal-title').text($.fn.gettext('Add new shift'))
+            $('#shift-modal-title').attr('data-id', '');
+        })
+
+        $(document).on("click", ".edit-shift", function () {
+            $('#shift-modal-title').text($.fn.gettext('Update shift'));
+            $('#shift-modal-title').attr('data-id', $(this).attr('data-id'));
+
+            $('#shift_name').val($(this).attr('data-title'));
+            $('#checkin_time').val($(this).attr('data-checkin-time'));
+            $('#checkin_gr_start').val($(this).attr('data-checkin-gr-start'));
+            $('#checkin_gr_end').val($(this).attr('data-checkin-gr-end'));
+            $('#checkin_threshold').val($(this).attr('data-checkin-threshold'));
+
+            $('#breakin_time').val($(this).attr('data-breakin-time'));
+            $('#breakin_gr_start').val($(this).attr('data-breakin-gr-start'));
+            $('#breakin_gr_end').val($(this).attr('data-breakin-gr-end'));
+            $('#breakin_threshold').val($(this).attr('data-breakin-threshold'));
+
+            $('#breakout_time').val($(this).attr('data-breakout-time'));
+            $('#breakout_gr_start').val($(this).attr('data-breakout-gr-start'));
+            $('#breakout_gr_end').val($(this).attr('data-breakout-gr-end'));
+            $('#breakout_threshold').val($(this).attr('data-breakout-threshold'));
+
+            $('#checkout_time').val($(this).attr('data-checkout-time'));
+            $('#checkout_gr_start').val($(this).attr('data-checkout-gr-start'));
+            $('#checkout_gr_end').val($(this).attr('data-checkout-gr-end'));
+            $('#checkout_threshold').val($(this).attr('data-checkout-threshold'));
+
+            let working_days = $(this).attr('data-working-day-list') ? JSON.parse($(this).attr('data-working-day-list')) : [];
+            for (let i = 0; i < working_days.length; i++) {
+                console.log($(pageElements.workingDayCheckboxIds[i]));
+                $(pageElements.workingDayCheckboxIds[i]).prop('checked', working_days[i]);
+            }
         })
     }
 }

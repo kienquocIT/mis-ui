@@ -24,7 +24,7 @@
                 <div class="tab-pane fade show active" id="tab_shift">
                     <div class="row">
                         <div class="col-12">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#modal-create-shift"
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#ShiftModal"
                                id="create_shift_button">
                                 <button class="btn btn-sm btn-outline-primary">
                                     <span>
@@ -37,16 +37,14 @@
                             </a>
                         </div>
                         <div class="col-12 mt-5">
-                            <table class="table nowrap w-100" data-method="GET"
-                                   data-url="{% url 'IncomingDocumentListAPI' %}"
-                                   data-url-detail="{% url 'IncomingDocumentDetail' 0 %}" id="tbl_incoming_document">
+                            <table class="table nowrap w-100" data-method="GET" data-url="{% url 'ShiftMasterDataListAPI' %}" id="tbl_shift">
                                 <thead>
                                     <tr>
                                         <th></th>
                                         <th>{% trans 'Code' %}</th>
                                         <th>{% trans 'Shift name' %}</th>
                                         <th>{% trans 'Description' %}</th>
-                                        <th>{% trans '' %}</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                             </table>
@@ -58,12 +56,12 @@
     </div>
 {% endblock %}
 {% block modalData %}
-    {% include 'hrm/attandance/shift/shift_create_modal.html' %}
+    {% include 'hrm/attandance/shift/shift_modal.html' %}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/js/hrm/attandance/shift/shift_common.js' %}"></script>
-    <script src="{% static 'assets/js/hrm/attandance/shift/shift_create.js' %}"></script>
     <script src="{% static 'assets/js/hrm/attandance/shift/shift_list.js' %}"></script>
+    <script src="{% static 'assets/js/hrm/attandance/shift/shift_submit.js' %}"></script>
 {% endblock %}

@@ -1,11 +1,11 @@
 {% load i18n %}
 
-<div class="modal fade" id="modal-create-shift" tabindex="-1" role="dialog"
-     aria-labelledby="modal-create-shift" aria-hidden="true">
+<div class="modal fade" id="ShiftModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenter" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{% trans 'Add new shift' %}</h5>
+                <h5 class="modal-title" id="shift-modal-title"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true" class="icon">
                             <i class="fas fa-times"></i>
@@ -13,8 +13,9 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="modal-create_shift"
+                <form id="form-shift"
                       data-url="{% url "ShiftMasterDataListAPI" %}"
+                      data-url-detail="{% url "ShiftMasterDataDetailAPI" "0" %}"
                       data-url-redirect="{% url "ShiftMasterDataList" %}"
                       data-method="POST">
                     {% csrf_token %}
@@ -31,16 +32,16 @@
                             <table class="table table-bordered nowrap w-100">
                                 <thead class="table-success">
                                 <tr>
-                                    <th style="min-width: 100px">Name</th>
-                                    <th style="min-width: 100px">Time</th>
-                                    <th style="min-width: 100px">Grace start</th>
-                                    <th style="min-width: 100px">Grace end</th>
-                                    <th style="min-width: 100px">Threshold late / Leave early</th>
+                                    <th style="min-width: 100px">{% trans 'Name' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Time' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Grace start' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Grace end' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Threshold late / Leave early' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>Check in</td>
+                                    <td>{% trans 'Check in' %}</td>
                                     <td>
                                         <div class="d-flex align-items-center"><input
                                                 class="form-control form-control-sm time-input" id="checkin_time"
@@ -69,7 +70,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Break in (check out 1st half shift)</td>
+                                    <td>{% trans 'Break in (check out 1st half shift)' %}</td>
                                     <td>
                                         <div class="d-flex align-items-center"><input
                                                 class="form-control form-control-sm time-input me-2" id="breakin_time"
@@ -96,7 +97,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Break out (check in 2nd half shift)</td>
+                                    <td>{% trans 'Break out (check in 2nd half shift)' %}</td>
                                     <td>
                                         <div class="d-flex align-items-center"><input
                                                 class="form-control form-control-sm time-input" id="breakout_time"
@@ -123,7 +124,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Check out</td>
+                                    <td>{% trans 'Check out' %}</td>
                                     <td>
                                         <div class="d-flex align-items-center"><input
                                                 class="form-control form-control-sm time-input" id="checkout_time"
@@ -159,44 +160,44 @@
                             <span>{% trans 'Working day' %}</span>
                         </div>
                         <div class="col-12">
-                            <div class="border shadow rounded p-2 d-flex align-content-center justify-content-between">
-                                <div class="form-check form-check-lg">
+                            <div style="overflow: auto" class="border shadow rounded p-2 d-flex align-content-center justify-content-between">
+                                <div style="min-width: 100px" class="form-check form-check-lg">
                                     <input type="checkbox" id="checkbox_mon" class="form-check-input"
                                            name="working_days[]">
                                     <label title="Monday" for="checkbox_mon"
                                            class="form-check-label">{% trans 'Monday' %}</label>
                                 </div>
-                                <div class="form-check form-check-lg">
+                                <div style="min-width: 100px" class="form-check form-check-lg">
                                     <input type="checkbox" id="checkbox_tue" class="form-check-input"
                                            name="working_days[]">
                                     <label title="Tuesday" for="checkbox_tue"
                                            class="form-check-label">{% trans 'Tuesday' %} </label>
                                 </div>
-                                <div class="form-check form-check-lg">
+                                <div style="min-width: 100px" class="form-check form-check-lg">
                                     <input type="checkbox" id="checkbox_wed" class="form-check-input"
                                            name="working_days[]">
                                     <label title="Wednesday" for="checkbox_wed"
                                            class="form-check-label">{% trans 'Wednesday' %}</label>
                                 </div>
-                                <div class="form-check form-check-lg">
+                                <div style="min-width: 100px" class="form-check form-check-lg">
                                     <input type="checkbox" id="checkbox_thu" class="form-check-input"
                                            name="working_days[]">
                                     <label title="Thursday" for="checkbox_thu"
                                            class="form-check-label">{% trans 'Thursday' %} </label>
                                 </div>
-                                <div class="form-check form-check-lg">
+                                <div style="min-width: 100px" class="form-check form-check-lg">
                                     <input type="checkbox" id="checkbox_fri" class="form-check-input"
                                            name="working_days[]">
                                     <label title="Friday" for="checkbox_fri"
                                            class="form-check-label">{% trans 'Friday' %}</label>
                                 </div>
-                                <div class="form-check form-check-lg">
+                                <div style="min-width: 100px" class="form-check form-check-lg">
                                     <input type="checkbox" id="checkbox_sat" class="form-check-input"
                                            name="working_days[]">
                                     <label title="Saturday" for="checkbox_sat"
                                            class="form-check-label"> {% trans 'Saturday' %} </label>
                                 </div>
-                                <div class="form-check form-check-lg">
+                                <div style="min-width: 100px" class="form-check form-check-lg">
                                     <input type="checkbox" id="checkbox_sun" class="form-check-input"
                                            name="working_days[]">
                                     <label title="Sunday" for="checkbox_sun"
@@ -210,11 +211,9 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     {% trans 'Close' %}
-                    <i class="fa-solid fa-arrow-right-to-bracket fa-rotate-180"></i>
                 </button>
-                <button type="submit" class="btn btn-primary" form="modal-create-shift">
+                <button type="submit" class="btn btn-primary" form="form-shift">
                     {% trans 'Save' %}
-                    <i class="fa-regular fa-floppy-disk me-1"></i>
                 </button>
             </div>
         </div>

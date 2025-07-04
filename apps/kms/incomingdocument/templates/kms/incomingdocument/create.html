@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block title %}
-    {% trans 'Document approval create' %}
+    {% trans 'Incoming document' %}
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
@@ -29,7 +29,6 @@
           data-url="{% url 'IncomingDocumentListAPI' %}"
           data-url-redirect="{% url 'IncomingDocumentList' %}">
         {% csrf_token %}
-        <h5 class="mb-3">{% trans 'INCOMING DOCUMENT' %}</h5>
         <div class="row" style="height: 100vh;">
             <div class="col-12 col-md-8 col-lg-8" style="overflow-y: auto; height: 100vh; padding-right: 1rem;">
                 <div class="row">

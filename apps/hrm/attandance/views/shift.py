@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared import mask_view, ServerAPI, ApiURL, HRMsg
 
 
 class ShiftMasterDataList(View):
@@ -34,8 +34,29 @@ class ShiftMasterDataListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        print("ARSENAL IS THE CHAMPION")
         resp = ServerAPI(user=request.user, url=ApiURL.SHIFT_LIST).post(request.data)
-        return resp.auto_return(key_success="shift_list")
+        if resp.state:
+            resp.result['message'] = HRMsg.SHIFT_CREATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class ShiftMasterDataDetailAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SHIFT_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='shift_detail')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SHIFT_DETAIL.fill_key(pk=pk)).put(request.data)
+        return resp.auto_return(key_success='shift_detail')
+
 
 

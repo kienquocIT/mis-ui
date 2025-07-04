@@ -6,6 +6,15 @@ from apps.shared.msg import BaseMsg
 class BaseView:
 
     @classmethod
+    def run_list(cls, request, url, key_success):
+        data = request.query_params.dict()
+        if isinstance(data, dict):
+            if "is_delete" not in data:
+                data.update({'is_delete': False})
+        resp = ServerAPI(user=request.user, url=url).get(data)
+        return resp.auto_return(key_success=key_success)
+
+    @classmethod
     def run_create(cls, request, url):
         resp = ServerAPI(user=request.user, url=url).post(request.data)
         if resp.state:

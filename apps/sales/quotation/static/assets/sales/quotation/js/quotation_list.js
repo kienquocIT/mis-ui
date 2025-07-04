@@ -187,6 +187,21 @@ $(function () {
                                     </div>`);
                     headerToolbar$.append($group);
                 }
+                // if (!$('#btn-recycle-bin').length) {
+                //     let $group = $(`<div class="btn-filter">
+                //                         <button type="button" class="btn btn-light btn-sm ml-1" id="btn-recycle-bin">
+                //                             <span><span class="icon"><i class="fas fa-recycle"></i></span><span>Recycle bin</span></span>
+                //                         </button>
+                //                     </div>`);
+                //     headerToolbar$.append($group);
+                //     // Select the appended button from the DOM and attach the event listener
+                //     $('#btn-recycle-bin').on('click', function () {
+                //         if ($.fn.dataTable.isDataTable($table)) {
+                //             $table.DataTable().destroy();
+                //         }
+                //         loadDbl({'is_delete': true});
+                //     });
+                // }
             }
         }
 
@@ -238,7 +253,6 @@ $(function () {
 
         $('#btn-apply-filter').on('click', function () {
             let dataParams = {};
-            dataParams['is_delete'] = $isDeleteEle[0].checked;
             if ($employeeEle.val() && $employeeEle.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = $employeeEle.val().join(',');
             }

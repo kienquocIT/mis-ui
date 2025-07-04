@@ -93,9 +93,11 @@ class QuotationListAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_LIST).get(data)
-        return resp.auto_return(key_success='quotation_list')
+        return BaseView.run_list(
+            request=request,
+            url=ApiURL.QUOTATION_LIST,
+            key_success='quotation_list'
+        )
 
     @mask_view(
         auth_require=True,

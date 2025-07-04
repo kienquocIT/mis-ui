@@ -5458,11 +5458,15 @@ class DTBControl {
         if ([2, 3].includes(data?.['system_status'])) {
             disabled = 'disabled';
         }
+        let bodyBase = `<a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit"></i><span>${$.fn.transEle.attr('data-edit')}</span></a>
+                        <a class="dropdown-item action-delete hidden" href="#" data-id="${data?.['id']}"><i class="dropdown-icon far fa-trash-alt"></i><span>${$.fn.transEle.attr('data-delete')}</span></a>`;
+        if (data?.['is_delete'] === true) {
+            bodyBase = `<a class="dropdown-item action-delete" href="#" data-id="${data?.['id']}"><i class="dropdown-icon far fa-trash-alt"></i><span>Restore</span></a>`;
+        }
         return `<div class="dropdown">
                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" aria-expanded="false" data-bs-toggle="dropdown"><span class="icon"><i class="far fa-caret-square-down"></i></span></button>
                     <div role="menu" class="dropdown-menu dropdown-menu-actions">
-                        <a class="dropdown-item ${disabled}" href="${link}"><i class="dropdown-icon far fa-edit"></i><span>${$.fn.transEle.attr('data-edit')}</span></a>
-                        <a class="dropdown-item action-delete" href="#" data-id="${data?.['id']}"><i class="dropdown-icon far fa-trash-alt"></i><span>${$.fn.transEle.attr('data-delete')}</span></a>
+                        ${bodyBase}
                     </div>
                 </div>`;
     }

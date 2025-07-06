@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Equipment return' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "EquipmentReturnCreate" %}">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12">
+            <table id="datatable_equipment_return_list"
+                   class="table nowrap w-100 mb-5"
+                   data-method="GET"
+                   data-url="{% url 'EquipmentReturnListAPI' %}"
+                   data-url-detail="{% url 'EquipmentReturnDetail' '0' %}"
+            >
+                <thead>
+                <tr>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 150px">{% trans "Code" %}</th>
+                    <th style="min-width: 300px">{% trans "Name" %}</th>
+                    <th style="min-width: 150px">{% trans "Employee created" %}</th>
+                    <th style="min-width: 150px">{% trans "Date created" %}</th>
+                    <th style="min-width: 80px">{% trans "System status" %}</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/equipmentreturn/equipment_return_list.js' %}"></script>
+{% endblock %}

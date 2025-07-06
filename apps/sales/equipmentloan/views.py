@@ -51,7 +51,7 @@ class EquipmentLoanCreate(View):
     )
     def get(self, request, *args, **kwargs):
         return {
-            'form_id': 'form-create-product-modification',
+            'form_id': 'form-create-equipment-loan',
         }, status.HTTP_200_OK
 
 
@@ -79,7 +79,7 @@ class EquipmentLoanUpdate(View):
     )
     def get(self, request, *args, **kwargs):
         return {
-            'form_id': 'form-detail-product-modification',
+            'form_id': 'form-detail-equipment-loan',
         }, status.HTTP_200_OK
 
 

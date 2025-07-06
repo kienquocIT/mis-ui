@@ -529,7 +529,7 @@ class EquipmentLoanHandler {
                 if (data) {
                     data = data['equipment_loan_detail'];
 
-                    console.log(data)
+                    // console.log(data)
 
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);

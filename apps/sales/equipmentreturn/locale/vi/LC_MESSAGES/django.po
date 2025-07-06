@@ -30,5 +30,9 @@ msgid "Loan date"
 msgstr "Ngày mượn"
 
 #
+msgid "You need to select an account before choosing Equipment Loan"
+msgstr "Bạn cần chọn một tài khoản trước khi chọn phiếu Cho mượn hàng"
+
+#
 msgid "Pick detail"
 msgstr "Lấy cụ thể"

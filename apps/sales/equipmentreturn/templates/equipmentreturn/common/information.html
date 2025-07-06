@@ -1,67 +1,56 @@
 {% load i18n %}
 
+
 <div class="row">
-    <div class="col-12 col-lg-9 col-md-9">
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="title">{% trans "Name" %}</label>
-                    <input required class="form-control" type="text" id="title">
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="account">{% trans "Account" %}</label>
-                    <div style="display: flex;">
-                        <input required disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="account">
-                        <button type="button" class="btn btn-xs btn-primary btn-animated ml-1" id="account-select-btn" data-bs-toggle="modal" data-bs-target="#account-select-modal">
-                            <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Select account' %}</span></span>
-                        </button>
-                    </div>
-                </div>
+    <div class="col-12 col-md-9 col-lg-9">
+        <div class="form-group">
+            <label class="form-label required" for="title">{% trans "Name" %}</label>
+            <input required class="form-control" type="text" id="title">
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label class="form-label required" for="document-date">{% trans "Document date" %}</label>
+            <div class="input-group mb-3">
+                <span class="input-affix-wrapper">
+                    <span class="input-prefix">📅</span>
+                    <input required class="form-control" id="document-date">
+                </span>
             </div>
         </div>
     </div>
-    <div class="col-12 col-lg-3 col-md-3">
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="document-date">{% trans "Document date" %}</label>
-                    <div class="input-group mb-3">
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix">📅</span>
-                            <input required class="form-control" id="document-date">
-                        </span>
-                    </div>
-                </div>
+    <div class="col-12 col-md-9 col-lg-9">
+        <div class="form-group">
+            <label class="form-label required" for="account">{% trans "Account" %}</label>
+            <div style="display: flex;">
+                <input required disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="account">
+                <button type="button" class="btn btn-xs btn-primary btn-animated ml-1" id="account-select-btn" data-bs-toggle="modal" data-bs-target="#account-select-modal">
+                    <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Select account' %}</span></span>
+                </button>
             </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="loan-date">{% trans "Loan date" %}</label>
-                    <div class="input-group mb-3">
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix">📅</span>
-                            <input required class="form-control" id="loan-date">
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="return-date">{% trans "Return date" %}</label>
-                    <div class="input-group mb-3">
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix">📅</span>
-                            <input required class="form-control" id="return-date">
-                        </span>
-                    </div>
-                </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-9 col-lg-9">
+        <div class="form-group">
+            <label class="form-label required" for="equipment-loan">{% trans "Equipment loan" %}</label>
+            <select class="form-select select2" id="equipment-loan" disabled></select>
+            <span class="small text-muted">{% trans 'You need to select an account before choosing Equipment Loan' %}</span>
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="form-group">
+            <label class="form-label" for="loan-date">{% trans "Loan date" %}</label>
+            <div class="input-group mb-3">
+                <span class="input-affix-wrapper">
+                    <span class="input-prefix">📅</span>
+                    <input disabled readonly class="form-control" id="loan-date">
+                </span>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row mb-5">
+<div class="row mt-3 mb-5">
     <div class="col-12">
         <ul class="nav nav-tabs nav-icon nav-light">
             <li class="nav-item">

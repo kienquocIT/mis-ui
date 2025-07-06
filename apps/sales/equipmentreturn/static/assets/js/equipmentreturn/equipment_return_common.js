@@ -7,10 +7,8 @@ class EquipmentReturnPageElements {
         this.$script_url = $('#script-url')
         this.$trans_url = $('#trans-url')
         this.$title = $('#title')
-        this.$account = $('#account')
         this.$document_date = $('#document-date')
         this.$loan_date = $('#loan-date')
-        this.$return_date = $('#return-date')
         // line detail
         this.$table_line_detail = $('#table_line_detail')
     }

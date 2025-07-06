@@ -7,7 +7,14 @@ class EquipmentReturnPageElements {
         this.$script_url = $('#script-url')
         this.$trans_url = $('#trans-url')
         this.$title = $('#title')
+        this.$account = $('#account')
         this.$document_date = $('#document-date')
+        // modal
+        this.$account_select_btn = $('#account-select-btn')
+        this.$account_select_modal = $('#account-select-modal')
+        this.$accept_select_account_btn = $('#accept-select-account-btn')
+        this.$table_select_account = $('#table-select-account')
+        this.$table_select_el = $('#table-select-el')
         // line detail
         this.$table_line_detail = $('#table_line_detail')
     }
@@ -28,6 +35,110 @@ const pageVariables = new EquipmentReturnPageVariables()
  * Các hàm load page và hàm hỗ trợ
  */
 class EquipmentReturnPageFunction {
+    static LoadAccountTable() {
+        pageElements.$table_select_account.DataTable().clear().destroy()
+        pageElements.$table_select_account.DataTableDefault({
+            useDataServer: true,
+            rowIdx: true,
+            reloadCurrency: true,
+            scrollY: '50vh',
+            scrollX: true,
+            scrollCollapse: true,
+            ajax: {
+                url: pageElements.$table_select_account.attr('data-url'),
+                type: 'GET',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('account_dd_list')) {
+                        return data?.['account_dd_list'];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-5',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                                    <input type="radio" name="account-selected-radio" class="form-check-input" data-account='${JSON.stringify(row)}'/>
+                                </div>`
+                    }
+                },
+                {
+                    data: 'name',
+                    className: 'w-70',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-soft-primary mr-2">${row?.['code']}</span><span>${row?.['name']}</span>`
+                    }
+                },
+                {
+                    data: 'tax_code',
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        return row?.['tax_code']
+                    }
+                },
+            ],
+        })
+    }
+    static LoadEquipmentLoanTableByAccount(account_id=null) {
+        pageElements.$table_select_el.DataTable().clear().destroy()
+        pageElements.$table_select_el.DataTableDefault({
+            styleDom: 'hide-foot',
+            useDataServer: true,
+            rowIdx: true,
+            reloadCurrency: true,
+            scrollY: '63vh',
+            scrollX: true,
+            scrollCollapse: true,
+            paging: false,
+            ajax: {
+                url: account_id ? pageElements.$table_select_el.attr('data-url') + `?account_mapped_id=${account_id}` : pageElements.$table_select_el.attr('data-url'),
+                type: 'GET',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('equipment_loan_list_by_account')) {
+                        return data?.['equipment_loan_list_by_account'];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-5',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                                <input type="radio" name="el-selected-radio" class="form-check-input" data-equipment-loan='${JSON.stringify(row)}'/>
+                            </div>`
+                    }
+                },
+                {
+                    className: 'w-70',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-soft-primary mr-2">${row?.['code']}</span><span>${row?.['title']}</span>`
+                    }
+                },
+                {
+                    className: 'text-right w-20',
+                    render: (data, type, row) => {
+                        return moment(row?.['loan_date'], "YYYY-MM-DD").format('DD/MM/YYYY')
+                    }
+                },
+            ],
+        })
+    }
     static LoadLineDetailTable(data_list=[], option='create') {
         pageElements.$table_line_detail.DataTable().clear().destroy()
         pageElements.$table_line_detail.DataTableDefault({
@@ -146,8 +257,24 @@ class EquipmentReturnHandler {
  */
 class EquipmentReturnEventHandler {
     static InitPageEven() {
+        pageElements.$account_select_btn.on('click', function () {
+            EquipmentReturnPageFunction.LoadAccountTable()
+        })
+        pageElements.$accept_select_account_btn.on('click', function () {
+            let selected_obj = null
+            $('input[name="account-selected-radio"]').each(async function () {
+                if ($(this).prop('checked')) {
+                    selected_obj = $(this).attr('data-account') ? JSON.parse($(this).attr('data-account')) : {}
+                    pageElements.$account.val(selected_obj?.['name']).attr('data-id', selected_obj?.['id']).prop('readonly', true).prop('disabled', true)
+                    pageElements.$account_select_modal.modal('hide')
+                }
+            })
+            if (!selected_obj) {
+                $.fn.notifyB({description: 'Nothing selected'}, 'warning');
+            }
+        })
         $(document).on("click", '#btn-select-detail', function () {
-
+            EquipmentReturnPageFunction.LoadEquipmentLoanTableByAccount(pageElements.$account.attr('data-id') || null)
         })
     }
 }

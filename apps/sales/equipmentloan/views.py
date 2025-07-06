@@ -107,7 +107,7 @@ class EquipmentLoanDetailAPI(APIView):
         return resp.auto_return()
 
 # related
-class LoanProductListAPI(APIView):
+class ELProductListAPI(APIView):
     permission_classes = [IsAuthenticated]  # noqa
 
     @mask_view(
@@ -116,7 +116,7 @@ class LoanProductListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.LOAN_PRODUCT_LIST).get(params)
+        resp = ServerAPI(user=request.user, url=ApiURL.EL_PRODUCT_LIST).get(params)
         return resp.auto_return(key_success='product_list')
 
 

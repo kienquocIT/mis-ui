@@ -105,3 +105,16 @@ class EquipmentReturnDetailAPI(APIView):
             resp.result['message'] = SaleMsg.EQUIPMENT_RETURN_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+# related
+class EREquipmentLoanListByAccountAPI(APIView):
+    permission_classes = [IsAuthenticated]  # noqa
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ER_EL_LIST_BY_ACCOUNT).get(params)
+        return resp.auto_return(key_success='equipment_loan_list_by_account')

@@ -1,7 +1,7 @@
 from django.urls import path
 from apps.sales.equipmentreturn.views import (
     EquipmentReturnList, EquipmentReturnCreate, EquipmentReturnDetail, EquipmentReturnUpdate,
-    EquipmentReturnListAPI, EquipmentReturnDetailAPI,
+    EquipmentReturnListAPI, EquipmentReturnDetailAPI, EREquipmentLoanListByAccountAPI,
 )
 
 urlpatterns = [
@@ -11,4 +11,5 @@ urlpatterns = [
     path('update/<str:pk>', EquipmentReturnUpdate.as_view(), name='EquipmentReturnUpdate'),
     path('list/api', EquipmentReturnListAPI.as_view(), name='EquipmentReturnListAPI'),
     path('detail/api/<str:pk>', EquipmentReturnDetailAPI.as_view(), name='EquipmentReturnDetailAPI'),
+    path('er-el-list-by-account/api', EREquipmentLoanListByAccountAPI.as_view(), name='EREquipmentLoanListByAccountAPI'),
 ]

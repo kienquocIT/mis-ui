@@ -45,16 +45,15 @@
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
             <div class="modal-body">
-                <div class="row h-50">
+                <div class="row h-100">
                     <div class="col-12 col-md-5 col-lg-5 border-right">
-                        <table class="table nowrap w-100" id="table-select-el">
+                        <table class="table nowrap w-100" id="table-select-el" data-url="{% url 'EREquipmentLoanListByAccountAPI' %}">
                             <thead>
                                 <tr>
-                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 30px"></th>
                                     <th style="min-width: 20px"></th>
                                     <th style="min-width: 150px">{% trans 'Equipment loan' %}</th>
                                     <th style="min-width: 100px">{% trans 'Loan date' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Return date' %}</th>
                                 </tr>
                             </thead>
                         </table>
@@ -63,24 +62,7 @@
                         <table id="table_el_detail" class="table nowrap w-100">
                             <thead>
                                 <tr>
-                                    <th style="min-width: 50px"></th>
-                                    <th style="min-width: 250px">{% trans 'Product' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                                    <th style="min-width: 100px">{% trans 'UOM' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Lot number' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Serial number' %}</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="row mt-2 h-50">
-                    <div class="col-12">
-                        <table id="table_line_detail_preview" class="table nowrap w-100">
-                            <thead class="bg-secondary-light-5">
-                                <tr>
-                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 30px"></th>
                                     <th style="min-width: 250px">{% trans 'Product' %}</th>
                                     <th style="min-width: 100px">{% trans 'Quantity' %}</th>
                                     <th style="min-width: 100px">{% trans 'UOM' %}</th>

@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+
     EquipmentLoanEventHandler.InitPageEven()
     UsualLoadPageFunction.LoadDate({element: pageElements.$document_date, auto_load: true, empty: false})
     UsualLoadPageFunction.LoadDate({element: pageElements.$loan_date, empty: true})

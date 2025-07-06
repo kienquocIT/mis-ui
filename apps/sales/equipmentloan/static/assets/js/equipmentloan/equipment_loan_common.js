@@ -517,6 +517,8 @@ class EquipmentLoanHandler {
         })
         frm.dataForm['equipment_loan_item_list'] = equipment_loan_item_list
 
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
+
         return frm
     }
     static LoadDetailEquipmentLoan(option) {
@@ -539,6 +541,12 @@ class EquipmentLoanHandler {
                     pageElements.$loan_date.val(moment(data?.['loan_date'], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     pageElements.$return_date.val(moment(data?.['return_date'], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     EquipmentLoanPageFunction.LoadLineDetailTable(data?.['equipment_loan_item_list'], option)
+
+                    new $x.cls.file($('#attachment')).init({
+                        enable_edit: option !== 'detail',
+                        data: data.attachment,
+                        name: 'attachment'
+                    })
 
                     $.fn.initMaskMoney2();
 

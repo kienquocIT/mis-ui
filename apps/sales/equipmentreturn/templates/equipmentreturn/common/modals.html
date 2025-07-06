@@ -37,64 +37,65 @@
     </div>
 </div>
 
-<div class="modal fade" id="picking-product-modal" tabindex="-1" role="dialog" aria-labelledby="picking-product-modal">
+<div class="modal fade" id="select-detail-modal" tabindex="-1" role="dialog" aria-labelledby="select-detail-modal">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{% trans 'Pick detail' %}</h5>
+                <h5 class="modal-title">{% trans 'Select returned equipment' %}</h5>
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
             <div class="modal-body">
-                <div class="row h-100">
-                    <div class="col-12 col-md-4 col-lg-4 table-none-space border-right">
-                        <table class="table nowrap w-100" id="table-select-warehouse">
+                <div class="row h-50">
+                    <div class="col-12 col-md-5 col-lg-5 border-right">
+                        <table class="table nowrap w-100" id="table-select-el">
                             <thead>
                                 <tr>
                                     <th style="min-width: 50px"></th>
                                     <th style="min-width: 20px"></th>
-                                    <th style="min-width: 150px">{% trans 'Warehouse' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Current quantity' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Picked quantity' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Equipment loan' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Loan date' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Return date' %}</th>
                                 </tr>
                             </thead>
                         </table>
                     </div>
-                    <div class="col-12 col-md-8 col-lg-8 table-lot-space" hidden>
-                        <table class="table nowrap w-100" id="table-select-lot">
+                    <div class="col-12 col-md-7 col-lg-7">
+                        <table id="table_el_detail" class="table nowrap w-100">
                             <thead>
                                 <tr>
                                     <th style="min-width: 50px"></th>
-                                    <th style="min-width: 20px"></th>
-                                    <th style="min-width: 150px">{% trans 'Lot number' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Remain' %}</th>
-                                    <th style="min-width: 80px">{% trans 'Expiration date' %}</th>
-                                    <th style="min-width: 80px">{% trans 'Mfr date' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Picked quantity' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Product' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                                    <th style="min-width: 100px">{% trans 'UOM' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Lot number' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Serial number' %}</th>
                                 </tr>
                             </thead>
+                            <tbody></tbody>
                         </table>
                     </div>
-                    <div class="col-12 col-md-8 col-lg-8 table-serial-space" hidden>
-                        <table class="table nowrap w-100" id="table-select-serial">
-                            <thead>
+                </div>
+                <div class="row mt-2 h-50">
+                    <div class="col-12">
+                        <table id="table_line_detail_preview" class="table nowrap w-100">
+                            <thead class="bg-secondary-light-5">
                                 <tr>
                                     <th style="min-width: 50px"></th>
-                                    <th style="min-width: 20px"></th>
-                                    <th style="min-width: 150px">{% trans 'Vendor serial no.' %}</th>
-                                    <th style="min-width: 150px">{% trans 'Serial no.' %}</th>
-                                    <th style="min-width: 80px">{% trans 'Expiration date' %}</th>
-                                    <th style="min-width: 80px">{% trans 'Mfr date' %}</th>
-                                    <th style="min-width: 80px">{% trans 'Warranty start' %}</th>
-                                    <th style="min-width: 80px">{% trans 'Warranty end' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Product' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                                    <th style="min-width: 100px">{% trans 'UOM' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Lot number' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Serial number' %}</th>
                                 </tr>
                             </thead>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Done' %}</button>
+                <button type="button" id="btn-accept-el-item" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Done' %}</button>
             </div>
         </div>
     </div>

@@ -26,13 +26,17 @@ msgid "Equipment Return"
 msgstr "Thu hồi hàng cho mượn"
 
 #
+msgid "Select Equipment loan"
+msgstr "Chọn phiếu Cho mượn hàng"
+
+#
 msgid "Loan date"
 msgstr "Ngày mượn"
 
 #
-msgid "You need to select an account before choosing Equipment Loan"
-msgstr "Bạn cần chọn một tài khoản trước khi chọn phiếu Cho mượn hàng"
+msgid "Serial number"
+msgstr "Số serial"
 
 #
-msgid "Pick detail"
-msgstr "Lấy cụ thể"
+msgid "Select returned equipment"
+msgstr "Chọn hàng được thu hồi"

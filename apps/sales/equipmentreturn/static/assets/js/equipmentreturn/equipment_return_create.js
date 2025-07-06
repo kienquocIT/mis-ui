@@ -3,6 +3,7 @@ $(document).ready(function () {
 
     EquipmentReturnEventHandler.InitPageEven()
     UsualLoadPageFunction.LoadDate({element: pageElements.$document_date, auto_load: true, empty: false})
+    EquipmentReturnPageFunction.LoadLineDetailTable()
 
     WFRTControl.setWFInitialData('equipmentreturn')
 

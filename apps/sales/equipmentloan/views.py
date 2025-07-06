@@ -129,7 +129,7 @@ class ELWarehouseListByProductAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST_BY_PRODUCT).get(params)
+        resp = ServerAPI(user=request.user, url=ApiURL.EL_WAREHOUSE_LIST_BY_PRODUCT).get(params)
         return resp.auto_return(key_success='warehouse_list_by_product')
 
 
@@ -142,7 +142,7 @@ class ELProductLotListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LOT_LIST).get(params)
+        resp = ServerAPI(user=request.user, url=ApiURL.EL_PRODUCT_LOT_LIST).get(params)
         return resp.auto_return(key_success='product_lot_list')
 
 
@@ -155,5 +155,5 @@ class ELProductSerialListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SERIAL_LIST).get(params)
+        resp = ServerAPI(user=request.user, url=ApiURL.EL_PRODUCT_SERIAL_LIST).get(params)
         return resp.auto_return(key_success='product_serial_list')

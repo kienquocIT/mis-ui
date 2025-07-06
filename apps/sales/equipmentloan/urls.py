@@ -13,7 +13,7 @@ urlpatterns = [
     path('list/api', EquipmentLoanListAPI.as_view(), name='EquipmentLoanListAPI'),
     path('detail/api/<str:pk>', EquipmentLoanDetailAPI.as_view(), name='EquipmentLoanDetailAPI'),
     path('loan-product-list/api', LoanProductListAPI.as_view(), name='LoanProductListAPI'),
-    path('warehouse-list-by-product/api', ELWarehouseListByProductAPI.as_view(), name='ELWarehouseListByProductAPI'),
-    path('product-lot-list/api', ELProductLotListAPI.as_view(), name='ELProductLotListAPI'),
-    path('product-serial-list/api', ELProductSerialListAPI.as_view(), name='ELProductSerialListAPI'),
+    path('el-warehouse-list-by-product/api', ELWarehouseListByProductAPI.as_view(), name='ELWarehouseListByProductAPI'),
+    path('el-product-lot-list/api', ELProductLotListAPI.as_view(), name='ELProductLotListAPI'),
+    path('el-product-serial-list/api', ELProductSerialListAPI.as_view(), name='ELProductSerialListAPI'),
 ]

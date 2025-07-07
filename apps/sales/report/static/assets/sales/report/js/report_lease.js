@@ -213,7 +213,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let txt = '';
                             if (row?.['asset_type'] === 2 && row?.['tool_data']?.['id']) {
@@ -227,7 +227,7 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if (row?.['offset_data']?.['id']) {
                                 return `<span class="table-row-offset">${row?.['offset_data']?.['title']}</span>`;
@@ -257,14 +257,14 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span>${row?.['quantity']}</span>`;
                         }
                     },
                     {
                         targets: 6,
-                        width: '5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span>${row?.['quantity_leased']}</span>`;
                         }

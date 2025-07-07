@@ -175,6 +175,7 @@ class LeaseOrderUpdate(View):
                    'list_from_app': 'leaseorder.leaseorder.edit',
                    'payment_term_stage': PAYMENT_TERM_STAGE,
                    'payment_date_type': PAYMENT_DATE_TYPE,
+                   'app_id': '010404b3-bb91-4b24-9538-075f5f00ef14',
                }, status.HTTP_200_OK
 
 

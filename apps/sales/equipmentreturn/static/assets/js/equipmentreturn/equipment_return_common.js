@@ -346,6 +346,7 @@ class EquipmentReturnEventHandler {
         })
         $(document).on("click", '#btn-select-detail', function () {
             EquipmentReturnPageFunction.LoadEquipmentLoanTableByAccount(pageElements.$account.attr('data-id') || null)
+            EquipmentReturnPageFunction.LoadEquipmentLoanItemsTable()
         })
         $(document).on("change", '.el-selected-radio', function () {
             EquipmentReturnPageFunction.LoadEquipmentLoanItemsTable($(this).attr('data-equipment-loan') ? JSON.parse($(this).attr('data-equipment-loan'))?.['equipment_loan_item_list'] || [] : [])

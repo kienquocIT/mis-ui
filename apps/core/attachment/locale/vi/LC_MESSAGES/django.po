@@ -68,3 +68,11 @@ msgstr "Không gian của tôi"
 #
 msgid "My file"
 msgstr "Tệp của tôi"
+
+#
+msgid "Access list of"
+msgstr "Danh sách truy cập của"
+
+#
+msgid "Data ID permission error"
+msgstr "Lỗi ID chia sẻ"

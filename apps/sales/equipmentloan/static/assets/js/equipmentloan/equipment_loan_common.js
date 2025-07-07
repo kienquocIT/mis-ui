@@ -132,7 +132,7 @@ class EquipmentLoanPageFunction {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <input disabled readonly type="number" min="0" class="form-control loan-quantity">
-                                    <button type='button' ${option === 'detail' ? 'disabled' : ''}
+                                    <button type='button'
                                             class="btn btn-outline-secondary btn-xs btn-pick-detail"
                                             data-bs-toggle="modal"
                                             data-bs-target="#picking-product-modal">

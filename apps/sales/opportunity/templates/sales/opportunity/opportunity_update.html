@@ -70,47 +70,6 @@
                 </div>
             </div>
         </form>
-
-        <form id="frm-add-member" data-method="POST" data-url="{% url 'MemberOfOpportunityDetailAddAPI' pk_opp='__pk_opp__' %}">
-            <div
-                    class="modal fade" id="modalAddMember" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLarge01"
-                    aria-hidden="true"
-            >
-                <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">{% trans "Add member to Sale team" %}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <table class="table nowrap w-100" id="dtbMember" data-method="GET"
-                                   data-url="{% url 'EmployeeListAPI' %}">
-                                <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>{% trans "Employee" %}</th>
-                                    <th>{% trans "Group" %}</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div class="modal-footer">
-                            <button
-                                    type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal"
-                            >{% trans "Close" %}</button>
-                            <button
-                                    type="submit" form="frm-add-member" class="btn btn-primary"
-                            >{% trans "Add" %}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
     </div>
 
     {{ data.type_customer|json_script:'data_type_customer' }}
@@ -161,6 +120,42 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalAddMember" tabindex="-1" role="dialog" aria-labelledby="modalAddMember" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Add member to Sale team" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="frm-add-member" data-method="POST" data-url="{% url 'MemberOfOpportunityDetailAddAPI' pk_opp='__pk_opp__' %}">
+                        <table class="table nowrap w-100" id="dtbMember" data-method="GET"
+                               data-url="{% url 'EmployeeListAPI' %}">
+                            <thead>
+                            <tr>
+                                <th style="min-width: 30px"></th>
+                                <th style="min-width: 20px"></th>
+                                <th style="min-width: 200px">{% trans "Employee" %}</th>
+                                <th style="min-width: 150px">{% trans "Group" %}</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button
+                            type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                    >{% trans "Close" %}</button>
+                    <button
+                            type="submit" form="frm-add-member" class="btn btn-primary"
+                    >{% trans "Add" %}</button>
                 </div>
             </div>
         </div>

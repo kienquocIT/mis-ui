@@ -15,6 +15,7 @@ class EquipmentReturnPageElements {
         this.$accept_select_account_btn = $('#accept-select-account-btn')
         this.$table_select_account = $('#table-select-account')
         this.$table_select_el = $('#table-select-el')
+        this.$table_el_detail = $('#table_el_detail')
         // line detail
         this.$table_line_detail = $('#table_line_detail')
     }
@@ -120,7 +121,7 @@ class EquipmentReturnPageFunction {
                     className: 'w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
-                                <input type="radio" name="el-selected-radio" class="form-check-input" data-equipment-loan='${JSON.stringify(row)}'/>
+                                <input type="radio" name="el-selected-radio" class="form-check-input el-selected-radio" data-equipment-loan='${JSON.stringify(row)}'/>
                             </div>`
                     }
                 },
@@ -134,6 +135,64 @@ class EquipmentReturnPageFunction {
                     className: 'text-right w-20',
                     render: (data, type, row) => {
                         return moment(row?.['loan_date'], "YYYY-MM-DD").format('DD/MM/YYYY')
+                    }
+                },
+            ],
+        })
+    }
+    static LoadEquipmentLoanItemsTable(data_list=[]) {
+        pageElements.$table_el_detail.DataTable().clear().destroy()
+        pageElements.$table_el_detail.DataTableDefault({
+            styleDom: 'hide-foot',
+            rowIdx: true,
+            reloadCurrency: true,
+            scrollY: '63vh',
+            scrollX: true,
+            scrollCollapse: true,
+            paging: false,
+            data: data_list,
+            columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-5',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                                <input type="radio" name="el-item-selected-radio" class="form-check-input el-item-selected-radio" data-el-item-id='${row?.['id']}'/>
+                            </div>`
+                    }
+                },
+                {
+                    className: 'w-30',
+                    render: (data, type, row) => {
+                        return `<a class="icon-collapse" data-bs-toggle="collapse" href=".${row?.['loan_product_data']?.['id']}" role="button" aria-expanded="false" aria-controls=".${row?.['loan_product_data']?.['id']}">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <span class="badge badge-sm badge-light ml-1 loan-product-code">${row?.['loan_product_data']?.['code'] || ''}</span>
+                                <span class="loan-product-title">${row?.['loan_product_data']?.['title'] || ''}</span>
+                                <div class="collapse ${row?.['loan_product_data']?.['id']}"><span class="small">${row?.['loan_product_data']?.['description'] || ''}</span></div>`
+                    }
+                },
+                {
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        return `<input disabled readonly type="number" min="0" class="form-control loan-quantity" value="${row?.['loan_quantity']}">`
+                    }
+                },
+                {
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        return `<span>--</span>`
+                    }
+                },
+                {
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        return `<span>--</span>`
                     }
                 },
             ],
@@ -172,25 +231,19 @@ class EquipmentReturnPageFunction {
                     }
                 },
                 {
-                    className: 'w-10',
-                    render: (data, type, row) => {
-                        return `<span></span>`
-                    }
-                },
-                {
                     className: 'w-15',
                     render: (data, type, row) => {
                         return `<span></span>`
                     }
                 },
                 {
-                    className: 'w-15',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `<span></span>`
                     }
                 },
                 {
-                    className: 'w-15',
+                    className: 'w-20',
                     render: (data, type, row) => {
                         return `<span></span>`
                     }
@@ -275,6 +328,9 @@ class EquipmentReturnEventHandler {
         })
         $(document).on("click", '#btn-select-detail', function () {
             EquipmentReturnPageFunction.LoadEquipmentLoanTableByAccount(pageElements.$account.attr('data-id') || null)
+        })
+        $(document).on("change", '.el-selected-radio', function () {
+            EquipmentReturnPageFunction.LoadEquipmentLoanItemsTable($(this).attr('data-equipment-loan') ? JSON.parse($(this).attr('data-equipment-loan'))?.['equipment_loan_item_list'] || [] : [])
         })
     }
 }

@@ -159,40 +159,58 @@ class EquipmentReturnPageFunction {
                     }
                 },
                 {
-                    className: 'w-5',
-                    render: (data, type, row) => {
-                        return `<div class="form-check">
-                                <input type="radio" name="el-item-selected-radio" class="form-check-input el-item-selected-radio" data-el-item-id='${row?.['id']}'/>
-                            </div>`
-                    }
-                },
-                {
-                    className: 'w-30',
+                    className: 'w-45',
                     render: (data, type, row) => {
                         return `<a class="icon-collapse" data-bs-toggle="collapse" href=".${row?.['loan_product_data']?.['id']}" role="button" aria-expanded="false" aria-controls=".${row?.['loan_product_data']?.['id']}">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
                                 <span class="badge badge-sm badge-light ml-1 loan-product-code">${row?.['loan_product_data']?.['code'] || ''}</span>
-                                <span class="loan-product-title">${row?.['loan_product_data']?.['title'] || ''}</span>
+                                <span class="loan-product-title" data-loan-item-id="${row?.['id']}">${row?.['loan_product_data']?.['title'] || ''}</span>
                                 <div class="collapse ${row?.['loan_product_data']?.['id']}"><span class="small">${row?.['loan_product_data']?.['description'] || ''}</span></div>`
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-10',
                     render: (data, type, row) => {
-                        return `<input disabled readonly type="number" min="0" class="form-control loan-quantity" value="${row?.['loan_quantity']}">`
+                        return `<span class="loan-quantity">${row?.['loan_quantity']}</span>`
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-40',
                     render: (data, type, row) => {
-                        return `<span>--</span>`
-                    }
-                },
-                {
-                    className: 'w-20',
-                    render: (data, type, row) => {
-                        return `<span>--</span>`
+                        if (Number((row?.['loan_product_data'] || {})?.['general_traceability_method']) === 0) {
+                            return `<input type="number" class="form-control none-return-quantity" placeholder="${$.fn.gettext('Enter return quantity')}" min="0" max="${row?.['loan_quantity'] || 0}" data-loan-item-id="${row?.['id']}">`
+                        }
+                        else if (Number((row?.['loan_product_data'] || {})?.['general_traceability_method']) === 1) {
+                            let lot_html = ``
+                            for (let i = 0; i < row?.['loan_product_lot_detail'].length; i++) {
+                                let item = row?.['loan_product_lot_detail'][i]
+                                lot_html += `<div class="col-12 mb-1">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">${(item?.['lot_data'] || {})?.['lot_number'] || ''} (${item?.['picked_quantity'] || 0})</span>
+                                                    <input type="number" class="form-control lot-return-quantity" placeholder="${$.fn.gettext('Enter return quantity for Lot')}" min="0" max="${item?.['picked_quantity'] || 0}" data-loan-item-id="${row?.['id']}">
+                                                </div>
+                                            </div>`
+                            }
+                            return `<div class="row">
+                                        ${lot_html}
+                                    </div>`
+                        }
+                        else if (Number((row?.['loan_product_data'] || {})?.['general_traceability_method']) === 2) {
+                            let serial_html = ``
+                            for (let i = 0; i < row?.['loan_product_sn_detail'].length; i++) {
+                                let item = row?.['loan_product_sn_detail'][i]
+                                serial_html += `<div class="col-12 mb-1">
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" data-loan-item-id="${row?.['id']}" id="${item?.['serial_id']}">
+                                                        <label class="form-check-label serial-return-check" for="${item?.['serial_id']}">${(item?.['serial_data'] || {})?.['serial_number'] || ''}</label>
+                                                    </div>
+                                                </div>`
+                            }
+                            return `<div class="row">
+                                        ${serial_html}
+                                    </div>`
+                        }
                     }
                 },
             ],

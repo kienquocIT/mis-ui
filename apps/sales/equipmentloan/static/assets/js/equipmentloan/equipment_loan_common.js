@@ -245,7 +245,7 @@ class EquipmentLoanPageFunction {
                         let none_list_raw = pageVariables.current_loan_row.find('.data-none-detail').text()
                         let none_list = none_list_raw ? JSON.parse(none_list_raw) : []
                         pageElements.$table_select_warehouse.find('tbody tr').each(function (index, ele) {
-                            let existed = none_list.find(item => item?.['warehouse_id'] === $(ele).find('.product-warehouse-select').attr('data-warehouse-id'))
+                            let existed = none_list.find(item => item?.['product_warehouse_id'] === $(ele).find('.product-warehouse-select').attr('data-product-warehouse-id'))
                             if (existed) {
                                 $(ele).find('.none-picked-quantity').val(existed?.['picked_quantity'])
                             }
@@ -274,21 +274,6 @@ class EquipmentLoanPageFunction {
                         visible: false,
                     }
                 ],
-                initComplete: function () {
-                    pageElements.$table_select_warehouse.DataTable().column(4).visible(Number(general_traceability_method) === 0)
-                    if (Number(general_traceability_method) === 0) {
-                        let none_list_raw = pageVariables.current_loan_row.find('.data-none-detail').text()
-                        let none_list = none_list_raw ? JSON.parse(none_list_raw) : []
-                        pageElements.$table_select_warehouse.find('tbody tr').each(function (index, ele) {
-                            let existed = none_list.find(item => item?.['warehouse_id'] === $(ele).find('.product-warehouse-select').attr('data-warehouse-id'))
-                            if (existed) {
-                                $(ele).find('.none-picked-quantity').val(existed?.['picked_quantity'])
-                            }
-                        })
-                    }
-                    EquipmentLoanPageFunction.LoadTableLotListByWarehouse()
-                    EquipmentLoanPageFunction.LoadTableSerialListByWarehouse()
-                }
             });
         }
     }

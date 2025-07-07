@@ -40,3 +40,7 @@ msgstr "Số serial"
 #
 msgid "Select returned equipment"
 msgstr "Chọn hàng được thu hồi"
+
+#
+msgid "Loan detail info"
+msgstr "Thông tin cho mượn cụ thể"

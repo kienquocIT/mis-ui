@@ -20,21 +20,17 @@
                     <button type="button" id="btn-create-related-feature" class="btn btn-secondary btn-xs dropdown-toggle" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown">
                         {% trans 'Related features' %}
                     </button>
-                    <div class="dropdown-menu dropdown-bordered dropdown-menu-dark" style="min-width: max-content; opacity: 0.9;" id="dropdown-menu-relate-app">
+                    <div class="dropdown-menu dropdown-bordered dropdown-menu-dark" style="min-width: max-content; opacity: 0.8;" id="dropdown-menu-relate-app">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-12 d-flex">
                                 <a id="create-quotation-shortcut" data-label="quotation.quotation" class="disabled dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-file-alt"></i><span class="small">{% trans 'Quotation' %}</span></a>
-                            </div>
-                            <div class="col-6">
-                                <a class="dropdown-item item-detail-related-feature text-blue small" id="item-related-quotation" href="#" target="_blank">{% trans 'View Quotation' %}</a>
+                                <a class="item-detail-related-feature small" id="item-related-quotation" href="#" target="_blank" title="{% trans 'View Quotation' %}"><i class="fa-solid fa-up-right-from-square"></i></a>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-12 d-flex">
                                 <a id="create-sale-order-shortcut" data-label="saleorder.saleorder" class="disabled dropdown-item relate-app" data-url="{% url 'SaleOrderCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-file-invoice"></i><span class="small">{% trans 'Sale Order' %}</span></a>
-                            </div>
-                            <div class="col-6">
-                                <a class="dropdown-item item-detail-related-feature text-blue small" id="item-related-sale-order" href="#" target="_blank">{% trans 'View Sale Order' %}</a>
+                                <a class="item-detail-related-feature small" id="item-related-sale-order" href="#" target="_blank" title="{% trans 'View Sale Order' %}"><i class="fa-solid fa-up-right-from-square"></i></a>
                             </div>
                         </div>
                         <a id="create-advance-payment-shortcut" class="disabled dropdown-item" data-url="{% url 'AdvancePaymentCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-hand-holding-usd"></i><span class="small">{% trans 'Advance Payment' %}</span></a>
@@ -46,10 +42,10 @@
                     </div>
                 </div>
                 <div class="btn-group" role="group">
-                    <a class="ml-1" id="goto-call-log" data-url="{% url 'OpportunityCallLogList' %}" href="#"  data-bs-toggle="tooltip" title="{% trans 'Call to customer' %}"><button type="button" class="btn btn-xs btn-light btn-rounded"><i class="dropdown-icon fas fa-phone-volume"></i></button></a>
-                    <a class="ml-1" id="goto-email" data-url="{% url 'OpportunityEmailList' %}" href="#" target="_blank" data-bs-toggle="tooltip" title="{% trans 'Email to customer' %}"><button type="button" class="btn btn-xs btn-light btn-rounded"><i class="dropdown-icon bi bi-envelope-fill"></i></button></a>
-                    <a class="ml-1" id="goto-meeting" data-url="{% url 'OpportunityMeetingList' %}" href="#" target="_blank" data-bs-toggle="tooltip" title="{% trans 'Meeting with customer' %}"><button type="button" class="btn btn-xs btn-light btn-rounded"><i class="dropdown-icon bi bi-person-workspace"></i></button></a>
-                    <a class="ml-1 current-create-task" data-bs-toggle="offcanvas" data-bs-target="#offCanvasRightTask" href="#" title="{% trans 'Task' %}"><button type="button" class="btn btn-xs btn-light btn-rounded"><i class="dropdown-icon fa-solid fa-list-check"></i></button></a>
+                    <a class="ml-1" id="goto-call-log" data-url="{% url 'OpportunityCallLogList' %}" href="#"  data-bs-toggle="tooltip" title="{% trans 'Call to customer' %}"><button type="button" class="btn btn-xs btn-soft-primary btn-rounded"><i class="dropdown-icon fas fa-phone-volume"></i></button></a>
+                    <a class="ml-1" id="goto-email" data-url="{% url 'OpportunityEmailList' %}" href="#" target="_blank" data-bs-toggle="tooltip" title="{% trans 'Email to customer' %}"><button type="button" class="btn btn-xs btn-soft-primary btn-rounded"><i class="dropdown-icon bi bi-envelope-fill"></i></button></a>
+                    <a class="ml-1" id="goto-meeting" data-url="{% url 'OpportunityMeetingList' %}" href="#" target="_blank" data-bs-toggle="tooltip" title="{% trans 'Meeting with customer' %}"><button type="button" class="btn btn-xs btn-soft-primary btn-rounded"><i class="dropdown-icon bi bi-person-workspace"></i></button></a>
+                    <a class="ml-1 current-create-task" data-bs-toggle="offcanvas" data-bs-target="#offCanvasRightTask" href="#" title="{% trans 'Task' %}"><button type="button" class="btn btn-xs btn-soft-primary btn-rounded"><i class="dropdown-icon fa-solid fa-list-check"></i></button></a>
                 </div>
             </div>
             <div class="col-2 col-md-3 col-lg-3 text-right" hidden>

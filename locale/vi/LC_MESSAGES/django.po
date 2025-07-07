@@ -5514,7 +5514,7 @@ msgstr "Hoạt động tiếp theo"
 
 #
 msgid "Related features"
-msgstr "Tính năng liên quan"
+msgstr "Chức năng liên quan"
 
 #
 msgid "Activity type"

@@ -72,3 +72,7 @@ msgstr "Chọn thành phần được thêm vào"
 #
 msgid "Picking component"
 msgstr "Lấy thành phần"
+
+#
+msgid "New description"
+msgstr "Mô tả mới"

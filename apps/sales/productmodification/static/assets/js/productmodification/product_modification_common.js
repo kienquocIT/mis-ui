@@ -59,7 +59,7 @@ const pageVariables = new ProductModificationPageVariables()
  * Các hàm load page và hàm hỗ trợ
  */
 class ProductModificationPageFunction {
-    static LoadTableCurrentProductModified(data_list=[], warehouse_code='', serial_number='', lot_number='') {
+    static LoadTableCurrentProductModified(data_list=[], warehouse_code='', serial_number='', lot_number='', new_description='', option='create') {
         pageElements.$table_current_product_modified.DataTable().clear().destroy()
         pageElements.$table_current_product_modified.DataTableDefault({
             dom: 't',
@@ -74,7 +74,7 @@ class ProductModificationPageFunction {
                     }
                 },
                 {
-                    className: 'w-65',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         return `<div class="d-flex align-items-center">
                                     <a data-bs-toggle="collapse" href=".d1_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d1_${row?.['id']}">
@@ -83,11 +83,17 @@ class ProductModificationPageFunction {
                                     <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code'] || ''}</span>
                                     <span class="ml-1">${row?.['title'] || ''}</span>
                                 </div>
-                                <div class="collapse d1_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                                <div class="collapse d1_${row?.['id']}"><span class="small">${new_description || row?.['description'] || ''}</span></div>`
                     }
                 },
                 {
-                    className: 'text-right w-30',
+                    className: 'w-45',
+                    render: (data, type, row) => {
+                        return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control new-des">${new_description || row?.['description'] || ''}</textarea>`
+                    }
+                },
+                {
+                    className: 'text-right w-25',
                     render: (data, type, row) => {
                         return `<span class="prd-modified-text-detail"></span>`;
                     }
@@ -204,7 +210,7 @@ class ProductModificationPageFunction {
                                 data-product-id="${row?.['id']}"
                                 data-product-code="${row?.['code']}"
                                 data-product-title="${row?.['title']}"
-                                data-product-description="${row?.['description'] || ''}"
+                                data-product-description="${row?.['new_description'] || row?.['description'] || ''}"
                                 data-product-general-traceability-method="${row?.['general_traceability_method']}"
                                 data-prd-wh="${row?.['product_warehouse_id'] || ''}"
                                 data-prd-wh-lot="${row?.['product_warehouse_lot_id'] || ''}"
@@ -226,20 +232,20 @@ class ProductModificationPageFunction {
                         if (row?.['lot_number']) {
                             return `<span class="text-primary fw-bold">${row?.['modified_number']}</span><br><span class="small">Lot: ${row?.['lot_number'] || ''}</span>`
                         }
-                        return ''
+                        return `<span class="text-primary fw-bold">${row?.['modified_number']}</span>`
                     }
                 },
                 {
                     className: 'w-70',
                     render: (data, type, row) => {
                         return `<div class="d-flex align-items-center">
-                                    <a data-bs-toggle="collapse" href=".d2_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['id']}">
+                                    <a data-bs-toggle="collapse" href=".d2_${row?.['modified_number']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['modified_number']}">
                                         <i class="bi bi-info-circle"></i>
                                     </a>
                                     <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span>
                                     <span class="ml-1">${row?.['title']}</span>
                                 </div>
-                                <div class="collapse d2_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
+                                <div class="collapse d2_${row?.['modified_number']}"><span class="small">${row?.['new_description'] || row?.['description'] || ''}</span></div>`
                     }
                 },
             ]
@@ -518,7 +524,7 @@ class ProductModificationPageFunction {
                         return `<input placeholder="${$.fn.gettext('Component name')}"
                                        class="form-control form-control-line fw-bold mb-1 init-component-title"
                                        value="${row?.['component_name'] || ''}">
-                                <textarea placeholder="${$.fn.gettext('Description')}..." rows="5" class="form-control small init-component-des">${row?.['component_des'] || ''}</textarea>`
+                                <textarea placeholder="${$.fn.gettext('Description')}..." rows="3" class="form-control small init-component-des">${row?.['component_des'] || ''}</textarea>`
                     }
                 },
                 {
@@ -1285,6 +1291,7 @@ class ProductModificationHandler {
 
         frm.dataForm['title'] = pageElements.$title.val()
         frm.dataForm['product_modified'] = pageVariables.current_product_modified?.['id']
+        frm.dataForm['new_description'] = pageVariables.current_product_modified?.['description']
         frm.dataForm['warehouse_id'] = pageVariables.current_product_modified?.['warehouse_id']
         frm.dataForm['prd_wh_lot'] = pageVariables.current_product_modified?.['lot_id']
         frm.dataForm['prd_wh_serial'] = pageVariables.current_product_modified?.['serial_id']
@@ -1346,11 +1353,14 @@ class ProductModificationHandler {
                     pageVariables.current_product_modified['id'] = data?.['prd_wh_data']?.['product']?.['id']
                     pageVariables.current_product_modified['serial_id'] = data?.['prd_wh_serial_data']?.['id']
                     pageVariables.current_product_modified['lot_id'] = data?.['prd_wh_lot_data']?.['id']
+                    pageVariables.current_product_modified['new_description'] = data?.['new_description']
                     ProductModificationPageFunction.LoadTableCurrentProductModified(
                         [pageVariables.current_product_modified],
                         data?.['prd_wh_data']?.['warehouse']?.['code'],
                         data?.['prd_wh_serial_data']?.['serial_number'],
                         data?.['prd_wh_lot_data']?.['lot_number'],
+                        data?.['new_description'],
+                        option
                     )
 
                     pageElements.$insert_component_btn.prop('hidden', false)
@@ -1484,6 +1494,9 @@ class ProductModificationEventHandler {
             else {
                 $.fn.notifyB({description: 'Nothing is selected'}, 'failure')
             }
+        })
+        $(document).on('change', '.new-des', function () {
+            pageVariables.current_product_modified['description'] = $(this).val()
         })
         pageElements.$btn_modal_picking_product.on('click', function () {
             pageElements.$table_select_lot.closest('.table-serial-space').prop('hidden', true)

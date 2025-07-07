@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    new $x.cls.file($('#attachment')).init({'name': 'attachment'});
+
+    $.fn.InitAutoGenerateCodeField({param_app_code: 'product', param_ele_code_id: 'product-code'})
     EquipmentLoanEventHandler.InitPageEven()
     UsualLoadPageFunction.LoadDate({element: pageElements.$document_date, auto_load: true, empty: false})
     UsualLoadPageFunction.LoadDate({element: pageElements.$loan_date, empty: true})

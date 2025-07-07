@@ -538,6 +538,8 @@ class APInvoiceHandler {
             return false
         }
 
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
+
         return frm
     }
     static LoadDetailAPInvoice(option) {

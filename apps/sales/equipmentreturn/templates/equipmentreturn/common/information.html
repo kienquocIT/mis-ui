@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="row">
-    <div class="col-12 col-lg-9 col-md-9">
+    <div class="col-12 col-md-9 col-lg-9">
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
@@ -22,7 +22,7 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-lg-3 col-md-3">
+    <div class="col-12 col-md-3 col-lg-3">
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
@@ -35,33 +35,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="loan-date">{% trans "Loan date" %}</label>
-                    <div class="input-group mb-3">
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix">📅</span>
-                            <input required class="form-control" id="loan-date">
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label required" for="return-date">{% trans "Return date" %}</label>
-                    <div class="input-group mb-3">
-                        <span class="input-affix-wrapper">
-                            <span class="input-prefix">📅</span>
-                            <input required class="form-control" id="return-date">
-                        </span>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
 
-<div class="row mb-5">
+<div class="row mt-5 mb-5">
     <div class="col-12">
         <ul class="nav nav-tabs nav-icon nav-light">
             <li class="nav-item">
@@ -81,20 +59,21 @@
             <div class="tab-pane fade show active" id="tab_line_detail">
                 <div class="row">
                     <div class="col-12">
-                        <table id="table_line_detail" class="table nowrap w-100" data-url-loan-product-list="{% url 'ELProductListAPI' %}">
+                        <table id="table_line_detail" class="table nowrap w-100">
                             <thead class="bg-secondary-light-5">
                                 <tr>
                                     <th style="min-width: 50px"></th>
                                     <th style="min-width: 250px">{% trans 'Product' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Quantity' %}</th>
-                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Lot number' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Serial number' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Return to warehouse' %}</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
-                        <button type="button" id="btn-add-row-line-detail" class="btn btn-primary btn-sm mt-2">
-                            <i class="fas fa-plus-circle"></i>
-                            {% trans 'Add new row' %}
+                        <button type="button" id="btn-select-detail" class="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#select-detail-modal">
+                            {% trans 'Select detail' %}
                         </button>
                     </div>
                 </div>

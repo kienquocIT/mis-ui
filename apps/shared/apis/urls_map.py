@@ -959,4 +959,12 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # sales/equipment loan
     EQUIPMENT_LOAN_LIST = StringUrl('equipment-loan/list')
     EQUIPMENT_LOAN_DETAIL = StringUrl('equipment-loan/detail/{pk}')
-    LOAN_PRODUCT_LIST = StringUrl('equipment-loan/loan-product-list')
+    EL_PRODUCT_LIST = StringUrl('equipment-loan/el-product-list')
+    EL_WAREHOUSE_LIST_BY_PRODUCT = StringUrl('equipment-loan/el-warehouse-list-by-product')
+    EL_PRODUCT_LOT_LIST = StringUrl('equipment-loan/el-product-lot-list')
+    EL_PRODUCT_SERIAL_LIST = StringUrl('equipment-loan/el-product-serial-list')
+
+    # sales/equipment return
+    EQUIPMENT_RETURN_LIST = StringUrl('equipment-return/list')
+    EQUIPMENT_RETURN_DETAIL = StringUrl('equipment-return/detail/{pk}')
+    ER_EL_LIST_BY_ACCOUNT = StringUrl('equipment-return/er-el-list-by-account')

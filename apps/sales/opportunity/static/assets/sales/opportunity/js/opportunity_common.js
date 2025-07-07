@@ -1316,7 +1316,7 @@ class LoadConfigAndLoadStage {
                 scrollX: true,
                 scrollY: '50vh',
                 ajax: {
-                    url: frm.dataUrl,
+                    url: frm.dataUrl + '?get_all=1',
                     type: frm.dataMethod,
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
@@ -1334,28 +1334,26 @@ class LoadConfigAndLoadStage {
                         }
                     },
                     {
-                        className: 'w-45',
-                        render: (data, type, row) => {
-                            return `<span class="badge badge-soft-primary w-30">${row?.['code']}</span><span class="text-primary ml-2">${row?.['full_name']}</span>`
-                        }
-                    },
-                    {
-                        data: 'group',
-                        className: 'w-40',
-                        render: (data) => {
-                            return `<span class="badge badge-outline badge-blue">{0}</span>`.format_by_idx(
-                                data.title
-                            )
-                        }
-                    },
-                    {
+                        className: 'w-5',
                         data: 'is_checked_new',
-                        className: 'w-10',
                         render: (data, type, row) => {
                             if ($('.member-item .card[data-id="' + row.id + '"]').length > 0) {
                                 return `<div class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`
                             }
                             return `<div class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" ${data === true ? "checked" : ""}/></span>`
+                        }
+                    },
+                    {
+                        className: 'w-50',
+                        render: (data, type, row) => {
+                            return `<span class="badge badge-soft-primary mr-1">${row?.['code']}</span><span>${row?.['full_name']}</span>`
+                        }
+                    },
+                    {
+                        className: 'text-right w-40',
+                        data: 'group',
+                        render: (data) => {
+                            return `<span>${data.title || ''}</span>`
                         }
                     },
                 ],
@@ -1369,7 +1367,7 @@ class LoadConfigAndLoadStage {
                                 is_checked_new: is_checked,
                                 idx: rowIdx + 1,
                             }
-                        }, false);
+                        }, true);
                     })
                 },
             });

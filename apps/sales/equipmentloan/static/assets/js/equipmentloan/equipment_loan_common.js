@@ -132,7 +132,7 @@ class EquipmentLoanPageFunction {
                     render: (data, type, row) => {
                         return `<div class="input-group">
                                     <input disabled readonly type="number" min="0" class="form-control loan-quantity">
-                                    <button type='button' ${option === 'detail' ? 'disabled' : ''}
+                                    <button type='button'
                                             class="btn btn-outline-secondary btn-xs btn-pick-detail"
                                             data-bs-toggle="modal"
                                             data-bs-target="#picking-product-modal">
@@ -245,7 +245,7 @@ class EquipmentLoanPageFunction {
                         let none_list_raw = pageVariables.current_loan_row.find('.data-none-detail').text()
                         let none_list = none_list_raw ? JSON.parse(none_list_raw) : []
                         pageElements.$table_select_warehouse.find('tbody tr').each(function (index, ele) {
-                            let existed = none_list.find(item => item?.['warehouse_id'] === $(ele).find('.product-warehouse-select').attr('data-warehouse-id'))
+                            let existed = none_list.find(item => item?.['product_warehouse_id'] === $(ele).find('.product-warehouse-select').attr('data-product-warehouse-id'))
                             if (existed) {
                                 $(ele).find('.none-picked-quantity').val(existed?.['picked_quantity'])
                             }
@@ -274,21 +274,6 @@ class EquipmentLoanPageFunction {
                         visible: false,
                     }
                 ],
-                initComplete: function () {
-                    pageElements.$table_select_warehouse.DataTable().column(4).visible(Number(general_traceability_method) === 0)
-                    if (Number(general_traceability_method) === 0) {
-                        let none_list_raw = pageVariables.current_loan_row.find('.data-none-detail').text()
-                        let none_list = none_list_raw ? JSON.parse(none_list_raw) : []
-                        pageElements.$table_select_warehouse.find('tbody tr').each(function (index, ele) {
-                            let existed = none_list.find(item => item?.['warehouse_id'] === $(ele).find('.product-warehouse-select').attr('data-warehouse-id'))
-                            if (existed) {
-                                $(ele).find('.none-picked-quantity').val(existed?.['picked_quantity'])
-                            }
-                        })
-                    }
-                    EquipmentLoanPageFunction.LoadTableLotListByWarehouse()
-                    EquipmentLoanPageFunction.LoadTableSerialListByWarehouse()
-                }
             });
         }
     }
@@ -517,6 +502,8 @@ class EquipmentLoanHandler {
         })
         frm.dataForm['equipment_loan_item_list'] = equipment_loan_item_list
 
+        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
+
         return frm
     }
     static LoadDetailEquipmentLoan(option) {
@@ -527,7 +514,7 @@ class EquipmentLoanHandler {
                 if (data) {
                     data = data['equipment_loan_detail'];
 
-                    console.log(data)
+                    // console.log(data)
 
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
@@ -539,6 +526,12 @@ class EquipmentLoanHandler {
                     pageElements.$loan_date.val(moment(data?.['loan_date'], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     pageElements.$return_date.val(moment(data?.['return_date'], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     EquipmentLoanPageFunction.LoadLineDetailTable(data?.['equipment_loan_item_list'], option)
+
+                    new $x.cls.file($('#attachment')).init({
+                        enable_edit: option !== 'detail',
+                        data: data.attachment,
+                        name: 'attachment'
+                    })
 
                     $.fn.initMaskMoney2();
 

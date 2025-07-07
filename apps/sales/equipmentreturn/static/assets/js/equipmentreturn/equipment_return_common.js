@@ -165,7 +165,7 @@ class EquipmentReturnPageFunction {
                                     <i class="bi bi-info-circle"></i>
                                 </a>
                                 <span class="badge badge-sm badge-light ml-1 loan-product-code">${row?.['loan_product_data']?.['code'] || ''}</span>
-                                <span class="loan-product-title" data-loan-item-id="${row?.['id']}">${row?.['loan_product_data']?.['title'] || ''}</span>
+                                <span class="loan-product-title" data-loan-item='${JSON.stringify(row?.['loan_product_data'])}' data-loan-item-id="${row?.['id']}">${row?.['loan_product_data']?.['title'] || ''}</span>
                                 <div class="collapse ${row?.['loan_product_data']?.['id']}"><span class="small">${row?.['loan_product_data']?.['description'] || ''}</span></div>`
                     }
                 },
@@ -350,6 +350,17 @@ class EquipmentReturnEventHandler {
         })
         $(document).on("change", '.el-selected-radio', function () {
             EquipmentReturnPageFunction.LoadEquipmentLoanItemsTable($(this).attr('data-equipment-loan') ? JSON.parse($(this).attr('data-equipment-loan'))?.['equipment_loan_item_list'] || [] : [])
+        })
+        $(document).on("click", '#btn-accept-er-item', function () {
+            // parse return item data for line detail table
+            let data_line_detail = []
+            pageElements.$table_el_detail.find('tbody tr').each(function (index, ele) {
+                let data_product = $(ele).find('.loan-product-title').attr('data-loan-item') ? JSON.parse($(ele).find('.loan-product-title').attr('data-loan-item')) : {}
+                data_line_detail.push({
+                    'data_product': data_product,
+                })
+            })
+            EquipmentReturnPageFunction.LoadLineDetailTable(data_line_detail)
         })
     }
 }

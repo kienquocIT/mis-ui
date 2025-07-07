@@ -7797,8 +7797,9 @@ class FileControl {
                             if (typeof fileData === 'object' && fileData.hasOwnProperty('id')) {
                                 config.onUploadSuccess(id, data);
                                 let eleItem = clsThis.ele$.find(`.dm-uploader-result-item[data-file-id="${id}"]`);
-                                eleItem.attr('data-file-id', data);
+                                eleItem.attr('data-file-id', fileData.id);
                                 eleItem.find('input.file-txt-remark').val(fileData.remarks);
+                                eleItem.find('a.file-preview-link').attr('href', '/attachment/preview/1'.format_url_with_uuid(fileData.id));
                                 clsThis.ui_on_click_remove(eleItem);
                                 clsThis.ui_on_click_download(eleItem);
                                 clsThis.ui_add_id(fileData.id);

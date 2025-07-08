@@ -8398,6 +8398,12 @@ class LeaseOrderSubmitHandle {
                         rowData['asset_data'] = JSON.parse($(assetDataEle).val());
                     }
                 }
+                let offsetShowEle = row.querySelector('.table-row-offset-show');
+                if (offsetShowEle) {
+                    if ($(offsetShowEle).val()) {
+                        rowData['offset_show'] = $(offsetShowEle).val();
+                    }
+                }
                 let eleUOM = row.querySelector('.table-row-uom');
                 if ($(eleUOM).val()) {
                     let dataUOM = SelectDDControl.get_data_from_idx($(eleUOM), $(eleUOM).val());

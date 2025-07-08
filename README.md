@@ -409,7 +409,7 @@ def view(...)
 ```js
 # QUAN TRỌNG: (search trong source code theo các keyword để hiểu rõ hơn)
 
-BƯỚC 1: Page create/update:
+BƯỚC 1: File js create/update:
     Thêm WFRTControl.callWFSubmitForm(_form) vào function sunmitForm 
     (với _form = new SetupFormSubmit($eleForm))
     VD: $form.submit(function (e) {
@@ -421,7 +421,7 @@ BƯỚC 1: Page create/update:
     Thêm WFRTControl.setWFInitialData(modelName) khi init page
     VD: WFRTControl.setWFInitialData('leaverequest');
         
-BƯỚC 2: Page detail/update:
+BƯỚC 2: File js detail/update:
       Thêm  $x.fn.renderCodeBreadcrumb(data), 
       $.fn.compareStatusShowPageAction(data),
       WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
@@ -509,6 +509,47 @@ VD:
 if (_form.dataForm.hasOwnProperty('attachment')) {
  _form.dataForm['attachment'] = $x.cls.file.get_val(_form.dataForm?.['attachment'], []);
 }
+
+```
+---
+
+---
+## CÁCH ÁP DỤNG PRINT CHO CHỨC NĂNG:
+
+```js
+BƯỚC 1:
+- Thêm extend html của print vào trang html detail của chức năng:
+VD:
+{% include 'printer/print.html' %}
+
+BƯỚC 2:
+- Thêm extend js và <script></script> vào {% block jsFooter %} trang html detail của chức năng:
+VD:
+<script src="{% static 'printer/print.js' %}"></script>
+
+ <script>
+     $(document).ready(function () {
+         $('#print-document').on('click', function () {
+             PrintTinymceControl.open_modal();
+         });
+     });
+ </script>
+
+BƯỚC 3: Thêm init print trong file js detail:
+VD:
+$.fn.callAjax2({
+   url: LeaseOrderLoadDataHandle.$form.data('url'),
+   method: 'GET',
+   isLoading: true,
+}).then(
+   (resp) => {
+       let data = $.fn.switcherResp(resp);
+       if (data) {
+           new PrintTinymceControl().render('010404b3-bb91-4b24-9538-075f5f00ef14', data, false);
+       }
+   }
+   )
+Lưu ý: '010404b3-bb91-4b24-9538-075f5f00ef14' là ID của chức năng khai báo trong apps/sharedapp/data/base/plan_app_sub/ (Source API)
 
 ```
 ---

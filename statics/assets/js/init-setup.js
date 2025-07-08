@@ -7757,7 +7757,6 @@ class FileControl {
                             }
                             const remarks = result.value;
                             const $folderId = opts?.['element_folder'];
-
                             const finalExtend = {
                                 state: true,
                                 data: {
@@ -7765,24 +7764,27 @@ class FileControl {
                                 }
                             };
                             // check select folder
-                            if(opts?.['select_folder'] && $folderId.val()){
-                                const fruit = await Swal.fire({
-                                    title: "Select folder",
-                                    showConfirmButton: true,
-                                    html: `<div class="form-group">` +
-                                        `<select class="form-select auto-init-select2" data-url="${
-                                            $('#url-factory').attr('data-folder-api')}" data-method="GET" data-keyResp="folder_list"></select></div>`,
-                                    didOpen: () => {
-                                        $('#swal2-html-container select').initSelect2()
-                                    },
-                                    preConfirm: function() {
-                                        return {folder: $('#swal2-html-container select').val()}
-                                    },
-                                });
-                                if (fruit.isConfirmed) $folderId.val(fruit.value?.['folder']);
-                                else{
-                                    clsThis.ui_remove_line_file_by_id(fileId);
-                                    return {state: false, data: 'CANCEL'};
+                            if ('select_folder' in opts && 'element_folder' in opts){
+                                const checkValid = $x.fn.checkUUID4($folderId.val())
+                                if (!checkValid){
+                                    const fruit = await Swal.fire({
+                                        title: "Select folder",
+                                        showConfirmButton: true,
+                                        html: `<div class="form-group">` +
+                                            `<select class="form-select auto-init-select2" data-url="${
+                                                $('#url-factory').attr('data-folder-api')}" data-method="GET" data-keyResp="folder_list"></select></div>`,
+                                        didOpen: () => {
+                                            $('#swal2-html-container select').initSelect2()
+                                        },
+                                        preConfirm: function () {
+                                            return {folder: $('#swal2-html-container select').val()}
+                                        },
+                                    });
+                                    if (fruit.isConfirmed) $folderId.val(fruit.value?.['folder']);
+                                    else {
+                                        clsThis.ui_remove_line_file_by_id(fileId);
+                                        return {state: false, data: 'CANCEL'};
+                                    }
                                 }
                                 finalExtend.data.folder = $folderId.val()
                             }
@@ -7816,9 +7818,11 @@ class FileControl {
                         },
                         onUploadError: function (id, xhr, status, message) {
                             config.onUploadError(id, xhr, status, message);
+                            let crt_msg = clsThis.ele$.attr('data-msg-upload-exception');
+                            if (xhr?.['responseJSON']?.data?.errors) crt_msg = xhr['responseJSON'].data.errors
                             Swal.fire({
                                 icon: 'error',
-                                title: clsThis.ele$.attr('data-msg-upload-exception'),
+                                title: crt_msg,
                             });
                             clsThis.ui_remove_line_file_by_id(id);
                         },

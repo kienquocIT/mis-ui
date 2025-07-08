@@ -53,17 +53,26 @@ class popupPermission {
             },
             columns: [{
                 data: 'id', render: (row, index, data) => {
-                    return `<div class="form-check">` + `<input type="checkbox" id="radio_${data.code}" class="form-check-input" value="${data.id}">` + `<label title="${data.title}" for="radio_${data.code}" class="form-check-label">` + `${data.title}</label>`
+                    return `<div class="form-check"><input type="checkbox" id="radio_${
+                        data.code}" class="form-check-input" value="${data.id}"><label title="${data.title
+                    }" for="radio_${data.code}" class="form-check-label">${data.title}</label>`;
                 },
             },],
             rowCallback: function (row, data) {
                 $(row).find('input').on('change', function () {
                     let state = $(this).prop('checked');
                     const is_all = data?.id === 'all_com'
+                    if (state)
+                        $(this).closest('tr').addClass('selected')
+                    else{
+                        $(this).closest('tr').removeClass('selected')
+                    }
+
                     if (state && data?.id && parseInt($('input[name="kind"]:checked').val()) === 1) {
                         let params = data?.id === 'all_com' ? {pageSize: -1} : {group_id: data.id};
                         _this.get_employee(params, is_all)
-                    } else _this.load_employee_list([], is_all)
+                    }
+                    else _this.load_employee_list([], is_all)
                     if (is_all) $('tbody tr td input:not([value="all_com"])', $table).prop('checked', false)
                 });
             },
@@ -80,24 +89,43 @@ class popupPermission {
             }
         } else {
             $empTbl.DataTableDefault({
-                paging: false, info: false, // searching: false,
-                scrollY: '250px', scrollX: '1023px', scrollCollapse: true, data: data, columns: [{
-                    data: 'id', width: '5%', render: (row, index, data) => {
-                        return `<div class="form-check">` + `<input type="checkbox" id="radio_${data.code}" class="form-check-input" value="${data.id}">` + `</div>`;
+                paging: false,
+                info: false, // searching: false,
+                scrollY: '250px',
+                scrollX: '1023px',
+                scrollCollapse: true,
+                data: data,
+                columns: [
+                    {
+                        data: 'id',
+                        width: '5%',
+                        render: (row, index, data) => {
+                            return `<div class="form-check"><input type="checkbox" id="radio_${data.code
+                            }" class="form-check-input" value="${data.id}" ${data?.selected ? 'checked' : ''}></div>`;
+                        }
                     },
-                }, {
-                    data: "code", width: '35%', render: (row) => {
-                        return row
+                    {
+                        data: "code",
+                        width: '35%',
+                        render: (row) => {
+                            return row
+                        }
+                    },
+                    {
+                        data: "full_name",
+                        width: '30%',
+                        render: (row) => {
+                            return row
+                        }
+                    },
+                    {
+                        data: 'group',
+                        width: '30%',
+                        render: (row) => {
+                            return row?.title || '--'
+                        }
                     }
-                }, {
-                    data: "full_name", width: '30%', render: (row) => {
-                        return row
-                    }
-                }, {
-                    data: 'group', width: '30%', render: (row) => {
-                        return row?.title || '--'
-                    }
-                }],
+                ],
             })
         }
         $('thead tr td input#checkbox_all', $empTbl).off().on('change', function () {
@@ -133,29 +161,29 @@ class popupPermission {
                     owner_list['all_com'] = {
                         id: 'all_com', title: $.fn.gettext('All Company')
                     }
-                    show_list.push(`<div class="chip chip-outline-primary pill chip-pill"><span class="chip-text">${$.fn.gettext('All Company')}</span></div>`)
-                } else {
+                    show_list.push(`<span class="badge badge-soft-primary">${$.fn.gettext('All Company')}</span>`)
+                }
+                else {
                     $groupTbl.DataTable().rows().every(function () {
                         let row = this.node();
                         if ($('input', row).prop('checked')) {
                             const idx = $(row).index();
                             owner_list[dataGroup[idx].id] = dataGroup[idx]
-                            show_list.push(`<div class="chip chip-outline-primary pill chip-pill"><span class="chip-text">${dataGroup[idx].title}</span></div>`)
+                            show_list.push(`<span class="badge badge-soft-primary">${dataGroup[idx].title}</span>`)
                         }
                     });
                 }
                 const $elmGroupData = $('input[name="group_access"]');
-                let data = $elmGroupData.data('group') || []
-                let newData = {...data, ...owner_list};
-                $elmGroupData.data('group', newData)
-            } else {
+                $elmGroupData.data('group', owner_list)
+            }
+            else {
                 const dataEmp = $empTbl.DataTable().data().toArray();
                 $empTbl.DataTable().rows().every(function () {
                     let row = this.node();
                     if ($('input', row).prop('checked')) {
                         const idx = $(row).index();
                         owner_list[dataEmp[idx].id] = dataEmp[idx]
-                        show_list.push(`<div class="chip chip-outline-primary pill chip-pill"><span class="chip-text">${dataEmp[idx].full_name}</span></div>`)
+                        show_list.push(`<span class="badge badge-soft-primary">${dataEmp[idx].full_name}</span>`)
                     }
                 });
 
@@ -164,9 +192,7 @@ class popupPermission {
                     return false
                 }
                 const $elmEmpData = $('input[name="employee_access"]');
-                let data = $elmEmpData.data('employee') || {}
-                let newData = {...data, ...owner_list};
-                $elmEmpData.data('employee', newData)
+                $elmEmpData.data('employee', owner_list)
 
                 const stored_group = {}
                 $groupTbl.DataTable().rows().every(function () {
@@ -185,9 +211,9 @@ class popupPermission {
     }
 
     switch_kind() {
-        const $elmGroupData = $('#recipient_form input[name="group_access"]');
-        const $elmEmpData = $('#recipient_form input[name="employee_access"]');
-        $('#recipient_form input[name="kind"]').on('change', function () {
+        const $elmGroupData = $('#frm_folder input[name="group_access"]');
+        const $elmEmpData = $('#frm_folder input[name="employee_access"]');
+        $('#frm_folder input[name="kind"]').on('change', function () {
             if (this.value === 'employee') $elmGroupData.data('group', [])
             else {
                 $elmEmpData.data('employee', [])
@@ -200,40 +226,53 @@ class popupPermission {
 
     btn_perm() {
         $('input[name="radio_perm_file"]').off().on('change', function () {
-            $('#checkbox_review, #checkbox_download, #checkbox_edit_f_attr, #checkbox_share, #checkbox_upload_ver, #checkbox_duplicate, #checkbox_edit_f').prop('checked', false)
+            // $('#checkbox_review, #checkbox_download, #checkbox_edit_f_attr, #checkbox_share, #checkbox_upload_ver, ' +
+            //     '#checkbox_duplicate, #checkbox_edit_f').prop('checked', false)
+            const $elementLst = $('#checkbox_see, #folder_upload_file, #folder_create_subfolders, #folder_delete, ' +
+                '#folder_share, #checkbox_review, #checkbox_edit_f')
+            $elementLst.prop('checked', false)
             switch (parseInt(this.value)) {
                 case 1:
                     $('#checkbox_review').prop('checked', true);
                     break;
                 case 2:
-                    $('#checkbox_review, #checkbox_download').prop('checked', true);
+                    $('#checkbox_see, #checkbox_review').prop('checked', true);
+                    break;
+                case 3:
+                    $('#checkbox_see, #folder_delete, #checkbox_review').prop('checked', true);
                     break;
                 default:
-                    $('#checkbox_download, #checkbox_review, #checkbox_edit_f_attr, #checkbox_share, #checkbox_upload_ver, #checkbox_duplicate, #checkbox_edit_f').prop('checked', true)
+                    $elementLst.prop('checked', true)
                     break;
             }
         })
     }
 
     init_date_exp() {
-        $('#input_expired').flatpickr({
+        const $inp = $('input[name="expiration_date"]')
+        $inp.flatpickr({
             allowInput: true,
             altInput: true,
             altFormat: 'd/m/Y',
             defaultDate: null,
             locale: globeLanguage === 'vi' ? 'vn' : 'default',
             shorthandCurrentMonth: true,
+            onReady: function (dObj, dStr, fp){
+                $(fp.element.nextSibling).attr('aria-label', 'input_expired')
+                    .attr('id', 'input_expired')
+            },
         }).set('clickOpens', false)
 
         $('#enabled_switch').on('change', function () {
-            const $inp = $('#input_expired')
             if (!$(this).prop('checked')) {
                 $inp[0]._flatpickr.clear()
                 $inp[0]._flatpickr.set('clickOpens', false)
                 $inp.prop('readonly', true)
+                $inp.next().prop('disabled', true)
             } else {
-                $inp[0]._flatpickr.set('clickOpens', true)
                 $inp.prop('readonly', false)
+                $inp.next().prop('disabled', false)
+                $inp[0]._flatpickr.set('clickOpens', true)
             }
         })
     }
@@ -241,6 +280,7 @@ class popupPermission {
     save_popup() {
         const _this = this;
         const $form_popup = this.$form;
+        const $urlF = $('#url-factory')
 
         $('#btn_update_perm').off().on('click', function (e) {
             e.preventDefault();
@@ -269,20 +309,22 @@ class popupPermission {
                 group_list: group_lst,
                 folder_perm_list: folder_perm,
                 file_in_perm_list: file_perm,
-                employee_or_group: parseInt(_data.kind),
+                employee_or_group: parseInt(_data.kind) === 1,
                 capability_list: _data['radio_perm_file'],
                 is_apply_sub: _data['apply_to_sub'],
             }
 
             // folder_perm_list: folder_perm
-            if (_data.expiration_date) temp_data.exp_date = _data.exp_date
+            temp_data.exp_date = _data.expiration_date ? _data.expiration_date : null;
 
             if (_data.id && $x.fn.checkUUID4(_data.id)) temp_data.id = _data.id
-
+            let url = $urlF.attr('data-folder-detail').format_url_with_uuid(_data.folder)
+            if(_data.type !== 'folder')
+                url = $urlF.attr('data-file-detail').format_url_with_uuid(_data.file)
             $.fn.callAjax2({
-                'url': $('#url-factory').attr('data-url-detail').format_url_with_uuid(_data.id),
+                'url': url,
                 'method': 'PUT',
-                data: {'permission_obj': temp_data}
+                data: {'permission_obj': temp_data, 'space': $('#folder-tree .btn-active').attr('data-space')}
             }).then((resp) => {
                 let rep = $.fn.switcherResp(resp);
                 if (rep && (rep['status'] === 201 || rep['status'] === 200)) {
@@ -297,23 +339,90 @@ class popupPermission {
 
     clear_form_popup() {
         this.$form[0].reset()
-        const $inp = $('#input_expired')
-        $('#table_group tbody tr td input, #table_employee tbody tr td input').prop('checked', false)
+        const $inp = $('input[name="expiration_date"]')
+        $('#table_group tbody tr td input').prop('checked', false)
+        $('#table_employee').DataTable().clear().draw();
         $('.employee-added > div').html('')
         // $inp[0]._flatpickr.set('clickOpens', false)
         $inp.prop('readonly', true)
         $('#sharePerm .modal-title span').text('')
         $('#btn_create').show()
         $('#btn_edit').hide()
+        this.$modalLoad.hide()
+    }
+
+    load_popup(){
+        let $modal = $('#sharePerm');
+        const $url = $('#url-factory')
+        const id = $modal.find('input[name="id"]').val()
+        const type = $modal.find('input[name="type"]').val()
+        const folder = $modal.find('input[name="folder"]').val()
+        const file = $modal.find('input[name="file"]').val()
+        let url = $url.attr('data-folder-perm-lst')
+        const _this = this
+
+        if(type === 'file') url = $url.attr('data-file-perm-lst')
+        if ($x.fn.checkUUID4(id)){
+            $.fn.callAjax2({
+                'url': url,
+                'method': 'GET',
+                'data': {'id': id}
+            }).then((resp) => {
+                let rep = $.fn.switcherResp(resp);
+                if (rep && (rep['status'] === 201 || rep['status'] === 200)) {
+                    const res = rep[type === 'file'? 'perm_file_lst'[0] : 'perm_fol_lst'][0];
+
+                    $(`input[name="kind"][val="${res.employee_or_group ? '1' : '2'}"],
+                    input[name="radio_perm_file"][val="${res.capability_list}"]`, $modal).prop('checked', true)
+                    $('input[name="type"]', $modal).val(type)
+                    $('input[name="folder"]', $modal).val(folder)
+                    $('input[name="file"]', $modal).val(file)
+                    if (res?.employee_list){
+                        let txtShow = '';
+                        const empLst = Object.values(res.employee_list).map((item) => {
+                            item.selected = true
+                            txtShow += `<span class="badge badge-soft-primary">${item.full_name}</span>`
+                            return item
+                        });
+                        $('.employee-added > div').html(txtShow)
+                        $('#table_employee').DataTable().rows.add(empLst).draw()
+                        $('input[name="employee_access"]', $modal).data('employee', res.employee_list)
+                    }
+                    if (res?.group_list){
+                        for (let key of Object.keys(res.group_list)){
+                            $(`#table_group tbody tr td input[value="${key}"]`).prop('checked', true)
+                                .closest('tr').addClass('selected')
+                        }
+                        $('input[name="group_access"]', $modal).data('group', res.group_list)
+                    }
+
+                    for (let item of res.folder_perm_list){
+                        $(`.wrap-folder-perm input[value="${item}"]`).prop('checked', true)
+                    }
+
+                    for (let item of res.file_in_perm_list){
+                        $(`.wrap-file-perm input[value="${item}"]`).prop('checked', true)
+                    }
+
+                    if (res.exp_date){
+                        $('#enabled_switch').prop('checked', true).trigger('change')
+                        const $exp = $('input[name="expiration_date"]')[0]
+                        $exp._flatpickr.setDate(res.exp_date)
+                    }
+                _this.$modalLoad.hide();
+                }
+            })
+        }
+        else this.$modalLoad.hide();
     }
 
     init() {
         this.load_group_list()
         this.load_employee_list([])
         this.add_new_recipient()
-        // this.switch_kind()
-        // this.btn_perm()
-        // this.init_date_exp()
+        this.switch_kind()
+        this.btn_perm()
+        this.init_date_exp()
         this.save_popup()
 
         // reset form
@@ -321,12 +430,20 @@ class popupPermission {
         $('#sharePerm').on('hidden.bs.modal', function () {
             _this.clear_form_popup()
         }).on('shown.bs.modal', function (event) {
-            const _dataId = $(event.relatedTarget).attr('data-id')
-            const _dataType = $(event.relatedTarget).attr('data-type')
-            const _dataTitle = $(event.relatedTarget).closest('tr').find('td:nth-child(2)').text()
-            $('input[name="folder"], input[name="id"]', $(this)).val(_dataId)
+            const $target = $(event.relatedTarget);
+            const _dataFolderId = $target.attr('data-folder')
+            const _dataFileId = $target.attr('data-file')
+            const _dataId = $target.attr('data-perm_id')
+            const _dataType = $target.attr('data-type')
+            let _dataTitle = $target.closest('tr').find('td:nth-child(2)').text()
+            if (!_dataTitle) _dataTitle = $target.attr('data-title')
+            $('input[name="folder"]', $(this)).val(_dataFolderId)
+            $('input[name="file"]', $(this)).val(_dataFileId)
+            $('input[name="id"]', $(this)).val(_dataId)
             $(this).find('input[name="type"]').val(_dataType)
             $('#sharePerm .modal-title span').text(_dataTitle)
+            _this.$modalLoad.show()
+            _this.load_popup()
         });
     }
 
@@ -349,8 +466,9 @@ class popupPermission {
             6: '#checkbox_duplicate',
             7: '#checkbox_edit_f'
         }
+        this.$modalLoad = $('.wrap-loading')
     }
-};
+}
 
 class FilesHandle {
 
@@ -368,6 +486,8 @@ class FilesHandle {
                 paging: false,
                 info: false,
                 searching: false,
+                autoWidth: true,
+                scrollX: true,
                 columns: [
                     {
                         data: 'id',
@@ -384,9 +504,14 @@ class FilesHandle {
                             const type = data?.['file_type'] ? data?.['file_type'] : 'folder'
                             const icon = icon_map?.[type] ? icon_map[type] : `<i class="bi bi-file-earmark"></i>`
                             const title = row ? row : data?.file_name
-                            const clsName = type === 'folder' ? 'folder_title' : 'file_title'
+                            const clsName = type === 'folder' ? 'folder_title' : 'file_title';
+                            let editBtn = ''
+                            if (type === 'folder')
+                                editBtn = `<span class="edit-rename" title="${$.fn.gettext('rename')}"><i class="fa-solid fa-pencil"></i></span>`
                             return `<a href="#" data-id="${data.id}" class="${clsName}">` +
-                                `<span class="icon text-${$x.fn.randomColor()}">${icon}</span><span class="fw-medium">${title}</span></a>`;
+                                `<span class="icon text-${$x.fn.randomColor()}">${icon}</span><span class="fw-medium">${
+                                title}</span></a>${editBtn}`
+
                         }
                     },
                     {
@@ -427,10 +552,13 @@ class FilesHandle {
                         render: (row, index, data) => {
                             let type = 'folder'
                             if (data?.file_type && data?.file_size && data?.file_name) type = 'file'
-                            const btn1 = `<button type="button" class="btn btn-icon btn-rounded bg-dark-hover" data-id="${row}" data-bs-toggle="modal" data-bs-target="#sharePerm" data-type="${type}"><span><i class="fa-solid fa-share-nodes"></i></span></button>`;
+                            const btn1 = `<button type="button" class="btn btn-icon btn-rounded bg-dark-hover" data-${type}="${row}" data-bs-toggle="modal" data-bs-target="#sharePerm" data-type="${type}"><span><i class="fa-solid fa-share-nodes"></i></span></button>`;
                             const btn2 = `<a class="btn btn-icon btn-rounded bg-dark-hover edit-button rotate90deg" ` + `data-id="${row}"><span class="icon"><i class="fa-solid fa-arrow-right-to-bracket"></i></span></a>`;
-                            const btn3 = `<button type="button" class="btn btn-icon btn-rounded bg-dark-hover dropdown-toggle" data-bs-toggle="dropdown" id="action_${row}">` + `<span class="icon-animate"><i class="fa-solid fa-ellipsis"></i></span></button>` + `<div class="dropdown-menu" aria-labelledby="action_${row}">` + `<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFolderMdl"><i class="dropdown-icon fas fa-folder-plus text-primary"></i><span>${$.fn.gettext('Access list')}</span></a>` + // `<a class="dropdown-item" href="#" id="upload-file" data-bs-toggle="modal" data-bs-target="#uploadFileMdl"><i class="dropdown-icon fas fa-file-upload text-primary"></i><span class="mt-2">${$.fn.gettext('Delete')}</span></a>` +
-                                `<a class="dropdown-item" href="#" id="update-folder"><i class="dropdown-icon fas fa-upload text-primary"></i><span>${'Move'}</span></a></div>`;
+                            const btn3 = `<button type="button" class="btn btn-icon btn-rounded bg-dark-hover dropdown-toggle" data-bs-toggle="dropdown" id="action_${row}">`
+                                + `<span class="icon-animate"><i class="fa-solid fa-ellipsis"></i></span></button>`
+                                + `<div class="dropdown-menu" aria-labelledby="action_${row}">`
+                                + `<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accessLst"><i class="dropdown-icon fas fa-folder-plus text-primary"></i><span>${$.fn.gettext('Access list')}</span></a>` + // `<a class="dropdown-item" href="#" id="upload-file" data-bs-toggle="modal" data-bs-target="#uploadFileMdl"><i class="dropdown-icon fas fa-file-upload text-primary"></i><span class="mt-2">${$.fn.gettext('Delete')}</span></a>` +
+                                `<a class="dropdown-item" href="#" id="update-folder"><i class="dropdown-icon fas fa-upload text-primary"></i><span>${$.fn.gettext('Move')}</span></a></div>`;
                             return `<div class="wrap-action">${btn1 + btn2 + btn3}</div>`;
                         }
                     }
@@ -442,14 +570,9 @@ class FilesHandle {
                         const folderId = $(this).attr('data-id')
                         _this.$loading.show()
                         _this.get_folder(folderId)
-                        _this.breadcrumb_handle({
-                            'id': folderId,
-                            'title': $('span:nth-child(2)', $(this)).text()
-                        })
-                        $('.tit-crt').html($('span:nth-child(2)', $(this)).text())
                     })
 
-                    // checked to select
+                    // table checked on input.
                     $('input[id*="checkbox_id_"]', row).off().on('change', function () {
                         const isCheck = $(this).prop('checked');
                         const $actSlc = $('.action-slc')
@@ -466,7 +589,7 @@ class FilesHandle {
 
                     // open modal update folder
                     $('#update-folder', row).off().on('click', function(){
-                        const $flMd = $('#addFolderMdl')
+                        const $flMd = _this.$elmMdFdr
                         const $crtFolder = $('#current_folder')
                         $('#add-folder-title', $flMd).prop('disabled',true)
                             .val(data.title)
@@ -480,8 +603,26 @@ class FilesHandle {
                         $('#folder_id', $flMd).val(data.id)
                         $flMd.modal('show')
 
+                    });
+                    // edit folder
+                    $('.edit-rename', row).off().on('click', function(){
+                        const $flMd = _this.$elmMdFdr;
+                        $('#folder_id', $flMd).val(data.id)
+                        $('#add-folder-title', $flMd).val(data.title)
+
+                        const crtFolderID = $('#current_folder').val();
+                        if (crtFolderID && crtFolderID !== 'root'){
+                            const title = $('.tit-crt').text()
+                            $('#add-folder-box-parent', $flMd).append(`<option value="${crtFolderID}" selected>${
+                                title}</option>`).trigger('change')
+                        }
+                        $('#add-folder-box-parent', $flMd).attr('data-params', JSON.stringify({ne: data.id}))
+                        $flMd.modal('show')
                     })
                 },
+                drawCallback: function(){
+                    _this.$loading.hide();
+                }
             })
         }
     }
@@ -489,7 +630,10 @@ class FilesHandle {
     get_folder(dataId = null) {
         const _this = this;
         $.fn.callAjax2({
-            'url': this.$urlFact.attr('data-url-detail').format_url_with_uuid(dataId), 'method': 'GET',
+            'url': this.$urlFact.attr('data-folder-detail').format_url_with_uuid(dataId),
+            'method': 'GET',
+            'sweetAlertOpts': {'allowOutsideClick': true},
+            'data': {'space': $('#folder-tree .btn-active').attr('data-space')}
         }).then((resp) => {
             let rep = $.fn.switcherResp(resp);
             if (rep && (rep['status'] === 201 || rep['status'] === 200)) {
@@ -501,7 +645,16 @@ class FilesHandle {
                     list_new.push(file)
                 }
                 _this.loadTable(list_new, true)
+
+                // set new current folder
                 $('#current_folder').data('data-json', {id: rep.id, title: rep.title}).val(rep.id)
+
+                // load new breadcrumb
+                _this.breadcrumb_handle({
+                    'id': rep.id,
+                    'title': rep.title
+                })
+                $('.tit-crt').html(rep.title)
             }
         })
     }
@@ -518,19 +671,22 @@ class FilesHandle {
             };
             const id = $('#folder_id').val()
             const parent = $('#add-folder-box-parent').val();
-            if (parent) dataSubmit['parent_n'] = parent;
+            dataSubmit['parent_n'] = parent ? parent : null;
             if (id) dataSubmit['id'] = id
-            const url = id ? _this.$urlFact.attr('data-url-detail').format_url_with_uuid(id) : _this.$urlFact.attr('data-folder-api');
+            const url = id ? _this.$urlFact.attr('data-folder-detail').format_url_with_uuid(id) : _this.$urlFact.attr('data-folder-api');
+            dataSubmit['space'] = $('#folder-tree .btn-active').attr('data-space')
             $.fn.callAjax2({
                 'url': url,
                 'method': id ? 'PUT' : 'POST',
                 'data': dataSubmit,
+                'sweetAlertOpts': {'allowOutsideClick': true},
             }).then((resp) => {
                 let data = $.fn.switcherResp(resp);
+                let crtVal = $crtFolder.val()
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
-                    if ((!parent || parent === $crtFolder.val()) && !id){
-                        // nếu là form create và là thư mục root hoặc parent = current thì add vào table
+                    if (!id && (!parent || parent === crtVal)){
+                         // nếu là form create và là thư mục root hoặc parent = current thì add vào table
                         _this.loadTable({
                             'id': data.id,
                             'title': data.title,
@@ -538,12 +694,26 @@ class FilesHandle {
                             'employee_inherit': data.employee_inherit
                         })
                     }
-                    if (id && parent !== $crtFolder.val()){
-                        // nếu là update và parent != current thì xóa row đó ra khỏi current
+                    else{
+                        const $tblFile = $('#main-files-info')
                         const idx = $(`#main-files-info input[id="checkbox_id_${id}"]`).closest('tr').index()
-                        $('#main-files-info').DataTable().row(idx).remove().draw()
+                        if (parent === crtVal || (!parent && crtVal === 'root')){
+                            // nếu folder cha bằng folder current
+                            // or ko có parent và current value bằng root
+                            let oldData = $tblFile.DataTable().row(idx).data();
+                            const newData = {...oldData,
+                                title: dataSubmit.title,
+                                date_modified: moment(new Date()).format('YYYY-MM-DD'),
+                                parent_n: parent ? {id: parent, title: $('.tit-crt').val()} : {}
+                            }
+                            // case folder edit đang nằm trong folder hiện tại
+                            $tblFile.DataTable().row(idx).data(newData).draw()
+                        }
+                        else
+                            // nếu là update và parent != current thì xóa row đó ra khỏi current
+                            $tblFile.DataTable().row(idx).remove().draw();
                     }
-                    $('#addFolderMdl').modal('hide');
+                    _this.$elmMdFdr.modal('hide');
                 }
             }, (err) => {
                 $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
@@ -555,7 +725,7 @@ class FilesHandle {
         const $btnSpace = $('#folder-tree button');
         const urlMap = {
             "my": this.$urlFact.attr('data-folder-my'),
-            "shared": this.$urlFact.attr('data-folder-share-api')
+            "shared": this.$urlFact.attr('data-folder-shared-to-me-lst')
         }
         const _this = this
 
@@ -612,7 +782,7 @@ class FilesHandle {
                 RootElm.on('click', function(){
                     const rootData = $(this).data('brc');
                     let url = _this.$urlFact.attr('data-folder-my')
-                    if (rootData.id === 'shared') url = _this.$urlFact.attr('data-folder-share-api')
+                    if (rootData.id === 'shared') url = _this.$urlFact.attr('data-folder-shared-to-me-lst')
                     $.fn.callAjax2({url: url, method: 'get'}
                     ).then(
                         (resp) => {
@@ -644,30 +814,21 @@ class FilesHandle {
     }
 
     delete_folder(id){
-        $.fn.callAjax2({
-            'url': this.$urlFact.attr('data-folder-my'),
-            'method': 'delete',
-            'data': {'ids': id}
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data['status'] === 204){
-                $('#main-files-info').DataTable().rows('.selected').remove().draw();
-                $('.action-slc').removeClass('active');
-            }
+        let _url = this.$urlFact.attr('data-folder-my')
+        if ($('#folder-tree button[data-space="shared"]').hasClass('btn-active'))
+            _url = this.$urlFact.attr('data-folder-shared-to-me-lst')
+        NotiConfirm({
+            url: _url,
+            data: {'ids': id},
+            type: 'folder'
         })
     }
 
     delete_file(ids){
-        $.fn.callAjax2({
-            'url': this.$urlFact.attr('data-file-edit'),
-            'method': 'delete',
-            'data': {'ids': ids}
-        }).then((resp) => {
-            let data = $.fn.switcherResp(resp);
-            if (data['status'] === 204){
-                $('#main-files-info').DataTable().rows('.selected').remove().draw();
-                $('.action-slc').removeClass('active');
-            }
+        NotiConfirm({
+            url: this.$urlFact.attr('data-file-edit'),
+            data: {'ids': ids},
+            type: 'file'
         })
     }
 
@@ -693,6 +854,89 @@ class FilesHandle {
             $('.action-slc').removeClass('active')
             $('input[id*="checkbox_id_"]:checked', $folderTbl).prop('checked', false)
         })
+    }
+
+    loadAccessLst(tblRowData){
+        let _url = this.$urlFact.attr('data-folder-perm-lst')
+        let params = {
+            'folder': tblRowData.folder,
+            'ids': tblRowData.perm_id,
+        }
+        if (tblRowData.type !== 'folder'){
+            _url = this.$urlFact.attr('data-file-perm-lst')
+            params = {'file': tblRowData.file}
+        }
+        const crtEmployee = $x.fn.getEmployeeCurrentID();
+        const _this = this
+        function actBtnDel(tblDataRow){
+            let urlDel = _this.$urlFact.attr('data-folder-perm-lst')
+            const paramsDel = { 'ids': [tblDataRow.perm_id] }
+            if (tblDataRow.type !== 'folder'){
+                urlDel = _this.$urlFact.attr('data-file-perm-lst')
+                paramsDel.file = tblDataRow.file
+            }
+            else paramsDel.folder = tblDataRow.folder
+            NotiConfirm({
+                url: urlDel,
+                data: paramsDel,
+                type: 'access',
+                perm_id: tblDataRow.perm_id
+            })
+        }
+
+        $.fn.callAjax2({
+            'url': _url,
+            'method': 'GET',
+            'data': params
+        }).then((resp) => {
+            let rep = $.fn.switcherResp(resp);
+            const $tabExp = $('#tab-expired');
+            const $tabAces = $('#tab-access');
+            if (rep && (rep['status'] === 201 || rep['status'] === 200)) {
+                const htmlTemp = $('#access-template-lst').html()
+                const crtDateTime = new Date();
+                for (let child of rep['perm_fol_lst']) {
+                    let newItem = $(htmlTemp)
+                    newItem.find('.heading').text($.fn.gettext(child?.employee_or_group ? 'Employee' : 'Group'))
+                    if (child?.exp_date && crtDateTime.getTime() < new Date(child.exp_date).getTime())
+                        newItem.find('.exp-heading').text(`${$.fn.gettext('Expire on')} ${moment(child.exp_date).format('DD MMM YYYY')}`)
+                    const listLoop = child?.employee_list ? child.employee_list : child.group_list
+                    const recipientLst = [];
+                    for (let item of Object.values(listLoop)){
+                        if (item?.full_name) recipientLst.push(`<span class="badge badge-soft-primary">${item.full_name}</span>`)
+                        else recipientLst.push(`<span class="badge badge-soft-primary">${item.title}</span>`)
+                    }
+
+                    $('.recipient-item', newItem).html(recipientLst)
+                    $('.recipient-action .view-perm', newItem).attr('data-perm_id', child.id)
+                        .attr('data-type', tblRowData.type)
+                        .attr('data-file', tblRowData.file)
+                        .attr('data-folder', tblRowData.folder)
+                        .attr('data-title', $('#accessLst .modal-title span').text())
+                    // if (child?.employee_created?.id !== crtEmployee){
+                        // - nếu ko phải user created, ko phải folder owner, ko có quyền share thì ẩn delete btn
+                        // $('.del-perm', newItem).addClass('disabled', true)
+                    // }
+                    if (child?.exp_date && crtDateTime.getTime() > new Date(child.exp_date).getTime())
+                        $tabExp.append(newItem)
+                    else $tabAces.append(newItem)
+
+                    newItem.attr('data-id', child.id)
+
+                    const temp = {...tblRowData, perm_id: child.id}
+                    $('.del-perm:not(.disabled)', newItem).off().on('click', () => actBtnDel(temp))
+                }
+
+                if ($tabExp.find('div.access-item').length <= 0 )
+                    $tabExp.append(`<div class="access-item d-flex flex-column mb-4"><p class="text-center">${
+                        $.fn.gettext('Access list is empty')
+                    }</p></div>`)
+                if ($tabAces.find('div.access-item').length <= 0 )
+                    $tabAces.append(`<div class="access-item d-flex flex-column mb-4"><p class="text-center">${
+                        $.fn.gettext('Access list is empty')
+                    }</p></div>`)
+            }
+        });
     }
 
     init() {
@@ -731,24 +975,92 @@ class FilesHandle {
             $('#add-folder-box-parent').val('').trigger('change')
         });
 
+        // click toggle menu on mobile
+        $('.hamburger-menu, .side_overlay, #folder-tree > .btn').off().on('click', function(){
+            $(this).closest('.align-items-stretch').toggleClass('active-menu')
+        })
+
+        // on modal show access list
+        const $tbMdL = $('#accessLst')
+        $tbMdL.on('show.bs.modal', function(e){
+            const $target = $(e.relatedTarget);
+            const $crtTr = $target.closest('tr');
+            let _title = $crtTr.find('td:nth-child(2) span.fw-medium').text()
+            const $rowIpt = $crtTr.find('td:nth-child(1) input')
+            let _dataTblRow = {
+                type: $rowIpt.attr('data-type'),
+                perm_id: null
+            }
+            if (_dataTblRow.type === 'folder')
+                _dataTblRow.folder = $rowIpt.val()
+            else _dataTblRow.file = $rowIpt.val()
+
+            _this.loadAccessLst(_dataTblRow)
+            $('#accessLst .modal-title span').text(_title)
+        })
+            .on('hidden.bs.modal', () => {
+                $('#tab-access, #tab-expired').html('')
+                $('.modal-title span', $tbMdL).text('')
+            })
 
         this.create_folder()
         this.action_space_title()
         this.breadcrumb_handle()
         this.action_bar()
+
+        this.$elmMdFdr.on('hidden.bs.modal', () =>{
+            $('#add-folder-title').val('')
+            $('#add-folder-box-parent').attr('data-params', '').val('').trigger('change')
+        })
     };
 
     constructor() {
         this.$urlFact = $('#url-factory')
         this.$elmMdFdr = $('#addFolderMdl')
-        this.$loading = $('#refresh-container')
+        this.$loading = $('.refresh-container')
     }
-};
+}
 
 function triggerAfterUpload(data={}){
     if (Object.keys(data).length){
         $('#main-files-info').DataTable().row.add(data).draw();
+        $.fn.notifyB({'description': $.fn.gettext("Upload file successfully")}, 'success')
     }
+}
+
+function NotiConfirm(params) {
+    Swal.fire({
+        title: $.fn.gettext('Delete this selection'),
+        text: $.fn.transEle.attr('data-sure-delete'),
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: $.fn.transEle.attr('data-delete'),
+        cancelButtonText: $.fn.transEle.attr('data-cancel'),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.fn.callAjax2({
+                'url': params.url,
+                'method': 'delete',
+                'data': params.data,
+                'sweetAlertOpts': {'allowOutsideClick': true},
+            }).then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data['status'] === 204) {
+                    if (['folder', 'file'].indexOf(params.type) !== -1){
+                        $('#main-files-info').DataTable().rows('.selected').remove().draw();
+                        $('.action-slc').removeClass('active');
+                    }
+                    else{
+                        // delete access list param type access
+                        $(`.access-item[data-id="${params.perm_id}"]`).remove()
+                    }
+
+                }
+            })
+        }
+    })
 }
 
 $(document).ready(function () {
@@ -764,7 +1076,7 @@ $(document).ready(function () {
     // init loading upload file
     new $x.cls.file($('#attachment')).init({
         'name': 'attachment',
-        'select_folder': false,
+        'select_folder': true,
         'element_folder': $('#current_folder'),
         'CB_after_upload': triggerAfterUpload,
     });

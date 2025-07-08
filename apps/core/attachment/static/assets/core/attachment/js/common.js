@@ -820,7 +820,7 @@ class FilesHandle {
         NotiConfirm({
             url: _url,
             data: {'ids': id},
-            type: 'folder',
+            type: 'folder'
         })
     }
 
@@ -828,7 +828,7 @@ class FilesHandle {
         NotiConfirm({
             url: this.$urlFact.attr('data-file-edit'),
             data: {'ids': ids},
-            type: 'file',
+            type: 'file'
         })
     }
 
@@ -879,7 +879,8 @@ class FilesHandle {
             NotiConfirm({
                 url: urlDel,
                 data: paramsDel,
-                type: 'access'
+                type: 'access',
+                perm_id: tblDataRow.perm_id
             })
         }
 
@@ -912,10 +913,10 @@ class FilesHandle {
                         .attr('data-file', tblRowData.file)
                         .attr('data-folder', tblRowData.folder)
                         .attr('data-title', $('#accessLst .modal-title span').text())
-                    if (child?.employee_created !== crtEmployee){
+                    // if (child?.employee_created?.id !== crtEmployee){
                         // - nếu ko phải user created, ko phải folder owner, ko có quyền share thì ẩn delete btn
-                        $('.del-perm', newItem).addClass('disabled', true)
-                    }
+                        // $('.del-perm', newItem).addClass('disabled', true)
+                    // }
                     if (child?.exp_date && crtDateTime.getTime() > new Date(child.exp_date).getTime())
                         $tabExp.append(newItem)
                     else $tabAces.append(newItem)
@@ -1052,7 +1053,7 @@ function NotiConfirm(params) {
                         $('.action-slc').removeClass('active');
                     }
                     else{
-                        // delete access list
+                        // delete access list param type access
                         $(`.access-item[data-id="${params.perm_id}"]`).remove()
                     }
 

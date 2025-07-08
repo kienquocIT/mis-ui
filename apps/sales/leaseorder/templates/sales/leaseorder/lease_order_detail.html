@@ -25,6 +25,8 @@
         data-url-detail="{% url 'LeaseOrderDetail' '0' %}"
         data-key-return="lease_order_list"
     ></script>
+    {% include 'printer/print.html' %}
+
     <div class="row">
         <div class="col-12 col-md-6 col-lg-6">
             <ul class="nav nav-line nav-tabs nav-light justify-content-start quotation-tabs">
@@ -42,8 +44,8 @@
         </div>
         <div class="col-12 col-md-6 col-lg-6">
             <div class="d-flex justify-content-end">
-                <div class="btn-group hidden" role="group" aria-label="Button group with nested dropdown">
-                    <button type="button" class="btn btn-outline-secondary" id="btn-copy-quotation" data-bs-toggle="modal" data-bs-target="#quotationModalCenter" data-copy-type="copy-from" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Copy Quotation' %}"><i class="far fa-copy"></i></button>
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <button type="button" class="btn btn-outline-secondary" id="print-document" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Print' %}" hidden><i class="fas fa-print"></i></button>
                 </div>
             </div>
         </div>
@@ -1458,4 +1460,14 @@
 
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
     <script src="{% static 'assets/js/extends/the-documents/auto-init-with-parameters.js' %}"></script>
+
+    <script src="{% static 'printer/print.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#print-document').on('click', function () {
+                PrintTinymceControl.open_modal();
+            });
+        });
+    </script>
 {% endblock %}

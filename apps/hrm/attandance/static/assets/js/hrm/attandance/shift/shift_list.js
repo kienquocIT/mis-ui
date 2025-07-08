@@ -67,7 +67,7 @@ $(document).ready(function () {
                                    data-checkout-gr-start="${row?.['checkout_gr_start'].slice(0, 5)}"
                                    data-checkout-gr-end="${row?.['checkout_gr_end'].slice(0, 5)}" 
                                    data-checkout-threshold="${row?.['checkout_threshold']}"
-                                   data-working-day-list="${JSON.stringify(row?.['working_day_list'] || [])}"
+                                   data-working-day-list="${JSON.stringify(row?.['working_day_list'] || []).replace(/"/g, '&quot;')}"  
                                    data-bs-toggle="modal" data-bs-target="#ShiftModal"
                                    class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-shift">
                                    <span class="btn-icon-wrap"><span class="feather-icon text-primary"><i data-feather="edit"></i></span></span>

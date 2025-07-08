@@ -1,4 +1,6 @@
-// Declare elements in Page
+/**
+ * Khai báo các Element
+ */
 class IncomingDocElements {
     constructor() {
         this.$titleEle = $('#txt_create_title')
@@ -15,11 +17,17 @@ class IncomingDocElements {
 
         // internal recipient
         this.$tableInternalRecipient = $('#table_internal_recipient')
+
+        // url
+        this.$urlEle = $('#app-url-factory');
     }
 }
+
 const pageElements = new IncomingDocElements();
 
-// Load data
+/**
+ * Khai báo các hàm chính
+ */
 class IncomingDocLoadDataHandle {
     static initPage() {
         // init selection
@@ -35,10 +43,12 @@ class IncomingDocLoadDataHandle {
 
     static initInternalRecipientTable(data) {
         const $tbl = pageElements.$tableInternalRecipient;
+
         if ($tbl.hasClass('dataTable')) {
             $tbl.DataTable().clear().rows.add(data).draw();
             return;
         }
+
         $tbl.DataTableDefault({
             data: data,
             paging: false,
@@ -46,34 +56,31 @@ class IncomingDocLoadDataHandle {
             searching: false,
             columns: [
                 {
-                    data: 'id',
-                    render: (row, index, data) => {
-                        if (!$x.fn.checkUUID4(row)) data.id = $x.cls.util.generateUUID4();
-                        const key = data?.kind === 1 ? 'employee_access' : 'group_access';
-                        const data_loop = data[key] || [];
-                        return Object.values(data_loop).map(val => {
-                            const name = data.kind === 1 ? val.full_name : val?.title;
-                            return `<div class="chip recipient-chip chip-outline-primary pill chip-pill mr-2">
-                                        <span class="chip-text">${name}</span>
-                                    </div>`;
-                        }).join('');
+                    data: 'employee_names',
+                    title: 'Internal Recipient',
+                    render: (names, type, row) => {
+                        if (Array.isArray(names)) {
+                            return names.map(name => `
+                            <div class="chip recipient-chip chip-outline-primary pill chip-pill mr-2">
+                                <span class="chip-text">${name}</span>
+                            </div>
+                        `).join('');
+                        }
+                        return '';
                     }
                 },
                 {
-                    data: 'title',
-                    render: (row) => row
-                },
-                {
                     data: 'id',
-                    render: (row) => {
+                    title: 'Actions',
+                    render: (id) => {
                         return `<div class="actions-btn text-center">
-                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button"
-                               title="Edit" href="#" data-id="${row}" data-action="edit">
-                               <span class="btn-icon-wrap"><i class="fa-solid fa-pen"></i></span></a>
-                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
-                               title="Delete" href="#" data-id="${row}" data-action="delete">
-                               <span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>
-                        </div>`;
+                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button"
+                           title="Edit" href="#" data-id="${id}" data-action="edit">
+                           <span class="btn-icon-wrap"><i class="fa-solid fa-pen"></i></span></a>
+                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn"
+                           title="Delete" href="#" data-id="${id}" data-action="delete">
+                           <span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span></a>
+                    </div>`;
                     }
                 }
             ],
@@ -85,11 +92,13 @@ class IncomingDocLoadDataHandle {
                 $('.actions-btn a.edit-button', row).off().on('click', function (e) {
                     e.stopPropagation();
                     $('#modal-recipient').trigger('modal.Recipient.edit', [{row_index: index}]);
+
+                    console.log(index)
+                    $('#form_id').val(index)
                 });
             }
         });
     }
-
 
     static buildAttachedList() {
         let parsedEffectiveDate = moment(pageElements.$effectiveDateEle.val(), "DD/MM/YYYY", true);
@@ -105,23 +114,24 @@ class IncomingDocLoadDataHandle {
         }]
     }
 
-
     static combineData(formEle) {
         let frm = new SetupFormSubmit($(formEle));
         frm.dataForm['title'] = pageElements.$titleEle.val();
-        frm.dataForm['remark'] = pageElements.$descriptionEle.val() ||'';
+        frm.dataForm['remark'] = pageElements.$descriptionEle.val() || '';
         frm.dataForm['attached_list'] = IncomingDocLoadDataHandle.buildAttachedList();
         frm.dataForm['internal_recipient'] = pageElements.$tableInternalRecipient.DataTable().data().toArray();
         if (frm.dataForm.hasOwnProperty('attachment')) {
-          frm.dataForm['attachment'] = $x.cls.file.get_val(frm.dataForm?.['attachment'], []);
+            frm.dataForm['attachment'] = $x.cls.file.get_val(frm.dataForm?.['attachment'], []);
         }
         return frm;
     }
 }
 
-// Load Editor
-class loadEditor {
-    init() {
+/**
+ * Các hàm load page và hàm hỗ trợ
+ */
+class IncomingDocPageFunction {
+    static loadEditor() {
         const $textArea = $('#textarea_remark');
         $textArea.tinymce({
             height: 500,
@@ -157,4 +167,8 @@ class loadEditor {
             `
         });
     }
+}
+
+class IncomingDocEventHandler {
+
 }

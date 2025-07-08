@@ -68,10 +68,7 @@ $(document).ready(function () {
 
     // init page
     IncomingDocLoadDataHandle.initPage();
-
-    // init remark
-    const remark = new loadEditor();
-    remark.init();
+    IncomingDocPageFunction.loadEditor();
 
     // load available data in form
     $.fn.callAjax2({

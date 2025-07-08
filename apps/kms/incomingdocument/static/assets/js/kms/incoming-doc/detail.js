@@ -30,12 +30,8 @@ function setFormReadonly($form) {
 }
 
 $(document).ready(function () {
+    IncomingDocLoadDataHandle.initPage();
     const $form = $('#frm_incoming_document');
-
-    // init remark
-    const remark = new loadEditor();
-    remark.init();
-
     $.fn.callAjax2({
         'url': $form.attr('data-url'),
         'method': 'GET',

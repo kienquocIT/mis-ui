@@ -126,7 +126,7 @@
     </form>
 {% endblock %}
 {% block modalData %}
-    {% include 'kms/document_approval/extend/popup-recipient.html' %}
+    {% include 'kms/incomingdocument/extend/popup-recipient.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
 {% endblock %}
@@ -135,7 +135,7 @@
     {% if base.language %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
-    <script src="{% static 'assets/js/kms/doc-approval/recipient-js.js' %}"></script>
+    <script src="{% static 'assets/js/kms/incoming-doc/recipient-js.js' %}"></script>
     <script src="{% static 'assets/js/kms/incoming-doc/common.js' %}"></script>
     <script src="{% static 'assets/js/kms/incoming-doc/detail.js' %}"></script>
 

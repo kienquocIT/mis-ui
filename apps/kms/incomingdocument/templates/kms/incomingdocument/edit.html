@@ -152,10 +152,23 @@
     </form>
 {% endblock %}
 {% block modalData %}
-    {% include 'kms/document_approval/extend/popup-recipient.html' %}
+    {% include 'kms/incomingdocument/extend/popup-recipient.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory">
+    <input
+            type="text"
+            id="app-url-factory"
+            data-md-employee="{% url 'EmployeeListAllAPI' %}"
+            data-md-group="{% url 'GroupDDListAPI' %}"
+    >
+    <input
+            type="text"
+            id="group-checked"
+    >
+    <input
+            type="text"
+            id="employee-checked"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
@@ -165,6 +178,6 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
     <script src="{% static 'assets/js/kms/incoming-doc/common.js' %}"></script>
-    <script src="{% static 'assets/js/kms/doc-approval/recipient-js.js' %}"></script>
+    <script src="{% static 'assets/js/kms/incoming-doc/recipient-js.js' %}"></script>
     <script src="{% static 'assets/js/kms/incoming-doc/edit.js' %}"></script>
 {% endblock %}

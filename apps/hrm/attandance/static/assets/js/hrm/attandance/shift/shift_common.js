@@ -1,3 +1,5 @@
+const dayKeys = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
 /**
  * Khai báo các Element
  */
@@ -37,13 +39,13 @@ class ShiftElement {
     }
 
     getSelectedWorkingDay() {
-        const selectedDays = [];
+        const result = {};
         for (let i = 0; i < this.workingDayCheckboxIds.length; i++) {
             const selector = this.workingDayCheckboxIds[i];
             const isChecked = $(selector).prop('checked');
-            selectedDays.push(isChecked);
+            result[dayKeys[i]] = isChecked;
         }
-        return selectedDays;
+        return result;
     }
 }
 const pageElements = new ShiftElement();
@@ -133,6 +135,26 @@ class ShiftLoadEventHandler {
         $(document).on("click", "#create_shift_button", function () {
             $('#shift-modal-title').text($.fn.gettext('Add new shift'))
             $('#shift-modal-title').attr('data-id', '');
+            $('#shift_name').val('');
+            $('#checkin_time').val('');
+            $('#checkin_gr_start').val('');
+            $('#checkin_gr_end').val('');
+            $('#checkin_threshold').val('');
+            $('#breakin_time').val('');
+            $('#breakin_gr_start').val('');
+            $('#breakin_gr_end').val('');
+            $('#breakin_threshold').val('');
+            $('#breakout_time').val('');
+            $('#breakout_gr_start').val('');
+            $('#breakout_gr_end').val('');
+            $('#breakout_threshold').val('');
+            $('#checkout_time').val('');
+            $('#checkout_gr_start').val('');
+            $('#checkout_gr_end').val('');
+            $('#checkout_threshold').val('');
+            pageElements.workingDayCheckboxIds.forEach(selector => {
+               $(selector).prop('checked', false);
+            });
         })
 
         $(document).on("click", ".edit-shift", function () {
@@ -160,11 +182,14 @@ class ShiftLoadEventHandler {
             $('#checkout_gr_end').val($(this).attr('data-checkout-gr-end'));
             $('#checkout_threshold').val($(this).attr('data-checkout-threshold'));
 
-            let working_days = $(this).attr('data-working-day-list') ? JSON.parse($(this).attr('data-working-day-list')) : [];
-            for (let i = 0; i < working_days.length; i++) {
-                console.log($(pageElements.workingDayCheckboxIds[i]));
-                $(pageElements.workingDayCheckboxIds[i]).prop('checked', working_days[i]);
-            }
+            // let working_days = $(this).attr('data-working-day-list') ? JSON.parse($(this).attr('data-working-day-list')) : [];
+            let working_days = JSON.parse($(this).attr('data-working-day-list'));
+            for (let i = 0; i < dayKeys.length; i++) {
+                const key = dayKeys[i];
+                const selector = pageElements.workingDayCheckboxIds[i];
+                const isChecked = working_days[key];
+                $(selector).prop('checked', isChecked);
+           }
         })
     }
 }

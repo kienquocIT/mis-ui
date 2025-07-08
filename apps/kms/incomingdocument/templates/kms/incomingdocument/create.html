@@ -8,7 +8,7 @@
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 
-    <link href="{% static 'assets/css/kms/doc-approval/recipient-css.css' %}" rel="stylesheet" type="text/css"/>
+    {#    <link href="{% static 'assets/css/kms/doc-approval/recipient-css.css' %}" rel="stylesheet" type="text/css"/>#}
     <link href="{% static 'assets/css/kms/doc-approval/common.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
@@ -49,15 +49,19 @@
                             <label class="form-label mt-2"
                                    for="table_internal_recipient">{% trans 'Internal Recipient' %}</label>
                             <table class="table nowrap table-advance w-100" id="table_internal_recipient"></table>
-                            <button class="btn btn-outline-primary" type="button" id="add_new_recipient"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modal-recipient">
-                        <span>
-                            <span>{% trans 'Add recipient' %}</span>
-                            <span class="icon">
-                                <i class="fa-regular fa-plus"></i>
-                            </span>
-                        </span>
+{#                            <button class="btn btn-outline-primary" type="button" id="add_new_recipient"#}
+{#                                    data-bs-toggle="modal"#}
+{#                                    data-bs-target="#modal-recipient">#}
+{#                                    <span>#}
+{#                                        <span>{% trans 'Add recipient' %}</span>#}
+{#                                        <span class="icon"><i class="fa-regular fa-plus"></i></span>#}
+{#                                    </span>#}
+{#                            </button>#}
+                            <button class="btn btn-outline-primary" type="button" id="add_new_recipient">
+                                <span>
+                                    <span>{% trans 'Add recipient' %}</span>
+                                    <span class="icon"><i class="fa-regular fa-plus"></i></span>
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -154,10 +158,23 @@
     </form>
 {% endblock %}
 {% block modalData %}
-    {% include 'kms/document_approval/extend/popup-recipient.html' %}
+    {% include 'kms/incomingdocument/extend/popup-recipient.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory">
+    <input
+            type="text"
+            id="app-url-factory"
+            data-md-employee="{% url 'EmployeeListAllAPI' %}"
+            data-md-group="{% url 'GroupDDListAPI' %}"
+    >
+    <input
+            type="text"
+            id="group-checked"
+    >
+    <input
+            type="text"
+            id="employee-checked"
+    >
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
@@ -167,6 +184,6 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
 
     <script src="{% static 'assets/js/kms/incoming-doc/common.js' %}"></script>
-    <script src="{% static 'assets/js/kms/doc-approval/recipient-js.js' %}"></script>
+    <script src="{% static 'assets/js/kms/incoming-doc/recipient-js.js' %}"></script>
     <script src="{% static 'assets/js/kms/incoming-doc/create.js' %}"></script>
 {% endblock %}

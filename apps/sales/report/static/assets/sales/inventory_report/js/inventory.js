@@ -146,7 +146,7 @@ $(document).ready(function () {
                                 <span class="${row?.['type']}" data-product-vm="${row?.['vm']}" data-product-code="${row?.['product_code']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
                             `
                             if (row?.['product_lot_number']) {
-                                html += `<span class="text-blue fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
+                                html += `<span class="text-blue fw-bold">${row?.['product_lot_number']}</span>`
                             }
                             return html
                         }
@@ -179,7 +179,7 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
                             if (row?.['lot_number']) {
-                                return `<span class="text-blue"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['lot_number']}</span>`
+                                return `<span class="text-blue">${row?.['lot_number']}</span>`
                             }
                         }
                         return ``
@@ -190,7 +190,7 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
                             if (row?.['expired_date']) {
-                                return `<span class="text-orange"><i class="bi bi-calendar2-x"></i>&nbsp;${row?.['expired_date']}</span>`
+                                return `<span class="text-danger">${row?.['expired_date']}</span>`
                             }
                         }
                         return ``

@@ -284,7 +284,7 @@ class EquipmentReturnPageFunction {
                 {
                     className: 'w-20',
                     render: (data, type, row) => {
-                        return `<select ${option === 'detail' ? 'disabled readonly' : ''} class="form-select select2 return-to-warehouse"></select>`
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 return-to-warehouse"></select>`
                     }
                 },
             ],
@@ -346,7 +346,7 @@ class EquipmentReturnHandler {
                     pageElements.$document_date.val(moment(data?.['document_date'], 'YYYY/MM/DD').format('DD/MM/YYYY'))
 
                     let data_line_detail = data?.['equipment_return_item_list']
-                    EquipmentReturnPageFunction.LoadLineDetailTable(data_line_detail)
+                    EquipmentReturnPageFunction.LoadLineDetailTable(data_line_detail, option)
                     pageElements.$table_line_detail.attr('data-return-item', JSON.stringify(data_line_detail))
 
                     new $x.cls.file($('#attachment')).init({

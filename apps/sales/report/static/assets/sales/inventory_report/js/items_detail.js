@@ -85,7 +85,7 @@ $(document).ready(function () {
                                 </a>
                                 <span data-product-id="${row?.['product_id']}" class="product-td text-primary fw-bold">${row?.['product_title']}</span>`
                             if (row?.['product_lot_number']) {
-                                html += `<span class="ml-1 text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
+                                html += `<span class="ml-1 text-blue small fw-bold">${row?.['product_lot_number']}</span>`
                             }
                             if (row?.['sale_order_code']) {
                                 html += `<span class="ml-1 text-danger small fw-bold sale-order-td" data-so-id="${row?.['sale_order_id']}">${row?.['sale_order_code']}</span>`
@@ -525,7 +525,7 @@ $(document).ready(function () {
                             for (const item of results[0]) {
                                 let lot_number_html = ''
                                 if (item?.['product']?.['lot_number']) {
-                                    lot_number_html = `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${item?.['product']?.['lot_number']}</span>&nbsp;`
+                                    lot_number_html = `<span class="text-blue small fw-bold">${item?.['product']?.['lot_number']}</span>&nbsp;`
                                 }
                                 let sale_order_html = ''
                                 if (item?.['product']?.['sale_order_code']) {

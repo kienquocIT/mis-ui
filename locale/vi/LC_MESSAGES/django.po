@@ -11025,7 +11025,7 @@ msgstr "Lưu chỉnh sửa vùng và phê duyệt"
 
 #
 msgid "Goods recovery"
-msgstr "Thu hồi"
+msgstr "Thu hồi hàng cho thuê"
 
 #
 msgid "Input quantity new products"

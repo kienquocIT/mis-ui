@@ -107,8 +107,8 @@ $(document).ready(function () {
                             return `<label class="text-center text-secondary">${row?.['ob_label']}</label>`
                         }
                         else if (row?.['row_type'] === 'log') {
-                            return `<label class="text-${row?.['text_color']} w-50">${row?.['trans_title']}</label>&nbsp;
-                                    <span class="badge badge-soft-${row?.['text_color']} w-40">${row?.['trans_code']}</span>`
+                            return `<label class="text-${row?.['text_color']}">${row?.['trans_title']}</label>&nbsp;
+                                    <span class="badge badge-sm badge-${row?.['text_color']}">${row?.['trans_code']}</span>`
                         }
                         else if (row?.['row_type'] === 'wh') {
                             return `<span class="text-secondary fw-bold wh-of-${row?.['product_id']}">${row?.['warehouse_title']}</span>
@@ -345,7 +345,7 @@ $(document).ready(function () {
                                             'stock_type': activity?.['stock_type'],
                                             'trans_code': activity?.['trans_code'],
                                             'trans_title': trans_title_sub?.[activity?.['trans_title']],
-                                            'system_date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
+                                            'system_date': moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm"),
                                             'quantity': activity?.['quantity'],
                                             'cost': activity?.['cost'],
                                             'value': activity?.['value'],
@@ -423,7 +423,7 @@ $(document).ready(function () {
                                         'stock_type': activity?.['stock_type'],
                                         'trans_code': activity?.['trans_code'],
                                         'trans_title': trans_title_sub?.[activity?.['trans_title']],
-                                        'system_date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
+                                        'system_date': moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm"),
                                         'quantity': activity?.['quantity'],
                                         'cost': activity?.['cost'],
                                         'value': activity?.['value'],
@@ -639,11 +639,11 @@ $(document).ready(function () {
                                                             <td class="first-col border-1"></td>
                                                             <td></td>
                                                             <td></td>
-                                                            <td><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
+                                                            <td><span class="small">${moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm")}</span></td>
                                                             <td hidden></td>
                                                             <td hidden></td>
                                                             <td>${ob_label}</td>
-                                                            <td><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                            <td><span class="badge badge-sm badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
                                                             <td><span class="text-${text_color}">${activity?.['quantity']}</span></td>
                                                             <td><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
                                                             <td><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
@@ -678,11 +678,11 @@ $(document).ready(function () {
                                                             <td class="first-col border-1"></td>
                                                             <td></td>
                                                             <td></td>
-                                                            <td><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
+                                                            <td><span class="small">${moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm")}</span></td>
                                                             <td hidden></td>
                                                             <td hidden></td>
                                                             <td>${ob_label}</td>
-                                                            <td><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                            <td><span class="badge badge-sm badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
                                                             <td></td>
                                                             <td></td>
                                                             <td></td>
@@ -795,11 +795,11 @@ $(document).ready(function () {
                                                         <td class="first-col border-1"></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
+                                                        <td><span class="small">${moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm")}</span></td>
                                                         <td hidden></td>
                                                         <td hidden></td>
                                                         <td>${ob_label}</td>
-                                                        <td><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                        <td><span class="badge badge-sm badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
                                                         <td><span class="text-${text_color}">${activity?.['quantity']}</span></td>
                                                         <td><span class="mask-money text-${text_color}" data-init-money="${activity?.['cost']}"></span></td>
                                                         <td><span class="mask-money text-${text_color}" data-init-money="${activity?.['value']}"></span></td>
@@ -834,11 +834,11 @@ $(document).ready(function () {
                                                         <td class="first-col border-1"></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td><span>${moment(activity?.['system_date']).format("DD/MM/YYYY")}</span></td>
+                                                        <td><span class="small">${moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm")}</span></td>
                                                         <td hidden></td>
                                                         <td hidden></td>
                                                         <td>${ob_label}</td>
-                                                        <td><span class="badge badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
+                                                        <td><span class="badge badge-sm badge-soft-${text_color} w-100">${activity?.['trans_code']}</span></td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>

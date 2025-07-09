@@ -635,11 +635,13 @@ class EquipmentLoanEventHandler {
 
             let sum_picked_quantity = 0
             pageElements.$table_select_warehouse.find('tbody tr').each(function (index, ele) {
-                component_none_list.push({
-                    'product_warehouse_id': $(ele).find('.product-warehouse-select').attr('data-product-warehouse-id'),
-                    'picked_quantity': parseFloat($(ele).find('.none-picked-quantity').val()) || 0
-                })
-                sum_picked_quantity += parseFloat($(ele).find('.none-picked-quantity').val()) || 0
+                if (Number(parseFloat($(ele).find('.none-picked-quantity').val()) || 0) > 0) {
+                    component_none_list.push({
+                        'product_warehouse_id': $(ele).find('.product-warehouse-select').attr('data-product-warehouse-id'),
+                        'picked_quantity': parseFloat($(ele).find('.none-picked-quantity').val()) || 0
+                    })
+                    sum_picked_quantity += parseFloat($(ele).find('.none-picked-quantity').val()) || 0
+                }
             })
 
             pageVariables.current_loan_row.find('.data-none-detail').text(JSON.stringify(component_none_list))

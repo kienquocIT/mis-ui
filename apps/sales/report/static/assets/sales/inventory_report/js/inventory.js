@@ -146,12 +146,12 @@ $(document).ready(function () {
                                 <span class="${row?.['type']}" data-product-vm="${row?.['vm']}" data-product-code="${row?.['product_code']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
                             `
                             if (row?.['product_lot_number']) {
-                                html += `<span class="text-blue small fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
+                                html += `<span class="text-blue fw-bold"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['product_lot_number']}</span>`
                             }
                             return html
                         }
                         if (row?.['type'] === 'detail_row') {
-                            return `<span class="detail_row small ${row?.['product_code']} badge ${row?.['bg_in']} ${row?.['bg_out']}"></span>`
+                            return `<span class="detail_row ${row?.['product_code']} ${row?.['bg_in']} ${row?.['bg_out']}"></span>&nbsp;<span class="badge badge-sm ${row?.['bg_in'].replace('text', 'badge')} ${row?.['bg_out'].replace('text', 'badge')}">${row?.['trans_code']}</span>`
                         }
                         return ``
                     }
@@ -169,7 +169,7 @@ $(document).ready(function () {
                     className: 'text-center',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
-                            return `<span class="small">${row?.['date'] ? row?.['date'] : ''}</span>`
+                            return `<span>${row?.['date'] ? row?.['date'] : ''}</span>`
                         }
                         return ``
                     }
@@ -179,7 +179,7 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
                             if (row?.['lot_number']) {
-                                return `<span class="small text-blue"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['lot_number']}</span>`
+                                return `<span class="text-blue"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['lot_number']}</span>`
                             }
                         }
                         return ``
@@ -190,7 +190,7 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['type'] === 'detail_row') {
                             if (row?.['expired_date']) {
-                                return `<span class="small text-orange"><i class="bi bi-calendar2-x"></i>&nbsp;${row?.['expired_date']}</span>`
+                                return `<span class="text-orange"><i class="bi bi-calendar2-x"></i>&nbsp;${row?.['expired_date']}</span>`
                             }
                         }
                         return ``
@@ -230,8 +230,8 @@ $(document).ready(function () {
                                     </div>`
                         }
                         return `<div class="row">
-                                    <div class="col-4"><span class="small text-secondary in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['in_quantity']}</span></div>
-                                    <div class="col-8"><span class="small text-secondary in-quantity-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['in_value']}"></span></div>
+                                    <div class="col-4"><span class="text-secondary in-quantity-span prd-in-quantity-${row?.['warehouse_id']}">${row?.['in_quantity']}</span></div>
+                                    <div class="col-8"><span class="text-secondary in-quantity-span mask-money prd-in-value-${row?.['warehouse_id']}" data-init-money="${row?.['in_value']}"></span></div>
                                 </div>`
                     }
                 },
@@ -251,8 +251,8 @@ $(document).ready(function () {
                                     </div>`
                         }
                         return `<div class="row">
-                                    <div class="col-4"><span class="small text-secondary out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['out_quantity']}</span></div>
-                                    <div class="col-8"><span class="small text-secondary out-quantity-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['out_value']}"></span></div>
+                                    <div class="col-4"><span class="text-secondary out-quantity-span prd-out-quantity-${row?.['warehouse_id']}">${row?.['out_quantity']}</span></div>
+                                    <div class="col-8"><span class="text-secondary out-quantity-span mask-money prd-out-value-${row?.['warehouse_id']}" data-init-money="${row?.['out_value']}"></span></div>
                                 </div>`
                     }
                 },
@@ -402,11 +402,11 @@ $(document).ready(function () {
                 if (textFilter$.length > 0) {
                     textFilter$.css('display', 'flex');
                     textFilter$.append(
-                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="small">${trans_script.attr('data-trans-vm')}</span>`)
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span>${trans_script.attr('data-trans-vm')}</span>`)
                     ).append(
-                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-blue-light-2 badge-indicator"></span><span class="small">${trans_script.attr('data-trans-fifo')}</span>`)
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-blue-light-2 badge-indicator"></span><span>${trans_script.attr('data-trans-fifo')}</span>`)
                     ).append(
-                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-secondary-light-3 badge-indicator"></span><span class="small">${trans_script.attr('data-trans-we')}</span>`)
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-secondary-light-3 badge-indicator"></span><span>${trans_script.attr('data-trans-we')}</span>`)
                     )
                 }
             },
@@ -866,36 +866,37 @@ $(document).ready(function () {
                                     let bg_in = ''
                                     let bg_out = ''
                                     if (activity?.['trans_title'] === 'Goods receipt') {
-                                        bg_in = 'badge-soft-primary'
+                                        bg_in = 'text-primary'
                                     }
                                     if (activity?.['trans_title'] === 'Goods return') {
-                                        bg_in = 'badge-soft-blue'
+                                        bg_in = 'text-blue'
                                     }
                                     if (activity?.['trans_title'] === 'Delivery (sale)') {
-                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                        bg_out = 'text-danger dlvr-sale'
                                     }
                                     if (activity?.['trans_title'] === 'Delivery (lease)') {
-                                        bg_out = 'badge-soft-danger dlvr-lease'
+                                        bg_out = 'text-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                        bg_in = 'badge-soft-green'
+                                        bg_in = 'text-green'
                                     }
                                     if (activity?.['trans_title'] === 'Goods issue') {
-                                        bg_out = 'badge-soft-orange'
+                                        bg_out = 'text-orange'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                        bg_in = 'badge-soft-purple gtf-in'
+                                        bg_in = 'text-purple gtf-in'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                        bg_out = 'badge-soft-purple gtf-out'
+                                        bg_out = 'text-purple gtf-out'
                                     }
                                     if (activity?.['trans_title'] === 'Balance init input') {
-                                        bg_in = 'badge-soft-secondary'
+                                        bg_in = 'text-secondary'
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'detail_row',
+                                        'trans_code': activity?.['trans_code'],
                                         'product_code': warehouse_activities?.['product']?.['code'],
-                                        'date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
+                                        'date': moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm"),
                                         'lot_number': activity?.['lot_number'],
                                         'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
                                         'bg_in': bg_in,
@@ -934,36 +935,37 @@ $(document).ready(function () {
                                     let bg_in = ''
                                     let bg_out = ''
                                     if (activity?.['trans_title'] === 'Goods receipt') {
-                                        bg_in = 'badge-soft-primary'
+                                        bg_in = 'text-primary'
                                     }
                                     if (activity?.['trans_title'] === 'Goods return') {
-                                        bg_in = 'badge-soft-blue'
+                                        bg_in = 'text-blue'
                                     }
                                     if (activity?.['trans_title'] === 'Delivery (sale)') {
-                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                        bg_out = 'text-danger dlvr-sale'
                                     }
                                     if (activity?.['trans_title'] === 'Delivery (lease)') {
-                                        bg_out = 'badge-soft-danger dlvr-lease'
+                                        bg_out = 'text-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                        bg_in = 'badge-soft-green'
+                                        bg_in = 'text-green'
                                     }
                                     if (activity?.['trans_title'] === 'Goods issue') {
-                                        bg_out = 'badge-soft-orange'
+                                        bg_out = 'text-orange'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                        bg_in = 'badge-soft-purple gtf-in'
+                                        bg_in = 'text-purple gtf-in'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                        bg_out = 'badge-soft-purple gtf-out'
+                                        bg_out = 'text-purple gtf-out'
                                     }
                                     if (activity?.['trans_title'] === 'Balance init input') {
-                                        bg_in = 'badge-soft-secondary'
+                                        bg_in = 'text-secondary'
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'detail_row',
+                                        'trans_code': activity?.['trans_code'],
                                         'product_code': warehouse_activities?.['product']?.['code'],
-                                        'date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
+                                        'date': moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm"),
                                         'lot_number': activity?.['lot_number'],
                                         'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
                                         'bg_in': bg_in,
@@ -1014,36 +1016,37 @@ $(document).ready(function () {
                                     let bg_in = ''
                                     let bg_out = ''
                                     if (activity?.['trans_title'] === 'Goods receipt') {
-                                        bg_in = 'badge-soft-primary'
+                                        bg_in = 'text-primary'
                                     }
                                     if (activity?.['trans_title'] === 'Goods return') {
-                                        bg_in = 'badge-soft-blue'
+                                        bg_in = 'text-blue'
                                     }
                                     if (activity?.['trans_title'] === 'Delivery (sale)') {
-                                        bg_out = 'badge-soft-danger dlvr-sale'
+                                        bg_out = 'text-danger dlvr-sale'
                                     }
                                     if (activity?.['trans_title'] === 'Delivery (lease)') {
-                                        bg_out = 'badge-soft-danger dlvr-lease'
+                                        bg_out = 'text-danger dlvr-lease'
                                     }
                                     if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                        bg_in = 'badge-soft-green'
+                                        bg_in = 'text-green'
                                     }
                                     if (activity?.['trans_title'] === 'Goods issue') {
-                                        bg_out = 'badge-soft-orange'
+                                        bg_out = 'text-orange'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                        bg_in = 'badge-soft-purple gtf-in'
+                                        bg_in = 'text-purple gtf-in'
                                     }
                                     if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                        bg_out = 'badge-soft-purple gtf-out'
+                                        bg_out = 'text-purple gtf-out'
                                     }
                                     if (activity?.['trans_title'] === 'Balance init input') {
-                                        bg_in = 'badge-soft-secondary'
+                                        bg_in = 'text-secondary'
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'detail_row',
+                                        'trans_code': activity?.['trans_code'],
                                         'product_code': warehouse_activities?.['product']?.['code'],
-                                        'date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
+                                        'date': moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm"),
                                         'lot_number': activity?.['lot_number'],
                                         'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
                                         'bg_in': bg_in,
@@ -1081,36 +1084,37 @@ $(document).ready(function () {
                                         let bg_in = ''
                                         let bg_out = ''
                                         if (activity?.['trans_title'] === 'Goods receipt') {
-                                            bg_in = 'badge-soft-primary'
+                                            bg_in = 'text-primary'
                                         }
                                         if (activity?.['trans_title'] === 'Goods return') {
-                                            bg_in = 'badge-soft-blue'
+                                            bg_in = 'text-blue'
                                         }
                                         if (activity?.['trans_title'] === 'Delivery (sale)') {
-                                            bg_out = 'badge-soft-danger dlvr-sale'
+                                            bg_out = 'text-danger dlvr-sale'
                                         }
                                         if (activity?.['trans_title'] === 'Delivery (lease)') {
-                                            bg_out = 'badge-soft-danger dlvr-lease'
+                                            bg_out = 'text-danger dlvr-lease'
                                         }
                                         if (activity?.['trans_title'] === 'Goods receipt (IA)') {
-                                            bg_in = 'badge-soft-green'
+                                            bg_in = 'text-green'
                                         }
                                         if (activity?.['trans_title'] === 'Goods issue') {
-                                            bg_out = 'badge-soft-orange'
+                                            bg_out = 'text-orange'
                                         }
                                         if (activity?.['trans_title'] === 'Goods transfer (in)') {
-                                            bg_in = 'badge-soft-purple gtf-in'
+                                            bg_in = 'text-purple gtf-in'
                                         }
                                         if (activity?.['trans_title'] === 'Goods transfer (out)') {
-                                            bg_out = 'badge-soft-purple gtf-out'
+                                            bg_out = 'text-purple gtf-out'
                                         }
                                         if (activity?.['trans_title'] === 'Balance init input') {
-                                            bg_in = 'badge-soft-secondary'
+                                            bg_in = 'text-secondary'
                                         }
                                         table_inventory_report_data.push({
                                             'type': 'detail_row',
+                                            'trans_code': activity?.['trans_code'],
                                             'product_code': warehouse_activities?.['product']?.['code'],
-                                            'date': moment(activity?.['system_date']).format("DD/MM/YYYY"),
+                                            'date': moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm"),
                                             'lot_number': activity?.['lot_number'],
                                             'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
                                             'bg_in': bg_in,
@@ -1162,39 +1166,39 @@ $(document).ready(function () {
         table_inventory_report.find('.detail_row').each(function () {
             $(this).closest('tr').attr('data-bs-toggle', 'tooltip')
             $(this).closest('tr').attr('data-bs-placement', 'top')
-            if ($(this).attr('class').includes('badge-soft-primary')) {
+            if ($(this).attr('class').includes('text-primary')) {
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-grc'))
                 $(this).text(trans_script.attr('data-trans-grc'))
             }
-            if ($(this).attr('class').includes('badge-soft-blue')) {
+            if ($(this).attr('class').includes('text-blue')) {
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-grt'))
                 $(this).text(trans_script.attr('data-trans-grt'))
             }
-            if ($(this).attr('class').includes('badge-soft-danger dlvr-sale')) {
+            if ($(this).attr('class').includes('text-danger dlvr-sale')) {
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr-sale'))
                 $(this).text(trans_script.attr('data-trans-dlvr-sale'))
             }
-            if ($(this).attr('class').includes('badge-soft-danger dlvr-lease')) {
+            if ($(this).attr('class').includes('text-danger dlvr-lease')) {
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-dlvr-lease'))
                 $(this).text(trans_script.attr('data-trans-dlvr-lease'))
             }
-            if ($(this).attr('class').includes('badge-soft-green')) {
+            if ($(this).attr('class').includes('text-green')) {
                 $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-grc')} (IA)`)
                 $(this).text(`${trans_script.attr('data-trans-grc')} (IA)`)
             }
-            if ($(this).attr('class').includes('badge-soft-orange')) {
+            if ($(this).attr('class').includes('text-orange')) {
                 $(this).closest('tr').attr('title', trans_script.attr('data-trans-gis'))
                 $(this).text(trans_script.attr('data-trans-gis'))
             }
-            if ($(this).attr('class').includes('badge-soft-purple gtf-in')) {
+            if ($(this).attr('class').includes('text-purple gtf-in')) {
                 $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-gtf')} (${trans_script.attr('data-trans-gtf-in')})`)
                 $(this).text(`${trans_script.attr('data-trans-gtf')} (${trans_script.attr('data-trans-gtf-in')})`)
             }
-            if ($(this).attr('class').includes('badge-soft-purple gtf-out')) {
+            if ($(this).attr('class').includes('text-purple gtf-out')) {
                 $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-gtf')} (${trans_script.attr('data-trans-gtf-out')})`)
                 $(this).text(`${trans_script.attr('data-trans-gtf')} (${trans_script.attr('data-trans-gtf-out')})`)
             }
-            if ($(this).attr('class').includes('badge-soft-secondary')) {
+            if ($(this).attr('class').includes('text-secondary')) {
                 $(this).closest('tr').attr('title', `${trans_script.attr('data-trans-bii')}`)
                 $(this).text(`${trans_script.attr('data-trans-bii')}`)
             }

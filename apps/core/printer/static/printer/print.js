@@ -415,7 +415,7 @@ class PrintTinymceControl {
                         link_default_protocol: 'https',
                         mentions: {
                             queryBy: 'code',
-                            items: 10,
+                            items: 20,
                             delimiter: '#',
                             source: function(query, process, delimiter) {
                                 if (delimiter === '#') {
@@ -423,7 +423,7 @@ class PrintTinymceControl {
                                         $.extend(
                                             {
                                                 'page': 1,
-                                                'pageSize': 10,
+                                                'pageSize': 20,
                                                 'ordering': 'title',
                                                 // 'application': application_id,
                                                 'application__in': `${application_id},ba2ef9f1-63f4-4cfb-ae2f-9dee6a56da68`,
@@ -471,7 +471,7 @@ class PrintTinymceControl {
                                 //     </li>
                                 // `
                                 return `
-                                    <li class="mention-item d-flex align-items-center px-2 py-1" 
+                                    <li class="dropdown-item mention-item d-flex align-items-center px-2 py-1" 
                                         style="cursor: pointer; transition: background 0.2s;">
                                         ${item.code.includes('___') 
                                             ? '<i class="fa-solid fa-table-list fa-xs mr-2 text-secondary"></i>' 
@@ -484,7 +484,7 @@ class PrintTinymceControl {
                                 `;
                             },
                             renderDropdown: function() {
-                                return '<ul class="rte-autocomplete dropdown-menu mention-person-list"></ul>';
+                                return `<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="rte-autocomplete dropdown-menu mention-person-list w-300p h-250p position-relative overflow-y-scroll position-absolute" style="z-index: 10000;"></div>`;
                             },
                             matcher: function (item) {
                                 return item;

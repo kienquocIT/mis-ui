@@ -6,6 +6,9 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'assets/core/attachment/css/common.css' %}" rel="stylesheet" type="text/css">
+
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
 {% endblock %}
@@ -14,7 +17,7 @@
     <form id="frm_folder" method="post" class="h-100">
         {% csrf_token %}
         <div class="d-flex align-items-stretch h-100 w-100">
-            <div class="w-md-15 d-block left_side">
+            <div class="d-block left_side">
                 <h4 class="h4 font-weight-bold pl-3 color-grey-dark-5">Home</h4>
                 <div class="mt-5" id="folder-tree">
                     <button class="btn btn-flush-primary flush-soft-hover rounded-5 w-100 btn-active"
@@ -37,13 +40,15 @@
                     </button>
                 </div>
             </div>
-            <div class="w-md-85 d-block right_side">
+            <div class="d-block right_side">
+                <div class="hamburger-menu">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
                 <div class="wrap-search w-60">
                     <div class="input-group">
                         <span class="input-affix-wrapper">
-                            <label for="add-folder-title" for="search_folder"></label>
                             <input type="text" class="form-control min-h-55p" placeholder="{% trans 'Search' %}"
-                            id="search_folder">
+                            id="search_folder" aria-label="search_folder">
                             <span class="input-suffix"><i class="fas fa-search"></i></span>
                         </span>
                     </div>
@@ -85,7 +90,7 @@
                 <h5 class="tit-crt mb-4"></h5>
                 <input type="hidden" id="current_folder" value="root">
                 <div class="w-100 card card-refresh">
-                    <div class="refresh-container" style="display: none">
+                    <div class="refresh-container" style="display: block">
                         <div class="loader-pendulums"></div>
                     </div>
                     <div class="action-slc">
@@ -101,7 +106,7 @@
                         </div>
 {#                        <div class="selected-div"></div>#}
                     </div>
-                    <table class="table nowrap w-100" id="main-files-info">
+                    <table class="table nowrap w-100 min-w-1440p" id="main-files-info">
                         <thead>
                         <tr>
                             <th>#</th>
@@ -116,6 +121,7 @@
                     </table>
                 </div>
             </div>
+            <div class="side_overlay"></div>
         </div>
 
         <div class="modal-area">
@@ -165,9 +171,13 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <div class="wrap-loading" style="display: none">
+                                <div class="loader-pendulums"></div>
+                            </div>
                             <form id="share_form">
                                 <input type="hidden" name="id">
                                 <input type="hidden" name="folder">
+                                <input type="hidden" name="file">
                                 <input type="hidden" name="type">
                                 <input type="hidden" name="group_access">
                                 <input type="hidden" name="employee_access">
@@ -243,34 +253,34 @@
 {#                                            <input type="radio" id="radio_review" class="form-check-input" checked#}
 {#                                                   name="radio_perm_file" value="1">#}
 {#                                            <label title="Review" for="radio_review" class="form-check-label">#}
-{#                                                {% trans 'Review' %}#}
+{#                                                {% trans 'Preview' %}#}
 {#                                            </label>#}
 {#                                        </div>#}
                                         <div class="form-check form-check-inline">
                                             <input type="radio" id="radio_view" class="form-check-input"
-                                                   name="radio_perm_file" value="2">
+                                                   name="radio_perm_file" value="2" checked>
                                             <label title="View" for="radio_view" class="form-check-label">
                                                 {% trans 'View' %}
                                             </label>
                                         </div>
-{#                                        <div class="form-check form-check-inline">#}
-{#                                            <input type="radio" id="radio_edit" class="form-check-input"#}
-{#                                                   name="radio_perm_file" value="3">#}
-{#                                            <label title="Edit" for="radio_edit" class="form-check-label">#}
-{#                                                {% trans 'Edit' %}#}
-{#                                            </label>#}
-{#                                        </div>#}
-{#                                        <div class="form-check form-check-inline">#}
-{#                                            <input type="radio" id="radio_custom" class="form-check-input"#}
-{#                                                   name="radio_perm_file" value="4">#}
-{#                                            <label title="Custom" for="radio_custom" class="form-check-label">#}
-{#                                                {% trans 'Custom' %}#}
-{#                                            </label>#}
-{#                                        </div>#}
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" id="radio_edit" class="form-check-input"
+                                                   name="radio_perm_file" value="3">
+                                            <label title="Edit" for="radio_edit" class="form-check-label">
+                                                {% trans 'Edit' %}
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" id="radio_custom" class="form-check-input"
+                                                   name="radio_perm_file" value="4">
+                                            <label title="Custom" for="radio_custom" class="form-check-label">
+                                                {% trans 'Custom' %}
+                                            </label>
+                                        </div>
                                     </div>
                                     <div class="col-md-12 mb-4">
                                         <div class="border">
-                                            <div class="w-100 p-2 layout_grid l_grid-3 pb-4">
+                                            <div class="w-100 p-2 layout_grid l_grid-3 pb-4 wrap-folder-perm">
                                                 <span class="form-label mt-2 mb-2 w-100 font-weight-bold">
                                                     {% trans 'Folder' %}
                                                 </span>
@@ -281,15 +291,15 @@
                                                         {% trans 'See' %}
                                                     </label>
                                                 </div>
-{#                                                <div class="form-check form-check-inline">#}
-{#                                                    <input type="checkbox" id="folder_upload_file"#}
-{#                                                           class="form-check-input"#}
-{#                                                           value="2" name="folder_upload_file">#}
-{#                                                    <label title="Upload file" for="folder_upload_file"#}
-{#                                                           class="form-check-label">#}
-{#                                                        {% trans 'Upload file' %}#}
-{#                                                    </label>#}
-{#                                                </div>#}
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" id="folder_upload_file"
+                                                           class="form-check-input"
+                                                           value="2" name="folder_upload_file">
+                                                    <label title="Upload file" for="folder_upload_file"
+                                                           class="form-check-label">
+                                                        {% trans 'Upload file' %}
+                                                    </label>
+                                                </div>
 {#                                                <div class="form-check form-check-inline">#}
 {#                                                    <input type="checkbox" id="folder_download"#}
 {#                                                           class="form-check-input"#}
@@ -299,15 +309,15 @@
 {#                                                        {% trans 'Download' %}#}
 {#                                                    </label>#}
 {#                                                </div>#}
-{#                                                <div class="form-check form-check-inline">#}
-{#                                                    <input type="checkbox" id="folder_create_subfolders"#}
-{#                                                           class="form-check-input"#}
-{#                                                           value="4" name="folder_create_subfolders">#}
-{#                                                    <label title="Create subfolders" for="folder_create_subfolders"#}
-{#                                                           class="form-check-label">#}
-{#                                                        {% trans 'Create subfolders' %}#}
-{#                                                    </label>#}
-{#                                                </div>#}
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" id="folder_create_subfolders"
+                                                           class="form-check-input"
+                                                           value="4" name="folder_create_subfolders">
+                                                    <label title="Create subfolders" for="folder_create_subfolders"
+                                                           class="form-check-label">
+                                                        {% trans 'Create subfolders' %}
+                                                    </label>
+                                                </div>
                                                 <div class="form-check form-check-inline">
                                                     <input type="checkbox" id="folder_delete" class="form-check-input"
                                                            value="5" name="folder_delete">
@@ -316,16 +326,16 @@
                                                         {% trans 'Delete' %}
                                                     </label>
                                                 </div>
-{#                                                <div class="form-check form-check-inline">#}
-{#                                                    <input type="checkbox" id="folder_share" class="form-check-input"#}
-{#                                                           value="6" name="folder_share">#}
-{#                                                    <label title="Duplicate" for="folder_share"#}
-{#                                                           class="form-check-label">#}
-{#                                                        {% trans 'Share' %}#}
-{#                                                    </label>#}
-{#                                                </div>#}
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" id="folder_share" class="form-check-input"
+                                                           value="6" name="folder_share">
+                                                    <label title="Duplicate" for="folder_share"
+                                                           class="form-check-label">
+                                                        {% trans 'Share' %}
+                                                    </label>
+                                                </div>
                                             </div>
-                                            <div class="w-100 p-2 layout_grid pb-4">
+                                            <div class="w-100 p-2 layout_grid pb-4 wrap-file-perm">
                                                 <span class="form-label mt-2 mb-2 w-100 font-weight-bold">
                                                     {% trans 'File in folder' %}
                                                 </span>
@@ -413,9 +423,9 @@
                                         </span>
                                         <div class="form-group">
                                             <div class="input-affix-wrapper">
-                                                <label for="expiration_date"></label>
                                                 <input type="text" class="form-control pl-2" name="expiration_date"
-                                                       id="input_expired" readonly>
+                                                       aria-label="expiration_date"
+                                                       readonly>
                                                 <span class="input-suffix"><i
                                                         class="fa-solid fa-calendar-days"></i></span>
                                             </div>
@@ -431,6 +441,36 @@
                     </div>
                 </div>
             </div>
+
+            <div class="modal fade" id="accessLst" tabindex="-1" role="dialog" aria-labelledby="accessLst" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans 'Access list of' %} "<span></span>"</h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="nav nav-line nav-tabs nav-light">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab"
+                                       data-bs-target="#tab-access" href="#tab-access">{% trans 'Detail' %}</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab"
+                                       data-bs-target="#tab-expired" href="#tab-expired">{% trans 'Expired' %}</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="tab-access"></div>
+                                <div class="tab-pane fade" id="tab-expired"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
 {% endblock %}
@@ -438,24 +478,59 @@
 {% block dataHiddenGroup %}
     <input
         type="text"
-        id="url-factory"
+        id="url-factory" aria-label="url-factory"
         data-file-edit="{% url 'AttachmentEditAPI' %}"
+        data-file-detail="{% url 'AttachmentUpdateAPI' 1 %}"
+{#        permission list of file #}
+        data-file-perm-lst="{% url 'FilePermListAPI' %}"
+{#        folder API#}
         data-folder-api="{% url 'FolderListAPI' %}"
-        data-url-detail="{% url 'FolderDetailAPI' 1 %}"
+        data-folder-detail="{% url 'FolderDetailAPI' 1 %}"
+{#        folder my space API#}
         data-folder-my="{% url 'FolderMyFileListAPI' %}"
-        data-folder-share-api="{% url 'FolderListSharedAPI' %}"
+{#        permission list of folder#}
+        data-folder-perm-lst="{% url 'FolderPermListAPI' %}"
+{#        folder list share to me#}
+        data-folder-shared-to-me-lst="{% url 'FolderListSharedAPI' %}"
     >
     <div id="attachment">{% include 'extends/files/all.html' %}</div>
     {{ data.employee_current|json_script:'employee_current' }}
+
+    <template id="access-template-lst">
+        <div class="access-item d-flex flex-column mb-4">
+            <div class="access-header d-flex flex-row mb-1">
+                <p class="heading d-inline-block"></p>
+                <p class="exp-heading ml-auto"></p>
+            </div>
+            <div class="access-body d-flex flex-row">
+                <div class="recipient-item w-100"></div>
+                <div class="recipient-action d-flex">
+                    <a href="#" class="btn btn-icon btn-flush-primary flush-soft-hover btn-rounded view-perm"
+                    data-bs-toggle="modal" data-bs-target="#sharePerm">
+                        <span class="icon">
+                            <i class="fa-solid fa-gear"></i>
+                        </span>
+                    </a>
+                    <a href="#" class="btn btn-icon btn-flush-primary flush-soft-hover btn-rounded del-perm">
+                        <span class="icon">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </template>
 {% endblock %}
 
 {% block jsFooter %}
     <!-- Select2 -->
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
 
-    <!-- Daterangepicker JS -->
-    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <!-- Flat pick JS -->
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
 
     <script src="{% static 'assets/core/attachment/js/common.js' %}"></script>
-{#    <script src="{% static 'assets/core/attachment/js/folder_list.js' %}"></script>#}
 {% endblock %}

@@ -3,7 +3,7 @@ $(document).ready(function () {
     EquipmentLoanEventHandler.InitPageEven()
     EquipmentLoanHandler.LoadDetailEquipmentLoan('update')
 
-    WFRTControl.setWFInitialData('productmodification')
+    WFRTControl.setWFInitialData('equipmentloan')
 
     let form_validator = $('#form-detail-equipment-loan').validate({
         submitHandler: function (form) {

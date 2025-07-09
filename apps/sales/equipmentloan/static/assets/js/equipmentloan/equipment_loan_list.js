@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    function loadPMList() {
+    function loadELList() {
         if (!$.fn.DataTable.isDataTable('#datatable_equipment_loan_list')) {
             let dtb = $('#datatable_equipment_loan_list');
             let frm = new SetupFormSubmit(dtb);
@@ -69,5 +69,5 @@ $(document).ready(function () {
         }
     }
 
-    loadPMList();
+    loadELList();
 })

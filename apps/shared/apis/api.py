@@ -1,4 +1,5 @@
 """share all popular class function for use together purpose"""
+import json
 from copy import deepcopy
 from typing import Callable, TypedDict, Union, Literal
 import requests
@@ -258,6 +259,7 @@ class RespData:
             callback_success: callable = None,
             status_success: int = None,
             callback_errors: callable = None,
+
     ) -> tuple[dict or list, int]:
         if not status_success:
             status_success = status.HTTP_200_OK
@@ -278,7 +280,11 @@ class RespData:
             auth_error_code = self.errors.get('auth_error_code', None)
             return self.resp_401(auth_error_code=auth_error_code)
         elif self.status == 403:
-            return self.resp_403()
+            err_msg = {}
+            if self.real_resp.text and '403' in self.real_resp.text:
+                parse_detail = json.loads(self.real_resp.text)
+                err_msg['errors'] = parse_detail['detail']
+            return self.resp_403(errors_perm=err_msg)
         elif self.status == 404:
             return self.resp_404()
         elif self.status == 405:
@@ -311,8 +317,8 @@ class RespData:
         return reverse('AuthLogin') + f'?next={next_url}'
 
     @classmethod
-    def resp_403(cls):
-        return {'render_api_status': 1403}, status.HTTP_403_FORBIDDEN
+    def resp_403(cls, errors_perm: dict):
+        return {'render_api_status': 1403, **errors_perm}, status.HTTP_403_FORBIDDEN
 
     def resp_429(self):
         retry_after = self.real_resp.headers.get('retry-after', 0)

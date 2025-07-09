@@ -154,13 +154,9 @@ $(function () {
             if (headerToolbar$.length > 0) {
                 if (!$('#btn-open-filter').length) {
                     let $group = $(`<div class="btn-filter">
-                                        <div class="d-flex justify-content-end align-items-center">
-                                            <div class="btn-group dropdown ml-1" data-bs-toggle="tooltip" title="${$transFact.attr('data-filter')}">
-                                                <button type="button" class="btn btn-light ml-1" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
-                                                    <span><span class="icon"><i class="fas fa-filter"></i></span></span>
-                                                </button>
-                                            </div>
-                                        </div>
+                                        <button type="button" class="btn btn-light btn-sm ml-1" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                            <span><span class="icon"><i class="fas fa-filter"></i></span><span>${$.fn.transEle.attr('data-filter')}</span></span>
+                                        </button>
                                     </div>`);
                     headerToolbar$.append($group);
                 }
@@ -184,7 +180,7 @@ $(function () {
         function renderCustom(key) {
             if (key === "0") {
                 return {
-                    width: '3%',
+                    width: '5%',
                     render: (data, type, row) => {
                         let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order_data']?.['id']);
                         let title = row?.['sale_order_data']?.['code'] ? row?.['sale_order_data']?.['code'] : '';
@@ -198,7 +194,7 @@ $(function () {
             }
             if (key === "1") {
                 return {
-                    width: '3%',
+                    width: '5%',
                     render: (data, type, row) => {
                         let link = $urlFact.data('account-detail').format_url_with_uuid(row?.['customer_data']?.['id']);
                         let title = row?.['customer_data']?.['code'] ? row?.['customer_data']?.['code'] : '';
@@ -263,7 +259,7 @@ $(function () {
             }
             if (key === "5") {
                 return {
-                    width: '3%',
+                    width: '5%',
                     render: (data, type, row) => {
                         if (row?.['due_date']) {
                             let currentDate = DateTimeControl.getCurrentDate("DMY", "/");

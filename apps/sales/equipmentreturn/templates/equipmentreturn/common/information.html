@@ -1,0 +1,92 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12 col-md-9 col-lg-9">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label required" for="title">{% trans "Name" %}</label>
+                    <input required class="form-control" type="text" id="title">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label required" for="account">{% trans "Account" %}</label>
+                    <div style="display: flex;">
+                        <input required disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="account">
+                        <button type="button" class="btn btn-xs btn-soft-primary btn-animated ml-1" id="account-select-btn" data-bs-toggle="modal" data-bs-target="#account-select-modal">
+                            <span><span class="icon"><span class="feather-icon"><i class="fas fa-solid fa-id-card-clip"></i></span></span><span>{% trans 'Select account' %}</span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-3 col-lg-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label required" for="document-date">{% trans "Document date" %}</label>
+                    <div class="input-group mb-3">
+                        <span class="input-affix-wrapper">
+                            <span class="input-prefix">📅</span>
+                            <input required class="form-control" id="document-date">
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 mb-5">
+    <div class="col-12">
+        <ul class="nav nav-tabs nav-icon nav-light">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-list-task"></i></span></span>
+                    <span class="nav-link-text">{% trans 'Line Detail' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-file-earmark-arrow-up"></i></span></span>
+                    <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_line_detail">
+                <div class="row">
+                    <div class="col-12">
+                        <table id="table_line_detail" class="table nowrap w-100">
+                            <thead class="bg-secondary-light-5">
+                                <tr>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 250px">{% trans 'Product' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Lot number' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Serial number' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Return to warehouse' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <button type="button" id="btn-select-detail" class="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#select-detail-modal">
+                            {% trans 'Select detail' %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_attachment" data-zone="attachment">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="w-100" id="attachment">
+                            {% include 'extends/files/all.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

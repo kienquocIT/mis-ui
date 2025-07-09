@@ -65,6 +65,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # files
     FILE_UPLOAD = StringUrl('attachment/upload')
     FILE_EDIT = StringUrl('attachment/edit')
+    FILE_UPDATE = StringUrl('attachment/update/{pk}')
     PUBLIC_FILE_UPLOAD = StringUrl('attachment/public-upload')
     FILE_UNUSED = StringUrl('attachment/unused')
     FILE_UPLOAD_WEB_BUILDER = StringUrl('attachment/web-builder/upload')
@@ -762,6 +763,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FOLDER_LIST_SHARED_TO_ME = StringUrl('attachment/folder/list-share-to-me')
     FOLDER_DETAIL = StringUrl('attachment/folder')
     FOLDER_UPLOAD_FILE_LIST = StringUrl('attachment/folder-upload-file/list')
+    FOLDER_CHECK_PERM = StringUrl('attachment/folder-check-perm')
+    FILE_CHECK_PERM = StringUrl('attachment/file-check-perm')
 
     # Zones
     ZONES_APPLICATION_LIST = StringUrl('base/zones-application/list')
@@ -959,6 +962,15 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # sales/equipment loan
     EQUIPMENT_LOAN_LIST = StringUrl('equipment-loan/list')
     EQUIPMENT_LOAN_DETAIL = StringUrl('equipment-loan/detail/{pk}')
+    EL_PRODUCT_LIST = StringUrl('equipment-loan/el-product-list')
+    EL_WAREHOUSE_LIST_BY_PRODUCT = StringUrl('equipment-loan/el-warehouse-list-by-product')
+    EL_PRODUCT_LOT_LIST = StringUrl('equipment-loan/el-product-lot-list')
+    EL_PRODUCT_SERIAL_LIST = StringUrl('equipment-loan/el-product-serial-list')
+
+    # sales/equipment return
+    EQUIPMENT_RETURN_LIST = StringUrl('equipment-return/list')
+    EQUIPMENT_RETURN_DETAIL = StringUrl('equipment-return/detail/{pk}')
+    ER_EL_LIST_BY_ACCOUNT = StringUrl('equipment-return/er-el-list-by-account')
     LOAN_PRODUCT_LIST = StringUrl('equipment-loan/loan-product-list')
 
     # masterdata/shift

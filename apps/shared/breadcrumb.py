@@ -114,6 +114,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     EQUIPMENT_LOAN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     EQUIPMENT_LOAN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    # Equipment return
+    EQUIPMENT_RETURN_LIST_PAGE = BreadcrumbChildren(_('Equipment Return'), 'EquipmentReturnList')
+    EQUIPMENT_RETURN_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'EquipmentReturnCreate')
+    EQUIPMENT_RETURN_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    EQUIPMENT_RETURN_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     # Advance
     ADVANCE_PAYMENT_LIST_PAGE = BreadcrumbChildren(_('Advance Payment'), 'AdvancePaymentList')
     ADVANCE_PAYMENT_CREATE_PAGE = BreadcrumbChildren(_('Advance Payment create'), 'AdvancePaymentCreate')
@@ -723,6 +729,14 @@ class BreadcrumbView:
         BreadcrumbItem.EQUIPMENT_LOAN_CREATE_PAGE]
     EQUIPMENT_LOAN_DETAIL_PAGE = EQUIPMENT_LOAN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     EQUIPMENT_LOAN_UPDATE_PAGE = EQUIPMENT_LOAN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    EQUIPMENT_RETURN_LIST_PAGE = [
+        BreadcrumbItem.EQUIPMENT_RETURN_LIST_PAGE
+    ]
+    EQUIPMENT_RETURN_CREATE_PAGE = EQUIPMENT_RETURN_LIST_PAGE + [
+        BreadcrumbItem.EQUIPMENT_RETURN_CREATE_PAGE]
+    EQUIPMENT_RETURN_DETAIL_PAGE = EQUIPMENT_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    EQUIPMENT_RETURN_UPDATE_PAGE = EQUIPMENT_RETURN_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     ADVANCE_PAYMENT_LIST_PAGE = [
         BreadcrumbItem.ADVANCE_PAYMENT_LIST_PAGE

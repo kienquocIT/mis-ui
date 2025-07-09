@@ -5514,7 +5514,7 @@ msgstr "Hoạt động tiếp theo"
 
 #
 msgid "Related features"
-msgstr "Tính năng liên quan"
+msgstr "Chức năng liên quan"
 
 #
 msgid "Activity type"
@@ -12026,3 +12026,7 @@ msgstr "Kho ảo"
 #
 msgid "Select virtual warehouse for 'Equipment Loan'"
 msgstr "Chọn kho ảo cho chức năng 'Cho mượn hàng'"
+
+#
+msgid "Being leased"
+msgstr "Đang được cho thuê"

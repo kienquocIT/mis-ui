@@ -14,8 +14,8 @@
                     <label class="form-label required" for="account">{% trans "Account" %}</label>
                     <div style="display: flex;">
                         <input required disabled readonly type="text" placeholder="{% trans 'Click the button behind the box to select' %}" class="form-control" id="account">
-                        <button type="button" class="btn btn-xs btn-primary btn-animated ml-1" id="account-select-btn" data-bs-toggle="modal" data-bs-target="#account-select-modal">
-                            <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Select account' %}</span></span>
+                        <button type="button" class="btn btn-xs btn-soft-primary btn-animated ml-1" id="account-select-btn" data-bs-toggle="modal" data-bs-target="#account-select-modal">
+                            <span><span class="icon"><span class="feather-icon"><i class="fas fa-solid fa-id-card-clip"></i></span></span><span>{% trans 'Select account' %}</span></span>
                         </button>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
             <div class="tab-pane fade show active" id="tab_line_detail">
                 <div class="row">
                     <div class="col-12">
-                        <table id="table_line_detail" class="table nowrap w-100" data-url-loan-product-list="{% url 'LoanProductListAPI' %}">
+                        <table id="table_line_detail" class="table nowrap w-100" data-url-loan-product-list="{% url 'ELProductListAPI' %}">
                             <thead class="bg-secondary-light-5">
                                 <tr>
                                     <th style="min-width: 50px"></th>

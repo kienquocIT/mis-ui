@@ -8,7 +8,7 @@ from requests_toolbelt import MultipartEncoder
 
 from apps.shared import mask_view, ServerAPI, ApiURL, TypeCheck
 from apps.shared.apis import RespData
-from apps.shared.msg import CoreMsg
+from apps.shared.msg import CoreMsg, KMSMsg
 
 
 class AttachmentUpload(APIView):
@@ -36,6 +36,7 @@ class AttachmentUpload(APIView):
 
 
 class AttachmentEditAPI(APIView):
+
     @mask_view(
         login_require=True,
         is_api=True
@@ -46,6 +47,21 @@ class AttachmentEditAPI(APIView):
             resp = ServerAPI(user=request.user, url=ApiURL.FILE_EDIT).delete(data)
             return resp.auto_return(status_success=status.HTTP_204_NO_CONTENT)
         return RespData.resp_400(errors_data={'File': 'Data error'})
+
+
+class AttachmentUpdateAPI(APIView):
+
+    @mask_view(
+        login_require=True,
+        is_api=True
+    )
+    def put(self, request, *args, pk, **kwargs):
+        return update_common(
+            request=request,
+            url=ApiURL.FILE_UPDATE,
+            pk=pk,
+            msg=CoreMsg.FILE_UPDATE
+        )
 
 
 class PublicAttachmentUpload(APIView):
@@ -166,7 +182,7 @@ class FolderList(View):
         breadcrumb='',
     )
     def get(self, request, *args, **kwargs):
-        return {'employee_current': request.user.employee_current_data,}, status.HTTP_200_OK
+        return {'employee_current': request.user.employee_current_data}, status.HTTP_200_OK
 
 
 class FolderListAPI(APIView):
@@ -245,6 +261,17 @@ class FolderListSharedAPI(APIView):
             msg=CoreMsg.FOLDER_CREATE
         )
 
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def delete(self, request, *args, **kwargs):
+        if 'ids' in request.data:
+            data = {'id_list': request.data['ids']}
+            resp = ServerAPI(user=request.user, url=ApiURL.FOLDER_LIST_SHARED_TO_ME).delete(data)
+            return resp.auto_return(status_success=status.HTTP_204_NO_CONTENT)
+        return RespData.resp_400(errors_data={'folder': 'Data error'})
+
 
 class FolderDetailAPI(APIView):
 
@@ -253,7 +280,7 @@ class FolderDetailAPI(APIView):
         is_api=True,
     )
     def get(self, request, *args, pk, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.FOLDER_DETAIL.push_id(pk)).get()
+        resp = ServerAPI(user=request.user, url=ApiURL.FOLDER_DETAIL.push_id(pk)).get(request.query_params.dict())
         return resp.auto_return()
 
     @mask_view(
@@ -298,3 +325,34 @@ class FolderUploadFileList(APIView):
             ).post(data=m)
             return resp.auto_return(key_success='file_detail')
         return RespData.resp_400(errors_data={'file': 'Not found'})
+
+
+class FolderPermListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.FOLDER_CHECK_PERM).get(request.query_params.dict())
+        return resp.auto_return(key_success='perm_fol_lst')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def delete(self, request, *args, **kwargs):
+        if 'ids' in request.data:
+            data = {'id_list': request.data['ids']}
+            resp = ServerAPI(user=request.user, url=ApiURL.FOLDER_CHECK_PERM).delete(data)
+            return resp.auto_return(status_success=status.HTTP_204_NO_CONTENT)
+        return RespData.resp_400(errors_data={'permission': KMSMsg.FOLDER_PERMISSION_LIST_ERROR})
+
+
+class FilePermListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.FILE_CHECK_PERM).get(request.data)
+        return resp.auto_return(key_success='perm_file_lst')

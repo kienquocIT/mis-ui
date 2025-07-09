@@ -11,7 +11,7 @@ $(function () {
         // Load inits
         QuotationLoadDataHandle.loadInitInherit();
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
-        FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle);
+        FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, [], {'account_name_id': QuotationLoadDataHandle.customerSelectEle.val()});
         FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
         $('#quotation-create-date-created').val(DateTimeControl.getCurrentDate("DMY", "/"));
         // init dataTable

@@ -51,7 +51,7 @@ class EquipmentLoanCreate(View):
     )
     def get(self, request, *args, **kwargs):
         return {
-            'form_id': 'form-create-product-modification',
+            'form_id': 'form-create-equipment-loan',
         }, status.HTTP_200_OK
 
 
@@ -79,7 +79,7 @@ class EquipmentLoanUpdate(View):
     )
     def get(self, request, *args, **kwargs):
         return {
-            'form_id': 'form-detail-product-modification',
+            'form_id': 'form-detail-equipment-loan',
         }, status.HTTP_200_OK
 
 
@@ -107,7 +107,7 @@ class EquipmentLoanDetailAPI(APIView):
         return resp.auto_return()
 
 # related
-class LoanProductListAPI(APIView):
+class ELProductListAPI(APIView):
     permission_classes = [IsAuthenticated]  # noqa
 
     @mask_view(
@@ -116,7 +116,7 @@ class LoanProductListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.LOAN_PRODUCT_LIST).get(params)
+        resp = ServerAPI(user=request.user, url=ApiURL.EL_PRODUCT_LIST).get(params)
         return resp.auto_return(key_success='product_list')
 
 
@@ -129,7 +129,7 @@ class ELWarehouseListByProductAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST_BY_PRODUCT).get(params)
+        resp = ServerAPI(user=request.user, url=ApiURL.EL_WAREHOUSE_LIST_BY_PRODUCT).get(params)
         return resp.auto_return(key_success='warehouse_list_by_product')
 
 
@@ -142,7 +142,7 @@ class ELProductLotListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LOT_LIST).get(params)
+        resp = ServerAPI(user=request.user, url=ApiURL.EL_PRODUCT_LOT_LIST).get(params)
         return resp.auto_return(key_success='product_lot_list')
 
 
@@ -155,5 +155,5 @@ class ELProductSerialListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SERIAL_LIST).get(params)
+        resp = ServerAPI(user=request.user, url=ApiURL.EL_PRODUCT_SERIAL_LIST).get(params)
         return resp.auto_return(key_success='product_serial_list')

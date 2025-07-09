@@ -158,13 +158,9 @@ $(function () {
             if (headerToolbar$.length > 0) {
                 if (!$('#btn-open-filter').length) {
                     let $group = $(`<div class="btn-filter">
-                                        <div class="d-flex justify-content-end align-items-center">
-                                            <div class="btn-group dropdown ml-1" data-bs-toggle="tooltip" title="${$transFact.attr('data-filter')}">
-                                                <button type="button" class="btn btn-light ml-1" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
-                                                    <span><span class="icon"><i class="fas fa-filter"></i></span></span>
-                                                </button>
-                                            </div>
-                                        </div>
+                                        <button type="button" class="btn btn-light btn-sm ml-1" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                            <span><span class="icon"><i class="fas fa-filter"></i></span><span>${$.fn.transEle.attr('data-filter')}</span></span>
+                                        </button>
                                     </div>`);
                     headerToolbar$.append($group);
                 }
@@ -217,7 +213,7 @@ $(function () {
                     },
                     {
                         targets: 1,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
                             let txt = '';
                             if (row?.['asset_type'] === 2 && row?.['tool_data']?.['id']) {
@@ -231,7 +227,7 @@ $(function () {
                     },
                     {
                         targets: 2,
-                        width: '15%',
+                        width: '10%',
                         render: (data, type, row) => {
                             if (row?.['offset_data']?.['id']) {
                                 return `<span class="table-row-offset">${row?.['offset_data']?.['title']}</span>`;
@@ -261,14 +257,14 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span>${row?.['quantity']}</span>`;
                         }
                     },
                     {
                         targets: 6,
-                        width: '5%',
+                        width: '10%',
                         render: (data, type, row) => {
                             return `<span>${row?.['quantity_leased']}</span>`;
                         }

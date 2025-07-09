@@ -51,7 +51,7 @@ $(document).ready(function () {
                         data: 'system_status',
                         className: 'text-center w-10',
                         render: (data, type, row) => {
-                            return WFRTControl.displayRuntimeStatus(row?.['system_status']);
+                            return WFRTControl.displayRuntimeStatus(row?.['system_status'], row?.['system_auto_create']);
                         }
                     },
                 ],

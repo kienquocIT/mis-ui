@@ -38,12 +38,24 @@ $(function () {
             6: $transFact.attr('data-balance-due'),
         };
 
-        function loadDbl(data, columns) {
-            // if ($.fn.DataTable.isDataTable($dtbArea.find('.table_payment_plan'))) {
-            //     $dtbArea.find('.table_payment_plan').DataTable().destroy();
-            // }
-            $dtbArea.find('.table_payment_plan').DataTableDefault({
-                data: data ? data : [],
+        function loadDbl(dataParams, columns) {
+            $dtbArea.find('.table_payment_plan').not('.dataTable').DataTableDefault({
+                useDataServer: true,
+                ajax: {
+                    url: $urlFact.attr('data-payment-plan'),
+                    type: "GET",
+                    data: dataParams,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('payment_plan_list')) {
+                            let dataFn = resp.data['payment_plan_list'] ? resp.data['payment_plan_list'] : [];
+                            dataFn.push({"is_total_in": true});
+                            dataFn.push({"is_total_out": true});
+                            return dataFn;
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
                 autoWidth: true,
                 scrollX: true,
                 fixedColumns: {
@@ -64,6 +76,8 @@ $(function () {
                     $.fn.initMaskMoney2();
                     // add css to Dtb
                     dtbHDCustom();
+                    // $dtbArea.find('.table_payment_plan').DataTable().row.add({"is_total_in": true}).draw().node();
+                    // $dtbArea.find('.table_payment_plan').DataTable().row.add({"is_total_out": true}).draw().node();
                     loadTotalInOut(settings);
                 },
             });
@@ -128,14 +142,14 @@ $(function () {
             // Inject totals into totalInRow
             if (totalInRow) {
                 Object.entries(columnTotalsIn).forEach(([colIndex, total]) => {
-                    $(totalInRow).find('td').eq(colIndex).html(`<span class="text-success mask-money" data-init-money="${total}"></span>`);
+                    $(totalInRow).find('td').eq(colIndex).html(`<span class="mask-money" data-init-money="${total}"></span>`);
                 });
             }
 
             // Inject totals into totalOutRow
             if (totalOutRow) {
                 Object.entries(columnTotalsOut).forEach(([colIndex, total]) => {
-                    $(totalOutRow).find('td').eq(colIndex).html(`<span class="text-danger mask-money" data-init-money="${-total}"></span>`);
+                    $(totalOutRow).find('td').eq(colIndex).html(`<span class="mask-money" data-init-money="${-total}"></span>`);
                 });
             }
         }
@@ -180,13 +194,13 @@ $(function () {
         function renderCustom(key) {
             if (key === "0") {
                 return {
-                    width: '5%',
+                    width: '8%',
                     render: (data, type, row) => {
                         let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order_data']?.['id']);
-                        let title = row?.['sale_order_data']?.['code'] ? row?.['sale_order_data']?.['code'] : '';
-                        if (row?.['purchase_order_data']?.['id'] && row?.['purchase_order_data']?.['code']) {
+                        let title = row?.['sale_order_data']?.['title'] ? row?.['sale_order_data']?.['title'] : '';
+                        if (row?.['purchase_order_data']?.['id'] && row?.['purchase_order_data']?.['title']) {
                             link = $urlFact.data('po-detail').format_url_with_uuid(row?.['purchase_order_data']?.['id']);
-                            title = row?.['purchase_order_data']?.['code'] ? row?.['purchase_order_data']?.['code'] : '';
+                            title = row?.['purchase_order_data']?.['title'] ? row?.['purchase_order_data']?.['title'] : '';
                         }
                         return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
                     }
@@ -194,13 +208,13 @@ $(function () {
             }
             if (key === "1") {
                 return {
-                    width: '5%',
+                    width: '8%',
                     render: (data, type, row) => {
                         let link = $urlFact.data('account-detail').format_url_with_uuid(row?.['customer_data']?.['id']);
-                        let title = row?.['customer_data']?.['code'] ? row?.['customer_data']?.['code'] : '';
-                        if (row?.['supplier_data']?.['id'] && row?.['supplier_data']?.['code']) {
+                        let title = row?.['customer_data']?.['name'] ? row?.['customer_data']?.['name'] : '';
+                        if (row?.['supplier_data']?.['id'] && row?.['supplier_data']?.['name']) {
                             link = $urlFact.data('account-detail').format_url_with_uuid(row?.['supplier_data']?.['id']);
-                            title = row?.['supplier_data']?.['code'] ? row?.['supplier_data']?.['code'] : '';
+                            title = row?.['supplier_data']?.['name'] ? row?.['supplier_data']?.['name'] : '';
                         }
                         return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
                     }
@@ -208,37 +222,26 @@ $(function () {
             }
             if (key === "2") {
                 return {
-                    width: '5%',
+                    width: '8%',
                     render: (data, type, row) => {
                         let date = '';
                         let dateSub = '';
                         if (row?.['invoice_planned_date']) {
                             date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_planned_date']);
-                            dateSub = "(Ngày xuất hóa đơn dự kiến)";
+                            dateSub = "Ngày xuất hóa đơn dự kiến: ";
                         }
                         let paymentStageData = row?.['so_payment_stage_data'];
                         if (row?.['purchase_order_data']?.['id']) {
                             paymentStageData = row?.['po_payment_stage_data'];
                         }
                         return `<div><span>${paymentStageData?.['term_data']?.['title'] ? paymentStageData?.['term_data']?.['title'] : ''}</span></div>
-                                <div><span>${date} ${dateSub}</span></div>`;
+                                <div><span>${dateSub}${date}</span></div>`;
                     }
                 }
             }
-            // if (key === "3") {
-            //     return {
-            //         width: '5%',
-            //         render: (data, type, row) => {
-            //             if (row?.['invoice_planned_date']) {
-            //                 return `<span>${DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_planned_date'])}</span>`;
-            //             }
-            //             return `<span></span>`;
-            //         }
-            //     }
-            // }
             if (key === "4") {
                 return {
-                    width: '5%',
+                    width: '8%',
                     render: (data, type, row) => {
                         let date = '';
                         let dateSub = '';
@@ -259,7 +262,7 @@ $(function () {
             }
             if (key === "5") {
                 return {
-                    width: '5%',
+                    width: '8%',
                     render: (data, type, row) => {
                         if (row?.['due_date']) {
                             let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
@@ -272,13 +275,19 @@ $(function () {
             }
             if (key === "6") {
                 return {
-                    width: '5%',
+                    width: '8%',
                     render: (data, type, row) => {
                         if (row?.['is_total_in'] === true) {
-                            return `<b>Total cash in</b>`;
+                            return `<div class="d-flex justify-content-between">
+                                        <b>Total cash in</b>
+                                        <b><i class="fa-solid fa-arrow-left text-green"></i></b>
+                                    </div>`;
                         }
                         if (row?.['is_total_out'] === true) {
-                            return `<b>Total cash out</b>`;
+                            return `<div class="d-flex justify-content-between">
+                                        <b>Total cash out</b>
+                                        <b><i class="fa-solid fa-arrow-right text-red"></i></b>
+                                    </div>`;
                         }
                         let balance = row?.['value_balance'];
                         if (row?.['purchase_order_data']?.['id']) {
@@ -297,24 +306,32 @@ $(function () {
         }
 
         function setMinWidthDtb(columns) {
-            let colLength = columns.length - 6;
-            let rate = 70 / colLength;
-            let width = `${rate}%`;
-            for (let i = 0; i < columns.length; i++) {
-                if (i > 6) {
-                    columns[i]["width"] = width;
+            let $table = $dtbArea.find('.table_payment_plan');
+            let minWidth = "min-w-1366p";
+            if (columns.length <= 10) {
+                for (let i = 0; i < columns.length; i++) {
+                    if (i <= 6) {
+                        if (columns[i]?.['width']) {
+                            delete columns[i]["width"];
+                        }
+                    }
                 }
             }
-            let $table = $dtbArea.find('.table_payment_plan');
-            let minWidth = "min-w-1440p";
-            if (columns.length > 7) {
-                minWidth = "min-w-2560p";
-            }
             if (columns.length > 10) {
-                minWidth = "min-w-3440p";
-            }
-            if (columns.length > 15) {
-                minWidth = "min-w-3440p";
+                let colLength = columns.length - 6;
+                let rate = 52 / colLength;
+                let width = `${rate}%`;
+                for (let i = 0; i < columns.length; i++) {
+                    if (i > 6) {
+                        columns[i]["width"] = width;
+                    }
+                }
+                if (columns.length <= 15) {
+                    minWidth = "min-w-1600p";
+                }
+                if (columns.length > 15) {
+                    minWidth = "min-w-2560p";
+                }
             }
             $table.addClass(minWidth);
             return true;
@@ -350,9 +367,8 @@ $(function () {
                     })
                 }
                 setMinWidthDtb(columns);
-                loadDbl([], columns);
             }
-            return true;
+            return columns;
         }
 
         function setupDataViewByDay(from, to) {
@@ -418,10 +434,9 @@ $(function () {
                     });
                 }
                 setMinWidthDtb(columns);
-                loadDbl([], columns);
             }
 
-            return true;
+            return columns;
         }
 
         function setupDataViewByWeek(from, to) {
@@ -515,10 +530,9 @@ $(function () {
                     });
                 }
                 setMinWidthDtb(columns);
-                loadDbl([], columns);
             }
 
-            return true;
+            return columns;
         }
 
         function setupDataViewByMonth(from, to) {
@@ -764,42 +778,64 @@ $(function () {
                 let dateEnd = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxEnd.val());
                 dataParams['date_approved__lte'] = dateEnd + ' 23:59:59';
             }
-            WindowControl.showLoading();
-            $.fn.callAjax2({
-                    'url': $urlFact.attr('data-payment-plan'),
-                    'method': 'GET',
-                    'data': dataParams,
-                    isLoading: true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('payment_plan_list') && Array.isArray(data.payment_plan_list)) {
-                            let dataPP = data?.['payment_plan_list'];
-                            for (let btn of $btnGroup[0].querySelectorAll('.btn-view')) {
-                                if ($(btn).hasClass('active')) {
-                                    if (btn === $btnDay[0]) {
-                                        customDtbByDay();
-                                    }
-                                    if (btn === $btnWeek[0]) {
-                                        customDtbByWeek();
-                                    }
-                                    if (btn === $btnMonth[0]) {
-                                        customDtbByMonth();
-                                    }
-                                }
-                            }
-
-                            $dtbArea.find('.table_payment_plan').DataTable().clear().draw();
-                            $dtbArea.find('.table_payment_plan').DataTable().rows.add(dataPP).draw();
-                            $dtbArea.find('.table_payment_plan').DataTable().row.add({"is_total_in": true}).draw().node();
-                            $dtbArea.find('.table_payment_plan').DataTable().row.add({"is_total_out": true}).draw().node();
-                            WindowControl.hideLoading();
-                        }
+            let columns = [];
+            for (let btn of $btnGroup[0].querySelectorAll('.btn-view')) {
+                if ($(btn).hasClass('active')) {
+                    if (btn === $btnDay[0]) {
+                        columns = customDtbByDay();
+                    }
+                    if (btn === $btnWeek[0]) {
+                        columns = customDtbByWeek();
+                    }
+                    if (btn === $btnMonth[0]) {
+                        columns = customDtbByMonth();
                     }
                 }
-            )
+            }
+
+            if ($.fn.dataTable.isDataTable($dtbArea.find('.table_payment_plan'))) {
+                $dtbArea.find('.table_payment_plan').DataTable().destroy();
+            }
+            loadDbl(dataParams, columns);
+
+
+
+            // WindowControl.showLoading();
+            // $.fn.callAjax2({
+            //         'url': $urlFact.attr('data-payment-plan'),
+            //         'method': 'GET',
+            //         'data': dataParams,
+            //         isLoading: true,
+            //     }
+            // ).then(
+            //     (resp) => {
+            //         let data = $.fn.switcherResp(resp);
+            //         if (data) {
+            //             if (data.hasOwnProperty('payment_plan_list') && Array.isArray(data.payment_plan_list)) {
+            //                 let dataPP = data?.['payment_plan_list'];
+            //                 for (let btn of $btnGroup[0].querySelectorAll('.btn-view')) {
+            //                     if ($(btn).hasClass('active')) {
+            //                         if (btn === $btnDay[0]) {
+            //                             customDtbByDay();
+            //                         }
+            //                         if (btn === $btnWeek[0]) {
+            //                             customDtbByWeek();
+            //                         }
+            //                         if (btn === $btnMonth[0]) {
+            //                             customDtbByMonth();
+            //                         }
+            //                     }
+            //                 }
+            //
+            //                 $dtbArea.find('.table_payment_plan').DataTable().clear().draw();
+            //                 $dtbArea.find('.table_payment_plan').DataTable().rows.add(dataPP).draw();
+            //                 WindowControl.hideLoading();
+            //             }
+            //         }
+            //     }
+            // )
+
+
         });
 
         initData();

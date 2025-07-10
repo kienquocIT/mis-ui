@@ -1,8 +1,8 @@
 $(document).ready(function () {
     IncomingDocEventHandler.InitPageEvent();
     IncomingDocPageFunction.loadEditor();
+    IncomingDocPageFunction.initDatePickers();
     IncomingDocPageFunction.loadDetailIncomingDoc('update');
-
     const $form = $('#frm_detail_incoming_document');
     $form.validate({
         submitHandler: function (form) {

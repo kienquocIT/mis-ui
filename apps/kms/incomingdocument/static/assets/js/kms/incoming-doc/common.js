@@ -30,6 +30,7 @@ class IncomingDocElements {
         this.$radioEdit = $('#radio_edit');
         this.$radioCustom = $('#radio_custom');
         this.$inputExpired = $('#input_expired');
+        this.$btnEnableSwitch = $('#enabled_switch');
         this.$checkboxesToCheck = [
             $('#checkbox_review'),
             $('#checkbox_download'),
@@ -120,7 +121,6 @@ class IncomingDocLoadDataHandle {
     static buildAttachedList() {
         let parsedEffectiveDate = moment(pageElements.$effectiveDateEle.val(), "DD/MM/YYYY", true);
         let parsedExpiredDate = moment(pageElements.$expiredDateEle.val(), "DD/MM/YYYY", true);
-
         return [{
             sender: pageElements.$senderEle.val(),
             document_type: pageElements.$docTypeEle.val(),
@@ -234,6 +234,22 @@ class IncomingDocPageFunction {
         });
     }
 
+    static disableRecipientEle(option) {
+        if (option) {
+            $('#radio_employee').prop('disabled', true);
+            $('#radio_group').prop('disabled', true);
+            pageElements.$radioReview.prop('disabled', true);
+            pageElements.$radioEdit.prop('disabled', true);
+            pageElements.$radioView.prop('disabled', true);
+            pageElements.$radioCustom.prop('disabled', true);
+            pageElements.$inputExpired.prop('disabled', true);
+            pageElements.$btnEnableSwitch.prop('disabled', true);
+            pageElements.$checkboxesToCheck.forEach($checkbox => {
+                $checkbox.prop('disabled', true)
+            });
+        }
+    }
+
     static prepareGroupAndEmployeeAccess(recipient) {
         if (!recipient || typeof recipient !== 'object') return;
 
@@ -259,19 +275,22 @@ class IncomingDocPageFunction {
     }
 
     static loadDetailIncomingDoc(option) {
-        const data_url = $('#frm_detail_incoming_document').attr('data-url');
+        let $form = $('#frm_detail_incoming_document');
+        const data_url = $form.attr('data-url');
         $.fn.callAjax2({url: data_url, method: 'GET'}).then(
             (resp) => {
-                IS_DETAIL_PAGE = option === 'detail';
+                IS_DETAIL_PAGE = $form.attr('data-method').toLowerCase() === 'get';
 
                 const data = $.fn.switcherResp(resp);
                 $x.fn.renderCodeBreadcrumb(data);
                 $.fn.compareStatusShowPageAction(data);
                 new $x.cls.file($('#attachment')).init({
-                    enable_edit: false,
+                    name: 'attachment',
+                    enable_edit: !IS_DETAIL_PAGE,
                     enable_download: true,
                     data: data?.['attachment'],
                 });
+
                 const attached = data?.['attached_list']?.[0] || {};
                 const recipients = data?.['internal_recipient'] || [];
                 const recipients_detail = recipients?.[0] || {};
@@ -288,7 +307,6 @@ class IncomingDocPageFunction {
                 IncomingDocPageFunction.LoadDocumentType(attached.document_type);
                 IncomingDocPageFunction.LoadContentGroup(attached.content_group);
                 IncomingDocPageFunction.LoadFolderType();
-                IncomingDocPageFunction.initDatePickers();
 
                 // Match by label (for cases where value may not be id)
                 const matchedOption = pageElements.$securityLevelEle.find('option').filter(function () {
@@ -303,7 +321,10 @@ class IncomingDocPageFunction {
                 recipientModalFunction.loadEmployeeList();
                 recipientModalFunction.loadEmployeeShow();
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
-                UsualLoadPageFunction.DisablePage(option==='detail', ['.modal-header button']);
+
+                // disable element
+                UsualLoadPageFunction.DisablePage(IS_DETAIL_PAGE, ['.modal-header button']);
+                IncomingDocPageFunction.disableRecipientEle(IS_DETAIL_PAGE);
             },
         );
     }
@@ -327,8 +348,8 @@ class IncomingDocPageFunction {
             $inp[0]._flatpickr.clear();
             $inp[0]._flatpickr.set('clickOpens', false);
         }
-        $('#btn_edit').hide();
-        $('#btn_create').show();
+        $('#btn_edit').show();
+        $('#btn_create').hide();
     }
 }
 
@@ -562,10 +583,11 @@ class recipientModalFunction {
                 let dataKey = storeData[key];
                 let data = dataKey?.['data'];
                 bodyShow += `<div class="chip chip-primary chip-dismissable mr-2">
-                                <span><span class="chip-text">${data?.['full_name']}</span>
-                                <button type="button" class="btn-close" data-id="${data?.['id']}"></button>
+                                <span>
+                                    <span class="chip-text">${data?.['full_name']}</span>
+                                    <button type="button" class="btn-close" data-id="${data?.['id']}" ${IS_DETAIL_PAGE ? 'disabled' : ''}></button>
                                 </span>
-                            </div>`
+                            </div>`;
             }
             pageElements.$employeeShowEle.append(bodyShow);
         }

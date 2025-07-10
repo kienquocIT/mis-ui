@@ -9,6 +9,11 @@ $(document).ready(function () {
     IncomingDocPageFunction.LoadFolderType();
     IncomingDocPageFunction.initDatePickers();
 
+    new $x.cls.file($('#attachment')).init({
+        name: 'attachment',
+        enable_edit: true,
+    });
+
     const $form = $('#frm_create_incoming_document');
     $form.validate({
         submitHandler: function (form) {

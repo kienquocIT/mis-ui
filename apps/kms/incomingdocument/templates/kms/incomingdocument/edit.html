@@ -11,7 +11,7 @@
     <link href="{% static 'assets/css/kms/doc-approval/common.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='frm_edit_incoming_document' %}
+    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='frm_detail_incoming_document' %}
 {% endblock %}
 {% block pageContent %}
     <form id="frm_detail_incoming_document" data-method="PUT"

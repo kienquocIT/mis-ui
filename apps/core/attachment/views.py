@@ -356,3 +356,22 @@ class FilePermListAPI(APIView):
     def get(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.FILE_CHECK_PERM).get(request.data)
         return resp.auto_return(key_success='perm_file_lst')
+
+
+class FolderDownloadAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.get('id', None)
+        if params:
+            resp = ServerAPI(
+                user=request.user, url=ApiURL.FOLDER_DOWNLOAD.fill_key(pk=params), return_response_origin=True
+            ).get(params, stream=True)
+            response = HttpResponse(resp.content, content_type=resp.headers['Content-Type'])
+            # response['Content-Disposition'] = resp.headers.get(
+            #     'Content-Disposition', 'attachment; filename="default_filename"'
+            # )
+            return response
+        return RespData.resp_404()

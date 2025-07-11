@@ -791,11 +791,11 @@ $(function () {
             let dataParams = {};
             if (boxStart.val()) {
                 let dateStart = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxStart.val());
-                dataParams['date_approved__gte'] = dateStart + ' 00:00:00';
+                dataParams['due_date__gte'] = dateStart + ' 00:00:00';
             }
             if (boxEnd.val()) {
                 let dateEnd = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxEnd.val());
-                dataParams['date_approved__lte'] = dateEnd + ' 23:59:59';
+                dataParams['due_date__lte'] = dateEnd + ' 23:59:59';
             }
             let columns = [];
             for (let btn of $btnGroup[0].querySelectorAll('.btn-view')) {
@@ -816,45 +816,6 @@ $(function () {
                 $dtbArea.find('.table_payment_plan').DataTable().destroy();
             }
             loadDbl(dataParams, columns);
-
-
-
-            // WindowControl.showLoading();
-            // $.fn.callAjax2({
-            //         'url': $urlFact.attr('data-payment-plan'),
-            //         'method': 'GET',
-            //         'data': dataParams,
-            //         isLoading: true,
-            //     }
-            // ).then(
-            //     (resp) => {
-            //         let data = $.fn.switcherResp(resp);
-            //         if (data) {
-            //             if (data.hasOwnProperty('payment_plan_list') && Array.isArray(data.payment_plan_list)) {
-            //                 let dataPP = data?.['payment_plan_list'];
-            //                 for (let btn of $btnGroup[0].querySelectorAll('.btn-view')) {
-            //                     if ($(btn).hasClass('active')) {
-            //                         if (btn === $btnDay[0]) {
-            //                             customDtbByDay();
-            //                         }
-            //                         if (btn === $btnWeek[0]) {
-            //                             customDtbByWeek();
-            //                         }
-            //                         if (btn === $btnMonth[0]) {
-            //                             customDtbByMonth();
-            //                         }
-            //                     }
-            //                 }
-            //
-            //                 $dtbArea.find('.table_payment_plan').DataTable().clear().draw();
-            //                 $dtbArea.find('.table_payment_plan').DataTable().rows.add(dataPP).draw();
-            //                 WindowControl.hideLoading();
-            //             }
-            //         }
-            //     }
-            // )
-
-
         });
 
         initData();

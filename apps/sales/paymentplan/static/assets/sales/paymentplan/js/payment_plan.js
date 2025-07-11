@@ -49,8 +49,8 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('payment_plan_list')) {
                             let dataFn = resp.data['payment_plan_list'] ? resp.data['payment_plan_list'] : [];
-                            dataFn.push({"is_total_in": true});
-                            dataFn.push({"is_total_out": true});
+                            dataFn.unshift({"is_total_in": true});
+                            dataFn.unshift({"is_total_out": true});
                             return dataFn;
                         }
                         throw Error('Call data raise errors.')
@@ -234,7 +234,14 @@ $(function () {
                         if (row?.['purchase_order_data']?.['id']) {
                             paymentStageData = row?.['po_payment_stage_data'];
                         }
-                        return `<div><span>${paymentStageData?.['term_data']?.['title'] ? paymentStageData?.['term_data']?.['title'] : ''}</span></div>
+                        let term = "";
+                        if (paymentStageData?.['remark']) {
+                            term = paymentStageData?.['remark'];
+                        }
+                        if (paymentStageData?.['term_data']?.['title']) {
+                            term = paymentStageData?.['term_data']?.['title'];
+                        }
+                        return `<div><b>${term}</b></div>
                                 <div><span>${dateSub}${date}</span></div>`;
                     }
                 }
@@ -247,7 +254,7 @@ $(function () {
                         let dateSub = '';
                         if (row?.['invoice_actual_date']) {
                             date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_actual_date']);
-                            dateSub = "(Ngày xuất hóa đơn thực tế)";
+                            dateSub = "Ngày xuất hóa đơn thực tế:";
                         }
                         let link = $urlFact.data('ar-invoice-detail').format_url_with_uuid(row?.['ar_invoice_data']?.['id']);
                         let title = row?.['ar_invoice_data']?.['title'] ? row?.['ar_invoice_data']?.['title'] : '';
@@ -256,7 +263,7 @@ $(function () {
                             title = row?.['ap_invoice_data']?.['title'] ? row?.['ap_invoice_data']?.['title'] : '';
                         }
                         return `<div><a href="${link}" class="link-primary underline_hover">${title}</a></div>
-                                <div><span>${date} ${dateSub}</span></div>`;
+                                <div><span>${dateSub}${date}</span></div>`;
                     }
                 }
             }
@@ -264,10 +271,17 @@ $(function () {
                 return {
                     width: '8%',
                     render: (data, type, row) => {
+                        if (row?.['ar_invoice_data']?.['id'] || row?.['ap_invoice_data']?.['id']) {
+                            return `<span class="badge text-dark-10 fs-8 bg-green-light-4">Đã thanh toán</span>`;
+                        }
                         if (row?.['due_date']) {
                             let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
                             let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
-                            return `<span>${daysBetween(currentDate, dueDate)} days</span>`;
+                            let daysLeft = daysBetween(currentDate, dueDate);
+                            if (daysLeft) {
+                                return `<span>${daysBetween(currentDate, dueDate)} ${$transFact.attr('data-day')} (${dueDate})</span>`;
+                            }
+                            return `<span class="badge text-dark-10 fs-8 bg-red-light-4">Đã quá hạn</span>`;
                         }
                         return ``;
                     }
@@ -623,6 +637,11 @@ $(function () {
 
             const date1 = new Date(y1, m1 - 1, d1);
             const date2 = new Date(y2, m2 - 1, d2);
+
+            // Nếu date1 < date2 thì return null
+            if (date1 > date2) {
+                return null;
+            }
 
             // Calculate the difference in milliseconds and convert to days
             const diffTime = Math.abs(date1 - date2);

@@ -12030,3 +12030,15 @@ msgstr "Chọn kho ảo cho chức năng 'Cho mượn hàng'"
 #
 msgid "Being leased"
 msgstr "Đang được cho thuê"
+
+#
+msgid "Over due"
+msgstr "Đến hạn thanh toán"
+
+#
+msgid "Total cash in"
+msgstr "Tổng thu"
+
+#
+msgid "Total cash out"
+msgstr "Tổng chi"

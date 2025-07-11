@@ -44,3 +44,7 @@ msgstr "Chọn hàng được thu hồi"
 #
 msgid "Return detail info"
 msgstr "Thông tin thu hồi chi tiết"
+
+#
+msgid "Returned"
+msgstr "Đã thu hồi"

@@ -46,30 +46,80 @@
             </div>
             <div class="modal-body">
                 <div class="row h-100">
-                    <div class="col-12 col-md-5 col-lg-5 border-right">
-                        <table class="table nowrap w-100" id="table-select-el" data-url="{% url 'EREquipmentLoanListByAccountAPI' %}">
-                            <thead>
-                                <tr>
-                                    <th style="min-width: 30px"></th>
-                                    <th style="min-width: 20px"></th>
-                                    <th style="min-width: 150px">{% trans 'Equipment loan' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Loan date' %}</th>
-                                </tr>
-                            </thead>
-                        </table>
+                    <div class="col-12 col-md-6 col-lg-6 border-right">
+                        <div class="row">
+                            <div class="col-12">
+                                <span>{% trans 'Equipment Loan' %}</span>
+                                <table class="table nowrap w-100" id="table-select-el" data-url="{% url 'EREquipmentLoanListByAccountAPI' %}">
+                                    <thead class="bg-primary-light-5">
+                                        <tr>
+                                            <th style="min-width: 30px"></th>
+                                            <th style="min-width: 20px"></th>
+                                            <th style="min-width: 150px">{% trans 'Equipment loan' %}</th>
+                                            <th style="min-width: 100px">{% trans 'Loan date' %}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-12">
+                                <span>{% trans 'Loan Items' %}</span>
+                                <table id="table_el_detail" class="table nowrap w-100">
+                                    <thead class="bg-primary-light-5">
+                                        <tr>
+                                            <th style="min-width: 30px"></th>
+                                            <th style="min-width: 20px"></th>
+                                            <th style="min-width: 200px">{% trans 'Product' %}</th>
+                                            <th style="min-width: 100px">{% trans 'Returned' %} / {% trans 'Loan quantity' %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-12 col-md-7 col-lg-7">
-                        <table id="table_el_detail" class="table nowrap w-100">
-                            <thead>
-                                <tr>
-                                    <th style="min-width: 30px"></th>
-                                    <th style="min-width: 200px">{% trans 'Product' %}</th>
-                                    <th style="min-width: 100px">{% trans 'Total' %}</th>
-                                    <th style="min-width: 300px">{% trans 'Return detail info' %}</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-12 div_detail" hidden>
+                                <table id="table_none_detail" class="table nowrap w-100">
+                                    <thead class="bg-secondary-light-5">
+                                        <tr>
+                                            <th style="min-width: 30px"></th>
+                                            <th style="min-width: 100px">{% trans 'Warehouse' %}</th>
+                                            <th style="min-width: 150px">{% trans 'Returned' %} / {% trans 'Total' %}</th>
+                                            <th style="min-width: 150px">{% trans 'This time' %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <div class="col-12 div_detail" hidden>
+                                <table id="table_lot_detail" class="table nowrap w-100">
+                                    <thead class="bg-secondary-light-5">
+                                        <tr>
+                                            <th style="min-width: 30px"></th>
+                                            <th style="min-width: 100px">{% trans 'Warehouse' %}</th>
+                                            <th style="min-width: 100px">{% trans 'Lot number' %}</th>
+                                            <th style="min-width: 150px">{% trans 'Returned' %} / {% trans 'Total' %}</th>
+                                            <th style="min-width: 150px">{% trans 'This time' %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <div class="col-12 div_detail" hidden>
+                                <table id="table_serial_detail" class="table nowrap w-100">
+                                    <thead class="bg-secondary-light-5">
+                                        <tr>
+                                            <th style="min-width: 30px"></th>
+                                            <th style="min-width: 100px">{% trans 'Warehouse' %}</th>
+                                            <th style="min-width: 100px">{% trans 'Serial number' %}</th>
+                                            <th style="min-width: 150px">{% trans 'This time' %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1609,7 +1609,6 @@ $(document).ready(function () {
             }
 
             dataParam['contexts'] = contexts
-            console.log(contexts)
             dataParam['question'] = message
             let chatbot_response_ajax = $.fn.callAjax2({
                 url: url_script.attr('data-url-ask'),

@@ -16,6 +16,9 @@ class EquipmentReturnPageElements {
         this.$table_select_account = $('#table-select-account')
         this.$table_select_el = $('#table-select-el')
         this.$table_el_detail = $('#table_el_detail')
+        this.$table_none_detail = $('#table_none_detail')
+        this.$table_lot_detail = $('#table_lot_detail')
+        this.$table_serial_detail = $('#table_serial_detail')
         // line detail
         this.$table_line_detail = $('#table_line_detail')
     }
@@ -95,7 +98,7 @@ class EquipmentReturnPageFunction {
             useDataServer: true,
             rowIdx: true,
             reloadCurrency: true,
-            scrollY: '63vh',
+            scrollY: '28vh',
             scrollX: true,
             scrollCollapse: true,
             paging: false,
@@ -146,6 +149,59 @@ class EquipmentReturnPageFunction {
             styleDom: 'hide-foot',
             rowIdx: true,
             reloadCurrency: true,
+            scrollY: '28vh',
+            scrollX: true,
+            scrollCollapse: true,
+            paging: false,
+            data: data_list,
+            columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-5',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                                <input type="radio" name="el-item-selected-radio"
+                                        class="form-check-input el-item-selected-radio"
+                                        data-loan-item-id="${row?.['id']}"
+                                        data-loan-product-none-detail='${JSON.stringify(row?.['loan_product_none_detail'] || [])}'
+                                        data-loan-product-lot-detail='${JSON.stringify(row?.['loan_product_lot_detail'] || [])}'
+                                        data-loan-product-serial-detail='${JSON.stringify(row?.['loan_product_sn_detail'] || [])}'
+                                        />
+                            </div>`
+                    }
+                },
+                {
+                    className: 'w-60',
+                    render: (data, type, row) => {
+                        return `<a class="icon-collapse" data-bs-toggle="collapse" href=".${row?.['loan_product_data']?.['id']}" role="button" aria-expanded="false" aria-controls=".${row?.['loan_product_data']?.['id']}">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <span class="badge badge-sm badge-light ml-1 loan-product-code">${row?.['loan_product_data']?.['code'] || ''}</span>
+                                <span class="loan-product-title" data-loan-item='${JSON.stringify(row?.['loan_product_data'])}' data-loan-item-id="${row?.['id']}">${row?.['loan_product_data']?.['title'] || ''}</span>
+                                <div class="collapse ${row?.['loan_product_data']?.['id']}"><span class="small">${row?.['loan_product_data']?.['description'] || ''}</span></div>`
+                    }
+                },
+                {
+                    className: 'w-30 text-right',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['sum_returned_quantity'] || 0}</span> / <span>${row?.['loan_quantity'] || 0}</span>`
+                    }
+                },
+            ],
+        })
+    }
+    static LoadEquipmentLoanItemsNoneTable(data_list=[]) {
+        pageElements.$table_none_detail.closest('.div_detail').prop('hidden', data_list.length === 0)
+        pageElements.$table_none_detail.DataTable().clear().destroy()
+        pageElements.$table_none_detail.DataTableDefault({
+            styleDom: 'hide-foot',
+            rowIdx: true,
+            reloadCurrency: true,
             scrollY: '63vh',
             scrollX: true,
             scrollCollapse: true,
@@ -159,66 +215,121 @@ class EquipmentReturnPageFunction {
                     }
                 },
                 {
-                    className: 'w-45',
+                    className: 'w-35',
                     render: (data, type, row) => {
-                        return `<a class="icon-collapse" data-bs-toggle="collapse" href=".${row?.['loan_product_data']?.['id']}" role="button" aria-expanded="false" aria-controls=".${row?.['loan_product_data']?.['id']}">
-                                    <i class="bi bi-info-circle"></i>
-                                </a>
-                                <span class="badge badge-sm badge-light ml-1 loan-product-code">${row?.['loan_product_data']?.['code'] || ''}</span>
-                                <span class="loan-product-title" data-loan-item='${JSON.stringify(row?.['loan_product_data'])}' data-loan-item-id="${row?.['id']}">${row?.['loan_product_data']?.['title'] || ''}</span>
-                                <div class="collapse ${row?.['loan_product_data']?.['id']}"><span class="small">${row?.['loan_product_data']?.['description'] || ''}</span></div>`
+                        return `<span class="badge badge-sm badge-soft-blue">${(row?.['warehouse_data'] || {})?.['code'] || ''}</span><br><span>${(row?.['warehouse_data'] || {})?.['title'] || ''}</span>`
                     }
                 },
                 {
-                    className: 'w-10',
+                    className: 'w-30',
                     render: (data, type, row) => {
-                        return `<span class="loan-quantity">${row?.['loan_quantity']}</span>`
+                        return `<span>${row?.['returned_quantity'] || 0}</span> / <span>${row?.['picked_quantity'] || 0}</span>`
                     }
                 },
                 {
-                    className: 'w-40',
+                    className: 'w-30',
                     render: (data, type, row) => {
-                        if (Number((row?.['loan_product_data'] || {})?.['general_traceability_method']) === 0) {
-                            return `<input type="number" class="form-control none-return-quantity" placeholder="${$.fn.gettext('Enter return quantity')}"
-                                           min="0" max="${row?.['loan_quantity'] || 0}"
-                                           data-loan-item-id="${row?.['id']}">`
-                        }
-                        else if (Number((row?.['loan_product_data'] || {})?.['general_traceability_method']) === 1) {
-                            let lot_html = ``
-                            for (let i = 0; i < row?.['loan_product_lot_detail'].length; i++) {
-                                let item = row?.['loan_product_lot_detail'][i]
-                                lot_html += `<div class="col-12 mb-1">
-                                                <div class="input-group">
-                                                    <span class="input-group-text">${(item?.['lot_data'] || {})?.['lot_number'] || ''} (${item?.['picked_quantity'] || 0})</span>
-                                                    <input type="number" class="form-control lot-return-quantity"
-                                                           placeholder="${$.fn.gettext('Enter return quantity for Lot')}"
-                                                           min="0" max="${item?.['picked_quantity'] || 0}"
-                                                           data-lot-id="${item?.['lot_id'] || ''}"
-                                                           data-lot-number="${(item?.['lot_data'] || {})?.['lot_number'] || ''}"
-                                                           data-loan-item-detail-id="${item?.['id'] || ''}">
-                                                </div>
-                                            </div>`
-                            }
-                            return `<div class="row">${lot_html}</div>`
-                        }
-                        else if (Number((row?.['loan_product_data'] || {})?.['general_traceability_method']) === 2) {
-                            let serial_html = ``
-                            for (let i = 0; i < row?.['loan_product_sn_detail'].length; i++) {
-                                let item = row?.['loan_product_sn_detail'][i]
-                                serial_html += `<div class="col-12 mb-1">
-                                                    <div class="form-check">
-                                                        <input type="checkbox"
-                                                               id="${item?.['serial_id'] || ''}"
-                                                               class="form-check-input serial-return-check"
-                                                               data-serial-id="${item?.['serial_id'] || ''}"
-                                                               data-serial-number="${(item?.['serial_data'] || {})?.['serial_number'] || ''}"
-                                                               data-loan-item-detail-id="${item?.['id'] || ''}">
-                                                        <label class="form-check-label" for="${item?.['serial_id']}">${(item?.['serial_data'] || {})?.['serial_number'] || ''}</label>
-                                                    </div>
-                                                </div>`
-                            }
-                            return `<div class="row">${serial_html}</div>`
-                        }
+                            return `<input type="number" class="form-control none-return-quantity"
+                                         min="0" max="${row?.['picked_quantity'] || 0}"
+                                         data-product-warehouse-id="${row?.['product_warehouse_id'] || ''}"
+                                         data-loan-item-detail-id="${row?.['id'] || ''}">`
+                    }
+                },
+            ],
+        })
+    }
+    static LoadEquipmentLoanItemsLotTable(data_list=[]) {
+        pageElements.$table_lot_detail.closest('.div_detail').prop('hidden', data_list.length === 0)
+        pageElements.$table_lot_detail.DataTable().clear().destroy()
+        pageElements.$table_lot_detail.DataTableDefault({
+            styleDom: 'hide-foot',
+            rowIdx: true,
+            reloadCurrency: true,
+            scrollY: '63vh',
+            scrollX: true,
+            scrollCollapse: true,
+            paging: false,
+            data: data_list,
+            columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-30',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm badge-soft-blue">${(row?.['warehouse_data'] || {})?.['code'] || ''}</span><br><span>${(row?.['warehouse_data'] || {})?.['title'] || ''}</span>`
+                    }
+                },
+                {
+                    className: 'w-25',
+                    render: (data, type, row) => {
+                        return `<span>${(row?.['lot_data'] || {})?.['lot_number'] || ''}</span>`
+                    }
+                },
+                {
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['lot_returned_quantity'] || 0} / ${row?.['picked_quantity'] || 0}</span>`
+                    }
+                },
+                {
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        return `<input type="number" class="form-control lot-return-quantity"
+                                       min="0" max="${row?.['picked_quantity'] || 0}"
+                                       data-lot-id="${row?.['lot_id'] || ''}"
+                                       data-lot-number="${(row?.['lot_data'] || {})?.['lot_number'] || ''}"
+                                       data-loan-item-detail-id="${row?.['id'] || ''}">`
+                    }
+                },
+            ],
+        })
+    }
+    static LoadEquipmentLoanItemsSerialTable(data_list=[]) {
+        pageElements.$table_serial_detail.closest('.div_detail').prop('hidden', data_list.length === 0)
+        pageElements.$table_serial_detail.DataTable().clear().destroy()
+        pageElements.$table_serial_detail.DataTableDefault({
+            styleDom: 'hide-foot',
+            rowIdx: true,
+            reloadCurrency: true,
+            scrollY: '63vh',
+            scrollX: true,
+            scrollCollapse: true,
+            paging: false,
+            data: data_list,
+            columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-30',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm badge-soft-blue">${(row?.['warehouse_data'] || {})?.['code'] || ''}</span><br><span>${(row?.['warehouse_data'] || {})?.['title'] || ''}</span>`
+                    }
+                },
+                {
+                    className: 'w-30',
+                    render: (data, type, row) => {
+                        return `<span>${(row?.['serial_data'] || {})?.['serial_number'] || ''}</span>`
+                    }
+                },
+                {
+                    className: 'w-60',
+                    render: (data, type, row) => {
+                        return `${row?.['is_returned_serial'] ? '<i class="fa-solid fa-check"></i>' : `
+                                        <div class="form-check form-check-sm">
+                                            <input type="checkbox"
+                                                class="form-check-input serial-return-check"
+                                                data-serial-id="${row?.['serial_id'] || ''}"
+                                                data-serial-number="${(row?.['serial_data'] || {})?.['serial_number'] || ''}"
+                                                data-loan-item-detail-id="${row?.['id'] || ''}">
+                                        </div>`}`
                     }
                 },
             ],
@@ -360,7 +471,8 @@ class EquipmentReturnHandler {
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
 
                     UsualLoadPageFunction.DisablePage(
-                        option==='detail'
+                        option==='detail',
+                        ['.modal-header button', '.modal-footer button']
                     )
                 }
             })
@@ -391,6 +503,9 @@ class EquipmentReturnEventHandler {
         $(document).on("click", '#btn-select-detail', function () {
             EquipmentReturnPageFunction.LoadEquipmentLoanTableByAccount(pageElements.$account.attr('data-id') || null)
             EquipmentReturnPageFunction.LoadEquipmentLoanItemsTable()
+            EquipmentReturnPageFunction.LoadEquipmentLoanItemsNoneTable()
+            EquipmentReturnPageFunction.LoadEquipmentLoanItemsLotTable()
+            EquipmentReturnPageFunction.LoadEquipmentLoanItemsSerialTable()
         })
         $(document).on("change", '.el-selected-radio', function () {
             EquipmentReturnPageFunction.LoadEquipmentLoanItemsTable($(this).attr('data-equipment-loan') ? JSON.parse($(this).attr('data-equipment-loan'))?.['equipment_loan_item_list'] || [] : [])
@@ -461,6 +576,11 @@ class EquipmentReturnEventHandler {
             })
             EquipmentReturnPageFunction.LoadLineDetailTable(data_line_detail)
             pageElements.$table_line_detail.attr('data-return-item', JSON.stringify(data_line_detail))
+        })
+        $(document).on("change", '.el-item-selected-radio', function () {
+            EquipmentReturnPageFunction.LoadEquipmentLoanItemsNoneTable($(this).attr('data-loan-product-none-detail') ? JSON.parse($(this).attr('data-loan-product-none-detail')) || [] : [])
+            EquipmentReturnPageFunction.LoadEquipmentLoanItemsLotTable($(this).attr('data-loan-product-lot-detail') ? JSON.parse($(this).attr('data-loan-product-lot-detail')) || [] : [])
+            EquipmentReturnPageFunction.LoadEquipmentLoanItemsSerialTable($(this).attr('data-loan-product-serial-detail') ? JSON.parse($(this).attr('data-loan-product-serial-detail')) || [] : [])
         })
     }
 }

@@ -3,6 +3,11 @@
 {% load static %}
 {% block title %}{% trans 'Equipment return' %}{% endblock %}
 {% block cssHeader %}
+    <style>
+        table .select2-selection__rendered {
+            max-width: 250px;
+        }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}

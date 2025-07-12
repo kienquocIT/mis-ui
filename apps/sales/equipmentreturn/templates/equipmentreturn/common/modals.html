@@ -49,7 +49,7 @@
                     <div class="col-12 col-md-6 col-lg-6 border-right">
                         <div class="row">
                             <div class="col-12">
-                                <span>{% trans 'Equipment Loan' %}</span>
+                                <span>1. {% trans 'Equipment Loan' %}</span>
                                 <table class="table nowrap w-100" id="table-select-el" data-url="{% url 'EREquipmentLoanListByAccountAPI' %}">
                                     <thead class="bg-primary-light-5">
                                         <tr>
@@ -61,8 +61,8 @@
                                     </thead>
                                 </table>
                             </div>
-                            <div class="col-12">
-                                <span>{% trans 'Loan Items' %}</span>
+                            <div class="col-12 mt-3">
+                                <span>2. {% trans 'Loan Items' %}</span>
                                 <table id="table_el_detail" class="table nowrap w-100">
                                     <thead class="bg-primary-light-5">
                                         <tr>
@@ -84,7 +84,7 @@
                                     <thead class="bg-secondary-light-5">
                                         <tr>
                                             <th style="min-width: 30px"></th>
-                                            <th style="min-width: 100px">{% trans 'Warehouse' %}</th>
+                                            <th style="min-width: 100px">{% trans 'Warehouse before' %}</th>
                                             <th style="min-width: 150px">{% trans 'Returned' %} / {% trans 'Total' %}</th>
                                             <th style="min-width: 150px">{% trans 'This time' %}</th>
                                         </tr>
@@ -97,7 +97,7 @@
                                     <thead class="bg-secondary-light-5">
                                         <tr>
                                             <th style="min-width: 30px"></th>
-                                            <th style="min-width: 100px">{% trans 'Warehouse' %}</th>
+                                            <th style="min-width: 100px">{% trans 'Warehouse before' %}</th>
                                             <th style="min-width: 100px">{% trans 'Lot number' %}</th>
                                             <th style="min-width: 150px">{% trans 'Returned' %} / {% trans 'Total' %}</th>
                                             <th style="min-width: 150px">{% trans 'This time' %}</th>
@@ -111,9 +111,9 @@
                                     <thead class="bg-secondary-light-5">
                                         <tr>
                                             <th style="min-width: 30px"></th>
-                                            <th style="min-width: 100px">{% trans 'Warehouse' %}</th>
+                                            <th style="min-width: 100px">{% trans 'Warehouse before' %}</th>
                                             <th style="min-width: 100px">{% trans 'Serial number' %}</th>
-                                            <th style="min-width: 150px">{% trans 'This time' %}</th>
+                                            <th style="min-width: 150px">{% trans 'Returned' %}</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>

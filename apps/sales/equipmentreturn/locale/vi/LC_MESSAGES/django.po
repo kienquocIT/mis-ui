@@ -48,3 +48,15 @@ msgstr "Thông tin thu hồi chi tiết"
 #
 msgid "Returned"
 msgstr "Đã thu hồi"
+
+#
+msgid "Loan Items"
+msgstr "Hàng cho mượn"
+
+#
+msgid "Loan quantity"
+msgstr "SL cho mượn"
+
+#
+msgid "Warehouse before"
+msgstr "Kho trước đó"

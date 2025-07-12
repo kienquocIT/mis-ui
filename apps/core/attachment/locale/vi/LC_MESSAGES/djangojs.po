@@ -89,3 +89,10 @@ msgstr "Cập nhập hoàn tất"
 #
 msgid "Access list"
 msgstr "Danh sách truy cập"
+#
+msgid "Expire on"
+msgstr "Hết hạn vào"
+
+#
+msgid "Access list is empty"
+msgstr "Danh sách dữ liệu đang trống"

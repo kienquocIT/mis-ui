@@ -22,15 +22,21 @@
                     </button>
                     <div class="dropdown-menu dropdown-bordered dropdown-menu-dark" style="min-width: max-content; opacity: 0.8;" id="dropdown-menu-relate-app">
                         <div class="row">
-                            <div class="col-12 d-flex">
+                            <div class="col-12 d-flex justify-content-between align-items-center">
                                 <a id="create-quotation-shortcut" data-label="quotation.quotation" class="disabled dropdown-item relate-app" data-url="{% url 'QuotationCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-file-alt"></i><span class="small">{% trans 'Quotation' %}</span></a>
-                                <a class="item-detail-related-feature small" id="item-related-quotation" href="#" target="_blank" title="{% trans 'View Quotation' %}"><i class="fa-solid fa-up-right-from-square"></i></a>
+                                <a class="item-detail-related-feature small" id="item-related-quotation" href="#" target="_blank" title="{% trans 'View detail' %}"><i class="fa-solid fa-up-right-from-square"></i></a>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 d-flex">
+                            <div class="col-12 d-flex justify-content-between align-items-center">
                                 <a id="create-sale-order-shortcut" data-label="saleorder.saleorder" class="disabled dropdown-item relate-app" data-url="{% url 'SaleOrderCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-file-invoice"></i><span class="small">{% trans 'Sale Order' %}</span></a>
-                                <a class="item-detail-related-feature small" id="item-related-sale-order" href="#" target="_blank" title="{% trans 'View Sale Order' %}"><i class="fa-solid fa-up-right-from-square"></i></a>
+                                <a class="item-detail-related-feature small" id="item-related-sale-order" href="#" target="_blank" title="{% trans 'View detail' %}"><i class="fa-solid fa-up-right-from-square"></i></a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 d-flex justify-content-between align-items-center">
+                                <a id="create-lease-order-shortcut" data-label="leaseorder.leaseorder" class="disabled dropdown-item relate-app" data-url="{% url 'LeaseOrderCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-handshake"></i><span class="small">{% trans 'Lease order' %}</span></a>
+                                <a class="item-detail-related-feature small" id="item-related-lease-order" href="#" target="_blank" title="{% trans 'View detail' %}"><i class="fa-solid fa-up-right-from-square"></i></a>
                             </div>
                         </div>
                         <a id="create-advance-payment-shortcut" class="disabled dropdown-item" data-url="{% url 'AdvancePaymentCreate' %}" href="#" target="_blank"><i class="dropdown-icon fas fa-hand-holding-usd"></i><span class="small">{% trans 'Advance Payment' %}</span></a>

@@ -3413,8 +3413,7 @@ class LeaseOrderLoadDataHandle {
         }
         if ($(form).attr('data-method').toLowerCase() !== 'get') {
             LeaseOrderLoadDataHandle.salePersonSelectEle[0].removeAttribute('readonly');
-            LeaseOrderLoadDataHandle.customerSelectEle[0].removeAttribute('readonly');
-            LeaseOrderLoadDataHandle.contactSelectEle[0].removeAttribute('readonly');
+            LeaseOrderLoadDataHandle.customerSelectEle[0].removeAttribute('disabled');
         }
         if (Object.keys(data?.['opportunity']).length > 0) {
             if (data?.['opportunity']?.['quotation_id'] !== data?.['id']) {  // Check if quotation is invalid in Opp => disabled btn copy to SO (only for detail page)
@@ -3427,8 +3426,7 @@ class LeaseOrderLoadDataHandle {
             }
             if ($(form).attr('data-method').toLowerCase() !== 'get') {
                 LeaseOrderLoadDataHandle.salePersonSelectEle[0].setAttribute('readonly', 'true');
-                LeaseOrderLoadDataHandle.customerSelectEle[0].setAttribute('readonly', 'true');
-                LeaseOrderLoadDataHandle.contactSelectEle[0].setAttribute('readonly', 'true');
+                LeaseOrderLoadDataHandle.customerSelectEle[0].setAttribute('disabled', 'true');
             }
         }
         if (data?.['customer_data']) {
@@ -8398,6 +8396,12 @@ class LeaseOrderSubmitHandle {
                 if (assetType && assetDataEle) {
                     if ($(assetType).val() === '3' && $(assetDataEle).val()) {
                         rowData['asset_data'] = JSON.parse($(assetDataEle).val());
+                    }
+                }
+                let offsetShowEle = row.querySelector('.table-row-offset-show');
+                if (offsetShowEle) {
+                    if ($(offsetShowEle).val()) {
+                        rowData['offset_show'] = $(offsetShowEle).val();
                     }
                 }
                 let eleUOM = row.querySelector('.table-row-uom');

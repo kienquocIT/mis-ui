@@ -9,3 +9,5 @@ class CoreMsg:  # pylint: disable=too-few-public-methods
     RECURRENCE_CREATE = _('Recurrence create successfully')
     RECURRENCE_UPDATE = _('Recurrence update successfully')
     RECURRENCE_ACTION = _('Recurrence action successfully')
+    FILE_UPDATE = _('File update successfully')
+    FOLDER_ = _('File update successfully')

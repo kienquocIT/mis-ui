@@ -438,7 +438,8 @@ $.fn.extend({
     callAjax2: function (opts = {}) {
         if (isDenied && !globeUrlNotDeny.includes(opts?.['url'])){
             return new Promise(function (resolve, reject) {});
-        } else {
+        }
+        else {
             let isDropdown = UtilControl.popKey(opts, 'isDropdown', false, true);
             let isNotify = UtilControl.popKey(opts, 'isNotify', false, true);
             if (!$.fn.isBoolean(isNotify)) isNotify = false;

@@ -1245,6 +1245,11 @@ class OpportunityActivity {
                 'saleorder.saleorder': 'saleorder.saleorder.create',
                 'leaseorder.leaseorder': 'leaseorder.leaseorder.create',
             };
+            let appMapErr = {
+                'quotation.quotation': transEle.attr('data-cancel-quo'),
+                'saleorder.saleorder': transEle.attr('data-cancel-so'),
+                'leaseorder.leaseorder': transEle.attr('data-cancel-lo'),
+            }
             if (appMapPerm?.[label] && detail?.['id']) {
                 let tableData = $tableTimeLine.DataTable().rows().data().toArray();
                 $.fn.callAjax2({
@@ -1260,20 +1265,21 @@ class OpportunityActivity {
                             if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
                                 if (data.opportunity_list.length === 1) {
                                     // Validate: check opp already has quotation/ sale order
-                                    for (let tData of tableData) {
-                                        if (label === 'quotation.quotation') {
-                                            if (tData?.['app_code'] === 'saleorder.saleorder' && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
-                                                $.fn.notifyB({description: transEle.attr('data-cancel-quo-so')}, 'failure');
+                                    let listCheck = ['quotation.quotation', 'saleorder.saleorder', 'leaseorder.leaseorder'];
+                                    if (listCheck.includes(label)) {
+                                        for (let tData of tableData) {
+                                            let tDataLabel = tData?.['app_code'];
+                                            let tDataStatus = tData?.['doc_data']?.['system_status'];
+                                            if (label === 'quotation.quotation') {
+                                                if (tDataLabel === 'saleorder.saleorder' && [1, 2, 3].includes(tDataStatus)) {
+                                                    $.fn.notifyB({description: transEle.attr('data-cancel-quo-so')}, 'failure');
+                                                    return false;
+                                                }
+                                            }
+                                            if (tDataLabel === label && [1, 2, 3].includes(tDataStatus)) {
+                                                $.fn.notifyB({description: appMapErr?.[label]}, 'failure');
                                                 return false;
                                             }
-                                        }
-                                        if (tData?.['app_code'] === label && [1, 2, 3].includes(tData?.['doc_data']?.['system_status'])) {
-                                            let errTxt = transEle.attr('data-cancel-quo');
-                                            if (label === 'saleorder.saleorder') {
-                                                errTxt = transEle.attr('data-cancel-so');
-                                            }
-                                            $.fn.notifyB({description: errTxt}, 'failure');
-                                            return false;
                                         }
                                     }
                                     const paramData = $.param({
@@ -2327,10 +2333,30 @@ class OpportunityLoadPage {
                 console.log(errs);
             }
         )
+        const lease_order_check_perm = $.fn.callAjax2({
+            url: urlFactory.attr('data-url-opp-list'),
+            data: {
+                'list_from_app': 'leaseorder.leaseorder.create', 'id': $.fn.getPkDetail()
+            },
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                        return data?.['opportunity_list'][0];
+                    }
+                    return null
+                }
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
         let create_return_sc = $('#create-return-advance-shortcut')
         create_return_sc.attr('href', create_return_sc.attr('data-url'))
 
-        Promise.all([quotation_check_perm, sale_order_check_perm, advance_check_perm, payment_check_perm, bom_check_perm, biding_check_perm, consulting_check_perm]).then(
+        Promise.all([quotation_check_perm, sale_order_check_perm, advance_check_perm, payment_check_perm, bom_check_perm, biding_check_perm, consulting_check_perm, lease_order_check_perm]).then(
             (results_perm_app) => {
                 if (results_perm_app[0]) {
                     let create_quotation_sc = $('#create-quotation-shortcut')
@@ -2406,6 +2432,11 @@ class OpportunityLoadPage {
                         'customer': encodeURIComponent(JSON.stringify(results_perm_app[6]?.['customer'])),
                     })
                     create_consulting_sc.attr('href', param_url)
+                }
+                if (results_perm_app[7]) {
+                    let create_lo_sc = $('#create-lease-order-shortcut')
+                    create_lo_sc.removeClass('disabled');
+                    create_lo_sc.removeAttr('href');
                 }
                 $('#btn-create-related-feature').attr('data-call-check-perm', 'true')
             })

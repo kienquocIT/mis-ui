@@ -152,7 +152,7 @@ function loadStockQuantityDataTable(gre_item_id) {
                         className: 'text-center',
                         render: (data, type, row) => {
                             if (row?.['lot_mapped']?.['lot_number']) {
-                                return `<span class="text-blue fw-bold small"><i class="bi bi-bookmark-fill"></i>&nbsp;${row?.['lot_mapped']?.['lot_number']}</span>`;
+                                return `<span class="text-blue fw-bold small">${row?.['lot_mapped']?.['lot_number']}</span>`;
                             }
                             return ''
                         }

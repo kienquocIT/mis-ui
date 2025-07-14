@@ -971,3 +971,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EQUIPMENT_RETURN_LIST = StringUrl('equipment-return/list')
     EQUIPMENT_RETURN_DETAIL = StringUrl('equipment-return/detail/{pk}')
     ER_EL_LIST_BY_ACCOUNT = StringUrl('equipment-return/er-el-list-by-account')
+    LOAN_PRODUCT_LIST = StringUrl('equipment-loan/loan-product-list')
+
+    # masterdata/shift
+    SHIFT_LIST = StringUrl('hrm/attendance-data/shift/list')
+    SHIFT_DETAIL = StringUrl('hrm/attendance-data/shift/detail/{pk}')

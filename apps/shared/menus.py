@@ -194,6 +194,11 @@ class MenusCoreConfigurations:
                 name='KMS Content group', code='menu_content_group_config',
                 view_name='ContentGroupList',
                 icon='<i class="fa-regular fa-copy"></i>'
+            ),
+            MenuCommon(
+                name='Shift', code='id_menu_master_data_shift',
+                view_name='ShiftMasterDataList',
+                icon='<i class="fas fa-history"></i>'
             )
         ]
     )

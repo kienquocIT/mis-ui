@@ -11,3 +11,4 @@ class HRMsg:  # pylint: disable=too-few-public-methods
     GROUP_DELETE = _('Group delete successfully')
     EMPLOYEE_CREATE = _('Employee create successfully')
     EMPLOYEE_UPDATE = _('Employee update successfully')
+    SHIFT_CREATE = _('Shift create successfully')

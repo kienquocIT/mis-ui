@@ -128,7 +128,8 @@ INSTALLED_APPS = \
     ] + [  # external
         'apps.web_builder',
     ] + [  # HRM
-        'apps.hrm.employee'
+        'apps.hrm.employee',
+        'apps.hrm.attandance',
     ] + [
         'apps.sales.financialcashflow',
         'apps.sales.reconciliation',

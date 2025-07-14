@@ -1,162 +1,33 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block title %}
-    {% trans 'Document approval create' %}
+    {% trans 'Incoming document' %}
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
-
     <link href="{% static 'assets/css/kms/doc-approval/recipient-css.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/kms/doc-approval/common.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="frm_edit_incoming_document">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon">
-                <i class="fa-regular fa-floppy-disk"></i>
-            </span>
-        </span>
-    </button>
+    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='frm_detail_incoming_document' %}
 {% endblock %}
 {% block pageContent %}
-    <form id="frm_edit_incoming_document"
-          data-method="PUT"
+    <form id="frm_detail_incoming_document" data-method="PUT"
           data-url="{% url 'IncomingDocumentDetailAPI' data.pk %}"
           data-url-redirect="{% url 'IncomingDocumentList' %}">
         {% csrf_token %}
-        <h5 class="mb-3">{% trans 'INCOMING DOCUMENT' %}</h5>
-        <div class="row" style="height: 100vh;">
-            <div class="col-12 col-md-8 col-lg-8" style="overflow-y: auto; height: 100vh; padding-right: 1rem;">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label class="form-label required" for="txt_title">{% trans 'Name' %}</label>
-                            <input type="text" class="form-control" name="title" id="txt_create_title" required>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label class="form-label" for="add-product-remark">{% trans 'Description' %}</label>
-                            <textarea name="remark" class="form-control" id="textarea_remark" rows="2"></textarea>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="content_recipient mt-4">
-                            <label class="form-label mt-2"
-                                   for="table_internal_recipient">{% trans 'Internal Recipient' %}</label>
-                            <table class="table nowrap table-advance w-100" id="table_internal_recipient"></table>
-                            <button class="btn btn-outline-primary" type="button" id="add_new_recipient"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modal-recipient">
-                        <span>
-                            <span>{% trans 'Add recipient' %}</span>
-                            <span class="icon">
-                                <i class="fa-regular fa-plus"></i>
-                            </span>
-                        </span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4" id="attached-document-form"
-                 style="border-left: 1px solid #dee2e6; padding-left: 1rem;">
-                <div class="row">
-                    <form data-method="post" id="form_attached" method="post">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label" for="txt_title">{% trans 'Sender' %}</label>
-                                <input type="text" class="form-control" name="sender" id="sender">
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label" for="select-box-doc_type">{% trans 'Document type' %}</label>
-                                <select class="form-select" id="select-box-doc_type"
-                                        data-url="{% url 'DocumentTypeConfigListAPI' %}"
-                                        name="document_type" data-keyResp="document_type_list">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label"
-                                       for="select-box-content_group">{% trans 'Content group' %}</label>
-                                <select class="form-select" id="select-box-content_group"
-                                        data-url="{% url 'ContentGroupListAPI' %}"
-                                        name="content_group" data-keyResp="content_group_list">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label" for="kms_effective_date">{% trans 'Effective date' %}</label>
-                                <div class="input-affix-wrapper">
-                                    <input class="form-control pl-2 date-picker" id="kms_effective_date" type="text"
-                                           name="effective_date"/>
-                                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label" for="kms_expired_date">{% trans 'Expired date' %}</label>
-                                <div class="input-affix-wrapper">
-                                    <input class="form-control pl-2 date-picker" id="kms_expired_date" type="text"
-                                           name="expired_date"/>
-                                    <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label" for="kms_security_level">{% trans 'Security level' %}</label>
-                                <select class="form-select" id="kms_security_level" name="security_lv"
-                                        data-keyResp="kms_doc_approval_list">
-                                    {% for item in data.lst_lv %}
-                                        <option value="{{ item.0 }}">{{ item.1 }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label" for="kms_folder">{% trans 'Folder' %}</label>
-                                <select class="form-select" id="kms_folder" name="folder" data-allowClear="true"
-                                        data-keyResp="folder_list"
-                                        data-url="{% url 'FolderListAPI' %}">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label" for="txt_title">{% trans 'Tag' %}</label>
-                                <input type="text" class="form-control" name="title" id="tag">
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group content_attached">
-                                <label class="form-label mt-2"
-                                       for="table_attached_info">{% trans 'Attachment files' %}</label>
-                                <div id="attachment" class="{{ addClass }}">
-                                    {% include 'extends/files/all.html' %}
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        {% include 'kms/incomingdocument/extend/main-space.html' %}
     </form>
 {% endblock %}
 {% block modalData %}
-    {% include 'kms/document_approval/extend/popup-recipient.html' %}
+    {% include 'kms/incomingdocument/extend/popup-recipient.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
-    <input type="text" id="url-factory">
+    <input type="text" id="app-url-factory" data-md-employee="{% url 'EmployeeListAllAPI' %}" data-md-group="{% url 'GroupDDListAPI' %}">
+    <input type="text" id="group-checked">
+    <input type="text" id="employee-checked">
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
@@ -164,8 +35,8 @@
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/js/kms/incoming-doc/common.js' %}"></script>
-    <script src="{% static 'assets/js/kms/doc-approval/recipient-js.js' %}"></script>
+    <script src="{% static 'assets/js/kms/incoming-doc/recipient-js.js' %}"></script>
     <script src="{% static 'assets/js/kms/incoming-doc/edit.js' %}"></script>
 {% endblock %}

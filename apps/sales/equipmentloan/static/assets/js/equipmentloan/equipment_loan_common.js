@@ -33,6 +33,7 @@ const pageElements = new EquipmentLoanPageElements()
  */
 class EquipmentLoanPageVariables {
     constructor() {
+        this.IS_DETAIL_PAGE = false
         this.current_product = null
         this.current_loan_row = null
     }
@@ -184,6 +185,7 @@ class EquipmentLoanPageFunction {
                 render: (data, type, row) => {
                     return `<div class="form-check">
                             <input type="radio" name="product-warehouse-select"
+                                   ${pageVariables.IS_DETAIL_PAGE && Number(general_traceability_method) === 0 ? 'disabled' : ''}
                                    class="form-check-input product-warehouse-select"
                                    data-product-warehouse-id="${row?.['id'] || ''}"
                                    data-warehouse-id="${row?.['warehouse_data']?.['id'] || ''}"
@@ -290,6 +292,7 @@ class EquipmentLoanPageFunction {
                 render: (data, type, row) => {
                     return `<div class="form-check">
                                 <input type="radio"
+                                       ${pageVariables.IS_DETAIL_PAGE ? 'disabled' : ''}
                                        name="lot-select"
                                        class="form-check-input lot-select"
                                        data-lot-id="${row?.['id']}"
@@ -387,6 +390,7 @@ class EquipmentLoanPageFunction {
                 render: (data, type, row) => {
                     return `<div class="form-check">
                                 <input type="checkbox"
+                                       ${pageVariables.IS_DETAIL_PAGE ? 'disabled' : ''}
                                        class="form-check-input serial-select"
                                        data-serial-id="${row?.['id']}"
                                 >
@@ -512,6 +516,8 @@ class EquipmentLoanHandler {
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
+                    pageVariables.IS_DETAIL_PAGE = option === 'detail'
+
                     data = data['equipment_loan_detail'];
 
                     // console.log(data)
@@ -538,7 +544,8 @@ class EquipmentLoanHandler {
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
 
                     UsualLoadPageFunction.DisablePage(
-                        option==='detail'
+                        option==='detail',
+                        ['.modal-header button', '.modal-footer button']
                     )
                 }
             })
@@ -609,25 +616,31 @@ class EquipmentLoanEventHandler {
                     pageElements.$table_select_warehouse.closest('.table-none-space').attr('class', 'col-12 col-md-4 col-lg-4 table-none-space border-right')
                 }
             }
+            pageElements.$table_select_lot.closest('.table-lot-space').prop('hidden', true)
+            pageElements.$table_select_serial.closest('.table-serial-space').prop('hidden', true)
         })
         $(document).on("change", '.product-warehouse-select', function () {
-            pageElements.$table_select_lot.closest('.table-lot-space').prop('hidden', Number(pageVariables.current_product?.['general_traceability_method']) !== 1)
-            pageElements.$table_select_serial.closest('.table-serial-space').prop('hidden', Number(pageVariables.current_product?.['general_traceability_method']) !== 2)
             if (Number(pageVariables.current_product?.['general_traceability_method']) === 0) {
                 pageElements.$table_select_warehouse.find('tr .none-picked-quantity').prop('disabled', true).prop('readonly', true)
                 $(this).closest('tr').find('.none-picked-quantity').prop('disabled', false).prop('readonly', false)
+                pageElements.$table_select_lot.closest('.table-lot-space').prop('hidden', true)
+                pageElements.$table_select_serial.closest('.table-serial-space').prop('hidden', true)
             }
             if (Number(pageVariables.current_product?.['general_traceability_method']) === 1) {
                 let product_id = pageVariables.current_product?.['id']
                 let warehouse_id = $(this).attr('data-warehouse-id')
                 let url = `${pageElements.$script_url.attr('data-url-lot-list-by-warehouse')}?product_warehouse__product_id=${product_id}&product_warehouse__warehouse_id=${warehouse_id}`
                 EquipmentLoanPageFunction.LoadTableLotListByWarehouse(url)
+                pageElements.$table_select_lot.closest('.table-lot-space').prop('hidden', false)
+                pageElements.$table_select_serial.closest('.table-serial-space').prop('hidden', true)
             }
             if (Number(pageVariables.current_product?.['general_traceability_method']) === 2) {
                 let product_id = pageVariables.current_product?.['id']
                 let warehouse_id = $(this).attr('data-warehouse-id')
                 let url = `${pageElements.$script_url.attr('data-url-serial-list-by-warehouse')}?product_warehouse__product_id=${product_id}&product_warehouse__warehouse_id=${warehouse_id}`
                 EquipmentLoanPageFunction.LoadTableSerialListByWarehouse(url)
+                pageElements.$table_select_lot.closest('.table-lot-space').prop('hidden', true)
+                pageElements.$table_select_serial.closest('.table-serial-space').prop('hidden', false)
             }
         })
         $(document).on("change", '.none-picked-quantity', function () {
@@ -635,11 +648,13 @@ class EquipmentLoanEventHandler {
 
             let sum_picked_quantity = 0
             pageElements.$table_select_warehouse.find('tbody tr').each(function (index, ele) {
-                component_none_list.push({
-                    'product_warehouse_id': $(ele).find('.product-warehouse-select').attr('data-product-warehouse-id'),
-                    'picked_quantity': parseFloat($(ele).find('.none-picked-quantity').val()) || 0
-                })
-                sum_picked_quantity += parseFloat($(ele).find('.none-picked-quantity').val()) || 0
+                if (Number(parseFloat($(ele).find('.none-picked-quantity').val()) || 0) > 0) {
+                    component_none_list.push({
+                        'product_warehouse_id': $(ele).find('.product-warehouse-select').attr('data-product-warehouse-id'),
+                        'picked_quantity': parseFloat($(ele).find('.none-picked-quantity').val()) || 0
+                    })
+                    sum_picked_quantity += parseFloat($(ele).find('.none-picked-quantity').val()) || 0
+                }
             })
 
             pageVariables.current_loan_row.find('.data-none-detail').text(JSON.stringify(component_none_list))

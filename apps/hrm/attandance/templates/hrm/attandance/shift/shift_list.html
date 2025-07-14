@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Shift information' %}
+{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12 col-lg-2 col-md-2">
+            <ul class="nav flex-column nav-light nav-pills nav vertical">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_shift">
+                        <span class="nav-link-text">{% trans 'Shift information' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-12 col-lg-10 col-md-10">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab_shift">
+                    <div class="row">
+                        <div class="col-12">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#ShiftModal"
+                               id="create_shift_button">
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <span>
+                                        <span class="icon">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </span>
+                                        <span>{% trans 'Add new shift' %}</span>
+                                    </span>
+                                </button>
+                            </a>
+                        </div>
+                        <div class="col-12 mt-5">
+                            <table class="table nowrap w-100" data-method="GET" data-url="{% url 'ShiftMasterDataListAPI' %}" id="tbl_shift">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>{% trans 'Code' %}</th>
+                                        <th>{% trans 'Shift name' %}</th>
+                                        <th>{% trans 'Description' %}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
+    {% include 'hrm/attandance/shift/shift_modal.html' %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static 'assets/js/hrm/attandance/shift/shift_common.js' %}"></script>
+    <script src="{% static 'assets/js/hrm/attandance/shift/shift_list.js' %}"></script>
+    <script src="{% static 'assets/js/hrm/attandance/shift/shift_submit.js' %}"></script>
+{% endblock %}

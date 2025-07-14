@@ -83,23 +83,23 @@ class ShiftLoadDataHandle {
         let dataForm = {};
         dataForm['title'] = pageElements.$titleEle.val();
         dataForm['checkin_time'] = pageElements.$checkinTime.val();
-        dataForm['checkin_gr_start'] = pageElements.$checkinGraceStart.val();
-        dataForm['checkin_gr_end'] = pageElements.$checkinGraceEnd.val();
+        dataForm['checkin_gr_start'] = pageElements.$checkinGraceStart.val() || null;
+        dataForm['checkin_gr_end'] = pageElements.$checkinGraceEnd.val() || null;
         dataForm['checkin_threshold'] = parseFloat(pageElements.$checkinThreshold.val());
 
         dataForm['break_in_time'] = pageElements.$breakinTime.val();
-        dataForm['break_in_gr_start'] = pageElements.$breakinGraceStart.val();
-        dataForm['break_in_gr_end'] = pageElements.$breakinGraceEnd.val();
+        dataForm['break_in_gr_start'] = pageElements.$breakinGraceStart.val() || null;
+        dataForm['break_in_gr_end'] = pageElements.$breakinGraceEnd.val() || null;
         dataForm['break_in_threshold'] = parseFloat(pageElements.$breakinThreshold.val());
 
         dataForm['break_out_time'] = pageElements.$breakoutTime.val();
-        dataForm['break_out_gr_start'] = pageElements.$breakoutGraceStart.val();
-        dataForm['break_out_gr_end'] = pageElements.$breakoutGraceEnd.val();
+        dataForm['break_out_gr_start'] = pageElements.$breakoutGraceStart.val() || null;
+        dataForm['break_out_gr_end'] = pageElements.$breakoutGraceEnd.val() || null;
         dataForm['break_out_threshold'] = parseFloat(pageElements.$breakoutThreshold.val());
 
         dataForm['checkout_time'] = pageElements.$checkoutTime.val();
-        dataForm['checkout_gr_start'] = pageElements.$checkoutGraceStart.val();
-        dataForm['checkout_gr_end'] = pageElements.$checkoutGraceEnd.val();
+        dataForm['checkout_gr_start'] = pageElements.$checkoutGraceStart.val() || null;
+        dataForm['checkout_gr_end'] = pageElements.$checkoutGraceEnd.val() || null;
         dataForm['checkout_threshold'] = parseFloat(pageElements.$checkoutThreshold.val());
 
         dataForm['working_day_list'] = pageElements.getSelectedWorkingDay();

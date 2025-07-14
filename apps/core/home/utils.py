@@ -232,6 +232,12 @@ PLAN_APP_OF_SALE = {
             detail_view_name='EquipmentLoanDetail',
             create_view_name='EquipmentLoanCreate').data,
     },
+    'equipmentreturn': {
+        'equipmentreturn': ReverseUrlCommon(
+            list_view_name='EquipmentReturnList',
+            detail_view_name='EquipmentReturnDetail',
+            create_view_name='EquipmentReturnCreate').data,
+    },
 }
 
 PLAN_APP_OF_E_OFFICE = {

@@ -95,6 +95,21 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label" for="company_shift_mode">{% trans 'Shift mode' %}</label>
+                            <select class="form-select" id="company_shift_mode">
+                                <option value="0">{% trans 'Single' %}</option>
+                                <option value="1" selected>{% trans 'Multiple' %}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-3" id="select_shift_block" hidden>
+                        <div class="form-group">
+                            <label class="form-label required" for="company_select_shift">{% trans 'Select shift' %}</label>
+                            <select class="form-select" id="company_select_shift" data-url="{% url 'ShiftMasterDataListAPI' %}" data-method="GET"></select>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>

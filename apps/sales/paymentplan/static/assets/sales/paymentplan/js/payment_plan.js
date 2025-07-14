@@ -2,7 +2,6 @@ $(function () {
     $(document).ready(function () {
 
         let $dtbArea = $('#dtb-area');
-        let $table = $('#table_payment_plan');
         let $btnGroup = $('#btn-group-view');
         let $btnDay = $('#btn-view-day');
         let $btnWeek = $('#btn-view-week');
@@ -17,11 +16,7 @@ $(function () {
         let eleFiscalYear = $('#data-fiscal-year');
         let dataMonth = JSON.parse($('#filter_month').text());
 
-        let htmlDtb = `<table
-                                class="table nowrap w-100 table_payment_plan"
-                                data-url="${$urlFact.attr('data-payment-plan')}"
-                                data-method="get"
-                        >
+        let htmlDtb = `<table class="table nowrap w-100 table_payment_plan">
                             <thead>
                             <tr class="bg-light"></tr>
                             </thead>
@@ -32,7 +27,6 @@ $(function () {
             0: $transFact.attr('data-document'),
             1: $transFact.attr('data-partner'),
             2: $transFact.attr('data-installment'),
-            // 3: 'Invoice planed date',
             4: $transFact.attr('data-invoice'),
             5: $transFact.attr('data-over-due'),
             6: $transFact.attr('data-balance-due'),
@@ -76,8 +70,6 @@ $(function () {
                     $.fn.initMaskMoney2();
                     // add css to Dtb
                     dtbHDCustom();
-                    // $dtbArea.find('.table_payment_plan').DataTable().row.add({"is_total_in": true}).draw().node();
-                    // $dtbArea.find('.table_payment_plan').DataTable().row.add({"is_total_out": true}).draw().node();
                     loadTotalInOut(settings);
                 },
             });
@@ -113,11 +105,11 @@ $(function () {
                 api.columns().every(function (colIndex) {
                     let colDef = settings.aoColumns[colIndex];
 
-                    if (colDef.checkRange && dataRow?.['date_approved']) {
+                    if (colDef.checkRange && dataRow?.['due_date']) {
                         const date = DateTimeControl.formatDateType(
                             'YYYY-MM-DD hh:mm:ss',
                             'DD/MM/YYYY',
-                            dataRow['date_approved']
+                            dataRow['due_date']
                         );
 
                         const inRange = isDateInRange(
@@ -271,7 +263,7 @@ $(function () {
                 return {
                     width: '8%',
                     render: (data, type, row) => {
-                        if (row?.['ar_invoice_data']?.['id'] || row?.['ap_invoice_data']?.['id']) {
+                        if (row?.['value_balance'] === 0) {
                             return `<span class="badge text-dark-10 fs-8 bg-green-light-4">Đã thanh toán</span>`;
                         }
                         if (row?.['due_date']) {
@@ -281,7 +273,7 @@ $(function () {
                             if (daysLeft) {
                                 return `<span>${daysBetween(currentDate, dueDate)} ${$transFact.attr('data-day')} (${dueDate})</span>`;
                             }
-                            return `<span class="badge text-dark-10 fs-8 bg-red-light-4">Đã quá hạn</span>`;
+                            return `<span class="badge text-dark-10 fs-8 bg-red-light-4">Đã quá hạn</span><span>${daysBetween(currentDate, dueDate)} ${$transFact.attr('data-day')} (${dueDate})</span>`;
                         }
                         return ``;
                     }
@@ -304,10 +296,12 @@ $(function () {
                                     </div>`;
                         }
                         let balance = row?.['value_balance'];
+                        let clsText = "text-green";
                         if (row?.['purchase_order_data']?.['id']) {
                             balance = -row?.['value_balance'];
+                            clsText = "text-red"
                         }
-                        return `<span class="mask-money" data-init-money="${balance}"></span>`;
+                        return `<span class="mask-money ${clsText}" data-init-money="${balance}"></span>`;
                     }
                 }
             }
@@ -344,7 +338,7 @@ $(function () {
                     minWidth = "min-w-1600p";
                 }
                 if (columns.length > 15) {
-                    minWidth = "min-w-2560p";
+                    minWidth = "min-w-4000p";
                 }
             }
             $table.addClass(minWidth);
@@ -366,7 +360,7 @@ $(function () {
                             let checkRange = meta.settings.aoColumns[meta.col].checkRange;
 
                             if (checkRange && row?.['date_approved']) {
-                                let date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['date_approved']);
+                                let date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
                                 let check = isDateInRange(checkRange?.['from'], checkRange?.['to'], date);
                                 if (check) {
                                     value = row?.['value_pay'];
@@ -433,7 +427,7 @@ $(function () {
                             let checkRange = meta.settings.aoColumns[meta.col].checkRange;
 
                             if (checkRange && row?.['date_approved']) {
-                                let date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['date_approved']);
+                                let date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
                                 let check = isDateInRange(checkRange?.['from'], checkRange?.['to'], date);
                                 if (check) {
                                     value = row?.['value_pay'];
@@ -529,7 +523,7 @@ $(function () {
                             let checkRange = meta.settings.aoColumns[meta.col].checkRange;
 
                             if (checkRange && row?.['date_approved']) {
-                                let date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['date_approved']);
+                                let date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
                                 let check = isDateInRange(checkRange?.['from'], checkRange?.['to'], date);
                                 if (check) {
                                     value = row?.['value_pay'];

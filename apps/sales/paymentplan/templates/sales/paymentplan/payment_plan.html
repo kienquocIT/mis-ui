@@ -20,54 +20,58 @@
 
     <div class="modal-canvas-area">
 
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
+        <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
             <div class="modal-header">
                 <h5><b>{% trans 'Filter' %}</b></h5>
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
             <div class="offcanvas-body">
+                <b>{% trans 'Information' %}</b>
                 <div class="row">
-                    <div class="form-group">
-                        <label class="form-label mt-2" for="box-customer">{% trans 'Partner' %}</label>
-                        <select
-                                class="form-select"
-                                id="box-customer"
-                                data-url="{% url "AccountDDListAPI" %}"
-                                data-method="GET"
-                                data-keyResp="account_dd_list"
-                                data-keyText="name"
-                                multiple
-                        ></select>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label mt-2" for="box-customer">{% trans 'Partner' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-customer"
+                                    data-url="{% url "AccountDDListAPI" %}"
+                                    data-method="GET"
+                                    data-keyResp="account_dd_list"
+                                    data-keyText="name"
+                                    multiple
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label mt-2" for="box-so">{% trans 'Sale order' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-so"
+                                    data-url="{% url "SaleOrderDDListAPI" %}"
+                                    data-method="GET"
+                                    data-keyResp="sale_order_dd_list"
+                                    multiple
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label mt-2" for="box-po">{% trans 'Purchase order' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-po"
+                                    data-url="{% url "PurchaseOrderDDListAPI" %}"
+                                    data-method="GET"
+                                    data-keyResp="purchase_order_dd_list"
+                                    multiple
+                            ></select>
+                        </div>
                     </div>
                 </div>
+                <b>{% trans 'Due date' %}</b>
                 <div class="row">
-                    <div class="form-group">
-                        <label class="form-label mt-2" for="box-so">{% trans 'Sale order' %}</label>
-                        <select
-                                class="form-select"
-                                id="box-so"
-                                data-url="{% url "SaleOrderDDListAPI" %}"
-                                data-method="GET"
-                                data-keyResp="sale_order_dd_list"
-                                multiple
-                        ></select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        <label class="form-label mt-2" for="box-po">{% trans 'Purchase order' %}</label>
-                        <select
-                                class="form-select"
-                                id="box-po"
-                                data-url="{% url "PurchaseOrderDDListAPI" %}"
-                                data-method="GET"
-                                data-keyResp="purchase_order_dd_list"
-                                multiple
-                        ></select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-2 col-lg-2">
                         <div class="form-group">
                             <label class="form-label" for="date-from">{% trans 'From' %}</label>
                             <div class="input-affix-wrapper">
@@ -79,7 +83,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-2 col-lg-2">
                         <div class="form-group">
                             <label class="form-label" for="date-to">{% trans 'To' %}</label>
                             <div class="input-affix-wrapper">

@@ -42,5 +42,21 @@ msgid "Select returned equipment"
 msgstr "Chọn hàng được thu hồi"
 
 #
-msgid "Loan detail info"
-msgstr "Thông tin cho mượn cụ thể"
+msgid "Return detail info"
+msgstr "Thông tin thu hồi chi tiết"
+
+#
+msgid "Returned"
+msgstr "Đã thu hồi"
+
+#
+msgid "Loan Items"
+msgstr "Hàng cho mượn"
+
+#
+msgid "Loan quantity"
+msgstr "SL cho mượn"
+
+#
+msgid "Warehouse before"
+msgstr "Kho trước đó"

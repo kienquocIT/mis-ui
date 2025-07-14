@@ -3,6 +3,11 @@
 {% load static %}
 {% block title %}{% trans 'Equipment return' %}{% endblock %}
 {% block cssHeader %}
+    <style>
+        table .select2-selection__rendered {
+            max-width: 250px;
+        }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}
@@ -20,6 +25,7 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
+            data-url-warehouse-list="{% url 'WareHouseListAPI' %}?interact=1&is_not_virtual=1"
     ></script>
     <script id="trans-url"
     ></script>

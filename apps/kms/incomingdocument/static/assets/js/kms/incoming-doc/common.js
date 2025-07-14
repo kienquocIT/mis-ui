@@ -18,105 +18,23 @@ class IncomingDocElements {
         this.$folderEle = $('#kms_folder');
 
         // internal recipient
-        this.$tableInternalRecipient = $('#table_internal_recipient');
+        this.$recipientListEle = $('#recipient_list');
         this.$tableGroup = $('#table_group');
         this.$tableEmployee = $('#table_employee');
         this.$storeGroupEle = $('#group-checked');
         this.$storeEmployeeEle = $('#employee-checked');
-        this.$btnAddEmployee = $('#add_employee');
-        this.$employeeShowEle = $('#employee_show');
-        this.$radioReview = $('#radio_review');
-        this.$radioView = $('#radio_view');
-        this.$radioEdit = $('#radio_edit');
-        this.$radioCustom = $('#radio_custom');
-        this.$inputExpired = $('#input_expired');
-        this.$btnEnableSwitch = $('#enabled_switch');
-        this.$checkboxesToCheck = [
-            $('#checkbox_review'),
-            $('#checkbox_download'),
-            $('#checkbox_edit_f_attr'),
-            $('#checkbox_share'),
-            $('#checkbox_upload_ver'),
-            $('#checkbox_duplicate'),
-            $('#checkbox_edit_f')
-        ];
 
         // url
         this.$urlEle = $('#app-url-factory');
     }
 }
+
 const pageElements = new IncomingDocElements();
 
 /**
  * Khai báo các hàm chính
  */
 class IncomingDocLoadDataHandle {
-    static initInternalRecipientTable(data, option='create') {
-        const $tbl = pageElements.$tableInternalRecipient;
-
-        if ($tbl.hasClass('dataTable')) {
-            $tbl.DataTable().clear().rows.add(data).draw();
-            return;
-        }
-
-        $tbl.DataTableDefault({
-            data: data,
-            paging: false,
-            info: false,
-            searching: false,
-            columns: [
-                {
-                    title: 'Internal Recipient',
-                    data: 'employee_access',
-                    render: (employeeAccess) => {
-                        if (!employeeAccess || typeof employeeAccess !== 'object') return '';
-
-                        const names = Object.values(employeeAccess)
-                            .map(emp => emp?.data?.full_name)
-                            .filter(Boolean);
-
-                        return names.map(name => `
-                        <div class="chip recipient-chip chip-outline-primary pill chip-pill mr-2">
-                            <span class="chip-text">${name}</span>
-                        </div>
-                    `).join('');
-                    }
-                },
-                {
-                    title: 'Actions',
-                    data: 'id',
-                    render: (id) => {
-                        return `
-                        <div class="actions-btn text-center">
-                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover edit-button"
-                               title="Edit" href="#" data-id="${id}" data-action="edit">
-                                <span class="btn-icon-wrap">${option==='detail' ? '<i class="fa-solid fa-eye"></i>' : '<i class="fa-solid fa-pen"></i>'}</span>
-                            </a>
-                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover delete-btn ${option==='detail' ? 'disabled' : ''}"
-                               title="Delete" href="#" data-id="${id}" data-action="delete">
-                                <span class="btn-icon-wrap"><i class="fa-regular fa-trash-can"></i></span>
-                            </a>
-                        </div>
-                    `;
-                    }
-                }
-            ],
-            rowCallback: function (row, data, index) {
-                // Bind delete button
-                $('.actions-btn a.delete-btn', row).off().on('click', function (e) {
-                    e.stopPropagation();
-                    $tbl.DataTable().row(row).remove().draw(false);
-                });
-
-                // Bind edit button
-                $('.actions-btn a.edit-button', row).off().on('click', function (e) {
-                    e.stopPropagation();
-                    $('#modal-recipient').trigger('modal.Recipient.edit', [{row_index: index}]);
-                    $('#form_id').val(index);
-                });
-            }
-        });
-    }
 
     static buildAttachedList() {
         let parsedEffectiveDate = moment(pageElements.$effectiveDateEle.val(), "DD/MM/YYYY", true);
@@ -131,12 +49,31 @@ class IncomingDocLoadDataHandle {
         }]
     }
 
+    static getInternalRecipientData() {
+        let employeeListRaw = pageElements.$storeEmployeeEle.val();
+        let employeeList = {};
+        if (typeof employeeListRaw === 'object' && employeeListRaw !== null) {
+            employeeList = employeeListRaw;
+        } else if (typeof employeeListRaw === 'string') {
+            try {
+                employeeList = JSON.parse(employeeListRaw);
+            } catch (err) {
+                employeeList = {};
+            }
+        }
+        let recipientData = Object.entries(employeeList).map(([uuid, obj]) => ({
+            employee: uuid,
+            employee_access: obj.data
+        }));
+        return recipientData;
+    }
+
     static combineData(formEle) {
         let frm = new SetupFormSubmit($(formEle));
         frm.dataForm['title'] = pageElements.$titleEle.val();
         frm.dataForm['remark'] = pageElements.$descriptionEle.val() || '';
         frm.dataForm['attached_list'] = IncomingDocLoadDataHandle.buildAttachedList();
-        frm.dataForm['internal_recipient'] = pageElements.$tableInternalRecipient.DataTable().data().toArray();
+        frm.dataForm['internal_recipient'] = IncomingDocLoadDataHandle.getInternalRecipientData();
         if (frm.dataForm.hasOwnProperty('attachment')) {
             frm.dataForm['attachment'] = $x.cls.file.get_val(frm.dataForm?.['attachment'], []);
         }
@@ -234,47 +171,29 @@ class IncomingDocPageFunction {
         });
     }
 
-    static disableRecipientEle(option) {
-        if (option) {
-            $('#radio_employee').prop('disabled', true);
-            $('#radio_group').prop('disabled', true);
-            pageElements.$radioReview.prop('disabled', true);
-            pageElements.$radioEdit.prop('disabled', true);
-            pageElements.$radioView.prop('disabled', true);
-            pageElements.$radioCustom.prop('disabled', true);
-            pageElements.$inputExpired.prop('disabled', true);
-            pageElements.$btnEnableSwitch.prop('disabled', true);
-            pageElements.$checkboxesToCheck.forEach($checkbox => {
-                $checkbox.prop('disabled', true)
-            });
-        }
-    }
-
     static prepareGroupAndEmployeeAccess(recipient) {
-        if (!recipient || typeof recipient !== 'object') return;
+        // organize data for Employee element
+        const storeEmployeeObj = {};
+        recipient.forEach(item => {
+            storeEmployeeObj[item.employee] = {
+                type: 'current',
+                data: item.employee_access
+            };
+        });
+        pageElements.$storeEmployeeEle.val(JSON.stringify(storeEmployeeObj));
 
         const storeGroupObj = {};
-        const storeEmployeeObj = {};
-        const employeeAccess = recipient?.['employee_access'] || {};
-        const groupAccess = recipient?.['group_access'] || {};
-
-        Object.entries(employeeAccess).forEach(([id, info]) => {
-            if (id && info?.data) {
-                storeEmployeeObj[id] = info;
-            }
+        recipient.forEach(item => {
+            const employeeAccess = item.employee_access;
+            storeGroupObj[employeeAccess.group.id] = {
+                type: 'current',
+                data: employeeAccess
+            };
         });
-
-        Object.entries(groupAccess).forEach(([id, info]) => {
-            if (id && info?.data) {
-                storeGroupObj[id] = info;
-            }
-        });
-
-        pageElements.$storeEmployeeEle.val(JSON.stringify(storeEmployeeObj));
         pageElements.$storeGroupEle.val(JSON.stringify(storeGroupObj));
     }
 
-    static loadDetailIncomingDoc(option) {
+    static loadDetailIncomingDoc() {
         let $form = $('#frm_detail_incoming_document');
         const data_url = $form.attr('data-url');
         $.fn.callAjax2({url: data_url, method: 'GET'}).then(
@@ -290,10 +209,8 @@ class IncomingDocPageFunction {
                     enable_download: true,
                     data: data?.['attachment'],
                 });
-
                 const attached = data?.['attached_list']?.[0] || {};
                 const recipients = data?.['internal_recipient'] || [];
-                const recipients_detail = recipients?.[0] || {};
                 const effectiveDate = attached.effective_date ? moment(attached.effective_date).format('DD/MM/YYYY') : '';
                 const expiredDate = attached.expired_date ? moment(attached.expired_date).format('DD/MM/YYYY') : '';
                 const levelLabel = attached.security_level || '';
@@ -315,8 +232,7 @@ class IncomingDocPageFunction {
                 if (matchedOption.length > 0) {
                     pageElements.$securityLevelEle.val(matchedOption.val()).trigger('change');
                 }
-                IncomingDocLoadDataHandle.initInternalRecipientTable(recipients, option);
-                IncomingDocPageFunction.prepareGroupAndEmployeeAccess(recipients_detail);
+                IncomingDocPageFunction.prepareGroupAndEmployeeAccess(recipients);
                 recipientModalFunction.loadGroupList();
                 recipientModalFunction.loadEmployeeList();
                 recipientModalFunction.loadEmployeeShow();
@@ -324,33 +240,10 @@ class IncomingDocPageFunction {
 
                 // disable element
                 UsualLoadPageFunction.DisablePage(IS_DETAIL_PAGE, ['.modal-header button']);
-                IncomingDocPageFunction.disableRecipientEle(IS_DETAIL_PAGE);
             },
         );
     }
 
-    // process for recipient popup
-    static uncheckAllRightCheckboxes() {
-        $('.right-access input[type="checkbox"]').prop('checked', false);
-    }
-
-    static clearRecipientPopup() {
-        const $form = $('#recipient_form');
-        $form[0].reset();
-
-        $('input[name="id"]', $form).val('').attr('data-idx', '');
-        $('#table_group tbody tr td input, #table_employee tbody tr td input').prop('checked', false);
-        $('.employee-added > div').html('');
-        const $inp = $('#input_expired');
-        $('#enabled_switch').prop('checked', false);
-        $inp.prop('readonly', true).val('');
-        if ($inp[0]?._flatpickr) {
-            $inp[0]._flatpickr.clear();
-            $inp[0]._flatpickr.set('clickOpens', false);
-        }
-        $('#btn_edit').show();
-        $('#btn_create').hide();
-    }
 }
 
 /**
@@ -432,7 +325,6 @@ class recipientModalFunction {
             }
         }
         return true;
-
     }
 
     static collectGroupLoadEmployee() {
@@ -488,7 +380,7 @@ class recipientModalFunction {
                             }
                         }
                         return `<div class="form-check form-check-lg">
-                                    <input ${IS_DETAIL_PAGE ? 'disabled' : '' } type="checkbox" id="checkbox_${data.code}" class="form-check-input row-checkbox" value="${data.id}" ${checked}>
+                                    <input ${IS_DETAIL_PAGE ? 'disabled' : ''} type="checkbox" id="checkbox_${data.code}" class="form-check-input row-checkbox" value="${data.id}" ${checked}>
                                     <label title="${data.title}" for="checkbox_${data.code}" class="form-check-label">
                                     ${data.title}</label>
                                 </div>`;
@@ -540,7 +432,7 @@ class recipientModalFunction {
                             }
                         }
                         return `<div class="form-check form-check-lg">
-                                    <input ${IS_DETAIL_PAGE ? 'disabled' : '' } type="checkbox" id="checkbox_${data.code}" class="form-check-input row-checkbox" value="${data.id}" ${checked}>
+                                    <input ${IS_DETAIL_PAGE ? 'disabled' : ''} type="checkbox" id="checkbox_${data.code}" class="form-check-input row-checkbox" value="${data.id}" ${checked}>
                                     <label title="${data.full_name}" for="checkbox_${data.code}" class="form-check-label">
                                     ${data.full_name}</label>
                                 </div>`;
@@ -576,7 +468,7 @@ class recipientModalFunction {
 
     static loadEmployeeShow() {
         if (pageElements.$storeEmployeeEle.val()) {
-            pageElements.$employeeShowEle.empty();
+            pageElements.$recipientListEle.empty();
             let storeData = JSON.parse(pageElements.$storeEmployeeEle.val());
             let bodyShow = ``;
             for (let key in storeData) {
@@ -589,38 +481,14 @@ class recipientModalFunction {
                                 </span>
                             </div>`;
             }
-            pageElements.$employeeShowEle.append(bodyShow);
+            pageElements.$recipientListEle.append(bodyShow);
         }
         return true;
-    }
-
-    static loadDateExp() {
-        pageElements.$inputExpired.flatpickr({
-            allowInput: true,
-            altInput: true,
-            altFormat: 'd/m/Y',
-            defaultDate: null,
-            locale: globeLanguage === 'vi' ? 'vn' : 'default',
-            shorthandCurrentMonth: true,
-        }).set('clickOpens', false)
-
-        $('#enabled_switch').on('change', function () {
-            const $inp = $('#input_expired')
-            if (!$(this).prop('checked')) {
-                $inp[0]._flatpickr.clear()
-                $inp[0]._flatpickr.set('clickOpens', false)
-                $inp.prop('readonly', true)
-            } else {
-                $inp[0]._flatpickr.set('clickOpens', true)
-                $inp.prop('readonly', false)
-            }
-        })
     }
 
     static runPopup() {
         recipientModalFunction.loadGroupList();
         recipientModalFunction.loadEmployeeList();
-        recipientModalFunction.loadDateExp();
     }
 }
 
@@ -630,14 +498,8 @@ class recipientModalFunction {
 class IncomingDocEventHandler {
     static InitPageEvent() {
         // create page
-        $('#add_new_recipient').on('click', function () {
-            IncomingDocPageFunction.clearRecipientPopup();
+        $('#edit_recipient_btn').on('click', function () {
             $('#modal-recipient').modal('show');
-        });
-
-        // recipient page
-        $('#add_employee').on('click', function () {
-            recipientModalFunction.loadEmployeeShow();
         });
 
         $('#employee_show').on('click', '.btn-close', function () {
@@ -652,36 +514,5 @@ class IncomingDocEventHandler {
             recipientModalFunction.collectGroupLoadEmployee();
             recipientModalFunction.loadEmployeeShow();
         });
-
-        pageElements.$radioReview.on('click', function () {
-            IncomingDocPageFunction.uncheckAllRightCheckboxes();
-            $('#checkbox_review').prop('checked', true);
-        });
-
-        pageElements.$radioView.on('click', function () {
-            IncomingDocPageFunction.uncheckAllRightCheckboxes();
-            const checkboxesToCheck = [
-                $('#checkbox_review'),
-                $('#checkbox_download')
-            ];
-            checkboxesToCheck.forEach($checkbox => {
-                $checkbox.prop('checked', true);
-            })
-        })
-
-        pageElements.$radioEdit.on('click', function () {
-            IncomingDocPageFunction.uncheckAllRightCheckboxes();
-            pageElements.$checkboxesToCheck.forEach($checkbox => {
-                $checkbox.prop('checked', true);
-            })
-        })
-
-        pageElements.$radioCustom.on('click', function () {
-            IncomingDocPageFunction.uncheckAllRightCheckboxes();
-            pageElements.$checkboxesToCheck.forEach($checkbox => {
-                $checkbox.prop('checked', true);
-            })
-        })
     }
-
 }

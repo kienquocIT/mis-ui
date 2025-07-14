@@ -3,11 +3,10 @@ $(document).ready(function () {
 
     IncomingDocEventHandler.InitPageEvent();
     IncomingDocPageFunction.loadEditor();
-    IncomingDocLoadDataHandle.initInternalRecipientTable();
+    IncomingDocPageFunction.initDatePickers();
     IncomingDocPageFunction.LoadDocumentType();
     IncomingDocPageFunction.LoadContentGroup();
     IncomingDocPageFunction.LoadFolderType();
-    IncomingDocPageFunction.initDatePickers();
 
     new $x.cls.file($('#attachment')).init({
         name: 'attachment',

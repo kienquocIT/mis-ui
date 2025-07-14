@@ -19,16 +19,16 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: "Create new shift successfully"}, 'success');
+                            setTimeout(function () {
+                                window.location.href = frm.dataUrlRedirect;
+                            }, 1000);
                         }
                     },
                     (errs) => {
                         $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        WindowControl.hideLoading();
                     }
-                ).finally(function () {
-                    setTimeout(function () {
-                        window.location.href = frm.dataUrlRedirect;
-                    }, 1000);
-                })
+                )
             } else {
                 WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
                 let frm = new SetupFormSubmit($(form));
@@ -42,16 +42,16 @@ $(document).ready(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: "Update new shift successfully"}, 'success');
+                            setTimeout(function () {
+                                window.location.href = frm.dataUrlRedirect;
+                            }, 1000);
                         }
                     },
                     (errs) => {
                         $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        WindowControl.hideLoading();
                     }
-                ).finally(function () {
-                    setTimeout(function () {
-                        window.location.href = frm.dataUrlRedirect;
-                    }, 1000);
-                })
+                )
             }
         }
     })

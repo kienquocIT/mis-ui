@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Product modification BOM' %}{% endblock %}
+{% block cssHeader %}
+    <style>
+    .tr-border-left-green {
+        border-left: 4px solid #28a745 !important;
+    }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'ProductModificationBOMUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-product-component-list="{% url 'PMBOMProductComponentListAPI' %}"
+            data-url-latest-component-list="{% url 'PMBOMLatestComponentListAPI' %}"
+            data-url-product-dd-list="{% url 'PMBOMProductDDListAPI' %}"
+    ></script>
+    <script id="trans-url"
+    ></script>
+    <form id="form-detail-product-modification-bom"
+        data-method="PUT"
+        data-url-redirect="{% url "ProductModificationBOMDetail" pk=pk %}"
+        data-url="{% url 'ProductModificationBOMDetailAPI' pk=pk %}"
+    >
+        {% csrf_token %}
+        {% include 'productmodificationbom/common/information.html' %}
+        {% include 'productmodificationbom/common/spaces.html' %}
+    </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'productmodificationbom/common/modals.html' %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static "assets/js/productmodificationbom/product_modification_bom_common.js" %}"></script>
+    <script src="{% static "assets/js/productmodificationbom/product_modification_bom_detail.js" %}"></script>
+{% endblock %}

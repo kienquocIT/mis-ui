@@ -4,6 +4,8 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 {% block pageAction %}{% endblock %}
@@ -26,7 +28,7 @@
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
             <div class="offcanvas-body">
-                <b>{% trans 'Information' %}</b>
+                <b>{% trans 'Common information' %}</b>
                 <div class="row">
                     <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
@@ -69,7 +71,21 @@
                         </div>
                     </div>
                 </div>
-                <b>{% trans 'Due date' %}</b>
+                <b>{% trans 'Payment time' %}</b>
+                <div class="row">
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label mt-2" for="box-month">{% trans 'Month' %}</label>
+                            <select
+                                    class="form-select area-period-element"
+                                    id="box-month"
+                                    data-url=""
+                                    data-method="GET"
+                                    name="month"
+                            ></select>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-12 col-md-2 col-lg-2">
                         <div class="form-group">
@@ -123,6 +139,7 @@
     <input
         type="text"
         id="app-url-factory"
+        data-fiscal-year="{% url "PeriodsConfigListAPI" %}"
         data-payment-plan="{% url 'PaymentPlanListAPI' %}"
         data-so-detail="{% url 'SaleOrderDetail' 1 %}"
         data-po-detail="{% url 'PurchaseOrderDetail' 1 %}"
@@ -134,8 +151,6 @@
     <input
             type="text"
             id="data-fiscal-year"
-            data-url="{% url "PeriodsConfigListAPI" %}"
-            data-method="GET"
     >
     <input
             type="text"
@@ -152,6 +167,10 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
 
     <script src="{% static 'assets/sales/paymentplan/js/payment_plan.js' %}"></script>
 {% endblock %}

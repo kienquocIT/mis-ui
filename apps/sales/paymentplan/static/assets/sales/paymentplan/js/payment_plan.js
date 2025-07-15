@@ -9,11 +9,12 @@ $(function () {
         let boxCustomer = $('#box-customer');
         let boxSO = $('#box-so');
         let boxPO = $('#box-po');
+        let $boxMonth = $('#box-month');
         let boxStart = $('#date-from');
         let boxEnd = $('#date-to');
         let $urlFact = $('#app-url-factory');
         let $transFact = $('#app-trans-factory');
-        let eleFiscalYear = $('#data-fiscal-year');
+        let $eleFiscalYear = $('#data-fiscal-year');
         let dataMonth = JSON.parse($('#filter_month').text());
 
         let htmlDtb = `<table class="table nowrap w-100 table_payment_plan">
@@ -43,8 +44,8 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('payment_plan_list')) {
                             let dataFn = resp.data['payment_plan_list'] ? resp.data['payment_plan_list'] : [];
-                            dataFn.unshift({"is_total_in": true});
-                            dataFn.unshift({"is_total_out": true});
+                            dataFn.push({"is_total_in": true});
+                            dataFn.push({"is_total_out": true});
                             return dataFn;
                         }
                         throw Error('Call data raise errors.')
@@ -273,7 +274,9 @@ $(function () {
                             if (daysLeft) {
                                 return `<span>${daysBetween(currentDate, dueDate)} ${$transFact.attr('data-day')} (${dueDate})</span>`;
                             }
-                            return `<span class="badge text-dark-10 fs-8 bg-red-light-4">Đã quá hạn</span><span>${daysBetween(currentDate, dueDate)} ${$transFact.attr('data-day')} (${dueDate})</span>`;
+                            return `<span class="badge text-dark-10 fs-8 bg-red-light-4">Đã quá hạn</span>
+                                    <br>
+                                    <span>${daysBetween(currentDate, dueDate)} ${$transFact.attr('data-day')} (${dueDate})</span>`;
                         }
                         return ``;
                     }
@@ -296,10 +299,13 @@ $(function () {
                                     </div>`;
                         }
                         let balance = row?.['value_balance'];
-                        let clsText = "text-green";
-                        if (row?.['purchase_order_data']?.['id']) {
-                            balance = -row?.['value_balance'];
-                            clsText = "text-red"
+                        let clsText = "";
+                        if (balance > 0) {
+                            clsText = "text-green";
+                            if (row?.['purchase_order_data']?.['id']) {
+                                balance = -row?.['value_balance'];
+                                clsText = "text-red"
+                            }
                         }
                         return `<span class="mask-money ${clsText}" data-init-money="${balance}"></span>`;
                     }
@@ -649,54 +655,7 @@ $(function () {
 
 
 
-        function storeLoadInitByDataFiscalYear() {
-            $.fn.callAjax2({
-                    'url': eleFiscalYear.attr('data-url'),
-                    'method': eleFiscalYear.attr('data-method'),
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('periods_list') && Array.isArray(data.periods_list)) {
-                            eleFiscalYear.val(JSON.stringify(data.periods_list));
-                            let currentYear = new Date().getFullYear();
-                            for (let period of data.periods_list) {
-                                if (period?.['fiscal_year'] === currentYear) {
-                                    let {startDate, endDate} = getYearRange(period?.['start_date']);
-                                    // set init val date range
-                                    let formattedStartDate = DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", startDate);
-                                    let formattedEndDate = DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", endDate);
-                                    boxStart.val(formattedStartDate);
-                                    boxEnd.val(formattedEndDate);
-                                    $.fn.callAjax2({
-                                            'url': $table.attr('data-url'),
-                                            'method': $table.attr('data-method'),
-                                            'data': {
-                                                'is_initial': false,
-                                                'date_approved__gte': startDate,
-                                                'date_approved__lte': endDate,
-                                            },
-                                            isLoading: true,
-                                        }
-                                    ).then(
-                                        (resp) => {
-                                            let data = $.fn.switcherResp(resp);
-                                            if (data) {
-                                                if (data.hasOwnProperty('report_revenue_list') && Array.isArray(data.report_revenue_list)) {
-                                                    $table.DataTable().clear().draw();
-                                                    $table.DataTable().rows.add(data.report_revenue_list).draw();
-                                                }
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            )
-        }
+
 
         function padWithZero(num) {
             return num < 10 ? '0' + num : num;
@@ -740,21 +699,110 @@ $(function () {
             return true;
         }
 
+        // init filter
+        function storeFiscalYear() {
+            $.fn.callAjax2({
+                    'url': $urlFact.attr('data-fiscal-year'),
+                    'method': "GET",
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('periods_list') && Array.isArray(data.periods_list)) {
+                            $eleFiscalYear.val(JSON.stringify(data.periods_list));
+                            loadBoxMonth();
+                        }
+                    }
+                }
+            )
+        }
+
+        function loadBoxMonth() {
+            let initDataMonth = JSON.parse($('#filter_month').text());
+            let data = [];
+            let dataMonths = parseMonthJSON();
+            for (let monthYear of dataMonths) {
+                data.push({
+                    'id': monthYear?.['month'],
+                    'title': initDataMonth[monthYear?.['month'] - 1][1],
+                    'month': monthYear?.['month'],
+                    'year': monthYear?.['year'],
+                })
+            }
+            data.push({
+                'id': '',
+                'title': 'Select...',
+                'month': 0,
+                'year': 0,
+            })
+            $boxMonth.empty();
+            $boxMonth.initSelect2({
+                data: data,
+                'allowClear': true,
+                templateResult: function (state) {
+                    let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
+                    return $(`<span>${state.text} ${groupHTML}</span>`);
+                },
+            });
+        }
+
+        function parseMonthJSON() {
+            let result = [];
+            let dataMonths = getAllMonthsFiscalYear();
+            for (let monthYear of dataMonths) {
+                const [year, month] = monthYear.split('-').map(Number);
+                result.push({
+                    year,
+                    month,
+                });
+            }
+            return result;
+        }
+
+        function getAllMonthsFiscalYear() {
+            let months = [];
+            if ($eleFiscalYear.val()) {
+                let year = new Date().getFullYear();
+                let dataFiscalYear = JSON.parse($eleFiscalYear.val());
+                if (dataFiscalYear.length > 0) {
+                    for (let dataFY of dataFiscalYear) {
+                        if (dataFY?.['fiscal_year'] === year) {
+                            let startDateFY = new Date(dataFY?.['start_date']);
+                            let currentDate = new Date(startDateFY);
+                            // Loop for 12 months
+                            for (let i = 0; i < 12; i++) {
+                                let formattedMonth = currentDate.toISOString().slice(0, 7);
+                                months.push(formattedMonth);
+                                // Move to the next month
+                                currentDate.setMonth(currentDate.getMonth() + 1);
+                            }
+                            break;
+                        }
+                    }
+
+                }
+            }
+            return months;
+        }
+
         // load init
         function initData() {
             FormElementControl.loadInitS2(boxCustomer, [], {}, null, true);
             FormElementControl.loadInitS2(boxSO, [], {}, null, true);
             FormElementControl.loadInitS2(boxPO, [], {}, null, true);
+
+            storeFiscalYear();
+
             let dataCurrentMonth = getCurrentMonthInfo();
             boxStart.val(dataCurrentMonth?.['from']);
             boxEnd.val(dataCurrentMonth?.['to']);
             $btnWeek.click();
-            // storeLoadInitByDataFiscalYear();
         }
 
         // init date picker
         $('.date-picker').each(function () {
-            DateTimeControl.initDatePicker(this);
+            DateTimeControl.initFlatPickerInMonth(this, 7, 2025);
         });
 
         // mask money
@@ -777,9 +825,17 @@ $(function () {
         $btnMonth.on('click', function () {
             removeActiveBtn();
             $btnMonth.addClass('active');
-            // customDtbByMonth();
             $('#btn-apply-filter').trigger('click');
         });
+
+        $boxMonth.on('change', function () {
+            let data = SelectDDControl.get_data_from_idx($boxMonth, $boxMonth.val());
+            if (data?.['month'] && data?.['year']) {
+                $('.date-picker').each(function () {
+                    DateTimeControl.initFlatPickerInMonth(this, data?.['month'], data?.['year']);
+                });
+            }
+        })
 
         $('#btn-apply-filter').on('click', function () {
             let dataParams = {};

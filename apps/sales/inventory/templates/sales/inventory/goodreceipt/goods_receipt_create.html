@@ -4,6 +4,8 @@
     <link href="{% static 'assets/sales/inventory/css/goodreceipt/goods_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 {% block pageAction %}
@@ -655,6 +657,10 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
 
     <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_common.js' %}"></script>
     <script src="{% static 'assets/sales/inventory/js/goodreceipt/goods_receipt_create.js' %}"></script>

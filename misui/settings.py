@@ -129,7 +129,7 @@ INSTALLED_APPS = \
         'apps.web_builder',
     ] + [  # HRM
         'apps.hrm.employee',
-        'apps.hrm.attandance',
+        'apps.hrm.attendance',
     ] + [
         'apps.sales.financialcashflow',
         'apps.sales.reconciliation',

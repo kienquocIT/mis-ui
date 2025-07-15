@@ -9,7 +9,7 @@ class ShiftMasterDataList(View):
     @mask_view(
         login_require=True,
         auth_require=True,
-        template='hrm/attandance/shift/shift_list.html',
+        template='hrm/attendance/shift/shift_list.html',
         menu_active='id_menu_master_data_shift',
         breadcrumb='MASTER_DATA_SHIFT_PAGE',
     )

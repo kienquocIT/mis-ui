@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.hrm.attandance.views import ShiftMasterDataList, ShiftMasterDataListAPI, ShiftMasterDataDetailAPI
+from apps.hrm.attendance.views import ShiftMasterDataList, ShiftMasterDataListAPI, ShiftMasterDataDetailAPI
 
 urlpatterns = [
     path('shift/list', ShiftMasterDataList.as_view(), name='ShiftMasterDataList'),

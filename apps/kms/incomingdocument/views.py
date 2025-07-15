@@ -177,7 +177,7 @@ class IncomingDocumentEdit(View):
            'pk': pk,
            'data': {'doc_id': pk},
            'input_mapping_properties': input_mapping_properties,
-           'form_id': 'frm_edit_incoming_document',
+           'form_id': 'frm_detail_incoming_document',
            'lst_lv': SECURITY_LV
         }, status.HTTP_200_OK
 

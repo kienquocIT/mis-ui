@@ -1,0 +1,65 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "Shift"
+msgstr "Ca làm việc"
+
+#
+msgid "shift"
+msgstr "Ca làm việc"
+
+#
+msgid "Shift information"
+msgstr "Thông tin ca"
+
+#
+msgid "Add new shift"
+msgstr "Thêm ca mới"
+
+#
+msgid "Shift name"
+msgstr "Tên ca làm việc"
+
+#
+msgid "Name"
+msgstr "Mục"
+
+#
+msgid "Master data shift"
+msgstr "Master data ca"
+
+#
+msgid "Check in"
+msgstr "Giờ vào"
+
+#
+msgid "Break in (check out 1st half shift)"
+msgstr "Nghỉ giữa giờ (kiểm tra ca làm việc đầu tiên)"
+
+#
+msgid "Break out (check in 2nd half shift)"
+msgstr "Kết thúc nghỉ giữa giờ (bắt đầu ca làm việc thứ hai)"
+
+#
+msgid "Check out"
+msgstr "Giờ ra"
+
+
+

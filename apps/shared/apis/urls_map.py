@@ -765,6 +765,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FOLDER_UPLOAD_FILE_LIST = StringUrl('attachment/folder-upload-file/list')
     FOLDER_CHECK_PERM = StringUrl('attachment/folder-check-perm')
     FILE_CHECK_PERM = StringUrl('attachment/file-check-perm')
+    FOLDER_DOWNLOAD = StringUrl('attachment/folder/download/{pk}')
 
     # Zones
     ZONES_APPLICATION_LIST = StringUrl('base/zones-application/list')
@@ -979,3 +980,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EQUIPMENT_RETURN_LIST = StringUrl('equipment-return/list')
     EQUIPMENT_RETURN_DETAIL = StringUrl('equipment-return/detail/{pk}')
     ER_EL_LIST_BY_ACCOUNT = StringUrl('equipment-return/er-el-list-by-account')
+    LOAN_PRODUCT_LIST = StringUrl('equipment-loan/loan-product-list')
+
+    # masterdata/shift
+    SHIFT_LIST = StringUrl('hrm/attendance-data/shift/list')
+    SHIFT_DETAIL = StringUrl('hrm/attendance-data/shift/detail/{pk}')

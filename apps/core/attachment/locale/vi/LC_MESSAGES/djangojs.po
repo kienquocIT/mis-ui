@@ -96,3 +96,11 @@ msgstr "Hết hạn vào"
 #
 msgid "Access list is empty"
 msgstr "Danh sách dữ liệu đang trống"
+
+#
+msgid "You do not have permission to perform this action!"
+msgstr "Bạn không có quyền thực hiện chức năng này!"
+
+#
+msgid "Delete this selection"
+msgstr "Xóa lựa chọn này"

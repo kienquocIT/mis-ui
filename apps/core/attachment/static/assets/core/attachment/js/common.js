@@ -324,7 +324,7 @@ class popupPermission {
             $.fn.callAjax2({
                 'url': url,
                 'method': 'PUT',
-                data: {'permission_obj': temp_data, 'space': $('#folder-tree .btn-active').attr('data-space')}
+                data: {'permission_obj': temp_data}
             }).then((resp) => {
                 let rep = $.fn.switcherResp(resp);
                 if (rep && (rep['status'] === 201 || rep['status'] === 200)) {
@@ -551,9 +551,10 @@ class FilesHandle {
                         width: '10%',
                         render: (row, index, data) => {
                             let type = 'folder'
-                            if (data?.file_type && data?.file_size && data?.file_name) type = 'file'
+                            if (data?.file_type && data?.file_size && data?.file_name) type = 'file';
                             const btn1 = `<button type="button" class="btn btn-icon btn-rounded bg-dark-hover" data-${type}="${row}" data-bs-toggle="modal" data-bs-target="#sharePerm" data-type="${type}"><span><i class="fa-solid fa-share-nodes"></i></span></button>`;
-                            const btn2 = `<a class="btn btn-icon btn-rounded bg-dark-hover edit-button rotate90deg" ` + `data-id="${row}"><span class="icon"><i class="fa-solid fa-arrow-right-to-bracket"></i></span></a>`;
+                            const btn2 = `<a class="btn btn-icon btn-rounded bg-dark-hover download-dtn rotate90deg" `
+                                + `data-id="${row}" href="#"><span class="icon"><i class="fa-solid fa-arrow-right-to-bracket"></i></span></a>`;
                             const btn3 = `<button type="button" class="btn btn-icon btn-rounded bg-dark-hover dropdown-toggle" data-bs-toggle="dropdown" id="action_${row}">`
                                 + `<span class="icon-animate"><i class="fa-solid fa-ellipsis"></i></span></button>`
                                 + `<div class="dropdown-menu" aria-labelledby="action_${row}">`
@@ -572,7 +573,7 @@ class FilesHandle {
                         _this.get_folder(folderId)
                     })
 
-                    // table checked on input.
+                    // table select row
                     $('input[id*="checkbox_id_"]', row).off().on('change', function () {
                         const isCheck = $(this).prop('checked');
                         const $actSlc = $('.action-slc')
@@ -604,6 +605,7 @@ class FilesHandle {
                         $flMd.modal('show')
 
                     });
+
                     // edit folder
                     $('.edit-rename', row).off().on('click', function(){
                         const $flMd = _this.$elmMdFdr;
@@ -618,7 +620,20 @@ class FilesHandle {
                         }
                         $('#add-folder-box-parent', $flMd).attr('data-params', JSON.stringify({ne: data.id}))
                         $flMd.modal('show')
-                    })
+                    });
+
+                    // download
+                    $('.download-dtn', row).off().on('click', function(e){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        let url = _this.$urlFact.attr('data-folder-download');
+                        if (data?.file_type && data?.file_size && data?.file_name)
+                            url = _this.$urlFact.attr('data-attach-download').format_url_with_uuid(data.id)
+                        _this.download_faf({
+                            url: url,
+                            params: {id: data.id, folder_name: data.title}
+                        })
+                    });
                 },
                 drawCallback: function(){
                     _this.$loading.hide();
@@ -669,6 +684,8 @@ class FilesHandle {
                 'title': $('#add-folder-title').val(),
                 'is_owner': true,
             };
+            $(this).prop('disabled', true)
+
             const id = $('#folder_id').val()
             const parent = $('#add-folder-box-parent').val();
             dataSubmit['parent_n'] = parent ? parent : null;
@@ -866,7 +883,7 @@ class FilesHandle {
             _url = this.$urlFact.attr('data-file-perm-lst')
             params = {'file': tblRowData.file}
         }
-        const crtEmployee = $x.fn.getEmployeeCurrentID();
+        // const crtEmployee = $x.fn.getEmployeeCurrentID();
         const _this = this
         function actBtnDel(tblDataRow){
             let urlDel = _this.$urlFact.attr('data-folder-perm-lst')
@@ -939,11 +956,29 @@ class FilesHandle {
         });
     }
 
+    download_faf(data){
+        const a = document.createElement("a");
+        a.href = data.url + `?id=${data.params.id}`;
+        if (data.params?.folder_name)
+            a.download = `${data.params.folder_name}.zip`
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    }
+
     init() {
         // load select parent_n
         $('#add-folder-box-parent').initSelect2({
             allowClear: true,
         });
+        // init on replace slash
+        $('#add-folder-title').on('blur', function(){
+            const txt = this.value
+            const regex = /\//g;
+
+            // Perform the replacement
+            this.value = txt.replace(regex, '-')
+        })
 
         // on init load folder list
         const _this = this;
@@ -972,7 +1007,8 @@ class FilesHandle {
         this.$elmMdFdr.on('hidden.bs.modal', function(){
             $('#add-folder-title').val('').prop('disabled', false)
             $('#folder_id').val('')
-            $('#add-folder-box-parent').val('').trigger('change')
+            $('#add-folder-box-parent').attr('data-params', '').val('').trigger('change')
+            $('#btn-add-folder').prop('disabled', false)
         });
 
         // click toggle menu on mobile
@@ -1008,10 +1044,6 @@ class FilesHandle {
         this.breadcrumb_handle()
         this.action_bar()
 
-        this.$elmMdFdr.on('hidden.bs.modal', () =>{
-            $('#add-folder-title').val('')
-            $('#add-folder-box-parent').attr('data-params', '').val('').trigger('change')
-        })
     };
 
     constructor() {

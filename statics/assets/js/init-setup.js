@@ -7820,10 +7820,36 @@ class FileControl {
                             config.onUploadError(id, xhr, status, message);
                             let crt_msg = clsThis.ele$.attr('data-msg-upload-exception');
                             if (xhr?.['responseJSON']?.data?.errors) crt_msg = xhr['responseJSON'].data.errors
-                            Swal.fire({
+                            let custom_opts = {
                                 icon: 'error',
                                 title: crt_msg,
-                            });
+                            }
+                            if (xhr?.['status'] === 403) custom_opts = {
+                                html:
+                                    `<div class="d-flex align-items-center">` +
+                                    `<div class="me-3"><img style="width: 60px; height: 60px" src="/static/assets/images/systems/forbidden.gif" alt="icon"></div>` +
+                                    `<div><h4 class="text-danger">${$.fn.gettext("Forbidden")}</h4>` +
+                                    `<p>${$.fn.gettext('You do not have permission to perform this action!')}</p></div></div>`,
+                                customClass: {
+                                    container: 'swal2-has-bg',
+                                    htmlContainer: 'bg-transparent text-start',
+                                    actions: 'w-100',
+                                },
+                                allowOutsideClick: true,
+                                showDenyButton: true,
+                                denyButtonText: $.fn.gettext('Home Page'),
+                                confirmButtonColor: '#3085d6',
+                                showConfirmButton: true,
+                                confirmButtonText: $.fn.gettext('Previous page'),
+                                denyButtonColor: '#21b48f',
+                                preConfirm: function (opts) {
+                                    window.location.href = document.referrer;
+                                },
+                                preDeny: function () {
+                                    window.location.href = '/';
+                                },
+                            }
+                            Swal.fire(custom_opts);
                             clsThis.ui_remove_line_file_by_id(id);
                         },
                         onInit: function () {

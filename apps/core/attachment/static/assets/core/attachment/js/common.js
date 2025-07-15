@@ -631,7 +631,7 @@ class FilesHandle {
                             url = _this.$urlFact.attr('data-attach-download').format_url_with_uuid(data.id)
                         _this.download_faf({
                             url: url,
-                            params: {id: data.id}
+                            params: {id: data.id, folder_name: data.title}
                         })
                     });
                 },
@@ -957,21 +957,13 @@ class FilesHandle {
     }
 
     download_faf(data){
-        $.fn.callAjax2({
-            'url': data.url,
-            'method': 'GET',
-            'data': data.params
-        }).then(blob => {
-            console.log('blob: ', blob)
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            // a.download = `folder_${folderId}.zip`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            window.URL.revokeObjectURL(url);
-        })
+        const a = document.createElement("a");
+        a.href = data.url + `?id=${data.params.id}`;
+        if (data.params?.folder_name)
+            a.download = `${data.params.folder_name}.zip`
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
     }
 
     init() {
@@ -979,6 +971,14 @@ class FilesHandle {
         $('#add-folder-box-parent').initSelect2({
             allowClear: true,
         });
+        // init on replace slash
+        $('#add-folder-title').on('blur', function(){
+            const txt = this.value
+            const regex = /\//g;
+
+            // Perform the replacement
+            this.value = txt.replace(regex, '-')
+        })
 
         // on init load folder list
         const _this = this;
@@ -1007,7 +1007,8 @@ class FilesHandle {
         this.$elmMdFdr.on('hidden.bs.modal', function(){
             $('#add-folder-title').val('').prop('disabled', false)
             $('#folder_id').val('')
-            $('#add-folder-box-parent').val('').trigger('change')
+            $('#add-folder-box-parent').attr('data-params', '').val('').trigger('change')
+            $('#btn-add-folder').prop('disabled', false)
         });
 
         // click toggle menu on mobile
@@ -1043,11 +1044,6 @@ class FilesHandle {
         this.breadcrumb_handle()
         this.action_bar()
 
-        this.$elmMdFdr.on('hidden.bs.modal', () =>{
-            $('#add-folder-title').val('')
-            $('#add-folder-box-parent').attr('data-params', '').val('').trigger('change')
-            $('#btn-add-folder').prop('disabled', false)
-        })
     };
 
     constructor() {

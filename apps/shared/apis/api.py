@@ -280,10 +280,6 @@ class RespData:
             auth_error_code = self.errors.get('auth_error_code', None)
             return self.resp_401(auth_error_code=auth_error_code)
         elif self.status == 403:
-            # err_msg = {}
-            # if self.real_resp.text and '403' in self.real_resp.text:
-            #     parse_detail = json.loads(self.real_resp.text)
-            #     err_msg['errors'] = parse_detail['detail']
             return self.resp_403()
         elif self.status == 404:
             return self.resp_404()

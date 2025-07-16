@@ -471,7 +471,7 @@ class ProductModificationBOMHandler {
                 if (data) {
                     data = data['product_modification_bom_detail'];
 
-                    console.log(data)
+                    // console.log(data)
 
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
@@ -480,6 +480,8 @@ class ProductModificationBOMHandler {
                     pageElements.$created_date.val(data?.['date_created'] ? DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", data?.['date_created']) : '')
                     pageVariables.current_product_modified = data?.['product_mapped_data']
                     pageVariables.current_product_modified['id'] = data?.['product_mapped_data']?.['id']
+                    pageVariables.current_product_modified['base_cost'] = data?.['base_cost']
+                    pageVariables.current_product_modified['modified_cost'] = data?.['modified_cost']
                     ProductModificationBOMPageFunction.LoadTableCurrentProductModified(
                         [pageVariables.current_product_modified],
                         data?.['base_cost'],

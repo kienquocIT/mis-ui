@@ -843,6 +843,12 @@ class MenusProduction:
                 view_name='ProductionReportList',
                 icon='<i class="fas fa-tasks"></i>',
             ),
+            MenuCommon(
+                name='Product modification BOM',
+                code='id_menu_product_modification_bom',
+                view_name='ProductModificationBOMList',
+                icon='<i class="fa-solid fa-boxes-stacked"></i>',
+            ),
         ],
     )
 

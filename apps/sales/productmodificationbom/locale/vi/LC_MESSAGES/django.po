@@ -1,0 +1,78 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "Component name"
+msgstr "Tên thành phần"
+
+#
+msgid "Component description"
+msgstr "Mô tả thành phần"
+
+#
+msgid "Add new component"
+msgstr "Thêm thành phần mới"
+
+#
+msgid "Product modification BOM"
+msgstr "BOM ráp-rã thiết bị"
+
+#
+msgid "Product Modification BOM"
+msgstr "BOM ráp-rã thiết bị"
+
+#
+msgid "Select base product"
+msgstr "Chọn sản phẩm ban đầu"
+
+#
+msgid "Current component"
+msgstr "Thành phần hiện tại"
+
+#
+msgid "Insert component"
+msgstr "Thêm thành phần"
+
+#
+msgid "Base cost"
+msgstr "Giá ban đầu"
+
+#
+msgid "Modified cost"
+msgstr "Giá qua điều chỉnh"
+
+#
+msgid "Base quantity"
+msgstr "SL ban đầu"
+
+#
+msgid "Removed quantity"
+msgstr "SL tháo rã"
+
+#
+msgid "Minus amount"
+msgstr "Khoảng trừ đi"
+
+#
+msgid "Plus amount"
+msgstr "Khoảng cộng vào"
+
+#
+msgid "Added component"
+msgstr "Thành phần thêm vào"

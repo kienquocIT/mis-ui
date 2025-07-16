@@ -87,7 +87,7 @@ class ProductModificationPageFunction {
                     }
                 },
                 {
-                    className: 'w-45',
+                    className: 'w-40',
                     render: (data, type, row) => {
                         return `<textarea ${option === 'detail' ? 'disabled readonly' : ''} class="form-control new-des">${new_description || row?.['description'] || ''}</textarea>`
                     }
@@ -1419,8 +1419,6 @@ class ProductModificationEventHandler {
                 pageElements.$select_product_modified_modal.modal('hide')
 
                 if ($checkedEle.attr('data-modified-number')) {
-                    const warehouse_data = $checkedEle.attr('data-warehouse-data') ? JSON.parse($checkedEle.attr('data-warehouse-data')) : {}
-
                     pageVariables.current_product_modified['warehouse_id'] = warehouse_data?.['id']
 
                     if (pageVariables.current_product_modified?.['general_traceability_method'] === '0') {

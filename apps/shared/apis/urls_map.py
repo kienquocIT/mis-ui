@@ -956,6 +956,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_MODIFIED_DROPDOWN_LIST = StringUrl('product-modification/dropdown/list')
     PRODUCT_MODIFIED_PRODUCT_GR_LIST = StringUrl('product-modification/product-modification-product-gr/list')
 
+    # sales/product modification bom
+    PRODUCT_MODIFICATION_BOM_LIST = StringUrl('product-modification-bom/list')
+    PRODUCT_MODIFICATION_BOM_DETAIL = StringUrl('product-modification-bom/detail/{pk}')
+    PMBOM_PRODUCT_COMPONENT_LIST = StringUrl('product-modification-bom/product-component-list')
+    PMBOM_LATEST_COMPONENT_LIST = StringUrl('product-modification-bom/latest-component-list')
+    PMBOM_PRODUCT_MODIFIED_LIST = StringUrl('product-modification-bom/product-modified-list')
+    PMBOM_PRODUCT_MODIFIED_BEFORE_LIST = StringUrl('product-modification-bom/product-modified-before-list')
+
     # KMS - Incoming Document
     INCOMING_DOCUMENT_LIST = StringUrl('kms/incoming-doc/list')
     INCOMING_DOCUMENT_DETAIL = StringUrl('kms/incoming-doc/detail/{pk}')

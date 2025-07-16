@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Product modification BOM' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <style>
+    .tr-border-left-green {
+        border-left: 4px solid #28a745 !important;
+    }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <button data-bs-toggle="modal" data-bs-target="#modal-alert-presave" class="btn btn-outline-primary" type="submit" form="form-create-product-modification-bom">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+        </span>
+    </button>
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-product-component-list="{% url 'PMBOMProductComponentListAPI' %}"
+            data-url-latest-component-list="{% url 'PMBOMLatestComponentListAPI' %}"
+            data-url-product-dd-list="{% url 'PMBOMProductDDListAPI' %}"
+    ></script>
+    <script id="trans-url"
+    ></script>
+    <form id="form-create-product-modification-bom"
+          data-url="{% url 'ProductModificationBOMListAPI' %}"
+          data-method="POST"
+          data-url-redirect="{% url "ProductModificationBOMList" %}"
+    >
+        {% csrf_token %}
+        {% include 'productmodificationbom/common/information.html' %}
+        {% include 'productmodificationbom/common/spaces.html' %}
+    </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'productmodificationbom/common/modals.html' %}
+{% endblock %}
+{% block jsFooter %}
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static "assets/js/productmodificationbom/product_modification_bom_common.js" %}"></script>
+    <script src="{% static "assets/js/productmodificationbom/product_modification_bom_create.js" %}"></script>
+{% endblock %}

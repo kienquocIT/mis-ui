@@ -23,7 +23,7 @@ urlpatterns = [
     path('product-lot-list/api', ProductLotListAPI.as_view(), name='ProductLotListAPI'),
     path('product-serial-list/api', ProductSerialListAPI.as_view(), name='ProductSerialListAPI'),
     path('product-inserted-list/api', ComponentInsertedListAPI.as_view(), name='ComponentInsertedListAPI'),
-    path('dropdown/api', ProductModificationDDListAPI.as_view(), name='ProductModificationDDListAPI'),
+    path('product-modified-dropdown/api', ProductModificationDDListAPI.as_view(), name='ProductModificationDDListAPI'),
     path(
         'product-modification-product-gr/api',
         ProductModificationProductGRListAPI.as_view(),

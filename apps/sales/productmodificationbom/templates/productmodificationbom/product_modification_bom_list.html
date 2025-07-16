@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Product modification BOM' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url "ProductModificationBOMCreate" %}">
+        <button class="btn btn-outline-primary" type="button">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12">
+            <table id="datatable_product_modification_bom_list"
+                   class="table nowrap w-100 mb-5"
+                   data-method="GET"
+                   data-url-redirect="{% url 'ProductModificationBOMList' %}"
+                   data-url="{% url 'ProductModificationBOMListAPI' %}"
+                   data-url-detail="{% url 'ProductModificationBOMDetail' '0' %}"
+            >
+                <thead>
+                <tr>
+                    <th style="min-width: 50px"></th>
+                    <th style="min-width: 150px">{% trans "Code" %}</th>
+                    <th style="min-width: 300px">{% trans "Name" %}</th>
+                    <th style="min-width: 150px">{% trans "Employee created" %}</th>
+                    <th style="min-width: 150px">{% trans "Date created" %}</th>
+                    <th style="min-width: 80px">{% trans "System status" %}</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/js/productmodificationbom/product_modification_bom_list.js' %}"></script>
+{% endblock %}

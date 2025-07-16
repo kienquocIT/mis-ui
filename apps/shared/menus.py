@@ -860,6 +860,15 @@ class MenusHRM:
             ),
         ]
     )
+    ATTENDANCE = MenuCommon(
+        name='Attendance', code='menu_attendance', view_name='', icon='<i class="fa-solid fa-clipboard-user"></i>',
+        child=[
+            MenuCommon(
+                name='Attendance table', code='menu_attendance_list', view_name='HRMAttendanceList',
+                icon='<i class="fa-solid fa-table-columns"></i>',
+            ),
+        ]
+    )
 
 
 class MenusPartnerCenter:
@@ -1069,6 +1078,7 @@ class SpaceItem:
             menus=[
                 MenusHRM.HOME,
                 MenusHRM.HUMAN_RESOURCES,
+                MenusHRM.ATTENDANCE,
             ],
         ),
         'inventory': SpaceCommon(

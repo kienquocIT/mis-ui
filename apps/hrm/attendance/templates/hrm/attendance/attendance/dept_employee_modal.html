@@ -1,0 +1,56 @@
+{% load i18n %}
+
+<div class="modal fade" id="deptEmployeeModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenter" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Select Department / Employee " %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="overflow: auto; max-height: 80vh">
+                <form id="recipient_form">
+                    <input type="hidden" id="form_id">
+                    <input type="hidden" id="group_access">
+                    <input type="hidden" id="employee_access">
+                    <div class="row">
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <table class="table nowrap w-100" id="table_group">
+                                <thead>
+                                <tr class="bg-light">
+                                    <td>{% trans 'Group' %}</td>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="col-12 col-md-8 col-lg-8">
+                            <table class="table nowrap w-100 min-w-610p" id="table_employee">
+                                <thead>
+                                <tr class="bg-light">
+                                    <td>
+                                        <div class="form-check form-check-lg">
+                                            <input type="checkbox" id="checkbox_all" class="form-check-input"
+                                                   name="check_all">
+                                            <label title="Group" for="checkbox_all"
+                                                   class="form-check-label">{% trans 'Name' %}</label>
+                                        </div>
+                                    </td>
+                                    <td>{% trans 'Code' %}</td>
+                                    <td>{% trans 'Group' %}</td>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" form="recipient_form" id="btn_create">
+                    {% trans 'Save' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

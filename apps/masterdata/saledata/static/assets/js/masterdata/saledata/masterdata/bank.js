@@ -5,22 +5,12 @@ const $bank_account_tbl = $('#datatable-bank-account')
 const $bank_abbreviation =$('#bank_abbreviation')
 const $bank_name =$('#bank_name')
 const $bank_foreign_name =$('#bank_foreign_name')
-const $bank_detail_address =$('#bank_detail_address')
-const $bank_country =$('#bank_country')
-const $bank_city =$('#bank_city')
-const $bank_district =$('#bank_district')
-const $bank_ward =$('#bank_ward')
 const $bank_mapped =$('#bank_mapped')
 const $bank_account_number =$('#bank_account_number')
 const $bank_account_owner =$('#bank_account_owner')
 const $currency =$('#currency')
 const $is_brand =$('#is_brand')
 const $brand_name =$('#brand_name')
-const $bank_account_detail_address =$('#bank_account_detail_address')
-const $bank_account_country =$('#bank_account_country')
-const $bank_account_city =$('#bank_account_city')
-const $bank_account_district =$('#bank_account_district')
-const $bank_account_ward =$('#bank_account_ward')
 let VietQRBankList = []
 
 function RenderBankTable() {
@@ -146,82 +136,6 @@ function RenderBankAccountTable() {
             },
         ],
     })
-}
-
-function loadBankCountry(data) {
-    $bank_country.initSelect2({
-        data: (data ? data : null),
-        keyResp: 'countries',
-    })
-}
-
-function loadBankCity(data) {
-    $bank_city.initSelect2({
-        data: (data ? data : null),
-        keyResp: 'cities',
-    }).on('change', function () {
-        let dataParams = JSON.stringify({'city_id': $(this).val()});
-        $bank_district.empty();
-        $bank_district.attr('data-params', dataParams).val("");
-        $bank_ward.empty();
-        $bank_ward.attr('data-params', '{}').val("");
-    });
-}
-
-function loadBankDistrict(data) {
-    $bank_district.initSelect2({
-        data: (data ? data : null),
-        keyResp: 'districts',
-    }).on('change', function () {
-        let dataParams = JSON.stringify({'district_id': $(this).val()});
-        $bank_ward.empty();
-        $bank_ward.attr('data-params', dataParams).val("");
-    });
-}
-
-function loadBankWard(wardData) {
-    $bank_ward.initSelect2({
-        data: (wardData ? wardData : null),
-        keyResp: 'wards',
-    });
-}
-
-function loadBankAccountCountry(data) {
-    $bank_account_country.initSelect2({
-        data: (data ? data : null),
-        keyResp: 'countries',
-    })
-}
-
-function loadBankAccountCity(data) {
-    $bank_account_city.initSelect2({
-        data: (data ? data : null),
-        keyResp: 'cities',
-    }).on('change', function () {
-        let dataParams = JSON.stringify({'city_id': $(this).val()});
-        $bank_account_district.empty();
-        $bank_account_district.attr('data-params', dataParams).val("");
-        $bank_account_ward.empty();
-        $bank_account_ward.attr('data-params', '{}').val("");
-    });
-}
-
-function loadBankAccountDistrict(data) {
-    $bank_account_district.initSelect2({
-        data: (data ? data : null),
-        keyResp: 'districts',
-    }).on('change', function () {
-        let dataParams = JSON.stringify({'district_id': $(this).val()});
-        $bank_account_ward.empty();
-        $bank_account_ward.attr('data-params', dataParams).val("");
-    });
-}
-
-function loadBankAccountWard(wardData) {
-    $bank_account_ward.initSelect2({
-        data: (wardData ? wardData : null),
-        keyResp: 'wards',
-    });
 }
 
 function loadBankMapped(data) {
@@ -388,16 +302,15 @@ $(document).ready(async function () {
     RenderBankTable()
     RenderBankAccountTable()
     await LoadVietQRBankList()
-    loadBankCountry()
-    loadBankCity()
-    loadBankDistrict()
-    loadBankWard()
     loadBankMapped()
     loadCurrency()
-    loadBankAccountCountry()
-    loadBankAccountCity()
-    loadBankAccountDistrict()
-    loadBankAccountWard()
+    // for location
+    LoadLocationCountry($('#modal-bank .location_country'))
+    LoadLocationProvince($('#modal-bank .location_province'))
+    LoadLocationWard($('#modal-bank .location_ward'))
+    LoadLocationCountry($('#modal-bank-account .location_country'))
+    LoadLocationProvince($('#modal-bank-account .location_province'))
+    LoadLocationWard($('#modal-bank-account .location_ward'))
 
     new SetupFormSubmit($('#form-create-bank')).validate({
         rules: {},
@@ -408,11 +321,10 @@ $(document).ready(async function () {
                 'bank_name': $bank_name.val(),
                 'bank_foreign_name': $bank_foreign_name.val(),
                 'head_office_address_data': {
-                    'country_id': $bank_country.val(),
-                    'city_id': $bank_city.val(),
-                    'district_id': $bank_district.val(),
-                    'ward_id': $bank_ward.val(),
-                    'address': $bank_detail_address.val()
+                    'country_id': $('#modal-bank .location_country').val(),
+                    'province_id': $('#modal-bank .location_province').val(),
+                    'ward_id': $('#modal-bank .location_ward').val(),
+                    'address': $('#modal-bank .location_detail_address').val()
                 },
                 'vietqr_json_data': VietQRBankList.find(item => item?.['code'] === $bank_abbreviation.val())
             }
@@ -449,11 +361,10 @@ $(document).ready(async function () {
                 'is_brand': $is_brand.prop('checked'),
                 'brand_name': $brand_name.val(),
                 'brand_address_data': {
-                    'country_id': $bank_account_country.val(),
-                    'city_id': $bank_account_city.val(),
-                    'district_id': $bank_account_district.val(),
-                    'ward_id': $bank_account_ward.val(),
-                    'address': $bank_account_detail_address.val()
+                    'country_id': $('#modal-bank-account .location_country').val(),
+                    'province_id': $('#modal-bank-account .location_province').val(),
+                    'ward_id': $('#modal-bank-account .location_ward').val(),
+                    'address': $('#modal-bank-account .location_detail_address').val()
                 }
             }
             $.fn.callAjax2({
@@ -477,3 +388,55 @@ $(document).ready(async function () {
         }
     })
 })
+
+// for location
+function LoadLocationCountry(ele, data) {
+    ele.initSelect2({
+        allowClear: true,
+        data: (data ? data : null),
+        keyResp: 'countries',
+        keyId: 'id',
+        keyText: 'title',
+    }).on('change', function () {
+        ele.closest('.card-location').find('.location_province').empty();
+        ele.closest('.card-location').find('.location_ward').empty();
+        if ($(this).val()) {
+            ele.closest('.card-location').find('.location_province').attr('data-url', `${ele.closest('.card-location').find('.location_province').attr('data-raw-url')}?country_id=${$(this).val()}`)
+            LoadLocationProvince($(this).closest('.card-location').find('.location_province'))
+            ele.closest('.card-location').find('.location_province').prop('disabled', false);
+            ele.closest('.card-location').find('.location_ward').prop('disabled', false);
+        }
+        else {
+            ele.closest('.card-location').find('.location_province').prop('disabled', true);
+            ele.closest('.card-location').find('.location_ward').prop('disabled', true);
+        }
+    });
+}
+function LoadLocationProvince(ele, data) {
+    ele.initSelect2({
+        allowClear: true,
+        data: (data ? data : null),
+        keyResp: 'nprovinces',
+        keyId: 'id',
+        keyText: 'fullname',
+    }).on('change', function () {
+        ele.closest('.card-location').find('.location_ward').empty();
+        if ($(this).val()) {
+            ele.closest('.card-location').find('.location_ward').attr('data-url', `${ele.closest('.card-location').find('.location_ward').attr('data-raw-url')}?province_id=${$(this).val()}`)
+            LoadLocationWard($(this).closest('.card-location').find('.location_ward'))
+            ele.closest('.card-location').find('.location_ward').prop('disabled', false);
+        }
+        else {
+            ele.closest('.card-location').find('.location_ward').prop('disabled', true);
+        }
+    });
+}
+function LoadLocationWard(ele, data) {
+    ele.initSelect2({
+        allowClear: true,
+        data: (data ? data : null),
+        keyResp: 'nwards',
+        keyId: 'id',
+        keyText: 'fullname',
+    });
+}

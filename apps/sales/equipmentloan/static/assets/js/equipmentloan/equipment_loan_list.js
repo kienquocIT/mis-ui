@@ -33,27 +33,44 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-sm w-5',
+                        className: 'ellipsis-cell-xs w-5',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-45',
+                        className: 'ellipsis-cell-lg w-25',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        className: 'ellipsis-cell-sm w-20',
+                        className: 'ellipsis-cell-lg w-20',
+                        render: (data, type, row) => {
+                            return `<span title="${(row?.['account_mapped_data'] || {})?.['name'] || ''}">${(row?.['account_mapped_data'] || {})?.['name'] || ''}</span>`;
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-lg w-10',
+                        render: (data, type, row) => {
+                            let html = ``
+                            for (let i=0; i < (row?.['product_loan_data'] || []).length; i++) {
+                                let item = row?.['product_loan_data'][i]
+                                html += `<div class="col-12" title="${(item || {})?.['title'] || ''}"><span class="badge badge-sm badge-secondary mr-1">${(item)?.['code'] || ''}</span><span>${(item || {})?.['title'] || ''}</span></div>`;
+                            }
+                            return `<div class="row">${html}</div>`
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-15',
                         render: (data, type, row) => {
                             return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
                     },
                     {
-                        className: 'ellipsis-cell-sm w-15',
+                        className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
                             return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }

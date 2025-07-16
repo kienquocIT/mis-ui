@@ -12033,7 +12033,7 @@ msgstr "Đang được cho thuê"
 
 #
 msgid "Over due"
-msgstr "Đến hạn thanh toán"
+msgstr "Quá hạn"
 
 #
 msgid "Total cash in"
@@ -12042,3 +12042,35 @@ msgstr "Tổng thu"
 #
 msgid "Total cash out"
 msgstr "Tổng chi"
+
+#
+msgid "View list"
+msgstr "Xem danh sách"
+
+#
+msgid "View detail of month"
+msgstr "Xem chi tiết tháng"
+
+#
+msgid "Due"
+msgstr "Đến hạn"
+
+#
+msgid "Common information"
+msgstr "Thông tin chung"
+
+#
+msgid "Payment time"
+msgstr "Thời gian thanh toán"
+
+#
+msgid "Not paid"
+msgstr "Chưa thanh toán"
+
+#
+msgid "Day left"
+msgstr "Ngày nữa"
+
+#
+msgid "Day previous"
+msgstr "Ngày trước"

@@ -39,7 +39,8 @@
                         <th>{% trans 'Partner' %}</th>
                         <th>{% trans 'Installment' %}</th>
                         <th>{% trans 'Invoice' %}</th>
-                        <th>{% trans 'Over due' %}</th>
+                        <th>{% trans 'Status' %}</th>
+                        <th>{% trans 'Due date' %}</th>
                         <th>{% trans 'Balance due' %}</th>
                         <th>{% trans 'Due date' %}</th>
                         <th>{% trans 'Total' %}</th>
@@ -295,6 +296,8 @@
         type="text"
         id="app-trans-factory"
         data-day="{% trans 'Day' %}"
+        data-day-left="{% trans 'Day left' %}"
+        data-day-previous="{% trans 'Day previous' %}"
         data-week="{% trans 'Week' %}"
         data-month="{% trans 'Month' %}"
         data-filter="{% trans 'Filter' %}"
@@ -302,8 +305,12 @@
         data-partner="{% trans 'Partner' %}"
         data-installment="{% trans 'Installment' %}"
         data-invoice="{% trans 'Invoice' %}"
-        data-over-due="{% trans 'Over due' %}"
+        data-status="{% trans 'Status' %}"
+        data-due-date="{% trans 'Due date' %}"
         data-balance-due="{% trans 'Balance due' %}"
+        data-paid="{% trans 'Paid' %}"
+        data-not-paid="{% trans 'Not paid' %}"
+        data-over-due="{% trans 'Over due' %}"
     >
     <input
         type="text"

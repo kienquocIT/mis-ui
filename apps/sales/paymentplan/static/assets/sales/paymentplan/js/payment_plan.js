@@ -40,8 +40,9 @@ $(function () {
             0: $transFact.attr('data-document'),
             1: $transFact.attr('data-partner'),
             2: $transFact.attr('data-installment'),
-            4: $transFact.attr('data-invoice'),
-            5: $transFact.attr('data-over-due'),
+            3: $transFact.attr('data-invoice'),
+            4: $transFact.attr('data-status'),
+            5: $transFact.attr('data-due-date'),
             6: $transFact.attr('data-balance-due'),
         };
 
@@ -144,26 +145,43 @@ $(function () {
                         width: '10%',
                         render: (data, type, row) => {
                             if (row?.['value_balance'] === 0) {
-                                return `<span class="badge text-dark-10 fs-8 bg-green-light-4">Đã thanh toán</span>`;
+                                return `<span class="badge text-dark-10 fs-8 bg-green-light-4">${$transFact.attr('data-paid')}</span>`;
                             }
                             if (row?.['due_date']) {
                                 let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
                                 let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
                                 let daysLeft = daysBetween(currentDate, dueDate);
                                 if (daysLeft >= 0) {
-                                    return `<span>${daysLeft} ${$transFact.attr('data-day')} (${dueDate})</span>`;
+                                    return `<span class="badge text-dark-10 fs-8 bg-yellow-light-4">${$transFact.attr('data-not-paid')}</span>`;
                                 }
-                                daysLeft = Math.abs(daysLeft);
-                                return `<span class="badge text-dark-10 fs-8 bg-red-light-4">Đã quá hạn</span>
-                                    <br>
-                                    <span>${daysLeft} ${$transFact.attr('data-day')} (${dueDate})</span>`;
+                                return `<span class="badge text-dark-10 fs-8 bg-red-light-4">${$transFact.attr('data-over-due')}</span>`;
                             }
                             return ``;
                         }
                     },
                     {
                         targets: 5,
-                        width: '15%',
+                        width: '10%',
+                        render: (data, type, row) => {
+                            if (row?.['value_balance'] === 0) {
+                                return `--`;
+                            }
+                            if (row?.['due_date']) {
+                                let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
+                                let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
+                                let daysLeft = daysBetween(currentDate, dueDate);
+                                if (daysLeft >= 0) {
+                                    return `<span>${daysLeft} ${$transFact.attr('data-day-left')} (${dueDate})</span>`;
+                                }
+                                daysLeft = Math.abs(daysLeft);
+                                return `<span>${daysLeft} ${$transFact.attr('data-day-previous')} (${dueDate})</span>`;
+                            }
+                            return ``;
+                        }
+                    },
+                    {
+                        targets: 6,
+                        width: '10%',
                         render: (data, type, row) => {
                             if (row?.['is_total_in'] === true) {
                                 return `<div class="d-flex justify-content-between">
@@ -190,7 +208,7 @@ $(function () {
                         }
                     },
                     {
-                        targets: 6,
+                        targets: 7,
                         width: '10%',
                         render: (data, type, row) => {
                             if (row?.['due_date']) {
@@ -200,8 +218,8 @@ $(function () {
                         }
                     },
                     {
-                        targets: 7,
-                        width: '15%',
+                        targets: 8,
+                        width: '10%',
                         render: (data, type, row) => {
                             let value = row?.['value_pay'];
                             if (row?.['purchase_order_data']?.['id']) {
@@ -466,7 +484,7 @@ $(function () {
             }
             if (key === "2") {
                 return {
-                    width: '8%',
+                    width: '7%',
                     render: (data, type, row) => {
                         let date = '';
                         let dateSub = '';
@@ -490,9 +508,9 @@ $(function () {
                     }
                 }
             }
-            if (key === "4") {
+            if (key === "3") {
                 return {
-                    width: '8%',
+                    width: '7%',
                     render: (data, type, row) => {
                         let date = '';
                         let dateSub = '';
@@ -511,24 +529,42 @@ $(function () {
                     }
                 }
             }
-            if (key === "5") {
+            if (key === "4") {
                 return {
-                    width: '8%',
+                    width: '6%',
                     render: (data, type, row) => {
                         if (row?.['value_balance'] === 0) {
-                            return `<span class="badge text-dark-10 fs-8 bg-green-light-4">Đã thanh toán</span>`;
+                            return `<span class="badge text-dark-10 fs-8 bg-green-light-4">${$transFact.attr('data-paid')}</span>`;
                         }
                         if (row?.['due_date']) {
                             let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
                             let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
                             let daysLeft = daysBetween(currentDate, dueDate);
                             if (daysLeft >= 0) {
-                                return `<span>${daysLeft} ${$transFact.attr('data-day')} (${dueDate})</span>`;
+                                return `<span class="badge text-dark-10 fs-8 bg-yellow-light-4">${$transFact.attr('data-not-paid')}</span>`;
+                            }
+                            return `<span class="badge text-dark-10 fs-8 bg-red-light-4">${$transFact.attr('data-over-due')}</span>`;
+                        }
+                        return ``;
+                    }
+                }
+            }
+            if (key === "5") {
+                return {
+                    width: '6%',
+                    render: (data, type, row) => {
+                        if (row?.['value_balance'] === 0) {
+                            return `--`;
+                        }
+                        if (row?.['due_date']) {
+                            let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
+                            let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
+                            let daysLeft = daysBetween(currentDate, dueDate);
+                            if (daysLeft >= 0) {
+                                return `<span>${daysLeft} ${$transFact.attr('data-day-left')} (${dueDate})</span>`;
                             }
                             daysLeft = Math.abs(daysLeft);
-                            return `<span class="badge text-dark-10 fs-8 bg-red-light-4">Đã quá hạn</span>
-                                    <br>
-                                    <span>${daysLeft} ${$transFact.attr('data-day')} (${dueDate})</span>`;
+                            return `<span>${daysLeft} ${$transFact.attr('data-day-previous')} (${dueDate})</span>`;
                         }
                         return ``;
                     }
@@ -536,7 +572,7 @@ $(function () {
             }
             if (key === "6") {
                 return {
-                    width: '8%',
+                    width: '7%',
                     render: (data, type, row) => {
                         if (row?.['is_total_in'] === true) {
                             return `<div class="d-flex justify-content-between">
@@ -573,10 +609,10 @@ $(function () {
 
         function setMinWidthDtb(columns) {
             let $table = $dtbArea.find('.table_payment_plan');
-            let minWidth = "min-w-1366p";
+            let minWidth = "min-w-1600p";
             if (columns.length <= 10) {
                 for (let i = 0; i < columns.length; i++) {
-                    if (i <= 6) {
+                    if (i <= 7) {
                         if (columns[i]?.['width']) {
                             delete columns[i]["width"];
                         }
@@ -585,15 +621,15 @@ $(function () {
             }
             if (columns.length > 10) {
                 let colLength = columns.length - 6;
-                let rate = 52 / colLength;
+                let rate = 51 / colLength;
                 let width = `${rate}%`;
                 for (let i = 0; i < columns.length; i++) {
-                    if (i > 6) {
+                    if (i > 7) {
                         columns[i]["width"] = width;
                     }
                 }
                 if (columns.length <= 15) {
-                    minWidth = "min-w-1600p";
+                    minWidth = "min-w-1920p";
                 }
                 if (columns.length > 15) {
                     minWidth = "min-w-4000p";

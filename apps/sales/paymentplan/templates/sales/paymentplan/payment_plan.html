@@ -16,7 +16,7 @@
     <div class="row">
         <div class="d-flex justify-content-start">
             <ul class="nav nav-line nav-tabs nav-light">
-                <li class="nav-item">
+                <li class="nav-item" id="nav-item-list">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
                         <span class="nav-link-text">{% trans 'View list' %}</span>
                     </a>
@@ -50,11 +50,6 @@
             </table>
         </div>
         <div class="tab-pane fade show" id="tab_block_2">
-            <div class="btn-group" role="group" aria-label="Button group with nested dropdown" id="btn-group-view">
-                <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-day">{% trans 'Day' %}</button>
-                <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-week">{% trans 'Week' %}</button>
-                <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-month">{% trans 'Month' %}</button>
-            </div>
             <div id="dtb-area"></div>
         </div>
     </div>
@@ -71,12 +66,12 @@
             <div class="offcanvas-body">
                 <b>{% trans 'Common information' %}</b>
                 <div class="row">
-                    <div class="col-12 col-md-4 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="box-partner-1">{% trans 'Partner' %}</label>
+                            <label class="form-label mt-2" for="box-customer-1">{% trans 'Customer' %}</label>
                             <select
                                     class="form-select"
-                                    id="box-partner-1"
+                                    id="box-customer-1"
                                     data-url="{% url "AccountDDListAPI" %}"
                                     data-method="GET"
                                     data-keyResp="account_dd_list"
@@ -85,7 +80,7 @@
                             ></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label class="form-label mt-2" for="box-so-1">{% trans 'Sale order' %}</label>
                             <select
@@ -98,7 +93,23 @@
                             ></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 col-lg-4">
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label mt-2" for="box-supplier-1">{% trans 'Supplier' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-supplier-1"
+                                    data-url="{% url "AccountDDListAPI" %}"
+                                    data-method="GET"
+                                    data-keyResp="account_dd_list"
+                                    data-keyText="name"
+                                    multiple
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label class="form-label mt-2" for="box-po-1">{% trans 'Purchase order' %}</label>
                             <select
@@ -109,6 +120,14 @@
                                     data-keyResp="purchase_order_dd_list"
                                     multiple
                             ></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-check form-check-lg d-flex align-items-center">
+                            <input type="checkbox" name="checkbox_not_paid_list" class="form-check-input" id="checkbox-not-paid-1">
+                            <label class="form-check-label" for="checkbox-not-paid-1">{% trans 'Not paid' %}</label>
                         </div>
                     </div>
                 </div>
@@ -157,10 +176,10 @@
                 <div class="row">
                     <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="box-partner">{% trans 'Partner' %}</label>
+                            <label class="form-label mt-2" for="box-customer">{% trans 'Customer' %}</label>
                             <select
                                     class="form-select"
-                                    id="box-partner"
+                                    id="box-customer"
                                     data-url="{% url "AccountDDListAPI" %}"
                                     data-method="GET"
                                     data-keyResp="account_dd_list"
@@ -182,6 +201,22 @@
                             ></select>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label mt-2" for="box-supplier">{% trans 'Supplier' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-supplier"
+                                    data-url="{% url "AccountDDListAPI" %}"
+                                    data-method="GET"
+                                    data-keyResp="account_dd_list"
+                                    data-keyText="name"
+                                    multiple
+                            ></select>
+                        </div>
+                    </div>
                     <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
                             <label class="form-label mt-2" for="box-po">{% trans 'Purchase order' %}</label>
@@ -193,6 +228,14 @@
                                     data-keyResp="purchase_order_dd_list"
                                     multiple
                             ></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-check form-check-lg d-flex align-items-center">
+                            <input type="checkbox" name="checkbox_not_paid_detail" class="form-check-input" id="checkbox-not-paid">
+                            <label class="form-check-label" for="checkbox-not-paid">{% trans 'Not paid' %}</label>
                         </div>
                     </div>
                 </div>
@@ -251,7 +294,9 @@
     <input
         type="text"
         id="app-trans-factory"
+        data-day="{% trans 'Day' %}"
         data-week="{% trans 'Week' %}"
+        data-month="{% trans 'Month' %}"
         data-filter="{% trans 'Filter' %}"
         data-document="{% trans 'Document' %}"
         data-partner="{% trans 'Partner' %}"
@@ -259,7 +304,6 @@
         data-invoice="{% trans 'Invoice' %}"
         data-over-due="{% trans 'Over due' %}"
         data-balance-due="{% trans 'Balance due' %}"
-        data-day="{% trans 'Day' %}"
     >
     <input
         type="text"

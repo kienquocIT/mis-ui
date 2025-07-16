@@ -4553,12 +4553,6 @@ class QuotationDataTableHandle {
                         }
                         let disabled = '';
                         let checked = '';
-                        // if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
-                        //     disabled = 'disabled';
-                        //     checked = 'checked';
-                        //     clsZoneReadonly = 'zone-readonly';
-                        // }
-
                         if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
                             let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
                             if (typeof storeID === 'object') {

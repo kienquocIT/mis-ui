@@ -1,23 +1,24 @@
 $(function () {
     $(document).ready(function () {
 
+        let $navList = $('#nav-item-list');
         let $tableList = $('#table_list');
-        let boxCustomer1 = $('#box-partner-1');
+        let boxCustomer1 = $('#box-customer-1');
         let boxSO1 = $('#box-so-1');
+        let boxSupplier1 = $('#box-supplier-1');
         let boxPO1 = $('#box-po-1');
+        let checkNotPaid1 = $('#checkbox-not-paid-1');
         let boxStart1 = $('#date-from-1');
         let boxEnd1 = $('#date-to-1');
         let $btnApplyFilterList = $('#btn-apply-filter-list');
 
         let $navDetailOfMonth = $('#nav-item-detail-of-month');
         let $dtbArea = $('#dtb-area');
-        let $btnGroup = $('#btn-group-view');
-        let $btnDay = $('#btn-view-day');
-        let $btnWeek = $('#btn-view-week');
-        let $btnMonth = $('#btn-view-month');
-        let boxCustomer = $('#box-partner');
+        let boxCustomer = $('#box-customer');
         let boxSO = $('#box-so');
+        let boxSupplier = $('#box-supplier');
         let boxPO = $('#box-po');
+        let checkNotPaid = $('#checkbox-not-paid');
         let $boxMonth = $('#box-month');
         let boxStart = $('#date-from');
         let boxEnd = $('#date-to');
@@ -289,6 +290,7 @@ $(function () {
                     $.fn.initMaskMoney2();
                     // add css to Dtb
                     dtbHDCustom();
+                    removeActiveBtn();
                     loadTotalInOut(settings);
                 },
             });
@@ -386,6 +388,37 @@ $(function () {
                     headerToolbar$.append($group);
                 }
             }
+
+            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+        headerToolbar$.prepend(textFilter$);
+
+        if (textFilter$.length > 0) {
+            textFilter$.css('display', 'flex');
+            // Check if the element already exists before appending
+            if (!$('#btn-group-view').length && !$('#btn-view-day').length && !$('#btn-view-week').length && !$('#btn-view-month').length) {
+                let $group = $(`<div class="btn-group" role="group" aria-label="Button group with nested dropdown" id="btn-group-view">
+                                    <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-day">${$transFact.attr('data-day')}</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-week">${$transFact.attr('data-week')}</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-month">${$transFact.attr('data-month')}</button>
+                                </div>`);
+                textFilter$.append(
+                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
+                );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn-view-day').on('click', function () {
+                    $dtbArea.attr('data-active-id', 'btn-view-day');
+                    $('#btn-apply-filter').trigger('click');
+                });
+                $('#btn-view-week').on('click', function () {
+                    $dtbArea.attr('data-active-id', 'btn-view-week');
+                    $('#btn-apply-filter').trigger('click');
+                });
+                $('#btn-view-month').on('click', function () {
+                    $dtbArea.attr('data-active-id', 'btn-view-month');
+                    $('#btn-apply-filter').trigger('click');
+                });
+            }
+        }
         }
 
         function customDtbCommon() {
@@ -810,31 +843,6 @@ $(function () {
             return result;
         }
 
-        function getCurrentMonthInfo() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth(); // 0-based
-
-            // First day of the month
-            const firstDate = new Date(year, month, 1);
-
-            // Last day of the month: set day = 0 of next month
-            const lastDate = new Date(year, month + 1, 0);
-
-            const formatDate = (date) => {
-                const dd = String(date.getDate()).padStart(2, '0');
-                const mm = String(date.getMonth() + 1).padStart(2, '0');
-                const yyyy = date.getFullYear();
-                return `${dd}/${mm}/${yyyy}`;
-            };
-
-            return {
-                "month": month + 1, // Make it 1-based
-                "from": formatDate(firstDate),
-                "to": formatDate(lastDate)
-            };
-        }
-
         function isDateInRange(fromDateStr, toDateStr, myDateStr) {
             // Convert DD/MM/YYYY to Date object
             function parseDate(str) {
@@ -867,53 +875,16 @@ $(function () {
             return result;
         }
 
-
-
-
-
-
-
-
-
-
-        function padWithZero(num) {
-            return num < 10 ? '0' + num : num;
-        }
-
-        function getYearRange(startDate) {
-            let endDate = getFiscalYearEndDate(startDate);
-            let datesFormat = formatStartEndDate(startDate, endDate);
-            return {startDate: datesFormat?.['startDate'], endDate: datesFormat?.['endDate']};
-        }
-
-        function getFiscalYearEndDate(startDate) {
-            let endDateFY = '';
-            if (startDate) {
-                let startDateFY = new Date(startDate);
-                endDateFY = new Date(startDateFY);
-                // Add 12 months to the start date
-                endDateFY.setMonth(startDateFY.getMonth() + 12);
-                // Subtract 1 day to get the last day of the fiscal year
-                endDateFY.setDate(endDateFY.getDate() - 1);
-                // Format the end date as 'YYYY-MM-DD'
-                endDateFY = endDateFY.toISOString().slice(0, 10);
-                return endDateFY;
-            }
-            return endDateFY;
-        }
-
-        function formatStartEndDate(startDate, endDate) {
-            if (startDate && endDate) {
-                startDate = startDate + ' 00:00:00';
-                endDate = endDate + ' 23:59:59';
-                return {startDate, endDate};
-            }
-            return {startDate: '', endDate: ''};
-        }
-
         function removeActiveBtn() {
-            for (let btn of $btnGroup[0].querySelectorAll('.btn-view')) {
+            for (let btn of $('#btn-group-view')[0].querySelectorAll('.btn-view')) {
                 $(btn).removeClass('active');
+            }
+            if ($dtbArea.attr('data-active-id')) {
+                let activeID = $dtbArea.attr('data-active-id');
+                let $activeEle = $(`#${activeID}`);
+                if ($activeEle.length > 0) {
+                    $activeEle.addClass('active');
+                }
             }
             return true;
         }
@@ -1007,12 +978,14 @@ $(function () {
 
         // load init
         function initData() {
-            FormElementControl.loadInitS2(boxCustomer1, [], {}, null, true);
+            FormElementControl.loadInitS2(boxCustomer1, [], {'account_types_mapped__account_type_order': 0}, null, true);
             FormElementControl.loadInitS2(boxSO1, [], {}, null, true);
+            FormElementControl.loadInitS2(boxSupplier1, [], {'account_types_mapped__account_type_order': 1}, null, true);
             FormElementControl.loadInitS2(boxPO1, [], {}, null, true);
 
-            FormElementControl.loadInitS2(boxCustomer, [], {}, null, true);
+            FormElementControl.loadInitS2(boxCustomer, [], {'account_types_mapped__account_type_order': 0}, null, true);
             FormElementControl.loadInitS2(boxSO, [], {}, null, true);
+            FormElementControl.loadInitS2(boxSupplier, [], {'account_types_mapped__account_type_order': 1}, null, true);
             FormElementControl.loadInitS2(boxPO, [], {}, null, true);
 
             storeFiscalYear();
@@ -1044,6 +1017,21 @@ $(function () {
 
         $btnApplyFilterList.on('click', function () {
             let dataParams = {};
+            if (boxCustomer1.val().length > 0) {
+                dataParams['customer_id__in'] = boxCustomer1.val().join(',');
+            }
+            if (boxSO1.val().length > 0) {
+                dataParams['sale_order_id__in'] = boxSO1.val().join(',');
+            }
+            if (boxSupplier1.val().length > 0) {
+                dataParams['supplier_id__in'] = boxSupplier1.val().join(',');
+            }
+            if (boxPO1.val().length > 0) {
+                dataParams['purchase_order_id__in'] = boxPO1.val().join(',');
+            }
+            if (checkNotPaid1[0].checked === true) {
+                dataParams['value_balance__gt'] = 0;
+            }
             if (boxStart1.val()) {
                 let dateStart = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxStart1.val());
                 dataParams['due_date__gte'] = dateStart + ' 00:00:00';
@@ -1058,23 +1046,9 @@ $(function () {
             loadDblList(dataParams);
         });
 
-        $btnDay.on('click', function () {
-            removeActiveBtn();
-            $btnDay.addClass('active');
-            $('#btn-apply-filter').trigger('click');
-        });
-
-        $btnWeek.on('click', function () {
-            removeActiveBtn();
-            $btnWeek.addClass('active');
-            $('#btn-apply-filter').trigger('click');
-        });
-
-        $btnMonth.on('click', function () {
-            removeActiveBtn();
-            $btnMonth.addClass('active');
-            $('#btn-apply-filter').trigger('click');
-        });
+        $navList.on('click', function () {
+            $btnApplyFilterList.click();
+        })
 
         $boxMonth.on('change', function () {
             let data = SelectDDControl.get_data_from_idx($boxMonth, $boxMonth.val());
@@ -1090,6 +1064,21 @@ $(function () {
 
         $btnApplyFilter.on('click', function () {
             let dataParams = {};
+            if (boxCustomer.val().length > 0) {
+                dataParams['customer_id__in'] = boxCustomer.val().join(',');
+            }
+            if (boxSO.val().length > 0) {
+                dataParams['sale_order_id__in'] = boxSO.val().join(',');
+            }
+            if (boxSupplier.val().length > 0) {
+                dataParams['supplier_id__in'] = boxSupplier.val().join(',');
+            }
+            if (boxPO.val().length > 0) {
+                dataParams['purchase_order_id__in'] = boxPO.val().join(',');
+            }
+            if (checkNotPaid[0].checked === true) {
+                dataParams['value_balance__gt'] = 0;
+            }
             if (boxStart.val()) {
                 let dateStart = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', boxStart.val());
                 dataParams['due_date__gte'] = dateStart + ' 00:00:00';
@@ -1099,18 +1088,21 @@ $(function () {
                 dataParams['due_date__lte'] = dateEnd + ' 23:59:59';
             }
             let columns = [];
-            for (let btn of $btnGroup[0].querySelectorAll('.btn-view')) {
-                if ($(btn).hasClass('active')) {
-                    if (btn === $btnDay[0]) {
-                        columns = customDtbByDay();
-                    }
-                    if (btn === $btnWeek[0]) {
-                        columns = customDtbByWeek();
-                    }
-                    if (btn === $btnMonth[0]) {
-                        columns = customDtbByMonth();
-                    }
+            if ($dtbArea.attr('data-active-id')) {
+                let activeID = $dtbArea.attr('data-active-id');
+                if (activeID === "btn-view-day") {
+                    columns = customDtbByDay();
                 }
+                if (activeID === "btn-view-week") {
+                    columns = customDtbByWeek();
+                }
+                if (activeID === "btn-view-month") {
+                    columns = customDtbByMonth();
+                }
+            }
+            if (!$dtbArea.attr('data-active-id')) {
+                $dtbArea.attr('data-active-id', 'btn-view-week');
+                columns = customDtbByWeek();
             }
             if ($.fn.dataTable.isDataTable($dtbArea.find('.table_payment_plan'))) {
                 $dtbArea.find('.table_payment_plan').DataTable().destroy();
@@ -1119,9 +1111,7 @@ $(function () {
         });
 
         $navDetailOfMonth.on('click', function () {
-            if ($dtbArea.find('.table_payment_plan').length === 0) {
-                $btnWeek.click();
-            }
+            $btnApplyFilter.click();
         })
 
         initData();

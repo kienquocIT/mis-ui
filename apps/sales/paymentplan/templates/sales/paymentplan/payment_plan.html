@@ -13,14 +13,139 @@
 {% block pageContent %}
     {% csrf_token %}
 
-    <div class="btn-group" role="group" aria-label="Button group with nested dropdown" id="btn-group-view">
-        <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-day">Day</button>
-        <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-week">Week</button>
-        <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-month">Month</button>
+    <div class="row">
+        <div class="d-flex justify-content-start">
+            <ul class="nav nav-line nav-tabs nav-light">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                        <span class="nav-link-text">{% trans 'View list' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item" id="nav-item-detail-of-month">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                        <span class="nav-link-text">{% trans 'View detail of month' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
-    <div id="dtb-area"></div>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="tab_block_1">
+            <table class="table nowrap w-100 min-w-1366p" id="table_list">
+                <thead>
+                    <tr class="bg-light">
+                        <th>{% trans 'Document' %}</th>
+                        <th>{% trans 'Partner' %}</th>
+                        <th>{% trans 'Installment' %}</th>
+                        <th>{% trans 'Invoice' %}</th>
+                        <th>{% trans 'Over due' %}</th>
+                        <th>{% trans 'Balance due' %}</th>
+                        <th>{% trans 'Due date' %}</th>
+                        <th>{% trans 'Total' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade show" id="tab_block_2">
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown" id="btn-group-view">
+                <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-day">{% trans 'Day' %}</button>
+                <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-week">{% trans 'Week' %}</button>
+                <button type="button" class="btn btn-outline-secondary btn-view" id="btn-view-month">{% trans 'Month' %}</button>
+            </div>
+            <div id="dtb-area"></div>
+        </div>
+    </div>
+
+
 
     <div class="modal-canvas-area">
+
+        <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="filterListCanvas" aria-labelledby="offcanvasTopLabel">
+            <div class="modal-header">
+                <h5><b>{% trans 'Filter' %}</b></h5>
+                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+            </div>
+            <div class="offcanvas-body">
+                <b>{% trans 'Common information' %}</b>
+                <div class="row">
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label mt-2" for="box-partner-1">{% trans 'Partner' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-partner-1"
+                                    data-url="{% url "AccountDDListAPI" %}"
+                                    data-method="GET"
+                                    data-keyResp="account_dd_list"
+                                    data-keyText="name"
+                                    multiple
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label mt-2" for="box-so-1">{% trans 'Sale order' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-so-1"
+                                    data-url="{% url "SaleOrderDDListAPI" %}"
+                                    data-method="GET"
+                                    data-keyResp="sale_order_dd_list"
+                                    multiple
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label mt-2" for="box-po-1">{% trans 'Purchase order' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-po-1"
+                                    data-url="{% url "PurchaseOrderDDListAPI" %}"
+                                    data-method="GET"
+                                    data-keyResp="purchase_order_dd_list"
+                                    multiple
+                            ></select>
+                        </div>
+                    </div>
+                </div>
+                <b>{% trans 'Payment time' %}</b>
+                <div class="row">
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-group">
+                            <label class="form-label" for="date-from">{% trans 'From' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="date_from" id="date-from-1"
+                                       class="form-control flat-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-group">
+                            <label class="form-label" for="date-to">{% trans 'To' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="date_from" id="date-to-1"
+                                       class="form-control flat-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+                <button type="button" class="btn btn-primary" id="btn-apply-filter-list" data-bs-dismiss="offcanvas">{% trans 'Apply' %}</button>
+            </div>
+        </div>
+
 
         <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
             <div class="modal-header">
@@ -32,10 +157,10 @@
                 <div class="row">
                     <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="box-customer">{% trans 'Partner' %}</label>
+                            <label class="form-label mt-2" for="box-partner">{% trans 'Partner' %}</label>
                             <select
                                     class="form-select"
-                                    id="box-customer"
+                                    id="box-partner"
                                     data-url="{% url "AccountDDListAPI" %}"
                                     data-method="GET"
                                     data-keyResp="account_dd_list"
@@ -92,7 +217,7 @@
                             <label class="form-label" for="date-from">{% trans 'From' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" name="date_from" id="date-from"
-                                       class="form-control date-picker" autocomplete="off">
+                                       class="form-control flat-picker-in-month" autocomplete="off">
                                 <div class="input-suffix">
                                     <i class="fas fa-calendar-alt"></i>
                                 </div>
@@ -104,7 +229,7 @@
                             <label class="form-label" for="date-to">{% trans 'To' %}</label>
                             <div class="input-affix-wrapper">
                                 <input type="text" name="date_from" id="date-to"
-                                       class="form-control date-picker" autocomplete="off">
+                                       class="form-control flat-picker-in-month" autocomplete="off">
                                 <div class="input-suffix">
                                     <i class="fas fa-calendar-alt"></i>
                                 </div>

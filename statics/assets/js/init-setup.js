@@ -7145,6 +7145,31 @@ class DateTimeControl {
             .replace('ss', parts.second || '00');
     }
 
+    static getMonthInfo(month, year) {
+        if (month < 1 || month > 12) {
+            throw new Error("Month must be between 1 and 12");
+        }
+
+        const targetMonth = month - 1; // JS Date dùng month 0-based
+
+        const firstDate = new Date(year, targetMonth, 1);
+        const lastDate = new Date(year, targetMonth + 1, 0);
+
+        const formatDate = (date) => {
+            const dd = String(date.getDate()).padStart(2, '0');
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const yyyy = date.getFullYear();
+            return `${dd}/${mm}/${yyyy}`;
+        };
+
+        return {
+            "month": month,
+            "year": year,
+            "from": formatDate(firstDate),
+            "to": formatDate(lastDate)
+        };
+    }
+
     static initDatePicker(ele) {
         $(ele).daterangepicker({
             singleDatePicker: true,

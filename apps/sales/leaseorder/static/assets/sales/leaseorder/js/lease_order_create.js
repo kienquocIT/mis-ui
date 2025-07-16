@@ -35,7 +35,7 @@ $(function () {
         LeaseOrderLoadDataHandle.loadInitQuotationConfig(LeaseOrderLoadDataHandle.$form.attr('data-method'));
         // date picker
         $('.date-picker').each(function () {
-            DateTimeControl.initDatePicker(this);
+            DateTimeControl.initFlatPicker(this);
         });
         // attachment
         if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {

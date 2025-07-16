@@ -53,6 +53,7 @@ $(function () {
                 },
                 autoWidth: true,
                 scrollX: true,
+                scrollY: "550px",
                 fixedColumns: {
                     leftColumns: Object.keys(staticHeaders).length
                 },
@@ -271,12 +272,13 @@ $(function () {
                             let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
                             let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
                             let daysLeft = daysBetween(currentDate, dueDate);
-                            if (daysLeft) {
-                                return `<span>${daysBetween(currentDate, dueDate)} ${$transFact.attr('data-day')} (${dueDate})</span>`;
+                            if (daysLeft >= 0) {
+                                return `<span>${daysLeft} ${$transFact.attr('data-day')} (${dueDate})</span>`;
                             }
+                            daysLeft = Math.abs(daysLeft);
                             return `<span class="badge text-dark-10 fs-8 bg-red-light-4">Đã quá hạn</span>
                                     <br>
-                                    <span>${daysBetween(currentDate, dueDate)} ${$transFact.attr('data-day')} (${dueDate})</span>`;
+                                    <span>${daysLeft} ${$transFact.attr('data-day')} (${dueDate})</span>`;
                         }
                         return ``;
                     }
@@ -638,14 +640,14 @@ $(function () {
             const date1 = new Date(y1, m1 - 1, d1);
             const date2 = new Date(y2, m2 - 1, d2);
 
-            // Nếu date1 < date2 thì return null
-            if (date1 > date2) {
-                return null;
-            }
-
             // Calculate the difference in milliseconds and convert to days
             const diffTime = Math.abs(date1 - date2);
-            return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            let result = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            // Nếu date1 < date2 thì return giá trị âm
+            if (date1 > date2) {
+                return -result;
+            }
+            return result;
         }
 
 

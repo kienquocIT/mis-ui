@@ -437,7 +437,7 @@ class ContractDataTableHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-doc').length) {
-                let $group = $(`<button type="button" class="btn btn-outline-secondary" id="btn-add-doc">
+                let $group = $(`<button type="button" class="btn btn-primary" id="btn-add-doc">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${ContractLoadDataHandle.$trans.attr('data-add')}</span></span>
                                 </button>`);
                 textFilter$.append(

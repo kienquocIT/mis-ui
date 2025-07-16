@@ -2651,23 +2651,25 @@ class QuotationLoadDataHandle {
     };
 
     static loadDropDowns(table) {
-        if (table[0].id === "datable-quotation-create-product" || table[0].id === "datable-quotation-create-cost") {  // PRODUCT || COST
-            table.DataTable().rows().every(function () {
-                let row = this.node();
+        if (table[0]) {
+            if (table[0].id === "datable-quotation-create-product" || table[0].id === "datable-quotation-create-cost") {  // PRODUCT || COST
+                table.DataTable().rows().every(function () {
+                    let row = this.node();
 
-                if (!row.querySelector('.table-row-group')) {
-                    if (table[0].id === "datable-quotation-create-product") {  // PRODUCT
-                        for (let ele of table[0].querySelectorAll('.btn-select-price')) {
-                            ele.removeAttribute('disabled');
+                    if (!row.querySelector('.table-row-group')) {
+                        if (table[0].id === "datable-quotation-create-product") {  // PRODUCT
+                            for (let ele of table[0].querySelectorAll('.btn-select-price')) {
+                                ele.removeAttribute('disabled');
+                            }
+                        }
+                        if (table[0].id === "datable-quotation-create-cost") {  // COST
+                            for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
+                                ele.removeAttribute('disabled');
+                            }
                         }
                     }
-                    if (table[0].id === "datable-quotation-create-cost") {  // COST
-                        for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
-                            ele.removeAttribute('disabled');
-                        }
-                    }
-                }
-            });
+                });
+            }
         }
         return true;
     };

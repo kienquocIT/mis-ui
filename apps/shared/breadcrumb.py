@@ -108,6 +108,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     PRODUCT_MODIFICATION_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     PRODUCT_MODIFICATION_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
 
+    # Product Modification BOM
+    PRODUCT_MODIFICATION_BOM_LIST_PAGE = BreadcrumbChildren(_('Product Modification BOM'), 'ProductModificationBOMList')
+    PRODUCT_MODIFICATION_BOM_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'ProductModificationBOMCreate')
+    PRODUCT_MODIFICATION_BOM_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    PRODUCT_MODIFICATION_BOM_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     # Equipment loan
     EQUIPMENT_LOAN_LIST_PAGE = BreadcrumbChildren(_('Equipment Loan'), 'EquipmentLoanList')
     EQUIPMENT_LOAN_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'EquipmentLoanCreate')
@@ -721,6 +727,14 @@ class BreadcrumbView:
         BreadcrumbItem.PRODUCT_MODIFICATION_CREATE_PAGE]
     PRODUCT_MODIFICATION_DETAIL_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     PRODUCT_MODIFICATION_UPDATE_PAGE = PRODUCT_MODIFICATION_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    PRODUCT_MODIFICATION_BOM_LIST_PAGE = [
+        BreadcrumbItem.PRODUCT_MODIFICATION_BOM_LIST_PAGE
+    ]
+    PRODUCT_MODIFICATION_BOM_CREATE_PAGE = PRODUCT_MODIFICATION_BOM_LIST_PAGE + [
+        BreadcrumbItem.PRODUCT_MODIFICATION_CREATE_PAGE]
+    PRODUCT_MODIFICATION_BOM_DETAIL_PAGE = PRODUCT_MODIFICATION_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    PRODUCT_MODIFICATION_BOM_UPDATE_PAGE = PRODUCT_MODIFICATION_BOM_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     EQUIPMENT_LOAN_LIST_PAGE = [
         BreadcrumbItem.EQUIPMENT_LOAN_LIST_PAGE

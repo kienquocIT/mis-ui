@@ -5,7 +5,7 @@ from .views import (
     ImageWebBuilderUpload, ImageWebBuilderList, FolderList, FolderListAPI, FolderDetailAPI,
     FolderUploadFileList, AttachmentDownload, AttachmentPreview, AttachmentInfo, PublicAttachmentUpload,
     FolderListSharedAPI, FolderMyFileListAPI, AttachmentEditAPI, FolderPermListAPI, FilePermListAPI,
-    AttachmentUpdateAPI
+    AttachmentUpdateAPI, FolderDownloadAPI
 )
 
 urlpatterns = [
@@ -31,4 +31,5 @@ urlpatterns = [
     path('folder-perm-list', FolderPermListAPI.as_view(), name='FolderPermListAPI'),
     # folder share with me
     path('folder/api/list-shared', FolderListSharedAPI.as_view(), name='FolderListSharedAPI'),
+    path('folder/api/download', FolderDownloadAPI.as_view(), name='FolderDownloadAPI'),
 ]

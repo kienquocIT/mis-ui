@@ -1,4 +1,6 @@
-from django.http import HttpResponse
+from datetime import datetime
+
+from django.http import HttpResponse, StreamingHttpResponse
 from django.views import View
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
@@ -356,3 +358,27 @@ class FilePermListAPI(APIView):
     def get(self, request, *args, pk, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.FILE_CHECK_PERM).get(request.data)
         return resp.auto_return(key_success='perm_file_lst')
+
+
+class FolderDownloadAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.get('id', None)
+        if params:
+            resp = ServerAPI(
+                request=request, user=request.user, url=ApiURL.FOLDER_DOWNLOAD.fill_key(pk=params),
+                return_response_origin=True
+            ).get(stream=True)
+            response = HttpResponse(
+                resp.content,
+                content_type=resp.headers['Content-Type']
+            )
+            response['Content-Disposition'] = resp.headers.get(
+                'Content-Disposition', f'attachment; filename="{int(datetime.now().timestamp())}.zip"'
+            )
+            return response
+        return RespData.resp_404()

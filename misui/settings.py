@@ -118,6 +118,7 @@ INSTALLED_APPS = \
         'apps.sales.partnercenter',
         'apps.sales.grouporder',
         'apps.sales.productmodification',
+        'apps.sales.productmodificationbom',
         'apps.sales.equipmentloan',
         'apps.sales.equipmentreturn',
     ] + [  # e-office Application
@@ -129,7 +130,7 @@ INSTALLED_APPS = \
         'apps.web_builder',
     ] + [  # HRM
         'apps.hrm.employee',
-        'apps.hrm.attandance',
+        'apps.hrm.attendance',
     ] + [
         'apps.sales.financialcashflow',
         'apps.sales.reconciliation',

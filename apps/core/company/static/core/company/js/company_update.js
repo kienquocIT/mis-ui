@@ -43,6 +43,7 @@ $(document).ready(function () {
     CompanyPageFunction.loadCompanyDistrict()
     CompanyPageFunction.loadCompanyWard()
     CompanyPageFunction.loadCurrency()
+    CompanyPageFunction.loadShift($('#company_select_shift'))
     CompanyHandler.LoadDetailCompany($('#frm-detail-company'), 'update');
 
     let logoFiles = null;
@@ -70,6 +71,8 @@ $(document).ready(function () {
         dataBodyConfig['cost_per_warehouse'] = $('#cost-per-warehouse').is(':checked');
         dataBodyConfig['cost_per_lot'] = $('#cost-per-lot').is(':checked');
         dataBodyConfig['cost_per_project'] = $('#cost-per-prj').is(':checked');
+        dataBodyConfig['shift_mode'] = $('#company_shift_mode').val();
+        dataBodyConfig['shift'] = $('#company_select_shift').val() || null;
         if (
             dataBodyConfig['currency_rule'] &&
             (

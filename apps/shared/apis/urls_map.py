@@ -765,6 +765,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     FOLDER_UPLOAD_FILE_LIST = StringUrl('attachment/folder-upload-file/list')
     FOLDER_CHECK_PERM = StringUrl('attachment/folder-check-perm')
     FILE_CHECK_PERM = StringUrl('attachment/file-check-perm')
+    FOLDER_DOWNLOAD = StringUrl('attachment/folder/download/{pk}')
 
     # Zones
     ZONES_APPLICATION_LIST = StringUrl('base/zones-application/list')
@@ -954,6 +955,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_SERIAL_LIST = StringUrl('product-modification/product-serial-list')
     PRODUCT_MODIFIED_DROPDOWN_LIST = StringUrl('product-modification/dropdown/list')
     PRODUCT_MODIFIED_PRODUCT_GR_LIST = StringUrl('product-modification/product-modification-product-gr/list')
+
+    # sales/product modification bom
+    PRODUCT_MODIFICATION_BOM_LIST = StringUrl('product-modification-bom/list')
+    PRODUCT_MODIFICATION_BOM_DETAIL = StringUrl('product-modification-bom/detail/{pk}')
+    PMBOM_PRODUCT_COMPONENT_LIST = StringUrl('product-modification-bom/product-component-list')
+    PMBOM_LATEST_COMPONENT_LIST = StringUrl('product-modification-bom/latest-component-list')
+    PMBOM_PRODUCT_MODIFIED_LIST = StringUrl('product-modification-bom/product-modified-list')
+    PMBOM_PRODUCT_MODIFIED_BEFORE_LIST = StringUrl('product-modification-bom/product-modified-before-list')
 
     # KMS - Incoming Document
     INCOMING_DOCUMENT_LIST = StringUrl('kms/incoming-doc/list')

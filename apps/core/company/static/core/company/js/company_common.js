@@ -111,6 +111,18 @@ class CompanyPageFunction {
             keyText: 'title',
         })
     }
+    static loadShift($ele, data) {
+        $ele.initSelect2({
+            ajax: {
+                url: $ele.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'shift_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
     // function number
     static preview_next_code() {
         let raw_schema = pageElements.$schema_item_list.val();
@@ -478,6 +490,10 @@ class CompanyHandler {
                 $('#idxCurrencyMaskDecimal').val(data1['config']['currency_rule'].decimal);
                 $('#idxCurrencyMaskPrecision').val(data1['config']['currency_rule'].precision);
                 $('#idxSubdomain').val(data1['config']['sub_domain']);
+
+                $('#company_shift_mode').val(data1?.['config']?.['shift_mode'])
+                $('#select_shift_block').prop('hidden', data1?.['config']?.['shift_mode'] === 1)
+                CompanyPageFunction.loadShift($('#company_select_shift'), data1?.['config']?.['shift_data'] || {})
             }
 
             UsualLoadPageFunction.DisablePage(option==='detail')
@@ -662,6 +678,9 @@ class CompanyEventHandler {
             UsualLoadPageFunction.AddTableRow(pageElements.$master_data_function_number_table)
             let row_added = pageElements.$master_data_function_number_table.find('tbody tr:last-child')
             CompanyPageFunction.LoadMasterDataList(row_added.find('.master-data-select'))
+        })
+        $('#company_shift_mode').on('change', function () {
+            $('#select_shift_block').prop('hidden', $(this).val() === '1')
         })
     }
 }

@@ -1,0 +1,66 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12">
+        <table class="table nowrap w-100" id="table-current-product-modified">
+            <thead class="bg-secondary-light-5">
+                <tr>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 200px">
+                        <button id="btn-open-modal-product" class="btn btn-xs btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#select-product-modified-modal">
+                            <span>
+                                <span class="icon">
+                                    <span class="feather-icon"><i class="fa-solid fa-circle-check"></i></span>
+                                </span>
+                                <span>{% trans 'Select base product' %}</span>
+                            </span>
+                        </button>
+                    </th>
+                    <th style="min-width: 150px">{% trans 'Base cost' %}</th>
+                    <th style="min-width: 150px">{% trans 'Modified cost' %}</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="row mb-10">
+    <div class="main-space col-12 col-md-12 col-lg-12 border-right mt-3">
+        <table class="table nowrap w-100" id="table-product-current-component">
+            <thead class="bg-primary-light-5">
+                <tr>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 250px">{% trans "Current component" %}</th>
+                    <th style="min-width: 100px">{% trans 'Base quantity' %}</th>
+                    <th style="min-width: 100px">{% trans 'Removed quantity' %}</th>
+                    <th style="min-width: 200px">{% trans 'Cost' %}</th>
+                    <th style="min-width: 200px">{% trans 'Minus amount' %}</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="main-space col-12 col-md-12 col-lg-12 mt-3">
+        <table class="table nowrap w-100" id="table-product-added-component">
+            <thead class="bg-success-light-5">
+                <tr>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 250px">{% trans "Added component" %}</th>
+                    <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                    <th style="min-width: 200px">{% trans 'Cost' %}</th>
+                    <th style="min-width: 200px">{% trans 'Plus amount' %}</th>
+                    <th style="min-width: 30px"></th>
+                </tr>
+            </thead>
+        </table>
+        <button hidden type="button" class="btn btn-xs btn-primary mt-2" id="insert-component-btn">
+            <span>
+                <span class="icon">
+                    <span class="feather-icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
+                </span>
+                <span>{% trans "Insert component" %}</span>
+            </span>
+        </button>
+    </div>
+</div>

@@ -847,7 +847,7 @@ class MenusProduction:
                 name='Product modification BOM',
                 code='id_menu_product_modification_bom',
                 view_name='ProductModificationBOMList',
-                icon='<i class="fa-solid fa-boxes-stacked"></i>',
+                icon='<i class="fas fa-wrench"></i>>',
             ),
         ],
     )

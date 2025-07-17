@@ -2425,7 +2425,6 @@ class WFRTControl {
 
     static callWFSubmitForm(_form) {
         let IDRuntime = WFRTControl.getRuntimeWF();
-        let $eleCode = $('#documentCode');
         let currentEmployee = $x.fn.getEmployeeCurrentID();
         let docData = WFRTControl.getRuntimeDocData();
         // Check currency
@@ -2437,15 +2436,16 @@ class WFRTControl {
             _form.dataForm['currency_exchange_data'] = dataCurrency?.['currency_exchange_data'];
             _form.dataForm['currency_exchange_rate'] = dataCurrency?.['currency_exchange_rate'];
         }
-        // Check CR
-        if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === currentEmployee && $eleCode && $eleCode.length > 0 && _form.dataMethod.toLowerCase() === 'put') {
+        // Check submit CR
+        if (docData?.['system_status'] === 3 && docData?.['employee_inherit']?.['id'] === currentEmployee && docData?.['code'] && _form.dataMethod.toLowerCase() === 'put') {
             let $eleForm = $(`#${globeFormMappedZone}`);
             let docRootID = docData?.['document_root_id'];
             let docChangeOrder = docData?.['document_change_order'] + 1;
+            let code = docData?.['code'];
             if ($eleForm && $eleForm.length > 0 && docRootID) {
                 _form.dataMethod = 'POST';
                 _form.dataUrl = $eleForm.attr('data-url-cr');
-                _form.dataForm['code'] = $eleCode.text();
+                _form.dataForm['code'] = code;
                 _form.dataForm['system_status'] = 1;
                 _form.dataForm['is_change'] = true;
                 _form.dataForm['document_root_id'] = docRootID;

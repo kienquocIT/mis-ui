@@ -46,7 +46,7 @@ $(function () {
                     else $('#btnDeliverySaleOrder').addClass('hidden');
 
                     // init print
-                    new PrintTinymceControl().render('010404b3-bb91-4b24-9538-075f5f00ef14', data, false);
+                    // new PrintTinymceControl().render('010404b3-bb91-4b24-9538-075f5f00ef14', data, false);
                 }
             }
         )

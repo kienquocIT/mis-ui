@@ -151,6 +151,9 @@ $(function () {
                                 let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
                                 let daysLeft = daysBetween(currentDate, dueDate);
                                 if (daysLeft >= 0) {
+                                    if (row?.['ar_invoice_data']?.['id'] || row?.['ap_invoice_data']?.['id']) {
+                                        return `<span class="badge text-dark-10 fs-8 bg-pink-light-4">${$transFact.attr('data-partially-paid')}</span>`;
+                                    }
                                     return `<span class="badge text-dark-10 fs-8 bg-yellow-light-4">${$transFact.attr('data-not-paid')}</span>`;
                                 }
                                 return `<span class="badge text-dark-10 fs-8 bg-red-light-4">${$transFact.attr('data-over-due')}</span>`;
@@ -553,6 +556,9 @@ $(function () {
                             let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
                             let daysLeft = daysBetween(currentDate, dueDate);
                             if (daysLeft >= 0) {
+                                if (row?.['ar_invoice_data']?.['id'] || row?.['ap_invoice_data']?.['id']) {
+                                    return `<span class="badge text-dark-10 fs-8 bg-pink-light-4">${$transFact.attr('data-partially-paid')}</span>`;
+                                }
                                 return `<span class="badge text-dark-10 fs-8 bg-yellow-light-4">${$transFact.attr('data-not-paid')}</span>`;
                             }
                             return `<span class="badge text-dark-10 fs-8 bg-red-light-4">${$transFact.attr('data-over-due')}</span>`;
@@ -588,13 +594,13 @@ $(function () {
                     render: (data, type, row) => {
                         if (row?.['is_total_in'] === true) {
                             return `<div class="d-flex justify-content-between">
-                                        <b>Total cash in</b>
+                                        <b>${$transFact.attr('data-total-cash-in')}</b>
                                         <b><i class="fa-solid fa-arrow-left text-green"></i></b>
                                     </div>`;
                         }
                         if (row?.['is_total_out'] === true) {
                             return `<div class="d-flex justify-content-between">
-                                        <b>Total cash out</b>
+                                        <b>${$transFact.attr('data-total-cash-out')}</b>
                                         <b><i class="fa-solid fa-arrow-right text-red"></i></b>
                                     </div>`;
                         }

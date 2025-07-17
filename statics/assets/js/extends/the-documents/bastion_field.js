@@ -327,7 +327,7 @@ class BastionFieldControl {
     }
 
     initOppSelect(opts) {
-        if (this.oppEle instanceof jQuery && this.oppEle.length === 1 && !this.oppEle.hasClass("select2-hidden-accessible")) {
+        if (this.oppEle instanceof jQuery && this.oppEle.length === 1) {
             let clsThis = this;
 
             // active events

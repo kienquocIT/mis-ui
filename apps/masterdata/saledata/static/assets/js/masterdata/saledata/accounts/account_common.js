@@ -303,15 +303,15 @@ class AccountPageFunction {
                     className: 'w-10',
                     render: (data, type, row) => {
                         return `<div class="form-check">
-                                    <input ${option === 'detail' ? 'disabled' : ''} type="radio" class="form-check-input" name="shippingaddressRadio" ${row?.['address_data']?.['is_default'] ? 'checked' : ''}>
+                                    <input ${option === 'detail' ? 'disabled' : ''} type="radio" class="form-check-input shippingaddressRadio" name="shippingaddressRadio" ${row?.['is_default'] ? 'checked' : ''}>
                                 </span>
-                                <span hidden class="address_data">${row?.['address_data']}</span>`
+                                <script class="address_data">${JSON.stringify(row?.['address_data'] || {})}</script>`
                     }
                 },
                 {
                     className: 'w-80',
                     render: (data, type, row) => {
-                        return `<span class="shipping_address_full_address">${row?.['address_data']?.['full_address']}</span>`
+                        return `<span class="shipping_address_full_address">${row?.['full_address']}</span>`
                     }
                 },
                 {
@@ -654,6 +654,8 @@ class AccountPageFunction {
         $('#shipping-address-table tbody tr').each(function (index, ele) {
             if ($(ele).find('.dataTables_empty').length === 0) {
                 shipping_address.push({
+                    'full_address': $(ele).find('.shipping_address_full_address').text(),
+                    'is_default': $(ele).find('.shippingaddressRadio').prop('checked'),
                     'address_data': $(ele).find('.address_data').text() ? JSON.parse($(ele).find('.address_data').text()) : {}
                 })
             }
@@ -1055,13 +1057,13 @@ class AccountEventHandler {
                     UsualLoadPageFunction.AddTableRow(
                         pageElements.$shipping_address_table,
                         {
+                            'full_address': full_address,
+                            'is_default': pageElements.$default_shipping_address.prop('checked'),
                             'address_data': {
                                 'country_id': country_id,
                                 'province_id': province_id,
                                 'ward_id': ward_id,
                                 'detail_address': shipping_address_detail,
-                                'full_address': full_address,
-                                'is_default': pageElements.$default_shipping_address.prop('checked'),
                             }
                         }
                     )

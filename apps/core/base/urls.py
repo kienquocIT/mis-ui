@@ -5,7 +5,8 @@ from apps.core.base.views import (
     ApplicationPropertyEmployeeListAPI, ApplicationPermissionAPI,
     CountryListAPI, CityListAPI, DistrictListAPI, DistrictAllListAPI, WardListAPI, WardAllListAPI,
     BaseCurrencyListAPI, BaseItemUnitListAPI, IndicatorParamListAPI, ApplicationForOpportunityPermitListAPI,
-    ApplicationDetailAPI, ZonesListAPI, ZonesList, ZonesApplicationListAPI, AppEmpConfigListAPI,
+    ApplicationDetailAPI, ZonesListAPI, ZonesList, ZonesApplicationListAPI, AppEmpConfigListAPI, NProvinceListAPI,
+    NWardListAPI,
 )
 
 urlpatterns = [
@@ -41,5 +42,7 @@ urlpatterns = [
     path('zones/api/list', ZonesListAPI.as_view(), name='ZonesListAPI'),
     # employee config on app
     path('app-emp-config/api/list', AppEmpConfigListAPI.as_view(), name='AppEmpConfigListAPI'),
-
+] + [
+    path('location/nprovinces/api', NProvinceListAPI.as_view(), name='NProvinceListAPI'),
+    path('location/nwards/api', NWardListAPI.as_view(), name='NWardListAPI'),
 ]

@@ -124,44 +124,7 @@
                             </div>
                             <div class="col-12">
                                 <h6 class="text-muted fw-bold">{% trans "Head office address" %}</h6>
-                                <div class="card card-body bg-light">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label class="form-label" for="bank_detail_address">{% trans "Detail address" %}</label>
-                                                <textarea class="form-control" placeholder="No. 123, Le Loi St." type="text" id="bank_detail_address"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label for="bank_country" class="form-label">{% trans "Country" %}</label>
-                                                <select class="form-select" id="bank_country" data-url="{% url "CountryListAPI" %}" data-method="GET"></select>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label for="bank_city" class="form-label">{% trans "Province" %}</label>
-                                                <select class="form-select" id="bank_city" data-url="{% url "CityListAPI" %}" data-method="GET"></select>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label for="bank_district" class="form-label">{% trans "District" %}</label>
-                                                <select class="form-select" id="bank_district"
-                                                        data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
-                                                ></select>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label for="bank_ward" class="form-label">{% trans "Ward" %}</label>
-                                                <select class="form-select" id="bank_ward"
-                                                        data-url="{% url "WardAllListAPI" %}" data-method="GET"
-                                                ></select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                {% include 'extends/location/common_address.html' %}
                             </div>
                         </div>
                     </form>
@@ -225,44 +188,7 @@
                             </div>
                             <div class="col-12 for-brand" hidden>
                                 <h6 class="text-muted fw-bold">{% trans "Brand address" %}</h6>
-                                <div class="card card-body bg-light">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label class="form-label" for="bank_account_detail_address">{% trans "Detail address" %}</label>
-                                                <textarea class="form-control" placeholder="No. 123, Le Loi St." type="text" id="bank_account_detail_address"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label for="bank_account_country" class="form-label">{% trans "Country" %}</label>
-                                                <select class="form-select" id="bank_account_country" data-url="{% url "CountryListAPI" %}" data-method="GET"></select>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label for="bank_account_city" class="form-label">{% trans "Province" %}</label>
-                                                <select class="form-select" id="bank_account_city" data-url="{% url "CityListAPI" %}" data-method="GET"></select>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label for="bank_account_district" class="form-label">{% trans "District" %}</label>
-                                                <select class="form-select" id="bank_account_district"
-                                                        data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
-                                                ></select>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label for="bank_account_ward" class="form-label">{% trans "Ward" %}</label>
-                                                <select class="form-select" id="bank_account_ward"
-                                                        data-url="{% url "WardAllListAPI" %}" data-method="GET"
-                                                ></select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                {% include 'extends/location/common_address.html' %}
                             </div>
                         </div>
                     </form>

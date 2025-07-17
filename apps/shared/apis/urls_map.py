@@ -409,6 +409,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DISTRICTS = StringUrl('base/location/districts')
     WARDS = StringUrl('base/location/wards')
     BASE_CURRENCY = StringUrl('base/currencies')
+    NPROVINCES = StringUrl('base/location/nprovinces')
+    NWARDS = StringUrl('base/location/nwards')
 
     # master-data/ promotion
     PROMOTION_LIST = StringUrl('promotion/list')

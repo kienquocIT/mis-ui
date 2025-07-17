@@ -7426,7 +7426,7 @@ msgstr "SL còn lại"
 
 #
 msgid "Order value"
-msgstr "GT đơn hàng"
+msgstr "Giá trị đơn hàng"
 
 #
 msgid "Received value"

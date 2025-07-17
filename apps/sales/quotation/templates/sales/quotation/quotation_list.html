@@ -33,7 +33,7 @@
             <th>{% trans 'Customer' %}</th>
             <th>{% trans 'Sale person' %}</th>
             <th>{% trans 'Created Date' %}</th>
-            <th>{% trans 'Quotation Value' %}</th>
+            <th>{% trans 'Quotation value' %}</th>
             <th>{% trans 'Status' %}</th>
             <th></th>
         </tr>
@@ -44,7 +44,7 @@
 
     <div class="modal-canvas-area">
 
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
+        <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
             <div class="modal-header">
                 <h5><b>{% trans 'Filter' %}</b></h5>
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
@@ -68,7 +68,7 @@
                 </div>
                 <div class="row">
                     <div class="form-group">
-                        <label class="form-label mt-2" for="customer_dd">{% trans 'Customer' %}</label>
+                        <label class="form-label" for="customer_dd">{% trans 'Customer' %}</label>
                         <select
                                 class="form-select"
                                 id="customer_dd"
@@ -83,16 +83,16 @@
                 <div class="row">
                     <div class="col-12 col-md-2 col-lg-2">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="operator">{% trans 'Operator' %}</label>
+                            <label class="form-label" for="operator">{% trans 'operator' %}</label>
                             <select
                                     class="form-select"
                                     id="operator"
                             ></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-10 col-lg-10">
+                    <div class="col-12 col-md-4 col-lg-4">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="total">{% trans 'Quotation Value' %}</label>
+                            <label class="form-label" for="total">{% trans 'Quotation value' %}</label>
                             <input
                                 type="text"
                                 class="form-control mask-money valid-num"
@@ -105,7 +105,7 @@
                 </div>
                 <b>{% trans 'Date approved' %}</b>
                 <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label" for="date_from">{% trans 'From' %}</label>
                             <div class="input-affix-wrapper">
@@ -117,7 +117,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label" for="date_to">{% trans 'To' %}</label>
                             <div class="input-affix-wrapper">

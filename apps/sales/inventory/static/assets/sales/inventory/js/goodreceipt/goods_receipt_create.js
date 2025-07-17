@@ -13,7 +13,7 @@ $(function () {
 
         // run datetimepicker
         $('.date-picker').each(function () {
-            DateTimeControl.initDatePicker(this);
+            DateTimeControl.initFlatPicker(this);
         });
 
         // attachment
@@ -132,28 +132,25 @@ $(function () {
         });
 
         GRDataTableHandle.tableLot.on('change', '.table-row-import', function () {
+            let rowCurrent = this.closest('tr');
             GRStoreDataHandle.storeDataProduct();
             let check = GRLoadDataHandle.loadCheckExceedQuantity();
             if (check === false) {
-                let rowIndex = GRDataTableHandle.tableLot.DataTable().row(this.closest('tr')).index();
+                let rowIndex = GRDataTableHandle.tableLot.DataTable().row(rowCurrent).index();
                 let row = GRDataTableHandle.tableLot.DataTable().row(rowIndex);
                 row.remove().draw();
                 GRStoreDataHandle.storeDataProduct();
             }
+            GRLoadDataHandle.loadDateDateDtbLot();
         });
 
         GRDataTableHandle.tableLot.on('change', '.date-picker', function () {
             let row = this.closest('tr');
             GRLoadDataHandle.loadDataIfChangeDateLotRow(row);
-            GRStoreDataHandle.storeDataProduct();
         });
 
         GRDataTableHandle.tableSerial.on('change', '.table-row-serial-number', function () {
             GRLoadDataHandle.loadCheckApplySerial(this);
-        });
-
-        GRDataTableHandle.tableSerial.on('change', '.date-picker', function () {
-            GRStoreDataHandle.storeDataProduct();
         });
 
         GRDataTableHandle.tableLineDetailPO.on('change', '.table-row-price, .table-row-tax', function () {
@@ -170,11 +167,13 @@ $(function () {
         GRDataTableHandle.tableLot.on('click', '.del-row', function () {
             deleteRowGR(this.closest('tr'), GRDataTableHandle.tableLot);
             GRStoreDataHandle.storeDataProduct();
+            GRLoadDataHandle.loadDateDateDtbLot();
         });
 
         GRDataTableHandle.tableSerial.on('click', '.del-row', function () {
             deleteRowGR(this.closest('tr'), GRDataTableHandle.tableSerial);
             GRStoreDataHandle.storeDataProduct();
+            GRLoadDataHandle.loadDateDateDtbSerial();
         });
 
         // IA BEGIN

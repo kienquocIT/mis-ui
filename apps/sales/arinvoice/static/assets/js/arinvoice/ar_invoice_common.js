@@ -24,7 +24,7 @@ class ARInvoicePageElements {
         this.$view_payment_term = $('#view-payment-term')
         this.$payment_term_info_table = $('#payment-term-info-table')
         this.$invoice_method = $('#invoice-method')
-        this.$bank_number = $('#bank-number')
+        this.$bank_info = $('#bank-info')
         this.$posting_date = $('#posting-date')
         this.$document_date = $('#document-date')
         this.$note = $('#note')
@@ -145,6 +145,19 @@ class ARInvoicePageFunction {
                 pageElements.$btn_group_for_delivery_ar.addClass('disabled')
                 pageElements.$btn_add_optionally.removeClass('disabled')
             }
+        })
+    }
+    static LoadCompanyBankAccount(data) {
+        pageElements.$bank_info.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: pageElements.$bank_info.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'bank_account_list',
+            keyId: 'id',
+            keyText: 'title',
         })
     }
     // tab
@@ -737,7 +750,7 @@ class ARInvoiceHandler {
         frm.dataForm['tax_number'] = pageElements.$tax_code.val()
         frm.dataForm['billing_address_id'] = pageElements.$billing_address.val() || null
         frm.dataForm['invoice_method'] = pageElements.$invoice_method.val()
-        frm.dataForm['bank_account_id'] = pageElements.$bank_number.val() || null
+        frm.dataForm['company_bank_account'] = pageElements.$bank_info.val() || null
         frm.dataForm['sale_order_mapped'] = pageElements.$sale_order.val() || null
         frm.dataForm['note'] = pageElements.$note.val()
         frm.dataForm['posting_date'] = moment(pageElements.$posting_date.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
@@ -826,23 +839,16 @@ class ARInvoiceHandler {
                             <option value="${data?.['customer_mapped_data']?.['billing_address_list'][i]?.['id']}">${data?.['customer_mapped_data']?.['billing_address_list'][i]?.['full_address']}</option>
                         `)
                     }
-                    for (let i = 0; i < (data?.['customer_mapped_data']?.['bank_account_list'] || []).length; i++) {
-                        let bank_account_name = data?.['customer_mapped_data']?.['bank_account_list'][i]?.['bank_account_name']
-                        let bank_account_number = data?.['customer_mapped_data']?.['bank_account_list'][i]?.['bank_account_number']
-                        let bank_code = data?.['customer_mapped_data']?.['bank_account_list'][i]?.['bank_code']
-                        let bank_name = data?.['customer_mapped_data']?.['bank_account_list'][i]?.['bank_name']
-                        pageElements.$bank_number.append(`
-                            <option value="${data?.['customer_mapped_data']?.['bank_account_list'][i]?.['id']}">${bank_name} (${bank_code}) - ${bank_account_number} (${bank_account_name})</option>
-                        `)
-                    }
                     pageElements.$billing_address.val(data?.['customer_mapped_data']?.['billing_address_id'])
-                    pageElements.$bank_number.val(data?.['customer_mapped_data']?.['bank_account_id'])
+                    ARInvoicePageFunction.LoadCompanyBankAccount(data?.['company_bank_account_data'])
                     pageElements.$invoice_method.val(data?.['invoice_method'])
                     if (data?.['invoice_method'] === 1) {
-                        pageElements.$bank_number.closest('.form-group').find('label').removeClass('required')
+                        pageElements.$bank_info.closest('.form-group').find('label').removeClass('required')
+                        pageElements.$bank_info.prop('disabled', true)
                     }
                     else {
-                        pageElements.$bank_number.closest('.form-group').find('label').addClass('required')
+                        pageElements.$bank_info.closest('.form-group').find('label').addClass('required')
+                        pageElements.$bank_info.prop('disabled', false)
                     }
                     ARInvoicePageFunction.LoadSaleOrder(data?.['sale_order_mapped_data'])
 
@@ -920,12 +926,15 @@ class ARInvoiceEventHandler {
     static InitPageEven() {
         pageElements.$invoice_method.on('change', function () {
             if ($(this).val() === '1') {
-                pageElements.$bank_number.closest('.form-group').find('label').removeClass('required')
-                pageElements.$bank_number.prop('required', false)
+                pageElements.$bank_info.closest('.form-group').find('label').removeClass('required')
+                pageElements.$bank_info.prop('required', false)
+                pageElements.$bank_info.prop('disabled', true)
+                pageElements.$bank_info.empty()
             }
             else {
-                pageElements.$bank_number.closest('.form-group').find('label').addClass('required')
-                pageElements.$bank_number.prop('required', true)
+                pageElements.$bank_info.closest('.form-group').find('label').addClass('required')
+                pageElements.$bank_info.prop('required', true)
+                pageElements.$bank_info.prop('disabled', false)
             }
         })
         pageElements.$customer_select_btn.on('click', function () {
@@ -942,15 +951,6 @@ class ARInvoiceEventHandler {
                     for (let i = 0; i < (selected_obj?.['billing_address'] || []).length; i++) {
                         pageElements.$billing_address.append(`
                             <option ${selected_obj?.['billing_address'][i]?.['is_default'] ? 'selected' : ''} value="${selected_obj?.['billing_address'][i]?.['id']}">${selected_obj?.['billing_address'][i]?.['full_address']}</option>
-                        `)
-                    }
-                    for (let i = 0; i < (selected_obj?.['bank_accounts_mapped'] || []).length; i++) {
-                        let bank_account_name = selected_obj?.['bank_accounts_mapped'][i]?.['bank_account_name']
-                        let bank_account_number = selected_obj?.['bank_accounts_mapped'][i]?.['bank_account_number']
-                        let bank_code = selected_obj?.['bank_accounts_mapped'][i]?.['bank_code']
-                        let bank_name = selected_obj?.['bank_accounts_mapped'][i]?.['bank_name']
-                        pageElements.$bank_number.append(`
-                            <option value="${selected_obj?.['bank_accounts_mapped'][i]?.['id']}">${bank_name} (${bank_code}) - ${bank_account_number} (${bank_account_name})</option>
                         `)
                     }
                     pageElements.$sale_order.prop('disabled', false)

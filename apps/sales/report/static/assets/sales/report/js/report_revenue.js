@@ -18,6 +18,7 @@ $(function () {
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
+                scrollY: "450px",
                 pageLength: 50,
                 columns: [
                     {

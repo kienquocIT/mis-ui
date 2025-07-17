@@ -2271,7 +2271,7 @@ class PODataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '18%',
                     render: (data, type, row) => {
                         let readonly = "readonly";
                         if (row?.['is_shipping'] === true) {

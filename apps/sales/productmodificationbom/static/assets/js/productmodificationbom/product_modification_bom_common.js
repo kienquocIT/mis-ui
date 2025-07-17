@@ -471,7 +471,7 @@ class ProductModificationBOMHandler {
                 if (data) {
                     data = data['product_modification_bom_detail'];
 
-                    console.log(data)
+                    // console.log(data)
 
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
@@ -480,6 +480,8 @@ class ProductModificationBOMHandler {
                     pageElements.$created_date.val(data?.['date_created'] ? DateTimeControl.formatDateType("YYYY-MM-DD hh:mm:ss", "DD/MM/YYYY", data?.['date_created']) : '')
                     pageVariables.current_product_modified = data?.['product_mapped_data']
                     pageVariables.current_product_modified['id'] = data?.['product_mapped_data']?.['id']
+                    pageVariables.current_product_modified['base_cost'] = data?.['base_cost']
+                    pageVariables.current_product_modified['modified_cost'] = data?.['modified_cost']
                     ProductModificationBOMPageFunction.LoadTableCurrentProductModified(
                         [pageVariables.current_product_modified],
                         data?.['base_cost'],
@@ -554,24 +556,25 @@ class ProductModificationBOMEventHandler {
                                 if (Object.keys(item?.['component_product_data']).length !== 0) {
                                     let component_product_data = item?.['component_product_data']
                                     parsed_current_component_data.push({
-                                        'order': item?.['order'],
-                                        'component_id': component_product_data?.['id'] || '',
-                                        // 'component_code': component_product_data?.['code'] || '',
-                                        // coi như 1 SP mới chứa các component
-                                        'component_code': '',
-                                        'component_name': component_product_data?.['title'] || '',
-                                        'component_des': component_product_data?.['description'] || '',
-                                        'component_quantity': item?.['component_quantity'],
+                                        "id": component_product_data?.['id'] || '',
+                                        "order": item?.['order'],
+                                        "component_text_data": {
+                                            "title": component_product_data?.['title'] || '',
+                                            'description': component_product_data?.['description'] || '',
+                                        },
+                                        "base_quantity": item?.['component_quantity'],
+                                        "cost": 0,
+                                        "subtotal": 0
                                     })
                                 }
                                 else {
-                                    let component_text_data = item?.['component_text_data']
                                     parsed_current_component_data.push({
-                                        'order': item?.['order'],
-                                        'component_id': item?.['component_id'] || '',
-                                        'component_name': component_text_data?.['title'] || '',
-                                        'component_des': component_text_data?.['description'] || '',
-                                        'component_quantity': item?.['component_quantity']
+                                        "id": item?.['component_id'] || '',
+                                        "order": item?.['order'],
+                                        "component_text_data": item?.['component_text_data'],
+                                        "base_quantity": item?.['component_quantity'],
+                                        "cost": 0,
+                                        "subtotal": 0
                                     })
                                 }
                             }
@@ -641,13 +644,15 @@ class ProductModificationBOMEventHandler {
                     let component_quantity = $(ele).find('.init-component-quantity').val() || ''
                     if (component_name && Number(component_quantity) > 0) {
                         init_component.push({
-                            "type": 0,
-                            "component_order": component_order,
-                            "component_id": component_id,
-                            "component_code": '',
-                            "component_name": component_name,
-                            "component_des": component_des,
-                            "component_quantity": component_quantity,
+                            "id": component_id,
+                            "order": component_order,
+                            "component_text_data": {
+                                "title": component_name,
+                                "description": component_des,
+                            },
+                            "base_quantity": component_quantity,
+                            "cost": 0,
+                            "subtotal": 0
                         })
                     } else {
                         $.fn.notifyB({description: `Missing component information at row ${component_order}`}, 'failure');

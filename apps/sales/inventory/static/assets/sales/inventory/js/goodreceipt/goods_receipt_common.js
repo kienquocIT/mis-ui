@@ -133,22 +133,6 @@ class GRLoadDataHandle {
         return true;
     };
 
-    static loadDatePicker($ele) {
-        $ele.daterangepicker({
-            singleDatePicker: true,
-            timepicker: false,
-            showDropdowns: false,
-            minYear: 2023,
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            maxYear: parseInt(moment().format('YYYY'), 10),
-            drops: 'up',
-            autoApply: true,
-        });
-        return true;
-    };
-
     static loadCustomAreaByType() {
         // Custom Area
         for (let eleArea of GRLoadDataHandle.$form[0].querySelectorAll('.custom-area')) {
@@ -763,10 +747,8 @@ class GRLoadDataHandle {
                     for (let lot_data of dataStore?.['lot_data']) {
                         let newRow = GRDataTableHandle.tableLot.DataTable().row.add(lot_data).draw().node();
                         GRLoadDataHandle.loadDDLot(newRow.querySelector('.dropdown-menu-lot'), lot_data?.['lot']);
-                        for (let ele of newRow.querySelectorAll('.date-picker')) {
-                            GRLoadDataHandle.loadDatePicker($(ele));
-                        }
                     }
+                    GRLoadDataHandle.loadDateDateDtbLot();
                 }
                 if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
                     GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableLot);
@@ -789,7 +771,7 @@ class GRLoadDataHandle {
         }
         let newRow = GRDataTableHandle.tableLot.DataTable().row.add(data).draw().node();
         for (let ele of newRow.querySelectorAll('.date-picker')) {
-            GRLoadDataHandle.loadDatePicker($(ele));
+            $(ele).val(DateTimeControl.getCurrentDate("DMY", "/"));
         }
         GRLoadDataHandle.loadDDLot(newRow.querySelector('.dropdown-menu-lot'));
         return true;
@@ -913,11 +895,9 @@ class GRLoadDataHandle {
                 }
                 if (dataStore?.['serial_data']) {
                     for (let serial_data of dataStore?.['serial_data']) {
-                        let newRow = GRDataTableHandle.tableSerial.DataTable().row.add(serial_data).draw().node();
-                        for (let ele of newRow.querySelectorAll('.date-picker')) {
-                            GRLoadDataHandle.loadDatePicker($(ele));
-                        }
+                        GRDataTableHandle.tableSerial.DataTable().row.add(serial_data).draw().node();
                     }
+                    GRLoadDataHandle.loadDateDateDtbSerial();
                 }
                 if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
                     GRLoadDataHandle.loadTableDisabled(GRDataTableHandle.tableSerial);
@@ -942,7 +922,7 @@ class GRLoadDataHandle {
         }
         let newRow = GRDataTableHandle.tableSerial.DataTable().row.add(data).draw().node();
         for (let ele of newRow.querySelectorAll('.date-picker')) {
-            GRLoadDataHandle.loadDatePicker($(ele));
+            $(ele).val(DateTimeControl.getCurrentDate("DMY", "/"));
         }
         return true;
     };
@@ -1015,6 +995,8 @@ class GRLoadDataHandle {
                                     }
                                 }
                                 GRStoreDataHandle.storeDataProduct();
+                                // load data date
+                                GRLoadDataHandle.loadDateDateDtbLot();
                                 return true;
                             }
                         }
@@ -1023,6 +1005,34 @@ class GRLoadDataHandle {
             }
         }
         return true
+    };
+
+    static loadDateDateDtbLot() {
+        GRDataTableHandle.tableLot.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = GRDataTableHandle.tableLot.DataTable().row(row).index();
+            let $row = GRDataTableHandle.tableLot.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+            let exEle = row.querySelector('.table-row-expire-date');
+            let mfEle = row.querySelector('.table-row-manufacture-date');
+            if (exEle && mfEle) {
+                if (dataRow?.['expire_date']) {
+                    $(exEle).val(DateTimeControl.formatDateType(
+                        'YYYY-MM-DD hh:mm:ss',
+                        'DD/MM/YYYY',
+                        dataRow?.['expire_date']
+                    ));
+                }
+                if (dataRow?.['manufacture_date']) {
+                    $(mfEle).val(DateTimeControl.formatDateType(
+                        'YYYY-MM-DD hh:mm:ss',
+                        'DD/MM/YYYY',
+                        dataRow?.['manufacture_date']
+                    ));
+                }
+            }
+        });
+        return;
     };
 
     static loadCheckApplySerial(ele) {
@@ -1068,14 +1078,17 @@ class GRLoadDataHandle {
                                     }
                                 }
                                 // if check pass => apply
+                                let rowTarget = ele.closest('tr');
                                 GRStoreDataHandle.storeDataProduct();
                                 let check = GRLoadDataHandle.loadCheckExceedQuantity();
                                 if (check === false) {
-                                    let rowIndex = GRDataTableHandle.tableSerial.DataTable().row(ele.closest('tr')).index();
+                                    let rowIndex = GRDataTableHandle.tableSerial.DataTable().row(rowTarget).index();
                                     let row = GRDataTableHandle.tableSerial.DataTable().row(rowIndex);
                                     row.remove().draw();
                                     GRStoreDataHandle.storeDataProduct();
                                 }
+                                // load data date
+                                GRLoadDataHandle.loadDateDateDtbSerial();
                                 return true;
                             }
                         }
@@ -1084,6 +1097,50 @@ class GRLoadDataHandle {
             }
         }
         return true;
+    };
+
+    static loadDateDateDtbSerial() {
+        GRDataTableHandle.tableSerial.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = GRDataTableHandle.tableSerial.DataTable().row(row).index();
+            let $row = GRDataTableHandle.tableSerial.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+            let exEle = row.querySelector('.table-row-expire-date');
+            let mfEle = row.querySelector('.table-row-manufacture-date');
+            let wsEle = row.querySelector('.table-row-warranty-start');
+            let weEle = row.querySelector('.table-row-warranty-end');
+            if (exEle && mfEle && wsEle && weEle) {
+                if (dataRow?.['expire_date']) {
+                    $(exEle).val(DateTimeControl.formatDateType(
+                        'YYYY-MM-DD hh:mm:ss',
+                        'DD/MM/YYYY',
+                        dataRow?.['expire_date']
+                    ));
+                }
+                if (dataRow?.['manufacture_date']) {
+                    $(mfEle).val(DateTimeControl.formatDateType(
+                        'YYYY-MM-DD hh:mm:ss',
+                        'DD/MM/YYYY',
+                        dataRow?.['manufacture_date']
+                    ));
+                }
+                if (dataRow?.['warranty_start']) {
+                    $(wsEle).val(DateTimeControl.formatDateType(
+                        'YYYY-MM-DD hh:mm:ss',
+                        'DD/MM/YYYY',
+                        dataRow?.['warranty_start']
+                    ));
+                }
+                if (dataRow?.['warranty_end']) {
+                    $(weEle).val(DateTimeControl.formatDateType(
+                        'YYYY-MM-DD hh:mm:ss',
+                        'DD/MM/YYYY',
+                        dataRow?.['warranty_end']
+                    ));
+                }
+            }
+        });
+        return;
     };
 
     static loadCheckExceedQuantity() {
@@ -1970,6 +2027,11 @@ class GRDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                for (let ele of row.querySelectorAll('.date-picker')) {
+                    DateTimeControl.initFlatPicker(ele);
+                }
+            },
             drawCallback: function () {
                 if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                     GRDataTableHandle.dtbLotHDCustom();
@@ -2059,6 +2121,11 @@ class GRDataTableHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                for (let ele of row.querySelectorAll('.date-picker')) {
+                    DateTimeControl.initFlatPicker(ele);
+                }
+            },
             drawCallback: function () {
                 if (GRLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                     GRDataTableHandle.dtbSerialHDCustom();
@@ -2566,7 +2633,7 @@ class GRStoreDataHandle {
                     }
                     tableSerial.DataTable().row(rowIndex).data(rowData);
                     for (let ele of row.querySelectorAll('.date-picker')) {
-                        GRLoadDataHandle.loadDatePicker($(ele));
+                        DateTimeControl.initFlatPicker(ele);
                     }
                     serial_data.push(rowData);
                 }
@@ -2604,7 +2671,7 @@ class GRStoreDataHandle {
                     }
                     tableLot.DataTable().row(rowIndex).data(rowData);
                     for (let ele of row.querySelectorAll('.date-picker')) {
-                        GRLoadDataHandle.loadDatePicker($(ele));
+                        DateTimeControl.initFlatPicker(ele);
                     }
                     lot_data.push(rowData);
                 }

@@ -2651,23 +2651,25 @@ class QuotationLoadDataHandle {
     };
 
     static loadDropDowns(table) {
-        if (table[0].id === "datable-quotation-create-product" || table[0].id === "datable-quotation-create-cost") {  // PRODUCT || COST
-            table.DataTable().rows().every(function () {
-                let row = this.node();
+        if (table[0]) {
+            if (table[0].id === "datable-quotation-create-product" || table[0].id === "datable-quotation-create-cost") {  // PRODUCT || COST
+                table.DataTable().rows().every(function () {
+                    let row = this.node();
 
-                if (!row.querySelector('.table-row-group')) {
-                    if (table[0].id === "datable-quotation-create-product") {  // PRODUCT
-                        for (let ele of table[0].querySelectorAll('.btn-select-price')) {
-                            ele.removeAttribute('disabled');
+                    if (!row.querySelector('.table-row-group')) {
+                        if (table[0].id === "datable-quotation-create-product") {  // PRODUCT
+                            for (let ele of table[0].querySelectorAll('.btn-select-price')) {
+                                ele.removeAttribute('disabled');
+                            }
+                        }
+                        if (table[0].id === "datable-quotation-create-cost") {  // COST
+                            for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
+                                ele.removeAttribute('disabled');
+                            }
                         }
                     }
-                    if (table[0].id === "datable-quotation-create-cost") {  // COST
-                        for (let ele of table[0].querySelectorAll('.btn-select-cost')) {
-                            ele.removeAttribute('disabled');
-                        }
-                    }
-                }
-            });
+                });
+            }
         }
         return true;
     };
@@ -4553,12 +4555,6 @@ class QuotationDataTableHandle {
                         }
                         let disabled = '';
                         let checked = '';
-                        // if (QuotationDataTableHandle.$tableProduct[0].querySelector(`.table-row-item[data-product-id="${row?.['id']}"]`)) {
-                        //     disabled = 'disabled';
-                        //     checked = 'checked';
-                        //     clsZoneReadonly = 'zone-readonly';
-                        // }
-
                         if (QuotationLoadDataHandle.$productsCheckedEle.val()) {
                             let storeID = JSON.parse(QuotationLoadDataHandle.$productsCheckedEle.val());
                             if (typeof storeID === 'object') {

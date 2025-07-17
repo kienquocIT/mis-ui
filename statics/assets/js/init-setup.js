@@ -7145,6 +7145,31 @@ class DateTimeControl {
             .replace('ss', parts.second || '00');
     }
 
+    static getMonthInfo(month, year) {
+        if (month < 1 || month > 12) {
+            throw new Error("Month must be between 1 and 12");
+        }
+
+        const targetMonth = month - 1; // JS Date dùng month 0-based
+
+        const firstDate = new Date(year, targetMonth, 1);
+        const lastDate = new Date(year, targetMonth + 1, 0);
+
+        const formatDate = (date) => {
+            const dd = String(date.getDate()).padStart(2, '0');
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const yyyy = date.getFullYear();
+            return `${dd}/${mm}/${yyyy}`;
+        };
+
+        return {
+            "month": month,
+            "year": year,
+            "from": formatDate(firstDate),
+            "to": formatDate(lastDate)
+        };
+    }
+
     static initDatePicker(ele) {
         $(ele).daterangepicker({
             singleDatePicker: true,
@@ -7162,6 +7187,73 @@ class DateTimeControl {
         });
         $(ele).val('').trigger('change');
     }
+
+    static initFlatPicker(ele) {
+        if (!ele._flatpickr) {
+            flatpickr(ele, {
+                dateFormat: "d/m/Y",
+                allowInput: true,
+                disableMobile: true,
+                locale: 'vn',
+                onChange: function (selectedDates, dateStr, instance) {
+                    if (selectedDates.length > 0) {
+                        const d = selectedDates[0];
+                        const formatted = ('0' + d.getDate()).slice(-2) + '/' +
+                            ('0' + (d.getMonth() + 1)).slice(-2) + '/' +
+                            d.getFullYear();
+                        $(ele).val(formatted).trigger('change');
+                    }
+                },
+                defaultDate: null
+            });
+
+            $(ele).val('').trigger('change');
+        }
+    }
+
+    static initFlatPickerInMonth(ele, month, year) {
+        // month: 1-based (e.g. 7 for July)
+        const targetMonth = month - 1; // flatpickr uses 0-based months
+        const targetYear = year;
+
+        const startDate = new Date(targetYear, targetMonth, 1);
+        const endDate = new Date(targetYear, targetMonth + 1, 0);
+
+        let fp = flatpickr(ele, {
+            dateFormat: "d/m/Y",
+            allowInput: true,
+            disableMobile: true,
+            locale: 'vn',
+            defaultDate: startDate,
+            minDate: startDate,
+            maxDate: endDate,
+            onChange: function (selectedDates, dateStr, instance) {
+                if (selectedDates.length > 0) {
+                    const d = selectedDates[0];
+                    const formatted = ('0' + d.getDate()).slice(-2) + '/' +
+                        ('0' + (d.getMonth() + 1)).slice(-2) + '/' +
+                        d.getFullYear();
+                    $(ele).val(formatted).trigger('change');
+                }
+            },
+            onReady: function (selectedDates, dateStr, instance) {
+                // Set calendar to desired month/year without triggering restrict logic
+                instance.currentYear = targetYear;
+                instance.changeMonth(targetMonth - instance.currentMonth); // move to desired month
+                instance.redraw();
+            },
+            // Optional: prevent switching month/year manually
+            onMonthChange: function (selectedDates, dateStr, instance) {
+                instance.setDate(startDate, false);
+            },
+            onYearChange: function (selectedDates, dateStr, instance) {
+                instance.setDate(startDate, false);
+            }
+        });
+
+        $(ele).val('').trigger('change');
+    }
+
 }
 
 class Beautiful {

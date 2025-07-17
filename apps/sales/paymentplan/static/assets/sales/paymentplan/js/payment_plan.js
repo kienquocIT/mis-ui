@@ -502,7 +502,7 @@ $(function () {
                         let dateSub = '';
                         if (row?.['invoice_planned_date']) {
                             date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_planned_date']);
-                            dateSub = "Ngày xuất hóa đơn dự kiến: ";
+                            dateSub = `${$transFact.attr('data-expected-invoice-date')}: `;
                         }
                         let paymentStageData = row?.['so_payment_stage_data'];
                         if (row?.['purchase_order_data']?.['id']) {
@@ -528,7 +528,7 @@ $(function () {
                         let dateSub = '';
                         if (row?.['invoice_actual_date']) {
                             date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_actual_date']);
-                            dateSub = "Ngày xuất hóa đơn thực tế:";
+                            dateSub = `${$transFact.attr('data-actual-invoice-date')}: `;
                         }
                         let link = $urlFact.data('ar-invoice-detail').format_url_with_uuid(row?.['ar_invoice_data']?.['id']);
                         let title = row?.['ar_invoice_data']?.['title'] ? row?.['ar_invoice_data']?.['title'] : '';

@@ -958,4 +958,76 @@ class UsualLoadPageFunction {
         }
         element.val(fullname)
     }
+
+    // for location
+    /**
+     * Auto load ô Country
+     * @param {HTMLElement|jQuery} element - element
+     * @param {Object} data - data json
+     * @returns {void}
+     */
+    static LoadLocationCountry(element, data) {
+        element.initSelect2({
+            allowClear: true,
+            data: (data ? data : null),
+            keyResp: 'countries',
+            keyId: 'id',
+            keyText: 'title',
+        }).on('change', function () {
+            element.closest('.card-location').find('.location_province').empty();
+            element.closest('.card-location').find('.location_ward').empty();
+            if (element.val()) {
+                element.closest('.card-location').find('.location_province').attr('data-url', `${element.closest('.card-location').find('.location_province').attr('data-raw-url')}?country_id=${$(this).val()}`)
+                UsualLoadPageFunction.LoadLocationProvince(element.closest('.card-location').find('.location_province'))
+                element.closest('.card-location').find('.location_province').prop('disabled', false);
+                element.closest('.card-location').find('.location_ward').prop('disabled', false);
+            }
+            else {
+                element.closest('.card-location').find('.location_province').prop('disabled', true);
+                element.closest('.card-location').find('.location_ward').prop('disabled', true);
+            }
+        });
+    }
+
+    /**
+     * Auto load ô Province
+     * @param {HTMLElement|jQuery} element - element
+     * @param {Object} data - data json
+     * @returns {void}
+     */
+    static LoadLocationProvince(element, data) {
+        element.initSelect2({
+            allowClear: true,
+            data: (data ? data : null),
+            keyResp: 'nprovinces',
+            keyId: 'id',
+            keyText: 'fullname',
+        }).on('change', function () {
+            element.closest('.card-location').find('.location_ward').empty();
+            if (element.val()) {
+                element.closest('.card-location').find('.location_ward').attr('data-url', `${element.closest('.card-location').find('.location_ward').attr('data-raw-url')}?province_id=${$(this).val()}`)
+                UsualLoadPageFunction.LoadLocationWard(element.closest('.card-location').find('.location_ward'))
+                element.closest('.card-location').find('.location_ward').prop('disabled', false);
+            }
+            else {
+                element.closest('.card-location').find('.location_ward').prop('disabled', true);
+            }
+        });
+    }
+
+    /**
+     * Auto load ô Ward
+     * @param {HTMLElement|jQuery} element - element
+     * @param {Object} data - data json
+     * @returns {void}
+     */
+    static LoadLocationWard(element, data) {
+        element.initSelect2({
+            allowClear: true,
+            data: (data ? data : null),
+            keyResp: 'nwards',
+            keyId: 'id',
+            keyText: 'fullname',
+        });
+    }
 }

@@ -29,9 +29,10 @@ $(document).ready(function () {
         element: $('#slb-contact-owner')
     })
     AccountPageFunction.LoadTableContactMapped()
-    AccountPageFunction.LoadShippingCities()
-    AccountPageFunction.LoadShippingDistrict()
-    AccountPageFunction.LoadShippingWard()
+    // for location
+    UsualLoadPageFunction.LoadLocationCountry($('#modal-shipping-address .location_country'))
+    UsualLoadPageFunction.LoadLocationProvince($('#modal-shipping-address .location_province'))
+    UsualLoadPageFunction.LoadLocationWard($('#modal-shipping-address .location_ward'))
     AccountPageFunction.LoadTableShippingAddress()
     AccountPageFunction.LoadTableBillingAddress()
     AccountPageFunction.LoadTableBankAccount()

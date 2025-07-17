@@ -12089,4 +12089,4 @@ msgstr "Ngày xuất hóa đơn dự kiến"
 
 #
 msgid "Actual invoice date"
-msgstr "Ngày xuất hóa đơn dự kiến"
+msgstr "Ngày xuất hóa đơn thực tế"

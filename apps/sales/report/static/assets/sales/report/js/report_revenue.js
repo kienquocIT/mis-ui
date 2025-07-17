@@ -301,7 +301,7 @@ $(function () {
             FormElementControl.loadInitS2(boxEmployee, [], {}, null, true);
             // init date picker
             $('.date-picker').each(function () {
-                DateTimeControl.initDatePicker(this);
+                DateTimeControl.initFlatPicker(this);
             });
             loadDbl();
             storeLoadInitByDataFiscalYear();

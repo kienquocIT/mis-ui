@@ -4,6 +4,8 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 {% block pageAction %}{% endblock %}
@@ -60,44 +62,48 @@
 
     <div class="modal-canvas-area">
 
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
+        <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
             <div class="modal-header">
                 <h5><b>{% trans 'Filter' %}</b></h5>
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
             <div class="offcanvas-body">
-                <div class="row">
-                    <div class="form-group">
-                        <label class="form-label" for="box-report-revenue-group">{% trans 'Group' %}</label>
-                        <select
-                                class="form-select"
-                                id="box-report-revenue-group"
-                                data-url="{% url "GroupListAPI" %}"
-                                data-method="GET"
-                                data-link-detail="{% url "GroupDetail" 1 %}"
-                                name="group"
-                                data-keyResp="group_list"
-                                multiple
-                        ></select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        <label class="form-label" for="box-report-revenue-employee">{% trans 'Employee' %}</label>
-                        <select
-                                class="form-select"
-                                id="box-report-revenue-employee"
-                                data-url="{% url "EmployeeListAPI" %}"
-                                data-method="GET"
-                                name="employee"
-                                data-keyResp="employee_list"
-                                data-keyText="full_name"
-                                multiple
-                        ></select>
-                    </div>
-                </div>
+                <b>{% trans 'Common information' %}</b>
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="box-report-revenue-group">{% trans 'Group' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-report-revenue-group"
+                                    data-url="{% url "GroupListAPI" %}"
+                                    data-method="GET"
+                                    data-link-detail="{% url "GroupDetail" 1 %}"
+                                    name="group"
+                                    data-keyResp="group_list"
+                                    multiple
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="box-report-revenue-employee">{% trans 'Employee' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="box-report-revenue-employee"
+                                    data-url="{% url "EmployeeListAPI" %}"
+                                    data-method="GET"
+                                    name="employee"
+                                    data-keyResp="employee_list"
+                                    data-keyText="full_name"
+                                    multiple
+                            ></select>
+                        </div>
+                    </div>
+                </div>
+                <b>{% trans 'Time' %}</b>
+                <div class="row">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label" for="report-revenue-date-from">{% trans 'From' %}</label>
                             <div class="input-affix-wrapper">
@@ -109,7 +115,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label" for="report-revenue-date-to">{% trans 'To' %}</label>
                             <div class="input-affix-wrapper">
@@ -171,6 +177,11 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
+
     <script src="{% static 'assets/sales/report/js/report_revenue.js' %}"></script>
     <script src="{% static 'assets/sales/report/js/advance_filter/advance_filter_common.js' %}"></script>
     <script src="{% static 'assets/sales/report/js/advance_filter/advance_filter_revenue.js' %}"></script>

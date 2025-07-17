@@ -3,6 +3,8 @@
 {% block title %}{% trans 'Quotation list' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
 {% block pageAction %}
@@ -48,6 +50,7 @@
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
             <div class="offcanvas-body">
+                <b>{% trans 'Common information' %}</b>
                 <div class="row">
                     <div class="form-group">
                         <label class="form-label" for="employee_dd">{% trans 'Employee' %}</label>
@@ -63,6 +66,44 @@
                         ></select>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="form-label mt-2" for="customer_dd">{% trans 'Customer' %}</label>
+                        <select
+                                class="form-select"
+                                id="customer_dd"
+                                data-url="{% url "AccountDDListAPI" %}"
+                                data-method="GET"
+                                data-keyResp="account_dd_list"
+                                data-keyText="name"
+                                multiple
+                        ></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-group">
+                            <label class="form-label mt-2" for="operator">{% trans 'Operator' %}</label>
+                            <select
+                                    class="form-select"
+                                    id="operator"
+                            ></select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-10 col-lg-10">
+                        <div class="form-group">
+                            <label class="form-label mt-2" for="total">{% trans 'Quotation Value' %}</label>
+                            <input
+                                type="text"
+                                class="form-control mask-money valid-num"
+                                id="total"
+                                value="0"
+                                data-return-type="number"
+                            >
+                        </div>
+                    </div>
+                </div>
+                <b>{% trans 'Date approved' %}</b>
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
@@ -127,6 +168,10 @@
 
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
 
     <script src="{% static 'assets/sales/quotation/js/quotation_list.js' %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>

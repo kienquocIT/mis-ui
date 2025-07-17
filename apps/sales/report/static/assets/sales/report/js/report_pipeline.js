@@ -753,7 +753,7 @@ $(function () {
 
         // init date picker
         $('.date-picker').each(function () {
-            DateTimeControl.initDatePicker(this);
+            DateTimeControl.initFlatPicker(this);
         });
 
         // mask money

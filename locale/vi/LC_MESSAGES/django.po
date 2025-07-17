@@ -7117,7 +7117,7 @@ msgid "Require input data in payment tab (same to purchase order)"
 msgstr "Yêu cầu nhập dữ liệu vào tab thanh toán (tương tự với đơn đặt hàng)"
 
 #
-msgid "Show data have win rate 100%"
+msgid "Show data 100 percent win rate"
 msgstr "Hiển thị dữ liệu có tỷ lệ thắng 100%"
 
 #
@@ -12074,3 +12074,11 @@ msgstr "Ngày nữa"
 #
 msgid "Day previous"
 msgstr "Ngày trước"
+
+#
+msgid "Time"
+msgstr "Thời gian"
+
+#
+msgid "Date approved"
+msgstr "Ngày duyệt"

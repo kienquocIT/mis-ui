@@ -12090,3 +12090,7 @@ msgstr "Ngày xuất hóa đơn dự kiến"
 #
 msgid "Actual invoice date"
 msgstr "Ngày xuất hóa đơn thực tế"
+
+#
+msgid "Partially paid"
+msgstr "Thanh toán một phần"

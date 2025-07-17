@@ -62,43 +62,11 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12">
-                        <div class="form-group">
-                            <label for="shipping-address-detail" class="label-field form-label required">{% trans "Address" %}</label>
-                            <input class="form-control" type="text" id="shipping-address-detail"
-                                    placeholder="Number 20, 22 street, Him Lam residential area">
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="shipping-city" class="label-field form-label required">{% trans "Province/City" %}</label>
-                            <select class="form-select" id="shipping-city" data-country-id
-                                    data-url="{% url "CityListAPI" %}" data-method="GET"
-                            ></select>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="shipping-district" class="label-field form-label required">{% trans "District" %}</label>
-                            <select class="form-select" id="shipping-district"
-                                    data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
-                            >
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="shipping-ward" class="label-field form-label">{% trans "Ward" %}</label>
-                            <select class="form-select" id="shipping-ward"
-                                    data-url="{% url "WardAllListAPI" %}" data-method="GET"
-                            >
-                            </select>
-                        </div>
+                        {% include 'extends/location/common_address.html' %}
                     </div>
                     <div class="col-12">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value=""
-                                   id="default-shipping-address"
-                            >
+                            <input class="form-check-input" type="checkbox" value="" id="default-shipping-address">
                             <label class="form-check-label" for="default-shipping-address">
                                 {% trans "Make default address" %}
                             </label>

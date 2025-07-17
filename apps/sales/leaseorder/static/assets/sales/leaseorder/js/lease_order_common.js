@@ -5073,6 +5073,7 @@ class LeaseOrderDataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,
@@ -5187,6 +5188,7 @@ class LeaseOrderDataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,
@@ -5287,6 +5289,7 @@ class LeaseOrderDataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,
@@ -5412,6 +5415,7 @@ class LeaseOrderDataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,

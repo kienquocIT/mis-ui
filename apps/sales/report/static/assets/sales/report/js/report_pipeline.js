@@ -21,6 +21,7 @@ $(function () {
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
+                scrollY: "60vh",
                 pageLength: 50,
                 columns: [
                     {

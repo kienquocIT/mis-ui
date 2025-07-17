@@ -4543,6 +4543,7 @@ class QuotationDataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,
@@ -4655,7 +4656,7 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            scrollY: "400px",
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,
@@ -4744,7 +4745,7 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            scrollY: "400px",
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,
@@ -4815,7 +4816,7 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            scrollY: "400px",
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,

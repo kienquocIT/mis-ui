@@ -66,7 +66,6 @@ $(function () {
                 },
                 autoWidth: true,
                 scrollX: true,
-                scrollY: "550px",
                 pageLength: 10,
                 columns: [
                     {
@@ -103,7 +102,7 @@ $(function () {
                             let dateSub = '';
                             if (row?.['invoice_planned_date']) {
                                 date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_planned_date']);
-                                dateSub = "Ngày xuất hóa đơn dự kiến: ";
+                                dateSub = `${$transFact.attr('data-expected-invoice-date')}: `;
                             }
                             let paymentStageData = row?.['so_payment_stage_data'];
                             if (row?.['purchase_order_data']?.['id']) {
@@ -128,7 +127,7 @@ $(function () {
                             let dateSub = '';
                             if (row?.['invoice_actual_date']) {
                                 date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_actual_date']);
-                                dateSub = "Ngày xuất hóa đơn thực tế:";
+                                dateSub = `${$transFact.attr('data-actual-invoice-date')}: `;
                             }
                             let link = $urlFact.data('ar-invoice-detail').format_url_with_uuid(row?.['ar_invoice_data']?.['id']);
                             let title = row?.['ar_invoice_data']?.['title'] ? row?.['ar_invoice_data']?.['title'] : '';
@@ -280,8 +279,8 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('payment_plan_list')) {
                             let dataFn = resp.data['payment_plan_list'] ? resp.data['payment_plan_list'] : [];
-                            dataFn.push({"is_total_in": true});
-                            dataFn.push({"is_total_out": true});
+                            dataFn.unshift({"is_total_in": true});
+                            dataFn.unshift({"is_total_out": true});
                             return dataFn;
                         }
                         throw Error('Call data raise errors.')
@@ -289,7 +288,8 @@ $(function () {
                 },
                 autoWidth: true,
                 scrollX: true,
-                scrollY: "550px",
+                scrollY: "60vh",
+                fixedHeader: true,
                 fixedColumns: {
                     leftColumns: Object.keys(staticHeaders).length
                 },
@@ -298,9 +298,21 @@ $(function () {
                 rowCallback: function (row, data, index) {
                     if (data?.['is_total_in'] === true) {
                         $(row).find('td:eq(1)').attr('colspan', 1);
+                        $(row).css({
+                            "position": 'sticky',
+                            'top': '43px',
+                            'background': 'white',
+                            'z-index': 10,
+                        });
                     }
                     if (data?.['is_total_out'] === true) {
                         $(row).find('td:eq(1)').attr('colspan', 1);
+                        $(row).css({
+                            "position": 'sticky',
+                            'top': '0px',
+                            'background': 'white',
+                            'z-index': 11,
+                        });
                     }
                 },
                 drawCallback: function (settings) {

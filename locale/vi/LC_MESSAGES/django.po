@@ -12082,3 +12082,11 @@ msgstr "Thời gian"
 #
 msgid "Date approved"
 msgstr "Ngày duyệt"
+
+#
+msgid "Expected invoice date"
+msgstr "Ngày xuất hóa đơn dự kiến"
+
+#
+msgid "Actual invoice date"
+msgstr "Ngày xuất hóa đơn dự kiến"

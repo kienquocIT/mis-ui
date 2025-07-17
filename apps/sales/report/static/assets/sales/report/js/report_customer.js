@@ -33,7 +33,7 @@ $(function () {
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
-                scrollY: "450px",
+                scrollY: "60vh",
                 pageLength: 50,
                 columns: [
                     {

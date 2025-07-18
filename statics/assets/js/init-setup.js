@@ -7188,7 +7188,7 @@ class DateTimeControl {
         $(ele).val('').trigger('change');
     }
 
-    static initFlatPicker(ele) {
+    static initFlatPickrDate(ele) {
         if (!ele._flatpickr) {
             flatpickr(ele, {
                 dateFormat: "d/m/Y",

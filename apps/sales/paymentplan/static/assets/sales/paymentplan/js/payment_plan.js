@@ -1059,7 +1059,7 @@ $(function () {
 
         // init date picker
         $('.flat-picker').each(function () {
-            DateTimeControl.initFlatPicker(this);
+            DateTimeControl.initFlatPickrDate(this);
         });
 
         $('.flat-picker-in-month').each(function () {

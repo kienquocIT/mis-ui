@@ -1,9 +1,18 @@
-function loadAddressDisplay(idx, addr, ward, district, city) {
-    let txt = `${addr ? addr : ''}, ${ward ? ward : ''}, ${district ? district : ''}, ${city ? city : ''}`;
-    $(idx).val(txt);
-}
-
-let [firstNameEle, lastNameEle, fullNameEle] = [$("#first_name_id"), $("#last_name_id"), $("#full_name_id")];
+const firstNameEle = $("#first_name_id")
+const lastNameEle = $("#last_name_id")
+const fullNameEle = $("#full_name_id")
+const bioEle = $('#bio')
+const inpPhoneEle = $('#inp-phone')
+const inpMobileEle = $('#inp-mobile')
+const inpMailEle = $('#inp-mail')
+const inpJobTitleEle = $('#inp-job-title')
+const empEle = $('#select-box-emp')
+const salEle = $('#select-box-salutation')
+const accEle = $('#select-box-account_name')
+const repEle = $('#select-box-report-to')
+const intEle = $('#select-box-interests')
+const work_address = $('#work_address')
+const home_address = $('#home_address')
 
 firstNameEle.on('input', function () {
     fullNameEle.val($(this).val() + ' ' + lastNameEle.val())
@@ -13,9 +22,51 @@ lastNameEle.on('input', function () {
     fullNameEle.val(firstNameEle.val() + ' ' + $(this).val())
 })
 
-let [empEle, salEle, accEle, repEle, intEle] = [$('#select-box-emp'), $('#select-box-salutation'), $('#select-box-account_name'), $('#select-box-report-to'), $('#select-box-interests')];
+$('#save-changes-modal-work-address').on('click', function () {
+    let country_id = $('#modal-work-address .location_country').val()
+    let province_id = $('#modal-work-address .location_province').val()
+    let ward_id = $('#modal-work-address .location_ward').val()
+    let detail_address = $('#modal-work-address .location_detail_address').val()
+    if (detail_address && ward_id && province_id && country_id) {
+        work_address.val(`${detail_address}, ${$('#modal-work-address .location_ward').find(`option:selected`).text()}, ${$('#modal-work-address .location_province').find(`option:selected`).text()}, ${$('#modal-work-address .location_country').find(`option:selected`).text()}`)
+        work_address.attr(
+            'data-work-address',
+            JSON.stringify({
+                country_id: country_id,
+                province_id: province_id,
+                ward_id: ward_id,
+                detail_address: detail_address,
+            })
+        )
+        $('#modal-work-address').modal('hide');
+    } else {
+        $.fn.notifyB({description: "Missing address information!"}, 'failure');
+    }
+})
 
-function loadEmployee(empData) {
+$('#save-changes-modal-home-address').on('click', function () {
+    let country_id = $('#modal-home-address .location_country').val()
+    let province_id = $('#modal-home-address .location_province').val()
+    let ward_id = $('#modal-home-address .location_ward').val()
+    let detail_address = $('#modal-home-address .location_detail_address').val()
+    if (detail_address && ward_id && province_id && country_id) {
+        home_address.val(`${detail_address}, ${$('#modal-home-address .location_ward').find(`option:selected`).text()}, ${$('#modal-home-address .location_province').find(`option:selected`).text()}, ${$('#modal-home-address .location_country').find(`option:selected`).text()}`)
+        home_address.attr(
+            'data-home-address',
+            JSON.stringify({
+                country_id: country_id,
+                province_id: province_id,
+                ward_id: ward_id,
+                detail_address: detail_address,
+            })
+        )
+        $('#modal-home-address').modal('hide');
+    } else {
+        $.fn.notifyB({description: "Missing address information!"}, 'failure');
+    }
+})
+
+function LoadEmployee(empData) {
     empEle.initSelect2({
         data: (empData ? empData : null),
         templateResult: function(data) {
@@ -31,14 +82,14 @@ function loadEmployee(empData) {
     });
 }
 
-function loadSalutation(salData) {
+function LoadSalutation(salData) {
     salEle.initSelect2({
         data: (salData ? salData : null),
         keyResp: 'salutation_list',
     });
 }
 
-function loadAccount(accData) {
+function LoadAccount(accData) {
     accEle.initSelect2({
         allowClear: true,
         data: (accData ? accData : null),
@@ -47,7 +98,7 @@ function loadAccount(accData) {
     }).on('change', function () {
         let selectedVal = $(this).val();
         if (selectedVal) {
-            loadReportTo()
+            LoadReportTo()
         }
         else {
             repEle.empty().prop('disabled', true);
@@ -55,7 +106,7 @@ function loadAccount(accData) {
     });
 }
 
-function loadReportTo(data) {
+function LoadReportTo(data) {
     let reportEleUrl = repEle.attr('data-url');
     reportEleUrl = reportEleUrl.replace("__pk__", accEle.val());
     repEle.attr('data-url', reportEleUrl);
@@ -66,145 +117,28 @@ function loadReportTo(data) {
     }).prop('disabled', false);
 }
 
-function loadInterest(interestData) {
+function LoadInterest(interestData) {
     intEle.initSelect2({
         data: (interestData ? interestData : null),
         keyResp: 'interests_list',
     });
 }
 
-let [wAddr, wCityEle, wDistrictEle, wWardEle, wWorkAddrDetail] = [$('#work_address_id'), $('#workcity'), $("#workdistrict"), $('#workward'), $('#detail-modal-work-address')];
-
-function loadWCities(cityData) {
-    wCityEle.initSelect2({
-        data: (cityData ? cityData : null),
-        keyResp: 'cities',
-    }).on('change', function () {
-        let dataParams = JSON.stringify({'city_id': $(this).val()});
-        wDistrictEle.attr('data-params', dataParams).val("");
-        wWardEle.attr('data-params', '{}').val("");
-    });
-}
-
-function loadWDistrict(disData) {
-    wDistrictEle.initSelect2({
-        data: (disData ? disData : null),
-        keyResp: 'districts',
-    }).on('change', function () {
-        let dataParams = JSON.stringify({'district_id': $(this).val()});
-        wWardEle.attr('data-params', dataParams).val("");
-    });
-}
-
-function loadWWard(wardData) {
-    wWardEle.initSelect2({
-        data: (wardData ? wardData : null),
-        keyResp: 'wards',
-    });
-}
-
-$('#save-changes-modal-work-address').on('click', function () {
-    try {
-        let country_id = $('input[name="work_country"]').val();
-        let city_id = wCityEle.val()
-        let district_id = wDistrictEle.val();
-        // let ward_id = wWardEle.val();
-
-        if (country_id && city_id && district_id) {
-            let detail_work_address = wWorkAddrDetail.val();
-            let city = wCityEle.find(`option:selected`).text();
-            let district = wDistrictEle.find(`option:selected`).text();
-            let ward = wWardEle.find(`option:selected`).text();
-
-            if (detail_work_address || city || district || ward) {
-                loadAddressDisplay(wAddr, detail_work_address, ward, district, city);
-                $(this).closest('div.modal').modal('hide');
-            } else {
-                $.fn.notifyB({description: "Missing address information!"}, 'failure');
-            }
-        } else {
-            $.fn.notifyB({description: "Missing address information!"}, 'failure');
-        }
-    } catch (error) {
-        $.fn.notifyB({description: "No address information!"}, 'failure');
-    }
-})
-
-let [hAddr, hCity, hDistrict, hWard, hHomeAddrDetail] = [$('#home_address_id'), $('#homecity'), $("#homedistrict"), $("#homeward"), $('#detail-modal-home-address')];
-
-function loadHCity(cityData) {
-    hCity.initSelect2({
-        data: (cityData ? cityData : null),
-        keyResp: 'cities',
-    }).on('change', function () {
-        let dataParams = JSON.stringify({'city_id': $(this).val()});
-        hDistrict.attr('data-params', dataParams).val("");
-        hWard.attr('data-params', '{}').val("");
-    });
-}
-
-function loadHDistrict(disData) {
-    hDistrict.initSelect2({
-        data: (disData ? disData : null),
-        keyResp: 'districts',
-    }).on('change', function () {
-        let dataParams = JSON.stringify({'district_id': $(this).val()});
-        hWard.attr('data-params', dataParams).val("");
-    });
-}
-
-function loadHWard(wardData) {
-    hWard.initSelect2({
-        data: (wardData ? wardData : null),
-        keyResp: 'wards',
-    });
-}
-
-$('#save-changes-modal-home-address').on('click', function () {
-    try {
-        let country_id = $('input[name="home_country"]').val();
-        let city_id = hCity.val()
-        let district_id = hDistrict.val();
-        // let ward_id = hWard.val();
-
-        if (country_id && city_id && district_id) {
-            let detail_home_address = hHomeAddrDetail.val();
-            let city = hCity.find(`option:selected`).text();
-            let district = hDistrict.find(`option:selected`).text();
-            let ward = hWard.find(`option:selected`).text();
-
-            if (detail_home_address || city || district || ward) {
-                loadAddressDisplay(hAddr, detail_home_address, ward, district, city);
-                $(this).closest('div.modal').modal('hide');
-            } else {
-                $.fn.notifyB({description: "Missing address information!"}, 'failure');
-            }
-        } else {
-            $.fn.notifyB({description: "Missing address information!"}, 'failure');
-        }
-    } catch (error) {
-        $.fn.notifyB({description: "No address information!"}, 'failure');
-    }
-})
-
 class ContactHandle {
-    static load() {
-        loadEmployee()
-        loadSalutation()
-        loadAccount()
-        loadInterest()
-        loadWCities()
-        loadWDistrict()
-        loadWWard()
-        loadHCity()
-        loadHDistrict()
-        loadHWard()
-    }
-
-    static combinesData(frmEle) {
+    static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['fullname'] = fullNameEle.val()
+
+        frm.dataForm['work_detail_address'] = work_address.val()
+        frm.dataForm['work_address_data'] = work_address.attr('data-work-address') ? JSON.parse(work_address.attr('data-work-address')) : {}
+        frm.dataForm['home_detail_address'] = home_address.val()
+        frm.dataForm['home_address_data'] = home_address.attr('data-home-address') ? JSON.parse(home_address.attr('data-home-address')) : {}
+
+        frm.dataForm['address_information'] = {
+            'work_address': work_address.val(),
+            'home_address': home_address.val(),
+        }
 
         frm.dataForm['additional_information'] = {
             'facebook': $('#facebook_id').val(),
@@ -213,23 +147,7 @@ class ContactHandle {
             'gmail': $('#gmail_id').val(),
             'interests': intEle.val(),
             'tags': $('#tag_id').val(),
-        };
-
-        frm.dataForm['work_detail_address'] = wWorkAddrDetail.val()
-        frm.dataForm['work_country'] = $('input[name="work_country"]').val();
-        frm.dataForm['work_city'] = wCityEle.val()
-        frm.dataForm['work_district'] = wDistrictEle.val()
-        frm.dataForm['work_ward'] = wWardEle.val()
-        frm.dataForm['home_detail_address'] = hHomeAddrDetail.val()
-        frm.dataForm['home_country'] = $('input[name="home_country"]').val();
-        frm.dataForm['home_city'] = hCity.val()
-        frm.dataForm['home_district'] = hDistrict.val()
-        frm.dataForm['home_ward'] = hWard.val()
-
-        frm.dataForm['address_information'] = {
-            'work_address': wAddr.val(),
-            'home_address': hAddr.val(),
-        };
+        }
 
         if (!frm.dataForm['account_name']) {
             frm.dataForm['account_name'] = null;
@@ -258,62 +176,46 @@ class ContactHandle {
             urlRedirect: frm.dataUrlRedirect,
         };
     }
-
-    static loadDetailContact(option='detail') {
+    static LoadDetailContact(option='detail') {
         let pk = $.fn.getPkDetail()
-        let frmEle = $("#form-detail-contact");
-        let url_loaded = frmEle.attr('data-detail-url').replace(0, pk);
-
         $.fn.callAjax2({
-            'url': url_loaded,
+            'url': $("#form-detail-contact").attr('data-detail-url').replace(0, pk),
             'method': 'GET'
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    let contact_detail = data?.['contact_detail'];
+                    let contact_detail = data?.['contact_detail']
                     // console.log(contact_detail)
-                    $.fn.compareStatusShowPageAction(contact_detail);
-                    $x.fn.renderCodeBreadcrumb(contact_detail);
+                    $.fn.compareStatusShowPageAction(contact_detail)
+                    $x.fn.renderCodeBreadcrumb(contact_detail)
 
-                    loadEmployee(contact_detail?.['owner']);
-                    loadSalutation(contact_detail?.['salutation']);
-                    loadAccount(contact_detail?.['account_name']);
-                    loadReportTo(contact_detail?.['report_to'])
-                    $('#first_name_id').val(contact_detail?.['fullname']?.['first_name']);
-                    $('#last_name_id').val(contact_detail?.['fullname']?.['last_name']);
-                    $('#full_name_id').val(contact_detail?.['fullname']?.['fullname']);
-                    $('#bio').val(contact_detail?.['biography']);
-                    $('#inp-phone').val(contact_detail?.['phone']);
-                    $('#inp-mobile').val(contact_detail?.['mobile']);
-                    $('#inp-mail').val(contact_detail?.['email']);
-                    $('#inp-job-title').val(contact_detail?.['job_title']);
-                    $('#work_address_id').val(contact_detail?.['address_information']?.['work_address']);
-                    wWorkAddrDetail.val(contact_detail?.['work_address_data']?.['work_detail_address'])
-                    loadWCities(contact_detail?.['work_address_data']?.['work_city']);
-                    loadWDistrict(contact_detail?.['work_address_data']?.['work_district']);
-                    loadWWard(contact_detail?.['work_address_data']?.['work_ward']);
-                    $('#home_address_id').val(contact_detail?.['address_information']?.['home_address']);
-                    hHomeAddrDetail.val(contact_detail?.['home_address_data']?.['home_detail_address'])
-                    loadHCity(contact_detail?.['home_address_data']?.['home_city']);
-                    loadHDistrict(contact_detail?.['home_address_data']?.['home_district']);
-                    loadHWard(contact_detail?.['home_address_data']?.['home_ward']);
+                    LoadEmployee(contact_detail?.['owner'])
+                    LoadSalutation(contact_detail?.['salutation'])
+                    LoadAccount(contact_detail?.['account_name'])
+                    LoadReportTo(contact_detail?.['report_to'])
+                    LoadInterest(Object.keys(contact_detail?.['additional_information']).length > 0 ? contact_detail?.['additional_information']?.['interests'].map(obj => obj?.['id']) : null);
+
+                    firstNameEle.val(contact_detail?.['fullname']?.['first_name'])
+                    lastNameEle.val(contact_detail?.['fullname']?.['last_name'])
+                    fullNameEle.val(contact_detail?.['fullname']?.['fullname'])
+                    bioEle.val(contact_detail?.['biography'])
+                    inpPhoneEle.val(contact_detail?.['phone'])
+                    inpMobileEle.val(contact_detail?.['mobile'])
+                    inpMailEle.val(contact_detail?.['email'])
+                    inpJobTitleEle.val(contact_detail?.['job_title'])
+                    work_address.val(contact_detail?.['address_information']?.['work_address'])
+                    home_address.val(contact_detail?.['address_information']?.['home_address'])
+
                     if (Object.keys(contact_detail?.['additional_information']).length > 0) {
-                        loadInterest(contact_detail?.['additional_information']?.['interests'].map(obj => obj?.['id']));
-                        $('#tag_id').val(contact_detail?.['additional_information']?.['tags']);
-                        $('#facebook_id').val(contact_detail?.['additional_information']?.['facebook']);
-                        $('#gmail_id').val(contact_detail?.['additional_information']?.['gmail']);
-                        $('#linkedln_id').val(contact_detail?.['additional_information']?.['linkedln']);
-                        $('#twitter_id').val(contact_detail?.['additional_information']?.['twitter']);
-                    } else {
-                        loadInterest();
+                        $('#tag_id').val(contact_detail?.['additional_information']?.['tags'])
+                        $('#facebook_id').val(contact_detail?.['additional_information']?.['facebook'])
+                        $('#gmail_id').val(contact_detail?.['additional_information']?.['gmail'])
+                        $('#linkedln_id').val(contact_detail?.['additional_information']?.['linkedln'])
+                        $('#twitter_id').val(contact_detail?.['additional_information']?.['twitter'])
                     }
 
-                    if (option === 'detail') {
-                        $(document.getElementsByTagName('input')).prop('disabled', true).prop('readonly', true)
-                        $(document.getElementsByTagName('select')).prop('disabled', true)
-                        $(document.getElementsByTagName('textarea')).prop('disabled', true).prop('readonly', true)
-                    }
+                    UsualLoadPageFunction.DisablePage(option==='detail')
                 }
             }
         )

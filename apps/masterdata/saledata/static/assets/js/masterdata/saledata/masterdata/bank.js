@@ -320,11 +320,12 @@ $(document).ready(async function () {
                 'bank_abbreviation': $bank_abbreviation.val(),
                 'bank_name': $bank_name.val(),
                 'bank_foreign_name': $bank_foreign_name.val(),
+                'head_office_address': `${$('#modal-bank .location_detail_address').val()}, ${$('#modal-bank .location_ward').find(`option:selected`).text()}, ${$('#modal-bank .location_province').find(`option:selected`).text()}, ${$('#modal-bank .location_country').find(`option:selected`).text()}`,
                 'head_office_address_data': {
                     'country_id': $('#modal-bank .location_country').val(),
                     'province_id': $('#modal-bank .location_province').val(),
                     'ward_id': $('#modal-bank .location_ward').val(),
-                    'address': $('#modal-bank .location_detail_address').val()
+                    'detail_address': $('#modal-bank .location_detail_address').val()
                 },
                 'vietqr_json_data': VietQRBankList.find(item => item?.['code'] === $bank_abbreviation.val())
             }

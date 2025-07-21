@@ -19,13 +19,18 @@
     </a>
 {% endblock %}
 {% block pageContent %}
-    <form id="form-detail-contact" data-method="GET" data-detail-url="{% url "ContactDetailAPI" pk=0 %}">
+    <form id="form-detail-contact"
+          data-method="GET"
+          data-detail-url="{% url "ContactDetailAPI" pk=0 %}">
         {% csrf_token %}
         {% include 'masterdata/saledata/accounts/common/contact/information.html' %}
     </form>
+{% endblock %}
+{% block modalData %}
     {% include 'masterdata/saledata/accounts/common/contact/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/accounts/contact_common.js' %}"></script>
     <script src="{% static "assets/js/masterdata/saledata/accounts/contact_detail.js" %}"></script>
 {% endblock %}

@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    ContactHandle.loadDetailContact('detail');
+    ContactHandle.LoadDetailContact('detail');
 });

@@ -17,13 +17,19 @@
     </button>
 {% endblock %}
 {% block pageContent %}
-    <form id="form-create-contact" data-method="POST" data-url="{% url "ContactCreateAPI" %}" data-url-redirect="{% url 'ContactList' %}">
+    <form id="form-create-contact"
+          data-method="POST"
+          data-url="{% url "ContactCreateAPI" %}"
+          data-url-redirect="{% url 'ContactList' %}">
         {% csrf_token %}
         {% include 'masterdata/saledata/accounts/common/contact/information.html' %}
     </form>
+{% endblock %}
+{% block modalData %}
     {% include 'masterdata/saledata/accounts/common/contact/modals.html' %}
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/accounts/contact_common.js' %}"></script>
     <script src="{% static 'assets/js/masterdata/saledata/accounts/contact_create.js' %}"></script>
 {% endblock %}

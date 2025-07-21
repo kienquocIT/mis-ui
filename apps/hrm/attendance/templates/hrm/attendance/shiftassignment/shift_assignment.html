@@ -29,28 +29,10 @@
                 </table>
             </div>
         </div>
-        <div class="col-12 col-md-7 col-lg-7 border-right">
+        <div class="col-12 col-md-9 col-lg-9 border-right">
             <div class="calendarapp-wrap" id="calendarapp-wrapper">
                 <div class="calendarapp-content pl-0">
                     <div id="calendar" class="w-100"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-2 col-lg-2">
-            <div class="row mt-5">
-                <div class="form-group">
-                    <label class="form-label" for="shift_current">{% trans 'Current shift' %}</label>
-                    <input type="text" class="form-control" id="shift_current">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="box_shift_apply">{% trans 'Select shift to apply' %}</label>
-                    <select
-                            class="form-select"
-                            id="box_shift_apply"
-                            data-url="{% url "ShiftMasterDataListAPI" %}"
-                            data-method="GET"
-                            data-keyResp="shift_list"
-                    ></select>
                 </div>
             </div>
         </div>
@@ -76,6 +58,192 @@
 {#            <div id="calendar" class="w-100"></div>#}
 {#        </div>#}
 {#    </div>#}
+
+
+
+    <!-- Calendar Drawer -->
+        <div class="hk-drawer calendar-drawer drawer-right">
+			<div>
+				<div class="drawer-header">
+					<div class="drawer-header-action">
+						<a href="#" id="edit_event" class="btn btn-sm btn-icon btn-flush-secondary btn-rounded flush-soft-hover"><span class="icon"><span class="feather-icon"><i data-feather="edit-2"></i></span></span></a>
+						<a href="#"  id="del_event" class="btn btn-sm btn-icon btn-flush-secondary btn-rounded flush-soft-hover"><span class="icon"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>
+						<a href="#" class="btn btn-sm btn-icon btn-flush-secondary btn-rounded flush-soft-hover me-2"><span class="icon"><span class="feather-icon"><i data-feather="external-link"></i></span></span></a>
+						<button type="button" class="drawer-close btn-close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+				</div>
+				<div class="drawer-body">
+					<div data-simplebar class="nicescroll-bar">
+						<div class="drawer-content-wrap">
+							<div class="event-head mb-4">
+								<span class="badge badge-violet badge-indicator badge-indicator-xl flex-shrink-0 me-2"></span>
+								<div>
+									<div class="event-name">Jampack Team Meet</div>
+									<span>Event</span>
+								</div>
+							</div>
+							<div class="row">
+                                <div class="form-group">
+                                    <label class="form-label" for="shift_current">{% trans 'Current shift' %}</label>
+                                    <input type="text" class="form-control" id="shift_current">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="form-label" for="box_shift_apply">{% trans 'Select shift to apply' %}</label>
+                                    <select
+                                            class="form-select"
+                                            id="box_shift_apply"
+                                            data-url="{% url "ShiftMasterDataListAPI" %}"
+                                            data-method="GET"
+                                            data-keyResp="shift_list"
+                                    ></select>
+                                </div>
+                            </div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="d-none">
+				<div class="drawer-header">
+					<div class="drawer-header-action">
+						<a href="#" class="btn btn-sm btn-icon btn-flush-secondary btn-rounded flush-soft-hover me-2"><span class="icon"><span class="feather-icon"><i data-feather="external-link"></i></span></span></a>
+						<button type="button" class="drawer-edit-close btn-close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+				</div>
+				<div class="drawer-body">
+					<div data-simplebar class="nicescroll-bar">
+						<div class="drawer-content-wrap">
+							<div class="event-head mb-4">
+								<span class="badge badge-violet badge-indicator badge-indicator-xl flex-shrink-0 me-2"></span>
+								<div>
+									<div class="event-name" contenteditable="true">Jampack Team Meet</div>
+									<div class="form-group mt-2 mb-0">
+										<div class="form-check form-check-inline ps-0">
+											<div class="form-check">
+												<input type="radio" id="event_1" name="eventSelect" class="form-check-input" checked=""	>
+												<label class="form-check-label" for="event_1">Event</label>
+											</div>
+										</div>
+										<div class="form-check form-check-inline ps-0">
+											<div class="form-check">
+												<input type="radio" id="reminder_1" name="eventSelect" class="form-check-input" >
+												<label class="form-check-label" for="reminder_1">Reminder</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<form>
+								<div class="form-group">
+									<div class="input-group">
+										<span class="input-affix-wrapper">
+											<span class="input-prefix"><span class="feather-icon"><i data-feather="calendar"></i></span></span>
+											<input class="form-control form-wth-icon" name="datetimes" value="Aug 18,2020 - Aug 19, 2020">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="input-group">
+										<span class="input-affix-wrapper">
+											<span class="input-prefix"><span class="feather-icon"><i data-feather="clock"></i></span></span>
+											<input type="text" class="form-control form-wth-icon input-timepicker" value="8:40 AM - 5:40 PM" >
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="input-group">
+										<span class="input-affix-wrapper">
+											<span class="input-prefix"><span class="feather-icon"><i data-feather="map-pin"></i></span></span>
+											<input type="text" class="form-control form-wth-icon" value="Oslo, Canada" >
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="input-group">
+										<span class="input-affix-wrapper">
+											<span class="input-prefix"><span class="feather-icon"><i data-feather="check-square"></i></span></span>
+											<select class="form-select">
+												<option  selected="" value="1">All Time</option>
+												<option value="2">Half Day</option>
+												<option value="3">9 to 5</option>
+											</select>
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="input-group">
+										<span class="input-affix-wrapper">
+											<span class="input-prefix"><span class="feather-icon"><i data-feather="eye"></i></span></span>
+											<select class="form-select">
+												<option selected="">Default Visibility</option>
+												<option value="1">Private</option>
+												<option value="2">Public</option>
+											</select>
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="input-group color-picker">
+										<span class="input-group-text colorpicker-input-addon"><i></i></span>
+										<input type="text" class="form-control" value="#009B84"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="d-flex flex-wrap">
+										<div class="chip chip-primary chip-dismissable user-chip mb-2 me-2">
+											<span>
+												<span class="avatar">
+													<img src="dist/img/avatar11.jpg" alt="user" class="avatar-img">
+												</span>
+												<span class="chip-text">Morgan</span>
+												<button type="button" class="btn-close"></button>
+											</span>
+										</div>
+										<div class="chip chip-primary chip-dismissable user-chip mb-2 me-2">
+											<span>
+												<span class="avatar">
+													<img src="dist/img/avatar12.jpg" alt="user" class="avatar-img">
+												</span>
+												<span class="chip-text">Charlie</span>
+												<button type="button" class="btn-close"></button>
+											</span>
+										</div>
+										<div class="chip chip-primary chip-dismissable user-chip mb-2 me-2">
+											<span>
+												<span class="avatar">
+													<img src="dist/img/avatar13.jpg" alt="user" class="avatar-img">
+												</span>
+												<span class="chip-text">Winston</span>
+												<button type="button" class="btn-close"></button>
+											</span>
+										</div>
+										<input type="text" class="form-control border-0 p-0 shadow-none flex-1 mb-2 me-2"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<textarea class="form-control" rows="4">Annual meeting with global branch teams & bosses about growth planning and fiscal year reports</textarea>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="drawer-footer d-flex justify-content-end">
+					<button class="btn btn-secondary drawer-edit-close me-2">discard</button>
+					<button class="btn btn-primary drawer-edit-close">save</button>
+				</div>
+			</div>
+		</div>
+        <!-- /Calendar Drawer -->
+
+
+
+
+
 
     <div class="modal-canvas-area">
 

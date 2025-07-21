@@ -6,7 +6,8 @@ $(document).ready(function () {
     UsualLoadPageFunction.LoadDate({element: pageElements.$invoice_date})
     UsualLoadPageFunction.LoadDate({element: pageElements.$posting_date})
     UsualLoadPageFunction.LoadDate({element: pageElements.$document_date})
-    APInvoicePageFunction.LoadLineDetailTable()
+    APInvoicePageFunction.LoadNormalTable()
+    APInvoicePageFunction.LoadDescriptionTable()
 
     WFRTControl.setWFInitialData('arinvoice')
 

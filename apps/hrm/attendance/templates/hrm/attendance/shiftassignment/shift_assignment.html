@@ -2,6 +2,7 @@
 {% load static i18n %}
 {% block title %}{% trans 'Payment plan' %}{% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/fullcalendar/main.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
@@ -14,10 +15,67 @@
     {% csrf_token %}
 
     <div class="row">
-        <div class="col-12 col-md-3 col-lg-3">AAA</div>
-        <div class="col-12 col-md-6 col-lg-6">BBB</div>
-        <div class="col-12 col-md-3 col-lg-3">CCC</div>
+        <div class="col-12 col-md-3 col-lg-3 border-right">
+            <div data-simplebar class="nicescroll-bar">
+                <table id="table_group" class="table nowrap w-100 mb-5">
+                    {% csrf_token %}
+                    <thead>
+                    <tr>
+                        <th>{% trans 'Group' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-12 col-md-7 col-lg-7 border-right">
+            <div class="calendarapp-wrap" id="calendarapp-wrapper">
+                <div class="calendarapp-content pl-0">
+                    <div id="calendar" class="w-100"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-2 col-lg-2">
+            <div class="row mt-5">
+                <div class="form-group">
+                    <label class="form-label" for="shift_current">{% trans 'Current shift' %}</label>
+                    <input type="text" class="form-control" id="shift_current">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="box_shift_apply">{% trans 'Select shift to apply' %}</label>
+                    <select
+                            class="form-select"
+                            id="box_shift_apply"
+                            data-url="{% url "ShiftMasterDataListAPI" %}"
+                            data-method="GET"
+                            data-keyResp="shift_list"
+                    ></select>
+                </div>
+            </div>
+        </div>
     </div>
+
+
+{#    <div class="calendarapp-wrap" id="calendarapp-wrapper">#}
+{#        <nav class="calendarapp-sidebar">#}
+{#            <div data-simplebar class="nicescroll-bar">#}
+{#                <table id="table_group" class="table nowrap w-100 mb-5">#}
+{#                    {% csrf_token %}#}
+{#                    <thead>#}
+{#                    <tr>#}
+{#                        <th>{% trans 'Group' %}</th>#}
+{#                    </tr>#}
+{#                    </thead>#}
+{#                    <tbody>#}
+{#                    </tbody>#}
+{#                </table>#}
+{#            </div>#}
+{#        </nav>#}
+{#        <div class="calendarapp-content">#}
+{#            <div id="calendar" class="w-100"></div>#}
+{#        </div>#}
+{#    </div>#}
 
     <div class="modal-canvas-area">
 
@@ -257,28 +315,18 @@
     <input
         type="text"
         id="app-trans-factory"
+        data-employee="{% trans 'Employee' %}"
     >
     <input
         type="text"
         id="app-url-factory"
+        data-dd-group="{% url 'GroupDDListAPI' %}"
+        data-dd-employee="{% url 'EmployeeListAllAPI' %}"
     >
-
-    <input
-            type="text"
-            id="data-fiscal-year"
-    >
-    <input
-            type="text"
-            id="data-store-year"
-    >
-    <input
-            type="text"
-            id="data-store-month"
-    >
-    {{ data.filter_month|json_script:'filter_month' }}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'vendors/fullcalendar/main.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
@@ -286,5 +334,7 @@
     {% if base.language == 'vi' %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
+
+    <script src="{% static 'assets/hrm/attendance/js/shiftassignment/shift_assignment_common.js' %}"></script>
 
 {% endblock %}

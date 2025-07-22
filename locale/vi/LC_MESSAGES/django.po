@@ -2625,7 +2625,7 @@ msgstr "Master data sản phẩm"
 
 #
 msgid "Product list"
-msgstr "Danh sách sản phẩm"
+msgstr "DS sản phẩm"
 
 #
 msgid "Product create"
@@ -9998,7 +9998,7 @@ msgstr "Loại ngày thanh toán"
 
 #
 msgid "Issue invoice"
-msgstr "Phát hành hóa đơn"
+msgstr "Phát hành HĐ"
 
 #
 msgid "Total payment"
@@ -11560,8 +11560,8 @@ msgid "Advance payment to supplier (according to Purchase order)"
 msgstr "Tạm ứng trước cho nhà cung cấp (theo Đơn mua hàng)"
 
 #
-msgid "Payment to supplier according to AP invoice"
-msgstr "Thanh toán cho nhà cung cấp theo Hóa đơn mua hàng"
+msgid "Payment to supplier (according to AP invoice)"
+msgstr "Thanh toán cho nhà cung cấp (theo Hóa đơn mua hàng)"
 
 #
 msgid "Invoice code"

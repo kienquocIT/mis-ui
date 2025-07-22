@@ -40,31 +40,26 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-25',
+                        className: 'ellipsis-cell-lg w-15',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-20',
+                        className: 'ellipsis-cell-lg w-15',
                         render: (data, type, row) => {
                             return `<span title="${(row?.['account_mapped_data'] || {})?.['name'] || ''}">${(row?.['account_mapped_data'] || {})?.['name'] || ''}</span>`;
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-10',
+                        className: 'text-center w-10',
                         render: (data, type, row) => {
-                            let html = ``
-                            for (let i=0; i < (row?.['product_loan_data'] || []).length; i++) {
-                                let item = row?.['product_loan_data'][i]
-                                html += `<div class="col-12" title="${(item || {})?.['title'] || ''}"><span class="badge badge-sm badge-secondary mr-1">${(item)?.['code'] || ''}</span><span>${(item || {})?.['title'] || ''}</span></div>`;
-                            }
-                            return `<div class="row">${html}</div>`
+                            return `<span class="view-detail-loan-product" data-bs-toggle="modal" data-bs-target="#modal-detail-product-loan" data-product-loan='${JSON.stringify(row?.['product_loan_data'] || [])}'><i class="fas fa-table"></i></span>`
                         }
                     },
                     {
-                        className: 'ellipsis-cell-sm w-15',
+                        className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
                             return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
@@ -73,6 +68,18 @@ $(document).ready(function () {
                         className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
                             return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['loan_date'], {'outputFormat': 'DD/MM/YYYY'});
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['return_date'], {'outputFormat': 'DD/MM/YYYY'});;
                         }
                     },
                     {
@@ -87,4 +94,41 @@ $(document).ready(function () {
     }
 
     loadELList();
+
+    function LoadLoanProductTable(data_list=[]) {
+        $('#table-loan-product').DataTable().clear().destroy()
+        $('#table-loan-product').DataTableDefault({
+            rowIdx: true,
+            reloadCurrency: true,
+            scrollY: '50vh',
+            scrollX: true,
+            scrollCollapse: true,
+            data: data_list,
+            columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-70',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm-light mr-1">${row?.['code']}</span><span>${row?.['title']}</span>`
+                    }
+                },
+                {
+                    className: 'w-25',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['quantity'] || '--'}</span>`
+                    }
+                },
+            ],
+        })
+    }
+
+    $(document).on("click", '.view-detail-loan-product', function () {
+        let data_product_loan = $(this).attr('data-product-loan') ? JSON.parse($(this).attr('data-product-loan')) : []
+        LoadLoanProductTable(data_product_loan)
+    })
 })

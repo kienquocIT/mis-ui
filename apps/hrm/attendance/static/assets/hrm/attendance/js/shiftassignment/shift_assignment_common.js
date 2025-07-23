@@ -136,7 +136,7 @@ class ShiftAssignHandle {
                     width: '70%',
                     render: (data, type, row) => {
                         return `<div class="form-check form-check-lg d-flex align-items-center">
-                                    <input type="checkbox" name="checkbox_employee" class="form-check-input checkbox-employee">
+                                    <input type="checkbox" name="checkbox_employee" class="form-check-input checkbox-employee" data-group-id="${groupID}">
                                     <label class="form-check-label">${row?.['full_name']}</label>
                                 </div>`;
                     }
@@ -149,6 +149,17 @@ class ShiftAssignHandle {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let checkEmployeeEle = row.querySelector('.checkbox-employee');
+                if (checkEmployeeEle) {
+                    let checkGroupEle = ShiftAssignHandle.$table[0].querySelector(`.checkbox-group[data-group-id="${groupID}"]`);
+                    if (checkGroupEle) {
+                        if (checkGroupEle.checked === true) {
+                            checkEmployeeEle.checked = true;
+                        }
+                    }
+                }
+            },
             drawCallback: function () {
                 // add css to Dtb
                 ShiftAssignHandle.loadDtbHideHeader(idTbl);
@@ -357,10 +368,10 @@ $(document).ready(function () {
                 render: (data, type, row) => {
                     return `<div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <button class="btn-collapse-app-wf btn btn-icon btn-rounded mr-1" data-group-id="${row?.['id']}"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']}</b>
+                                    <button class="btn-collapse-parent btn btn-icon btn-rounded mr-1" data-group-id="${row?.['id']}"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']}</b>
                                 </div>
                                 <div class="form-check form-check-lg">
-                                    <input type="checkbox" name="checkbox_group" class="form-check-input checkbox-group">
+                                    <input type="checkbox" name="checkbox_group" class="form-check-input checkbox-group" data-group-id="${row?.['id']}">
                                 </div>
                             </div>`;
                 }
@@ -374,7 +385,7 @@ $(document).ready(function () {
 
     // EVENT CLICK TO COLLAPSE IN LINE
     //      ACTION: INSERT TABLE CHILD TO ROW
-    $(document).on('click', '.btn-collapse-app-wf', function (event) {
+    $(document).on('click', '.btn-collapse-parent', function (event) {
         event.preventDefault();
 
         let idTbl = UtilControl.generateRandomString(12);
@@ -397,13 +408,13 @@ $(document).ready(function () {
             trEle.addClass('bg-grey-light-5');
             iconEle.removeClass('text-secondary').addClass('text-dark');
 
-            if (!trEle.next().hasClass('child-workflow-list')) {
+            if (!trEle.next().hasClass('child-list')) {
                 let dtlSub = `<table id="${idTbl}" class="table table-child nowrap w-100"><thead></thead><tbody></tbody></table>`
                 $(this).closest('tr').after(
-                    `<tr class="child-workflow-list"><td colspan="4"><div class="child-workflow-group hidden-simple">${dtlSub}</div></td></tr>`
+                    `<tr class="child-list"><td colspan="4"><div class="child-workflow-group hidden-simple">${dtlSub}</div></td></tr>`
                 );
             }
-            if (trEle.next().hasClass('child-workflow-list')) {
+            if (trEle.next().hasClass('child-list')) {
                 let $tableChildEle = trEle.next().find('.table-child');
                 if ($tableChildEle.length > 0) {
                     idTbl = $tableChildEle[0].id;
@@ -419,6 +430,23 @@ $(document).ready(function () {
 
     ShiftAssignHandle.$table.on('click', '.checkbox-employee', function () {
         ShiftAssignHandle.loadShiftEmployee(calendar, ShiftAssignHandle.calendarInfo);
+
+        if (this.checked === false) {
+            let checkGroupEle = ShiftAssignHandle.$table[0].querySelector(`.checkbox-group[data-group-id="${$(this).attr('data-group-id')}"]`);
+            if (checkGroupEle) {
+                checkGroupEle.checked = false;
+            }
+        }
+    });
+
+    ShiftAssignHandle.$table.on('click', '.checkbox-group', function () {
+        let row = this.closest('tr');
+        if (row) {
+            let btnCollapse = row.querySelector('.btn-collapse-parent');
+            if (btnCollapse) {
+                $(btnCollapse).trigger('click');
+            }
+        }
     });
 
 });

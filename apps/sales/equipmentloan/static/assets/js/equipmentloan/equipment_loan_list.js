@@ -12,7 +12,7 @@ $(document).ready(function () {
                 reloadCurrency: true,
                 fixedColumns: {
                     leftColumns: 2,
-                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                    rightColumns: window.innerWidth <= 768 ? 0 : 2
                 },
                 ajax: {
                     url: frm.dataUrl,
@@ -79,13 +79,32 @@ $(document).ready(function () {
                     {
                         className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
-                            return $x.fn.displayRelativeTime(row?.['return_date'], {'outputFormat': 'DD/MM/YYYY'});;
+                            return $x.fn.displayRelativeTime(row?.['return_date'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
-                        className: 'text-center w-10',
+                        className: 'text-center w-5',
                         render: (data, type, row) => {
                             return WFRTControl.displayRuntimeStatus(row?.['system_status']);
+                        }
+                    },
+                    {
+                        className: 'text-center w-5',
+                        render: (data, type, row) => {
+                            if (row?.['system_status'] === 3) {
+                                const link = dtb.attr('data-url-create-equipment-return') + `?el_selected_id=${row?.['id']}&account_id=${(row?.['account_mapped_data'] || {})?.['id'] || ''}&account_name=${(row?.['account_mapped_data'] || {})?.['name'] || ''}`;
+                                let return_redirect = `<a target="_blank" class="ml-1" title="${$.fn.gettext('Equipment return')}" href="${link}"><i class="fa-solid fa-rotate-left"></i></a>`
+                                if (row?.['return_status'] === 0) {
+                                    return `<span class="small text-muted">${$.fn.gettext('Have not returned yet')} ${return_redirect}</span>`
+                                }
+                                else if (row?.['return_status'] === 1) {
+                                    return `<span class="small text-blue">${$.fn.gettext('Partially returned')} ${return_redirect}</span>`
+                                }
+                                else if (row?.['return_status'] === 2) {
+                                    return `<span class="small text-success">${$.fn.gettext('Returned')} <i class="fa-solid fa-check"></i></span>`
+                                }
+                            }
+                            return '';
                         }
                     },
                 ]
@@ -95,14 +114,16 @@ $(document).ready(function () {
 
     loadELList();
 
-    function LoadLoanProductTable(data_list=[]) {
-        $('#table-loan-product').DataTable().clear().destroy()
-        $('#table-loan-product').DataTableDefault({
+    function LoadLoanProductTable(tbl, data_list=[]) {
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault({
+            styleDom: 'hide-foot',
             rowIdx: true,
             reloadCurrency: true,
             scrollY: '50vh',
             scrollX: true,
             scrollCollapse: true,
+            paging: false,
             data: data_list,
             columns: [
                 {
@@ -129,6 +150,6 @@ $(document).ready(function () {
 
     $(document).on("click", '.view-detail-loan-product', function () {
         let data_product_loan = $(this).attr('data-product-loan') ? JSON.parse($(this).attr('data-product-loan')) : []
-        LoadLoanProductTable(data_product_loan)
+        LoadLoanProductTable($('#table-loan-product'), data_product_loan)
     })
 })

@@ -484,3 +484,19 @@ msgstr "Đã tạo phiếu Xuất Hàng"
 #
 msgid "Created Goods Receipt"
 msgstr "Đã tạo phiếu Nhập Hàng"
+
+#
+msgid "Equipment return"
+msgstr "Thu hồi hàng cho mượn"
+
+#
+msgid "Returned"
+msgstr "Đã thu hồi"
+
+#
+msgid "Partially returned"
+msgstr "Thu hồi một phần"
+
+#
+msgid "Have not returned yet"
+msgstr "Chưa thu hồi"

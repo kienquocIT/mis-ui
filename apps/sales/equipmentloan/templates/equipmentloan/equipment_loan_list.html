@@ -26,6 +26,7 @@
                    data-method="GET"
                    data-url="{% url 'EquipmentLoanListAPI' %}"
                    data-url-detail="{% url 'EquipmentLoanDetail' '0' %}"
+                   data-url-create-equipment-return="{% url 'EquipmentReturnCreate' %}"
             >
                 <thead>
                 <tr>
@@ -39,6 +40,7 @@
                     <th style="min-width: 150px">{% trans "Loan date" %}</th>
                     <th style="min-width: 150px">{% trans "Return date" %}</th>
                     <th style="min-width: 80px">{% trans "System status" %}</th>
+                    <th style="min-width: 100px">{% trans "State" %}</th>
                 </tr>
                 </thead>
             </table>

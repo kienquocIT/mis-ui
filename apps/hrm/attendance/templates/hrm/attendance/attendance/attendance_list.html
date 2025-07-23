@@ -4,53 +4,16 @@
     {% trans 'Attendance Table' %}
 {% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
 {% endblock %}
 {% block pageContent %}
+    {{ data.data.current_period | json_script:"current_period" }}
     <div class="row">
         <div class="col-12">
-            <!-- Year, Month, Date Filter -->
             <div class="row">
-                <div class="col-12 col-md-2 col-lg-2"></div>
-                <div class="col-12 col-md-2 col-lg-2">
-                    <div class="form-group">
-                        <label for="period-select"
-                               class="form-label {% if period_req == True %}required{% endif %}">{% trans 'Fiscal year' %}</label>
-                        <select class="form-select select2" id="fiscal year"
-                                data-url="{% url 'PeriodsConfigListAPI' %}"
-                                {% if period_req == True %}required{% endif %}
-                                data-method="GET"
-                        ></select>
-                    </div>
-                </div>
-                <div class="col-12 col-md-2 col-lg-2">
-                    <div class="form-group">
-                        <div class="row">
-                            <div class='col-12'>
-                                <label for="period-month" class="form-label">{% trans 'Select Month' %}</label>
-                                <select id="period-month" class="form-select" {% if month_req == True %}required{% endif %}></select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-3 col-lg-3">
-                    <div class="form-group">
-                        <label class="form-label required">{% trans 'Select Date' %}</label>
-                        <div class="input-group">
-                            <label class="input-group-text" for="period-day-from"><i class="fa-solid fa-calendar-days"></i></label>
-                            <input type="number" min="1" max="31" id="period_start_date" class="form-control"
-                                   placeholder="{% trans 'Start date' %}" required>
-                            <label class="input-group-text" for="period-day-to"><i class="fa-solid fa-calendar-days"></i></label>
-                            <input type="number" min="1" max="31" id="period_end_date" class="form-control"
-                                   placeholder="{% trans 'End date' %}" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-3 col-lg-3"></div>
-            </div>
-            <div class="row">
+                {% include 'extends/periods_group.html' with period_req=True month_req=True date_req=True %}
                 <!-- Filter button -->
                 <div class="col-12">
                     <button type="button" class="btn btn-secondary btn-floating btn-sm"
@@ -59,38 +22,21 @@
                     </button>
                 </div>
                 <!-- Table -->
-                <div class="col-12 mt-3">
-                    <table class="w-100 table nowrap">
-                        <thead>
-                            <tr>
-                                <th>Employee</th>
-                                <th>1</th>
-                                <th>2</th>
-                                <th>3</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><span class="badge badge-soft-primary mr-2">EMP001</span>Đỗ Trần Khánh Phương</td>
-                                <td>x</td>
-                                <td>x</td>
-                                <td>x</td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge badge-soft-primary mr-2">EMP002</span>Đỗ Trần Minh Phương</td>
-                                <td>x</td>
-                                <td>x</td>
-                                <td>x</td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge badge-soft-primary mr-2">EMP003</span>Đỗ Trần Thùy Phương</td>
-                                <td>x</td>
-                                <td>x</td>
-                                <td>x</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <div class="col-12 mt-3" id="space_main_table_employee"></div>
+            </div>
+        </div>
+        <div class="col-12" style="position: fixed; bottom: 0px">
+            <div class="row">
+                <div class="col-12 col-lg-1 col-md-1"></div>
+                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "P: Present" %}</strong></div>
+                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "A: Absent" %}</strong></div>
+                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "L: Leave" %}</strong></div>
+                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "B: Business Trip" %}</strong></div>
+                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "H: Holiday" %}</strong></div>
+                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "W: Weekend" %}</strong></div>
+                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "O: Overtime" %}</strong></div>
+                <div class="col-12 col-lg-2 col-md-2"><strong>{% trans "OB: Overtime on business trip" %}</strong></div>
+                <div class="col-12 col-lg-2 col-md-2"></div>
             </div>
         </div>
     </div>
@@ -104,8 +50,10 @@
            data-md-group="{% url 'GroupDDListAPI' %}">
     <input type="text" id="group-checked">
     <input type="text" id="employee-checked">
+    <input type="text" id="url-attendance-data" data-attendance="{% url "LoadSampleAttendanceListAPI" %}">
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
+    <script src="{% static 'assets/js/periods_group.js' %}"></script>
     <script src="{% static 'assets/js/hrm/attendance/attendance/attendance_common.js' %}"></script>
 {% endblock %}

@@ -19,7 +19,7 @@ msgstr ""
 
 #
 msgid "Incoming document"
-msgstr "Văn bản đến"
+msgstr "Công văn đến"
 
 #
 msgid "Management number"

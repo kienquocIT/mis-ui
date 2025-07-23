@@ -484,3 +484,7 @@ msgstr "Đã tạo phiếu Xuất Hàng"
 #
 msgid "Created Goods Receipt"
 msgstr "Đã tạo phiếu Nhập Hàng"
+
+#
+msgid "None Group"
+msgstr "Không có nhóm"

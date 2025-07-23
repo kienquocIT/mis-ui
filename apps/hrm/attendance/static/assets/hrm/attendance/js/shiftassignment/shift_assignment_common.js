@@ -6,6 +6,7 @@ class ShiftAssignHandle {
     static $toEle = $('#apply_to');
     static $shiftApplyEle = $('#box_shift_apply');
     static $btnShiftAssign = $('#btn-shift-assign');
+    static $groupsCheckedEle = $('#groups-checked');
     static $employeesCheckedEle = $('#employees-checked');
 
     static $transEle = $('#app-trans-factory');
@@ -254,8 +255,15 @@ class ShiftAssignHandle {
     };
 
     static setupDataSubmit() {
+        let groupList = [];
         let employeeList = [];
         let dateList = [];
+        if (ShiftAssignHandle.$groupsCheckedEle.val()) {
+            let storeID = JSON.parse(ShiftAssignHandle.$groupsCheckedEle.val());
+            for (let key in storeID) {
+                groupList.push(key);
+            }
+        }
         if (ShiftAssignHandle.$employeesCheckedEle.val()) {
             let storeID = JSON.parse(ShiftAssignHandle.$employeesCheckedEle.val());
             for (let key in storeID) {
@@ -267,6 +275,7 @@ class ShiftAssignHandle {
             dateList.push(DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', parseDate));
         }
         return {
+            'group_list': groupList,
             'employee_list': employeeList,
             'shift': ShiftAssignHandle.$shiftApplyEle.val(),
             'date_list': dateList,
@@ -274,6 +283,44 @@ class ShiftAssignHandle {
     };
 
     // DataTable
+    static loadStoreCheckGroup(ele) {
+        let row = ele.closest('tr');
+        let rowIndex = ShiftAssignHandle.$table.DataTable().row(row).index();
+        let $row = ShiftAssignHandle.$table.DataTable().row(rowIndex);
+        let dataRow = $row.data();
+        if (dataRow) {
+            if (ShiftAssignHandle.$groupsCheckedEle.val()) {
+                let storeID = JSON.parse(ShiftAssignHandle.$groupsCheckedEle.val());
+                if (typeof storeID === 'object') {
+                    if (ele.checked === true) {
+                        if (!storeID?.[dataRow?.['id']]) {
+                            storeID[dataRow?.['id']] = {
+                                "type": "current",
+                                "data": dataRow,
+                            };
+                        }
+                    }
+                    if (ele.checked === false) {
+                        if (storeID?.[dataRow?.['id']]) {
+                            delete storeID?.[dataRow?.['id']];
+                        }
+                    }
+                    ShiftAssignHandle.$groupsCheckedEle.val(JSON.stringify(storeID));
+                }
+            } else {
+                let dataStore = {};
+                if (ele.checked === true) {
+                    dataStore[dataRow?.['id']] = {
+                        "type": "current",
+                        "data": dataRow,
+                    };
+                }
+                ShiftAssignHandle.$groupsCheckedEle.val(JSON.stringify(dataStore));
+            }
+        }
+        return true;
+    };
+
     static loadStoreCheckEmployee(ele) {
         let row = ele.closest('tr');
         let table = row.closest('table');
@@ -313,8 +360,29 @@ class ShiftAssignHandle {
         return true;
     };
 
+    static loadPushDtbEmployee(trEle, groupID) {
+        let idTbl = UtilControl.generateRandomString(12);
+        if (!trEle.next().hasClass('child-list')) {
+            let dtlSub = `<table id="${idTbl}" class="table table-child nowrap w-100"><thead></thead><tbody></tbody></table>`
+            trEle.after(
+                `<tr class="child-list"><td colspan="4"><div class="child-workflow-group hidden-simple">${dtlSub}</div></td></tr>`
+            );
+        }
+        if (trEle.next().hasClass('child-list')) {
+            let $tableChildEle = trEle.next().find('.table-child');
+            if ($tableChildEle.length > 0) {
+                idTbl = $tableChildEle[0].id;
+            }
+        }
+        ShiftAssignHandle.loadDtbEmployee(idTbl, groupID);
+        return true;
+    };
+
     static loadDtbEmployee(idTbl, groupID) {
         let $tableChild = $('#' + idTbl);
+        if ($.fn.dataTable.isDataTable($tableChild)) {
+            $tableChild.DataTable().destroy();
+        }
         $tableChild.not('.dataTable').DataTableDefault({
             useDataServer: true,
             ajax: {
@@ -369,16 +437,13 @@ class ShiftAssignHandle {
                 // add css to Dtb
                 ShiftAssignHandle.loadDtbHideHeader(idTbl);
 
-                $tableChild.DataTable().rows().every(function () {
-            let rowData = {};
-            let row = this.node();
-            let checkEmployeeEle = row.querySelector('.checkbox-employee');
-                if (checkEmployeeEle) {
-                    ShiftAssignHandle.loadStoreCheckEmployee(checkEmployeeEle);
-                }
-
-
-                });
+                // $tableChild.DataTable().rows().every(function () {
+                //     let row = this.node();
+                //     let checkEmployeeEle = row.querySelector('.checkbox-employee');
+                //     if (checkEmployeeEle) {
+                //         ShiftAssignHandle.loadStoreCheckEmployee(checkEmployeeEle);
+                //     }
+                // });
 
             },
         });
@@ -522,7 +587,6 @@ $(document).ready(function () {
     $(document).on('click', '.btn-collapse-parent', function (event) {
         event.preventDefault();
 
-        let idTbl = UtilControl.generateRandomString(12);
         let trEle = $(this).closest('tr');
         let iconEle = $(this).find('.icon-collapse-app-wf');
 
@@ -542,23 +606,16 @@ $(document).ready(function () {
             trEle.addClass('bg-grey-light-5');
             iconEle.removeClass('text-secondary').addClass('text-dark');
 
-            if (!trEle.next().hasClass('child-list')) {
-                let dtlSub = `<table id="${idTbl}" class="table table-child nowrap w-100"><thead></thead><tbody></tbody></table>`
-                $(this).closest('tr').after(
-                    `<tr class="child-list"><td colspan="4"><div class="child-workflow-group hidden-simple">${dtlSub}</div></td></tr>`
-                );
-            }
-            if (trEle.next().hasClass('child-list')) {
-                let $tableChildEle = trEle.next().find('.table-child');
-                if ($tableChildEle.length > 0) {
-                    idTbl = $tableChildEle[0].id;
-                    if ($.fn.dataTable.isDataTable($tableChildEle)) {
-                        $tableChildEle.DataTable().destroy();
-                    }
-                }
-            }
-            ShiftAssignHandle.loadDtbEmployee(idTbl, $(this).attr('data-group-id'));
+            ShiftAssignHandle.loadPushDtbEmployee(trEle, $(this).attr('data-group-id'));
             trEle.next().removeClass('hidden').find('.child-workflow-group').slideToggle();
+        }
+    });
+
+    ShiftAssignHandle.$table.on('click', '.checkbox-group', function () {
+        ShiftAssignHandle.loadStoreCheckGroup(this);
+        let row = this.closest('tr');
+        if (row) {
+            ShiftAssignHandle.loadPushDtbEmployee($(row), $(this).attr('data-group-id'));
         }
     });
 
@@ -569,32 +626,6 @@ $(document).ready(function () {
             let checkGroupEle = ShiftAssignHandle.$table[0].querySelector(`.checkbox-group[data-group-id="${$(this).attr('data-group-id')}"]`);
             if (checkGroupEle) {
                 checkGroupEle.checked = false;
-            }
-        }
-    });
-
-    ShiftAssignHandle.$table.on('click', '.checkbox-group', function () {
-        let row = this.closest('tr');
-        if (row) {
-            let btnCollapse = row.querySelector('.btn-collapse-parent');
-            if (btnCollapse) {
-                let checkEmployeesEle = ShiftAssignHandle.$table[0].querySelectorAll(`.checkbox-employee[data-group-id="${$(this).attr('data-group-id')}"]`);
-                if (checkEmployeesEle.length > 0) {
-                    let tableChild = checkEmployeesEle[0].closest('table');
-                    if ($.fn.dataTable.isDataTable($(tableChild))) {
-                        $(tableChild).DataTable().destroy();
-                    }
-                    ShiftAssignHandle.loadDtbEmployee(tableChild.id, $(this).attr('data-group-id'));
-                }
-                if (checkEmployeesEle.length === 0) {
-                    $(btnCollapse).trigger('click');
-                }
-
-                // let iconEle = $(btnCollapse).find('.icon-collapse-app-wf');
-                // if (iconEle.hasClass('fa-caret-right')) {
-                //
-                // }
-
             }
         }
     });

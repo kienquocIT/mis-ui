@@ -327,7 +327,7 @@ class BastionFieldControl {
     }
 
     initOppSelect(opts) {
-        if (this.oppEle instanceof jQuery && this.oppEle.length === 1 && !this.oppEle.hasClass("select2-hidden-accessible")) {
+        if (this.oppEle instanceof jQuery && this.oppEle.length === 1) {
             let clsThis = this;
 
             // active events
@@ -591,28 +591,30 @@ class BastionFieldControl {
 
     _callLinkedData(filterData) {
         const clsThis = this;
-        $.fn.callAjax2({
-            url: clsThis.processEle.data('url-data-match') + '?' + $.param({
-                ...filterData,
-                'app_id': clsThis.app_id,
-            }),
-            method: 'GET',
-            isLoading: true,
-            loadingOpts: {
-                'html': $.fn.gettext('Retrieving Opportunity Data that has been linked to Process') + '...',
-            },
-        }).then(resp => {
-                const data = $.fn.switcherResp(resp);
-                if (data) {
-                    const linkedData = data?.['opp_process_stage_app'];
-                    clsThis.selectedFillAllData(linkedData);
-                }
-            },
-            (error) => {
-                if (error.status === 403)
-                    clsThis.processEle.val(null).trigger("change", BastionFieldControl.skipBastionChange);
-                else console.log('error permission denied')
-            })
+        if (clsThis.processEle.data('url-data-match')) {
+            $.fn.callAjax2({
+                url: clsThis.processEle.data('url-data-match') + '?' + $.param({
+                    ...filterData,
+                    'app_id': clsThis.app_id,
+                }),
+                method: 'GET',
+                isLoading: true,
+                loadingOpts: {
+                    'html': $.fn.gettext('Retrieving Opportunity Data that has been linked to Process') + '...',
+                },
+            }).then(resp => {
+                    const data = $.fn.switcherResp(resp);
+                    if (data) {
+                        const linkedData = data?.['opp_process_stage_app'];
+                        clsThis.selectedFillAllData(linkedData);
+                    }
+                },
+                (error) => {
+                    if (error.status === 403)
+                        clsThis.processEle.val(null).trigger("change", BastionFieldControl.skipBastionChange);
+                    else console.log('error permission denied')
+                })
+        }
     }
 
     callLinkedData(from_app) {

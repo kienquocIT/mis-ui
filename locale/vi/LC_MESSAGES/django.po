@@ -2625,7 +2625,7 @@ msgstr "Master data sản phẩm"
 
 #
 msgid "Product list"
-msgstr "Danh sách sản phẩm"
+msgstr "DS sản phẩm"
 
 #
 msgid "Product create"
@@ -7117,7 +7117,7 @@ msgid "Require input data in payment tab (same to purchase order)"
 msgstr "Yêu cầu nhập dữ liệu vào tab thanh toán (tương tự với đơn đặt hàng)"
 
 #
-msgid "Show data have win rate 100%"
+msgid "Show data 100 percent win rate"
 msgstr "Hiển thị dữ liệu có tỷ lệ thắng 100%"
 
 #
@@ -7426,7 +7426,7 @@ msgstr "SL còn lại"
 
 #
 msgid "Order value"
-msgstr "GT đơn hàng"
+msgstr "Giá trị đơn hàng"
 
 #
 msgid "Received value"
@@ -9998,7 +9998,7 @@ msgstr "Loại ngày thanh toán"
 
 #
 msgid "Issue invoice"
-msgstr "Phát hành hóa đơn"
+msgstr "Phát hành HĐ"
 
 #
 msgid "Total payment"
@@ -11560,8 +11560,8 @@ msgid "Advance payment to supplier (according to Purchase order)"
 msgstr "Tạm ứng trước cho nhà cung cấp (theo Đơn mua hàng)"
 
 #
-msgid "Payment to supplier according to AP invoice"
-msgstr "Thanh toán cho nhà cung cấp theo Hóa đơn mua hàng"
+msgid "Payment to supplier (according to AP invoice)"
+msgstr "Thanh toán cho nhà cung cấp (theo Hóa đơn mua hàng)"
 
 #
 msgid "Invoice code"
@@ -12074,3 +12074,23 @@ msgstr "Ngày nữa"
 #
 msgid "Day previous"
 msgstr "Ngày trước"
+
+#
+msgid "Time"
+msgstr "Thời gian"
+
+#
+msgid "Date approved"
+msgstr "Ngày duyệt"
+
+#
+msgid "Expected invoice date"
+msgstr "Ngày xuất hóa đơn dự kiến"
+
+#
+msgid "Actual invoice date"
+msgstr "Ngày xuất hóa đơn thực tế"
+
+#
+msgid "Partially paid"
+msgstr "Thanh toán một phần"

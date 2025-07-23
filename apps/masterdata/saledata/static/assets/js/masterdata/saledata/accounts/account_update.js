@@ -1,30 +1,10 @@
 $(document).ready(function () {
     AccountEventHandler.InitPageEven()
 
-    UsualLoadPageFunction.LoadAccountType({
-        element: pageElements.$account_type
-    })
-    UsualLoadPageFunction.LoadEmployee({
-        element: pageElements.$account_manager
-    })
-    UsualLoadPageFunction.LoadIndustry({
-        element: pageElements.$industry,
-        allow_clear: true
-    })
-    UsualLoadPageFunction.LoadAccountGroup({
-        element: pageElements.$account_group
-    })
-    UsualLoadPageFunction.LoadAccount({
-        element: pageElements.$parent_account,
-        allow_clear: true
-    })
-    UsualLoadPageFunction.LoadEmployee({
-        element: $('#slb-contact-owner')
-    })
-    AccountPageFunction.LoadTableContactMapped()
-    AccountPageFunction.LoadShippingCities()
-    AccountPageFunction.LoadShippingDistrict()
-    AccountPageFunction.LoadShippingWard()
+    // for location
+    UsualLoadPageFunction.LoadLocationCountry($('#modal-shipping-address .location_country'))
+    UsualLoadPageFunction.LoadLocationProvince($('#modal-shipping-address .location_province'))
+    UsualLoadPageFunction.LoadLocationWard($('#modal-shipping-address .location_ward'))
     AccountPageFunction.LoadTableShippingAddress()
     AccountPageFunction.LoadTableBillingAddress()
     AccountPageFunction.LoadTableBankAccount()

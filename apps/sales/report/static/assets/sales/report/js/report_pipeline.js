@@ -21,6 +21,7 @@ $(function () {
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
+                scrollY: "60vh",
                 pageLength: 50,
                 columns: [
                     {
@@ -753,7 +754,7 @@ $(function () {
 
         // init date picker
         $('.date-picker').each(function () {
-            DateTimeControl.initDatePicker(this);
+            DateTimeControl.initFlatPicker(this);
         });
 
         // mask money

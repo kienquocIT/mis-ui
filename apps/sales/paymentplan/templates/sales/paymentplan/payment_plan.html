@@ -71,7 +71,7 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="box-customer-1">{% trans 'Customer' %}</label>
+                            <label class="form-label" for="box-customer-1">{% trans 'Customer' %}</label>
                             <select
                                     class="form-select"
                                     id="box-customer-1"
@@ -85,7 +85,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="box-so-1">{% trans 'Sale order' %}</label>
+                            <label class="form-label" for="box-so-1">{% trans 'Sale order' %}</label>
                             <select
                                     class="form-select"
                                     id="box-so-1"
@@ -100,7 +100,7 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="box-supplier-1">{% trans 'Supplier' %}</label>
+                            <label class="form-label" for="box-supplier-1">{% trans 'Supplier' %}</label>
                             <select
                                     class="form-select"
                                     id="box-supplier-1"
@@ -114,7 +114,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="box-po-1">{% trans 'Purchase order' %}</label>
+                            <label class="form-label" for="box-po-1">{% trans 'Purchase order' %}</label>
                             <select
                                     class="form-select"
                                     id="box-po-1"
@@ -136,7 +136,7 @@
                 </div>
                 <b>{% trans 'Payment time' %}</b>
                 <div class="row">
-                    <div class="col-12 col-md-2 col-lg-2">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label" for="date-from">{% trans 'From' %}</label>
                             <div class="input-affix-wrapper">
@@ -148,7 +148,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-2 col-lg-2">
+                    <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
                             <label class="form-label" for="date-to">{% trans 'To' %}</label>
                             <div class="input-affix-wrapper">
@@ -177,9 +177,9 @@
             <div class="offcanvas-body">
                 <b>{% trans 'Common information' %}</b>
                 <div class="row">
-                    <div class="col-12 col-md-4 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="box-customer">{% trans 'Customer' %}</label>
+                            <label class="form-label" for="box-customer">{% trans 'Customer' %}</label>
                             <select
                                     class="form-select"
                                     id="box-customer"
@@ -191,9 +191,9 @@
                             ></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="box-so">{% trans 'Sale order' %}</label>
+                            <label class="form-label" for="box-so">{% trans 'Sale order' %}</label>
                             <select
                                     class="form-select"
                                     id="box-so"
@@ -206,9 +206,9 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12 col-md-4 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="box-supplier">{% trans 'Supplier' %}</label>
+                            <label class="form-label" for="box-supplier">{% trans 'Supplier' %}</label>
                             <select
                                     class="form-select"
                                     id="box-supplier"
@@ -220,9 +220,9 @@
                             ></select>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="box-po">{% trans 'Purchase order' %}</label>
+                            <label class="form-label" for="box-po">{% trans 'Purchase order' %}</label>
                             <select
                                     class="form-select"
                                     id="box-po"
@@ -246,7 +246,7 @@
                 <div class="row">
                     <div class="col-12 col-md-3 col-lg-3">
                         <div class="form-group">
-                            <label class="form-label mt-2" for="box-month">{% trans 'Month' %}</label>
+                            <label class="form-label" for="box-month">{% trans 'Month' %}</label>
                             <select
                                     class="form-select area-period-element"
                                     id="box-month"
@@ -313,6 +313,11 @@
         data-paid="{% trans 'Paid' %}"
         data-not-paid="{% trans 'Not paid' %}"
         data-over-due="{% trans 'Over due' %}"
+        data-partially-paid="{% trans 'Partially paid' %}"
+        data-expected-invoice-date="{% trans 'Expected invoice date' %}"
+        data-actual-invoice-date="{% trans 'Actual invoice date' %}"
+        data-total-cash-in="{% trans 'Total cash in' %}"
+        data-total-cash-out="{% trans 'Total cash out' %}"
     >
     <input
         type="text"

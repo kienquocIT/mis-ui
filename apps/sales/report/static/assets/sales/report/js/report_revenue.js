@@ -18,7 +18,7 @@ $(function () {
                 data: data ? data : [],
                 autoWidth: true,
                 scrollX: true,
-                scrollY: "450px",
+                scrollY: "60vh",
                 pageLength: 50,
                 columns: [
                     {
@@ -301,7 +301,7 @@ $(function () {
             FormElementControl.loadInitS2(boxEmployee, [], {}, null, true);
             // init date picker
             $('.date-picker').each(function () {
-                DateTimeControl.initDatePicker(this);
+                DateTimeControl.initFlatPicker(this);
             });
             loadDbl();
             storeLoadInitByDataFiscalYear();

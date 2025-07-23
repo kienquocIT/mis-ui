@@ -85,64 +85,48 @@
 <div class="row mt-5 supplier-space">
     <div class="col-12 col-md-5 col-lg-5">
         <div class="form-group">
-            <label for="advance_for_supplier_value" class="form-label fw-bold h5">
-                {% trans "Advance payment to supplier (not according to Purchase order)" %}
-            </label>
-            <input class="form-control mask-money" value="0" id="advance_for_supplier_value">
+            <label class="form-check-label fw-bold h5">{% trans "Advance payment to supplier (not according to Purchase order)" %}</label>
+            <input class="form-control mask-money" value="0" id="advance_for_supplier_value" disabled readonly>
         </div>
     </div>
 </div>
-<div class="row mt-5 supplier-space">
-    <div class="col-12 col-md-6 col-lg-6">
-        <div class="dropdown">
-            <span data-bs-toggle="dropdown">
-                <label data-value="0" id="cof_type_label" class="form-label fw-bold h5">
-                    {% trans 'Advance payment to supplier (according to Purchase order)' %}
-                </label><i class="fa-regular fa-square-caret-down text-primary ml-2"></i>
-            </span>
-            <div id="cof_type" role="menu" class="dropdown-menu dropdown-menu-dark">
-                <a class="dropdown-item" href="#" data-value="0"><i class="dropdown-icon fa-solid fa-hand-point-right"></i><span>{% trans 'Advance payment to supplier (according to Purchase order)' %}</span></a>
-                <a class="dropdown-item" href="#" data-value="1"><i class="dropdown-icon fa-solid fa-hand-point-right"></i><span>{% trans 'Payment to supplier according to AP invoice' %}</span></a>
-            </div>
-        </div>
+<div class="row supplier-space">
+    <div class="col-12 mt-5">
+        <label class="form-check-label fw-bold h5">{% trans 'Advance payment to supplier (according to Purchase order)' %}</label>
+        <span class="small text-muted" style="float: right;">({% trans 'Order by Due date' %})</span>
+        <table id="advance-to-supplier-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'AdvanceForSupplierListForCashOutflowAPI' %}">
+            <thead>
+            <tr>
+                <th style="min-width: 30px"></th>
+                <th style="min-width: 30px"></th>
+                <th style="min-width: 80px">{% trans 'PO code' %}</th>
+                <th style="min-width: 100px">{% trans 'Description' %}</th>
+                <th style="min-width: 80px">{% trans 'Due date' %}</th>
+                <th style="min-width: 150px">{% trans 'Total' %}</th>
+                <th style="min-width: 150px">{% trans 'Balance value' %}</th>
+                <th style="min-width: 200px">{% trans 'Payment value' %}</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
-    <div class="col-12">
-        <div id="area_table_advance_to_supplier">
-            <table id="advance-to-supplier-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'AdvanceForSupplierListForCashOutflowAPI' %}">
-                <thead>
-                <tr >
-                    <th style="min-width: 50px"></th>
-                    <th style="min-width: 50px"></th>
-                    <th style="min-width: 80px">{% trans 'PO code' %}</th>
-                    <th style="min-width: 100px">{% trans 'Description' %}</th>
-                    <th style="min-width: 80px">{% trans 'Due date' %}</th>
-                    <th style="min-width: 150px">{% trans 'Total' %}</th>
-                    <th style="min-width: 150px">{% trans 'Balance value' %}</th>
-                    <th style="min-width: 200px">{% trans 'Payment value' %}</th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <span class="small text-muted">{% trans 'Order by Due date' %}</span>
-        </div>
-        <div hidden id="area_table_ap_invoice">
-            <table id="ap-invoice-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'APInvoiceListForCashOutflowAPI' %}">
-                <thead>
-                <tr>
-                    <th style="min-width: 50px"></th>
-                    <th style="min-width: 50px"></th>
-                    <th style="min-width: 80px">{% trans 'Invoice code' %}</th>
-                    <th style="min-width: 100px">{% trans 'Document type' %}</th>
-                    <th style="min-width: 100px">{% trans 'Document date' %}</th>
-                    <th style="min-width: 150px">{% trans 'Total' %}</th>
-                    <th style="min-width: 150px">{% trans 'Balance value' %}</th>
-                    <th style="min-width: 200px">{% trans 'Payment value' %}</th>
-                    <th style="min-width: 150px">{% trans 'Payment discount' %}</th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+    <div class="col-12 mt-5">
+        <label class="form-check-label fw-bold h5">{% trans 'Payment to supplier (according to AP invoice)' %}</label>
+        <table id="ap-invoice-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'APInvoiceListForCashOutflowAPI' %}">
+            <thead>
+            <tr>
+                <th style="min-width: 30px"></th>
+                <th style="min-width: 30px"></th>
+                <th style="min-width: 80px">{% trans 'Invoice code' %}</th>
+                <th style="min-width: 100px">{% trans 'Document date' %}</th>
+                <th style="min-width: 150px">{% trans 'Total' %}</th>
+                <th style="min-width: 150px">{% trans 'Balance value' %}</th>
+                <th style="min-width: 200px">{% trans 'Payment value' %}</th>
+                <th style="min-width: 150px">{% trans 'Payment discount' %}</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 </div>
 <div class="row mt-5 customer-space" hidden>

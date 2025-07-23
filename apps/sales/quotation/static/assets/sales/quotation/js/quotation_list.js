@@ -6,6 +6,9 @@ $(function () {
         let urlsEle = $('#app-url-factory');
         let $isDeleteEle = $('#is_delete');
         let $employeeEle = $('#employee_dd');
+        let $customerEle = $('#customer_dd');
+        let $operatorEle = $('#operator');
+        let $totalEle = $('#total');
         let $fromEle = $('#date_from');
         let $toEle = $('#date_to');
 
@@ -240,10 +243,19 @@ $(function () {
         }
 
         function initPage() {
-            FormElementControl.loadInitS2($employeeEle);
+            FormElementControl.loadInitS2($employeeEle, [], {}, null, true);
+            FormElementControl.loadInitS2($customerEle, [], {'account_types_mapped__account_type_order': 0}, null, true);
+            FormElementControl.loadInitS2($operatorEle, [
+                {'id': '', 'title': 'Select...',},
+                {"id": "=", "title": "="},
+                {"id": ">", "title": ">"},
+                {"id": "<", "title": "<"},
+                {"id": ">=", "title": "≥"},
+                {"id": "<=", "title": "≤"},
+            ], {}, null, true);
             // init date picker
             $('.date-picker').each(function () {
-                DateTimeControl.initDatePicker(this);
+                DateTimeControl.initFlatPicker(this);
             });
 
             loadDbl();
@@ -255,6 +267,26 @@ $(function () {
             let dataParams = {};
             if ($employeeEle.val() && $employeeEle.val().length > 0) {
                 dataParams['employee_inherit_id__in'] = $employeeEle.val().join(',');
+            }
+            if ($customerEle.val() && $customerEle.val().length > 0) {
+                dataParams['customer_id__in'] = $customerEle.val().join(',');
+            }
+            if ($operatorEle.val()) {
+                if ($operatorEle.val() === "=") {
+                    dataParams['customer_id__in'] = $customerEle.val().join(',');
+                }
+                if ($operatorEle.val() === ">") {
+                    dataParams['indicator_revenue__gt'] = $totalEle.valCurrency();
+                }
+                if ($operatorEle.val() === "<") {
+                    dataParams['indicator_revenue__lt'] = $totalEle.valCurrency();
+                }
+                if ($operatorEle.val() === ">=") {
+                    dataParams['indicator_revenue__gte'] = $totalEle.valCurrency();
+                }
+                if ($operatorEle.val() === "<=") {
+                    dataParams['indicator_revenue__lte'] = $totalEle.valCurrency();
+                }
             }
             if ($fromEle.val()) {
                 dataParams['date_approved__gte'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $fromEle.val());

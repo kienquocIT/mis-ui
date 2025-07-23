@@ -259,3 +259,23 @@ class AppEmpConfigListAPI(APIView):
             url=ApiURL.APP_EMP_CONFIG_LIST,
             msg=AppMsg.EMPLOYEE_ZONES_CONFIG_UPDATE
         )
+
+
+class NProvinceListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.NPROVINCES, user=request.user).get()
+        return resp.auto_return(key_success='nprovinces')
+
+
+class NWardListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, url=ApiURL.NWARDS, user=request.user).get()
+        return resp.auto_return(key_success='nwards')

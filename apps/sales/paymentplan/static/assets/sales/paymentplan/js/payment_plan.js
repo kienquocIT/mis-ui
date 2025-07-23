@@ -66,7 +66,6 @@ $(function () {
                 },
                 autoWidth: true,
                 scrollX: true,
-                scrollY: "550px",
                 pageLength: 10,
                 columns: [
                     {
@@ -103,7 +102,7 @@ $(function () {
                             let dateSub = '';
                             if (row?.['invoice_planned_date']) {
                                 date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_planned_date']);
-                                dateSub = "Ngày xuất hóa đơn dự kiến: ";
+                                dateSub = `${$transFact.attr('data-expected-invoice-date')}: `;
                             }
                             let paymentStageData = row?.['so_payment_stage_data'];
                             if (row?.['purchase_order_data']?.['id']) {
@@ -128,7 +127,7 @@ $(function () {
                             let dateSub = '';
                             if (row?.['invoice_actual_date']) {
                                 date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_actual_date']);
-                                dateSub = "Ngày xuất hóa đơn thực tế:";
+                                dateSub = `${$transFact.attr('data-actual-invoice-date')}: `;
                             }
                             let link = $urlFact.data('ar-invoice-detail').format_url_with_uuid(row?.['ar_invoice_data']?.['id']);
                             let title = row?.['ar_invoice_data']?.['title'] ? row?.['ar_invoice_data']?.['title'] : '';
@@ -152,6 +151,9 @@ $(function () {
                                 let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
                                 let daysLeft = daysBetween(currentDate, dueDate);
                                 if (daysLeft >= 0) {
+                                    if (row?.['ar_invoice_data']?.['id'] || row?.['ap_invoice_data']?.['id']) {
+                                        return `<span class="badge text-dark-10 fs-8 bg-pink-light-4">${$transFact.attr('data-partially-paid')}</span>`;
+                                    }
                                     return `<span class="badge text-dark-10 fs-8 bg-yellow-light-4">${$transFact.attr('data-not-paid')}</span>`;
                                 }
                                 return `<span class="badge text-dark-10 fs-8 bg-red-light-4">${$transFact.attr('data-over-due')}</span>`;
@@ -280,8 +282,8 @@ $(function () {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('payment_plan_list')) {
                             let dataFn = resp.data['payment_plan_list'] ? resp.data['payment_plan_list'] : [];
-                            dataFn.push({"is_total_in": true});
-                            dataFn.push({"is_total_out": true});
+                            dataFn.unshift({"is_total_in": true});
+                            dataFn.unshift({"is_total_out": true});
                             return dataFn;
                         }
                         throw Error('Call data raise errors.')
@@ -289,7 +291,8 @@ $(function () {
                 },
                 autoWidth: true,
                 scrollX: true,
-                scrollY: "550px",
+                scrollY: "60vh",
+                fixedHeader: true,
                 fixedColumns: {
                     leftColumns: Object.keys(staticHeaders).length
                 },
@@ -298,9 +301,21 @@ $(function () {
                 rowCallback: function (row, data, index) {
                     if (data?.['is_total_in'] === true) {
                         $(row).find('td:eq(1)').attr('colspan', 1);
+                        $(row).css({
+                            "position": 'sticky',
+                            'top': '43px',
+                            'background': 'white',
+                            'z-index': 10,
+                        });
                     }
                     if (data?.['is_total_out'] === true) {
                         $(row).find('td:eq(1)').attr('colspan', 1);
+                        $(row).css({
+                            "position": 'sticky',
+                            'top': '0px',
+                            'background': 'white',
+                            'z-index': 11,
+                        });
                     }
                 },
                 drawCallback: function (settings) {
@@ -490,7 +505,7 @@ $(function () {
                         let dateSub = '';
                         if (row?.['invoice_planned_date']) {
                             date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_planned_date']);
-                            dateSub = "Ngày xuất hóa đơn dự kiến: ";
+                            dateSub = `${$transFact.attr('data-expected-invoice-date')}: `;
                         }
                         let paymentStageData = row?.['so_payment_stage_data'];
                         if (row?.['purchase_order_data']?.['id']) {
@@ -516,7 +531,7 @@ $(function () {
                         let dateSub = '';
                         if (row?.['invoice_actual_date']) {
                             date = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['invoice_actual_date']);
-                            dateSub = "Ngày xuất hóa đơn thực tế:";
+                            dateSub = `${$transFact.attr('data-actual-invoice-date')}: `;
                         }
                         let link = $urlFact.data('ar-invoice-detail').format_url_with_uuid(row?.['ar_invoice_data']?.['id']);
                         let title = row?.['ar_invoice_data']?.['title'] ? row?.['ar_invoice_data']?.['title'] : '';
@@ -541,6 +556,9 @@ $(function () {
                             let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
                             let daysLeft = daysBetween(currentDate, dueDate);
                             if (daysLeft >= 0) {
+                                if (row?.['ar_invoice_data']?.['id'] || row?.['ap_invoice_data']?.['id']) {
+                                    return `<span class="badge text-dark-10 fs-8 bg-pink-light-4">${$transFact.attr('data-partially-paid')}</span>`;
+                                }
                                 return `<span class="badge text-dark-10 fs-8 bg-yellow-light-4">${$transFact.attr('data-not-paid')}</span>`;
                             }
                             return `<span class="badge text-dark-10 fs-8 bg-red-light-4">${$transFact.attr('data-over-due')}</span>`;
@@ -576,13 +594,13 @@ $(function () {
                     render: (data, type, row) => {
                         if (row?.['is_total_in'] === true) {
                             return `<div class="d-flex justify-content-between">
-                                        <b>Total cash in</b>
+                                        <b>${$transFact.attr('data-total-cash-in')}</b>
                                         <b><i class="fa-solid fa-arrow-left text-green"></i></b>
                                     </div>`;
                         }
                         if (row?.['is_total_out'] === true) {
                             return `<div class="d-flex justify-content-between">
-                                        <b>Total cash out</b>
+                                        <b>${$transFact.attr('data-total-cash-out')}</b>
                                         <b><i class="fa-solid fa-arrow-right text-red"></i></b>
                                     </div>`;
                         }

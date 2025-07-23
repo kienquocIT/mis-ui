@@ -4,6 +4,13 @@ $(function () {
 
         let $table = $('#table_sale_order_list')
         let frm = new SetupFormSubmit($table);
+
+        let $employeeEle = $('#employee_dd');
+        let $customerEle = $('#customer_dd');
+        let $operatorEle = $('#operator');
+        let $totalEle = $('#total');
+        let $fromEle = $('#date_from');
+        let $toEle = $('#date_to');
         let transEle = $('#trans-factory');
         let urlsEle = $('#app-url-factory');
         let $modalDeliveryInfoEle = $('#deliveryInfoModalCenter');
@@ -11,32 +18,13 @@ $(function () {
         let $deliveryRemarkEle = $('#remarks');
         let $btnDelivery = $('#btn-delivery');
 
-        // date picker
-        $('.date-picker').each(function () {
-            $(this).daterangepicker({
-                singleDatePicker: true,
-                timepicker: false,
-                showDropdowns: false,
-                minYear: 2023,
-                locale: {
-                    format: 'DD/MM/YYYY',
-                },
-                maxYear: parseInt(moment().format('YYYY'), 10),
-                autoApply: true,
-                autoUpdateInput: false,
-            }).on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY')).trigger('change');
-            });
-            $(this).val('').trigger('change');
-        });
-
-        function loadDbl() {
+        function loadDbl(dataParams) {
             $table.DataTableDefault({
                 useDataServer: true,
                 ajax: {
                     url: frm.dataUrl,
                     type: frm.dataMethod,
-                    // data: {'is_recurring': false},
+                    data: dataParams,
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data && resp.data.hasOwnProperty('sale_order_list')) {
@@ -211,8 +199,24 @@ $(function () {
                 drawCallback: function () {
                     // mask money
                     $.fn.initMaskMoney2();
+                    dtbHDCustom();
                 },
             });
+        }
+
+        function dtbHDCustom() {
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+            if (headerToolbar$.length > 0) {
+                if (!$('#btn-open-filter').length) {
+                    let $group = $(`<div class="btn-filter">
+                                        <button type="button" class="btn btn-light btn-sm ml-1" id="btn-open-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                            <span><span class="icon"><i class="fas fa-filter"></i></span><span>${$.fn.transEle.attr('data-filter')}</span></span>
+                                        </button>
+                                    </div>`);
+                    headerToolbar$.append($group);
+                }
+            }
         }
 
         function renderPopoverCR(ele, data) {
@@ -303,7 +307,26 @@ $(function () {
             return true;
         }
 
-        loadDbl();
+        function initPage() {
+            FormElementControl.loadInitS2($employeeEle, [], {}, null, true);
+            FormElementControl.loadInitS2($customerEle, [], {'account_types_mapped__account_type_order': 0}, null, true);
+            FormElementControl.loadInitS2($operatorEle, [
+                {'id': '', 'title': 'Select...',},
+                {"id": "=", "title": "="},
+                {"id": ">", "title": ">"},
+                {"id": "<", "title": "<"},
+                {"id": ">=", "title": "≥"},
+                {"id": "<=", "title": "≤"},
+            ], {}, null, true);
+            // init date picker
+            $('.date-picker').each(function () {
+                DateTimeControl.initFlatPicker(this);
+            });
+
+            loadDbl();
+        }
+
+        initPage();
 
         $btnDelivery.on('click', function () {
             if (!$deliveryEstimatedDateEle.val()) {
@@ -340,6 +363,44 @@ $(function () {
                     $.fn.notifyB({description: errs.data.errors}, 'failure');
                 }
             )
+        });
+
+
+        $('#btn-apply-filter').on('click', function () {
+            let dataParams = {};
+            if ($employeeEle.val() && $employeeEle.val().length > 0) {
+                dataParams['employee_inherit_id__in'] = $employeeEle.val().join(',');
+            }
+            if ($customerEle.val() && $customerEle.val().length > 0) {
+                dataParams['customer_id__in'] = $customerEle.val().join(',');
+            }
+            if ($operatorEle.val()) {
+                if ($operatorEle.val() === "=") {
+                    dataParams['customer_id__in'] = $customerEle.val().join(',');
+                }
+                if ($operatorEle.val() === ">") {
+                    dataParams['indicator_revenue__gt'] = $totalEle.valCurrency();
+                }
+                if ($operatorEle.val() === "<") {
+                    dataParams['indicator_revenue__lt'] = $totalEle.valCurrency();
+                }
+                if ($operatorEle.val() === ">=") {
+                    dataParams['indicator_revenue__gte'] = $totalEle.valCurrency();
+                }
+                if ($operatorEle.val() === "<=") {
+                    dataParams['indicator_revenue__lte'] = $totalEle.valCurrency();
+                }
+            }
+            if ($fromEle.val()) {
+                dataParams['date_approved__gte'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $fromEle.val());
+            }
+            if ($toEle.val()) {
+                dataParams['date_approved__lte'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $toEle.val());
+            }
+            if ($.fn.dataTable.isDataTable($table)) {
+                $table.DataTable().destroy();
+            }
+            loadDbl(dataParams);
         });
 
     });

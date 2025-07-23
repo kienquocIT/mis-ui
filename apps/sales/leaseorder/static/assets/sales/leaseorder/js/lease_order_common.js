@@ -5073,6 +5073,7 @@ class LeaseOrderDataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,
@@ -5187,6 +5188,7 @@ class LeaseOrderDataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,
@@ -5287,6 +5289,7 @@ class LeaseOrderDataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,
@@ -5412,6 +5415,7 @@ class LeaseOrderDataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
+            scrollY: "60vh",
             columns: [
                 {
                     targets: 0,
@@ -5834,37 +5838,13 @@ class LeaseOrderDataTableHandle {
                     }
                 }
                 if (dateEle) {
-                    $(dateEle).daterangepicker({
-                        singleDatePicker: true,
-                        timepicker: false,
-                        showDropdowns: false,
-                        minYear: 2023,
-                        locale: {
-                            format: 'DD/MM/YYYY'
-                        },
-                        maxYear: parseInt(moment().format('YYYY'), 10),
-                        drops: 'up',
-                        autoApply: true,
-                    });
-                    $(dateEle).val(null).trigger('change');
+                    DateTimeControl.initFlatPicker(dateEle);
                     if (data?.['date']) {
                         $(dateEle).val(moment(data?.['date']).format('DD/MM/YYYY'));
                     }
                 }
                 if (dueDateEle) {
-                    $(dueDateEle).daterangepicker({
-                        singleDatePicker: true,
-                        timepicker: false,
-                        showDropdowns: false,
-                        minYear: 2023,
-                        locale: {
-                            format: 'DD/MM/YYYY'
-                        },
-                        maxYear: parseInt(moment().format('YYYY'), 10),
-                        drops: 'up',
-                        autoApply: true,
-                    });
-                    $(dueDateEle).val(null).trigger('change');
+                    DateTimeControl.initFlatPicker(dueDateEle);
                     if (data?.['due_date']) {
                         $(dueDateEle).val(moment(data?.['due_date']).format('DD/MM/YYYY'));
                     }
@@ -6060,19 +6040,7 @@ class LeaseOrderDataTableHandle {
                 let $termMD = LeaseOrderLoadDataHandle.paymentSelectEle;
                 let checkTax = LeaseOrderLoadDataHandle.loadCheckSameMixTax();
                 if (dateEle) {
-                    $(dateEle).daterangepicker({
-                        singleDatePicker: true,
-                        timepicker: false,
-                        showDropdowns: false,
-                        minYear: 2023,
-                        locale: {
-                            format: 'DD/MM/YYYY'
-                        },
-                        maxYear: parseInt(moment().format('YYYY'), 10),
-                        drops: 'up',
-                        autoApply: true,
-                    });
-                    $(dateEle).val(null).trigger('change');
+                    DateTimeControl.initFlatPicker(dateEle);
                     if (data?.['date']) {
                         $(dateEle).val(moment(data?.['date']).format('DD/MM/YYYY'));
                     }

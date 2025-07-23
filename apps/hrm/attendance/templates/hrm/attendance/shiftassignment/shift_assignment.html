@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Payment plan' %}{% endblock %}
+{% block title %}{% trans 'Shift assignment' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/fullcalendar/main.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
@@ -39,7 +39,9 @@
         <div class="col-12 col-md-2 col-lg-2">
             <div class="row mt-5">
                 <h5>Áp dụng ca làm việc</h5>
-                <div class="form-group w-80">
+                <br>
+                <br>
+                <div class="form-group w-70">
                     <label class="form-label" for="apply_from">{% trans 'From' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" id="apply_from"
@@ -49,7 +51,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group w-80">
+                <div class="form-group w-70">
                     <label class="form-label" for="apply_to">{% trans 'To' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" id="apply_to"
@@ -73,6 +75,8 @@
                             data-keyResp="shift_list"
                     ></select>
                 </div>
+
+                <a href="{% url "ShiftMasterDataList" %}" target="_blank" class="link-primary underline_hover">View shift list</a>
             </div>
         </div>
     </div>
@@ -420,6 +424,10 @@
         id="app-url-factory"
         data-dd-group="{% url 'GroupDDListAPI' %}"
         data-dd-employee="{% url 'EmployeeListAllAPI' %}"
+    >
+    <input
+            type="text"
+            id="employees-checked"
     >
 {% endblock %}
 {% block jsFooter %}

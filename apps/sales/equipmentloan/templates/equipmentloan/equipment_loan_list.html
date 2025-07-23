@@ -34,11 +34,11 @@
                     <th style="min-width: 100px">{% trans "Code" %}</th>
                     <th style="min-width: 300px">{% trans "Name" %}</th>
                     <th style="min-width: 300px">{% trans "Account" %}</th>
-                    <th style="min-width: 100px">{% trans "Product list" %}</th>
-                    <th style="min-width: 150px">{% trans "Employee created" %}</th>
-                    <th style="min-width: 150px">{% trans "Date created" %}</th>
                     <th style="min-width: 150px">{% trans "Loan date" %}</th>
                     <th style="min-width: 150px">{% trans "Return date" %}</th>
+                    <th style="min-width: 150px">{% trans "Employee created" %}</th>
+                    <th style="min-width: 150px">{% trans "Date created" %}</th>
+                    <th style="min-width: 100px">{% trans "Loan product" %}</th>
                     <th style="min-width: 80px">{% trans "System status" %}</th>
                     <th style="min-width: 100px">{% trans "State" %}</th>
                 </tr>
@@ -49,7 +49,7 @@
 {% endblock %}
 {% block modalData %}
     <div class="modal fade" id="modal-detail-product-loan" tabindex="-1" role="dialog" aria-labelledby="modal-detail-product-loan">
-        <div class="modal-dialog" style="min-width: 70%" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{% trans 'Loan product' %}</h5>
@@ -61,7 +61,7 @@
                     <div class="row">
                         <div class="col-12">
                             <table class="table nowrap w-100" id="table-loan-product">
-                                <thead>
+                                <thead class="bg-secondary-light-5">
                                     <tr>
                                         <th></th>
                                         <th>{% trans 'Product' %}</th>
@@ -71,9 +71,6 @@
                             </table>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                 </div>
             </div>
         </div>

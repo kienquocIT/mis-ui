@@ -53,9 +53,15 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'text-center w-10',
+                        className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
-                            return `<span class="view-detail-loan-product" data-bs-toggle="modal" data-bs-target="#modal-detail-product-loan" data-product-loan='${JSON.stringify(row?.['product_loan_data'] || [])}'><i class="fas fa-table"></i></span>`
+                            return $x.fn.displayRelativeTime(row?.['loan_date'], {'outputFormat': 'DD/MM/YYYY'});
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['return_date'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
@@ -71,15 +77,9 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-sm w-10',
+                        className: 'text-center w-10',
                         render: (data, type, row) => {
-                            return $x.fn.displayRelativeTime(row?.['loan_date'], {'outputFormat': 'DD/MM/YYYY'});
-                        }
-                    },
-                    {
-                        className: 'ellipsis-cell-sm w-10',
-                        render: (data, type, row) => {
-                            return $x.fn.displayRelativeTime(row?.['return_date'], {'outputFormat': 'DD/MM/YYYY'});
+                            return `<span class="view-detail-loan-product" data-bs-toggle="modal" data-bs-target="#modal-detail-product-loan" data-product-loan='${JSON.stringify(row?.['product_loan_data'] || [])}'><i class="fas fa-table"></i></span>`
                         }
                     },
                     {
@@ -117,7 +117,7 @@ $(document).ready(function () {
     function LoadLoanProductTable(tbl, data_list=[]) {
         tbl.DataTable().clear().destroy()
         tbl.DataTableDefault({
-            styleDom: 'hide-foot',
+            dom: '',
             rowIdx: true,
             reloadCurrency: true,
             scrollY: '50vh',
@@ -135,7 +135,7 @@ $(document).ready(function () {
                 {
                     className: 'w-70',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm-light mr-1">${row?.['code']}</span><span>${row?.['title']}</span>`
+                        return `<span class="badge badge-sm badge-light mr-1">${row?.['code']}</span><span>${row?.['title']}</span>`
                     }
                 },
                 {

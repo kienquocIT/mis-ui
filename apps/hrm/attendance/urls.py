@@ -1,7 +1,7 @@
 from django.urls import path
 
 from apps.hrm.attendance.views import ShiftMasterDataList, ShiftMasterDataListAPI, ShiftMasterDataDetailAPI, \
-    ShiftAssignmentList
+    ShiftAssignmentList, ShiftAssignmentListAPI
 
 urlpatterns = [
     path('shift/list', ShiftMasterDataList.as_view(), name='ShiftMasterDataList'),
@@ -10,4 +10,5 @@ urlpatterns = [
 
     # shift assignment
     path('shift-assignment/list', ShiftAssignmentList.as_view(), name='ShiftAssignmentList'),
+    path('shift-assignment/api/list', ShiftAssignmentListAPI.as_view(), name='ShiftAssignmentListAPI'),
 ]

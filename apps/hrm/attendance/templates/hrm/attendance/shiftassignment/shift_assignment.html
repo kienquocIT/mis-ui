@@ -78,6 +78,11 @@
 
                 <a href="{% url "ShiftMasterDataList" %}" target="_blank" class="link-primary underline_hover">View shift list</a>
             </div>
+            <br>
+            <br>
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-primary" id="btn-shift-assign">{% trans 'Apply' %}</button>
+            </div>
         </div>
     </div>
 
@@ -422,6 +427,7 @@
     <input
         type="text"
         id="app-url-factory"
+        data-api-shift-assignment="{% url 'ShiftAssignmentListAPI' %}"
         data-dd-group="{% url 'GroupDDListAPI' %}"
         data-dd-employee="{% url 'EmployeeListAllAPI' %}"
     >

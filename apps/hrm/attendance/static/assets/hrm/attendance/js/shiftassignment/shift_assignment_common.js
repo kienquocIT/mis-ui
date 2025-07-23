@@ -2,7 +2,10 @@ class ShiftAssignHandle {
     static $wrapperEle = $('#calendarapp-wrapper');
     static $calendarEle = $('#calendar');
     static $table = $('#table_group');
+    static $fromEle = $('#apply_from');
+    static $toEle = $('#apply_to');
     static $shiftApplyEle = $('#box_shift_apply');
+    static $btnShiftAssign = $('#btn-shift-assign');
     static $employeesCheckedEle = $('#employees-checked');
 
     static $transEle = $('#app-trans-factory');
@@ -176,37 +179,99 @@ class ShiftAssignHandle {
 
     };
 
-    static generateEvents(startDate, endDate) {
+    static generateEvents(startDate, endDate, employeeID, calendar) {
         let events = [];
         let mStart = moment(startDate);
         let mEnd = moment(endDate);
 
-        let shift_default = ShiftAssignHandle.dataCompanyConfig?.['shift_data'];
-
-        for (let m = mStart.clone(); m.isBefore(mEnd); m.add(1, 'days')) {
-            events.push({
-                title: `${shift_default?.['title']}`,
-                start: m.format('YYYY-MM-DD'),
-                extendedProps: {
-                    toHtml: 'convert'
+        WindowControl.showLoading();
+        $.fn.callAjax2({
+                'url': ShiftAssignHandle.$urlEle.attr('data-api-shift-assignment'),
+                'method': "GET",
+                'data': {'employee_id': employeeID},
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('shift_assignment_list') && Array.isArray(data.shift_assignment_list)) {
+                        for (let m = mStart.clone(); m.isBefore(mEnd); m.add(1, 'days')) {
+                            for (let shiftAssignmentData of data.shift_assignment_list) {
+                                if (shiftAssignmentData?.['date'] === m.format('YYYY-MM-DD')) {
+                                    events.push({
+                                        title: `${shiftAssignmentData?.['shift']?.['title']}`,
+                                        start: m.format('YYYY-MM-DD'),
+                                        extendedProps: {
+                                            toHtml: 'convert'
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                        calendar.removeAllEvents();
+                        calendar.addEventSource(events);
+                        WindowControl.hideLoading();
+                    }
                 }
-            });
-        }
-
+            }
+        )
         return events;
     };
 
     static loadShiftEmployee(calendar, info) {
-        let events = [];
         if (ShiftAssignHandle.$employeesCheckedEle.val()) {
             let storeID = JSON.parse(ShiftAssignHandle.$employeesCheckedEle.val());
             if (Object.keys(storeID).length === 1) {
-                events = ShiftAssignHandle.generateEvents(info.start, info.end);
+                let employeeID = Object.keys(storeID)[0];
+                ShiftAssignHandle.generateEvents(info.start, info.end, employeeID, calendar);
             }
         }
-        calendar.removeAllEvents();
-        calendar.addEventSource(events);
-    }
+        return true;
+    };
+
+    static parseDateList(dateFrom, dateTo) {
+        let result = [];
+        let parse = (str) => {
+            const [day, month, year] = str.split('/').map(Number);
+            return new Date(year, month - 1, day);
+        };
+        let format = (date) => {
+            const dd = String(date.getDate()).padStart(2, '0');
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const yyyy = date.getFullYear();
+            return `${dd}/${mm}/${yyyy}`;
+        };
+
+        let current = parse(dateFrom);
+        let end = parse(dateTo);
+
+        while (current <= end) {
+            result.push(format(current));
+            current.setDate(current.getDate() + 1);
+        }
+        return result;
+    };
+
+    static setupDataSubmit() {
+        let employeeList = [];
+        let dateList = [];
+        if (ShiftAssignHandle.$employeesCheckedEle.val()) {
+            let storeID = JSON.parse(ShiftAssignHandle.$employeesCheckedEle.val());
+            for (let key in storeID) {
+                employeeList.push(key);
+            }
+        }
+        let parseDateList = ShiftAssignHandle.parseDateList(ShiftAssignHandle.$fromEle.val(), ShiftAssignHandle.$toEle.val());
+        for (let parseDate of parseDateList) {
+            dateList.push(DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', parseDate));
+        }
+        return {
+            'employee_list': employeeList,
+            'shift': ShiftAssignHandle.$shiftApplyEle.val(),
+            'date_list': dateList,
+        };
+    };
 
     // DataTable
     static loadStoreCheckEmployee(ele) {
@@ -249,7 +314,8 @@ class ShiftAssignHandle {
     };
 
     static loadDtbEmployee(idTbl, groupID) {
-        $('#' + idTbl).not('.dataTable').DataTableDefault({
+        let $tableChild = $('#' + idTbl);
+        $tableChild.not('.dataTable').DataTableDefault({
             useDataServer: true,
             ajax: {
                 url: ShiftAssignHandle.$urlEle.attr('data-dd-employee'),
@@ -277,6 +343,12 @@ class ShiftAssignHandle {
                                 }
                             }
                         }
+                        let checkGroupEle = ShiftAssignHandle.$table[0].querySelector(`.checkbox-group[data-group-id="${groupID}"]`);
+                        if (checkGroupEle) {
+                            if (checkGroupEle.checked === true) {
+                                checked = 'checked';
+                            }
+                        }
                         return `<div class="form-check form-check-lg d-flex align-items-center">
                                     <input type="checkbox" name="checkbox_employee" id="checkbox_employee_${row?.['id']}" class="form-check-input checkbox-employee" data-group-id="${groupID}" ${checked}>
                                     <label class="form-check-label" for="checkbox_employee_${row?.['id']}">${row?.['full_name']}</label>
@@ -292,19 +364,22 @@ class ShiftAssignHandle {
                 },
             ],
             rowCallback: function (row, data, index) {
-                let checkEmployeeEle = row.querySelector('.checkbox-employee');
-                if (checkEmployeeEle) {
-                    let checkGroupEle = ShiftAssignHandle.$table[0].querySelector(`.checkbox-group[data-group-id="${groupID}"]`);
-                    if (checkGroupEle) {
-                        if (checkGroupEle.checked === true) {
-                            checkEmployeeEle.checked = true;
-                        }
-                    }
-                }
             },
             drawCallback: function () {
                 // add css to Dtb
                 ShiftAssignHandle.loadDtbHideHeader(idTbl);
+
+                $tableChild.DataTable().rows().every(function () {
+            let rowData = {};
+            let row = this.node();
+            let checkEmployeeEle = row.querySelector('.checkbox-employee');
+                if (checkEmployeeEle) {
+                    ShiftAssignHandle.loadStoreCheckEmployee(checkEmployeeEle);
+                }
+
+
+                });
+
             },
         });
     };
@@ -367,9 +442,6 @@ $(document).ready(function () {
             targetEvent = info.event;
         },
         datesSet: function (info) {
-            // let events = ShiftAssignHandle.generateEvents(info.start, info.end);
-            // calendar.removeAllEvents();
-            // calendar.addEventSource(events);
             ShiftAssignHandle.calendarInfo = info;
             ShiftAssignHandle.loadShiftEmployee(calendar, ShiftAssignHandle.calendarInfo);
         },
@@ -407,11 +479,6 @@ $(document).ready(function () {
         $(this).toggleClass('is_active')
         $(this).parent().next().next('.content-wrap').slideToggle()
     })
-
-
-
-
-
 
     // INIT DATATABLE GROUP
     ShiftAssignHandle.$table.DataTableDefault({
@@ -511,9 +578,51 @@ $(document).ready(function () {
         if (row) {
             let btnCollapse = row.querySelector('.btn-collapse-parent');
             if (btnCollapse) {
-                $(btnCollapse).trigger('click');
+                let checkEmployeesEle = ShiftAssignHandle.$table[0].querySelectorAll(`.checkbox-employee[data-group-id="${$(this).attr('data-group-id')}"]`);
+                if (checkEmployeesEle.length > 0) {
+                    let tableChild = checkEmployeesEle[0].closest('table');
+                    if ($.fn.dataTable.isDataTable($(tableChild))) {
+                        $(tableChild).DataTable().destroy();
+                    }
+                    ShiftAssignHandle.loadDtbEmployee(tableChild.id, $(this).attr('data-group-id'));
+                }
+                if (checkEmployeesEle.length === 0) {
+                    $(btnCollapse).trigger('click');
+                }
+
+                // let iconEle = $(btnCollapse).find('.icon-collapse-app-wf');
+                // if (iconEle.hasClass('fa-caret-right')) {
+                //
+                // }
+
             }
         }
+    });
+
+    ShiftAssignHandle.$btnShiftAssign.on('click', function () {
+        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
+        $.fn.callAjax2(
+            {
+                'url': ShiftAssignHandle.$urlEle.attr('data-api-shift-assignment'),
+                'method': "POST",
+                'data': ShiftAssignHandle.setupDataSubmit(),
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                    $.fn.notifyB({description: data.message}, 'success');
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 2000);
+                }
+            }, (err) => {
+                setTimeout(() => {
+                    WindowControl.hideLoading();
+                }, 1000)
+                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+            }
+        )
     });
 
 });

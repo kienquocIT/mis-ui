@@ -136,9 +136,9 @@ class ShiftAssignHandle {
                     width: '70%',
                     render: (data, type, row) => {
                         return `<div class="form-check form-check-lg d-flex align-items-center">
-                                            <input type="checkbox" name="checkbox_employee" class="form-check-input checkbox-employee">
-                                            <label class="form-check-label">${row?.['full_name']}</label>
-                                        </div>`;
+                                    <input type="checkbox" name="checkbox_employee" class="form-check-input checkbox-employee">
+                                    <label class="form-check-label">${row?.['full_name']}</label>
+                                </div>`;
                     }
                 },
                 {
@@ -157,6 +157,11 @@ class ShiftAssignHandle {
     }
 
     static init(calendar) {
+        // init date picker
+        $('.flat-picker').each(function () {
+            DateTimeControl.initFlatPickrDate(this);
+        });
+
         calendar.render();
 
         // click show detail of calendar
@@ -302,7 +307,6 @@ $(document).ready(function () {
                     'color': 'inherit',
                     'float': 'right',
                     'font-size': '10px',
-                    'margin-top': '25px',
                 })
             }
         }
@@ -351,7 +355,14 @@ $(document).ready(function () {
                 targets: 0,
                 width: "20%",
                 render: (data, type, row) => {
-                    return `<button class="btn-collapse-app-wf btn btn-icon btn-rounded mr-1" data-group-id="${row?.['id']}"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']}</b>`;
+                    return `<div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <button class="btn-collapse-app-wf btn btn-icon btn-rounded mr-1" data-group-id="${row?.['id']}"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']}</b>
+                                </div>
+                                <div class="form-check form-check-lg">
+                                    <input type="checkbox" name="checkbox_group" class="form-check-input checkbox-group">
+                                </div>
+                            </div>`;
                 }
             },
         ],

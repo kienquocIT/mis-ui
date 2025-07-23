@@ -29,10 +29,49 @@
                 </table>
             </div>
         </div>
-        <div class="col-12 col-md-9 col-lg-9 border-right">
+        <div class="col-12 col-md-7 col-lg-7 border-right">
             <div class="calendarapp-wrap" id="calendarapp-wrapper">
                 <div class="calendarapp-content pl-0">
                     <div id="calendar" class="w-100"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-2 col-lg-2">
+            <div class="row mt-5">
+                <h5>Áp dụng ca làm việc</h5>
+                <div class="form-group w-80">
+                    <label class="form-label" for="apply_from">{% trans 'From' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" id="apply_from"
+                               class="form-control flat-picker" autocomplete="off">
+                        <div class="input-suffix">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group w-80">
+                    <label class="form-label" for="apply_to">{% trans 'To' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input type="text" id="apply_to"
+                               class="form-control flat-picker" autocomplete="off">
+                        <div class="input-suffix">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="shift_current">{% trans 'Current shift' %}</label>
+                    <input type="text" class="form-control" id="shift_current" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="box_shift_apply">{% trans 'Select shift to apply' %}</label>
+                    <select
+                            class="form-select"
+                            id="box_shift_apply"
+                            data-url="{% url "ShiftMasterDataListAPI" %}"
+                            data-method="GET"
+                            data-keyResp="shift_list"
+                    ></select>
                 </div>
             </div>
         </div>
@@ -84,24 +123,6 @@
 									<span>Event</span>
 								</div>
 							</div>
-							<div class="row">
-                                <div class="form-group">
-                                    <label class="form-label" for="shift_current">{% trans 'Current shift' %}</label>
-                                    <input type="text" class="form-control" id="shift_current">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="form-label" for="box_shift_apply">{% trans 'Select shift to apply' %}</label>
-                                    <select
-                                            class="form-select"
-                                            id="box_shift_apply"
-                                            data-url="{% url "ShiftMasterDataListAPI" %}"
-                                            data-method="GET"
-                                            data-keyResp="shift_list"
-                                    ></select>
-                                </div>
-                            </div>
 						</div>
 					</div>
 				</div>
@@ -138,97 +159,6 @@
 									</div>
 								</div>
 							</div>
-							<form>
-								<div class="form-group">
-									<div class="input-group">
-										<span class="input-affix-wrapper">
-											<span class="input-prefix"><span class="feather-icon"><i data-feather="calendar"></i></span></span>
-											<input class="form-control form-wth-icon" name="datetimes" value="Aug 18,2020 - Aug 19, 2020">
-										</span>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="input-group">
-										<span class="input-affix-wrapper">
-											<span class="input-prefix"><span class="feather-icon"><i data-feather="clock"></i></span></span>
-											<input type="text" class="form-control form-wth-icon input-timepicker" value="8:40 AM - 5:40 PM" >
-										</span>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="input-group">
-										<span class="input-affix-wrapper">
-											<span class="input-prefix"><span class="feather-icon"><i data-feather="map-pin"></i></span></span>
-											<input type="text" class="form-control form-wth-icon" value="Oslo, Canada" >
-										</span>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="input-group">
-										<span class="input-affix-wrapper">
-											<span class="input-prefix"><span class="feather-icon"><i data-feather="check-square"></i></span></span>
-											<select class="form-select">
-												<option  selected="" value="1">All Time</option>
-												<option value="2">Half Day</option>
-												<option value="3">9 to 5</option>
-											</select>
-										</span>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="input-group">
-										<span class="input-affix-wrapper">
-											<span class="input-prefix"><span class="feather-icon"><i data-feather="eye"></i></span></span>
-											<select class="form-select">
-												<option selected="">Default Visibility</option>
-												<option value="1">Private</option>
-												<option value="2">Public</option>
-											</select>
-										</span>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="input-group color-picker">
-										<span class="input-group-text colorpicker-input-addon"><i></i></span>
-										<input type="text" class="form-control" value="#009B84"/>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="d-flex flex-wrap">
-										<div class="chip chip-primary chip-dismissable user-chip mb-2 me-2">
-											<span>
-												<span class="avatar">
-													<img src="dist/img/avatar11.jpg" alt="user" class="avatar-img">
-												</span>
-												<span class="chip-text">Morgan</span>
-												<button type="button" class="btn-close"></button>
-											</span>
-										</div>
-										<div class="chip chip-primary chip-dismissable user-chip mb-2 me-2">
-											<span>
-												<span class="avatar">
-													<img src="dist/img/avatar12.jpg" alt="user" class="avatar-img">
-												</span>
-												<span class="chip-text">Charlie</span>
-												<button type="button" class="btn-close"></button>
-											</span>
-										</div>
-										<div class="chip chip-primary chip-dismissable user-chip mb-2 me-2">
-											<span>
-												<span class="avatar">
-													<img src="dist/img/avatar13.jpg" alt="user" class="avatar-img">
-												</span>
-												<span class="chip-text">Winston</span>
-												<button type="button" class="btn-close"></button>
-											</span>
-										</div>
-										<input type="text" class="form-control border-0 p-0 shadow-none flex-1 mb-2 me-2"/>
-									</div>
-								</div>
-								<div class="form-group">
-									<textarea class="form-control" rows="4">Annual meeting with global branch teams & bosses about growth planning and fiscal year reports</textarea>
-								</div>
-							</form>
 						</div>
 					</div>
 				</div>

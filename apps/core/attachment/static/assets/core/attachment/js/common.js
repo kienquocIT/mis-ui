@@ -37,7 +37,6 @@ class popupPermission {
             info: false,
             searching: false,
             scrollY: '250px',
-            scrollCollapse: true,
             ajax: {
                 url: $table.attr('data-url'), type: 'get', data: function (d) {
                     d.pageSize = -1
@@ -318,11 +317,18 @@ class popupPermission {
             temp_data.exp_date = _data.expiration_date ? _data.expiration_date : null;
 
             if (_data.id && $x.fn.checkUUID4(_data.id)) temp_data.id = _data.id
-            let url = $urlF.attr('data-folder-detail').format_url_with_uuid(_data.folder)
-            if(_data.type !== 'folder')
-                url = $urlF.attr('data-file-detail').format_url_with_uuid(_data.file)
+            const url = $urlF.attr('data-folder-detail')
+            let url_parse = url.format_url_with_uuid(_data.folder)
+            if(_data.type !== 'folder' && url)
+                url_parse = url.format_url_with_uuid(_data.file)
+            if (!url){
+                Swal.fire({
+                    icon: 'error', title: 'Oops...', text: $.fn.gettext('File permissions cannot be shared in this space'),
+                })
+                return false
+            }
             $.fn.callAjax2({
-                'url': url,
+                'url': url_parse,
                 'method': 'PUT',
                 data: {'permission_obj': temp_data}
             }).then((resp) => {
@@ -471,175 +477,251 @@ class popupPermission {
 }
 
 class FilesHandle {
-
-    loadTable(data_tbl = [], reload_data = false) {
+    loadTable(data_tbl = {}, isReset=false) {
         const $tbl = $('#main-files-info')
         const _this = this
-
-        if ($tbl.hasClass('dataTable')) {
-            if (reload_data) $tbl.DataTable().clear().rows.add(data_tbl).draw();
-            else $tbl.DataTable().row.add(data_tbl).draw();
-        }
-        else{
+        const space = $('#folder-tree .btn-active').attr('data-space')
+        let url = this.$urlFact.attr('data-folder-api')
+        if (space === 'shared') url = this.$urlFact.attr('data-folder-shared-to-me-lst')
+        if (data_tbl?.['url']) url = data_tbl.url
+        if (isReset) $tbl.DataTable().ajax.url(url).load()
+        else
             $tbl.DataTableDefault({
-                data: data_tbl,
-                paging: false,
-                info: false,
-                searching: false,
-                autoWidth: true,
-                scrollX: true,
-                columns: [
-                    {
-                        data: 'id',
-                        width: '2%',
-                        render: (row, index, data) => {
-                            const type = data?.['file_type'] !== undefined ? data['file_type'] : 'folder'
-                            return `<input type="checkbox" id="checkbox_id_${row}" value="${row}" data-type="${type}">`
-                        }
-                    },
-                    {
-                        data: 'title',
-                        width: '38%',
-                        render: (row, index, data) => {
-                            const type = data?.['file_type'] ? data?.['file_type'] : 'folder'
-                            const icon = icon_map?.[type] ? icon_map[type] : `<i class="bi bi-file-earmark"></i>`
-                            const title = row ? row : data?.file_name
-                            const clsName = type === 'folder' ? 'folder_title' : 'file_title';
-                            let editBtn = ''
-                            if (type === 'folder')
-                                editBtn = `<span class="edit-rename" title="${$.fn.gettext('rename')}"><i class="fa-solid fa-pencil"></i></span>`
-                            return `<a href="#" data-id="${data.id}" class="${clsName}">` +
-                                `<span class="icon text-${$x.fn.randomColor()}">${icon}</span><span class="fw-medium">${
+            destroy: true,
+            ajax: {
+                url: url,
+                type: 'GET',
+                data: function (d) {
+                    if (space === 'workspace') {
+                        d.is_system = true
+                    }
+                    d.length = 50
+                    if (data_tbl?.next) d.page = data_tbl.next
+                    return d
+                },
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    const res = data[space === 'workspace' ? 'folder_list' : space === 'my'
+                        ? 'folder_mf_list' : 'folder_stm_list']
+                    $tbl.data('ajax', {'next': data['page_next'], 'url': url})
+                    if (data['page_next'] === 0)
+                        $('#btn-loading').prop('disabled', true).removeClass('iactive').parent().addClass('hidden')
+                    else{
+                        $('#btn-loading').prop('disabled', false).removeClass('iactive')
+                            .parent().removeClass('hidden')
+                    }
+                    if (res)
+                        return res;
+                    throw Error('Call data raise errors.')
+                },
+            },
+            paging: false,
+            info: false,
+            searching: false,
+            autoWidth: true,
+            scrollX: true,
+            columns: [
+                {
+                    data: 'id',
+                    width: '2%',
+                    render: (row, index, data) => {
+                        const type = data?.['file_type'] !== undefined ? data['file_type'] : 'folder'
+                        return `<input type="checkbox" id="checkbox_id_${row}" value="${row}" data-type="${
+                            type}" ${data?.is_system ? 'disabled' : ''}>`
+                    }
+                },
+                {
+                    data: 'title',
+                    width: '38%',
+                    render: (row, index, data) => {
+                        const type = data?.['file_type'] ? data?.['file_type'] : 'folder'
+                        const icon = icon_map?.[type] ? icon_map[type] : `<i class="bi bi-file-earmark"></i>`
+                        let title = row ? row : data?.file_name
+                        const clsName = type === 'folder' ? 'folder_title' : 'file_title';
+                        let editBtn = ''
+                        if (data?.is_system)
+                            title = data?.['title_i18n']
+                        if (type === 'folder' && !data?.is_system)
+                            editBtn = `<span class="edit-rename" title="${$.fn.gettext('rename')}"><i class="fa-solid fa-pencil"></i></span>`
+                        return `<a href="#" data-id="${data.id}" class="${clsName}">` +
+                            `<span class="icon text-${$x.fn.randomColor()}">${icon}</span><span class="fw-medium">${
                                 title}</span></a>${editBtn}`
 
-                        }
-                    },
-                    {
-                        data: 'employee_inherit',
-                        width: '20%',
-                        render: (row, index, data) => {
-                            return row?.full_name ? row.full_name : data?.employee_created ? data.employee_created.full_name : '--';
-                        }
-                    },
-                    {
-                        data: 'date_modified',
-                        width: '10%',
-                        render: (row, index, data) => {
-                            const data_date_created = row ? row : data?.date_created
-                            return row ? moment(data_date_created, 'YYYY-MM-DD').format('DD/MM/YYYY') : '--';
-                        }
-                    },
-                    {
-                        data: 'file_size',
-                        width: '10%',
-                        render: (row) => {
-                            return row ? formatBytes(row) : '--';
-                        }
-                    },
-                    {
-                        data: 'id',
-                        width: '10%',
-                        render: (row, index, data) => {
-                            // row type (folder or file)
-                            let file_type = $.fn.gettext('Folder')
-                            if (data?.file_type && data?.file_size && data?.file_name) file_type = $.fn.gettext('File')
-                            return file_type;
-                        }
-                    },
-                    {
-                        data: 'id',
-                        width: '10%',
-                        render: (row, index, data) => {
-                            let type = 'folder'
-                            if (data?.file_type && data?.file_size && data?.file_name) type = 'file';
-                            const btn1 = `<button type="button" class="btn btn-icon btn-rounded bg-dark-hover" data-${type}="${row}" data-bs-toggle="modal" data-bs-target="#sharePerm" data-type="${type}"><span><i class="fa-solid fa-share-nodes"></i></span></button>`;
-                            const btn2 = `<a class="btn btn-icon btn-rounded bg-dark-hover download-dtn rotate90deg" `
-                                + `data-id="${row}" href="#"><span class="icon"><i class="fa-solid fa-arrow-right-to-bracket"></i></span></a>`;
-                            const btn3 = `<button type="button" class="btn btn-icon btn-rounded bg-dark-hover dropdown-toggle" data-bs-toggle="dropdown" id="action_${row}">`
-                                + `<span class="icon-animate"><i class="fa-solid fa-ellipsis"></i></span></button>`
-                                + `<div class="dropdown-menu" aria-labelledby="action_${row}">`
-                                + `<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accessLst"><i class="dropdown-icon fas fa-folder-plus text-primary"></i><span>${$.fn.gettext('Access list')}</span></a>` + // `<a class="dropdown-item" href="#" id="upload-file" data-bs-toggle="modal" data-bs-target="#uploadFileMdl"><i class="dropdown-icon fas fa-file-upload text-primary"></i><span class="mt-2">${$.fn.gettext('Delete')}</span></a>` +
-                                `<a class="dropdown-item" href="#" id="update-folder"><i class="dropdown-icon fas fa-upload text-primary"></i><span>${$.fn.gettext('Move')}</span></a></div>`;
-                            return `<div class="wrap-action">${btn1 + btn2 + btn3}</div>`;
-                        }
                     }
-                ],
-                rowCallback: function (row, data) {
-                    // click on title
-                    $('a.folder_title', row).off().on('click', function (e) {
-                        e.stopPropagation();
-                        const folderId = $(this).attr('data-id')
-                        _this.$loading.show()
-                        _this.get_folder(folderId)
-                    })
-
-                    // table select row
-                    $('input[id*="checkbox_id_"]', row).off().on('change', function () {
-                        const isCheck = $(this).prop('checked');
-                        const $actSlc = $('.action-slc')
-                        if (isCheck){
-                            $actSlc.addClass('active');
-                            $(this).closest('tr').addClass('selected')
-                        }
-                        else{
-                             if($('input[id*="checkbox_id_"]:checked', $tbl).length === 0)
-                                 $actSlc.removeClass('active')
-                            $(this).closest('tr').removeClass('selected')
-                        }
-                    })
-
-                    // open modal update folder
-                    $('#update-folder', row).off().on('click', function(){
-                        const $flMd = _this.$elmMdFdr
-                        const $crtFolder = $('#current_folder')
-                        $('#add-folder-title', $flMd).prop('disabled',true)
-                            .val(data.title)
-                        const folderParent = $crtFolder.val() ? {
-                            "id": $crtFolder.val(),
-                            "title": $('.tit-crt').text()
-                        } : null;
-                        if (folderParent)
-                            $('#add-folder-box-parent', $flMd).append(`<option value="${folderParent.id}" selected>${
-                                folderParent.title}</option>`)
-                        $('#folder_id', $flMd).val(data.id)
-                        $flMd.modal('show')
-
-                    });
-
-                    // edit folder
-                    $('.edit-rename', row).off().on('click', function(){
-                        const $flMd = _this.$elmMdFdr;
-                        $('#folder_id', $flMd).val(data.id)
-                        $('#add-folder-title', $flMd).val(data.title)
-
-                        const crtFolderID = $('#current_folder').val();
-                        if (crtFolderID && crtFolderID !== 'root'){
-                            const title = $('.tit-crt').text()
-                            $('#add-folder-box-parent', $flMd).append(`<option value="${crtFolderID}" selected>${
-                                title}</option>`).trigger('change')
-                        }
-                        $('#add-folder-box-parent', $flMd).attr('data-params', JSON.stringify({ne: data.id}))
-                        $flMd.modal('show')
-                    });
-
-                    // download
-                    $('.download-dtn', row).off().on('click', function(e){
-                        e.preventDefault();
-                        e.stopPropagation();
-                        let url = _this.$urlFact.attr('data-folder-download');
-                        if (data?.file_type && data?.file_size && data?.file_name)
-                            url = _this.$urlFact.attr('data-attach-download').format_url_with_uuid(data.id)
-                        _this.download_faf({
-                            url: url,
-                            params: {id: data.id, folder_name: data.title}
-                        })
-                    });
                 },
-                drawCallback: function(){
-                    _this.$loading.hide();
+                {
+                    data: 'employee_inherit',
+                    width: '20%',
+                    render: (row, index, data) => {
+                        return row?.full_name ? row.full_name : data?.employee_created ?
+                            data.employee_created.full_name : data?.['is_system'] ? $.fn.gettext('System') : '--';
+                    }
+                },
+                {
+                    data: 'date_modified',
+                    width: '10%',
+                    render: (row, index, data) => {
+                        const data_date_created = row ? row : data?.date_created
+                        return row ? moment(data_date_created, 'YYYY-MM-DD').format('DD/MM/YYYY') : '--';
+                    }
+                },
+                {
+                    data: 'file_size',
+                    width: '10%',
+                    render: (row) => {
+                        return row ? formatBytes(row) : '--';
+                    }
+                },
+                {
+                    data: 'id',
+                    width: '10%',
+                    render: (row, index, data) => {
+                        // row type (folder or file)
+                        let file_type = $.fn.gettext('Folder')
+                        if (data?.file_type && data?.file_size && data?.file_name) file_type = $.fn.gettext('File')
+                        return file_type;
+                    }
+                },
+                {
+                    data: 'id',
+                    width: '10%',
+                    render: (row, index, data) => {
+                        let type = 'folder'
+                        const isDisabled = data?.['is_system'] ? 'disabled' : '';
+                        if (data?.file_type && data?.file_size && data?.file_name) type = 'file';
+                        const btn1 = `<button type="button" class="btn btn-icon btn-rounded bg-dark-hover" data-${type}="${row}" data-bs-toggle="modal" data-bs-target="#sharePerm" data-type="${type}" ${isDisabled}><span><i class="fa-solid fa-share-nodes"></i></span></button>`;
+                        const btn2 = `<a class="btn btn-icon btn-rounded bg-dark-hover download-dtn rotate90deg ${
+                            isDisabled}" data-id="${row}" href="#"><span class="icon"><i class="fa-solid fa-arrow-right-to-bracket"></i></span></a>`;
+                        const btn3 = `<button type="button" class="btn btn-icon btn-rounded bg-dark-hover dropdown-toggle" data-bs-toggle="dropdown" id="action_${row}" ${isDisabled}>`
+                            + `<span class="icon-animate"><i class="fa-solid fa-ellipsis"></i></span></button>`
+                            + `<div class="dropdown-menu" aria-labelledby="action_${row}">`
+                            + `<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accessLst"><i class="dropdown-icon fas fa-folder-plus text-primary"></i><span>${$.fn.gettext('Access list')}</span></a>` + // `<a class="dropdown-item" href="#" id="upload-file" data-bs-toggle="modal" data-bs-target="#uploadFileMdl"><i class="dropdown-icon fas fa-file-upload text-primary"></i><span class="mt-2">${$.fn.gettext('Delete')}</span></a>` +
+                            `<a class="dropdown-item" href="#" id="update-folder"><i class="dropdown-icon fas fa-upload text-primary"></i><span>${$.fn.gettext('Move')}</span></a></div>`;
+                        return `<div class="wrap-action">${btn1 + btn2 + btn3}</div>`;
+                    }
+                }
+            ],
+            rowCallback: function (row, data) {
+
+                $('a.folder_title', row).off().on('click', function (e) {
+                    e.stopPropagation();
+                    const folderId = $(this).attr('data-id')
+                    _this.$loading.show()
+                    _this.get_folder(folderId)
+                })
+
+                // table select row
+                $('input[id*="checkbox_id_"]', row).off().on('change', function () {
+                    const isCheck = $(this).prop('checked');
+                    const $actSlc = $('.action-slc')
+                    if (isCheck) {
+                        $actSlc.addClass('active');
+                        $(this).closest('tr').addClass('selected')
+                    } else {
+                        if ($('input[id*="checkbox_id_"]:checked', $tbl).length === 0)
+                            $actSlc.removeClass('active')
+                        $(this).closest('tr').removeClass('selected')
+                    }
+                })
+
+                // open modal update folder
+                $('#update-folder', row).off().on('click', function () {
+                    const $flMd = _this.$elmMdFdr
+                    const $crtFolder = $('#current_folder')
+                    $('#add-folder-title', $flMd).prop('disabled', true)
+                        .val(data.title)
+                    const folderParent = $crtFolder.val() ? {
+                        "id": $crtFolder.val(),
+                        "title": $('.tit-crt').text()
+                    } : null;
+                    if (folderParent)
+                        $('#add-folder-box-parent', $flMd).append(`<option value="${folderParent.id}" selected>${
+                            folderParent.title}</option>`)
+                    $('#folder_id', $flMd).val(data.id)
+                    $flMd.modal('show')
+
+                });
+
+                // edit folder
+                $('.edit-rename', row).off().on('click', function () {
+                    const $flMd = _this.$elmMdFdr;
+                    $('#folder_id', $flMd).val(data.id)
+                    $('#add-folder-title', $flMd).val(data.title)
+
+                    const crtFolderID = $('#current_folder').val();
+                    if (crtFolderID && crtFolderID !== 'root') {
+                        const title = $('.tit-crt').text()
+                        $('#add-folder-box-parent', $flMd).append(`<option value="${crtFolderID}" selected>${
+                            title}</option>`).trigger('change')
+                    }
+                    $('#add-folder-box-parent', $flMd).attr('data-params', JSON.stringify({ne: data.id}))
+                    $flMd.modal('show')
+                });
+
+                // download
+                $('.download-dtn', row).off().on('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    let url = _this.$urlFact.attr('data-folder-download');
+                    if (data?.file_type && data?.file_size && data?.file_name)
+                        url = _this.$urlFact.attr('data-attach-download').format_url_with_uuid(data.id)
+                    if (!url) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: $.fn.gettext('Folder permissions cannot be downloaded in this space'),
+                        })
+                        return false
+                    }
+                    _this.download_faf({
+                        url: url,
+                        params: {id: data.id, folder_name: data.title}
+                    })
+                });
+            },
+            drawCallback: function () {
+                _this.$loading.hide();
+            },
+            initComplete: function () {
+                _this.infinityLoading()
+            }
+        })
+
+    }
+
+    infinityLoading(){
+        const $tbl = $('#main-files-info')
+        const $btnLoad = $('#btn-loading')
+        const $activeSpace = $('#folder-tree');
+        const _this = this
+        $btnLoad.on('click', function (e) {
+            e.preventDefault();
+            $btnLoad.prop('disabled', false).addClass('iactive')
+            const dataAjax = $tbl.data('ajax')
+            const crtSpace = $('.btn-active', $activeSpace).attr('data-space')
+            if (dataAjax.next === 0) return true
+            let url = _this.$urlFact.attr('data-folder-api')
+            let params = {page: dataAjax.next, pageSize: 50}
+            if(crtSpace === 'shared')
+                url = _this.$urlFact.attr('data-folder-shared-to-me-lst')
+            if (crtSpace === 'workspace') params['is_system'] = true
+            $.fn.callAjax2({
+                'url': url,
+                'method': 'get',
+                data: params,
+            }).then((req)=>{
+                const res = $.fn.switcherResp(req);
+                if (res && (res['status'] === 201 || res['status'] === 200)) {
+                    let tblNewData = res[crtSpace === 'my' ? 'folder_mf_list' : crtSpace === 'shared' ? 'folder_stm_list' : 'folder_list']
+                    $tbl.DataTable().rows.add(tblNewData).draw()
+                    if (res.page_next > 0){
+                        $tbl.data('ajax', {next: res.page_next})
+                        $btnLoad.removeClass('iactive')
+                    }
+                    else $btnLoad.removeClass('iactive').prop('disabled', true)
                 }
             })
-        }
+        })
     }
 
     get_folder(dataId = null) {
@@ -647,8 +729,7 @@ class FilesHandle {
         $.fn.callAjax2({
             'url': this.$urlFact.attr('data-folder-detail').format_url_with_uuid(dataId),
             'method': 'GET',
-            'sweetAlertOpts': {'allowOutsideClick': true},
-            'data': {'space': $('#folder-tree .btn-active').attr('data-space')}
+            'sweetAlertOpts': {'allowOutsideClick': true}
         }).then((resp) => {
             let rep = $.fn.switcherResp(resp);
             if (rep && (rep['status'] === 201 || rep['status'] === 200)) {
@@ -659,7 +740,7 @@ class FilesHandle {
                 for (let file of rep?.['files']) {
                     list_new.push(file)
                 }
-                _this.loadTable(list_new, true)
+                _this.$folder.DataTable().clear().rows.add(list_new).draw()
 
                 // set new current folder
                 $('#current_folder').data('data-json', {id: rep.id, title: rep.title}).val(rep.id)
@@ -691,7 +772,8 @@ class FilesHandle {
             dataSubmit['parent_n'] = parent ? parent : null;
             if (id) dataSubmit['id'] = id
             const url = id ? _this.$urlFact.attr('data-folder-detail').format_url_with_uuid(id) : _this.$urlFact.attr('data-folder-api');
-            dataSubmit['space'] = $('#folder-tree .btn-active').attr('data-space')
+            if ($('#folder-tree .btn-active').attr('data-space') === 'workspace')
+                dataSubmit['is_admin'] = true
             $.fn.callAjax2({
                 'url': url,
                 'method': id ? 'PUT' : 'POST',
@@ -704,12 +786,12 @@ class FilesHandle {
                     $.fn.notifyB({description: data.message}, 'success');
                     if (!id && (!parent || parent === crtVal)){
                          // nếu là form create và là thư mục root hoặc parent = current thì add vào table
-                        _this.loadTable({
+                        _this.$folder.DataTable().row.add({
                             'id': data.id,
                             'title': data.title,
                             'date_created': data.date_created,
                             'employee_inherit': data.employee_inherit
-                        })
+                        }).draw()
                     }
                     else{
                         const $tblFile = $('#main-files-info')
@@ -723,11 +805,11 @@ class FilesHandle {
                                 date_modified: moment(new Date()).format('YYYY-MM-DD'),
                                 parent_n: parent ? {id: parent, title: $('.tit-crt').val()} : {}
                             }
-                            // case folder edit đang nằm trong folder hiện tại
+                            // case update row when folder is in current folder
                             $tblFile.DataTable().row(idx).data(newData).draw()
                         }
                         else
-                            // nếu là update và parent != current thì xóa row đó ra khỏi current
+                            // remove row data when row not belong to current folder
                             $tblFile.DataTable().row(idx).remove().draw();
                     }
                     _this.$elmMdFdr.modal('hide');
@@ -741,36 +823,22 @@ class FilesHandle {
     action_space_title(){
         const $btnSpace = $('#folder-tree button');
         const urlMap = {
-            "my": this.$urlFact.attr('data-folder-my'),
+            "workspace": this.$urlFact.attr('data-folder-api'),
+            "my": this.$urlFact.attr('data-folder-api'),
             "shared": this.$urlFact.attr('data-folder-shared-to-me-lst')
         }
         const _this = this
 
-        $btnSpace.on('click', function(){
+        $btnSpace.on('click', function(e){
+            e.preventDefault();
             if ($(this).hasClass('btn-active')) return true
             $('#folder-tree button').removeClass('btn-active')
             $(this).addClass('btn-active')
             const btnKey = $(this).attr('data-space')
-            $.fn.callAjax2({
-                'url': urlMap[btnKey],
-                'method': 'GET'
-            }).then(
-                (resp) => {
-                    let rep = $.fn.switcherResp(resp);
-                    if (rep && (rep['status'] === 201 || rep['status'] === 200)){
-                        const keyLst = btnKey === 'my' ? 'folder_mf_list' : 'folder_stm_list';
-                        _this.loadTable(rep[keyLst], true)
-                    }
-                    else _this.loadTable([], true)
-                    $('#folder-path').html('')
-                    $('.tit-crt').text('')
-                    $('.btn_cancel_slt').trigger('click');
-                },
-                (error) => {
-                    $.fn.notifyB({'description': error.data.errors?.detail}, 'failure')
-                    _this.loadTable([], true)
-                }
-            )
+            _this.loadTable({'url': urlMap[btnKey]}, true)
+            $('#folder-path').html('')
+            $('.tit-crt').text('')
+            $('.btn_cancel_slt').trigger('click');
         })
     }
 
@@ -798,19 +866,11 @@ class FilesHandle {
                 })
                 RootElm.on('click', function(){
                     const rootData = $(this).data('brc');
-                    let url = _this.$urlFact.attr('data-folder-my')
+                    let url = _this.$urlFact.attr('data-folder-api')
                     if (rootData.id === 'shared') url = _this.$urlFact.attr('data-folder-shared-to-me-lst')
-                    $.fn.callAjax2({url: url, method: 'get'}
-                    ).then(
-                        (resp) => {
-                            let rep = $.fn.switcherResp(resp);
-                            if (rep && (rep['status'] === 201 || rep['status'] === 200)){
-                                _this.loadTable(rep[rootData.id === 'my' ? 'folder_mf_list' : 'folder_stm_list'], true)
-                                $listHtml.add($('.tit-crt')).html('');
-                                $('#current_folder').val('')
-                            }
-                        }
-                    )
+                    _this.loadTable({'url':url}, true)
+                    $listHtml.add($('.tit-crt')).html('');
+                    $('#current_folder').val('')
                 })
             }
             if (hasItem) $listHtml.append('<span>/</span>');
@@ -831,7 +891,7 @@ class FilesHandle {
     }
 
     delete_folder(id){
-        let _url = this.$urlFact.attr('data-folder-my')
+        let _url = this.$urlFact.attr('data-folder-api')
         if ($('#folder-tree button[data-space="shared"]').hasClass('btn-active'))
             _url = this.$urlFact.attr('data-folder-shared-to-me-lst')
         NotiConfirm({
@@ -975,20 +1035,13 @@ class FilesHandle {
         $('#add-folder-title').on('blur', function(){
             const txt = this.value
             const regex = /\//g;
-
             // Perform the replacement
             this.value = txt.replace(regex, '-')
         })
 
         // on init load folder list
         const _this = this;
-        $.fn.callAjax2({
-            'url': this.$urlFact.attr('data-folder-my'), 'method': 'GET'
-        }).then((resp) => {
-            let rep = $.fn.switcherResp(resp);
-            if (rep && (rep['status'] === 201 || rep['status'] === 200)) _this.loadTable(rep['folder_mf_list'])
-        }, (error) => $.fn.notifyB({
-            'description': error.data.errors?.detail}, 'failure'))
+        this.loadTable();
 
         // valid folder clicked before click upload file
         $('#upload-file').off().on('click', function (e) {
@@ -1050,6 +1103,7 @@ class FilesHandle {
         this.$urlFact = $('#url-factory')
         this.$elmMdFdr = $('#addFolderMdl')
         this.$loading = $('.refresh-container')
+        this.$folder = $('#main-files-info')
     }
 }
 

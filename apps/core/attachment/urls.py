@@ -5,7 +5,7 @@ from .views import (
     ImageWebBuilderUpload, ImageWebBuilderList, FolderList, FolderListAPI, FolderDetailAPI,
     FolderUploadFileList, AttachmentDownload, AttachmentPreview, AttachmentInfo, PublicAttachmentUpload,
     FolderListSharedAPI, FolderMyFileListAPI, AttachmentEditAPI, FolderPermListAPI, FilePermListAPI,
-    AttachmentUpdateAPI, FolderDownloadAPI
+    AttachmentUpdateAPI, FolderDownloadAPI, FolderMyFileList
 )
 
 urlpatterns = [
@@ -24,12 +24,17 @@ urlpatterns = [
 
     # folder API
     path('folder/list', FolderList.as_view(), name='FolderList'),
-    path('folder/api/list', FolderListAPI.as_view(), name='FolderListAPI'),
-    path('folder/api/list-my-file', FolderMyFileListAPI.as_view(), name='FolderMyFileListAPI'),
+    path('folder/list-api', FolderListAPI.as_view(), name='FolderListAPI'),
+
+    path('folder/my-file', FolderMyFileList.as_view(), name='FolderMyFileList'),
+    path('folder/my-file-api', FolderMyFileListAPI.as_view(), name='FolderMyFileListAPI'),
+
     path('folder/detail-api/<str:pk>', FolderDetailAPI.as_view(), name='FolderDetailAPI'),
     path('folder-upload-file/api/list', FolderUploadFileList.as_view(), name='FolderUploadFileList'),
     path('folder-perm-list', FolderPermListAPI.as_view(), name='FolderPermListAPI'),
     # folder share with me
     path('folder/api/list-shared', FolderListSharedAPI.as_view(), name='FolderListSharedAPI'),
     path('folder/api/download', FolderDownloadAPI.as_view(), name='FolderDownloadAPI'),
+
+    #
 ]

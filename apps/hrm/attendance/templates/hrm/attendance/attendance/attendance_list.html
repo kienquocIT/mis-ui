@@ -10,6 +10,7 @@
 {% endblock %}
 {% block pageContent %}
     {{ data.data.current_period | json_script:"current_period" }}
+
     <div class="row">
         <div class="col-12">
             <div class="row">
@@ -25,24 +26,22 @@
                 <div class="col-12 mt-3" id="space_main_table_employee"></div>
             </div>
         </div>
-        <div class="col-12" style="position: fixed; bottom: 0px">
-            <div class="row">
-                <div class="col-12 col-lg-1 col-md-1"></div>
-                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "P: Present" %}</strong></div>
-                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "A: Absent" %}</strong></div>
-                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "L: Leave" %}</strong></div>
-                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "B: Business Trip" %}</strong></div>
-                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "H: Holiday" %}</strong></div>
-                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "W: Weekend" %}</strong></div>
-                <div class="col-12 col-lg-1 col-md-1"><strong>{% trans "O: Overtime" %}</strong></div>
-                <div class="col-12 col-lg-2 col-md-2"><strong>{% trans "OB: Overtime on business trip" %}</strong></div>
-                <div class="col-12 col-lg-2 col-md-2"></div>
-            </div>
-        </div>
+    </div>
+
+    <div class="d-flex align-content-between hidden" id="table-note">
+        <span class="mr-5">{% trans "P: Present" %}</span>
+        <span class="mr-5">{% trans "A: Absent" %}</span>
+        <span class="mr-5">{% trans "L: Leave" %}</span>
+        <span class="mr-5">{% trans "B: Business Trip" %}</span>
+        <span class="mr-5">{% trans "H: Holiday" %}</span>
+        <span class="mr-5">{% trans "W: Weekend" %}</span>
+        <span class="mr-5">{% trans "O: Overtime" %}</span>
+        <span class="mr-5">{% trans "OB: Overtime on business trip" %}</span>
     </div>
 {% endblock %}
 {% block modalData %}
     {% include 'hrm/attendance/attendance/dept_employee_modal.html' %}
+    {% include 'hrm/attendance/attendance/offcanvas_detail.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"

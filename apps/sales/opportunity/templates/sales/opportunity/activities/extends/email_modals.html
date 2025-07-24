@@ -25,7 +25,7 @@
                     {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True show_warning=True opp_title=opp_title has_opp=True has_process=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
                 {% endif %}
 
-                <div class="col-12 col-md-12 col-lg-12">
+                <div class="col-12">
                     <div class="form-group">
                         <label for="email-to-select-box" class="form-label">{% trans 'to' %}</label>
                         <select id="email-to-select-box" class="select2 form-select" multiple></select>
@@ -43,19 +43,19 @@
                         <select id="email-bcc-select-box" class="select2 form-select" multiple data-url="{% url 'ContactListAPI' %}" data-method="GET"></select>
                     </div>
                 </div>
-                <div class="col-12 col-md-12 col-lg-12">
+                <div class="col-12">
                     <div class="form-group">
                         <label for="email-subject-input" class="form-label required">{% trans 'Subject' %}</label>
                         <input id="email-subject-input" class="form-control required">
                     </div>
                 </div>
-                <div class="col-12 col-md-12 col-lg-12">
+                <div class="col-12">
                     <div class="form-group">
                         <label for="email-content-area" class="form-label">{% trans 'Content' %}</label>
                         <textarea id="email-content-area"></textarea>
                     </div>
                 </div>
-                <div class="col-12 col-md-12 col-lg-12">
+                <div class="col-12">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="just_log">
                         <label for="just_log" class="form-check-label">{% trans 'Just log' %}</label>

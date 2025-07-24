@@ -133,7 +133,7 @@ $(document).ready(function () {
 
     $('.large-view-btn').on('click', function () {
         if ($(this).closest('.view-space').attr('class') === 'view-space col-6 col-md-6 col-lg-6 mt-3') {
-            $(this).closest('.view-space').attr('class', 'view-space col-12 col-md-12 col-lg-12 mt-3')
+            $(this).closest('.view-space').attr('class', 'view-space col-12 mt-3')
         }
         else {
             $(this).closest('.view-space').attr('class', 'view-space col-6 col-md-6 col-lg-6 mt-3')

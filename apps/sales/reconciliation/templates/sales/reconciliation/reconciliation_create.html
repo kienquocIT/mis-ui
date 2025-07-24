@@ -24,6 +24,9 @@
             data-trans-delivery="{% trans 'Delivery' %}"
             data-trans-ar="{% trans 'AR invoice' %}"
             data-trans-cif="{% trans 'Cash inflow' %}"
+            data-trans-gr="{% trans 'Goods receipt' %}"
+            data-trans-ap="{% trans 'AP invoice' %}"
+            data-trans-cof="{% trans 'Cash outflow' %}"
     ></script>
     <form id="form-create-recon" data-method="POST" data-url="{% url 'ReconListAPI' %}" data-url-redirect="{% url 'ReconList' %}">
         {% include 'sales/reconciliation/common/information.html' %}

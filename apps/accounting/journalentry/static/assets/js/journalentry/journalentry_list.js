@@ -33,7 +33,7 @@ $(document).ready(function() {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-xs w-30',
+                        className: 'ellipsis-cell-xs w-20',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
@@ -49,6 +49,12 @@ $(document).ready(function() {
                         className: 'w-15',
                         render: (data, type, row) => {
                             return `<span>${(row?.['je_transaction_data'] || {})?.['code'] || ''}</span>`
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
                     },
                     {

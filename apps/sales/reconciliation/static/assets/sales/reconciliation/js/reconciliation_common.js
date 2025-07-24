@@ -1,117 +1,19 @@
-const $trans_script = $('#trans-script');
-const $title = $('#title');
-const $customer = $('#customer');
-const $posting_date = $('#posting_date');
-const $document_date = $('#document_date');
-const $type = $('#type');
-const $table_recon = $('#table-recon');
-const $recon_total = $('#recon-total');
-
-const table_recon_cfg = [
-    {
-        className: 'w-5',
-        render: () => {
-            return ``
-        }
-    },
-    {
-        className: 'w-5',
-        render: (data, type, row) => {
-            return `<div class="form-check">
-                <input type="checkbox"
-                       ${row?.['id'] ? 'disabled checked' : ''}
-                       data-credit-id="${Object.keys(row?.['credit_doc_data']).length > 0 ? row?.['credit_doc_data']?.['id'] : ''}"
-                       data-debit-id="${Object.keys(row?.['debit_doc_data']).length > 0 ? row?.['debit_doc_data']?.['id'] : ''}"
-                       class="form-check-input selected_document"
-                >
-                <label class="form-check-label"></label>
-            </div>`
-        }
-    },
-    {
-        className: 'w-15',
-        render: (data, type, row) => {
-            let credit_doc_data = row?.['credit_doc_data'] || {}
-            let document_code = ''
-            let document_type = ''
-            if (Object.keys(credit_doc_data).length > 0) {
-                document_code = credit_doc_data?.['code'] ? credit_doc_data?.['code'] : ''
-                document_type = ReconAction.ConvertToDocTitle(credit_doc_data?.['app_code'])
-                return `<span class="badge badge-soft-primary document_code mr-1">${document_code}</span><span class="document_type small">(${document_type})</span>`;
-            }
-            else {
-                let debit_doc_data = row?.['debit_doc_data'] || {}
-                document_code = debit_doc_data?.['code'] ? debit_doc_data?.['code'] : ''
-                document_type = ReconAction.ConvertToDocTitle(debit_doc_data?.['app_code'])
-                return `<span class="badge badge-soft-danger document_code mr-1">${document_code}</span><span class="document_type small">(${document_type})</span>`;
-            }
-        }
-    },
-    {
-        className: 'w-10',
-        render: (data, type, row) => {
-            let credit_doc_data = row?.['credit_doc_data'] || {}
-            let posting_date = ''
-            if (Object.keys(credit_doc_data).length > 0) {
-                posting_date = credit_doc_data?.['posting_date'] ? moment(credit_doc_data?.['posting_date'].split(' '), 'YYYY-MM-DD').format('DD/MM/YYYY') : ''
-            }
-            else {
-                let debit_doc_data = row?.['debit_doc_data'] || {}
-                posting_date = debit_doc_data?.['posting_date'] ? moment(debit_doc_data?.['posting_date'].split(' '), 'YYYY-MM-DD').format('DD/MM/YYYY') : ''
-            }
-            return `<span class="posting_date"><i class="fa-regular fa-calendar"></i> ${posting_date}</span>`;
-        }
-    },
-    {
-        className: 'text-right w-15',
-        render: (data, type, row) => {
-            let recon_total = row?.['recon_total'] ? row?.['recon_total'] : 0
-            let credit_doc_data = row?.['credit_doc_data'] || {}
-            if (Object.keys(credit_doc_data).length > 0) {
-                return `<span class="mask-money recon_total" data-init-money="${recon_total}"></span>`;
-            }
-            return `(<span class="mask-money recon_total" data-init-money="${recon_total}"></span>)`;
-        }
-    },
-    {
-        className: 'text-right w-15',
-        render: (data, type, row) => {
-            let recon_balance = row?.['recon_balance'] ? row?.['recon_balance'] : 0
-            let credit_doc_data = row?.['credit_doc_data'] || {}
-            if (Object.keys(credit_doc_data).length > 0) {
-                return `<span class="mask-money recon_balance" data-init-money="${recon_balance}"></span>`;
-            }
-            return `(<span class="mask-money recon_balance" data-init-money="${recon_balance}"></span>)`;
-        }
-    },
-    {
-        className: 'text-right w-15',
-        render: (data, type, row) => {
-            let recon_amount = row?.['recon_amount'] ? row?.['recon_amount'] : 0
-            let credit_doc_data = row?.['credit_doc_data'] || {}
-            if (Object.keys(credit_doc_data).length > 0) {
-                return `<input disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount credit_amount" value="${recon_amount}">`;
-            }
-            return `<input disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount debit_amount" value="${recon_amount}">`;
-        }
-    },
-    {
-        className: 'w-15',
-        render: (data, type, row) => {
-            return `<textarea disabled ${row?.['id'] ? 'disabled readonly' : ''} rows="1" class="form-control note"></textarea>`;
-        }
-    },
-    {
-        className: 'text-center w-5',
-        render: (data, type, row) => {
-            let credit_doc_data = row?.['credit_doc_data'] || {}
-            if (Object.keys(credit_doc_data).length > 0) {
-                return `<span class="accounting_account">${row?.['credit_account_data']?.['acc_code']}</span>`;
-            }
-            return `<span class="accounting_account">${row?.['debit_account_data']?.['acc_code']}</span>`;
-        }
-    },
-]
+/**
+ * Khai báo các element trong page
+ */
+class ReconPageElements {
+    constructor() {
+        this.$trans_script = $('#trans-script');
+        this.$title = $('#title');
+        this.$customer = $('#customer');
+        this.$posting_date = $('#posting_date');
+        this.$document_date = $('#document_date');
+        this.$type = $('#type');
+        this.$table_recon = $('#table-recon');
+        this.$recon_total = $('#recon-total');
+    }
+}
+const pageElements = new ReconPageElements()
 
 class ReconLoadPage {
     static LoadDate(element) {
@@ -154,7 +56,111 @@ class ReconLoadPage {
             scrollCollapse: true,
             paging: false,
             data: data_list,
-            columns: table_recon_cfg,
+            columns: [
+                {
+                    className: 'w-5',
+                    render: () => {
+                        return ``
+                    }
+                },
+                {
+                    className: 'w-5',
+                    render: (data, type, row) => {
+                        return `<div class="form-check">
+                            <input type="checkbox"
+                                   ${row?.['id'] ? 'disabled checked' : ''}
+                                   data-credit-id="${Object.keys(row?.['credit_doc_data']).length > 0 ? row?.['credit_doc_data']?.['id'] : ''}"
+                                   data-debit-id="${Object.keys(row?.['debit_doc_data']).length > 0 ? row?.['debit_doc_data']?.['id'] : ''}"
+                                   class="form-check-input selected_document"
+                            >
+                            <label class="form-check-label"></label>
+                        </div>`
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        let credit_doc_data = row?.['credit_doc_data'] || {}
+                        let document_code = ''
+                        let document_type = ''
+                        if (Object.keys(credit_doc_data).length > 0) {
+                            document_code = credit_doc_data?.['code'] ? credit_doc_data?.['code'] : ''
+                            document_type = ReconAction.ConvertToDocTitle(credit_doc_data?.['app_code'])
+                            return `<span class="badge badge-soft-primary document_code mr-1">${document_code}</span><span class="document_type small">(${document_type})</span>`;
+                        }
+                        else {
+                            let debit_doc_data = row?.['debit_doc_data'] || {}
+                            document_code = debit_doc_data?.['code'] ? debit_doc_data?.['code'] : ''
+                            document_type = ReconAction.ConvertToDocTitle(debit_doc_data?.['app_code'])
+                            return `<span class="badge badge-soft-danger document_code mr-1">${document_code}</span><span class="document_type small">(${document_type})</span>`;
+                        }
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        let credit_doc_data = row?.['credit_doc_data'] || {}
+                        let posting_date = ''
+                        if (Object.keys(credit_doc_data).length > 0) {
+                            posting_date = credit_doc_data?.['posting_date'] ? moment(credit_doc_data?.['posting_date'].split(' '), 'YYYY-MM-DD').format('DD/MM/YYYY') : ''
+                        }
+                        else {
+                            let debit_doc_data = row?.['debit_doc_data'] || {}
+                            posting_date = debit_doc_data?.['posting_date'] ? moment(debit_doc_data?.['posting_date'].split(' '), 'YYYY-MM-DD').format('DD/MM/YYYY') : ''
+                        }
+                        return `<span class="posting_date"><i class="fa-regular fa-calendar"></i> ${posting_date}</span>`;
+                    }
+                },
+                {
+                    className: 'text-right w-15',
+                    render: (data, type, row) => {
+                        let recon_total = row?.['recon_total'] ? row?.['recon_total'] : 0
+                        let credit_doc_data = row?.['credit_doc_data'] || {}
+                        if (Object.keys(credit_doc_data).length > 0) {
+                            return `<span class="mask-money recon_total" data-init-money="${recon_total}"></span>`;
+                        }
+                        return `(<span class="mask-money recon_total" data-init-money="${recon_total}"></span>)`;
+                    }
+                },
+                {
+                    className: 'text-right w-15',
+                    render: (data, type, row) => {
+                        let recon_balance = row?.['recon_balance'] || 0
+                        let credit_doc_data = row?.['credit_doc_data'] || {}
+                        if (Object.keys(credit_doc_data).length > 0) {
+                            return `<span class="mask-money recon_balance" data-init-money="${recon_balance}"></span>`;
+                        }
+                        return `(<span class="mask-money recon_balance" data-init-money="${recon_balance}"></span>)`;
+                    }
+                },
+                {
+                    className: 'text-right w-15',
+                    render: (data, type, row) => {
+                        let recon_amount = row?.['recon_amount'] || 0
+                        let credit_doc_data = row?.['credit_doc_data'] || {}
+                        if (Object.keys(credit_doc_data).length > 0) {
+                            return `<input disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount credit_amount" value="${recon_amount}">`;
+                        }
+                        return `<input disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount debit_amount" value="${recon_amount * (-1)}">`;
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return `<textarea disabled ${row?.['id'] ? 'disabled readonly' : ''} rows="1" class="form-control note"></textarea>`;
+                    }
+                },
+                {
+                    className: 'text-center w-5',
+                    render: (data, type, row) => {
+                        let credit_doc_data = row?.['credit_doc_data'] || {}
+                        if (Object.keys(credit_doc_data).length > 0) {
+                            return `<span class="accounting_account">${row?.['credit_account_data']?.['acc_code']}</span>`;
+                        }
+                        return `<span class="accounting_account">${row?.['debit_account_data']?.['acc_code']}</span>`;
+                    }
+                },
+            ],
             initComplete: function () {
                 ReconAction.RecalculateReconTotal()
             }
@@ -164,31 +170,40 @@ class ReconLoadPage {
 
 class ReconAction {
     static ConvertToDocTitle(app_code='') {
-        if (app_code === 'arinvoice.arinvoice') {
-            return $trans_script.attr('data-trans-ar')
+        if (app_code === 'delivery.orderdeliverysub') {
+            return pageElements.$trans_script.attr('data-trans-delivery')
         }
-        else if (app_code === 'delivery.orderdeliverysub') {
-            return $trans_script.attr('data-trans-delivery')
+        else if (app_code === 'arinvoice.arinvoice') {
+            return pageElements.$trans_script.attr('data-trans-ar')
         }
         else if (app_code === 'financialcashflow.cashinflow') {
-            return $trans_script.attr('data-trans-cif')
+            return pageElements.$trans_script.attr('data-trans-cif')
+        }
+        else if (app_code === 'inventory.goodsreceipt') {
+            return pageElements.$trans_script.attr('data-trans-gr')
+        }
+        else if (app_code === 'apinvoice.apinvoice') {
+            return pageElements.$trans_script.attr('data-trans-ap')
+        }
+        else if (app_code === 'financialcashflow.cashoutflow') {
+            return pageElements.$trans_script.attr('data-trans-cof')
         }
         return ''
     }
     static RecalculateReconTotal() {
         let sum_credit_amount = 0
-        $table_recon.find('tbody tr .credit_amount').each(function () {
+        pageElements.$table_recon.find('tbody tr .credit_amount').each(function () {
             if ($(this).closest('tr').find('.selected_document').prop('checked')) {
                 sum_credit_amount += parseFloat($(this).attr('value'))
             }
         })
         let sum_debit_amount = 0
-        $table_recon.find('tbody tr .debit_amount').each(function () {
+        pageElements.$table_recon.find('tbody tr .debit_amount').each(function () {
             if ($(this).closest('tr').find('.selected_document').prop('checked')) {
                 sum_debit_amount += parseFloat($(this).attr('value'))
             }
         })
-        $recon_total.attr('value', sum_credit_amount - sum_debit_amount)
+        pageElements.$recon_total.attr('value', sum_credit_amount - sum_debit_amount)
         $.fn.initMaskMoney2()
     }
     // detail
@@ -202,27 +217,27 @@ class ReconAction {
 
 class ReconHandle {
     static LoadPage() {
-        ReconLoadPage.LoadCustomer($customer)
-        ReconLoadPage.LoadDate($posting_date)
-        ReconLoadPage.LoadDate($document_date)
-        ReconLoadPage.LoadTableRecon($table_recon)
+        ReconLoadPage.LoadCustomer(pageElements.$customer)
+        ReconLoadPage.LoadDate(pageElements.$posting_date)
+        ReconLoadPage.LoadDate(pageElements.$document_date)
+        ReconLoadPage.LoadTableRecon(pageElements.$table_recon)
     }
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
-        if (parseFloat($recon_total.attr('value')) !== 0) {
+        if (parseFloat(pageElements.$recon_total.attr('value')) !== 0) {
             $.fn.notifyB({description: `Recon total must be 0`}, 'failure');
             return false
         }
 
-        frm.dataForm['title'] = $title.val()
-        frm.dataForm['customer_id'] = $customer.val()
-        frm.dataForm['posting_date'] = moment($posting_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
-        frm.dataForm['document_date'] = moment($document_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
-        frm.dataForm['type'] = $type.val()
+        frm.dataForm['title'] = pageElements.$title.val()
+        frm.dataForm['customer_id'] = pageElements.$customer.val()
+        frm.dataForm['posting_date'] = moment(pageElements.$posting_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['document_date'] = moment(pageElements.$document_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
+        frm.dataForm['type'] = pageElements.$type.val()
 
         let recon_item_data = []
-        $table_recon.find('tbody tr').each(function () {
+        pageElements.$table_recon.find('tbody tr').each(function () {
             if ($(this).find('.selected_document').prop('checked')) {
                 recon_item_data.push({
                     'ar_invoice_id': $(this).find('.selected_document').attr('data-credit-id') ? $(this).find('.selected_document').attr('data-credit-id') : null,
@@ -259,14 +274,15 @@ class ReconHandle {
                     data = data['recon_detail'];
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
 
-                    $title.val(data?.['title'])
-                    $posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
-                    $document_date.val(moment(data?.['document_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
-                    ReconLoadPage.LoadCustomer($customer, data?.['business_partner_data'])
+                    // console.log(data)
 
-                    ReconLoadPage.LoadTableRecon($table_recon, data?.['recon_items_data'])
+                    pageElements.$title.val(data?.['title'])
+                    pageElements.$posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
+                    pageElements.$document_date.val(moment(data?.['document_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
+                    ReconLoadPage.LoadCustomer(pageElements.$customer, data?.['business_partner_data'])
+
+                    ReconLoadPage.LoadTableRecon(pageElements.$table_recon, data?.['recon_items_data'])
 
                     $.fn.initMaskMoney2()
                     ReconAction.DisabledDetailPage(option);

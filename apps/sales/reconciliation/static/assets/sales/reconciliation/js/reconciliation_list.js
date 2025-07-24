@@ -38,17 +38,23 @@ $(document).ready(function () {
                     },
                     {
                         data: 'title',
-                        className: 'w-25',
+                        className: 'w-20',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
+                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title'] || ''}">${row?.['title'] || ''}</a>`
                         }
                     },
                     {
                         data: 'customer_data',
-                        className: 'w-35',
+                        className: 'w-25',
                         render: (data, type, row) => {
-                            return `<span class="text-muted">${row?.['business_partner_data']?.['name']}</span>`
+                            return `<span class="text-muted">${(row?.['business_partner_data'] || {})?.['name'] || ''}</span>`
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
                     },
                     {
@@ -58,10 +64,9 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        data: 'status',
                         className: 'text-center w-10',
                         render: (data, type, row) => {
-                            return WFRTControl.displayRuntimeStatus(row?.['system_status']);
+                            return WFRTControl.displayRuntimeStatus(row?.['system_status'], row?.['system_auto_create']);
                         }
                     }
                 ],

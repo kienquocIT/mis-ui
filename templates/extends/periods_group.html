@@ -16,7 +16,7 @@
 ></script>
 
 <div class="row">
-    <div class="col-12 col-lg-12 col-md-12">
+    <div class="col-12">
         <div class="form-group">
             <label for="period-select" class="form-label {% if period_req == True %}required{% endif %}">{% trans 'Fiscal year' %}</label>
             <select class="form-select select2" id="period-select"
@@ -27,7 +27,7 @@
         </div>
     </div>
     {% if quarter_active == True %}
-    <div class="col-12 col-lg-12 col-md-12">
+    <div class="col-12">
         <div class="form-group">
             <div class="row">
                 <div class='col-12'>
@@ -45,7 +45,7 @@
         </div>
     </div>
     {% endif %}
-    <div class="col-12 col-lg-12 col-md-12">
+    <div class="col-12">
         <div class="form-group">
             <div class="row">
                 <div class='col-12'>
@@ -58,7 +58,7 @@
         </div>
     </div>
     {% if date_req == True %}
-    <div class="col-12 col-lg-12 col-md-12">
+    <div class="col-12">
         <div class="form-group">
             <label class="form-label required">{% trans 'Date range' %}</label>
             <div class="input-group">

@@ -11,25 +11,25 @@
 			</div>
 			<div class="modal-body">
                 <div class="row">
-                    <div class="col-12 col-md-12 col-lg-12">
+                    <div class="col-12">
                         <div class="form-group">
                             <label class="form-label" for="total_payment_modal">{% trans "Total payment" %}</label>
                             <input disabled readonly class="form-control form-control-line mask-money" value="0" id="total_payment_modal">
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-12">
+                    <div class="col-12">
                         <div class="form-group">
                             <label class="form-label" for="cash_value">{% trans "Cash value" %}</label>
                             <input class="form-control mask-money" value="0" id="cash_value">
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-12">
+                    <div class="col-12">
                         <div class="form-group">
                             <label class="form-label" for="bank_value">{% trans "Bank value" %}</label>
                             <input class="form-control mask-money" value="0" id="bank_value">
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-12">
+                    <div class="col-12">
                         <div class="form-group">
                             <label class="form-label" for="company_bank_account">{% trans "Select company bank account" %}</label>
                             <select class="form-select" id="company_bank_account" data-method=GET data-url="{% url 'BankAccountMasterDataListAPI' %}"></select>
@@ -56,7 +56,7 @@
 			</div>
 			<div class="modal-body">
                 <div class="row">
-                    <div class="col-12 col-md-12 col-lg-12">
+                    <div class="col-12">
                         <table id="detail-payment-table" class="table nowrap w-100">
                             <thead>
                             <tr>
@@ -78,7 +78,7 @@
                             <tbody></tbody>
                         </table>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-12 mt-5">
+                    <div class="col-12 mt-5">
                         <div class="form-group text-right">
                             <label class="form-label fw-bold text-decoration-underline" for="total-detail-payment-modal">{% trans "Total" %}:</label>
                             <span class="mask-money fw-bold" data-init-money="0" id="total-detail-payment-modal"></span>

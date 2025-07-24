@@ -203,7 +203,7 @@ class ReconAction {
                 sum_debit_amount += parseFloat($(this).attr('value'))
             }
         })
-        pageElements.$recon_total.attr('value', sum_credit_amount - sum_debit_amount)
+        pageElements.$recon_total.attr('value', sum_credit_amount + sum_debit_amount)
         $.fn.initMaskMoney2()
     }
     // detail

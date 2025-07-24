@@ -180,11 +180,14 @@ class FolderList(View):
     @mask_view(
         auth_require=True,
         template='core/attachment/folder_list.html',
-        menu_active='menu_folder_list',
+        menu_active='menu_folder_ws_list',
         breadcrumb='',
     )
     def get(self, request, *args, **kwargs):
-        return {'employee_current': request.user.employee_current_data}, status.HTTP_200_OK
+        return {
+                   'employee_current': request.user.employee_current_data,
+                   'folder_space': 'workspace'
+               }, status.HTTP_200_OK
 
 
 class FolderListAPI(APIView):
@@ -207,6 +210,18 @@ class FolderListAPI(APIView):
             url=ApiURL.FOLDER_LIST,
             msg=CoreMsg.FOLDER_CREATE
         )
+
+
+class FolderMyFileList(View):
+
+    @mask_view(
+        auth_require=True,
+        template='core/attachment/my_space_list.html',
+        menu_active='menu_folder_list',
+        breadcrumb='',
+    )
+    def get(self, request, *args, **kwargs):
+        return {'employee_current': request.user.employee_current_data, 'folder_space': 'my_space'}, status.HTTP_200_OK
 
 
 class FolderMyFileListAPI(APIView):

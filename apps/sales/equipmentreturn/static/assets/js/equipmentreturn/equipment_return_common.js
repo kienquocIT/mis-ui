@@ -9,6 +9,7 @@ class EquipmentReturnPageElements {
         this.$title = $('#title')
         this.$account = $('#account')
         this.$document_date = $('#document-date')
+        this.$btn_select_detail = $('#btn-select-detail')
         // modal
         this.$account_select_btn = $('#account-select-btn')
         this.$account_select_modal = $('#account-select-modal')
@@ -93,7 +94,7 @@ class EquipmentReturnPageFunction {
             ],
         })
     }
-    static LoadEquipmentLoanTableByAccount(account_id=null) {
+    static LoadEquipmentLoanTableByAccount(account_id=null, el_selected_id=null) {
         pageElements.$table_select_el.DataTable().clear().destroy()
         pageElements.$table_select_el.DataTableDefault({
             styleDom: 'hide-foot',
@@ -126,7 +127,7 @@ class EquipmentReturnPageFunction {
                     className: 'w-5',
                     render: (data, type, row) => {
                         return `<div class="form-check">
-                                <input type="radio" name="el-selected-radio" class="form-check-input el-selected-radio" data-equipment-loan='${JSON.stringify(row)}'/>
+                                <input type="radio" name="el-selected-radio" class="form-check-input el-selected-radio" ${el_selected_id ? 'checked' : ''} data-id="${row?.['id']}" data-equipment-loan='${JSON.stringify(row)}'/>
                             </div>`
                     }
                 },
@@ -143,6 +144,16 @@ class EquipmentReturnPageFunction {
                     }
                 },
             ],
+            initComplete: function () {
+                if (el_selected_id) {  // cho tự động load modal khi Thu Hồi từ danh sách Cho mượn
+                    pageElements.$table_select_el.find('tbody tr .el-selected-radio').each(function (index, ele) {
+                        if ($(ele).attr('data-id') === el_selected_id) {
+                            EquipmentReturnPageFunction.LoadEquipmentLoanItemsTable($(ele).attr('data-equipment-loan') ? JSON.parse($(ele).attr('data-equipment-loan'))?.['equipment_loan_item_list'] || [] : [])
+                            return true
+                        }
+                    })
+                }
+            }
         })
     }
     static LoadEquipmentLoanItemsTable(data_list=[]) {
@@ -533,7 +544,7 @@ class EquipmentReturnEventHandler {
                 $.fn.notifyB({description: 'Nothing selected'}, 'warning');
             }
         })
-        $(document).on("click", '#btn-select-detail', function () {
+        pageElements.$btn_select_detail.on("click", function () {
             EquipmentReturnPageFunction.LoadEquipmentLoanTableByAccount(pageElements.$account.attr('data-id') || null)
             EquipmentReturnPageFunction.LoadEquipmentLoanItemsTable()
             EquipmentReturnPageFunction.LoadEquipmentLoanItemsNoneTable()
@@ -541,7 +552,9 @@ class EquipmentReturnEventHandler {
             EquipmentReturnPageFunction.LoadEquipmentLoanItemsSerialTable()
         })
         $(document).on("change", '.el-selected-radio', function () {
-            EquipmentReturnPageFunction.LoadEquipmentLoanItemsTable($(this).attr('data-equipment-loan') ? JSON.parse($(this).attr('data-equipment-loan'))?.['equipment_loan_item_list'] || [] : [])
+            if ($(this).prop('checked')) {
+                EquipmentReturnPageFunction.LoadEquipmentLoanItemsTable($(this).attr('data-equipment-loan') ? JSON.parse($(this).attr('data-equipment-loan'))?.['equipment_loan_item_list'] || [] : [])
+            }
         })
         $(document).on("change", '.el-item-selected-radio', function () {
             EquipmentReturnPageFunction.LoadEquipmentLoanItemsNoneTable(

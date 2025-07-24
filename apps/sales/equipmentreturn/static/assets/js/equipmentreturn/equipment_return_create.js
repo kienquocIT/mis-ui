@@ -1,4 +1,21 @@
 $(document).ready(function () {
+    const urlParams = new URLSearchParams(window.location.search)
+    let account_id = urlParams.get('account_id')
+    let account_name = urlParams.get('account_name')
+    let el_selected_id = urlParams.get('el_selected_id')
+
+    pageElements.$account.val(account_name)
+    pageElements.$account.attr('data-id', account_id)
+
+    requestAnimationFrame(() => {
+        $('#select-detail-modal').modal('show')
+        EquipmentReturnPageFunction.LoadEquipmentLoanTableByAccount(account_id || null, el_selected_id || null)
+        EquipmentReturnPageFunction.LoadEquipmentLoanItemsTable()
+        EquipmentReturnPageFunction.LoadEquipmentLoanItemsNoneTable()
+        EquipmentReturnPageFunction.LoadEquipmentLoanItemsLotTable()
+        EquipmentReturnPageFunction.LoadEquipmentLoanItemsSerialTable()
+    })
+
     new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 
     EquipmentReturnEventHandler.InitPageEven()

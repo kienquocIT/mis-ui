@@ -410,7 +410,6 @@ class AdvancePaymentPageFunction {
                     console.log(errs);
                 }
             )
-
             let dataParam3 = {'opportunity_id': opportunity_id}
             let payment_mapped_item = $.fn.callAjax2({
                 url: pageElements.$script_url.attr('data-url-payment-cost-list'),
@@ -585,6 +584,7 @@ class AdvancePaymentPageFunction {
                     AdvancePaymentPageFunction.DrawTablePlan(data_table_planned)
                     WFRTControl.setWFRuntimeID(workflow_runtime_id);
                 })
+
         }
     }
     static LoadPlanSaleOrder(opportunity_id, sale_order_id, workflow_runtime_id) {

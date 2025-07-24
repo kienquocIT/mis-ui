@@ -104,3 +104,11 @@ msgstr "Bạn không có quyền thực hiện chức năng này!"
 #
 msgid "Delete this selection"
 msgstr "Xóa lựa chọn này"
+
+#
+msgid "File permissions cannot be shared in this space"
+msgstr "Tệp không thể chia sẻ"
+
+#
+msgid "Folder permissions cannot be downloaded in this space"
+msgstr "Thư mục này không thể tải xuống trong không gian này"

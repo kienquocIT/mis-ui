@@ -197,10 +197,20 @@ class ShiftAssignHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('shift_assignment_list') && Array.isArray(data.shift_assignment_list)) {
+                        let listBg = ['#298DFF', '#e92990', '#c02ff3', '#00d67f'];
+                        let shiftBg = {};
                         for (let m = mStart.clone(); m.isBefore(mEnd); m.add(1, 'days')) {
                             for (let shiftAssignmentData of data.shift_assignment_list) {
                                 if (shiftAssignmentData?.['date'] === m.format('YYYY-MM-DD')) {
+                                    let bg = listBg[Math.floor(Math.random() * listBg.length)];
+                                    if (!shiftBg?.[shiftAssignmentData?.['shift']?.['id']]) {
+                                        shiftBg[shiftAssignmentData?.['shift']?.['id']] = bg;
+                                    }
+                                    if (shiftBg?.[shiftAssignmentData?.['shift']?.['id']]) {
+                                        bg = shiftBg?.[shiftAssignmentData?.['shift']?.['id']];
+                                    }
                                     events.push({
+                                        backgroundColor: `${bg}`,
                                         title: `${shiftAssignmentData?.['shift']?.['title']}`,
                                         start: m.format('YYYY-MM-DD'),
                                         extendedProps: {
@@ -210,7 +220,6 @@ class ShiftAssignHandle {
                                 }
                             }
                         }
-                        calendar.removeAllEvents();
                         calendar.addEventSource(events);
                         WindowControl.hideLoading();
                     }
@@ -221,6 +230,7 @@ class ShiftAssignHandle {
     };
 
     static loadShiftEmployee(calendar, info) {
+        calendar.removeAllEvents();
         if (ShiftAssignHandle.$employeesCheckedEle.val()) {
             let storeID = JSON.parse(ShiftAssignHandle.$employeesCheckedEle.val());
             if (Object.keys(storeID).length === 1) {
@@ -256,12 +266,18 @@ class ShiftAssignHandle {
 
     static setupDataSubmit() {
         let groupList = [];
+        let groupEmployeeExcludeList = [];
         let employeeList = [];
         let dateList = [];
         if (ShiftAssignHandle.$groupsCheckedEle.val()) {
             let storeID = JSON.parse(ShiftAssignHandle.$groupsCheckedEle.val());
             for (let key in storeID) {
                 groupList.push(key);
+                if (storeID[key]?.['employee_exclude_list']) {
+                    for (let excludeID of storeID[key]?.['employee_exclude_list']) {
+                        groupEmployeeExcludeList.push(excludeID);
+                    }
+                }
             }
         }
         if (ShiftAssignHandle.$employeesCheckedEle.val()) {
@@ -276,6 +292,7 @@ class ShiftAssignHandle {
         }
         return {
             'group_list': groupList,
+            'group_employee_exclude_list': groupEmployeeExcludeList,
             'employee_list': employeeList,
             'shift': ShiftAssignHandle.$shiftApplyEle.val(),
             'date_list': dateList,
@@ -289,34 +306,57 @@ class ShiftAssignHandle {
         let $row = ShiftAssignHandle.$table.DataTable().row(rowIndex);
         let dataRow = $row.data();
         if (dataRow) {
+            let groupID = dataRow?.['id'];
             if (ShiftAssignHandle.$groupsCheckedEle.val()) {
                 let storeID = JSON.parse(ShiftAssignHandle.$groupsCheckedEle.val());
                 if (typeof storeID === 'object') {
                     if (ele.checked === true) {
-                        if (!storeID?.[dataRow?.['id']]) {
-                            storeID[dataRow?.['id']] = {
+                        if (!storeID?.[groupID]) {
+                            storeID[groupID] = {
                                 "type": "current",
                                 "data": dataRow,
                             };
                         }
+                        if (storeID?.[groupID]) {
+                            if (storeID?.[groupID]?.['employee_exclude_list']) {
+                                storeID[groupID]['employee_exclude_list'] = [];
+                            }
+                        }
                     }
                     if (ele.checked === false) {
-                        if (storeID?.[dataRow?.['id']]) {
-                            delete storeID?.[dataRow?.['id']];
+                        if (storeID?.[groupID]) {
+                            delete storeID?.[groupID];
                         }
+                        // remove employee of group
+                        ShiftAssignHandle.loadRemoveEmployeeOfGroup(groupID);
                     }
                     ShiftAssignHandle.$groupsCheckedEle.val(JSON.stringify(storeID));
                 }
             } else {
                 let dataStore = {};
                 if (ele.checked === true) {
-                    dataStore[dataRow?.['id']] = {
+                    dataStore[groupID] = {
                         "type": "current",
                         "data": dataRow,
                     };
                 }
                 ShiftAssignHandle.$groupsCheckedEle.val(JSON.stringify(dataStore));
             }
+        }
+        return true;
+    };
+
+    static loadRemoveEmployeeOfGroup(groupID) {
+        if (ShiftAssignHandle.$employeesCheckedEle.val()) {
+            let storeID = JSON.parse(ShiftAssignHandle.$employeesCheckedEle.val());
+            for (let key in storeID) {
+                if (storeID[key]?.['group_id']) {
+                    if (storeID[key]?.['group_id'] === groupID) {
+                        delete storeID[key];
+                    }
+                }
+            }
+            ShiftAssignHandle.$employeesCheckedEle.val(JSON.stringify(storeID));
         }
         return true;
     };
@@ -328,6 +368,8 @@ class ShiftAssignHandle {
         let $row = $(table).DataTable().row(rowIndex);
         let dataRow = $row.data();
         if (dataRow) {
+            let groupID = $(ele).attr('data-group-id');
+            let employeeID = dataRow?.['id'];
             if (ShiftAssignHandle.$employeesCheckedEle.val()) {
                 let storeID = JSON.parse(ShiftAssignHandle.$employeesCheckedEle.val());
                 if (typeof storeID === 'object') {
@@ -336,6 +378,7 @@ class ShiftAssignHandle {
                             storeID[dataRow?.['id']] = {
                                 "type": "current",
                                 "data": dataRow,
+                                "group_id": groupID,
                             };
                         }
                     }
@@ -343,6 +386,8 @@ class ShiftAssignHandle {
                         if (storeID?.[dataRow?.['id']]) {
                             delete storeID?.[dataRow?.['id']];
                         }
+                        // push employee exclude to group
+                        ShiftAssignHandle.loadPushGroupExclude(groupID, employeeID);
                     }
                     ShiftAssignHandle.$employeesCheckedEle.val(JSON.stringify(storeID));
                 }
@@ -354,7 +399,32 @@ class ShiftAssignHandle {
                         "data": dataRow,
                     };
                 }
+                if (ele.checked === false) {
+                    // push employee exclude to group
+                    ShiftAssignHandle.loadPushGroupExclude(groupID, employeeID);
+                }
                 ShiftAssignHandle.$employeesCheckedEle.val(JSON.stringify(dataStore));
+            }
+        }
+        return true;
+    };
+
+    static loadPushGroupExclude(groupID, employeeID) {
+        let checkGroupEle = ShiftAssignHandle.$table[0].querySelector(`.checkbox-group[data-group-id="${groupID}"]`);
+        if (checkGroupEle) {
+            if (checkGroupEle.checked === true) {
+                checkGroupEle.checked = false;
+            }
+            if (ShiftAssignHandle.$groupsCheckedEle.val()) {
+                let storeID = JSON.parse(ShiftAssignHandle.$groupsCheckedEle.val());
+                if (storeID?.[groupID]) {
+                    if (storeID[groupID]?.['employee_exclude_list']) {
+                        storeID[groupID]['employee_exclude_list'].push(employeeID);
+                    } else {
+                        storeID[groupID]['employee_exclude_list'] = [employeeID];
+                    }
+                    ShiftAssignHandle.$groupsCheckedEle.val(JSON.stringify(storeID));
+                }
             }
         }
         return true;
@@ -436,15 +506,6 @@ class ShiftAssignHandle {
             drawCallback: function () {
                 // add css to Dtb
                 ShiftAssignHandle.loadDtbHideHeader(idTbl);
-
-                // $tableChild.DataTable().rows().every(function () {
-                //     let row = this.node();
-                //     let checkEmployeeEle = row.querySelector('.checkbox-employee');
-                //     if (checkEmployeeEle) {
-                //         ShiftAssignHandle.loadStoreCheckEmployee(checkEmployeeEle);
-                //     }
-                // });
-
             },
         });
     };
@@ -514,15 +575,15 @@ $(document).ready(function () {
             let eventEle = info.el;
             let eventFcMainEle = info.el.querySelector('.fc-event-main');
             if (info.event.extendedProps.toHtml === 'convert') {
-                $(eventEle).css({
-                    'background-color': 'transparent',
-                    'border': 'none',
-                })
-                $(eventFcMainEle).css({
-                    'color': 'inherit',
-                    'float': 'right',
-                    'font-size': '10px',
-                })
+                // $(eventEle).css({
+                //     'background-color': 'transparent',
+                //     'border': 'none',
+                // })
+                // $(eventFcMainEle).css({
+                //     'color': 'inherit',
+                //     'float': 'right',
+                //     'font-size': '10px',
+                // })
             }
         }
 
@@ -622,12 +683,13 @@ $(document).ready(function () {
     ShiftAssignHandle.$table.on('click', '.checkbox-employee', function () {
         ShiftAssignHandle.loadStoreCheckEmployee(this);
         ShiftAssignHandle.loadShiftEmployee(calendar, ShiftAssignHandle.calendarInfo);
-        if (this.checked === false) {
-            let checkGroupEle = ShiftAssignHandle.$table[0].querySelector(`.checkbox-group[data-group-id="${$(this).attr('data-group-id')}"]`);
-            if (checkGroupEle) {
-                checkGroupEle.checked = false;
-            }
-        }
+        // if (this.checked === false) {
+        //     let checkGroupEle = ShiftAssignHandle.$table[0].querySelector(`.checkbox-group[data-group-id="${$(this).attr('data-group-id')}"]`);
+        //     if (checkGroupEle) {
+        //         checkGroupEle.checked = false;
+        //         ShiftAssignHandle.loadStoreCheckGroup(checkGroupEle);
+        //     }
+        // }
     });
 
     ShiftAssignHandle.$btnShiftAssign.on('click', function () {
@@ -644,6 +706,7 @@ $(document).ready(function () {
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
                     setTimeout(() => {
+                        window.location.reload();
                         WindowControl.hideLoading();
                     }, 2000);
                 }

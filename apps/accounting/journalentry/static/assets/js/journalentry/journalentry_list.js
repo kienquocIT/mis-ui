@@ -33,20 +33,20 @@ $(document).ready(function() {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-xs w-20',
+                        className: 'ellipsis-cell-xs w-5',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        className: 'w-15',
+                        className: 'w-25',
                         render: (data, type, row) => {
                             return `<span>${row?.['original_transaction']}</span>`
                         }
                     },
                     {
-                        className: 'w-15',
+                        className: 'w-20',
                         render: (data, type, row) => {
                             return `<span>${(row?.['je_transaction_data'] || {})?.['code'] || ''}</span>`
                         }

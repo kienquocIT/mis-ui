@@ -1,14 +1,14 @@
 {% load i18n %}
 
 <div class="row">
-    <div class="col-12 col-md-12 col-lg-12 text-center">
+    <div class="col-12 text-center">
         <h3 class="fw-bold text-primary" id="ar-invoice-label"></h3>
     </div>
 </div>
 <div class="row mt-3">
     <div class="col-12 col-md-9 col-lg-9">
         <div class="row">
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label required" for="customer-name">{% trans "Customer" %}</label>
                     <div style="display: flex;">
@@ -46,25 +46,25 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label required" for="billing-address">{% trans "Billing address" %}</label>
                     <select class="form-select select2" id="billing-address"></select>
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                         <div class="form-group">
                             <label class="form-label" for="buyer-name">{% trans "Buyer name" %}</label>
                             <input class="form-control" id="buyer-name">
                         </div>
                     </div>
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label required" for="title">{% trans "Title" %}</label>
                     <input required class="form-control" id="title">
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label" for="sale-order">{% trans "Sale order" %} <span class="small text-muted">({% trans 'Get by selected customer' %})</span></label>
                     <div class="input-group">
@@ -90,7 +90,7 @@
                     <select class="form-select" id="bank-info" data-method="GET" data-url="{% url 'BankAccountMasterDataListAPI' %}" disabled></select>
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label" for="note">{% trans "Note" %}</label>
                     <textarea class="form-control" id="note"></textarea>
@@ -100,13 +100,13 @@
     </div>
     <div class="col-12 col-md-3 col-lg-3">
         <div class="row">
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label" for="invoice-number">{% trans "Invoice number" %}</label>
                     <input class="form-control" id="invoice-number">
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label required" for="invoice-exp">{% trans "Mẫu số" %}</label>
                     <select required class="form-select" id="invoice-exp">
@@ -121,13 +121,13 @@
                     </select>
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label" for="invoice-sign">{% trans "Kí hiệu" %} <span class="text-muted small">({% trans 'Auto load according to config' %})</span></label>
                     <input disabled readonly class="form-control" id="invoice-sign">
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label required" for="invoice-date">{% trans "Invoice date" %}</label>
                     <div class="input-group mb-3">
@@ -138,13 +138,13 @@
                     </div>
                 </div>
             </div>
-{#            <div class="col-12 col-md-12 col-lg-12">#}
+{#            <div class="col-12">#}
 {#                <div class="form-group">#}
 {#                    <label class="form-label" for="invoice-status">{% trans "Invoice status" %}</label>#}
 {#                    <input disabled readonly class="form-control form-control-line fw-bold text-blue" id="invoice-status" value="Khởi tạo">#}
 {#                </div>#}
 {#            </div>#}
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label required" for="posting-date">{% trans "Posting date" %}</label>
                     <div class="input-group mb-3">
@@ -155,7 +155,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label required" for="document-date">{% trans "Document date" %}</label>
                     <div class="input-group mb-3">

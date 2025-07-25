@@ -1,18 +1,25 @@
-const $trans_script = $('#trans-script')
-const $url_script = $('#url-script')
-const $ori_trans = $('#ori-trans')
-const $transaction_code = $('#transaction-code')
-const $transaction_name = $('#transaction-name')
-const $type = $('#type')
-const $je_posting_date = $('#je-posting-date')
-const $je_doc_date = $('#je-doc-date')
-const $journal_entry_table = $('#journal-entry-table')
+/**
+ * Khai báo các element trong page
+ */
+class JEPageElements {
+    constructor() {
+        this.$trans_script = $('#trans-script')
+        this.$url_script = $('#url-script')
+        this.$ori_trans = $('#ori-trans')
+        this.$transaction_code = $('#transaction-code')
+        this.$transaction_name = $('#transaction-name')
+        this.$je_posting_date = $('#je-posting-date')
+        this.$je_doc_date = $('#je-doc-date')
+        this.$journal_entry_table = $('#journal-entry-table')
+    }
+}
+const pageElements = new JEPageElements()
 
 class JELoadPage {
     static LoadJETable(datalist=[]) {
         let has_fc_value = false
         let has_lc_value = false
-        $journal_entry_table.DataTableDefault({
+        pageElements.$journal_entry_table.DataTableDefault({
             styleDom: 'hide-foot',
             useDataServer: false,
             rowIdx: true,
@@ -116,11 +123,11 @@ class JEHandle {
                     data = data['journal_entry_detail'];
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    $ori_trans.val(data?.['original_transaction']).trigger('change')
-                    $transaction_code.val(data?.['je_transaction_data']?.['code'])
-                    $transaction_name.val(data?.['je_transaction_data']?.['title'])
-                    $je_posting_date.val(moment(data?.['je_posting_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
-                    $je_doc_date.val(moment(data?.['je_document_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
+                    pageElements.$ori_trans.val(data?.['original_transaction']).trigger('change')
+                    pageElements.$transaction_code.val(data?.['je_transaction_data']?.['code'])
+                    pageElements.$transaction_name.val(data?.['je_transaction_data']?.['title'])
+                    pageElements.$je_posting_date.val(moment(data?.['je_posting_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
+                    pageElements.$je_doc_date.val(moment(data?.['je_document_date'].split(' ')[0], 'YYYY-MM-DD').format('DD/MM/YYYY'))
 
                     const je_items_sum = {};
                     (data?.['je_items'] || []).forEach(item => {
@@ -138,6 +145,8 @@ class JEHandle {
                     });
 
                     JELoadPage.LoadJETable(Object.values(je_items_sum) || [])
+
+                    UsualLoadPageFunction.DisablePage(option==='detail')
                 }
             })
     }

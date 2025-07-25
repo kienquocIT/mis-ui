@@ -11,21 +11,21 @@
     <div class="offcanvas-body">
         {% include 'extends/periods_group.html' with period_req=True month_req=True date_req=True %}
         <div class="row">
-            <div class="col-12 col-lg-12 col-md-12">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
                     <select class="form-select select2 select-multiple" id="warehouses_select" multiple
                             data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
                 </div>
             </div>
-            <div class="col-12 col-lg-12 col-md-12">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="form-label" for="items_select">{% trans 'Product' %}</label>
                     <select class="form-select select2 select-multiple" id="items_select" multiple
                             data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
                 </div>
             </div>
-            <div class="project-filter col-12 col-lg-12 col-md-12">
+            <div class="project-filter col-12">
                 <div class="form-group">
                     <label for="project-select" class="form-label">{% trans 'Project' %}</label>
                     <select class="form-select select2" id="project-select"
@@ -34,7 +34,7 @@
                     ></select>
                 </div>
             </div>
-            <div class="col-12 col-lg-12 col-md-12 mt-3">
+            <div class="col-12 mt-3">
                 <div class="btn-group dropup w-100" role="group">
                     <button type="button" class="btn btn-social btn-social-facebook btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% trans 'Apply' %}

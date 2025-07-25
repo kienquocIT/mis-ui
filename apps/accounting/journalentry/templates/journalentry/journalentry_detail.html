@@ -12,9 +12,7 @@
     <script id="trans-script"
             data-trans-all="{% trans 'Default all' %}"
     ></script>
-    <script id="url-script"
-
-    ></script>
+    <script id="url-script"></script>
 
     <form id="form-detail-je" data-url="{% url 'JournalEntryDetailAPI' pk=pk %}" data-method="GET">
         {% csrf_token %}
@@ -25,6 +23,7 @@
 {% block modalData %}
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/js/journalentry/journalentry_common.js' %}"></script>
     <script src="{% static 'assets/js/journalentry/journalentry_detail.js' %}"></script>
 {% endblock %}

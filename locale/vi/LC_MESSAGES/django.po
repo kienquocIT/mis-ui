@@ -10053,7 +10053,7 @@ msgstr "Ngày ghi sổ"
 
 #
 msgid "Balance value"
-msgstr "Giá trị cân đối"
+msgstr "Giá trị còn lại"
 
 #
 msgid "Customers pay in advance (not according to Sale order)"
@@ -12082,3 +12082,15 @@ msgstr "Ngày xuất hóa đơn thực tế"
 #
 msgid "Partially paid"
 msgstr "Thanh toán một phần"
+
+#
+msgid "Reconciliation of Customer"
+msgstr "Cấn trừ cho Khách hàng"
+
+#
+msgid "Reconciliation of Supplier"
+msgstr "Cấn trừ cho Nhà cung cấp"
+
+#
+msgid "Reconciliation of Employee"
+msgstr "Cấn trừ cho Nhân viên"

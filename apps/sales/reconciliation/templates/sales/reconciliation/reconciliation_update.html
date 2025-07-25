@@ -28,7 +28,7 @@
             data-trans-ap="{% trans 'AP invoice' %}"
             data-trans-cof="{% trans 'Cash outflow' %}"
     ></script>
-    <form id="form-detail-recon" data-method="GET" data-url="{% url 'ReconDetailAPI' pk=pk %}">
+    <form id="form-detail-recon" data-method="PUT" data-url="{% url 'ReconDetailAPI' pk=pk %}" data-url-redirect="{% url 'ReconDetail' pk=pk %}">
         {% include 'sales/reconciliation/common/information.html' %}
         {% include 'sales/reconciliation/common/table.html' %}
     </form>
@@ -39,5 +39,5 @@
     <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/sales/reconciliation/js/reconciliation_common.js' %}"></script>
-    <script src="{% static 'assets/sales/reconciliation/js/reconciliation_detail.js' %}"></script>
+    <script src="{% static 'assets/sales/reconciliation/js/reconciliation_update.js' %}"></script>
 {% endblock %}

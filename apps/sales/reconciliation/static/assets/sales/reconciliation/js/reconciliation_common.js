@@ -6,6 +6,9 @@ class ReconPageElements {
         this.$trans_script = $('#trans-script');
         this.$title = $('#title');
         this.$customer = $('#customer');
+        this.$supplier = $('#supplier');
+        this.$customer_space = $('#customer-space');
+        this.$supplier_space = $('#supplier-space');
         this.$posting_date = $('#posting_date');
         this.$document_date = $('#document_date');
         this.$type = $('#type');
@@ -15,39 +18,23 @@ class ReconPageElements {
 }
 const pageElements = new ReconPageElements()
 
-class ReconLoadPage {
-    static LoadDate(element) {
-        element.daterangepicker({
-            singleDatePicker: true,
-            timePicker: false,
-            showDropdowns: true,
-            autoApply: true,
-            minYear: parseInt(moment().format('YYYY')),
-            locale: {format: 'DD/MM/YYYY'},
-            maxYear: parseInt(moment().format('YYYY')) + 100,
-        }).val('')
-    }
-    static LoadCustomer(element, data) {
-        element.initSelect2({
-            allowClear: true,
-            ajax: {
-                url: element.attr('data-url'),
-                data: {'is_customer_account': true},
-                method: 'GET',
-            },
-            data: (data ? data : null),
-            keyResp: 'customer_list',
-            keyId: 'id',
-            keyText: 'name',
-        }).on('change', function () {
-            if (element.val()) {
+/**
+ * Khai báo các biến sử dụng trong page
+ */
+class ReconPageVariables {
+    constructor() {
 
-            }
-        })
     }
-    static LoadTableRecon(element, data_list=[]) {
-        element.DataTable().clear().destroy()
-        element.DataTableDefault({
+}
+const pageVariables = new ReconPageVariables()
+
+/**
+ * Các hàm load page và hàm hỗ trợ
+ */
+class ReconPageFunction {
+    static LoadTableRecon(data_list=[]) {
+        pageElements.$table_recon.DataTable().clear().destroy()
+        pageElements.$table_recon.DataTableDefault({
             styleDom: 'hide-foot',
             reloadCurrency: true,
             rowIdx: true,
@@ -85,14 +72,14 @@ class ReconLoadPage {
                         let document_type = ''
                         if (Object.keys(credit_doc_data).length > 0) {
                             document_code = credit_doc_data?.['code'] ? credit_doc_data?.['code'] : ''
-                            document_type = ReconAction.ConvertToDocTitle(credit_doc_data?.['app_code'])
-                            return `<span class="badge badge-soft-primary document_code mr-1">${document_code}</span><span class="document_type small">(${document_type})</span>`;
+                            document_type = ReconPageFunction.ConvertToDocTitle(credit_doc_data?.['app_code'])
+                            return `<span class="document_type">${document_type}</span><span class="badge badge-soft-primary document_code ml-1">${document_code}</span>`;
                         }
                         else {
                             let debit_doc_data = row?.['debit_doc_data'] || {}
                             document_code = debit_doc_data?.['code'] ? debit_doc_data?.['code'] : ''
-                            document_type = ReconAction.ConvertToDocTitle(debit_doc_data?.['app_code'])
-                            return `<span class="badge badge-soft-danger document_code mr-1">${document_code}</span><span class="document_type small">(${document_type})</span>`;
+                            document_type = ReconPageFunction.ConvertToDocTitle(debit_doc_data?.['app_code'])
+                            return `<span class="document_type">${document_type}</span><span class="badge badge-soft-danger document_code ml-1">${document_code}</span>`;
                         }
                     }
                 },
@@ -108,7 +95,7 @@ class ReconLoadPage {
                             let debit_doc_data = row?.['debit_doc_data'] || {}
                             posting_date = debit_doc_data?.['posting_date'] ? moment(debit_doc_data?.['posting_date'].split(' '), 'YYYY-MM-DD').format('DD/MM/YYYY') : ''
                         }
-                        return `<span class="posting_date"><i class="fa-regular fa-calendar"></i> ${posting_date}</span>`;
+                        return `<span class="posting_date">📅 ${posting_date}</span>`;
                     }
                 },
                 {
@@ -162,13 +149,11 @@ class ReconLoadPage {
                 },
             ],
             initComplete: function () {
-                ReconAction.RecalculateReconTotal()
+                ReconPageFunction.RecalculateReconTotal()
             }
         })
     }
-}
-
-class ReconAction {
+    // sub
     static ConvertToDocTitle(app_code='') {
         if (app_code === 'delivery.orderdeliverysub') {
             return pageElements.$trans_script.attr('data-trans-delivery')
@@ -206,22 +191,12 @@ class ReconAction {
         pageElements.$recon_total.attr('value', sum_credit_amount + sum_debit_amount)
         $.fn.initMaskMoney2()
     }
-    // detail
-    static DisabledDetailPage(option) {
-        if (option === 'detail') {
-            $('form input').prop('readonly', true).prop('disabled', true);
-            $('form select').prop('disabled', true);
-        }
-    }
 }
 
-class ReconHandle {
-    static LoadPage() {
-        ReconLoadPage.LoadCustomer(pageElements.$customer)
-        ReconLoadPage.LoadDate(pageElements.$posting_date)
-        ReconLoadPage.LoadDate(pageElements.$document_date)
-        ReconLoadPage.LoadTableRecon(pageElements.$table_recon)
-    }
+/**
+ * Khai báo các hàm chính
+ */
+class ReconHandler {
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
@@ -231,10 +206,16 @@ class ReconHandle {
         }
 
         frm.dataForm['title'] = pageElements.$title.val()
-        frm.dataForm['customer_id'] = pageElements.$customer.val()
         frm.dataForm['posting_date'] = moment(pageElements.$posting_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
         frm.dataForm['document_date'] = moment(pageElements.$document_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
         frm.dataForm['type'] = pageElements.$type.val()
+
+        if (pageElements.$type.val() === '0') {
+            frm.dataForm['business_partner'] = pageElements.$customer.val() || null
+        }
+        else if (pageElements.$type.val() === '1') {
+            frm.dataForm['business_partner'] = pageElements.$supplier.val() || null
+        }
 
         let recon_item_data = []
         pageElements.$table_recon.find('tbody tr').each(function () {
@@ -280,39 +261,71 @@ class ReconHandle {
                     pageElements.$title.val(data?.['title'])
                     pageElements.$posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     pageElements.$document_date.val(moment(data?.['document_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
-                    ReconLoadPage.LoadCustomer(pageElements.$customer, data?.['business_partner_data'])
 
-                    ReconLoadPage.LoadTableRecon(pageElements.$table_recon, data?.['recon_items_data'])
+                    pageElements.$type.val(data?.['type'])
+                    UsualLoadPageFunction.LoadCustomer({
+                        element: pageElements.$customer,
+                        data: data?.['business_partner_data']}
+                    )
+                    UsualLoadPageFunction.LoadSupplier({
+                        element: pageElements.$supplier,
+                        data: data?.['business_partner_data']}
+                    )
+                    if (data?.['type'] === '0') {
+                        pageElements.$customer_space.prop('hidden', false)
+                        UsualLoadPageFunction.LoadCustomer({
+                            element: pageElements.$customer,
+                            data: data?.['business_partner_data']}
+                        )
+                        UsualLoadPageFunction.LoadSupplier({element: pageElements.$supplier})
+                    }
+                    else if (data?.['type'] === '1') {
+                        pageElements.$supplier_space.prop('hidden', false)
+                        UsualLoadPageFunction.LoadCustomer({element: pageElements.$customer})
+                        UsualLoadPageFunction.LoadSupplier({
+                            element: pageElements.$supplier,
+                            data: data?.['business_partner_data']}
+                        )
+                    }
+
+                    ReconPageFunction.LoadTableRecon(data?.['recon_items_data'])
 
                     $.fn.initMaskMoney2()
-                    ReconAction.DisabledDetailPage(option);
+
+                    UsualLoadPageFunction.DisablePage(option==='detail');
+
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
     }
 }
 
-$(document).on('change', '.negative-no', function () {
-    let old_val = $(this).val()
-    $(this).val('('+ old_val +')')
-})
+/**
+ * Khai báo các Event
+ */
+class ReconEventHandler {
+    static InitPageEven() {
+        pageElements.$type.on('change', function () {
+            pageElements.$customer_space.prop('hidden', $(this).val() !== '0')
+            pageElements.$supplier_space.prop('hidden', $(this).val() !== '1')
+        })
+        $(document).on('change', '.selected_document', function () {
+            $(this).closest('tr').find('.recon_amount').attr(
+                'value',
+                $(this).prop('checked') ? parseFloat($(this).closest('tr').find('.recon_balance').attr('data-init-money')) : 0
+            ).prop('disabled', !$(this).prop('checked'))
 
-$(document).on('change', '.selected_document', function () {
-    $(this).closest('tr').find('.recon_amount').attr(
-        'value',
-        $(this).prop('checked') ? parseFloat($(this).closest('tr').find('.recon_balance').attr('data-init-money')) : 0
-    ).prop('disabled', !$(this).prop('checked'))
-
-    $(this).closest('tr').find('.note').prop('disabled', !$(this).prop('checked'))
-    ReconAction.RecalculateReconTotal()
-})
-
-$(document).on('change', '.recon_amount', function () {
-    let this_value = parseFloat($(this).attr('value'))
-    let recon_balance = parseFloat($(this).closest('tr').find('.recon_balance').attr('data-init-money'))
-    if (this_value > recon_balance) {
-        $.fn.notifyB({description: `Recon value can not > Balance value`}, 'failure');
-        $(this).attr('value', recon_balance)
+            $(this).closest('tr').find('.note').prop('disabled', !$(this).prop('checked'))
+            ReconPageFunction.RecalculateReconTotal()
+        })
+        $(document).on('change', '.recon_amount', function () {
+            let this_value = parseFloat($(this).attr('value'))
+            let recon_balance = parseFloat($(this).closest('tr').find('.recon_balance').attr('data-init-money'))
+            if (this_value > recon_balance) {
+                $.fn.notifyB({description: `Recon value can not > Balance value`}, 'failure');
+                $(this).attr('value', recon_balance)
+            }
+            ReconPageFunction.RecalculateReconTotal()
+        })
     }
-    ReconAction.RecalculateReconTotal()
-})
+}

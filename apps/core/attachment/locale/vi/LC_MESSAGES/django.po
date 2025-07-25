@@ -76,3 +76,7 @@ msgstr "Danh sách truy cập của"
 #
 msgid "Data ID permission error"
 msgstr "Lỗi ID chia sẻ"
+
+#
+msgid "show more"
+msgstr "hiện thêm"

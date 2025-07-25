@@ -65,26 +65,40 @@ class ReconPageFunction {
                     }
                 },
                 {
-                    className: 'w-15',
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        let credit_doc_data = row?.['credit_doc_data'] || {}
+                        let document_type = ''
+                        let color = ''
+                        if (Object.keys(credit_doc_data).length > 0) {
+                            document_type = ReconPageFunction.ConvertToDocTitle(credit_doc_data?.['app_code'])
+                            color = 'text-primary'
+                        }
+                        else {
+                            let debit_doc_data = row?.['debit_doc_data'] || {}
+                            document_type = ReconPageFunction.ConvertToDocTitle(debit_doc_data?.['app_code'])
+                            color = 'text-danger'
+                        }
+                        return `<span class="document_type ${color}">${document_type}</span>`;
+                    }
+                },
+                {
+                    className: 'text-right w-5',
                     render: (data, type, row) => {
                         let credit_doc_data = row?.['credit_doc_data'] || {}
                         let document_code = ''
-                        let document_type = ''
                         if (Object.keys(credit_doc_data).length > 0) {
                             document_code = credit_doc_data?.['code'] ? credit_doc_data?.['code'] : ''
-                            document_type = ReconPageFunction.ConvertToDocTitle(credit_doc_data?.['app_code'])
-                            return `<span class="document_type">${document_type}</span><span class="badge badge-soft-primary document_code ml-1">${document_code}</span>`;
                         }
                         else {
                             let debit_doc_data = row?.['debit_doc_data'] || {}
                             document_code = debit_doc_data?.['code'] ? debit_doc_data?.['code'] : ''
-                            document_type = ReconPageFunction.ConvertToDocTitle(debit_doc_data?.['app_code'])
-                            return `<span class="document_type">${document_type}</span><span class="badge badge-soft-danger document_code ml-1">${document_code}</span>`;
                         }
+                        return `<span class="document_code">${document_code}</span>`;
                     }
                 },
                 {
-                    className: 'w-10',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         let credit_doc_data = row?.['credit_doc_data'] || {}
                         let posting_date = ''
@@ -132,19 +146,19 @@ class ReconPageFunction {
                     }
                 },
                 {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return `<textarea disabled ${row?.['id'] ? 'disabled readonly' : ''} rows="1" class="form-control note"></textarea>`;
-                    }
-                },
-                {
-                    className: 'text-center w-5',
+                    className: 'text-right w-5',
                     render: (data, type, row) => {
                         let credit_doc_data = row?.['credit_doc_data'] || {}
                         if (Object.keys(credit_doc_data).length > 0) {
-                            return `<span class="accounting_account">${row?.['credit_account_data']?.['acc_code']}</span>`;
+                            return `<span class="accounting_account h5">${row?.['credit_account_data']?.['acc_code']}</span>`;
                         }
-                        return `<span class="accounting_account">${row?.['debit_account_data']?.['acc_code']}</span>`;
+                        return `<span class="accounting_account h5">${row?.['debit_account_data']?.['acc_code']}</span>`;
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return `<textarea disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control note"></textarea>`;
                     }
                 },
             ],
@@ -208,7 +222,7 @@ class ReconHandler {
         frm.dataForm['title'] = pageElements.$title.val()
         frm.dataForm['posting_date'] = moment(pageElements.$posting_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
         frm.dataForm['document_date'] = moment(pageElements.$document_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
-        frm.dataForm['type'] = pageElements.$type.val()
+        frm.dataForm['recon_type'] = pageElements.$type.val()
 
         if (pageElements.$type.val() === '0') {
             frm.dataForm['business_partner'] = pageElements.$customer.val() || null
@@ -239,6 +253,7 @@ class ReconHandler {
         }
 
         // console.log(frm)
+
         return {
             url: frm.dataUrl,
             method: frm.dataMethod,
@@ -262,7 +277,7 @@ class ReconHandler {
                     pageElements.$posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     pageElements.$document_date.val(moment(data?.['document_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
 
-                    pageElements.$type.val(data?.['type'])
+                    pageElements.$type.val(data?.['recon_type'])
                     UsualLoadPageFunction.LoadCustomer({
                         element: pageElements.$customer,
                         data: data?.['business_partner_data']}
@@ -271,7 +286,7 @@ class ReconHandler {
                         element: pageElements.$supplier,
                         data: data?.['business_partner_data']}
                     )
-                    if (data?.['type'] === '0') {
+                    if (data?.['recon_type'] === '0') {
                         pageElements.$customer_space.prop('hidden', false)
                         UsualLoadPageFunction.LoadCustomer({
                             element: pageElements.$customer,
@@ -279,7 +294,7 @@ class ReconHandler {
                         )
                         UsualLoadPageFunction.LoadSupplier({element: pageElements.$supplier})
                     }
-                    else if (data?.['type'] === '1') {
+                    else if (data?.['recon_type'] === '1') {
                         pageElements.$supplier_space.prop('hidden', false)
                         UsualLoadPageFunction.LoadCustomer({element: pageElements.$customer})
                         UsualLoadPageFunction.LoadSupplier({

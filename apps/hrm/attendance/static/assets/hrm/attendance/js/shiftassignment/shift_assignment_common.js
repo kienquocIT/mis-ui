@@ -197,17 +197,23 @@ class ShiftAssignHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('shift_assignment_list') && Array.isArray(data.shift_assignment_list)) {
-                        let listBg = ['#298DFF', '#e92990', '#c02ff3', '#00d67f'];
+                        let listBg = ['#e92990', '#c02ff3', '#00d67f'];
                         let shiftBg = {};
                         for (let m = mStart.clone(); m.isBefore(mEnd); m.add(1, 'days')) {
                             for (let shiftAssignmentData of data.shift_assignment_list) {
                                 if (shiftAssignmentData?.['date'] === m.format('YYYY-MM-DD')) {
-                                    let bg = listBg[Math.floor(Math.random() * listBg.length)];
-                                    if (!shiftBg?.[shiftAssignmentData?.['shift']?.['id']]) {
-                                        shiftBg[shiftAssignmentData?.['shift']?.['id']] = bg;
+                                    let bg = '#298DFF';
+                                    if (Object.keys(shiftBg).length === 0) {
+                                        shiftBg[shiftAssignmentData?.['shift']?.['id']] = '#298DFF';
                                     }
-                                    if (shiftBg?.[shiftAssignmentData?.['shift']?.['id']]) {
-                                        bg = shiftBg?.[shiftAssignmentData?.['shift']?.['id']];
+                                    if (Object.keys(shiftBg).length > 0) {
+                                        if (shiftBg?.[shiftAssignmentData?.['shift']?.['id']]) {
+                                            bg = shiftBg?.[shiftAssignmentData?.['shift']?.['id']];
+                                        }
+                                        if (!shiftBg?.[shiftAssignmentData?.['shift']?.['id']]) {
+                                            bg = listBg[Math.floor(Math.random() * listBg.length)];
+                                            shiftBg[shiftAssignmentData?.['shift']?.['id']] = bg;
+                                        }
                                     }
                                     events.push({
                                         backgroundColor: `${bg}`,
@@ -575,10 +581,10 @@ $(document).ready(function () {
             let eventEle = info.el;
             let eventFcMainEle = info.el.querySelector('.fc-event-main');
             if (info.event.extendedProps.toHtml === 'convert') {
-                // $(eventEle).css({
-                //     'background-color': 'transparent',
-                //     'border': 'none',
-                // })
+                $(eventEle).css({
+                    // 'background-color': 'transparent',
+                    'border': 'none',
+                })
                 // $(eventFcMainEle).css({
                 //     'color': 'inherit',
                 //     'float': 'right',

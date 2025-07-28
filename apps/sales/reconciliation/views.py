@@ -48,6 +48,22 @@ class ReconDetail(View):
         }, status.HTTP_200_OK
 
 
+class ReconUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/reconciliation/reconciliation_update.html',
+        menu_active='',
+        breadcrumb='RECON_UPDATE_PAGE',
+    )
+    def get(self, request, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.RECON_DATA_MAP
+        return {
+            'list_from_app': 'reconciliation.reconciliation.edit',
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'form-detail-recon'
+        }, status.HTTP_200_OK
+
+
 class ReconListAPI(APIView):
     @mask_view(
         auth_require=True,

@@ -1,0 +1,543 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'KMS Files' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/core/attachment/css/common.css' %}" rel="stylesheet" type="text/css">
+
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+
+{% block pageContent %}
+    <form id="frm_folder" method="post" class="h-100">
+        {% csrf_token %}
+        <div class="d-flex align-items-stretch h-100 w-100">
+            <div class="d-block left_side">
+                <h4 class="h4 font-weight-bold pl-3 color-grey-dark-5">Home</h4>
+                <div class="mt-5" id="folder-tree">
+                    <button class="btn btn-flush-primary flush-soft-hover rounded-5 w-100 btn-active"
+                            data-space="my" type="button">
+                        <span class="justify-content-start">
+                            <span class="icon">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </span>
+                            <span class="no-transform">{% trans 'My Space' %}</span>
+                        </span>
+                    </button>
+                    <button class="btn btn-flush-primary flush-soft-hover rounded-5 w-100"
+                            data-space="shared" type="button">
+                        <span class="justify-content-start">
+                            <span class="icon">
+                                <i class="fa-solid fa-user-group"></i>
+                            </span>
+                            <span class="no-transform">{% trans 'Share with me' %}</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <div class="d-block right_side">
+                <div class="hamburger-menu">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div class="wrap-search w-60">
+                    <div class="input-group">
+                        <span class="input-affix-wrapper">
+                            <input type="text" class="form-control min-h-55p" placeholder="{% trans 'Search' %}"
+                            id="search_folder" aria-label="search_folder">
+                            <span class="input-suffix"><i class="fas fa-search"></i></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="btn-files_actions mt-4">
+                    <button type="button" class="btn btn-white btn-floating btn-lg btn_common mr-3" aria-expanded="false"
+                            data-bs-toggle="dropdown">
+                        <span class="icon-animate">
+                            <i class="fa-solid fa-plus"></i>
+                        </span>
+                        <span class="mt-3 font-weight-bold font-3">{% trans 'Upload or Create' %}</span>
+                    </button>
+                    <div class="dropdown-menu w-210p">
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFolderMdl">
+                            <i class="dropdown-icon fas fa-folder-plus text-primary"></i>
+                            <span>{% trans 'New folder' %}</span>
+                        </a>
+                        <a class="dropdown-item" href="#" id="upload-file">
+                            <i class="dropdown-icon fas fa-file-upload text-primary"></i>
+                            <span class="mt-2">{% trans 'Upload file' %}</span>
+                        </a>
+{#                        <a class="dropdown-item" href="#" id="upload-folder">#}
+{#                            <i class="dropdown-icon fas fa-upload text-primary"></i>#}
+{#                            <span>{% trans 'Upload folder' %}</span>#}
+{#                        </a>#}
+                    </div>
+                    <button type="button" class="btn btn-white btn-floating btn-lg btn_common"
+                    data-bs-toggle="modal" data-bs-target="#addFolderMdl">
+                        <span class="icon-animate">
+                            <i class="fa-solid fa-plus"></i>
+                        </span>
+                        <span class="mt-3 font-weight-bold font-3">{% trans 'Create folder' %}</span>
+                    </button>
+                </div>
+                <div class="clearfix"></div>
+                <div class="d-flex align-items-center mb-2 breadcrumb_file mt-4" id="folder-path">
+                </div>
+                <div class="clearfix"></div>
+                <h5 class="tit-crt mb-4"></h5>
+                <input type="hidden" id="current_folder" value="root">
+                <div class="w-100 card card-refresh">
+                    <div class="refresh-container" style="display: block">
+                        <div class="loader-pendulums"></div>
+                    </div>
+                    <div class="action-slc">
+                        <div class="wrap-act">
+                            <button class="btn btn-icon btn-flush-primary flush-soft-hover btn-rounded btn_cancel_slt"
+                                    type="button">
+                                <span class="icon"><i class="fa-solid fa-xmark"></i></span>
+                            </button>
+                            <button class="btn btn-icon btn-flush-primary flush-soft-hover btn-rounded btn_delete_slt"
+                                    type="button">
+                                <span class="icon"><i class="fa-solid fa-trash-can"></i></span>
+                            </button>
+                        </div>
+{#                        <div class="selected-div"></div>#}
+                    </div>
+                    <table class="table nowrap w-100 min-w-1440p" id="main-files-info">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{% trans 'Name' %}</th>
+                            <th>{% trans 'Owner' %}</th>
+                            <th>{% trans 'Date modified' %}</th>
+                            <th>{% trans 'Size' %}</th>
+                            <th>{% trans 'Type' %}</th>
+                            <th>{% trans 'Action' %}</th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <div class="w-100 d-block mt-8 mb-md-16 hidden">
+                        <button type="button" class="btn btn-outline-primary btn-square m-auto w-md-375p w-sm-280p p-2" id="btn-loading">
+                            <span class="spinner loading-text">
+                                {% trans 'show more' %}
+                            </span>
+                            <b></b>
+                            <b></b>
+                            <b></b>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="side_overlay"></div>
+        </div>
+
+        <div class="modal-area">
+            <div class="modal fade" id="addFolderMdl" tabindex="-1" role="dialog" aria-labelledby="addFolderMdl" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans 'New folder' %}</h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="id" id="folder_id">
+                            <div class="form-group">
+                                <label class="form-label required" for="add-folder-title">{% trans 'Title' %}</label>
+                                <input type="text" class="form-control" name="title" id="add-folder-title">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="add-folder-box-parent">{% trans 'Parent folder' %}</label>
+                                <select
+                                    class="form-select"
+                                    id="add-folder-box-parent"
+                                    data-url="{% url "FolderListAPI" %}"
+                                    data-method="GET"
+                                    name="parent_n"
+                                    data-keyResp="folder_list"
+                                    data-params="{'pro':'{{data.list_from_app|escape}}'}"
+                                ></select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn-add-folder">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="sharePerm" tabindex="-1" role="dialog" aria-labelledby="sharePerm" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans 'Share' %} "<span></span>"</h5>
+                            <button type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                    data-bs-dismiss="modal">
+                                <span class="icon"><i class="far fa-window-close"></i></span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="wrap-loading" style="display: none">
+                                <div class="loader-pendulums"></div>
+                            </div>
+                            <form id="share_form">
+                                <input type="hidden" name="id">
+                                <input type="hidden" name="folder">
+                                <input type="hidden" name="file">
+                                <input type="hidden" name="type">
+                                <input type="hidden" name="group_access">
+                                <input type="hidden" name="employee_access">
+                                <div class="row">
+                                    <div class="col-md-12 mt-2">
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" id="radio_employee" class="form-check-input"
+                                                   name="kind" value="1" checked>
+                                            <label title="Employee" for="radio_employee" class="form-check-label">
+                                                {% trans 'Employee' %}
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" id="radio_group" class="form-check-input"
+                                                   name="kind" value="2">
+                                            <label title="Group" for="radio_group" class="form-check-label">
+                                                {% trans 'Group' %}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 mt-3">
+                                        <div class="w-100 d-flex align-items-start">
+                                            <div class="w-30 w-sm-40">
+                                                <table class="table nowrap w-100 mt-4" id="table_group"
+                                                       data-url="{% url 'GroupDDListAPI' %}">
+                                                    <thead>
+                                                    <tr>
+                                                        <td>{% trans 'Group' %}</td>
+                                                    </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                            <div class="w-70 w-sm-60">
+                                                <table class="table nowrap w-100 min-w-610p" id="table_employee"
+                                                       data-url="{% url 'EmployeeListAllAPI' %}">
+                                                    <thead>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="form-check">
+                                                                <input type="checkbox" id="checkbox_all"
+                                                                       class="form-check-input"
+                                                                       name="check_all" aria-labelledby="checkbox_all">
+                                                            </div>
+                                                        </td>
+                                                        <td>{% trans 'Code' %}</td>
+                                                        <td>{% trans 'Name' %}</td>
+                                                        <td>{% trans 'Group' %}</td>
+                                                    </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-outline-primary mt-2 float-right" type="button"
+                                                id="add_selected">
+                                    <span>
+                                        <span>{% trans 'Add' %}</span>
+                                        <span class="icon">
+                                            <i class="fa-regular fa-floppy-disk"></i>
+                                        </span>
+                                    </span>
+                                        </button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="col-md-12 employee-added mt-2 mb-2">
+                                        <div class="d-flex justify-content-start flex-wrap border min-h-35p w-100 p-2">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 mt-4 mb-3">
+{#                                        <div class="form-check form-check-inline">#}
+{#                                            <input type="radio" id="radio_review" class="form-check-input" checked#}
+{#                                                   name="radio_perm_file" value="1">#}
+{#                                            <label title="Review" for="radio_review" class="form-check-label">#}
+{#                                                {% trans 'Preview' %}#}
+{#                                            </label>#}
+{#                                        </div>#}
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" id="radio_view" class="form-check-input"
+                                                   name="radio_perm_file" value="2" checked>
+                                            <label title="View" for="radio_view" class="form-check-label">
+                                                {% trans 'View' %}
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" id="radio_edit" class="form-check-input"
+                                                   name="radio_perm_file" value="3">
+                                            <label title="Edit" for="radio_edit" class="form-check-label">
+                                                {% trans 'Edit' %}
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" id="radio_custom" class="form-check-input"
+                                                   name="radio_perm_file" value="4">
+                                            <label title="Custom" for="radio_custom" class="form-check-label">
+                                                {% trans 'Custom' %}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 mb-4">
+                                        <div class="border">
+                                            <div class="w-100 p-2 layout_grid l_grid-3 pb-4 wrap-folder-perm">
+                                                <span class="form-label mt-2 mb-2 w-100 font-weight-bold">
+                                                    {% trans 'Folder' %}
+                                                </span>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" id="checkbox_see" class="form-check-input"
+                                                           checked value="1" name="folder_see">
+                                                    <label title="See" for="checkbox_see" class="form-check-label">
+                                                        {% trans 'See' %}
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" id="folder_upload_file"
+                                                           class="form-check-input"
+                                                           value="2" name="folder_upload_file">
+                                                    <label title="Upload file" for="folder_upload_file"
+                                                           class="form-check-label">
+                                                        {% trans 'Upload file' %}
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" id="folder_download"
+                                                           class="form-check-input"
+                                                           value="3" name="folder_download">
+                                                    <label title="Download" for="folder_download"
+                                                           class="form-check-label">
+                                                        {% trans 'Download' %}
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" id="folder_create_subfolders"
+                                                           class="form-check-input"
+                                                           value="4" name="folder_create_subfolders">
+                                                    <label title="Create subfolders" for="folder_create_subfolders"
+                                                           class="form-check-label">
+                                                        {% trans 'Create subfolders' %}
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" id="folder_delete" class="form-check-input"
+                                                           value="5" name="folder_delete">
+                                                    <label title="Delete" for="folder_delete"
+                                                           class="form-check-label">
+                                                        {% trans 'Delete' %}
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" id="folder_share" class="form-check-input"
+                                                           value="6" name="folder_share">
+                                                    <label title="Duplicate" for="folder_share"
+                                                           class="form-check-label">
+                                                        {% trans 'Share' %}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="w-100 p-2 layout_grid pb-4 wrap-file-perm">
+                                                <span class="form-label mt-2 mb-2 w-100 font-weight-bold">
+                                                    {% trans 'File in folder' %}
+                                                </span>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" id="checkbox_review" class="form-check-input"
+                                                           checked
+                                                           value="1" name="perm_review">
+                                                    <label title="Review" for="checkbox_review"
+                                                           class="form-check-label">
+                                                        {% trans 'Review' %}
+                                                    </label>
+                                                </div>
+{#                                                <div class="form-check form-check-inline">#}
+{#                                                    <input type="checkbox" id="checkbox_download"#}
+{#                                                           class="form-check-input"#}
+{#                                                           value="2" name="perm_download">#}
+{#                                                    <label title="Download" for="checkbox_download"#}
+{#                                                           class="form-check-label">#}
+{#                                                        {% trans 'Download' %}#}
+{#                                                    </label>#}
+{#                                                </div>#}
+{#                                                <div class="form-check form-check-inline">#}
+{#                                                    <input type="checkbox" id="checkbox_edit_f_attr"#}
+{#                                                           class="form-check-input"#}
+{#                                                           value="3" name="perm_e_f_attr">#}
+{#                                                    <label title="Edit file attributes" for="checkbox_edit_f_attr"#}
+{#                                                           class="form-check-label">#}
+{#                                                        {% trans 'Edit file attributes' %}#}
+{#                                                    </label>#}
+{#                                                </div>#}
+{#                                                <div class="form-check form-check-inline">#}
+{#                                                    <input type="checkbox" id="checkbox_share" class="form-check-input"#}
+{#                                                           value="4" name="perm_share">#}
+{#                                                    <label title="Share" for="checkbox_share" class="form-check-label">#}
+{#                                                        {% trans 'Share' %}#}
+{#                                                    </label>#}
+{#                                                </div>#}
+{#                                                <div class="form-check form-check-inline">#}
+{#                                                    <input type="checkbox" id="checkbox_upload_ver"#}
+{#                                                           class="form-check-input"#}
+{#                                                           value="5" name="perm_upload">#}
+{#                                                    <label title="Upload version" for="checkbox_upload_ver"#}
+{#                                                           class="form-check-label">#}
+{#                                                        {% trans 'Upload version' %}#}
+{#                                                    </label>#}
+{#                                                </div>#}
+{#                                                <div class="form-check form-check-inline">#}
+{#                                                    <input type="checkbox" id="checkbox_duplicate"#}
+{#                                                           class="form-check-input"#}
+{#                                                           value="6" name="perm_dublicate">#}
+{#                                                    <label title="Duplicate" for="checkbox_duplicate"#}
+{#                                                           class="form-check-label">#}
+{#                                                        {% trans 'Duplicate' %}#}
+{#                                                    </label>#}
+{#                                                </div>#}
+                                                <div class="form-check form-check-inline">
+                                                    <input type="checkbox" id="checkbox_edit_f" class="form-check-input"
+                                                           value="7" name="perm_e_f">
+                                                    <label title="Edit file" for="checkbox_edit_f"
+                                                           class="form-check-label">
+                                                        {% trans 'Edit file' %}
+                                                    </label>
+                                                </div>
+                                            </div>
+{#                                            <div class="form-check form-switch">#}
+{#                                                <input type="checkbox" id="apply_to_sub" class="form-check-input"#}
+{#                                                name="apply_to_sub">#}
+{#                                                <label title="Apply to subfolders" for="apply_to_sub" class="form-check-label">#}
+{#                                                    {% trans 'Apply to subfolders' %}#}
+{#                                                </label>#}
+{#                                            </div>#}
+                                            <div class="clearfix mt-2"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6"></div>
+                                    <div class="col-lg-6 col-md-12 special-block d-flex justify-content-center align-items-center">
+                                        <div class="switch_enable">
+                                            <div class="form-check form-switch">
+                                                <label for="enabled_switch"></label>
+                                                <input type="checkbox" id="enabled_switch" class="form-check-input">
+                                            </div>
+                                        </div>
+                                        <span class="form-label">
+                                            {% trans 'Expiration date' %}
+                                        </span>
+                                        <div class="form-group">
+                                            <div class="input-affix-wrapper">
+                                                <input type="text" class="form-control pl-2" name="expiration_date"
+                                                       aria-label="expiration_date"
+                                                       readonly>
+                                                <span class="input-suffix"><i
+                                                        class="fa-solid fa-calendar-days"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="button" class="btn btn-primary" id="btn_update_perm">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="accessLst" tabindex="-1" role="dialog" aria-labelledby="accessLst" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans 'Access list of' %} "<span></span>"</h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="nav nav-line nav-tabs nav-light">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab"
+                                       data-bs-target="#tab-access" href="#tab-access">{% trans 'Detail' %}</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab"
+                                       data-bs-target="#tab-expired" href="#tab-expired">{% trans 'Expired' %}</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="tab-access"></div>
+                                <div class="tab-pane fade" id="tab-expired"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="url-factory" aria-label="url-factory"
+{#######  FILE API ###}
+        data-file-edit="{% url 'AttachmentEditAPI' %}"
+        data-file-detail="{% url 'AttachmentUpdateAPI' 1 %}"
+{#######  FOLDER API #}
+        data-folder-api="{% url 'FolderMyFileListAPI' %}"
+        data-folder-detail="{% url 'FolderDetailAPI' 1 %}"
+        data-folder-shared-to-me-lst="{% url 'FolderListSharedAPI' %}"
+{#######  PERMISSION API #}
+        data-folder-perm-lst="{% url 'FolderPermListAPI' %}"
+        data-file-perm-lst="{% url 'FilePermListAPI' %}"
+{#        DOWNLOAD API #}
+        data-attach-download="{% url 'AttachmentDownload' 1%}"
+        data-folder-download="{% url 'FolderDownloadAPI' %}"
+    >
+    <div id="attachment">{% include 'extends/files/all.html' %}</div>
+    {{ data.employee_current|json_script:'employee_current' }}
+
+    <template id="access-template-lst">
+        <div class="access-item d-flex flex-column mb-4">
+            <div class="access-header d-flex flex-row mb-1">
+                <p class="heading d-inline-block"></p>
+                <p class="exp-heading ml-auto"></p>
+            </div>
+            <div class="access-body d-flex flex-row">
+                <div class="recipient-item w-100"></div>
+                <div class="recipient-action d-flex">
+                    <a href="#" class="btn btn-icon btn-flush-primary flush-soft-hover btn-rounded view-perm"
+                    data-bs-toggle="modal" data-bs-target="#sharePerm">
+                        <span class="icon">
+                            <i class="fa-solid fa-gear"></i>
+                        </span>
+                    </a>
+                    <a href="#" class="btn btn-icon btn-flush-primary flush-soft-hover btn-rounded del-perm">
+                        <span class="icon">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </template>
+{% endblock %}
+
+{% block jsFooter %}
+    <!-- Select2 -->
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+
+    <!-- Flat pick JS -->
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
+
+    <script src="{% static 'assets/core/attachment/js/common.js' %}"></script>
+{% endblock %}

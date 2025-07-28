@@ -23,6 +23,7 @@
     {{ data.invoice_signs | json_script:"invoice_signs" }}
 
     <script id="script-url"
+            data-url-tax-list="{% url 'TaxListAPI' %}"
             data-url-goods-receipt-list="{% url 'GoodReceiptsListForAPInvoiceAPI' %}"
     ></script>
     <script id="script-trans"></script>

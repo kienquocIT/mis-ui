@@ -18,15 +18,13 @@
         </button>
     </a>
 {% endblock %}
-
 {% block pageContent %}
     <div class="row">
         <div class="col-12">
             <table id="datatable_contact_list" class="table nowrap w-100 mb-5"
                    data-url="{% url "ContactListAPI" %}" data-method="GET"
                    data-url-detail="{% url 'ContactDetail' pk=0 %}"
-                   data-url-update="{% url 'ContactUpdate' pk=0 %}"
-            >
+                   data-url-update="{% url 'ContactUpdate' pk=0 %}">
                 <thead>
                     <tr>
                         <th style="min-width: 50px"></th>

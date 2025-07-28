@@ -1,11 +1,19 @@
 $(document).ready(function () {
-    ContactHandle.loadDetailContact('update')
+    // for location
+    UsualLoadPageFunction.LoadLocationCountry($('#modal-work-address .location_country'))
+    UsualLoadPageFunction.LoadLocationProvince($('#modal-work-address .location_province'))
+    UsualLoadPageFunction.LoadLocationWard($('#modal-work-address .location_ward'))
+    UsualLoadPageFunction.LoadLocationCountry($('#modal-home-address .location_country'))
+    UsualLoadPageFunction.LoadLocationProvince($('#modal-home-address .location_province'))
+    UsualLoadPageFunction.LoadLocationWard($('#modal-home-address .location_ward'))
+
+    ContactHandle.LoadDetailContact('update')
 
     const frm = new SetupFormSubmit($('#form-detail-contact'));
     frm.validate({
         submitHandler: function (form) {
             WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
-            let combinesData = ContactHandle.combinesData(form);
+            let combinesData = ContactHandle.CombinesData(form);
             $.fn.callAjax2(combinesData).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);

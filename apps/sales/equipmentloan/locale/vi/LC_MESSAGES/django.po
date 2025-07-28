@@ -36,3 +36,7 @@ msgstr "Ngày hoàn trả"
 #
 msgid "Pick detail"
 msgstr "Lấy cụ thể"
+
+#
+msgid "Loan product"
+msgstr "SP cho mượn"

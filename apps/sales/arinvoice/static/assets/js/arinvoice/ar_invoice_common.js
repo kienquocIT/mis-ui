@@ -284,7 +284,7 @@ class ARInvoicePageFunction {
                 {
                     className: 'text-center',
                     render: () => {
-                        return `<button type='button' ${from_delivery} class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row">
+                        return `<button ${option==='detail' ? 'disabled' : ''} type='button' ${from_delivery} class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs delete-item-row">
                                     <span class="icon"><i class="fas fa-trash"></i></span>
                                 </button>`;
                     }
@@ -295,7 +295,7 @@ class ARInvoicePageFunction {
                         return `<div class="input-group">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix product-des" data-bs-toggle="tooltip" title="${product_data?.['description']}"><i class="bi bi-info-circle"></i></span>
-                                <select ${from_delivery} data-product='${JSON.stringify(product_data)}' class="form-select select-2 product-select"></select>
+                                <select ${option==='detail' ? 'disabled' : ''} ${from_delivery} data-product='${JSON.stringify(product_data)}' class="form-select select-2 product-select"></select>
                             </span>
                         </div>`
                     }
@@ -303,20 +303,20 @@ class ARInvoicePageFunction {
                 {
                     render: (data, type, row) => {
                         let product_uom_data = row?.['product_uom_data'] || {}
-                        return `<select ${from_delivery} data-product-uom='${JSON.stringify(product_uom_data)}' class="form-select select-2 uom-select"></select>`
+                        return `<select ${option==='detail' ? 'disabled' : ''} ${from_delivery} data-product-uom='${JSON.stringify(product_uom_data)}' class="form-select select-2 uom-select"></select>`
                     }
                 },
                 {
                     className: 'text-right',
                     render: (data, type, row) => {
                         let product_quantity = row?.['product_quantity'] || 0
-                        return `<input type="number" ${from_delivery} value="${product_quantity}" class="form-control product_quantity recalculate-field text-right">`
+                        return `<input ${option==='detail' ? 'disabled readonly' : ''} type="number" ${from_delivery} value="${product_quantity}" class="form-control product_quantity recalculate-field text-right">`
                     }
                 },
                 {
                     className: 'text-right',
                     render: (data, type, row) => {
-                        return `<input ${from_delivery} class="form-control product_unit_price mask-money recalculate-field text-right" value="${row?.['product_unit_price'] || 0}">`
+                        return `<input ${option==='detail' ? 'disabled readonly' : ''} ${from_delivery} class="form-control product_unit_price mask-money recalculate-field text-right" value="${row?.['product_unit_price'] || 0}">`
                     }
                 },
                 {
@@ -328,13 +328,14 @@ class ARInvoicePageFunction {
                 {
                     className: 'text-right',
                     render: (data, type, row) => {
-                        return `<input ${from_delivery} class="form-control product_discount_value mask-money recalculate-field text-danger text-right" value="${row?.['product_discount_value'] || 0}">`
+                        return `<input ${option==='detail' ? 'disabled readonly' : ''} ${from_delivery} class="form-control product_discount_value mask-money recalculate-field text-danger text-right" value="${row?.['product_discount_value'] || 0}">`
                     }
                 },
                 {
                     render: (data, type, row) => {
                         let product_tax_data = row?.['product_tax_data'] || {}
-                        return `<select ${from_delivery}
+                        return `<select ${option==='detail' ? 'disabled' : ''}
+                                        ${from_delivery}
                                         data-tax='${JSON.stringify(product_tax_data)}'
                                         data-tax-value="${row?.['product_tax_value'] || 0}"
                                         class="form-select select2 product_taxes recalculate-field"></select>`
@@ -348,7 +349,7 @@ class ARInvoicePageFunction {
                 },
                 {
                     render: (data, type, row) => {
-                        return `<textarea rows="1" class="form-control note">${row?.['note'] || ''}</textarea>`
+                        return `<textarea ${option==='detail' ? 'disabled readonly' : ''} rows="1" class="form-control note">${row?.['note'] || ''}</textarea>`
                     }
                 },
             ],
@@ -422,20 +423,21 @@ class ARInvoicePageFunction {
                     className: 'w-40',
                     render: (data, type, row) => {
                         let ar_product_des = row?.['ar_product_des'] || ''
-                        return `<textarea rows="1" class="ar_product_des form-control">${ar_product_des}</textarea>`
+                        return `<textarea ${option==='detail' ? 'disabled readonly' : ''} class="ar_product_des form-control">${ar_product_des}</textarea>`
                     }
                 },
                 {
                     className: 'text-right w-20',
                     render: (data, type, row) => {
                         let product_subtotal = row?.['product_subtotal'] || 0
-                        return `<input class="recalculate-field product_subtotal_price mask-money form-control text-right" value="${product_subtotal}">`
+                        return `<input ${option==='detail' ? 'disabled readonly' : ''} class="recalculate-field product_subtotal_price mask-money form-control text-right" value="${product_subtotal}">`
                     }
                 },
                 {
                     className: 'w-15',
                     render: (data, type, row) => {
-                        return `<select class="recalculate-field form-select select2 product_taxes"
+                        return `<select ${option==='detail' ? 'disabled' : ''}
+                                        class="recalculate-field form-select select2 product_taxes"
                                         data-tax='${JSON.stringify(row?.['product_tax_data'] || {})}'
                                         data-tax-value="${row?.['product_tax_value'] || 0}"
                                 ></select>`
@@ -449,31 +451,22 @@ class ARInvoicePageFunction {
                 },
                 {
                     render: (data, type, row) => {
-                        return `<textarea rows="1" class="form-control note">${row?.['note'] || ''}</textarea>`
+                        return `<textarea ${option==='detail' ? 'disabled readonly' : ''} class="form-control note">${row?.['note'] || ''}</textarea>`
                     }
                 },
             ],
             initComplete: function() {
                 if (datasource.length > 0) {
-                    if (datasource.length > 0) {
-                        pageElements.$description_datatable.find('tbody tr').each(function () {
-                            let tax_select = $(this).find('.product_taxes')
-                            let tax_data = tax_select.attr('data-tax') ? JSON.parse(tax_select.attr('data-tax')) : {}
-                            UsualLoadPageFunction.LoadTax({
-                                element: tax_select,
-                                data: tax_data,
-                                data_url: pageElements.$script_url.attr('data-url-tax-list')
-                            })
+                    pageElements.$description_datatable.find('tbody tr').each(function () {
+                        let tax_select = $(this).find('.product_taxes')
+                        let tax_data = tax_select.attr('data-tax') ? JSON.parse(tax_select.attr('data-tax')) : {}
+                        UsualLoadPageFunction.LoadTax({
+                            element: tax_select,
+                            data: tax_data,
+                            data_url: pageElements.$script_url.attr('data-url-tax-list')
                         })
-                        ARInvoicePageFunction.CalculatePrice('des')
-
-                        if (option === 'detail') {
-                            pageElements.$description_datatable.find('tbody tr input').prop('disabled', true).prop('readonly', true)
-                            pageElements.$description_datatable.find('tbody tr textarea').prop('disabled', true).prop('readonly', true)
-                            pageElements.$description_datatable.find('tbody tr select').prop('disabled', true)
-                            pageElements.$description_datatable.find('tbody tr button').prop('disabled', true)
-                        }
-                    }
+                    })
+                    ARInvoicePageFunction.CalculatePrice('des')
                 }
             }
         });
@@ -759,14 +752,13 @@ class ARInvoiceHandler {
         frm.dataForm['invoice_sign'] = pageElements.$invoice_sign.val()
         frm.dataForm['invoice_number'] = pageElements.$invoice_number.val()
         frm.dataForm['invoice_example'] = pageElements.$invoice_exp.val()
-        frm.dataForm['delivery_mapped_list'] = pageElements.$normal_datatable.attr('data-delivery-selected') !== '' ? pageElements.$normal_datatable.attr('data-delivery-selected').split(',') : []
+        frm.dataForm['delivery_mapped_list'] = (pageElements.$normal_datatable.attr('data-delivery-selected') || '').split(',').filter(Boolean)
 
         // let vat_number = []
         let data_item_list = []
         if (!pageElements.$normal_datatable.closest('.table_space').prop('hidden')) {
             pageElements.$normal_datatable.find('tbody tr').each(function () {
                 data_item_list.push({
-                    'item_index': $(this).find('td:first-child').text(),
                     'product_id': $(this).find('.product-select').val() || null,
                     'product_uom_id': $(this).find('.uom-select').val() || null,
                     'product_quantity': $(this).find('.product_quantity').val(),
@@ -783,7 +775,6 @@ class ARInvoiceHandler {
         else if (!pageElements.$description_datatable.closest('.table_space').prop('hidden')) {
             pageElements.$description_datatable.find('tbody tr').each(function () {
                 data_item_list.push({
-                    'item_index': $(this).find('td:first-child').text(),
                     'ar_product_des': $(this).find('.ar_product_des').val(),
                     'product_subtotal': $(this).find('.product_subtotal_price').attr('value'),
                     'product_tax_id': $(this).find('.product_taxes').val() || null,
@@ -872,18 +863,18 @@ class ARInvoiceHandler {
                         if (data?.['delivery_mapped'].length === 0) {
                             pageElements.$normal_datatable.closest('.table_space').prop('hidden', true)
                             pageElements.$description_datatable.closest('.table_space').prop('hidden', false)
-                            ARInvoicePageFunction.LoadDescriptionTable(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                            ARInvoicePageFunction.LoadDescriptionTable(data?.['item_mapped'], option)
                         }
                         else {
                             pageElements.$normal_datatable.closest('.table_space').prop('hidden', false)
                             pageElements.$description_datatable.closest('.table_space').prop('hidden', true)
-                            ARInvoicePageFunction.LoadNormalTable(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                            ARInvoicePageFunction.LoadNormalTable(data?.['item_mapped'], option)
                         }
                     }
                     else {
                         pageElements.$normal_datatable.closest('.table_space').prop('hidden', false)
                         pageElements.$description_datatable.closest('.table_space').prop('hidden', true)
-                        ARInvoicePageFunction.LoadNormalTable(data?.['item_mapped'].sort((a, b) => a.item_index - b.item_index), option)
+                        ARInvoicePageFunction.LoadNormalTable(data?.['item_mapped'], option)
                     }
 
                     if (Object.keys(data?.['sale_order_mapped_data']).length > 0) {

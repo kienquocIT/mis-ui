@@ -12,7 +12,7 @@ $(document).ready(function () {
                 reloadCurrency: true,
                 fixedColumns: {
                     leftColumns: 2,
-                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                    rightColumns: window.innerWidth <= 768 ? 0 : 2
                 },
                 ajax: {
                     url: frm.dataUrl,
@@ -40,31 +40,32 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-25',
+                        className: 'ellipsis-cell-lg w-15',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-20',
+                        className: 'ellipsis-cell-lg w-15',
                         render: (data, type, row) => {
                             return `<span title="${(row?.['account_mapped_data'] || {})?.['name'] || ''}">${(row?.['account_mapped_data'] || {})?.['name'] || ''}</span>`;
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-10',
+                        className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
-                            let html = ``
-                            for (let i=0; i < (row?.['product_loan_data'] || []).length; i++) {
-                                let item = row?.['product_loan_data'][i]
-                                html += `<div class="col-12" title="${(item || {})?.['title'] || ''}"><span class="badge badge-sm badge-secondary mr-1">${(item)?.['code'] || ''}</span><span>${(item || {})?.['title'] || ''}</span></div>`;
-                            }
-                            return `<div class="row">${html}</div>`
+                            return $x.fn.displayRelativeTime(row?.['loan_date'], {'outputFormat': 'DD/MM/YYYY'});
                         }
                     },
                     {
-                        className: 'ellipsis-cell-sm w-15',
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['return_date'], {'outputFormat': 'DD/MM/YYYY'});
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
                             return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
                         }
@@ -78,7 +79,32 @@ $(document).ready(function () {
                     {
                         className: 'text-center w-10',
                         render: (data, type, row) => {
+                            return `<span class="view-detail-loan-product" data-bs-toggle="modal" data-bs-target="#modal-detail-product-loan" data-product-loan='${JSON.stringify(row?.['product_loan_data'] || [])}'><i class="fas fa-table"></i></span>`
+                        }
+                    },
+                    {
+                        className: 'text-center w-5',
+                        render: (data, type, row) => {
                             return WFRTControl.displayRuntimeStatus(row?.['system_status']);
+                        }
+                    },
+                    {
+                        className: 'text-center w-5',
+                        render: (data, type, row) => {
+                            if (row?.['system_status'] === 3) {
+                                const link = dtb.attr('data-url-create-equipment-return') + `?el_selected_id=${row?.['id']}&account_id=${(row?.['account_mapped_data'] || {})?.['id'] || ''}&account_name=${(row?.['account_mapped_data'] || {})?.['name'] || ''}`;
+                                let return_redirect = `<a target="_blank" class="ml-1" title="${$.fn.gettext('Equipment return')}" href="${link}"><i class="fa-solid fa-rotate-left"></i></a>`
+                                if (row?.['return_status'] === 0) {
+                                    return `<span class="small text-muted">${$.fn.gettext('Have not returned yet')} ${return_redirect}</span>`
+                                }
+                                else if (row?.['return_status'] === 1) {
+                                    return `<span class="small text-blue">${$.fn.gettext('Partially returned')} ${return_redirect}</span>`
+                                }
+                                else if (row?.['return_status'] === 2) {
+                                    return `<span class="small text-success">${$.fn.gettext('Returned')} <i class="fa-solid fa-check"></i></span>`
+                                }
+                            }
+                            return '';
                         }
                     },
                 ]
@@ -87,4 +113,43 @@ $(document).ready(function () {
     }
 
     loadELList();
+
+    function LoadLoanProductTable(tbl, data_list=[]) {
+        tbl.DataTable().clear().destroy()
+        tbl.DataTableDefault({
+            dom: '',
+            rowIdx: true,
+            reloadCurrency: true,
+            scrollY: '50vh',
+            scrollX: true,
+            scrollCollapse: true,
+            paging: false,
+            data: data_list,
+            columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-70',
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm badge-light mr-1">${row?.['code']}</span><span>${row?.['title']}</span>`
+                    }
+                },
+                {
+                    className: 'w-25',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['quantity'] || '--'}</span>`
+                    }
+                },
+            ],
+        })
+    }
+
+    $(document).on("click", '.view-detail-loan-product', function () {
+        let data_product_loan = $(this).attr('data-product-loan') ? JSON.parse($(this).attr('data-product-loan')) : []
+        LoadLoanProductTable($('#table-loan-product'), data_product_loan)
+    })
 })

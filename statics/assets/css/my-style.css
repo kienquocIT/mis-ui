@@ -1362,3 +1362,33 @@ table.dataTable tr.dtrg-group th {
   border: none;
   transition: all 0.3s ease-in-out;
 }
+
+/*custom button*/
+/************* Neumorphism Style **********/
+.btn-neumor{
+    --bg-wrap-neumor: #e5e9f4;
+    --shadow-neumor:
+    -.3rem -.3rem 4px -1px rgb(255 255 255),
+    .4rem .4rem 4px -1px rgb(128 128 128 / 50%);
+    border: 0 solid transparent;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-neumor);
+    outline: none;
+    color: var(--txt-color, #007d88);
+
+}
+.btn-neumor:active,
+.btn-neumor:hover,
+.btn-neumor:focus{
+    box-shadow: inset .2rem .2rem 4px -1px rgb(128 128 128 / 50%),
+    inset -.3rem -.3rem 4px -1px rgb(255 255 255);
+}
+
+.btn-neumor[disabled],
+.btn-neumor[readonly]{
+    --disable-shadow:
+    -.1rem -.1rem .2rem 0 rgb(255 255 255 / 75%),
+    .1rem .1rem .2rem rgb(128 128 128 / 50%);
+    box-shadow: var(--disable-shadow);
+    color: var(--txt-color-disabled, rgb(0 126 136 / 50%));
+}

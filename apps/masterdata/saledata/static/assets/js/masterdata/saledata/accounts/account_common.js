@@ -34,9 +34,6 @@ class AccountPageElements {
         this.$add_shipping_address_btn = $('#add-shipping-address-btn')
         this.$modal_shipping_address = $('#modal-shipping-address')
         this.$shipping_address_detail = $('#shipping-address-detail')
-        this.$shipping_city = $('#shipping-city')
-        this.$shipping_district = $('#shipping-district')
-        this.$shipping_ward = $('#shipping-ward')
         this.$default_shipping_address = $('#default-shipping-address')
         this.$save_modal_shipping_address = $('#save-modal-shipping-address')
         // tab billing address
@@ -287,31 +284,6 @@ class AccountPageFunction {
         })
     }
     // tab shipping
-    static LoadShippingCities(cityData) {
-        pageElements.$shipping_city.initSelect2({
-            data: (cityData ? cityData : null),
-            keyResp: 'cities',
-        }).on('change', function () {
-            let dataParams = JSON.stringify({'city_id': $(this).val()});
-            pageElements.$shipping_district.attr('data-params', dataParams).val("");
-            pageElements.$shipping_ward.attr('data-params', '{}').val("");
-        });
-    }
-    static LoadShippingDistrict(disData) {
-        pageElements.$shipping_district.initSelect2({
-            data: (disData ? disData : null),
-            keyResp: 'districts',
-        }).on('change', function () {
-            let dataParams = JSON.stringify({'district_id': $(this).val()});
-            pageElements.$shipping_ward.attr('data-params', dataParams).val("");
-        });
-    }
-    static LoadShippingWard(wardData) {
-        pageElements.$shipping_ward.initSelect2({
-            data: (wardData ? wardData : null),
-            keyResp: 'wards',
-        });
-    }
     static LoadTableShippingAddress(data=[], option='') {
         pageElements.$shipping_address_table.DataTable().clear().destroy()
         pageElements.$shipping_address_table.DataTableDefault({
@@ -331,13 +303,9 @@ class AccountPageFunction {
                     className: 'w-10',
                     render: (data, type, row) => {
                         return `<div class="form-check">
-                                    <input ${option === 'detail' ? 'disabled' : ''} type="radio" class="form-check-input" name="shippingaddressRadio" ${row?.['is_default'] ? 'checked' : ''}>
+                                    <input ${option === 'detail' ? 'disabled' : ''} type="radio" class="form-check-input shippingaddressRadio" name="shippingaddressRadio" ${row?.['is_default'] ? 'checked' : ''}>
                                 </span>
-                                <span hidden class="shipping_address_country_id">${row?.['country_id']}</span>
-                                <span hidden class="shipping_address_city_id">${row?.['city_id']}</span>
-                                <span hidden class="shipping_address_district_id">${row?.['district_id']}</span>
-                                <span hidden class="shipping_address_ward_id">${row?.['ward_id']}</span>
-                                <span hidden class="shipping_address_detail_address">${row?.['detail_address']}</span>`
+                                <script class="address_data">${JSON.stringify(row?.['address_data'] || {})}</script>`
                     }
                 },
                 {
@@ -683,16 +651,12 @@ class AccountPageFunction {
     }
     static get_shipping_address() {
         let shipping_address = [];
-        $('#shipping-address-table tbody tr').each(function () {
-            if ($(this).find('.shipping_address_country_id').text()) {
+        $('#shipping-address-table tbody tr').each(function (index, ele) {
+            if ($(ele).find('.dataTables_empty').length === 0) {
                 shipping_address.push({
-                    'country_id': $(this).find('.shipping_address_country_id').text(),
-                    'city_id': $(this).find('.shipping_address_city_id').text(),
-                    'district_id': $(this).find('.shipping_address_district_id').text(),
-                    'ward_id': $(this).find('.shipping_address_ward_id').text(),
-                    'detail_address': $(this).find('.shipping_address_detail_address').text(),
-                    'full_address': $(this).find('.shipping_address_full_address').text(),
-                    'is_default': $(this).find('input[type="radio"]').is(':checked'),
+                    'full_address': $(ele).find('.shipping_address_full_address').text(),
+                    'is_default': $(ele).find('.shippingaddressRadio').prop('checked'),
+                    'address_data': $(ele).find('.address_data').text() ? JSON.parse($(ele).find('.address_data').text()) : {}
                 })
             }
         })
@@ -1071,24 +1035,18 @@ class AccountEventHandler {
         })
         pageElements.$save_modal_shipping_address.on('click', function () {
             try {
-                let shipping_address_detail = pageElements.$shipping_address_detail.val()
-                let shipping_city = pageElements.$shipping_city.find(`option:selected`).text()
-                let shipping_district = pageElements.$shipping_district.find(`option:selected`).text()
-                let shipping_ward = pageElements.$shipping_ward.find(`option:selected`).text()
+                let shipping_address_detail = $('#modal-shipping-address .location_detail_address').val()
+                let shipping_country = $('#modal-shipping-address .location_country').find(`option:selected`).text()
+                let shipping_province = $('#modal-shipping-address .location_province').find(`option:selected`).text()
+                let shipping_ward = $('#modal-shipping-address .location_ward').find(`option:selected`).text()
 
-                let shipping_city_data = SelectDDControl.get_data_from_idx(pageElements.$shipping_city, pageElements.$shipping_city.val());
-                let country_id = shipping_city_data?.['country_id']
-                let city_id = pageElements.$shipping_city.val()
-                let district_id = pageElements.$shipping_district.val()
-                let ward_id = pageElements.$shipping_ward.val()
+                let country_id = $('#modal-shipping-address .location_country').val()
+                let province_id = $('#modal-shipping-address .location_province').val()
+                let ward_id = $('#modal-shipping-address .location_ward').val()
 
                 let full_address = '';
-                if (shipping_city && shipping_district && shipping_address_detail) {
-                    if (shipping_ward) {
-                        full_address = `${shipping_address_detail}, ${shipping_ward}, ${shipping_district}, ${shipping_city}`
-                    } else {
-                        full_address = `${shipping_address_detail}, ${shipping_district}, ${shipping_city}`
-                    }
+                if (country_id && province_id && ward_id && shipping_address_detail) {
+                    full_address = `${shipping_address_detail}, ${shipping_ward}, ${shipping_province}, ${shipping_country}`
                     pageElements.$modal_shipping_address.modal('hide');
                     pageElements.$shipping_address_detail.val('');
                 } else {
@@ -1099,13 +1057,14 @@ class AccountEventHandler {
                     UsualLoadPageFunction.AddTableRow(
                         pageElements.$shipping_address_table,
                         {
+                            'full_address': full_address,
                             'is_default': pageElements.$default_shipping_address.prop('checked'),
-                            'country_id': country_id,
-                            'city_id': city_id,
-                            'district_id': district_id,
-                            'ward_id': ward_id,
-                            'detail_address': shipping_address_detail,
-                            'full_address': full_address
+                            'address_data': {
+                                'country_id': country_id,
+                                'province_id': province_id,
+                                'ward_id': ward_id,
+                                'detail_address': shipping_address_detail,
+                            }
                         }
                     )
                 }

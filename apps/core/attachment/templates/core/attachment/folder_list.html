@@ -21,21 +21,12 @@
                 <h4 class="h4 font-weight-bold pl-3 color-grey-dark-5">Home</h4>
                 <div class="mt-5" id="folder-tree">
                     <button class="btn btn-flush-primary flush-soft-hover rounded-5 w-100 btn-active"
-                            data-space="my" type="button">
+                            data-space="workspace" type="button">
                         <span class="justify-content-start">
                             <span class="icon">
-                                <i class="fa-solid fa-layer-group"></i>
+                                <i class="fa-solid fa-cloud"></i>
                             </span>
-                            <span class="no-transform">{% trans 'My Space' %}</span>
-                        </span>
-                    </button>
-                    <button class="btn btn-flush-primary flush-soft-hover rounded-5 w-100"
-                            data-space="shared" type="button">
-                        <span class="justify-content-start">
-                            <span class="icon">
-                                <i class="fa-solid fa-user-group"></i>
-                            </span>
-                            <span class="no-transform">{% trans 'Share with me' %}</span>
+                            <span class="no-transform">{% trans 'Default' %}</span>
                         </span>
                     </button>
                 </div>
@@ -54,27 +45,6 @@
                     </div>
                 </div>
                 <div class="btn-files_actions mt-4">
-                    <button type="button" class="btn btn-white btn-floating btn-lg btn_common mr-3" aria-expanded="false"
-                            data-bs-toggle="dropdown">
-                        <span class="icon-animate">
-                            <i class="fa-solid fa-plus"></i>
-                        </span>
-                        <span class="mt-3 font-weight-bold font-3">{% trans 'Upload or Create' %}</span>
-                    </button>
-                    <div class="dropdown-menu w-210p">
-                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFolderMdl">
-                            <i class="dropdown-icon fas fa-folder-plus text-primary"></i>
-                            <span>{% trans 'New folder' %}</span>
-                        </a>
-                        <a class="dropdown-item" href="#" id="upload-file">
-                            <i class="dropdown-icon fas fa-file-upload text-primary"></i>
-                            <span class="mt-2">{% trans 'Upload file' %}</span>
-                        </a>
-{#                        <a class="dropdown-item" href="#" id="upload-folder">#}
-{#                            <i class="dropdown-icon fas fa-upload text-primary"></i>#}
-{#                            <span>{% trans 'Upload folder' %}</span>#}
-{#                        </a>#}
-                    </div>
                     <button type="button" class="btn btn-white btn-floating btn-lg btn_common"
                     data-bs-toggle="modal" data-bs-target="#addFolderMdl">
                         <span class="icon-animate">
@@ -119,6 +89,16 @@
                         </tr>
                         </thead>
                     </table>
+                    <div class="w-100 d-block mt-8 mb-md-16 hidden">
+                        <button type="button" class="btn btn-outline-primary btn-square m-auto w-md-375p w-sm-280p p-2" id="btn-loading">
+                            <span class="spinner loading-text">
+                                {% trans 'show more' %}
+                            </span>
+                            <b></b>
+                            <b></b>
+                            <b></b>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="side_overlay"></div>
@@ -476,26 +456,16 @@
 {% endblock %}
 
 {% block dataHiddenGroup %}
-    <input
-        type="text"
-        id="url-factory" aria-label="url-factory"
-        data-file-edit="{% url 'AttachmentEditAPI' %}"
-        data-file-detail="{% url 'AttachmentUpdateAPI' 1 %}"
-{#        permission list of file #}
+    <input type="hidden" aria-label="url-factory" id="url-factory"
+{#######  PERMISSION API #}
         data-file-perm-lst="{% url 'FilePermListAPI' %}"
-{#        folder API#}
+        data-folder-perm-lst="{% url 'FolderPermListAPI' %}"
+{#######   FOLDER API #}
         data-folder-api="{% url 'FolderListAPI' %}"
         data-folder-detail="{% url 'FolderDetailAPI' 1 %}"
-{#        folder my space API#}
-        data-folder-my="{% url 'FolderMyFileListAPI' %}"
-{#        permission list of folder#}
-        data-folder-perm-lst="{% url 'FolderPermListAPI' %}"
-{#        folder list share to me#}
-        data-folder-shared-to-me-lst="{% url 'FolderListSharedAPI' %}"
+{#######   DOWNLOAD API #}
         data-attach-download="{% url 'AttachmentDownload' 1%}"
-        data-folder-download="{% url 'FolderDownloadAPI' %}"
     >
-    <div id="attachment">{% include 'extends/files/all.html' %}</div>
     {{ data.employee_current|json_script:'employee_current' }}
 
     <template id="access-template-lst">
@@ -525,9 +495,6 @@
 {% endblock %}
 
 {% block jsFooter %}
-    <!-- Select2 -->
-    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
-
     <!-- Flat pick JS -->
     <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
     {% if base.language %}

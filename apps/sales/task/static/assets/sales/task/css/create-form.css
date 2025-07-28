@@ -36,3 +36,17 @@
 .input-affix-wrapper .form-control:not(:first-child){
     padding-left: 0.75rem;
 }
+
+#formOpportunityTask + .task_loading {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: rgb(255 255 255 / 80%);
+    text-align: center;
+}
+
+#formOpportunityTask + .task_loading > div{
+    margin-top: calc(50% - 14px);
+}

@@ -18,6 +18,7 @@ function resetFormTask() {
     $('.create-subtask, .parents-block').addClass('hidden')
     window.editor.setData('')
     $('.create-task').attr('disabled', false);
+    $('#formOpportunityTask + .task_loading').hide()
     $('#process_id').val(null).trigger('change')
     $('#selectStatus').val(function(){
         let data = $(this).data('default-stt')
@@ -50,6 +51,7 @@ $(document).ready(function () {
     const $sttElm = $('#selectStatus');
     const $oppElm = $('#opportunity_id')
     const $prjElm = $('#project_id')
+    const $btnCanvasLoad = $('#formOpportunityTask + .task_loading')
 
     new $x.cls.file($('#assigner_attachment')).init({'name': 'attach'});
     new $x.cls.file($('#assignee_attachment')).init({'name': 'attach_assignee'});
@@ -242,6 +244,7 @@ $(document).ready(function () {
         {
             submitHandler: function (form) {
                 form.find('.create-task').attr('disabled', true)
+                $btnCanvasLoad.show()
                 let _form = new SetupFormSubmit(form);
                 let formData = _form.dataForm
                 const $assignerElm = $('#inputAssigner')
@@ -345,16 +348,18 @@ $(document).ready(function () {
                                 const datadump = JSON.stringify(formData)
                                 elm.removeAttr('data-task').attr('data-task', datadump)
                                 $('body').append(elm).trigger('From-Task.Submitted')
-
                             }
                             if ($('.current-create-task').length) $('.cancel-task').trigger('click')
                         }
+                        // mở lại button tạo
+                        $btnCanvasLoad.hide()
                         form.find('.create-task').attr('disabled', false)
                     },
                     (errs) => {
                         if (errs?.data?.errors)
                             $.fn.notifyB({'description': errs?.data?.errors}, 'failure')
                         form.find('.create-task').attr('disabled', false)
+                        $btnCanvasLoad.hide()
                     }
                 )
             }

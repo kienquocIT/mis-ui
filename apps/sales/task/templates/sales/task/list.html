@@ -12,18 +12,16 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a href="#">
-        <button class="btn btn-outline-primary btn-create-todo"
-                type="button" data-bs-toggle="offcanvas" data-bs-target="#offCanvasRightTask"
-                title="{% trans 'Create' %}">
+    <button class="btn btn-outline-primary btn-create-todo"
+            type="button" data-bs-toggle="offcanvas" data-bs-target="#offCanvasRightTask"
+            title="{% trans 'Create' %}">
         <span>
             <span>{% trans 'Create' %}</span>
             <span class="icon">
                 <i class="fa-solid fa-plus"></i>
             </span>
         </span>
-        </button>
-    </a>
+    </button>
 {% endblock %}
 
 {% block pageContent %}

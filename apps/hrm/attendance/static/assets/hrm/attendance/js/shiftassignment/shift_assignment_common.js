@@ -474,7 +474,7 @@ class ShiftAssignHandle {
             },
         },
         pageLength:50,
-        scrollY: '76vh',
+        scrollY: '70vh',
         searching: false,
         info: false,
         columns: [

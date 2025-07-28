@@ -12,8 +12,8 @@ class ShiftAssignmentList(View):
     @mask_view(
         auth_require=True,
         template='hrm/attendance/shiftassignment/shift_assignment.html',
-        menu_active='menu_quotation_list',
-        breadcrumb='QUOTATION_LIST_PAGE',
+        menu_active='menu_shift_assignment_list',
+        breadcrumb='SHIFT_ASSIGNMENT_LIST_PAGE',
         icon_cls='fas fa-user-clock',
         icon_bg='bg-pink',
     )

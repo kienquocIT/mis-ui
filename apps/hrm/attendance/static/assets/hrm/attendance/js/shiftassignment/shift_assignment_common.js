@@ -7,7 +7,6 @@ class ShiftAssignHandle {
     static $fromEle = $('#apply_from');
     static $toEle = $('#apply_to');
     static $shiftApplyEle = $('#box_shift_apply');
-    static $btnShiftAssign = $('#btn-shift-assign');
     static $groupsCheckedEle = $('#groups-checked');
     static $employeesCheckedEle = $('#employees-checked');
 
@@ -253,6 +252,22 @@ class ShiftAssignHandle {
 
     static parseDateList(dateFrom, dateTo) {
         let result = [];
+        let dataShift = SelectDDControl.get_data_from_idx(ShiftAssignHandle.$shiftApplyEle, ShiftAssignHandle.$shiftApplyEle.val());
+        let dayOfWeek = [];
+        let dayOfWeekCheck = dataShift?.['working_day_list'] ? dataShift?.['working_day_list'] : {};
+        for (let key in dayOfWeekCheck) {
+            if (dayOfWeekCheck[key] === true) {
+                switch (key) {
+                    case "Sun": dayOfWeek.push(0); break;
+                    case "Mon": dayOfWeek.push(1); break;
+                    case "Tue": dayOfWeek.push(2); break;
+                    case "Wed": dayOfWeek.push(3); break;
+                    case "Thu": dayOfWeek.push(4); break;
+                    case "Fri": dayOfWeek.push(5); break;
+                    case "Sat": dayOfWeek.push(6); break;
+                }
+            }
+        }
         let parse = (str) => {
             const [day, month, year] = str.split('/').map(Number);
             return new Date(year, month - 1, day);
@@ -268,7 +283,9 @@ class ShiftAssignHandle {
         let end = parse(dateTo);
 
         while (current <= end) {
-            result.push(format(current));
+            if (dayOfWeek.includes(current.getDay())) {
+                result.push(format(new Date(current)));
+            }
             current.setDate(current.getDate() + 1);
         }
         return result;

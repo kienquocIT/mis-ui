@@ -55,7 +55,7 @@ function dateRangeToList(data){
 function yearList(){
     let lsYear = {}
     const ws = JSON.parse($('#ws_data').text()).years
-    if (ws)
+    if (ws & Object.keys(ws).length > 0)
         for (let item of ws) {
             lsYear[item["config_year"]] = item["list_holiday"]
         }

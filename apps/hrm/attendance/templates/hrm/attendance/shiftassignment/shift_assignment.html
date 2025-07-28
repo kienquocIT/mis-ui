@@ -12,79 +12,98 @@
 {% block pageAction %}{% endblock %}
 
 {% block pageContent %}
-    {% csrf_token %}
+    <form
+            data-url="{% url 'ShiftAssignmentListAPI' %}"
+            data-url-redirect="{% url 'ShiftAssignmentList' %}"
+            data-method="POST"
+            id="frm_shift_assignment"
+            method="post"
+    >
+        {% csrf_token %}
 
-    <div class="row">
-        <div class="col-12 col-md-3 col-lg-3 border-right">
-            <div data-simplebar class="nicescroll-bar">
-                <table id="table_group" class="table nowrap w-100 mb-5">
-                    {% csrf_token %}
-                    <thead>
-                    <tr>
-                        <th>{% trans 'Group' %}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="col-12 col-md-7 col-lg-7 border-right">
-            <div class="calendarapp-wrap" id="calendarapp-wrapper">
-                <div class="calendarapp-content pl-0">
-                    <div id="calendar" class="w-100"></div>
+        <div class="row">
+            <div class="col-12 col-md-3 col-lg-3 border-right">
+                <h5>Đối tượng áp dụng</h5>
+                <br>
+                <div data-simplebar class="nicescroll-bar">
+                    <div class="form-check form-switch form-switch-lg">
+                        <input type="checkbox" class="form-check-input" id="checkbox_all_company">
+                        <label class="form-check-label" for="checkbox_all_company">All company</label>
+                    </div>
+                    <table id="table_group" class="table nowrap w-100 mb-5">
+                        {% csrf_token %}
+                        <thead>
+                        <tr>
+                            <th>{% trans 'Group' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-md-2 col-lg-2">
-            <div class="row mt-5">
-                <h5>Áp dụng ca làm việc</h5>
-                <br>
-                <br>
-                <div class="form-group w-70">
-                    <label class="form-label" for="apply_from">{% trans 'From' %}</label>
-                    <div class="input-affix-wrapper">
-                        <input type="text" id="apply_from"
-                               class="form-control flat-picker" autocomplete="off">
-                        <div class="input-suffix">
-                            <i class="fas fa-calendar-alt"></i>
-                        </div>
+            <div class="col-12 col-md-7 col-lg-7 border-right">
+                <div class="calendarapp-wrap" id="calendarapp-wrapper">
+                    <div class="calendarapp-content pl-0">
+                        <div id="calendar" class="w-100"></div>
                     </div>
                 </div>
-                <div class="form-group w-70">
-                    <label class="form-label" for="apply_to">{% trans 'To' %}</label>
-                    <div class="input-affix-wrapper">
-                        <input type="text" id="apply_to"
-                               class="form-control flat-picker" autocomplete="off">
-                        <div class="input-suffix">
-                            <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="row">
+                    <h5>Áp dụng ca làm việc</h5>
+                    <br>
+                    <br>
+                    <div class="form-group w-70">
+                        <label class="form-label required" for="apply_from">{% trans 'From' %}</label>
+                        <div class="input-affix-wrapper">
+                            <input type="text" id="apply_from"
+                                   class="form-control flat-picker" name="apply_from" autocomplete="off" required>
+                            <div class="input-suffix">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="shift_current">{% trans 'Current shift' %}</label>
-                    <input type="text" class="form-control" id="shift_current" readonly>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="box_shift_apply">{% trans 'Select shift to apply' %}</label>
-                    <select
-                            class="form-select"
-                            id="box_shift_apply"
-                            data-url="{% url "ShiftMasterDataListAPI" %}"
-                            data-method="GET"
-                            data-keyResp="shift_list"
-                    ></select>
-                </div>
+                    <div class="form-group w-70">
+                        <label class="form-label required" for="apply_to">{% trans 'To' %}</label>
+                        <div class="input-affix-wrapper">
+                            <input type="text" id="apply_to"
+                                   class="form-control flat-picker" name="apply_to" autocomplete="off" required>
+                            <div class="input-suffix">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="shift_current">{% trans 'Current shift' %}</label>
+                        <input type="text" class="form-control" id="shift_current" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required" for="box_shift_apply">{% trans 'Select shift to apply' %}</label>
+                        <select
+                                class="form-select"
+                                id="box_shift_apply"
+                                name="shift"
+                                data-url="{% url "ShiftMasterDataListAPI" %}"
+                                data-method="GET"
+                                data-keyResp="shift_list"
+                                required
+                        ></select>
+                    </div>
 
-                <a href="{% url "ShiftMasterDataList" %}" target="_blank" class="link-primary underline_hover">View shift list</a>
-            </div>
-            <br>
-            <br>
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-primary" id="btn-shift-assign">{% trans 'Apply' %}</button>
+                    <a href="{% url "ShiftMasterDataList" %}" target="_blank" class="link-primary underline_hover">View shift list</a>
+                </div>
+                <br>
+                <br>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary" id="btn-shift-assign" type="submit" form="frm_shift_assignment">{% trans 'Apply' %}</button>
+                </div>
             </div>
         </div>
-    </div>
+
+    </form>
+
+
 
 
 {#    <div class="calendarapp-wrap" id="calendarapp-wrapper">#}

@@ -2,6 +2,7 @@ class ShiftAssignHandle {
     static $form = $('#frm_shift_assignment');
     static $wrapperEle = $('#calendarapp-wrapper');
     static $calendarEle = $('#calendar');
+    static $drawerBodyShift = $('#drawer_body_shift');
     static $allCompanyEle = $('#checkbox_all_company');
     static $table = $('#table_group');
     static $fromEle = $('#apply_from');
@@ -137,20 +138,22 @@ class ShiftAssignHandle {
                 "border": "none",
                 "box-shadow": "0 8px 10px rgba(0, 0, 0, 0.1)"
             }).addClass('drawer-toggle');
-            let source = window.targetEvent.extendedProps.source;
-            if (source.calendar_type === 3){
-                source.date_from = window.targetEvent.start
-                source.date_to = window.targetEvent.end
+            if ($(this).attr('data-shift')) {
+                let shiftNameEle = ShiftAssignHandle.$drawerBodyShift[0].querySelector('.shift-name');
+                let workingHoursEle = ShiftAssignHandle.$drawerBodyShift[0].querySelector('.shift-working-hours');
+                let breakTimeEle = ShiftAssignHandle.$drawerBodyShift[0].querySelector('.shift-break-time');
+                if (shiftNameEle && workingHoursEle && breakTimeEle) {
+                    let shiftData = JSON.parse($(this).attr('data-shift'));
+                    $(shiftNameEle).empty();
+                    $(workingHoursEle).empty();
+                    $(breakTimeEle).empty();
+
+                    $(shiftNameEle).html(`${shiftData?.['title']}`);
+                    $(workingHoursEle).html(`<span>${shiftData?.['checkin_time']}</span> - <span>${shiftData?.['checkout_time']}</span>`);
+                    $(breakTimeEle).html(`<span>${shiftData?.['break_in_time']}</span> - <span>${shiftData?.['break_out_time']}</span>`);
+
+                }
             }
-            let sltData = ShiftAssignHandle.prepareData(source)
-            let $elmPopup = $('.calendar-drawer')
-            $elmPopup.find('.event-name').text(sltData.title);
-            $elmPopup.find('.date_txt').text(sltData?.date);
-            $elmPopup.find('.time_txt').text(sltData?.time || '--');
-            $elmPopup.find('.loca_txt').text(sltData?.location);
-            $elmPopup.find('.type_txt').text(sltData?.type);
-            $elmPopup.find('.member_txt').html(sltData?.member);
-            $elmPopup.find('.des_txt').text(sltData?.des);
             return false;
         });
 
@@ -169,7 +172,7 @@ class ShiftAssignHandle {
             if (window.DateListCallable.includes(DStart.format('YYYY-MM'))) return true
             else window.DateListCallable.push( DStart.format('YYYY-MM') )
 
-        })
+        });
 
         // click prev btn
         $(document).on("click", ".calendarapp-wrap .fc-prev-button", function () {
@@ -219,9 +222,10 @@ class ShiftAssignHandle {
                                         }
                                     }
                                     events.push({
-                                        backgroundColor: `${bg}`,
-                                        title: `${shiftAssignmentData?.['shift']?.['title']}`,
+                                        backgroundColor: bg,
+                                        title: shiftAssignmentData?.['shift']?.['title'],
                                         start: m.format('YYYY-MM-DD'),
+                                        dataShift: shiftAssignmentData?.['shift'],
                                         extendedProps: {
                                             toHtml: 'convert'
                                         }
@@ -653,6 +657,8 @@ $(document).ready(function () {
                 //     'float': 'right',
                 //     'font-size': '10px',
                 // })
+
+                $(eventEle).attr('data-shift', JSON.stringify(info.event.extendedProps.dataShift));
             }
         }
 

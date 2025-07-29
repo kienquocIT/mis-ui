@@ -7188,7 +7188,7 @@ class DateTimeControl {
         $(ele).val('').trigger('change');
     }
 
-    static initFlatPicker(ele) {
+    static initFlatPickrDate(ele) {
         if (!ele._flatpickr) {
             flatpickr(ele, {
                 dateFormat: "d/m/Y",
@@ -7211,7 +7211,7 @@ class DateTimeControl {
         }
     }
 
-    static initFlatPickerInMonth(ele, month, year) {
+    static initFlatPickrDateInMonth(ele, month, year) {
         // month: 1-based (e.g. 7 for July)
         const targetMonth = month - 1; // flatpickr uses 0-based months
         const targetYear = year;

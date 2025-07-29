@@ -1059,11 +1059,11 @@ $(function () {
 
         // init date picker
         $('.flat-picker').each(function () {
-            DateTimeControl.initFlatPicker(this);
+            DateTimeControl.initFlatPickrDate(this);
         });
 
         $('.flat-picker-in-month').each(function () {
-            DateTimeControl.initFlatPickerInMonth(this, 7, 2025);
+            DateTimeControl.initFlatPickrDateInMonth(this, 7, 2025);
         });
 
         // mask money
@@ -1108,7 +1108,7 @@ $(function () {
             let data = SelectDDControl.get_data_from_idx($boxMonth, $boxMonth.val());
             if (data?.['month'] && data?.['year']) {
                 $('.flat-picker-in-month').each(function () {
-                    DateTimeControl.initFlatPickerInMonth(this, data?.['month'], data?.['year']);
+                    DateTimeControl.initFlatPickrDateInMonth(this, data?.['month'], data?.['year']);
                 });
                 let dataMonth = DateTimeControl.getMonthInfo(data?.['month'], data?.['year']);
                 boxStart.val(dataMonth?.['from']);

@@ -527,6 +527,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Shift
     MASTER_DATA_SHIFT_PAGE = BreadcrumbChildren(_('Master data shift'), 'ShiftMasterDataList')
 
+    # Shift assignment
+    SHIFT_ASSIGNMENT_LIST_PAGE = BreadcrumbChildren(_('Shift assignment'), 'ShiftAssignmentList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1429,3 +1432,7 @@ class BreadcrumbView:
         BreadcrumbItem.MASTER_DATA_SHIFT_PAGE
     ]
 
+    # Shift assignment
+    SHIFT_ASSIGNMENT_LIST_PAGE = [
+        BreadcrumbItem.SHIFT_ASSIGNMENT_LIST_PAGE
+    ]

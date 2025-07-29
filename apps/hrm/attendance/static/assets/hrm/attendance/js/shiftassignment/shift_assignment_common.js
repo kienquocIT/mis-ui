@@ -244,10 +244,17 @@ class ShiftAssignHandle {
 
     static loadShiftEmployee(calendar, info) {
         calendar.removeAllEvents();
+        let employeeStore = {};
+        let groupStore = {};
         if (ShiftAssignHandle.$employeesCheckedEle.val()) {
-            let storeID = JSON.parse(ShiftAssignHandle.$employeesCheckedEle.val());
-            if (Object.keys(storeID).length === 1) {
-                let employeeID = Object.keys(storeID)[0];
+            employeeStore = JSON.parse(ShiftAssignHandle.$employeesCheckedEle.val());
+        }
+        if (ShiftAssignHandle.$groupsCheckedEle.val()) {
+            groupStore = JSON.parse(ShiftAssignHandle.$groupsCheckedEle.val());
+        }
+        if (Object.keys(employeeStore).length === 1) {
+            if (Object.keys(groupStore).length === 0) {
+                let employeeID = Object.keys(employeeStore)[0];
                 ShiftAssignHandle.generateEvents(info.start, info.end, employeeID, calendar);
             }
         }

@@ -4,6 +4,7 @@
 class ReconPageElements {
     constructor() {
         this.$trans_script = $('#trans-script');
+        this.$url_script = $('#url-script');
         this.$title = $('#title');
         this.$customer = $('#customer');
         this.$supplier = $('#supplier');
@@ -323,6 +324,31 @@ class ReconEventHandler {
         pageElements.$type.on('change', function () {
             pageElements.$customer_space.prop('hidden', $(this).val() !== '0')
             pageElements.$supplier_space.prop('hidden', $(this).val() !== '1')
+        })
+        pageElements.$customer.on('change', function () {
+            let dataParams = {}
+            let ar_ajax = $.fn.callAjax2({
+                url: pageElements.$url_script.attr('data-url-ar-list-for-recon'),
+                data: dataParams,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('ar_invoice_list')) {
+                        return data?.['ar_invoice_list'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([ar_ajax]).then(
+                (results) => {
+                    let data_ar = results[0]
+                    console.log(data_ar)
+                })
         })
         $(document).on('change', '.selected_document', function () {
             $(this).closest('tr').find('.recon_amount').attr(

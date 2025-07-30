@@ -20,3 +20,14 @@
     cursor: pointer;
     background: rgba(0, 125, 136, 0.15);
 }
+.loading{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background: rgb(255 255 255 / 80%);
+    vertical-align: middle;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}

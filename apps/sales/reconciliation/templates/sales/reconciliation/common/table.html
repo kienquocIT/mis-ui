@@ -5,31 +5,33 @@
         <table class="table nowrap w-100" id="table-recon">
             <thead>
             <tr>
-                <th style="min-width: 50px"></th>
-                <th style="min-width: 50px"></th>
-                <th style="min-width: 120px">{% trans "Original transaction" %}</th>
-                <th style="min-width: 80px">{% trans 'Posting date' %}</th>
+                <th style="min-width: 30px"></th>
+                <th style="min-width: 30px"></th>
+                <th style="min-width: 150px">{% trans "Original transaction" %}</th>
+                <th style="min-width: 100px">{% trans "Transaction code" %}</th>
+                <th style="min-width: 100px">{% trans 'Posting date' %}</th>
                 <th style="min-width: 120px">{% trans 'Total value' %}</th>
                 <th style="min-width: 120px">{% trans 'Balance value' %}</th>
                 <th style="min-width: 150px">{% trans 'Recon amount' %}</th>
-                <th style="min-width: 150px">{% trans 'Note' %}</th>
                 <th style="min-width: 80px">{% trans 'Recon account' %}</th>
+                <th style="min-width: 150px">{% trans 'Note' %}</th>
             </tr>
             </thead>
             <tfoot>
-                <tr style="position: sticky; bottom: 0">
+                <tr>
                     <td style="min-width: 30px"></td>
                     <td style="min-width: 30px"></td>
-                    <td style="min-width: 120px"></td>
-                    <td style="min-width: 80px"></td>
-                    <td style="min-width: 120px"></td>
-                    <td style="min-width: 120px"><label for="recon-total" class="form-label text-primary fw-bold text-decoration-underline">{% trans 'Recon total' %}</label></td>
-                    <td style="min-width: 150px">
-                        <input disabled readonly id="recon-total" class="form-control form-control-line mask-money fw-bold text-primary text-right" value="0">
-                        <span class="small fst-italic text-muted">{% trans 'Recon total must be 0' %}</span>
-                    </td>
                     <td style="min-width: 150px"></td>
+                    <td style="min-width: 100px"></td>
+                    <td style="min-width: 100px"></td>
+                    <td style="min-width: 120px"></td>
+                    <td style="min-width: 120px"><label for="recon-total" class="form-label text-primary fw-bold">{% trans 'Recon total' %}</label></td>
+                    <td style="min-width: 150px">
+                        <input disabled readonly id="recon-total" class="form-control form-control-line mask-money text-primary text-right" value="0">
+                        <span class="small text-muted">{% trans 'Recon total must be 0' %}</span>
+                    </td>
                     <td style="min-width: 80px"></td>
+                    <td style="min-width: 150px"></td>
                 </tr>
             </tfoot>
         </table>

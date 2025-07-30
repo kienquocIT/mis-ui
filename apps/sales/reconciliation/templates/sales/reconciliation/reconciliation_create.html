@@ -26,6 +26,9 @@
             data-trans-ap="{% trans 'AP invoice' %}"
             data-trans-cof="{% trans 'Cash outflow' %}"
     ></script>
+    <script id="url-script"
+            data-url-ar-list-for-recon="{% url 'ARInvoiceListForReconAPI' %}"
+    ></script>
     <form id="form-create-recon" data-method="POST" data-url="{% url 'ReconListAPI' %}" data-url-redirect="{% url 'ReconList' %}">
         {% include 'sales/reconciliation/common/information.html' %}
         {% include 'sales/reconciliation/common/table.html' %}

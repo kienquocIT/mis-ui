@@ -12094,3 +12094,7 @@ msgstr "Cấn trừ cho Nhà cung cấp"
 #
 msgid "Reconciliation of Employee"
 msgstr "Cấn trừ cho Nhân viên"
+
+#
+msgid "Hover to see title"
+msgstr "Trỏ vào để xem tiêu đề"

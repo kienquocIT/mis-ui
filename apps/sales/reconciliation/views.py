@@ -26,7 +26,7 @@ class ReconCreate(View):
         input_mapping_properties = InputMappingProperties.RECON_DATA_MAP
         return {
             'app_id': 'b690b9ff-670a-474b-8ae2-2c17d7c30f40',
-            'list_from_app': 'reconciliation.reconciliation.create',
+            'list_from_app': 'financialrecon.reconciliation.create',
             'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-create-recon'
         }, status.HTTP_200_OK
@@ -42,7 +42,7 @@ class ReconDetail(View):
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.RECON_DATA_MAP
         return {
-            'list_from_app': 'reconciliation.reconciliation.create',
+            'list_from_app': 'financialrecon.reconciliation.create',
             'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-detail-recon'
         }, status.HTTP_200_OK
@@ -58,7 +58,7 @@ class ReconUpdate(View):
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.RECON_DATA_MAP
         return {
-            'list_from_app': 'reconciliation.reconciliation.edit',
+            'list_from_app': 'financialrecon.reconciliation.edit',
             'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-detail-recon'
         }, status.HTTP_200_OK
@@ -105,6 +105,28 @@ class ReconDetailAPI(APIView):
             resp.result['message'] = SaleMsg.CIF_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+# related
+class APInvoiceListForReconAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.AP_INVOICE_LIST_FOR_RECON).get(data)
+        return resp.auto_return(key_success='ap_invoice_list')
+
+
+class CashOutflowListForReconAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.COF_LIST_FOR_RECON).get(data)
+        return resp.auto_return(key_success='cash_outflow_list')
 
 
 class ARInvoiceListForReconAPI(APIView):

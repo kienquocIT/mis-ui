@@ -41,7 +41,7 @@ Properties are loaded dynamically based on:
 
 ### 1. Basic Setup
 
-Include the required files in your template:
+Include the required files in your template (example for revenue report):
 
 ```html
 <!-- Include the filter display area -->
@@ -57,7 +57,23 @@ Include the required files in your template:
 
 ### 2. URL Configuration
 
-Set up the required URLs in your template:
+Set up the required URLs in your template:  
+
+Required for every template:
+This url used for loading left dropdown data 
+```html
+data-app-prop-list = "{% url 'ApplicationPropertyListAPI' %}"
+```
+
+Can adjust based on feature:  
+This url used for loading right dropdown data
+
+```html
+data-account-list="{% url 'your-account-list-url' %}">
+```
+
+<br/>
+Tổng hợp;
 
 ```html
 <div id="app-url-factory"
@@ -78,9 +94,9 @@ class YourModuleFilterHandler extends AdvanceFilterCommonHandler {
         // Define content type mappings
         this.CONTENT_TYPE_MAPPING_URL = {
             "your.model": {
-                "url": $('#app-url-factory').data('your-model-list'),
-                "keyResp": "model_list",
-                "keyText": "name"
+                "url": $('#app-url-factory').data('xxx'),
+                "keyResp": "xxx",
+                "keyText": "xxx"
             }
         };
     }
@@ -108,43 +124,50 @@ $(document).ready(function () {
 });
 ```
 
-### 4. Creating Filters
+#### Example for revenue report:
+```javascript
+class AdvanceFilterRevenueCommonHandler extends AdvanceFilterCommonHandler{
+    constructor() {
+        super();
+        this.$url = $('#app-url-factory')
+        this.CONTENT_TYPE_MAPPING_URL = {
+            "saledata.account": {
+                "url": $('#app-url-factory').data('account-list'),
+                "keyResp": "account_list",
+                "keyText": "title"
+            },
+        }
+    }
 
-#### User Workflow:
-1. Click "Open Advance Filter" button
-2. Enter a filter title
-3. Build filter conditions:
-   - Select property from dropdown
-   - Choose operator based on property type
-   - Enter/select value (disabled for null operators)
-4. Add more conditions with "And" button (within same group)
-5. Add new filter groups with "Add Group" button (OR relationship)
-6. Save the filter
+    getPropUrl() {
+        return this.$url.data('app-prop-list')
+    }
 
-#### Visual Example:
+    getContentTypeMappingUrl(contentType) {
+        return this.CONTENT_TYPE_MAPPING_URL[contentType]
+    }
+
+    clearDataFormCreateFilter() {
+        super.clearDataFormCreateFilter();
+        this.init()
+    }
+}
+
+
+$(document).ready(function () {
+    const advanceFilterRevenueCommonHandler = new AdvanceFilterRevenueCommonHandler();
+    advanceFilterRevenueCommonHandler.getCurrPageAppID()
+    advanceFilterRevenueCommonHandler.addEventBinding()
+    advanceFilterRevenueCommonHandler.init()
+
+    advanceFilterRevenueCommonHandler.setUpFormCreateFilterSubmit()
+    advanceFilterRevenueCommonHandler.fetchDataFilterList()
+
+    advanceFilterRevenueCommonHandler.setUpFormUpdateFilterSubmit()
+})
 ```
-Filter: Active Premium Customers
 
-Group 1:
-  - Account Type IS "Premium" AND
-  - Status IS "Active"
-  
-OR
-
-Group 2:
-  - Revenue > 1000000 AND
-  - Last Order Date >= "2024-01-01"
-```
-
-### 5. Managing Filters
-
-#### Available Actions:
-- **Select**: Click radio button to apply filter
-- **Edit**: Click pencil icon to modify
-- **Delete**: Click trash icon to remove
-- **Deselect**: Click selected radio button again to clear
-
-### 6. API Integration
+### 4. API Integration
 
 The module expects these API endpoints:
 
@@ -154,13 +177,17 @@ The module expects these API endpoints:
 - `PUT /api/advance-filter/{id}/` - Update filter
 - `DELETE /api/advance-filter/{id}/` - Delete filter
 
-#### Supporting APIs:
-- Application properties list
-- Related model lists (based on content type)
-
-### 7. Data Structure
+### 5. Data Structure
 
 #### Filter Condition Format:
+DATA_PROPERTY_TYPE = (  
+    (1, 'Text'),  
+    (2, 'Date time'),  
+    (3, 'Choices'),  
+    (4, 'Checkbox'),  
+    (5, 'Master data'),  
+    (6, 'Number'),  
+)
 ```json
 {
     "title": "Filter Name",
@@ -177,82 +204,3 @@ The module expects these API endpoints:
     ]
 }
 ```
-
-## Advanced Features
-
-### 1. Custom Select2 Templates
-The system supports custom result templates for dropdowns:
-```javascript
-{
-    res1: "code",    // Badge display
-    res2: "title"    // Main text
-}
-```
-
-### 2. Type-based Input Switching
-- Automatically switches between select and input based on property type
-- Numeric validation for type 6 fields
-- Dynamic operator list based on field type
-
-### 3. Null Handling
-- Special operators (exactnull, notexactnull) disable value input
-- Automatic handling of empty/null checks
-
-## Troubleshooting
-
-### Common Issues:
-
-1. **Properties not loading**
-   - Check `currPageAppID` is set correctly
-   - Verify API endpoint URLs
-   - Ensure `is_filter_condition: true` parameter
-
-2. **Operators not showing**
-   - Verify property type is returned from API
-   - Check COMPARE_OPERATOR_MAPPING configuration
-
-3. **Values not populating**
-   - Confirm content type mapping is defined
-   - Check API response format matches expected keys
-
-### Debugging Tips:
-- Check browser console for AJAX errors
-- Verify data attributes on select elements
-- Use network tab to inspect API responses
-
-## Customization
-
-### Adding New Operator Types:
-1. Add to `COMPARE_OPERATOR_MAPPING` in base class
-2. Handle new operator in backend filter logic
-
-### Supporting New Content Types:
-1. Add mapping to `CONTENT_TYPE_MAPPING_URL`
-2. Ensure API returns data in expected format
-
-### Styling:
-- Uses Bootstrap 5 classes
-- Custom classes: `.filter-card`, `.filter-row`, `.filter-group-body`
-- Icons from Font Awesome
-
-## Best Practices
-
-1. **Performance**
-   - Limit filter complexity to avoid slow queries
-   - Consider indexing filtered fields
-   - Implement pagination for result sets
-
-2. **User Experience**
-   - Provide meaningful property names
-   - Group related properties
-   - Show property descriptions in tooltips
-
-3. **Security**
-   - Validate filter conditions server-side
-   - Sanitize user inputs
-   - Check user permissions for properties
-
-4. **Maintenance**
-   - Keep property definitions updated
-   - Document custom operators
-   - Test filter combinations regularly

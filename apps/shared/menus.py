@@ -872,9 +872,15 @@ class MenusHRM:
             ),
         ]
     )
-    ATTENDANCE = MenuCommon(
-        name='Attendance', code='menu_attendance', view_name='', icon='<i class="fa-solid fa-clipboard-user"></i>',
+
+	ATTENDANCE = MenuCommon(
+        name='Attendance', code='menu_attendance', view_name='',
+        icon='<i class="fas fa-solid fa-person"></i>',
         child=[
+            MenuCommon(
+                name='Shift assignment', code='menu_shift_assignment_list', view_name='ShiftAssignmentList',
+                icon='<i class="fas fa-user-clock"></i>',
+            ),
             MenuCommon(
                 name='Attendance table', code='menu_attendance_list', view_name='HRMAttendanceList',
                 icon='<i class="fa-solid fa-table-columns"></i>',
@@ -933,21 +939,6 @@ class MenusFinancials:
 
         ],
     )
-    GENERAL = MenuCommon(
-        name='General', code='menu_general', view_name='', icon='<i class="fas bi bi-link"></i>',
-        child=[
-            MenuCommon(
-                name='Reconciliation', code='menu_reconciliation', view_name='ReconList',
-                icon='<i class="fas bi bi-ui-checks"></i>',
-            ),
-            MenuCommon(
-                name='Payment plan',
-                code='menu_payment_plan_list',
-                view_name='PaymentPlanList',
-                icon='<i class="fas fa-money-check-alt"></i>',
-            ),
-        ],
-    )
     CASHFLOW = MenuCommon(
         name='Cashflow', code='menu_cashflow', view_name='', icon='<i class="fas fa-exchange-alt"></i>',
         child=[
@@ -965,6 +956,15 @@ class MenusFinancials:
         name='Journal entry', code='menu_journal_entry_list', view_name='JournalEntryList',
         icon='<i class="fas bi bi-journal-text"></i>',
     )
+    RECONCILIATION = MenuCommon(
+        name='Reconciliation', code='menu_reconciliation', view_name='ReconList',
+        icon='<i class="fas bi bi-ui-checks"></i>',
+    )
+    PAYMENT_PLAN = MenuCommon(
+        name='Payment plan', code='menu_payment_plan_list', view_name='PaymentPlanList',
+        icon='<i class="fas fa-money-check-alt"></i>',
+    )
+
 
 
 # Space Setup
@@ -1069,10 +1069,11 @@ class SpaceItem:
             menus=[
                 MenusFinancials.HOME,
                 MenusFinancials.ACCOUNTING_SETTING,
-                MenusFinancials.GENERAL,
                 MenusFinancials.CASHFLOW,
                 MenusFinancials.ASSET,
                 MenusFinancials.JOURNAL_ENTRY,
+                MenusFinancials.RECONCILIATION,
+                MenusFinancials.PAYMENT_PLAN,
             ]
         ),
         'forms': SpaceCommon(

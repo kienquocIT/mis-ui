@@ -145,7 +145,11 @@
     </style>
     <style>
         #idxPageContent {
-            background-color: #A7C1E1;
+            {#background-color: #A7C1E1;#}
+            background-image: url("{% static 'assets/js/home_1.jpg' %}");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
         }
     </style>
     <style>
@@ -167,8 +171,9 @@
         }
 
         .event-at-head .event-at-title {
-            font-weight: bold;
-            flex-basis: 45%;
+            {#font-weight: bold;#}
+            {#flex-basis: 45%;#}
+            flex-basis: 60%;
         }
 
         .event-at-item .event-at-head .event-at-date-group-in-title {

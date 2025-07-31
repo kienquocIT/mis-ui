@@ -527,7 +527,10 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Shift
     MASTER_DATA_SHIFT_PAGE = BreadcrumbChildren(_('Master data shift'), 'ShiftMasterDataList')
 
-    # Attendance
+    # Shift assignment
+    SHIFT_ASSIGNMENT_LIST_PAGE = BreadcrumbChildren(_('Shift assignment'), 'ShiftAssignmentList')
+    
+	# Attendance
     HRM_ATTENDANCE_LIST_PAGE = BreadcrumbChildren(_('HRM Attendance info'), 'HRMAttendanceList')
 
 
@@ -1432,7 +1435,12 @@ class BreadcrumbView:
         BreadcrumbItem.MASTER_DATA_SHIFT_PAGE
     ]
 
-    # attendance
+    # Shift assignment
+    SHIFT_ASSIGNMENT_LIST_PAGE = [
+        BreadcrumbItem.SHIFT_ASSIGNMENT_LIST_PAGE
+    ]
+    
+	# Attendance
     HRM_ATTENDANCE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.HRM_ATTENDANCE_LIST_PAGE

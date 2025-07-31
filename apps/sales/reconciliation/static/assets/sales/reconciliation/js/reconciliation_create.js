@@ -1,38 +1,21 @@
 $(document).ready(function () {
-    ReconHandle.LoadPage();
+    ReconEventHandler.InitPageEven()
+    UsualLoadPageFunction.LoadCustomer({element: pageElements.$customer})
+    UsualLoadPageFunction.LoadSupplier({element: pageElements.$supplier})
+    UsualLoadPageFunction.LoadDate({element: pageElements.$posting_date})
+    UsualLoadPageFunction.LoadDate({element: pageElements.$document_date})
+
+    ReconPageFunction.LoadTableRecon()
+
     WFRTControl.setWFInitialData('reconciliation')
 
-    // SUBMIT FORM CREATE
-    const recon_create_form = $('#form-create-recon')
-    let form_validator = recon_create_form.validate({
+    let form_validator = $('#form-create-recon').validate({
         submitHandler: function (form) {
-            let form_data = ReconHandle.CombinesData(form);
+            let form_data = ReconHandler.CombinesData(form, 'create');
             if (form_data) {
-                WindowControl.showLoading();
-                $.fn.callAjax2(form_data)
-                    .then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data) {
-                                $.fn.notifyB({description: "Successfully"}, 'success')
-                                setTimeout(() => {
-                                    window.location.replace(recon_create_form.attr('data-url-redirect'));
-                                    location.reload.bind(location);
-                                }, 1000);
-                            }
-                        },
-                        (errs) => {
-                            setTimeout(
-                                () => {
-                                    WindowControl.hideLoading();
-                                },
-                                1000
-                            )
-                            $.fn.notifyB({description: errs.data.errors}, 'failure');
-                        }
-                    )
+                WFRTControl.callWFSubmitForm(form_data);
             }
         }
     })
-    AutoValidator.CustomValidator(form_validator, [])
+    AutoValidator.CustomValidator(form_validator)
 });

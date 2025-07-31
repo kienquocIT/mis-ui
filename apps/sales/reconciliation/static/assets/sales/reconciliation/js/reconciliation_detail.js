@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    ReconHandle.LoadDetailRecon('detail');
+    ReconHandler.LoadDetailRecon('detail');
 })

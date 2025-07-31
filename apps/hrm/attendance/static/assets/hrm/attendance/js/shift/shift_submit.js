@@ -4,7 +4,18 @@ $(document).ready(function () {
 
     let frm_shift = $('#form-shift')
     new SetupFormSubmit(frm_shift).validate({
-        rules: {title: {required: true,}},
+        rules: {
+            title: {
+                required: true,
+                maxlength: 100
+            },
+            checkin_time: {
+                required: true
+            },
+            checkout_time: {
+                required: true
+            }
+        },
         submitHandler: function (form) {
             if ($('#shift-modal-title').attr('data-id') === '') {
                 WindowControl.showLoading({'loadingTitleAction': 'CREATE'});

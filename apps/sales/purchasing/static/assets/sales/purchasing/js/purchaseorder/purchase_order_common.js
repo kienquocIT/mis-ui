@@ -2567,13 +2567,13 @@ class PODataTableHandle {
 
                 let checkTax = POLoadDataHandle.loadCheckSameMixTax();
                 if (dateEle) {
-                    DateTimeControl.initFlatPicker(dateEle);
+                    DateTimeControl.initFlatPickrDate(dateEle);
                     if (data?.['date']) {
                         $(dateEle).val(moment(data?.['date']).format('DD/MM/YYYY'));
                     }
                 }
                 if (dueDateEle) {
-                    DateTimeControl.initFlatPicker(dueDateEle);
+                    DateTimeControl.initFlatPickrDate(dueDateEle);
                     if (data?.['due_date']) {
                         $(dueDateEle).val(moment(data?.['due_date']).format('DD/MM/YYYY'));
                     }
@@ -2737,7 +2737,7 @@ class PODataTableHandle {
 
                 let checkTax = POLoadDataHandle.loadCheckSameMixTax();
                 if (dateEle) {
-                    DateTimeControl.initFlatPicker(dateEle);
+                    DateTimeControl.initFlatPickrDate(dateEle);
                     if (data?.['date']) {
                         $(dateEle).val(moment(data?.['date']).format('DD/MM/YYYY'));
                     }

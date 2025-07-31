@@ -2029,7 +2029,7 @@ class GRDataTableHandle {
             ],
             rowCallback: function (row, data, index) {
                 for (let ele of row.querySelectorAll('.date-picker')) {
-                    DateTimeControl.initFlatPicker(ele);
+                    DateTimeControl.initFlatPickrDate(ele);
                 }
             },
             drawCallback: function () {
@@ -2123,7 +2123,7 @@ class GRDataTableHandle {
             ],
             rowCallback: function (row, data, index) {
                 for (let ele of row.querySelectorAll('.date-picker')) {
-                    DateTimeControl.initFlatPicker(ele);
+                    DateTimeControl.initFlatPickrDate(ele);
                 }
             },
             drawCallback: function () {
@@ -2633,7 +2633,7 @@ class GRStoreDataHandle {
                     }
                     tableSerial.DataTable().row(rowIndex).data(rowData);
                     for (let ele of row.querySelectorAll('.date-picker')) {
-                        DateTimeControl.initFlatPicker(ele);
+                        DateTimeControl.initFlatPickrDate(ele);
                     }
                     serial_data.push(rowData);
                 }
@@ -2671,7 +2671,7 @@ class GRStoreDataHandle {
                     }
                     tableLot.DataTable().row(rowIndex).data(rowData);
                     for (let ele of row.querySelectorAll('.date-picker')) {
-                        DateTimeControl.initFlatPicker(ele);
+                        DateTimeControl.initFlatPickrDate(ele);
                     }
                     lot_data.push(rowData);
                 }

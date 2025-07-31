@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Reconciliation' %}{% endblock %}
+{% block cssHeader %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+    <a href="{% url 'ReconUpdate' pk=pk %}">
+        <button class="btn btn-outline-primary" id="btn-enable-edit">
+            <span>
+                <span>{% trans 'Edit' %}</span>
+                <span class="icon">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+{% block pageContent %}
+    <script id="trans-script"
+            data-trans-delivery="{% trans 'Delivery' %}"
+            data-trans-ar="{% trans 'AR invoice' %}"
+            data-trans-cif="{% trans 'Cash inflow' %}"
+            data-trans-gr="{% trans 'Goods receipt' %}"
+            data-trans-ap="{% trans 'AP invoice' %}"
+            data-trans-cof="{% trans 'Cash outflow' %}"
+    ></script>
+    <form id="form-detail-recon" data-method="PUT" data-url="{% url 'ReconDetailAPI' pk=pk %}" data-url-redirect="{% url 'ReconDetail' pk=pk %}">
+        {% include 'sales/reconciliation/common/information.html' %}
+        {% include 'sales/reconciliation/common/table.html' %}
+    </form>
+{% endblock %}
+{% block jsFooter %}
+    <!-- Daterangepicker JS -->
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static 'assets/sales/reconciliation/js/reconciliation_common.js' %}"></script>
+    <script src="{% static 'assets/sales/reconciliation/js/reconciliation_update.js' %}"></script>
+{% endblock %}

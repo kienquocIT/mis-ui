@@ -3,8 +3,6 @@
 {% load static %}
 {% block title %}{% trans 'Reconciliation' %}{% endblock %}
 {% block cssHeader %}
-    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
 {% endblock %}
 {% block jsHeader %}
@@ -24,6 +22,12 @@
             data-trans-delivery="{% trans 'Delivery' %}"
             data-trans-ar="{% trans 'AR invoice' %}"
             data-trans-cif="{% trans 'Cash inflow' %}"
+            data-trans-gr="{% trans 'Goods receipt' %}"
+            data-trans-ap="{% trans 'AP invoice' %}"
+            data-trans-cof="{% trans 'Cash outflow' %}"
+    ></script>
+    <script id="url-script"
+            data-url-ar-list-for-recon="{% url 'ARInvoiceListForReconAPI' %}"
     ></script>
     <form id="form-create-recon" data-method="POST" data-url="{% url 'ReconListAPI' %}" data-url-redirect="{% url 'ReconList' %}">
         {% include 'sales/reconciliation/common/information.html' %}
@@ -33,8 +37,8 @@
 {% block jsFooter %}
     <!-- Daterangepicker JS -->
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'vendors/sweetalert2/sweetalert2.js' %}"></script>
     <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/sales/reconciliation/js/reconciliation_common.js' %}"></script>
     <script src="{% static 'assets/sales/reconciliation/js/reconciliation_create.js' %}"></script>
 {% endblock %}

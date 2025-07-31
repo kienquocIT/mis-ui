@@ -1659,17 +1659,17 @@ class ProductModificationEventHandler {
         })
         // space
         $('.layout-btn').on('click', function () {
-            if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-12 col-lg-12 border-right mt-3') {
+            if ($(this).closest('.main-space').attr('class') === 'main-space col-12 border-right mt-3') {
                 $('.main-space').attr('class', 'main-space col-12 col-md-6 col-lg-6 border-right mt-3')
             }
-            else if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-12 col-lg-12 mt-3') {
+            else if ($(this).closest('.main-space').attr('class') === 'main-space col-12 mt-3') {
                 $('.main-space').attr('class', 'main-space col-12 col-md-6 col-lg-6 mt-3')
             }
             else if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-6 col-lg-6 border-right mt-3') {
-                $('.main-space').attr('class', 'main-space col-12 col-md-12 col-lg-12 border-right mt-3')
+                $('.main-space').attr('class', 'main-space col-12 border-right mt-3')
             }
             else if ($(this).closest('.main-space').attr('class') === 'main-space col-12 col-md-6 col-lg-6 mt-3') {
-                $('.main-space').attr('class', 'main-space col-12 col-md-12 col-lg-12 mt-3')
+                $('.main-space').attr('class', 'main-space col-12 mt-3')
             }
         })
         pageElements.$insert_component_btn.on('click', function () {
@@ -1738,7 +1738,7 @@ class ProductModificationEventHandler {
             ProductModificationPageFunction.LoadTableComponentWarehouseByProduct(url, $(this).attr('data-product-general-traceability-method'))
 
             if ($(this).attr('data-product-general-traceability-method') === '0') {
-                pageElements.$table_select_component_warehouse.closest('.table-none-space').attr('class', 'col-12 col-md-12 col-lg-12 table-none-space border-right')
+                pageElements.$table_select_component_warehouse.closest('.table-none-space').attr('class', 'col-12 table-none-space border-right')
             }
             else {
                 pageElements.$table_select_component_warehouse.closest('.table-none-space').attr('class', 'col-12 col-md-4 col-lg-4 table-none-space border-right')

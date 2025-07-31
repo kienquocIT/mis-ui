@@ -13,7 +13,7 @@ $(function () {
 
         // run datetimepicker
         $('.date-picker').each(function () {
-            DateTimeControl.initFlatPicker(this);
+            DateTimeControl.initFlatPickrDate(this);
         });
 
         // attachment

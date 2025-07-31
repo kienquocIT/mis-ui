@@ -5,6 +5,7 @@ $(document).ready(function () {
     const $AvlList = $('#employee_available_detail_tbl')
     const $AvlHistoryList = $('#employee_adjust_history_tb')
     const $editForm = $('#edit_available_form')
+    const $elmLoad = $('.loading')
 
     class EmployeeHandle {
         static LoadList() {
@@ -14,15 +15,20 @@ $(document).ready(function () {
                     type: "GET",
                     dataSrc: 'data.employee_list',
                     data: function (a) {
+                        a.pageSize = -1
                         a.list_from_leave = 1
                         a.list_from_app = 'leave.leaveavailable.view'
                         return a
                     },
                 },
+                paging: false,
                 responsive: true,
                 useDataServer: true,
                 info: false,
-                pageLength: 50,
+                // pageLength: 50,
+                scrollY: window.innerHeight - 192,
+                scrollCollapse: true,
+                scroller: true,
                 columns: [
                     {
                         data: 'code',
@@ -54,6 +60,7 @@ $(document).ready(function () {
                     tbl.rows('.selected').nodes().each((row) => row.classList.remove('selected'));
                     classList.add('selected');
                     // row selected call jax load available list and history list of this employee has select
+                    $elmLoad.css({'display': 'flex'})
                     const row_data = tbl.rows('.selected').data().toArray()
                     EmployeeHandle.CallAvailable(row_data[0]?.id)
                     EmployeeHandle.CallHistory(row_data[0]?.id)
@@ -225,6 +232,7 @@ $(document).ready(function () {
                 }).then((resp) => {
                         let data = $.fn.switcherResp(resp).leave_available;
                         EmployeeHandle.LoadAvailableTable(data)
+                        $elmLoad.css({'display': 'none'})
                     },
                     (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
                 )

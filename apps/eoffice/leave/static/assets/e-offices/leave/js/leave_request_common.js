@@ -37,10 +37,13 @@ function filterWorkingDay(){
     for (let key in ws.working_days){
         const item = ws.working_days[key]
         item.work = !!item?.['work']
-        if (!item?.work ||(!item?.aft.to || !item?.aft.from || !item?.mor.to || !item?.mor.from)) convert_list[key] = item
+        if ( !item?.work || (!item?.aft.to || !item?.aft.from || !item?.mor.to || !item?.mor.from))
+            convert_list[key] = item
     }
+    // trả về danh sách ngày ko làm ( ví dụ: ngày chủ nhật "0" or làm nửa buổi thứ bảy "6")
     return convert_list
 }
+
 function dateRangeToList(data){
     // get all date between two date
     let dateList = [];
@@ -59,6 +62,7 @@ function yearList(){
         for (let item of ws) {
             lsYear[item["config_year"]] = item["list_holiday"]
         }
+    else $.fn.notifyB({'description': $.fn.gettext('Oops, some data is missing. Please reload the page and try again.')}, 'failure')
     return lsYear
 }
 function checkHalfDay(item, data, dayMapWs, total){
@@ -74,16 +78,15 @@ function checkHalfDay(item, data, dayMapWs, total){
         else if (!data.morning_shift_f) total -= 0.5
         if (item === data.date_to && data.morning_shift_t) total -= 0.5
     }
-    else
+    else // case date_to
         if (dayMapWs){
             if (dayMapWs?.['work'])
-                if (dayMapWs.mor.to && dayMapWs.mor.from) //nếu làm buổi sáng
-                    total -= 1
+                if (data.morning_shift_t) //nếu làm buổi sáng
+                    total -= dayMapWs.mor.to ? 0.5 : 1
                 else // làm buổi chiều
-                    total -= data.morning_shift_t ? 0.5 : 1
+                    total -= dayMapWs.mor.to && dayMapWs.aft.to ? 1 : 0.5
             return total
         }
-        else if (data.morning_shift_t) total -= 0.5
     return total
 }
 class detailTab {
@@ -104,7 +107,7 @@ class detailTab {
         for (let item of dateList){
             const day = new Date(item).getDay()
             const dayMapWs = wsLsConvert?.[day];
-            // check range ngày nghỉ trong ngày làm việc, nếu ngày nghỉ trùng ngày ko làm => trừ 1 trong tổng ngày
+            // check range ngày nghỉ trong ngày làm việc, nếu ngày dk nghỉ trùng ngày ko làm => trừ 1 trong tổng ngày
             if (dayMapWs && !dayMapWs?.['work']) tempTotal -= 1
 
             // check range ngày nghỉ trong ngày holidays
@@ -163,7 +166,7 @@ class detailTab {
                 || (['FF', 'MY', 'MC'].includes(leave_available.leave_type.code) && data.subtotal > data['leave_available'].total))
                 $.fn.notifyB({description: $transElm.attr('data-out-of-stock')}, 'failure')
 
-            $('[name*="subtotal_"]', row).val(data.subtotal)
+            $('input[name*="subtotal_"]', row).val(data.subtotal)
             $(document).trigger("footerCallback");
         }
     }

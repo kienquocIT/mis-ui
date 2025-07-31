@@ -872,8 +872,7 @@ class MenusHRM:
             ),
         ]
     )
-
-	ATTENDANCE = MenuCommon(
+    ATTENDANCE = MenuCommon(
         name='Attendance', code='menu_attendance', view_name='',
         icon='<i class="fas fa-solid fa-person"></i>',
         child=[

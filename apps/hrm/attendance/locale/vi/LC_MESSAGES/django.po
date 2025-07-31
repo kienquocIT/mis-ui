@@ -61,5 +61,16 @@ msgstr "Kết thúc nghỉ giữa giờ (bắt đầu ca làm việc thứ hai)"
 msgid "Check out"
 msgstr "Giờ ra"
 
+#
+msgid "Grace start"
+msgstr "Thời gian bắt đầu vào/ra tối đa"
+
+#
+msgid "Grace end"
+msgstr "Thời gian kết thúc vào/ra tối đa"
+
+#
+msgid "Threshold late / Leave early"
+msgstr "Ngưỡng đi trễ / về sớm cho phép"
 
 

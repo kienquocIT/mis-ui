@@ -12130,3 +12130,7 @@ msgstr "Giờ làm việc"
 #
 msgid "Break time"
 msgstr "Giờ giải lao"
+
+#
+msgid "Attendance"
+msgstr "Chấm công"

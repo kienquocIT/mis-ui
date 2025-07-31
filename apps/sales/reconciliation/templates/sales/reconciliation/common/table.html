@@ -7,12 +7,13 @@
             <tr>
                 <th style="min-width: 30px"></th>
                 <th style="min-width: 30px"></th>
-                <th style="min-width: 150px">{% trans "Original transaction" %}</th>
+                <th style="min-width: 100px">{% trans "Original transaction" %}</th>
                 <th style="min-width: 100px" title="{% trans 'Hover to see title' %}">{% trans "Transaction code" %} <i class="bi bi-info-circle"></i></th>
                 <th style="min-width: 100px">{% trans 'Posting date' %}</th>
                 <th style="min-width: 120px">{% trans 'Total value' %}</th>
                 <th style="min-width: 120px">{% trans 'Balance value' %}</th>
                 <th style="min-width: 150px">{% trans 'Recon amount' %}</th>
+                <th style="min-width: 100px">{% trans 'Account' %}</th>
                 <th style="min-width: 200px">{% trans 'Note' %}</th>
             </tr>
             </thead>
@@ -20,7 +21,7 @@
                 <tr>
                     <td style="min-width: 30px"></td>
                     <td style="min-width: 30px"></td>
-                    <td style="min-width: 150px"></td>
+                    <td style="min-width: 100px"></td>
                     <td style="min-width: 100px"></td>
                     <td style="min-width: 100px"></td>
                     <td style="min-width: 120px"></td>
@@ -29,6 +30,7 @@
                         <input disabled readonly id="recon-total" class="form-control form-control-line mask-money text-primary text-right" value="0">
                         <span class="small text-muted">{% trans 'Recon total must be 0' %}</span>
                     </td>
+                    <th style="min-width: 100px"></th>
                     <td style="min-width: 200px"></td>
                 </tr>
             </tfoot>

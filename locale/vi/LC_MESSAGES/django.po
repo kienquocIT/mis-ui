@@ -6982,7 +6982,7 @@ msgstr "Mô tả giao dịch"
 
 #
 msgid "Trans code"
-msgstr "Mã giao dịch"
+msgstr "Mã GD"
 
 #
 msgid "In quantity"
@@ -10913,7 +10913,7 @@ msgstr "Đối tác kinh doanh"
 
 #
 msgid "Transaction code"
-msgstr "Mã giao dịch"
+msgstr "Mã GD"
 
 #
 msgid "Transaction name"
@@ -12134,7 +12134,6 @@ msgstr "Giờ giải lao"
 #
 msgid "Attendance"
 msgstr "Chấm công"
-msgstr "Cấn trừ cho Nhân viên"
 
 #
 msgid "Hover to see title"

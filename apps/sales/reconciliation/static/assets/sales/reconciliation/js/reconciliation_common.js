@@ -33,7 +33,7 @@ const pageVariables = new ReconPageVariables()
  * Các hàm load page và hàm hỗ trợ
  */
 class ReconPageFunction {
-    static LoadTableRecon(data_list=[]) {
+    static LoadTableRecon(data_list=[], option='create') {
         pageElements.$table_recon.DataTable().clear().destroy()
         pageElements.$table_recon.DataTableDefault({
             styleDom: 'hide-foot',
@@ -56,12 +56,12 @@ class ReconPageFunction {
                     render: (data, type, row) => {
                         return `<div class="form-check">
                             <input type="checkbox"
-                                   ${row?.['id'] ? 'disabled checked' : ''}
+                                   ${option === 'detail' ? 'disabled' : ''}
+                                   ${row?.['id'] ? 'checked' : ''}
                                    data-credit-id="${row?.['credit_doc_id'] || ''}"
                                    data-debit-id="${row?.['debit_doc_id'] || ''}"
                                    class="form-check-input selected_document"
                             >
-                            <label class="form-check-label"></label>
                         </div>`
                     }
                 },
@@ -94,7 +94,7 @@ class ReconPageFunction {
                     }
                 },
                 {
-                    className: 'text-right w-15',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         let recon_total = row?.['recon_total'] || 0
                         if (row?.['credit_doc_id']) {
@@ -104,7 +104,7 @@ class ReconPageFunction {
                     }
                 },
                 {
-                    className: 'text-right w-15',
+                    className: 'text-right w-10',
                     render: (data, type, row) => {
                         let recon_balance = row?.['recon_balance'] || 0
                         if (row?.['credit_doc_id']) {
@@ -118,20 +118,27 @@ class ReconPageFunction {
                     render: (data, type, row) => {
                         let recon_amount = row?.['recon_amount'] || 0
                         if (row?.['credit_doc_id']) {
-                            return `<input disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount credit_amount" value="${recon_amount}">`;
+                            return `<input disabled ${option === 'detail' ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount credit_amount" value="${recon_amount}">`;
                         }
-                        return `<input disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount debit_amount" value="${recon_amount * (-1)}">`;
+                        return `<input disabled ${option === 'detail' ? 'disabled readonly' : ''} class="form-control text-right mask-money recon_amount debit_amount" value="${recon_amount * (-1)}">`;
+                    }
+                },
+                {
+                    className: 'text-right w-10',
+                    render: (data, type, row) => {
+                        return `<span class="account_code" style="font-size: 20px">${row?.['debit_account_data']?.['acc_code'] || row?.['credit_account_data']?.['acc_code']}</span>`;
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<textarea disabled ${row?.['id'] ? 'disabled readonly' : ''} class="form-control note"></textarea>`;
+                        return `<textarea disabled ${option === 'detail' ? 'disabled readonly' : ''} ${row?.['id'] ? 'disabled readonly' : ''} class="form-control note"></textarea>`;
                     }
                 },
             ],
             initComplete: function () {
                 ReconPageFunction.RecalculateReconTotal()
+                pageElements.$table_recon.DataTable().column(8).visible(option!=='create');
             }
         })
     }
@@ -222,12 +229,7 @@ class ReconHandler {
 
         // console.log(frm)
 
-        return {
-            url: frm.dataUrl,
-            method: frm.dataMethod,
-            data: frm.dataForm,
-            urlRedirect: frm.dataUrlRedirect,
-        };
+        return frm
     }
     static LoadDetailRecon(option) {
         let url_loaded = $('#form-detail-recon').attr('data-url');
@@ -239,7 +241,7 @@ class ReconHandler {
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    // console.log(data)
+                    console.log(data)
 
                     pageElements.$title.val(data?.['title'])
                     pageElements.$posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
@@ -265,7 +267,7 @@ class ReconHandler {
                         })
                     }
 
-                    ReconPageFunction.LoadTableRecon(data?.['recon_items_data'])
+                    ReconPageFunction.LoadTableRecon(data?.['recon_items_data'], option)
 
                     $.fn.initMaskMoney2()
 
@@ -383,7 +385,13 @@ class ReconEventHandler {
         $(document).on('change', '.recon_amount', function () {
             let this_value = parseFloat($(this).attr('value'))
             let recon_balance = parseFloat($(this).closest('tr').find('.recon_balance').attr('data-init-money'))
-            if (this_value > recon_balance) {
+            if (this_value > 0) {
+                this_value = this_value * (-1)
+            }
+            if ($(this).hasClass('debit_amount')) {
+                $(this).attr('value', this_value)
+            }
+            if (this_value > recon_balance * (-1)) {
                 $.fn.notifyB({description: `Recon value can not > Balance value`}, 'failure');
                 $(this).attr('value', recon_balance)
             }

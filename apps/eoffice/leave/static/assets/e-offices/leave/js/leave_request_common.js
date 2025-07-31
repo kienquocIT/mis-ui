@@ -31,11 +31,12 @@ function ConvertToTotal(data){
     return tempTotal
 }
 function filterWorkingDay(){
-    const ws = JSON.parse($('#ws_data').text())
+    const $elmWs = $('#ws_data')
+    const ws = $elmWs.text().length ? JSON.parse($elmWs.text())?.['working_days'] : {}
     // ds ngày ko làm or làm nửa buồi
     let convert_list = []
-    for (let key in ws.working_days){
-        const item = ws.working_days[key]
+    for (let key in ws){
+        const item = ws[key]
         item.work = !!item?.['work']
         if ( !item?.work || (!item?.aft.to || !item?.aft.from || !item?.mor.to || !item?.mor.from))
             convert_list[key] = item
@@ -56,9 +57,10 @@ function dateRangeToList(data){
     return dateList
 }
 function yearList(){
-    let lsYear = {}
-    const ws = JSON.parse($('#ws_data').text()).years
-    if (ws)
+    let lsYear = {};
+    const $elmWs = $('#ws_data')
+    const ws = $elmWs.text().length ? JSON.parse($elmWs.text())?.['years'] : []
+    if (ws && ws.length)
         for (let item of ws) {
             lsYear[item["config_year"]] = item["list_holiday"]
         }

@@ -80,7 +80,7 @@ $(function () {
                                 title = row?.['purchase_order_data']?.['title'] ? row?.['purchase_order_data']?.['title'] : '';
                                 code = row?.['purchase_order_data']?.['code'] ? row?.['purchase_order_data']?.['code'] : '';
                             }
-                            return `<a href="${link}" class="link-primary underline_hover">${title}</a><div><span class="badge text-dark-10 fs-8 bg-green-light-4">${code}</span></div>`;
+                            return `<a href="${link}" class="link-primary underline_hover">${title}</a><div><span class="badge text-dark-10 fs-8 bg-orange-light-4">${code}</span></div>`;
                         }
                     },
                     {
@@ -483,7 +483,7 @@ $(function () {
                             title = row?.['purchase_order_data']?.['title'] ? row?.['purchase_order_data']?.['title'] : '';
                             code = row?.['purchase_order_data']?.['code'] ? row?.['purchase_order_data']?.['code'] : '';
                         }
-                        return `<a href="${link}" class="link-primary underline_hover">${title}</a><div><span class="badge text-dark-10 fs-8 bg-green-light-4">${code}</span></div>`;
+                        return `<a href="${link}" class="link-primary underline_hover">${title}</a><div><span class="badge text-dark-10 fs-8 bg-orange-light-4">${code}</span></div>`;
                     }
                 }
             }

@@ -74,11 +74,13 @@ $(function () {
                         render: (data, type, row) => {
                             let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order_data']?.['id']);
                             let title = row?.['sale_order_data']?.['title'] ? row?.['sale_order_data']?.['title'] : '';
-                            if (row?.['purchase_order_data']?.['id'] && row?.['purchase_order_data']?.['title']) {
+                            let code = row?.['sale_order_data']?.['code'] ? row?.['sale_order_data']?.['code'] : '';
+                            if (row?.['purchase_order_data']?.['id'] && row?.['purchase_order_data']?.['title'] && row?.['purchase_order_data']?.['code']) {
                                 link = $urlFact.data('po-detail').format_url_with_uuid(row?.['purchase_order_data']?.['id']);
                                 title = row?.['purchase_order_data']?.['title'] ? row?.['purchase_order_data']?.['title'] : '';
+                                code = row?.['purchase_order_data']?.['code'] ? row?.['purchase_order_data']?.['code'] : '';
                             }
-                            return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
+                            return `<a href="${link}" class="link-primary underline_hover">${title}</a><div><span class="badge text-dark-10 fs-8 bg-orange-light-4">${code}</span></div>`;
                         }
                     },
                     {
@@ -475,11 +477,13 @@ $(function () {
                     render: (data, type, row) => {
                         let link = $urlFact.data('so-detail').format_url_with_uuid(row?.['sale_order_data']?.['id']);
                         let title = row?.['sale_order_data']?.['title'] ? row?.['sale_order_data']?.['title'] : '';
-                        if (row?.['purchase_order_data']?.['id'] && row?.['purchase_order_data']?.['title']) {
+                        let code = row?.['sale_order_data']?.['code'] ? row?.['sale_order_data']?.['code'] : '';
+                        if (row?.['purchase_order_data']?.['id'] && row?.['purchase_order_data']?.['title'] && row?.['purchase_order_data']?.['code']) {
                             link = $urlFact.data('po-detail').format_url_with_uuid(row?.['purchase_order_data']?.['id']);
                             title = row?.['purchase_order_data']?.['title'] ? row?.['purchase_order_data']?.['title'] : '';
+                            code = row?.['purchase_order_data']?.['code'] ? row?.['purchase_order_data']?.['code'] : '';
                         }
-                        return `<a href="${link}" class="link-primary underline_hover">${title}</a>`;
+                        return `<a href="${link}" class="link-primary underline_hover">${title}</a><div><span class="badge text-dark-10 fs-8 bg-orange-light-4">${code}</span></div>`;
                     }
                 }
             }
@@ -1059,11 +1063,11 @@ $(function () {
 
         // init date picker
         $('.flat-picker').each(function () {
-            DateTimeControl.initFlatPicker(this);
+            DateTimeControl.initFlatPickrDate(this);
         });
 
         $('.flat-picker-in-month').each(function () {
-            DateTimeControl.initFlatPickerInMonth(this, 7, 2025);
+            DateTimeControl.initFlatPickrDateInMonth(this, 7, 2025);
         });
 
         // mask money
@@ -1108,7 +1112,7 @@ $(function () {
             let data = SelectDDControl.get_data_from_idx($boxMonth, $boxMonth.val());
             if (data?.['month'] && data?.['year']) {
                 $('.flat-picker-in-month').each(function () {
-                    DateTimeControl.initFlatPickerInMonth(this, data?.['month'], data?.['year']);
+                    DateTimeControl.initFlatPickrDateInMonth(this, data?.['month'], data?.['year']);
                 });
                 let dataMonth = DateTimeControl.getMonthInfo(data?.['month'], data?.['year']);
                 boxStart.val(dataMonth?.['from']);

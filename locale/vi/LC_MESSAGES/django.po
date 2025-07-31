@@ -12096,5 +12096,46 @@ msgid "Reconciliation of Employee"
 msgstr "Cấn trừ cho Nhân viên"
 
 #
+msgid "Shift assignment"
+msgstr "Phân công ca"
+
+#
+msgid "All company"
+msgstr "Toàn bộ công ty"
+
+#
+msgid "Applicable object"
+msgstr "Đối tượng áp dụng"
+
+#
+msgid "Apply for shifts"
+msgstr "Áp dụng ca làm việc"
+
+#
+msgid "Current shift"
+msgstr "Ca hiện tại"
+
+#
+msgid "Select shift to apply"
+msgstr "Chọn ca áp dụng"
+
+#
+msgid "View shift list"
+msgstr "Xem danh sách ca"
+
+#
+msgid "Working hours"
+msgstr "Giờ làm việc"
+
+#
+msgid "Break time"
+msgstr "Giờ giải lao"
+
+#
+msgid "Attendance"
+msgstr "Chấm công"
+msgstr "Cấn trừ cho Nhân viên"
+
+#
 msgid "Hover to see title"
 msgstr "Trỏ vào để xem tiêu đề"

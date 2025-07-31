@@ -203,12 +203,12 @@ class ReconHandler {
         pageElements.$table_recon.find('tbody tr').each(function () {
             if ($(this).find('.selected_document').prop('checked')) {
                 recon_item_data.push({
-                    'ar_invoice_id': $(this).find('.selected_document').attr('data-credit-id') ? $(this).find('.selected_document').attr('data-credit-id') : null,
-                    'cash_inflow_id': null,
-                    'recon_balance': $(this).find('.recon_balance').attr('data-init-money'),
-                    'recon_amount': $(this).find('.recon_amount').attr('value'),
-                    'note': $(this).find('.note').val(),
-                    'accounting_account': '1311'
+                    'debit_doc_id': $(this).find('.selected_document').attr('data-debit-id') || null,
+                    'credit_doc_id': $(this).find('.selected_document').attr('data-credit-id') || null,
+                    'recon_total': Math.abs(parseFloat($(this).find('.recon_total').attr('data-init-money') || 0)),
+                    'recon_balance': Math.abs(parseFloat($(this).find('.recon_balance').attr('data-init-money') || 0)),
+                    'recon_amount': Math.abs(parseFloat($(this).find('.recon_amount').attr('value') || 0)),
+                    'note': $(this).find('.note').val()
                 })
             }
         })
@@ -239,7 +239,7 @@ class ReconHandler {
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
 
-                    console.log(data)
+                    // console.log(data)
 
                     pageElements.$title.val(data?.['title'])
                     pageElements.$posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))

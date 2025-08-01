@@ -149,16 +149,30 @@ $(function () {
                                 return `<span class="badge text-dark-10 fs-8 bg-green-light-4">${$transFact.attr('data-paid')}</span>`;
                             }
                             if (row?.['due_date']) {
+                                let btnTxt = $transFact.attr('data-create-cash-in');
+                                let btnUrl = $urlFact.attr('data-cash-in-create');
+                                if (row?.['purchase_order_data']?.['id']) {
+                                    btnTxt = $transFact.attr('data-create-cash-out');
+                                    btnUrl = $urlFact.attr('data-cash-out-create');
+                                }
+                                let btn = `<a href="${btnUrl}" target="_blank"><button type="button" class="btn btn-outline-primary btn-xs mt-2">
+                                                <span>
+                                                    <span class="icon">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </span>
+                                                    <span>${btnTxt}</span>
+                                                </span>
+                                            </button></a>`;
                                 let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
                                 let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
                                 let daysLeft = daysBetween(currentDate, dueDate);
                                 if (daysLeft >= 0) {
                                     if (row?.['ar_invoice_data']?.['id'] || row?.['ap_invoice_data']?.['id']) {
-                                        return `<span class="badge text-dark-10 fs-8 bg-pink-light-4">${$transFact.attr('data-partially-paid')}</span>`;
+                                        return `<span class="badge text-dark-10 fs-8 bg-pink-light-4">${$transFact.attr('data-partially-paid')}</span>${btn}`;
                                     }
-                                    return `<span class="badge text-dark-10 fs-8 bg-yellow-light-4">${$transFact.attr('data-not-paid')}</span>`;
+                                    return `<span class="badge text-dark-10 fs-8 bg-yellow-light-4">${$transFact.attr('data-not-paid')}</span>${btn}`;
                                 }
-                                return `<span class="badge text-dark-10 fs-8 bg-red-light-4">${$transFact.attr('data-over-due')}</span>`;
+                                return `<span class="badge text-dark-10 fs-8 bg-red-light-4">${$transFact.attr('data-over-due')}</span>${btn}`;
                             }
                             return ``;
                         }
@@ -556,16 +570,30 @@ $(function () {
                             return `<span class="badge text-dark-10 fs-8 bg-green-light-4">${$transFact.attr('data-paid')}</span>`;
                         }
                         if (row?.['due_date']) {
+                            let btnTxt = $transFact.attr('data-create-cash-in');
+                            let btnUrl = $urlFact.attr('data-cash-in-create');
+                            if (row?.['purchase_order_data']?.['id']) {
+                                btnTxt = $transFact.attr('data-create-cash-out');
+                                btnUrl = $urlFact.attr('data-cash-out-create');
+                            }
+                            let btn = `<a href="${btnUrl}" target="_blank"><button type="button" class="btn btn-outline-primary btn-xs mt-2">
+                                            <span>
+                                                <span class="icon">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </span>
+                                                <span>${btnTxt}</span>
+                                            </span>
+                                        </button></a>`;
                             let currentDate = DateTimeControl.getCurrentDate("DMY", "/");
                             let dueDate = DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', row?.['due_date']);
                             let daysLeft = daysBetween(currentDate, dueDate);
                             if (daysLeft >= 0) {
                                 if (row?.['ar_invoice_data']?.['id'] || row?.['ap_invoice_data']?.['id']) {
-                                    return `<span class="badge text-dark-10 fs-8 bg-pink-light-4">${$transFact.attr('data-partially-paid')}</span>`;
+                                    return `<span class="badge text-dark-10 fs-8 bg-pink-light-4">${$transFact.attr('data-partially-paid')}</span>${btn}`;
                                 }
-                                return `<span class="badge text-dark-10 fs-8 bg-yellow-light-4">${$transFact.attr('data-not-paid')}</span>`;
+                                return `<span class="badge text-dark-10 fs-8 bg-yellow-light-4">${$transFact.attr('data-not-paid')}</span>${btn}`;
                             }
-                            return `<span class="badge text-dark-10 fs-8 bg-red-light-4">${$transFact.attr('data-over-due')}</span>`;
+                            return `<span class="badge text-dark-10 fs-8 bg-red-light-4">${$transFact.attr('data-over-due')}</span>${btn}`;
                         }
                         return ``;
                     }

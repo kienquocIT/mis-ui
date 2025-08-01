@@ -26,7 +26,7 @@ class ReconCreate(View):
         input_mapping_properties = InputMappingProperties.RECON_DATA_MAP
         return {
             'app_id': 'b690b9ff-670a-474b-8ae2-2c17d7c30f40',
-            'list_from_app': 'financialrecon.reconciliation.create',
+            'list_from_app': 'reconciliation.reconciliation.create',
             'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-create-recon'
         }, status.HTTP_200_OK
@@ -42,7 +42,7 @@ class ReconDetail(View):
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.RECON_DATA_MAP
         return {
-            'list_from_app': 'financialrecon.reconciliation.create',
+            'list_from_app': 'reconciliation.reconciliation.create',
             'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-detail-recon'
         }, status.HTTP_200_OK
@@ -58,7 +58,7 @@ class ReconUpdate(View):
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.RECON_DATA_MAP
         return {
-            'list_from_app': 'financialrecon.reconciliation.edit',
+            'list_from_app': 'reconciliation.reconciliation.edit',
             'input_mapping_properties': input_mapping_properties,
             'form_id': 'form-detail-recon'
         }, status.HTTP_200_OK

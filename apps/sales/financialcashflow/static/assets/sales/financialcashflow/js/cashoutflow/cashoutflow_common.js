@@ -332,7 +332,7 @@ class COFPageFunction {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            return resp.data['ap_invoice_list'] ? resp.data['ap_invoice_list'] : [];
+                            return resp.data['ap_invoice_list'] ? resp.data['ap_invoice_list'].filter(item => item?.['recon_balance'] > 0) : [];
                         }
                         return [];
                     },

@@ -2979,7 +2979,9 @@ class WFRTControl {
                 }
             })
         }
-        globeWFRuntimeID = runtime_id;
+        if (!globeWFRuntimeID) {
+            globeWFRuntimeID = runtime_id;
+        }
     }
 
     static setWFInitialData(app_code, isCR = false) {

@@ -82,26 +82,26 @@ class ShiftLoadDataHandle {
     static combineDataForm() {
         let dataForm = {};
         dataForm['title'] = pageElements.$titleEle.val();
-        dataForm['checkin_time'] = pageElements.$checkinTime.val();
-        dataForm['checkin_gr_start'] = pageElements.$checkinGraceStart.val() || null;
-        dataForm['checkin_gr_end'] = pageElements.$checkinGraceEnd.val() || null;
-        dataForm['checkin_threshold'] = parseFloat(pageElements.$checkinThreshold.val());
 
-        dataForm['break_in_time'] = pageElements.$breakinTime.val();
-        dataForm['break_in_gr_start'] = pageElements.$breakinGraceStart.val() || null;
-        dataForm['break_in_gr_end'] = pageElements.$breakinGraceEnd.val() || null;
-        dataForm['break_in_threshold'] = parseFloat(pageElements.$breakinThreshold.val());
+        dataForm['time_data'] = {
+            'checkin_time': pageElements.$checkinTime.val() || null,
+            'checkin_gr_start': pageElements.$checkinGraceStart.val() || null,
+            'checkin_gr_end': pageElements.$checkinGraceEnd.val() || null,
+            'break_in_time': pageElements.$breakinTime.val() || null,
+            'break_in_gr_start': pageElements.$breakinGraceStart.val() || null,
+            'break_in_gr_end': pageElements.$breakinGraceEnd.val() || null,
+            'break_out_time': pageElements.$breakoutTime.val() || null,
+            'break_out_gr_start': pageElements.$breakoutGraceStart.val() || null,
+            'break_out_gr_end': pageElements.$breakoutGraceEnd.val() || null,
+            'checkout_time': pageElements.$checkoutTime.val() || null,
+            'checkout_gr_start': pageElements.$checkoutGraceStart.val() || null,
+            'checkout_gr_end': pageElements.$checkoutGraceEnd.val() || null,
+        }
 
-        dataForm['break_out_time'] = pageElements.$breakoutTime.val();
-        dataForm['break_out_gr_start'] = pageElements.$breakoutGraceStart.val() || null;
-        dataForm['break_out_gr_end'] = pageElements.$breakoutGraceEnd.val() || null;
-        dataForm['break_out_threshold'] = parseFloat(pageElements.$breakoutThreshold.val());
-
-        dataForm['checkout_time'] = pageElements.$checkoutTime.val();
-        dataForm['checkout_gr_start'] = pageElements.$checkoutGraceStart.val() || null;
-        dataForm['checkout_gr_end'] = pageElements.$checkoutGraceEnd.val() || null;
-        dataForm['checkout_threshold'] = parseFloat(pageElements.$checkoutThreshold.val());
-
+        dataForm['checkin_threshold'] = parseInt(pageElements.$checkinThreshold.val() || 0);
+        dataForm['break_in_threshold'] = parseInt(pageElements.$breakinThreshold.val() || 0);
+        dataForm['break_out_threshold'] = parseInt(pageElements.$breakoutThreshold.val() || 0);
+        dataForm['checkout_threshold'] = parseInt(pageElements.$checkoutThreshold.val() || 0);
         dataForm['working_day_list'] = pageElements.getSelectedWorkingDay();
         return dataForm;
     }

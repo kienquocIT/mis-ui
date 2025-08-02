@@ -3384,7 +3384,7 @@ msgid "Change Space to "
 msgstr "Cập nhật Space thành "
 
 #
-msgid "Auto reload has been applied after the timeout!"
+msgid "Auto reload page after the timeout!"
 msgstr "Tự động tải lại trang đã được áp dụng sau thời gian chờ!"
 
 #

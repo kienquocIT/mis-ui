@@ -1,0 +1,375 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'General Dashboard' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        /* Modern Dashboard with Light Gray Theme */
+        #idxPageContent {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            padding-top: 1.5rem;
+            position: relative;
+        }
+
+        .container-fluid {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Spinner Custom */
+        .spinner-grow {
+            width: 2.5rem !important;
+            height: 2.5rem !important;
+        }
+
+        /* Responsive Grid */
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1rem;
+            }
+
+            .form-label {
+                font-size: 0.75rem;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    {{ data.data.current_period | json_script:"current_period" }}
+    <script id="script-url"
+            data-url-report-revenue-profit="{% url 'ReportRevenueListAPI' %}"
+            data-url-top-sale-customer-list="{% url 'ReportCustomerListAPI' %}"
+            data-url-top-category-product-list="{% url 'ReportProductListAPIRDashBoard' %}"
+            data-url-company-revenue-plan="{% url 'RevenuePlanListAPI' %}"
+            data-url-revenue-plan-by-report-perm="{% url 'RevenuePlanByReportPermListAPI' %}"
+    ></script>
+    <script id="trans-script"
+            data-trans-m1th="{% trans 'Jan ' %}"
+            data-trans-m2th="{% trans 'Feb ' %}"
+            data-trans-m3th="{% trans 'Mar ' %}"
+            data-trans-m4th="{% trans 'Apr ' %}"
+            data-trans-m5th="{% trans 'May ' %}"
+            data-trans-m6th="{% trans 'Jun ' %}"
+            data-trans-m7th="{% trans 'Jul ' %}"
+            data-trans-m8th="{% trans 'Aug ' %}"
+            data-trans-m9th="{% trans 'Sep ' %}"
+            data-trans-m10th="{% trans 'Oct ' %}"
+            data-trans-m11th="{% trans 'Nov ' %}"
+            data-trans-m12th="{% trans 'Dec ' %}"
+            data-trans-revenue="{% trans 'Revenue' %}"
+            data-trans-profit="{% trans 'Profit' %}"
+            data-trans-month="{% trans 'Month' %}"
+            data-trans-chart-revenue="{% trans 'Revenue chart' %}"
+            data-trans-chart-profit="{% trans 'Profit chart' %}"
+            data-trans-expected="{% trans 'Expected' %}"
+            data-trans-reality="{% trans 'Reality' %}"
+            data-trans-chart-topsale="{% trans 'Top sale' %}"
+            data-trans-chart-topcustomer="{% trans 'Top customer' %}"
+            data-trans-chart-topcategory="{% trans 'Top category' %}"
+            data-trans-chart-topproduct="{% trans 'Top product' %}"
+            data-trans-quarter-1="{% trans 'Quarter' %} 1"
+            data-trans-quarter-2="{% trans 'Quarter' %} 2"
+            data-trans-quarter-3="{% trans 'Quarter' %} 3"
+            data-trans-quarter-4="{% trans 'Quarter' %} 4"
+            data-trans-all="{% trans 'Default all' %}"
+    ></script>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="money-display" class="form-label">{% trans 'Money display' %}</label>
+                                    <select class="form-select" id="money-display">
+                                        <option value="0" selected>{% trans 'Million' %}</option>
+                                        <option value="1">{% trans 'Billion' %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="money-round" class="form-label">{% trans 'Money round' %}</label>
+                                    <input id="money-round" type="number" class="form-control" value="1" min="0">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="period-filter" class="form-label">
+                                        {% trans 'Fiscal year' %} 
+                                        <small class="text-muted fw-normal">({% trans 'for revenue chart & profit chart' %})</small>
+                                    </label>
+                                    <select class="form-select"
+                                            id="period-filter"
+                                            data-url="{% url 'PeriodsConfigListAPI' %}"
+                                            data-method="GET"
+                                    ></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-2">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="bi bi-graph-up-arrow text-primary"></i>
+                            {% trans 'This month revenue' %}
+                        </h5>
+                        <div class="row">
+                            <div class="col-12">
+                                <span class="stat-value mask-money" data-mask-money="0" id="current-revenue"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-2">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="bi bi-currency-dollar text-success"></i>
+                            {% trans 'This month profit' %}
+                        </h5>
+                        <div class="row">
+                            <div class="col-12">
+                                <span class="stat-value mask-money" data-mask-money="0" id="current-profit"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row dashboard-space mb-10">
+            <div class="view-space col-12">
+                <div class="card">
+                    <div class="collapse show" id="revenueprofitCollapse">
+                        <div class="px-3 py-2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button type="button"
+                                                id="reload-revenue-profit-data-btn"
+                                                class="reload-data-btn btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover">
+                                            <span class="icon"
+                                                  data-bs-toggle="tooltip"
+                                                  data-bs-placement="right"
+                                                  title="{% trans 'Refresh data' %}"><i class="fas fa-sync"></i></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label" for="revenue-profit-chart-type">{% trans 'Chart type' %}</label>
+                                        <select class="form-select" id="revenue-profit-chart-type">
+                                            <option value="0" selected>{% trans 'Line' %}</option>
+                                            <option value="1">{% trans 'Bar' %}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label" for="revenue-profit-view-type">{% trans 'View by' %}</label>
+                                        <select class="form-select" id="revenue-profit-view-type">
+                                            <option value="0" selected>{% trans 'Period revenue / profit' %}</option>
+                                            <option value="1">{% trans 'Accumulated revenue / profit' %}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label" for="profit-type">{% trans 'Profit type' %}</label>
+                                        <select class="form-select" id="profit-type">
+                                            <option value="0" selected>{% trans 'Gross profit' %}</option>
+                                            <option value="1">{% trans 'Net income' %}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label" for="revenue-profit-group">{% trans 'Group' %}</label>
+                                        <select class="form-select" id="revenue-profit-group" 
+                                                data-method="GET" 
+                                                data-url="{% url 'GroupListAPI' %}"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body p-3">
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <div class="position-relative">
+                                    <div id="revenue-spinner" class="spinner-grow text-primary position-absolute top-50 start-50 translate-middle" role="status"></div>
+                                    <div id="revenue_chart" style="width: 100%; height: 300px;"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="position-relative">
+                                    <div id="profit-spinner" class="spinner-grow text-success position-absolute top-50 start-50 translate-middle" role="status"></div>
+                                    <div id="profit_chart" style="width: 100%; height: 300px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="view-space col-12">
+                <div class="card">
+                    <div class="collapse show" id="topsalecustomerCollapse">
+                        <div class="px-3 py-2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button type="button"
+                                                id="reload-top-sale-customer-data-btn"
+                                                class="reload-data-btn btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover">
+                                            <span class="icon"
+                                                  data-bs-toggle="tooltip"
+                                                  data-bs-placement="right"
+                                                  title="{% trans 'Refresh data' %}"><i class="fas fa-sync"></i></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="top-sale-customer-time">{% trans 'Time range' %}</label>
+                                        <div class="input-group">
+                                            <select class="form-select" id="top-sale-customer-time">
+                                                <option value="0">{% trans 'Month' %}</option>
+                                                <option value="1">{% trans 'Quarter' %}</option>
+                                                <option value="2" selected>{% trans 'Whole year' %}</option>
+                                            </select>
+                                            <select class="form-select" id="top-sale-customer-time-detail" disabled></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="top-sale-number" class="form-label">{% trans 'Sale number viewed' %}</label>
+                                        <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="top-customer-number" class="form-label">{% trans 'Customer number viewed' %}</label>
+                                        <input class="form-control" type="number" id="top-customer-number" min="1" max="20" value="10">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body p-3">
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <div class="position-relative">
+                                    <div id="topsale-spinner" class="spinner-grow text-warning position-absolute top-50 start-50 translate-middle" role="status"></div>
+                                    <div id="topsale_chart" style="width: 100%; height: 300px;"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="position-relative">
+                                    <div id="topcustomer-spinner" class="spinner-grow text-info position-absolute top-50 start-50 translate-middle" role="status"></div>
+                                    <div id="topcustomer_chart" style="width: 100%; height: 300px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="view-space col-12">
+                <div class="card">
+                    <div class="collapse show" id="topcategoryproductCollapse">
+                        <div class="px-3 py-2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button type="button"
+                                                id="reload-top-category-product-data-btn"
+                                                class="reload-data-btn btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover">
+                                            <span class="icon"
+                                                  data-bs-toggle="tooltip"
+                                                  data-bs-placement="right"
+                                                  title="{% trans 'Refresh data' %}"><i class="fas fa-sync"></i></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="top-category-product-time">{% trans 'Time range' %}</label>
+                                        <div class="input-group">
+                                            <select class="form-select" id="top-category-product-time">
+                                                <option value="0">{% trans 'Month' %}</option>
+                                                <option value="1">{% trans 'Quarter' %}</option>
+                                                <option value="2" selected>{% trans 'Whole year' %}</option>
+                                            </select>
+                                            <select class="form-select" id="top-category-product-time-detail" disabled></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="top-category-number" class="form-label">{% trans 'View category number' %}</label>
+                                        <input class="form-control" type="number" id="top-category-number" min="1" max="20" value="10">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <div class="form-group">
+                                        <label for="top-product-number" class="form-label">{% trans 'View product number' %}</label>
+                                        <input class="form-control" type="number" id="top-product-number" min="1" max="20" value="10">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body p-3">
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <div class="position-relative">
+                                    <div id="topcategory-spinner" class="spinner-grow text-info position-absolute top-50 start-50 translate-middle" role="status"></div>
+                                    <div id="topcategory_chart" style="width: 100%; height: 300px;"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="position-relative">
+                                    <div id="topproduct-spinner" class="spinner-grow text-danger position-absolute top-50 start-50 translate-middle" role="status"></div>
+                                    <div id="topproduct_chart" style="width: 100%; height: 300px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooterUnCompress %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/echartjs/echart.js' %}"></script>
+    <script src="{% static 'assets/sales/dashboard/dashboard_general_echarts.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
+{% endblock %}

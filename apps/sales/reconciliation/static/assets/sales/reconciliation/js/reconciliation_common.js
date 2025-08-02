@@ -66,20 +66,14 @@ class ReconPageFunction {
                     }
                 },
                 {
-                    className: 'w-15',
+                    className: 'w-25',
                     render: (data, type, row) => {
                         let document_type = ReconPageFunction.ConvertToDocTitle(row?.['credit_app_code'] || row?.['debit_app_code'] || '')
-                        return `<span class="document_type ${row?.['credit_doc_id'] ? 'text-primary' : 'text-danger'}">${document_type}</span>`;
-                    }
-                },
-                {
-                    className: 'text-right w-10',
-                    render: (data, type, row) => {
                         let credit_doc_data = row?.['credit_doc_data'] || {}
                         let debit_doc_data = row?.['debit_doc_data'] || {}
                         let document_code = credit_doc_data?.['code'] || debit_doc_data?.['code'] || ''
                         let document_title = credit_doc_data?.['title'] || debit_doc_data?.['title'] || ''
-                        return `<span class="document_code fw-bold" title="${document_title}">${document_code}</span>`;
+                        return `<span class="document_type ${row?.['credit_doc_id'] ? 'text-primary' : 'text-danger'}">${document_type}</span> (<span class="document_code" title="${document_title}">${document_code}</span>)`;
                     }
                 },
                 {
@@ -138,7 +132,7 @@ class ReconPageFunction {
             ],
             initComplete: function () {
                 ReconPageFunction.RecalculateReconTotal()
-                pageElements.$table_recon.DataTable().column(8).visible(option!=='create');
+                pageElements.$table_recon.DataTable().column(7).visible(option!=='create');
             }
         })
     }

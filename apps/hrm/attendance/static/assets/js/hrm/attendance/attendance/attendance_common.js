@@ -1,9 +1,7 @@
 class AttendanceElements {
     constructor() {
-        this.$fiscalYearEle = $('#period-select');
-        this.$monthFilterEle = $('#period-month');
-        this.$startDate = $('#period-day-from');
-        this.$endDate = $('#period-day-to');
+        this.$startDate = $('#date_from');
+        this.$endDate = $('#date_to');
         this.$urlEle = $('#url-factory');
         this.$urlAttendanceEle = $('#url-attendance-data');
 
@@ -396,25 +394,14 @@ class AttendancePageFunction {
         if (checkedEmployee) {
             // get criteria to show data, include: employee, date, month, fiscal year
             let checkedEmployeeData = JSON.parse(checkedEmployee);
-            let fiscal_year = pageElements.$fiscalYearEle.val();
-            let month_filter = pageElements.$monthFilterEle.val();
-            let start_date = pageElements.$startDate.val();
-            let end_date = pageElements.$endDate.val();
-            let date_range = {
-                start: {
-                    day: parseInt(start_date),
-                    month: parseInt(month_filter)
-                },
-                end: {
-                    day: parseInt(end_date),
-                    month: parseInt(month_filter)
-                }
-            };
 
             // build input parameters for filter processing
-            let dataParams = {
-                'emp_list': checkedEmployeeData.join(","),
-                'date_range': JSON.stringify(date_range)
+            let dataParams = {'employee_id__in': checkedEmployeeData.join(",")}
+            if (pageElements.$startDate.val()) {
+                dataParams['date__gte'] = DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", pageElements.$startDate.val());
+            }
+            if (pageElements.$startDate.val()) {
+                dataParams['date__lte'] = DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", pageElements.$endDate.val());
             }
 
             // build ajax to get necessary data (filter processing occurred in view)
@@ -503,11 +490,6 @@ class AttendanceEventHandler {
             AttendancePageFunction.fetchAttendanceData();
         })
 
-        // event when change month and data fields
-        pageElements.$monthFilterEle.on('change', function () {
-            AttendancePageFunction.fetchAttendanceData();
-        })
-
         pageElements.$startDate.on('change', function () {
             AttendancePageFunction.fetchAttendanceData();
         })
@@ -593,6 +575,11 @@ class AttendanceEventHandler {
 }
 
 $(document).ready(function () {
+    // init date picker
+    $('.flat-picker').each(function () {
+        DateTimeControl.initFlatPickrDate(this);
+    });
+
     AttendanceEventHandler.InitPageEvent();
     AttendanceLoadDataHandle.loadEmployeeList();
 });

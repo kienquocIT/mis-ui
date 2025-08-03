@@ -5,6 +5,8 @@
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
 {% endblock %}
@@ -14,7 +16,33 @@
     <div class="row">
         <div class="col-12">
             <div class="row">
-                {% include 'extends/periods_group.html' with period_req=True month_req=True date_req=True %}
+                <!-- Select Date -->
+                <div class="row">
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-group">
+                            <label class="form-label" for="date_from">{% trans 'From' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="date_from" id="date_from"
+                                       class="form-control flat-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-2">
+                        <div class="form-group">
+                            <label class="form-label" for="date_to">{% trans 'To' %}</label>
+                            <div class="input-affix-wrapper">
+                                <input type="text" name="date_from" id="date_to"
+                                       class="form-control flat-picker" autocomplete="off">
+                                <div class="input-suffix">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Filter button -->
                 <div class="col-12">
                     <button type="button" class="btn btn-secondary btn-floating btn-sm"
@@ -49,10 +77,13 @@
            data-md-group="{% url 'GroupDDListAPI' %}">
     <input type="text" id="group-checked">
     <input type="text" id="employee-checked">
-    <input type="text" id="url-attendance-data" data-attendance="{% url "LoadSampleAttendanceListAPI" %}">
+    <input type="text" id="url-attendance-data" data-attendance="{% url "AttendanceListAPI" %}">
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
-    <script src="{% static 'assets/js/periods_group.js' %}"></script>
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
     <script src="{% static 'assets/js/hrm/attendance/attendance/attendance_common.js' %}"></script>
 {% endblock %}

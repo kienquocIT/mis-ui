@@ -10032,8 +10032,8 @@ msgid "Cash outflow list"
 msgstr "Danh sách phiếu chi"
 
 #
-msgid "Customers pay according to AR invoice"
-msgstr "Khách hàng thanh toán theo Hóa đơn bán hàng"
+msgid "Customers pay (according to AR invoice)"
+msgstr "Khách hàng thanh toán (theo Hóa đơn bán hàng)"
 
 #
 msgid "Payment discount"

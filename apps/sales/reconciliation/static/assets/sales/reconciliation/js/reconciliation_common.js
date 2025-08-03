@@ -283,10 +283,10 @@ class ReconEventHandler {
             pageElements.$supplier_space.prop('hidden', $(this).val() !== '1')
         })
         pageElements.$customer.on('change', function () {
-            let dataParams = {'customer_mapped_id': pageElements.$customer.val() || null}
+            let dataParams1 = {'customer_mapped_id': pageElements.$customer.val() || null}
             let ar_ajax = $.fn.callAjax2({
                 url: pageElements.$url_script.attr('data-url-ar-list-for-recon'),
-                data: dataParams,
+                data: dataParams1,
                 method: 'GET'
             }).then(
                 (resp) => {
@@ -301,13 +301,43 @@ class ReconEventHandler {
                 }
             )
 
-            Promise.all([ar_ajax]).then(
+            let dataParams2 = {'customer_mapped_id': pageElements.$customer.val() || null}
+            let cif_ajax = $.fn.callAjax2({
+                url: pageElements.$url_script.attr('data-url-cif-list-for-recon'),
+                data: dataParams2,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('cash_inflow_list')) {
+                        return data?.['cash_inflow_list'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([ar_ajax, cif_ajax]).then(
                 (results) => {
                     let data_ar = results[0]
                     data_ar.forEach(item => {
-                        const recon_total = parseFloat(item?.['recon_total']) || 0;
-                        const sum_recon_amount = parseFloat(item?.['sum_recon_amount']) || 0;
-                        item['recon_balance'] = recon_total - sum_recon_amount;
+                        let data_ar = results[0]
+                        data_ar.forEach(item => {
+                            const recon_total = parseFloat(item?.['recon_total']) || 0;
+                            const sum_recon_amount = parseFloat(item?.['sum_recon_amount']) || 0;
+                            item['recon_balance'] = recon_total - sum_recon_amount;
+                        });
+
+                        let data_cif = results[1]
+                        data_cif.forEach(item => {
+                            const recon_total = parseFloat(item?.['recon_total']) || 0;
+                            const sum_recon_amount = parseFloat(item?.['sum_recon_amount']) || 0;
+                            item['recon_balance'] = recon_total - sum_recon_amount;
+                        });
+
+                        ReconPageFunction.LoadTableRecon(data_ar.concat(data_cif))
                     });
                 })
         })

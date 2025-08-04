@@ -4,10 +4,12 @@ class ShiftAssignHandle {
     static $calendarEle = $('#calendar');
     static $drawerBodyShift = $('#drawer_body_shift');
     static $allCompanyEle = $('#checkbox_all_company');
-    static $table = $('#table_group');
+    static $tableEmployee = $('#table_employee');
+    static $tableGroup = $('#table_group');
     static $fromEle = $('#apply_from');
     static $toEle = $('#apply_to');
     static $shiftApplyEle = $('#box_shift_apply');
+
     static $groupsCheckedEle = $('#groups-checked');
     static $employeesCheckedEle = $('#employees-checked');
 
@@ -122,6 +124,7 @@ class ShiftAssignHandle {
 
     static init(calendar) {
         // init dtb
+        ShiftAssignHandle.loadDtbEmployee();
         ShiftAssignHandle.loadDtbGroup();
         // init config
         ShiftAssignHandle.getStoreCompanyConfig();
@@ -341,8 +344,8 @@ class ShiftAssignHandle {
     // DataTable
     static loadStoreCheckGroup(ele) {
         let row = ele.closest('tr');
-        let rowIndex = ShiftAssignHandle.$table.DataTable().row(row).index();
-        let $row = ShiftAssignHandle.$table.DataTable().row(rowIndex);
+        let rowIndex = ShiftAssignHandle.$tableGroup.DataTable().row(row).index();
+        let $row = ShiftAssignHandle.$tableGroup.DataTable().row(rowIndex);
         let dataRow = $row.data();
         if (dataRow) {
             let groupID = dataRow?.['id'];
@@ -449,7 +452,7 @@ class ShiftAssignHandle {
     };
 
     static loadPushGroupExclude(groupID, employeeID) {
-        let checkGroupEle = ShiftAssignHandle.$table[0].querySelector(`.checkbox-group[data-group-id="${groupID}"]`);
+        let checkGroupEle = ShiftAssignHandle.$tableGroup[0].querySelector(`.checkbox-group[data-group-id="${groupID}"]`);
         if (checkGroupEle) {
             if (checkGroupEle.checked === true) {
                 checkGroupEle.checked = false;
@@ -483,15 +486,73 @@ class ShiftAssignHandle {
                 idTbl = $tableChildEle[0].id;
             }
         }
-        ShiftAssignHandle.loadDtbEmployee(idTbl, groupID);
+        ShiftAssignHandle.loadDtbGroupEmployee(idTbl, groupID);
         return true;
     };
 
-    static loadDtbGroup() {
-        if ($.fn.dataTable.isDataTable(ShiftAssignHandle.$table)) {
-            ShiftAssignHandle.$table.DataTable().destroy();
+    static loadDtbEmployee() {
+        if ($.fn.dataTable.isDataTable(ShiftAssignHandle.$tableEmployee)) {
+            ShiftAssignHandle.$tableEmployee.DataTable().destroy();
         }
-        ShiftAssignHandle.$table.DataTableDefault({
+        ShiftAssignHandle.$tableEmployee.not('.dataTable').DataTableDefault({
+            useDataServer: true,
+            ajax: {
+                url: ShiftAssignHandle.$urlEle.attr('data-dd-employee'),
+                type: 'GET',
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) return resp.data['employee_list'] ? resp.data['employee_list'] : [];
+                    return [];
+                },
+            },
+            pageLength: 10,
+            info: false,
+            columns: [
+                {
+                    title: ShiftAssignHandle.$transEle.attr('data-employee'),
+                    width: '70%',
+                    render: (data, type, row) => {
+                        let checked = '';
+                        if (ShiftAssignHandle.$employeesCheckedEle.val()) {
+                            let storeID = JSON.parse(ShiftAssignHandle.$employeesCheckedEle.val());
+                            if (typeof storeID === 'object') {
+                                if (storeID?.[row?.['id']]) {
+                                    checked = 'checked';
+                                }
+                            }
+                        }
+                        let checkGroupEle = ShiftAssignHandle.$tableGroup[0].querySelector(`.checkbox-group[data-group-id="${row?.['group']?.['id']}"]`);
+                        if (checkGroupEle) {
+                            if (checkGroupEle.checked === true) {
+                                checked = 'checked';
+                            }
+                        }
+                        return `<div class="form-check form-check-lg d-flex align-items-center">
+                                    <input type="checkbox" name="checkbox_employee" id="check_employee_${row?.['id']}" class="form-check-input checkbox-employee" data-group-id="${row?.['group']?.['id']}" ${checked}>
+                                    <label class="form-check-label" for="check_employee_${row?.['id']}">${row?.['full_name']}</label>
+                                </div>`;
+                    }
+                },
+                {
+                    title: ShiftAssignHandle.$transEle.attr('data-code'),
+                    width: '30%',
+                    render: (data, type, row) => {
+                        return `<span class="form-check-label">${row?.['code']}</span>`;
+                    }
+                },
+            ],
+            rowCallback: function (row, data, index) {
+            },
+            drawCallback: function () {
+            },
+        });
+    };
+
+    static loadDtbGroup() {
+        if ($.fn.dataTable.isDataTable(ShiftAssignHandle.$tableGroup)) {
+            ShiftAssignHandle.$tableGroup.DataTable().destroy();
+        }
+        ShiftAssignHandle.$tableGroup.DataTableDefault({
         ajax: {
             url: ShiftAssignHandle.$urlEle.attr('data-dd-group'),
             type: "GET",
@@ -501,9 +562,8 @@ class ShiftAssignHandle {
               return [];
             },
         },
-        pageLength:50,
+        pageLength:10,
         scrollY: '70vh',
-        // searching: false,
         info: false,
         columns: [
             {
@@ -528,7 +588,7 @@ class ShiftAssignHandle {
     }, false);
     };
 
-    static loadDtbEmployee(idTbl, groupID) {
+    static loadDtbGroupEmployee(idTbl, groupID) {
         let $tableChild = $('#' + idTbl);
         if ($.fn.dataTable.isDataTable($tableChild)) {
             $tableChild.DataTable().destroy();
@@ -561,7 +621,7 @@ class ShiftAssignHandle {
                                 }
                             }
                         }
-                        let checkGroupEle = ShiftAssignHandle.$table[0].querySelector(`.checkbox-group[data-group-id="${groupID}"]`);
+                        let checkGroupEle = ShiftAssignHandle.$tableGroup[0].querySelector(`.checkbox-group[data-group-id="${groupID}"]`);
                         if (checkGroupEle) {
                             if (checkGroupEle.checked === true) {
                                 checked = 'checked';
@@ -585,7 +645,7 @@ class ShiftAssignHandle {
             },
             drawCallback: function () {
                 // add css to Dtb
-                ShiftAssignHandle.loadDtbHideHeader(idTbl);
+                // ShiftAssignHandle.loadDtbHideHeader(idTbl);
             },
         });
     };
@@ -688,43 +748,6 @@ $(document).ready(function () {
         $(this).parent().next().next('.content-wrap').slideToggle()
     })
 
-    // INIT DATATABLE GROUP
-    // ShiftAssignHandle.$table.DataTableDefault({
-    //     ajax: {
-    //         url: ShiftAssignHandle.$urlEle.attr('data-dd-group'),
-    //         type: "GET",
-    //         dataSrc: function (resp){
-    //           let data = $.fn.switcherResp(resp);
-    //           if (data && data.hasOwnProperty('group_dd_list')) return data['group_dd_list'];
-    //           return [];
-    //         },
-    //     },
-    //     pageLength:50,
-    //     scrollY: '76vh',
-    //     searching: false,
-    //     info: false,
-    //     columns: [
-    //         {
-    //             targets: 0,
-    //             width: "20%",
-    //             render: (data, type, row) => {
-    //                 return `<div class="d-flex justify-content-between align-items-center">
-    //                             <div>
-    //                                 <button class="btn-collapse-parent btn btn-icon btn-rounded mr-1" data-group-id="${row?.['id']}"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']}</b>
-    //                             </div>
-    //                             <div class="form-check form-check-lg">
-    //                                 <input type="checkbox" name="checkbox_group" class="form-check-input checkbox-group" data-group-id="${row?.['id']}">
-    //                             </div>
-    //                         </div>`;
-    //             }
-    //         },
-    //     ],
-    //     drawCallback: function () {
-    //         // add css to Dtb
-    //         ShiftAssignHandle.loadDtbHideHeader('table_group');
-    //     },
-    // }, false);
-
     // EVENT CLICK TO COLLAPSE IN LINE
     //      ACTION: INSERT TABLE CHILD TO ROW
     $(document).on('click', '.btn-collapse-parent', function (event) {
@@ -757,22 +780,35 @@ $(document).ready(function () {
     ShiftAssignHandle.$allCompanyEle.on('click', function () {
         ShiftAssignHandle.$groupsCheckedEle.val("");
         ShiftAssignHandle.$employeesCheckedEle.val("");
+        ShiftAssignHandle.loadDtbEmployee();
         ShiftAssignHandle.loadDtbGroup();
     });
 
-    ShiftAssignHandle.$table.on('click', '.checkbox-group', function () {
+    ShiftAssignHandle.$tableEmployee.on('click', '.checkbox-employee', function () {
+        ShiftAssignHandle.loadStoreCheckEmployee(this);
+        ShiftAssignHandle.loadShiftEmployee(calendar, ShiftAssignHandle.calendarInfo);
+        ShiftAssignHandle.$allCompanyEle[0].checked = false;
+
+        ShiftAssignHandle.loadDtbGroup();
+    });
+
+    ShiftAssignHandle.$tableGroup.on('click', '.checkbox-group', function () {
         ShiftAssignHandle.loadStoreCheckGroup(this);
         let row = this.closest('tr');
         if (row) {
             ShiftAssignHandle.loadPushDtbEmployee($(row), $(this).attr('data-group-id'));
         }
         ShiftAssignHandle.$allCompanyEle[0].checked = false;
+
+        ShiftAssignHandle.loadDtbEmployee();
     });
 
-    ShiftAssignHandle.$table.on('click', '.checkbox-employee', function () {
+    ShiftAssignHandle.$tableGroup.on('click', '.checkbox-employee', function () {
         ShiftAssignHandle.loadStoreCheckEmployee(this);
         ShiftAssignHandle.loadShiftEmployee(calendar, ShiftAssignHandle.calendarInfo);
         ShiftAssignHandle.$allCompanyEle[0].checked = false;
+
+        ShiftAssignHandle.loadDtbEmployee();
     });
 
     SetupFormSubmit.validate(ShiftAssignHandle.$form, {

@@ -21,25 +21,62 @@
     >
         {% csrf_token %}
 
+
         <div class="row">
             <div class="col-12 col-md-3 col-lg-3 border-right">
                 <h5>{% trans 'Applicable object' %}</h5>
-                <br>
                 <div data-simplebar class="nicescroll-bar">
                     <div class="form-check form-switch form-switch-lg">
                         <input type="checkbox" class="form-check-input" id="checkbox_all_company">
                         <label class="form-check-label" for="checkbox_all_company">{% trans 'All company' %}</label>
                     </div>
-                    <table id="table_group" class="table nowrap w-100 mb-5">
-                        {% csrf_token %}
-                        <thead>
-                        <tr>
-                            <th>{% trans 'Group' %}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+
+                    <div class="row">
+                        <ul class="nav nav-line nav-tabs nav-light">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                                    <span class="nav-link-text">{% trans 'View by employee' %}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                                    <span class="nav-link-text">{% trans 'View by group' %}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tab_block_1">
+                            <table id="table_employee" class="table nowrap w-100 mb-5">
+                                <thead>
+                                <tr>
+                                    <th class="w-70">{% trans 'Employee' %}</th>
+                                    <th class="w-30">{% trans 'Code' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade show" id="tab_block_2">
+                            <table id="table_group" class="table nowrap w-100 mb-5">
+                                {% csrf_token %}
+                                <thead>
+                                <tr>
+                                    <th>{% trans 'Group' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+
+
                 </div>
             </div>
             <div class="col-12 col-md-7 col-lg-7 border-right">

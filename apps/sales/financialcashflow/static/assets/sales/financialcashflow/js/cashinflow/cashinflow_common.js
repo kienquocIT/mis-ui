@@ -43,6 +43,7 @@ class CIFPageVariables {
                 render: (data, type, row) => {
                     return row?.['is_ar_invoice'] ? `<div class="form-check">
                         <input type="checkbox"
+                               ${pageVariables.is_detail_page ? 'disabled': ''}
                                class="form-check-input selected_payment_stage"
                                data-so-pm-stage-id="${row?.['id']}"
                         >
@@ -111,6 +112,7 @@ class CIFPageVariables {
                 render: (data, type, row) => {
                     return `<div class="form-check">
                     <input type="checkbox"
+                           ${pageVariables.is_detail_page ? 'disabled': ''}
                            class="form-check-input select_row_customer_advance"
                            data-customer-advance-id="${row?.['id']}"
                     >
@@ -121,7 +123,7 @@ class CIFPageVariables {
             {
                 className: 'w-5',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-primary">${row?.['sale_order']?.['code']}</span>`
+                    return `<span class="text-primary fw-bold">${row?.['sale_order']?.['code']}</span>`
                 }
             },
             {
@@ -157,7 +159,7 @@ class CIFPageVariables {
             {
                 className: 'text-right w-15',
                 render: () => {
-                    return `<input class="form-control text-right mask-money cash_in_value_advance" value="0"">`;
+                    return `<input ${pageVariables.is_detail_page ? 'disabled readonly': ''} class="form-control text-right mask-money cash_in_value_advance" value="0"">`;
                 }
             },
         ]
@@ -173,6 +175,7 @@ class CIFPageVariables {
                 render: (data, type, row) => {
                     return `<div class="form-check">
                                 <input type="checkbox"
+                                       ${pageVariables.is_detail_page ? 'disabled': ''}
                                        class="form-check-input select_row_ar_invoice"
                                        data-ar-invoice-id="${row?.['id']}"
                                 >
@@ -181,15 +184,9 @@ class CIFPageVariables {
                 }
             },
             {
-                className: 'w-5',
-                render: (data, type, row) => {
-                    return `<span class="badge badge-primary">${row?.['code'] ? row?.['code'] : ''}</span>`
-                }
-            },
-            {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span class="text-muted">${row?.['document_type'] ? row?.['document_type'] : ''}</span>`;
+                    return `<span class="text-primary fw-bold">${row?.['code'] ? row?.['code'] : ''}</span>`
                 }
             },
             {
@@ -223,7 +220,7 @@ class CIFPageVariables {
                 }
             },
             {
-                className: 'text-right w-10',
+                className: 'text-right w-15',
                 render: () => {
                     return `<div class="input-group">
                                 <span class="input-affix-wrapper">
@@ -341,7 +338,6 @@ class CIFPageFunction {
                         }
                         row_checkbox.closest('tr').find('.cash_in_value_advance').attr('value', data_list[i]?.['sum_payment_value'])
                     }
-                    CIFHandler.Disable()
                 }
             });
         }
@@ -386,7 +382,7 @@ class CIFPageFunction {
                     dataSrc: function (resp) {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
-                            return resp.data['ar_invoice_list'] ? resp.data['ar_invoice_list'] : [];
+                            return resp.data['ar_invoice_list'] ? resp.data['ar_invoice_list'].filter(item => item?.['recon_balance'] > 0) : [];
                         }
                         return [];
                     },
@@ -413,7 +409,6 @@ class CIFPageFunction {
                         }
                         row_checkbox.closest('tr').find('.cash_in_value').attr('value', data_list[i]?.['sum_payment_value'])
                     }
-                    CIFHandler.Disable()
                 }
             });
         }
@@ -456,7 +451,6 @@ class CIFPageFunction {
                         }
                     }
                     CIFPageFunction.CalculateModalDetailPaymentSum()
-                    CIFHandler.Disable()
                 }
             });
         }
@@ -477,17 +471,12 @@ class CIFPageFunction {
     static RecalculateTotalPayment() {
         let total_payment = 0
         total_payment += pageElements.$purchase_advance_value.attr('value') ? parseFloat(pageElements.$purchase_advance_value.attr('value')) : 0
-        const cif_value = $('#cif_type_label').attr('data-value')
-        if (cif_value === '0') {
-            pageElements.$customer_advance_table.find('tbody tr').each(function () {
-                total_payment += $(this).find('.cash_in_value_advance').attr('value') ? parseFloat($(this).find('.cash_in_value_advance').attr('value')) : 0
-            })
-        }
-        else if (cif_value === '1') {
-            pageElements.$ar_invoice_table.find('tbody tr').each(function () {
-                total_payment += $(this).find('.cash_in_value').attr('value') ? parseFloat($(this).find('.cash_in_value').attr('value')) : 0
-            })
-        }
+        pageElements.$customer_advance_table.find('tbody tr').each(function () {
+            total_payment += $(this).find('.cash_in_value_advance').attr('value') ? parseFloat($(this).find('.cash_in_value_advance').attr('value')) : 0
+        })
+        pageElements.$ar_invoice_table.find('tbody tr').each(function () {
+            total_payment += $(this).find('.cash_in_value').attr('value') ? parseFloat($(this).find('.cash_in_value').attr('value')) : 0
+        })
         pageElements.$total_payment.attr('value', total_payment)
         pageElements.$total_payment_modal.attr('value', pageElements.$total_payment.attr('value'))
         pageElements.$btn_modal_payment_method.prop('disabled', total_payment === 0)
@@ -529,19 +518,6 @@ class CIFPageFunction {
  * Khai báo các hàm chính
  */
 class CIFHandler {
-    static Disable() {
-        if (pageVariables.is_detail_page) {
-            $('form .form-check-input').prop('readonly', true).prop('disabled', true);
-            $('form .form-control').prop('readonly', true).prop('disabled', true);
-            $('form .form-select').prop('readonly', true).prop('disabled', true);
-            $('.modal .form-check-input').prop('readonly', true).prop('disabled', true);
-            $('.modal .form-control').prop('readonly', true).prop('disabled', true);
-            $('.modal .form-select').prop('readonly', true).prop('disabled', true);
-            // $('#cif_type_label').closest('span').removeAttr('data-bs-toggle').removeClass('dropdown-toggle')
-            $('#payment-method-modal .modal-footer').remove();
-            $('#detail-payment-value-modal .modal-footer').remove();
-        }
-    }
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle));
 
@@ -550,27 +526,22 @@ class CIFHandler {
         frm.dataForm['posting_date'] = moment(pageElements.$posting_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
         frm.dataForm['document_date'] = moment(pageElements.$document_date.val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
         frm.dataForm['description'] = pageElements.$description.val()
-        let cash_in_customer_advance_data = []
-        let cash_in_ar_invoice_data = []
-        let payment_method_data = pageElements.$btn_modal_payment_method.attr('data-payment-method') ? JSON.parse(pageElements.$btn_modal_payment_method.attr('data-payment-method')) : {}
 
         frm.dataForm['purchase_advance_value'] = pageElements.$purchase_advance_value.attr('value') ? pageElements.$purchase_advance_value.attr('value') : 0
-        const cif_value = $('#cif_type_label').attr('data-value')
-        if (cif_value === '0') {
-            cash_in_ar_invoice_data = []
-            pageElements.$customer_advance_table.find('tbody tr').each(function () {
-                if ($(this).find('.select_row_customer_advance').prop('checked')) {
-                    cash_in_customer_advance_data.push({
-                        'sale_order_stage_id': $(this).find('.select_row_customer_advance').attr('data-customer-advance-id'),
-                        'sum_balance_value': $(this).find('.recon_balance_value_advance').attr('data-init-money'),
-                        'sum_payment_value': $(this).find('.cash_in_value_advance').attr('value'),
-                    })
-                }
-            })
-        }
-        else if (cif_value === '1') {
-            cash_in_customer_advance_data = []
-            pageElements.$ar_invoice_table.find('tbody tr').each(function () {
+
+        let cash_in_customer_advance_data = []
+        pageElements.$customer_advance_table.find('tbody tr').each(function () {
+            if ($(this).find('.select_row_customer_advance').prop('checked')) {
+                cash_in_customer_advance_data.push({
+                    'sale_order_stage_id': $(this).find('.select_row_customer_advance').attr('data-customer-advance-id'),
+                    'sum_balance_value': $(this).find('.recon_balance_value_advance').attr('data-init-money'),
+                    'sum_payment_value': $(this).find('.cash_in_value_advance').attr('value'),
+                })
+            }
+        })
+
+        let cash_in_ar_invoice_data = []
+        pageElements.$ar_invoice_table.find('tbody tr').each(function () {
                 if ($(this).find('.select_row_ar_invoice').prop('checked')) {
                     let detail_payment = $(this).find('.btn_selected_payment_stage').attr('data-detail-payment')
                     cash_in_ar_invoice_data.push({
@@ -583,11 +554,10 @@ class CIFHandler {
                     })
                 }
             })
-        }
 
         frm.dataForm['cash_in_customer_advance_data'] = cash_in_customer_advance_data
         frm.dataForm['cash_in_ar_invoice_data'] = cash_in_ar_invoice_data
-        frm.dataForm['payment_method_data'] = payment_method_data
+        frm.dataForm['payment_method_data'] = pageElements.$btn_modal_payment_method.attr('data-payment-method') ? JSON.parse(pageElements.$btn_modal_payment_method.attr('data-payment-method')) : {}
 
         // console.log(frm)
         return frm
@@ -602,7 +572,8 @@ class CIFHandler {
                     data = data['cash_inflow_detail'];
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(data);
-                    console.log(data)
+
+                    // console.log(data)
 
                     pageElements.$title.val(data?.['title'])
                     pageElements.$posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
@@ -612,69 +583,36 @@ class CIFHandler {
 
                     pageElements.$purchase_advance_value.attr('value', data?.['purchase_advance_value'] ? data?.['purchase_advance_value'] : 0)
 
+                    let param1 = {}
+                    let param2 = {}
                     if (data?.['system_status'] === 3) {
-                        if (data?.['cash_in_customer_advance_data'].length === 0 && data?.['cash_in_ar_invoice_data'].length === 0) {
-                            // phiếu đã duyệt nhưng chỉ thu tạm ứng không theo hđ
-                            CIFPageFunction.LoadCustomerAdvanceTable()
-                            CIFPageFunction.LoadARInvoiceTable()
+                        param1 = {
+                            'sale_order__customer_id': pageElements.$customer.val(),
                         }
-                        else if (data?.['cash_in_customer_advance_data'].length > 0) {
-                            $('#cif_type_label').text($('#cif_type .dropdown-item:eq(0)').text()).attr('data-value', '0')
-                            $('#area_table_customer_advance').prop('hidden', false)
-                            $('#area_table_ar_invoice').prop('hidden', true)
-                            // nếu thu tạm ứng theo hđ
-                            CIFPageFunction.LoadCustomerAdvanceTable(
-                                {
-                                    'sale_order__customer_id': pageElements.$customer.val(),
-                                },
-                                data?.['cash_in_customer_advance_data'],
-                                data?.['system_status'] === 3
-                            )
-                            CIFPageFunction.LoadARInvoiceTable()
-                        }
-                        else if (data?.['cash_in_ar_invoice_data'].length > 0) {
-                            $('#cif_type_label').text($('#cif_type .dropdown-item:eq(1)').text()).attr('data-value', '1')
-                            $('#area_table_customer_advance').prop('hidden', true)
-                            $('#area_table_ar_invoice').prop('hidden', false)
-                            // nếu thu theo hóa đơn
-                            CIFPageFunction.LoadCustomerAdvanceTable()
-                            CIFPageFunction.LoadARInvoiceTable(
-                                {
-                                    'customer_mapped_id': pageElements.$customer.val(),
-                                },
-                                data?.['cash_in_ar_invoice_data'],
-                                data?.['system_status'] === 3
-                            )
+                        param2 = {
+                            'customer_mapped_id': pageElements.$customer.val(),
                         }
                     }
                     else {
-                        if (data?.['cash_in_customer_advance_data'].length > 0) {
-                            $('#cif_type_label').text($('#cif_type .dropdown-item:eq(0)').text()).attr('data-value', '0')
-                            $('#area_table_customer_advance').prop('hidden', false)
-                            $('#area_table_ar_invoice').prop('hidden', true)
+                        param1 = {
+                            'sale_order__customer_id': pageElements.$customer.val(),
+                            'cash_inflow_done': false
                         }
-                        else if (data?.['cash_in_ar_invoice_data'].length > 0) {
-                            $('#cif_type_label').text($('#cif_type .dropdown-item:eq(1)').text()).attr('data-value', '1')
-                            $('#area_table_customer_advance').prop('hidden', true)
-                            $('#area_table_ar_invoice').prop('hidden', false)
+                        param2 = {
+                            'customer_mapped_id': pageElements.$customer.val(),
+                            'cash_inflow_done': false
                         }
-                        CIFPageFunction.LoadCustomerAdvanceTable(
-                            {
-                                'sale_order__customer_id': pageElements.$customer.val(),
-                                'cash_inflow_done': false
-                            },
-                            data?.['cash_in_customer_advance_data'],
-                            data?.['system_status'] === 3
-                        )
-                        CIFPageFunction.LoadARInvoiceTable(
-                            {
-                                'customer_mapped_id': pageElements.$customer.val(),
-                                'cash_inflow_done': false
-                            },
-                            data?.['cash_in_ar_invoice_data'],
-                            data?.['system_status'] === 3
-                        )
                     }
+                    CIFPageFunction.LoadCustomerAdvanceTable(
+                        param1,
+                        data?.['cash_in_customer_advance_data'],
+                        data?.['system_status'] === 3
+                    )
+                    CIFPageFunction.LoadARInvoiceTable(
+                        param2,
+                        data?.['cash_in_ar_invoice_data'],
+                        data?.['system_status'] === 3
+                    )
 
                     pageElements.$total_payment.attr('value', data?.['total_value'])
 
@@ -693,7 +631,9 @@ class CIFHandler {
                     CIFPageFunction.LoadCompanyBankAccount(pageElements.$company_bank_account, data?.['company_bank_account_data'])
 
                     $.fn.initMaskMoney2()
-                    CIFHandler.Disable();
+
+                    UsualLoadPageFunction.DisablePage(option==='detail');
+
                     WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 }
             })
@@ -813,12 +753,6 @@ class CIFEventHandler {
             $.fn.initMaskMoney2()
             // calculate total payment value modal
             CIFPageFunction.CalculateModalDetailPaymentSum()
-        })
-        // thay đổi loại thu tiền
-        $('#cif_type .dropdown-item').on('click', function () {
-            $('#cif_type_label').text($(this).text()).attr('data-value', $(this).attr('data-value'))
-            $('#area_table_customer_advance').prop('hidden', $(this).attr('data-value') !== '0')
-            $('#area_table_ar_invoice').prop('hidden', $(this).attr('data-value') !== '1')
         })
     }
 }

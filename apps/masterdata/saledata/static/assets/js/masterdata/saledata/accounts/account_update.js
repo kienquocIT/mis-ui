@@ -1,6 +1,9 @@
 $(document).ready(function () {
     AccountEventHandler.InitPageEven()
 
+    UsualLoadPageFunction.LoadEmployee({
+        element: $('#slb-contact-owner')
+    })
     // for location
     UsualLoadPageFunction.LoadLocationCountry($('#modal-shipping-address .location_country'))
     UsualLoadPageFunction.LoadLocationProvince($('#modal-shipping-address .location_province'))

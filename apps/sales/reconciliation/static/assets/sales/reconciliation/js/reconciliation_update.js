@@ -1,7 +1,7 @@
 $(document).ready(function () {
     ReconEventHandler.InitPageEven()
 
-    ReconHandler.LoadDetailRecon('detail');
+    ReconHandler.LoadDetailRecon('update');
 
     WFRTControl.setWFInitialData('reconciliation')
 

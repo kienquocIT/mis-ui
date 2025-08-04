@@ -17,4 +17,3 @@ urlpatterns = [
     # attendance
     path('attendance/list/api', AttendanceListAPI.as_view(), name='AttendanceListAPI')
 ]
-

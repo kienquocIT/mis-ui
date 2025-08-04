@@ -503,7 +503,7 @@ class ShiftAssignHandle {
         },
         pageLength:50,
         scrollY: '70vh',
-        searching: false,
+        // searching: false,
         info: false,
         columns: [
             {
@@ -523,7 +523,7 @@ class ShiftAssignHandle {
         ],
         drawCallback: function () {
             // add css to Dtb
-            ShiftAssignHandle.loadDtbHideHeader('table_group');
+            // ShiftAssignHandle.loadDtbHideHeader('table_group');
         },
     }, false);
     };
@@ -805,7 +805,7 @@ $(document).ready(function () {
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
                     setTimeout(() => {
-                        window.location.reload();
+                        ShiftAssignHandle.loadShiftEmployee(calendar, ShiftAssignHandle.calendarInfo);
                         WindowControl.hideLoading();
                     }, 2000);
                 }

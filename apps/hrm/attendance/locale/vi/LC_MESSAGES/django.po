@@ -83,7 +83,7 @@ msgstr "Bảng chấm công"
 
 #
 msgid "Attendance Filter"
-msgstr "Lọc dữ liệu chấm công"
+msgstr "Bộ Lọc"
 
 #
 msgid "Department / Employee Filter"

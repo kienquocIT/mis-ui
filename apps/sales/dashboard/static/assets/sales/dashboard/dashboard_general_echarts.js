@@ -157,7 +157,7 @@ $(document).ready(function () {
                 formatter: function(params) {
                     let result = params[0].name + '<br/>';
                     params.forEach(function(item) {
-                        result += `${item.marker} ${item.seriesName}: ${new Intl.NumberFormat('vi-VN').format(item.value)}<br/>`;
+                        result += `${item.marker} ${item.seriesName}: ${item.value ? item.value.toFixed(moneyRoundEle.val()) : '--'}<br/>`;
                     });
                     return result;
                 }
@@ -545,15 +545,13 @@ $(document).ready(function () {
                 }
             },
             tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                    type: 'shadow',
-                    animation: true
-                },
+                trigger: 'item',
+                confine: true,
                 formatter: function(params) {
-                    const fullName = params[0].name;
-                    const displayName = fullName.length > 15 ? fullName.substring(0, 15) + '...' : fullName;
-                    return `${fullName}<br/>${params[0].marker} ${new Intl.NumberFormat('vi-VN').format(params[0].value)}`;
+                    if (params.componentType === 'series') {
+                        return new Intl.NumberFormat('vi-VN').format(params.value ? params.value.toFixed(moneyRoundEle.val()) : '--');
+                    }
+                    return '';
                 }
             },
             toolbox: {
@@ -615,7 +613,7 @@ $(document).ready(function () {
                         return value;
                     },
                     tooltip: {
-                        show: true
+                        show: false
                     },
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -811,6 +809,10 @@ $(document).ready(function () {
         let topX_revenue = topX.map(item => item.revenue);
         let topX_full_name = topX.map(item => item.full_name);
         
+        // Reverse arrays to show from high to low (top to bottom)
+        topX_revenue.reverse();
+        topX_full_name.reverse();
+        
         let series_data = [{
             data: topX_revenue,
             color: CHART_COLORS.warning
@@ -875,6 +877,10 @@ $(document).ready(function () {
         let topX_revenue = topX.map(item => item.revenue);
         let topX_title = topX.map(item => item.title);
         
+        // Reverse arrays to show from high to low (top to bottom)
+        topX_revenue.reverse();
+        topX_title.reverse();
+        
         let series_data = [{
             data: topX_revenue,
             color: CHART_COLORS.secondary
@@ -903,15 +909,13 @@ $(document).ready(function () {
                 }
             },
             tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                    type: 'shadow',
-                    animation: true
-                },
+                trigger: 'item',
+                confine: true,
                 formatter: function(params) {
-                    const fullName = params[0].name;
-                    const displayName = fullName.length > 15 ? fullName.substring(0, 15) + '...' : fullName;
-                    return `${fullName}<br/>${params[0].marker} ${new Intl.NumberFormat('vi-VN').format(params[0].value)}`;
+                    if (params.componentType === 'series') {
+                        return new Intl.NumberFormat('vi-VN').format(params.value ? params.value.toFixed(moneyRoundEle.val()) : '--');
+                    }
+                    return '';
                 }
             },
             toolbox: {
@@ -973,7 +977,7 @@ $(document).ready(function () {
                         return value;
                     },
                     tooltip: {
-                        show: true
+                        show: false
                     },
                     fontFamily: 'Arial, Helvetica, sans-serif'
                 },
@@ -1169,6 +1173,10 @@ $(document).ready(function () {
         let topX_revenue = topX.map(item => item.revenue);
         let topX_title = topX.map(item => item.title);
         
+        // Reverse arrays to show from high to low (top to bottom)
+        topX_revenue.reverse();
+        topX_title.reverse();
+        
         let series_data = [{
             data: topX_revenue,
             color: CHART_COLORS.info
@@ -1232,6 +1240,10 @@ $(document).ready(function () {
         let topX = topProduct_chart_data.slice(0, topProductNumberEle.val())
         let topX_revenue = topX.map(item => item.revenue);
         let topX_title = topX.map(item => item.title);
+        
+        // Reverse arrays to show from high to low (top to bottom)
+        topX_revenue.reverse();
+        topX_title.reverse();
         
         let series_data = [{
             data: topX_revenue,

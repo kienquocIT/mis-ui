@@ -28,7 +28,7 @@ class DashboardGeneralList(View):
 class DashboardPipelineList(View):
     @mask_view(
         auth_require=True,
-        template='sales/dashboard/dashboard_pipeline.html',
+        template='sales/dashboard/dashboard_pipeline_echarts.html',
         breadcrumb='DASHBOARD_PIPELINE_LIST_PAGE',
         menu_active='id_menu_dashboard_pipeline',
     )

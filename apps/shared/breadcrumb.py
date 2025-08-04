@@ -529,6 +529,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Shift assignment
     SHIFT_ASSIGNMENT_LIST_PAGE = BreadcrumbChildren(_('Shift assignment'), 'ShiftAssignmentList')
+    
+	# Attendance
+    HRM_ATTENDANCE_LIST_PAGE = BreadcrumbChildren(_('HRM Attendance info'), 'HRMAttendanceList')
 
 
 class BreadcrumbView:
@@ -1436,3 +1439,10 @@ class BreadcrumbView:
     SHIFT_ASSIGNMENT_LIST_PAGE = [
         BreadcrumbItem.SHIFT_ASSIGNMENT_LIST_PAGE
     ]
+    
+	# Attendance
+    HRM_ATTENDANCE_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.HRM_ATTENDANCE_LIST_PAGE
+    ]
+

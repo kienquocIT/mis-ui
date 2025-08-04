@@ -992,3 +992,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # attendance/shift assignment
     SHIFT_ASSIGNMENT_LIST = StringUrl('hrm/attendance/shift-assignment/list')
+
+    # attendance/attendance
+    ATTENDANCE_LIST = StringUrl('hrm/attendance/attendance/list')

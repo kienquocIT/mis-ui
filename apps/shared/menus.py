@@ -880,6 +880,10 @@ class MenusHRM:
                 name='Shift assignment', code='menu_shift_assignment_list', view_name='ShiftAssignmentList',
                 icon='<i class="fas fa-user-clock"></i>',
             ),
+            MenuCommon(
+                name='Attendance table', code='menu_attendance_list', view_name='HRMAttendanceList',
+                icon='<i class="fa-solid fa-table-columns"></i>',
+            ),
         ]
     )
 

@@ -12142,3 +12142,23 @@ msgstr "Tạo phiếu thu"
 #
 msgid "Create cash out"
 msgstr "Tạo phiếu chi"
+
+#
+msgid "View by employee"
+msgstr "Xem theo nhân viên"
+
+#
+msgid "View by group"
+msgstr "Xem theo nhóm"
+
+#
+msgid "Synchronize employee"
+msgstr "Đồng bộ nhân viên"
+
+#
+msgid "Device employee id"
+msgstr "ID nhân viên trên thiết bị"
+
+#
+msgid "Device employee name"
+msgstr "Tên nhân viên trên thiết bị"

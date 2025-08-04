@@ -1,0 +1,28 @@
+{% load i18n %}
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas_attendance_detail" data-method="GET"  data-key="">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title fw-bold">Attendance detail</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column">
+        <div class="row mt-3" id="emp_name_detail"></div>
+        <div class="row mt-2" id="date_detail"></div>
+        <div class="row mt-2" id="shift_detail"></div>
+        <div class="row mt-2" id="checkin_detail"></div>
+        <div class="row mt-2" id="checkout_detail"></div>
+        <div class="row mt-2" id="status_detail"></div>
+        <div class="row mt-2" id="is_late_detail"></div>
+        <div class="row mt-2" id="is_early_detail"></div>
+        <div class="row mt-2" id="regular_ovt_detail"></div>
+        <div class="row mt-2" id="weekend_ovt_detail"></div>
+        <div class="row mt-2" id="holiday_ovt_detail"></div>
+
+        <div class="mt-auto pt-4 text-end">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">
+                {% trans 'Close' %}
+            </button>
+        </div>
+    </div>
+</div>

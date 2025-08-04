@@ -1,0 +1,52 @@
+{% load i18n %}
+
+<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Select Department / Employee " %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="overflow: auto; max-height: 80vh">
+                <form id="employee_selection_form">
+                    <input type="hidden" id="form_id">
+                    <input type="hidden" id="group_access">
+                    <input type="hidden" id="employee_access">
+                    <div class="row">
+                        <div class="col-12 d-flex justify-content-start">
+                            <div class="form-check form-check-lg">
+                                <input type="checkbox" id="select_box_all" class="form-check-input">
+                                <label for="customCheck3" class="form-check-label">{% trans 'Select All' %}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table nowrap w-100" id="table_employee">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                </button>
+                <button type="button" class="btn btn-primary" form="filter_modal" id="btn_select"><i
+                        class="fa-solid fa-floppy-disk"></i>
+                    {% trans 'Select' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

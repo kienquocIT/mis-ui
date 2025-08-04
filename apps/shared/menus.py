@@ -881,6 +881,10 @@ class MenusHRM:
                 icon='<i class="fas fa-user-clock"></i>',
             ),
             MenuCommon(
+                name='Attendance table', code='menu_attendance_list', view_name='HRMAttendanceList',
+                icon='<i class="fa-solid fa-table-columns"></i>',
+            ),
+            MenuCommon(
                 name='Synchronize employee',
                 code='menu_device_integrate_employee_list',
                 view_name='DeviceIntegrateEmployeeList',

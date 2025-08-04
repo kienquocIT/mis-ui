@@ -885,6 +885,12 @@ class MenusHRM:
                 icon='<i class="fa-solid fa-table-columns"></i>',
             ),
             MenuCommon(
+                name='Attendance device config',
+                code='menu_attendance_device_list',
+                view_name='AttendanceDeviceList',
+                icon='<i class="fa-solid fa-gears"></i>',
+            ),
+            MenuCommon(
                 name='Synchronize employee',
                 code='menu_device_integrate_employee_list',
                 view_name='DeviceIntegrateEmployeeList',

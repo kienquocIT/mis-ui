@@ -1,5 +1,5 @@
 class DIEmployeeHandle {
-    static Stable = $('#table_main');
+    static $table = $('#table_main');
 
     static $transEle = $('#app-trans-factory');
     static $urlEle = $('#app-url-factory');
@@ -60,10 +60,10 @@ class DIEmployeeHandle {
     };
 
     static loadDtbTable() {
-        if ($.fn.dataTable.isDataTable(DIEmployeeHandle.Stable)) {
-            DIEmployeeHandle.Stable.DataTable().destroy();
+        if ($.fn.dataTable.isDataTable(DIEmployeeHandle.$table)) {
+            DIEmployeeHandle.$table.DataTable().destroy();
         }
-        DIEmployeeHandle.Stable.not('.dataTable').DataTableDefault({
+        DIEmployeeHandle.$table.not('.dataTable').DataTableDefault({
             useDataServer: true,
             ajax: {
                 url: DIEmployeeHandle.$urlEle.attr('data-api-device-integrate-employee-list'),
@@ -142,7 +142,7 @@ class DIEmployeeHandle {
     };
 
     static dtbHDCustom() {
-        let $table = DIEmployeeHandle.Stable;
+        let $table = DIEmployeeHandle.$table;
         let wrapper$ = $table.closest('.dataTables_wrapper');
         let $theadEle = wrapper$.find('thead');
         if ($theadEle.length > 0) {
@@ -179,11 +179,11 @@ $(document).ready(function () {
 
     DIEmployeeHandle.loadDtbTable();
 
-    DIEmployeeHandle.Stable.on('click', '.table-row-save', function () {
+    DIEmployeeHandle.$table.on('click', '.table-row-save', function () {
         let row = this.closest('tr');
         if (row) {
-            let rowIndex = DIEmployeeHandle.Stable.DataTable().row(row).index();
-            let $row = DIEmployeeHandle.Stable.DataTable().row(rowIndex);
+            let rowIndex = DIEmployeeHandle.$table.DataTable().row(row).index();
+            let $row = DIEmployeeHandle.$table.DataTable().row(rowIndex);
             let dataRow = $row.data();
             let employeeEle = row.querySelector('.table-row-employee');
             if (employeeEle) {

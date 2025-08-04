@@ -12,10 +12,10 @@ class AttendanceDeviceList(View):
     @mask_view(
         auth_require=True,
         template='hrm/attendance/deviceintegrate/attendance_device.html',
-        menu_active='menu_device_integrate_employee_list',
-        breadcrumb='DEVICE_INTEGRATE_EMPLOYEE_LIST_PAGE',
-        icon_cls='fas fa-repeat',
-        icon_bg='bg-sky',
+        menu_active='menu_attendance_device_list',
+        breadcrumb='ATTENDANCE_DEVICE_LIST_PAGE',
+        icon_cls='fa-solid fa-gears',
+        icon_bg='bg-smoke',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK

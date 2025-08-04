@@ -1,6 +1,7 @@
 class AttendanceDeviceHandle {
     static $form = $('#frm_attendance_device');
     static $table = $('#table_main');
+    static $modal = $('#mainModal');
 
     static $transEle = $('#app-trans-factory');
     static $urlEle = $('#app-url-factory');
@@ -62,14 +63,18 @@ class AttendanceDeviceHandle {
                     targets: 4,
                     width: '15%',
                     render: (data, type, row) => {
-                        return `<span></span>`;
+                        let cls = "fa-solid fa-xmark text-red";
+                        if (row?.['is_using'] === true) {
+                            cls = "fa-solid fa-check text-green";
+                        }
+                        return `<div class="d-flex justify-content-start align-items-center"><i class="fs-5 ${cls}"></i></div>`;
                     }
                 },
                 {
                     targets: 5,
                     width: '10%',
                     render: (data, type, row) => {
-                        return `<button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover btn-lg"><span class="icon"><i class="fa-solid fa-pen-to-square"></i></span></button>`;
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover btn-lg btn-edit" data-bs-toggle="modal" data-bs-target="#mainModal"><span class="icon"><i class="fa-solid fa-pen-to-square"></i></span></button>`;
                     }
                 },
             ],
@@ -100,12 +105,21 @@ class AttendanceDeviceHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn_add').length) {
-                let $group = $(`<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal" id="btn_add">
+                let $group = $(`<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mainModal" id="btn_add">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${AttendanceDeviceHandle.$transEle.attr('data-add-new')}</span></span>
                                 </button>`);
                 textFilter$.append(
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                 );
+                // Select the appended button from the DOM and attach the event listener
+                $('#btn_add').on('click', function () {
+                    let cusTitle = AttendanceDeviceHandle.$modal[0].querySelector('.modal-title-custom');
+                    if (cusTitle) {
+                        $(cusTitle).html(`${AttendanceDeviceHandle.$transEle.attr('data-modal-add')}`);
+                    }
+                    AttendanceDeviceHandle.$modal.attr('data-method', 'post');
+                    AttendanceDeviceHandle.$modal.attr('data-id', '');
+                });
             }
         }
     };
@@ -117,6 +131,7 @@ class AttendanceDeviceHandle {
             'device_ip': _form.dataForm?.['device_ip'],
             'username': _form.dataForm?.['username'],
             'password': _form.dataForm?.['password'],
+            'is_using': _form.dataForm?.['is_using'],
         }
     };
 
@@ -125,6 +140,27 @@ class AttendanceDeviceHandle {
 $(document).ready(function () {
 
     AttendanceDeviceHandle.loadDtbTable();
+
+    AttendanceDeviceHandle.$table.on('click', '.btn-edit', function () {
+        let row = this.closest('tr');
+        if (row) {
+            let rowIndex = AttendanceDeviceHandle.$table.DataTable().row(row).index();
+            let $row = AttendanceDeviceHandle.$table.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+            let cusTitle = AttendanceDeviceHandle.$modal[0].querySelector('.modal-title-custom');
+            if (cusTitle) {
+                $(cusTitle).html(`${AttendanceDeviceHandle.$transEle.attr('data-modal-update')}`);
+            }
+            AttendanceDeviceHandle.$modal.attr('data-method', 'put');
+            AttendanceDeviceHandle.$modal.attr('data-id', dataRow?.['id']);
+            $('#title').val(dataRow?.['title']);
+            $('#device_ip').val(dataRow?.['device_ip']);
+            $('#username').val(dataRow?.['username']);
+            $('#password').val(dataRow?.['password']);
+            $('#is_using')[0].checked = dataRow?.['is_using'];
+        }
+        return true;
+    });
 
     SetupFormSubmit.validate(AttendanceDeviceHandle.$form, {
             rules: {
@@ -150,11 +186,19 @@ $(document).ready(function () {
         });
 
     function submitHandlerFunc() {
-        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
+        let url = AttendanceDeviceHandle.$urlEle.attr('data-api-attendance-device-list');
+        let method = AttendanceDeviceHandle.$modal.attr('data-method').toLowerCase();
+        let id = AttendanceDeviceHandle.$modal.attr('data-id');
+        let type = 'CREATE';
+        if (method === "put" && id) {
+            url = AttendanceDeviceHandle.$urlEle.attr('data-api-detail-attendance-device').format_url_with_uuid(id);
+        }
+
+        WindowControl.showLoading({'loadingTitleAction': type});
         $.fn.callAjax2(
             {
-                'url': AttendanceDeviceHandle.$urlEle.attr('data-api-attendance-device-list'),
-                'method': "POST",
+                'url': url,
+                'method': method,
                 'data': AttendanceDeviceHandle.setupDataSubmit(),
             }
         ).then(

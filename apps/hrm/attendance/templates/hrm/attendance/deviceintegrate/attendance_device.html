@@ -40,14 +40,15 @@
         <div class="modal-canvas-area">
 
             <div
-                    class="modal fade" id="addModal" tabindex="-1"
-                    role="dialog" aria-labelledby="addModal"
+                    class="modal fade" id="mainModal" tabindex="-1"
+                    role="dialog" aria-labelledby="mainModal"
                     aria-hidden="true"
+                    data-method="post" data-id=""
             >
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title"><b>{% trans 'Add attendace device' %}</b></h5>
+                            <h5 class="modal-title"><b class="modal-title-custom"></b></h5>
                             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
                         </div>
                         <div class="modal-body">
@@ -87,10 +88,14 @@
                                         required
                                 >
                             </div>
+                            <div class="form-check form-switch form-switch-lg">
+                                <input type="checkbox" class="form-check-input" name="is_using" id="is_using">
+                                <label class="form-check-label" for="is_using">{% trans 'Use this device' %}</label>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                            <button type="submit" class="btn btn-primary" form="frm_attendance_device" data-bs-dismiss="modal" >{% trans 'Save' %}</button>
+                            <button type="submit" class="btn btn-primary" form="frm_attendance_device" data-bs-dismiss="modal">{% trans 'Save' %}</button>
                         </div>
                     </div>
                 </div>
@@ -108,6 +113,8 @@
         id="app-trans-factory"
         data-employee="{% trans 'Employee' %}"
         data-add-new="{% trans 'Add new' %}"
+        data-modal-add="{% trans 'Add attendance device' %}"
+        data-modal-update="{% trans 'Update attendance device' %}"
     >
     <input
         type="text"

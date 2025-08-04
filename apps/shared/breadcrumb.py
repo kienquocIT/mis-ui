@@ -533,6 +533,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 	# Attendance
     HRM_ATTENDANCE_LIST_PAGE = BreadcrumbChildren(_('HRM Attendance info'), 'HRMAttendanceList')
 
+    # Device integrate
+    DEVICE_EMPLOYEE_INTEGRATE_LIST_PAGE = BreadcrumbChildren(_('Synchronize employee'), 'DeviceIntegrateEmployeeList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1446,3 +1449,7 @@ class BreadcrumbView:
         BreadcrumbItem.HRM_ATTENDANCE_LIST_PAGE
     ]
 
+    # Device integrate
+    DEVICE_INTEGRATE_EMPLOYEE_LIST_PAGE = [
+        BreadcrumbItem.DEVICE_EMPLOYEE_INTEGRATE_LIST_PAGE
+    ]

@@ -857,6 +857,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Recon
     FINANCIAL_RECON_LIST = StringUrl('financial-reconciliation/list')
     FINANCIAL_RECON_DETAIL = StringUrl('financial-reconciliation/detail/{pk}')
+    AP_INVOICE_LIST_FOR_RECON = StringUrl('financial-reconciliation/ap-invoice-for-recon/list')
+    COF_LIST_FOR_RECON = StringUrl('financial-reconciliation/cash-outflow-for-recon/list')
     AR_INVOICE_LIST_FOR_RECON = StringUrl('financial-reconciliation/ar-invoice-for-recon/list')
     CIF_LIST_FOR_RECON = StringUrl('financial-reconciliation/cash-inflow-for-recon/list')
 
@@ -993,3 +995,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # attendance/attendance
     ATTENDANCE_LIST = StringUrl('hrm/attendance/attendance/list')
+
+    # attendance/device integrate
+    DEVICE_INTEGRATE_EMPLOYEE_LIST = StringUrl('hrm/attendance/device-integrate-employee/list')
+    DEVICE_INTEGRATE_EMPLOYEE_DETAIL = StringUrl('hrm/attendance/device-integrate-employee/{pk}')

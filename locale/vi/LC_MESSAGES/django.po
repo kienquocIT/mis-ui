@@ -3384,7 +3384,7 @@ msgid "Change Space to "
 msgstr "Cập nhật Space thành "
 
 #
-msgid "Auto reload has been applied after the timeout!"
+msgid "Auto reload page after the timeout!"
 msgstr "Tự động tải lại trang đã được áp dụng sau thời gian chờ!"
 
 #
@@ -6982,7 +6982,7 @@ msgstr "Mô tả giao dịch"
 
 #
 msgid "Trans code"
-msgstr "Mã giao dịch"
+msgstr "Mã GD"
 
 #
 msgid "In quantity"
@@ -10032,8 +10032,8 @@ msgid "Cash outflow list"
 msgstr "Danh sách phiếu chi"
 
 #
-msgid "Customers pay according to AR invoice"
-msgstr "Khách hàng thanh toán theo Hóa đơn bán hàng"
+msgid "Customers pay (according to AR invoice)"
+msgstr "Khách hàng thanh toán (theo Hóa đơn bán hàng)"
 
 #
 msgid "Payment discount"
@@ -10913,7 +10913,7 @@ msgstr "Đối tác kinh doanh"
 
 #
 msgid "Transaction code"
-msgstr "Mã giao dịch"
+msgstr "Mã GD"
 
 #
 msgid "Transaction name"
@@ -12142,3 +12142,27 @@ msgstr "Tạo phiếu thu"
 #
 msgid "Create cash out"
 msgstr "Tạo phiếu chi"
+
+#
+msgid "View by employee"
+msgstr "Xem theo nhân viên"
+
+#
+msgid "View by group"
+msgstr "Xem theo nhóm"
+
+#
+msgid "Synchronize employee"
+msgstr "Đồng bộ nhân viên"
+
+#
+msgid "Device employee id"
+msgstr "ID nhân viên trên thiết bị"
+
+#
+msgid "Device employee name"
+msgstr "Tên nhân viên trên thiết bị"
+
+#
+msgid "Hover to see title"
+msgstr "Trỏ vào để xem tiêu đề"

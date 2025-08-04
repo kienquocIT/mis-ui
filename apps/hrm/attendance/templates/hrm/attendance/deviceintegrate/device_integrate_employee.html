@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Device integrate employee' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block pageAction %}{% endblock %}
+
+{% block pageContent %}
+
+    <form>
+        {% csrf_token %}
+
+        <table
+                id="table_main"
+                class="table nowrap min-w-1366p w-100"
+        >
+            <thead>
+            <tr class="bg-light">
+                <th>STT</th>
+                <th>{% trans 'Employee' %}</th>
+                <th>{% trans 'Device employee id' %}</th>
+                <th>{% trans 'Device employee name' %}</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </form>
+
+
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-employee="{% trans 'Employee' %}"
+        data-refresh="{% trans 'Refresh' %}"
+    >
+    <input
+        type="text"
+        id="app-url-factory"
+        data-api-device-integrate-employee-list="{% url 'DeviceIntegrateEmployeeListAPI' %}"
+        data-api-detail-integrate-employee="{% url 'DeviceIntegrateEmployeeDetailAPI' 1 %}"
+        data-api-dd-employee-list="{% url 'EmployeeListAllAPI' %}"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+
+    <script src="{% static 'assets/hrm/attendance/js/deviceintegrate/device_integrate_employee.js' %}"></script>
+
+{% endblock %}

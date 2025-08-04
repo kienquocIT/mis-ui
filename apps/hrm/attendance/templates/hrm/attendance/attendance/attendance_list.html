@@ -16,39 +16,53 @@
     <div class="row">
         <div class="col-12">
             <div class="row">
-                <!-- Select Date -->
-                <div class="row">
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <div class="form-group">
-                            <label class="form-label" for="date_from">{% trans 'From' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" name="date_from" id="date_from"
-                                       class="form-control flat-picker" autocomplete="off">
-                                <div class="input-suffix">
-                                    <i class="fas fa-calendar-alt"></i>
+                <!-- Filter area -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">{% trans "Attendance Filter" %}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-5 col-lg-5">
+                                <label class="form-label"
+                                       for="txt_title">{% trans 'Department / Employee Filter' %}</label>
+                                <div id="select_employee" class="form-control d-flex align-items-center"
+                                     style="cursor: pointer;">
+                                    <span class="employee-icon"><i class="fa-solid fa-user-group"></i></span>
+                                    <span class="employee-text ms-2">{% trans "All Department & Employee" %}</span>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <div class="form-group">
-                            <label class="form-label" for="date_to">{% trans 'To' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" name="date_from" id="date_to"
-                                       class="form-control flat-picker" autocomplete="off">
-                                <div class="input-suffix">
-                                    <i class="fas fa-calendar-alt"></i>
+                            <div class="col-12 col-md-2 col-lg-2">
+                                <div class="form-group">
+                                    <label class="form-label" for="date_from">{% trans 'From' %}</label>
+                                    <div class="input-affix-wrapper">
+                                        <input type="text" name="date_from" id="date_from"
+                                               class="form-control flat-picker" autocomplete="off">
+                                        <div class="input-suffix">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="col-12 col-md-2 col-lg-2">
+                                <div class="form-group">
+                                    <label class="form-label" for="date_to">{% trans 'To' %}</label>
+                                    <div class="input-affix-wrapper">
+                                        <input type="text" name="date_to" id="date_to"
+                                               class="form-control flat-picker" autocomplete="off">
+                                        <div class="input-suffix">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-1 col-lg-1 d-flex align-items-center">
+                                <button id="apply_filter" class="btn btn-success text-white">
+                                    <i class="fa-solid fa-filter"></i> {% trans 'Apply Filter' %}
+                                </button>
+                            </div>
+                            <div class="col-12 col-md-2 col-lg-2"></div>
                     </div>
-                </div>
-                <!-- Filter button -->
-                <div class="col-12">
-                    <button type="button" class="btn btn-secondary btn-floating btn-sm"
-                            data-bs-toggle="modal" data-bs-target="#filterModal">
-                        <i class="fa-solid fa-filter"></i> {% trans 'Filter' %}
-                    </button>
                 </div>
                 <!-- Table -->
                 <div class="col-12 mt-3" id="space_main_table_employee"></div>
@@ -85,5 +99,5 @@
     {% if base.language == 'vi' %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
-    <script src="{% static 'assets/js/hrm/attendance/attendance/attendance_common.js' %}"></script>
+    <script src="{% static 'assets/hrm/attendance/js/attendance/attendance_common.js' %}"></script>
 {% endblock %}

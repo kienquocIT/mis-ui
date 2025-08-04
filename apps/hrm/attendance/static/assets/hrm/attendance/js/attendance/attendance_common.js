@@ -1,9 +1,11 @@
 class AttendanceElements {
     constructor() {
+        this.$select_employee = $('#select_employee');
         this.$startDate = $('#date_from');
         this.$endDate = $('#date_to');
         this.$urlEle = $('#url-factory');
         this.$urlAttendanceEle = $('#url-attendance-data');
+        this.$btnAplly = $('#apply_filter');
 
         // filter modal element
         this.$tableEmployeeEle = $('#table_employee');
@@ -26,14 +28,36 @@ class AttendanceElements {
 
         // sub-element
         this.$statusColors = {
-            'P': 'bg-success-light-5',
-            'A': 'bg-danger-light-5',
-            'L': 'bg-warning-light-5',
-            'B': 'bg-info-light-5',
-            'H': 'bg-purple-light-5',
-            'W': 'bg-secondary-light-5',
-            'O': 'bg-primary-light-5',
-            'OB': 'bg-dark-light-5'
+            0: 'bg-success-light-5',
+            1: 'bg-danger-light-5',
+            2: 'bg-warning-light-5',
+            3: 'bg-info-light-5',
+            4: 'bg-purple-light-5',
+            5: 'bg-secondary-light-5',
+            6: 'bg-primary-light-5',
+            7: 'bg-dark-light-5'
+        }
+
+        this.$statusAttendance = {
+            0: 'A',
+            1: 'P',
+            2: 'L',
+            3: 'B',
+            4: 'W',
+            5: 'H',
+            6: 'O',
+            7: 'OB'
+        }
+
+        this.$parseStatusInfo = {
+            0: 'Absent',
+            1: 'Present',
+            2: 'Leave',
+            3: 'Business Trip',
+            4: 'Holiday',
+            5: 'Weekend',
+            6: 'Overtime',
+            7: 'Overtime on business trip'
         }
     }
 }
@@ -207,7 +231,7 @@ class AttendanceLoadDataHandle {
      *
      * @returns {void}
      */
-    static loadAttendanceMainTable(data_list=[], date_range={}) {
+    static loadAttendanceMainTable(data_list=[], date_range=[]) {
         // init table
         let columns_cfg = AttendancePageFunction.initMainTable(date_range);
         let $main_table = $('#main_table_employee')
@@ -239,17 +263,20 @@ class AttendanceLoadDataHandle {
                         // fill status
                         for (let i=0; i < (data_list[index]?.attendance || []).length; i++) {
                             let item = (data_list[index]?.attendance || [])[i];
-                            $(ele).find(`td:eq(${i+1})`).html(`${item?.status}`);
+                            let attendanceStatus = item?.attendance_status !== undefined ? item?.attendance_status : '';
+                            let attendanceStatusStr = pageElements.$statusAttendance?.[attendanceStatus] || '';
+                            $(ele).find(`td:eq(${i+1})`).html(`${attendanceStatusStr}`);
                             $(ele).find(`td:eq(${i+1})`).attr('data-attendance-detail', JSON.stringify(item));
                             $(ele).find(`td:eq(${i+1})`).attr('data-fullname', data_list[index]?.['full_name']);
 
                             // change color for each status
-                            // if (pageElements.$statusColors[item?.status]) {
-                            //     $(ele).find(`td:eq(${i+1})`).addClass(pageElements.$statusColors[item?.status]);
-                            // }
+                            if (pageElements.$statusColors[item?.status]) {
+                                $(ele).find(`td:eq(${i+1})`).addClass(pageElements.$statusColors[item?.status]);
+                            }
                         }
                     });
                 }
+
 
                 // Add note in the top of the table
                 let wrapper$ = $main_table.closest('.dataTables_wrapper');
@@ -311,9 +338,9 @@ class AttendancePageFunction {
      * @param date_range
      * @returns {[{className: string, render: (function(): string)}]}
      */
-    static initMainTable(date_range) {
-        let startDate = date_range?.start?.day;
-        let endDate = date_range?.end?.day;
+    static initMainTable(dateRange) {
+        let startDate = dateRange[0];
+        let endDate = dateRange[1];
         let th_html = ``;
         let columns_cfg = [
             {
@@ -335,7 +362,7 @@ class AttendancePageFunction {
                                 <thead class="bg-warning-light-4">
                                     <tr>
                                         <th class="fw-bold" style="min-width: 300px">Employee</th>
-                                        ${th_html} 
+                                        ${th_html}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -348,21 +375,35 @@ class AttendancePageFunction {
         const grouped = [];
 
         for (let item of raw_data) {
-            const empId = item.employee_id;
-            if (!grouped[empId]) {
-                grouped[empId] = {
-                    employee_id: empId,
-                    code: item.code,
-                    full_name: item.full_name,
+            const employeeInfo = item?.employee || {};
+            if (!grouped[employeeInfo]) {
+                grouped[employeeInfo] = {
+                    employee_id: employeeInfo?.id || '',
+                    code: employeeInfo?.code || '',
+                    full_name: employeeInfo?.full_name || '',
                     attendance: []
                 };
             }
 
             // Clone the item but exclude employee_id, code, full_name
             const {employee_id, code, full_name, ...attendanceItem} = item;
-            grouped[empId].attendance.push(attendanceItem);
+            grouped[employeeInfo].attendance.push(attendanceItem);
         }
         return Object.values(grouped);
+    }
+
+    static fillAttendancePerDay(standardData, dayCount, dayStart) {
+        const result = [];
+        for (let i = 0; i < (standardData || []).length; i++) {
+            let attendancePerDay = Array.from({length: dayCount}, () => ({}));
+            let attendance_data = (standardData || [])[i]?.attendance || [];
+            for (let j = 0; j < attendance_data.length; j++) {
+                attendancePerDay[attendance_data[j]?.date.split('-')[2] - dayStart] = attendance_data[j];
+            }
+            standardData[i]['attendance'] = attendancePerDay;
+            result.push(standardData[i]);
+        }
+        return result;
     }
 
     /**
@@ -391,17 +432,18 @@ class AttendancePageFunction {
      */
     static fetchAttendanceData() {
         let checkedEmployee = pageElements.$storeEmployeeEle.val();
-        if (checkedEmployee) {
+        let dateStart = pageElements.$startDate.val();
+        let dateEnd = pageElements.$endDate.val();
+
+        if (checkedEmployee && dateStart && dateEnd) {
             // get criteria to show data, include: employee, date, month, fiscal year
             let checkedEmployeeData = JSON.parse(checkedEmployee);
 
             // build input parameters for filter processing
-            let dataParams = {'employee_id__in': checkedEmployeeData.join(",")}
-            if (pageElements.$startDate.val()) {
-                dataParams['date__gte'] = DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", pageElements.$startDate.val());
-            }
-            if (pageElements.$startDate.val()) {
-                dataParams['date__lte'] = DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", pageElements.$endDate.val());
+            let dataParams = {
+                'employee_id_lst': checkedEmployeeData.join(","),
+                'date_start': DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", dateStart),
+                'date_end': DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", dateEnd),
             }
 
             // build ajax to get necessary data (filter processing occurred in view)
@@ -412,7 +454,7 @@ class AttendancePageFunction {
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);
-                    return data || [];
+                    return data?.['attendance_list'] || [];
                 },
                 (errs) => {
                     console.log(errs);
@@ -422,11 +464,20 @@ class AttendancePageFunction {
             // wait to ajax run complete
             Promise.all([ajax_v1]).then(
                 (results) => {
-                    let firstRes = results[0]
+                    let firstRes = results[0];
                     let standardData = AttendancePageFunction.formatToStandardData(firstRes); // format data
-                    AttendanceLoadDataHandle.loadAttendanceMainTable(standardData, date_range);
+
+                    let dayStart = parseInt(dateStart.split('/')[0]);
+                    let dayEnd =  parseInt(dateEnd.split('/')[0]);
+                    let dateRange = [dayStart, dayEnd];
+                    let dayCount = dayEnd - dayStart + 1;
+                    let solvedData = AttendancePageFunction.fillAttendancePerDay(standardData, dayCount, dayStart);
+                    AttendanceLoadDataHandle.loadAttendanceMainTable(solvedData, dateRange);
                 });
             $('#filterModal').hide();
+        }
+        else {
+            $.fn.notifyB({description: 'Employee, Start Date, and End Date are required'}, 'failure');
         }
     }
 }
@@ -436,6 +487,11 @@ class AttendancePageFunction {
  **/
 class AttendanceEventHandler {
     static InitPageEvent() {
+        // show employee filter modal
+        pageElements.$select_employee.on('click', function() {
+            $('#filterModal').modal('show');
+        });
+
         // toggle show/hide rows in a group
         pageElements.$tableEmployeeEle.on('click', '.toggle-icon', function() {
             const $groupRow = $(this).closest('tr');
@@ -487,14 +543,20 @@ class AttendanceEventHandler {
 
         // event for button select in filter modal
         pageElements.$btnSelect.on('click', function () {
-            AttendancePageFunction.fetchAttendanceData();
+            // show text in input element
+            let checkedEmployee = pageElements.$storeEmployeeEle.val();
+            let checkedEmployeeData = JSON.parse(checkedEmployee || '[]');
+            let count = checkedEmployeeData.length;
+            let displayText = count === 0
+                ? gettext('All Department & Employee')
+                : `${count} employee${count > 1 ? 's' : ''} selected`;
+
+            pageElements.$select_employee.find('.employee-text').text(displayText);
+            $('#filterModal').modal('hide');
         })
 
-        pageElements.$startDate.on('change', function () {
-            AttendancePageFunction.fetchAttendanceData();
-        })
-
-        pageElements.$endDate.on('change', function () {
+        // show information on main table
+        pageElements.$btnAplly.on('click', function() {
             AttendancePageFunction.fetchAttendanceData();
         })
 
@@ -511,18 +573,8 @@ class AttendanceEventHandler {
         $(document).on("click", '#main_table_employee tbody td', function () {
             let attendanceData = $(this).attr('data-attendance-detail') ? JSON.parse($(this).attr('data-attendance-detail')) : {};
             let fullname = $(this).attr('data-fullname') || '';
-            let status = attendanceData?.status || '';
-
-            const parseStatusInfo = {
-                'P': 'Present',
-                'A': 'Absent',
-                'L': 'Leave',
-                'B': 'Business Trip',
-                'H': 'Holiday',
-                'W': 'Weekend',
-                'O': 'Overtime',
-                'OB': 'Overtime on business trip'
-            }
+            let status = attendanceData?.attendance_status !== undefined ? attendanceData?.attendance_status : '';
+            let statusStr = pageElements.$parseStatusInfo?.[status] || '';
 
             pageElements.$employeeDetailEle.html(`
                 <div class="col-4 fw-semibold">Employee Name:</div>
@@ -530,23 +582,23 @@ class AttendanceEventHandler {
             `);
             pageElements.$dateDetailEle.html(`
                 <div class="col-4 fw-semibold">Date:</div>
-                <div class="col-8"></div>
+                <div class="col-8">${attendanceData?.date || ''}</div>
             `);
             pageElements.$shiftDetailEle.html(`
                 <div class="col-4 fw-semibold">Shift:</div>
-                <div class="col-8">${attendanceData?.shift || ''}</div>
+                <div class="col-8">${(attendanceData?.shift || {})?.title || ''}</div>
             `);
             pageElements.$checkinDetailEle.html(`
                 <div class="col-4 fw-semibold">Check In:</div>
-                <div class="col-8">${(attendanceData?.checkin || '').replace('T', ' ')}</div>
+                <div class="col-8">${(attendanceData?.checkin_time || '').replace('T', ' ')}</div>
             `);
             pageElements.$checkoutDetailEle.html(`
-                <div class="col-4 fw-semibold">Check In:</div>
-                <div class="col-8">${(attendanceData?.checkout || '').replace('T', ' ')}</div>
+                <div class="col-4 fw-semibold">Check Out:</div>
+                <div class="col-8">${(attendanceData?.checkout_time || '').replace('T', ' ')}</div>
             `);
             pageElements.$statusDetailEle.html(`
                 <div class="col-4 fw-semibold">Status:</div>
-                <div class="col-8">${parseStatusInfo[status] || status}</div>
+                <div class="col-8">${statusStr}</div>
             `);
             pageElements.$isLateDetailEle.html(`
                 <div class="col-4 fw-semibold">Is Late:</div>

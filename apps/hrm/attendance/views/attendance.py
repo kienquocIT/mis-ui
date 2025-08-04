@@ -73,43 +73,12 @@ class LoadSampleAttendanceListAPI(APIView):
         return JsonResponse({'data': filtered_data, 'status': 200})
 
 
-# class AttendanceListAPI(APIView):
-#     @mask_view(
-#         auth_require=True,
-#         is_api=True,
-#     )
-#     def get(self, request, *args, **kwargs):
-#         params = request.query_params.dict()
-#         resp = ServerAPI(user=request.user, url=ApiURL.ATTENDANCE_LIST).get(params)
-#         return resp.auto_return(key_success="attendance_list")
-
 class AttendanceListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        raw_params = request.query_params.dict()
-        # filters = {}
-        #
-        # # parse employee list
-        # emp_list_str = raw_params.get('emp_list', '')
-        # if emp_list_str:
-        #     emp_list = emp_list_str.split(',')
-        #     filters['employee_id__in'] = ','.join(emp_list)
-        #
-        # # parse date range
-        # try:
-        #     date_range = json.loads(raw_params.get("date_range", '{}'))
-        #     start_date = date_range['start']['day']
-        #     end_date = date_range['end']['day']
-        #     month = date_range['start']['month']
-        #     year = datetime.now().year
-        #     filters['date__gte'] = f"{year}-{month:02}-{start_date:02}"
-        #     filters['date__lte'] = f"{year}-{month:02}-{end_date:02}"
-        # except (json.JSONDecodeError, KeyError, TypeError):
-        #     pass
-
-        resp = ServerAPI(user=request.user, url=ApiURL.ATTENDANCE_LIST).get(raw_params)
+        data_params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ATTENDANCE_LIST).get(data_params)
         return resp.auto_return(key_success='attendance_list')
-

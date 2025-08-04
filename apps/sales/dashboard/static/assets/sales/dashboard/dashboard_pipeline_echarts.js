@@ -1133,7 +1133,6 @@ $(document).ready(function () {
             xAxis: {
                 type: indexAxis === 'y' ? 'value' : 'category',
                 data: indexAxis === 'y' ? undefined : labelX,
-                name: indexAxis === 'y' ? titleX : titleY,
                 nameLocation: 'middle',
                 nameGap: indexAxis === 'y' ? 35 : 45,
                 nameTextStyle: {

@@ -12134,3 +12134,11 @@ msgstr "Giờ giải lao"
 #
 msgid "Attendance"
 msgstr "Chấm công"
+
+#
+msgid "Create cash in"
+msgstr "Tạo phiếu thu"
+
+#
+msgid "Create cash out"
+msgstr "Tạo phiếu chi"

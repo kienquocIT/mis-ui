@@ -318,6 +318,8 @@
         data-actual-invoice-date="{% trans 'Actual invoice date' %}"
         data-total-cash-in="{% trans 'Total cash in' %}"
         data-total-cash-out="{% trans 'Total cash out' %}"
+        data-create-cash-in="{% trans 'Create cash in' %}"
+        data-create-cash-out="{% trans 'Create cash out' %}"
     >
     <input
         type="text"
@@ -329,6 +331,9 @@
         data-account-detail="{% url 'AccountDetail' 1 %}"
         data-ar-invoice-detail="{% url 'ARInvoiceDetail' 1 %}"
         data-ap-invoice-detail="{% url 'APInvoiceDetail' 1 %}"
+
+        data-cash-in-create="{% url 'CashInflowCreate' %}"
+        data-cash-out-create="{% url 'CashOutflowCreate' %}"
     >
 
     <input

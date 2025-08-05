@@ -489,7 +489,10 @@ msgstr "Đã tạo phiếu Nhập Hàng"
 msgid "Oops, some data is missing. Please reload the page and try again."
 msgstr "Oops, một số dữ liệu đang thiếu. Vui lòng tải lại trang và thử lại."
 
-
 #
 msgid "None Group"
 msgstr "Không có nhóm"
+
+#
+msgid "Group"
+msgstr "Phòng ban"

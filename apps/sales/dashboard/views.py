@@ -12,7 +12,7 @@ from apps.shared.msg import SaleMsg
 class DashboardGeneralList(View):
     @mask_view(
         auth_require=True,
-        template='sales/dashboard/dashboard_general_echarts.html',
+        template='sales/dashboard/dashboard_general_echarts_v2.html',
         breadcrumb='DASHBOARD_GENERAL_LIST_PAGE',
         menu_active='id_menu_dashboard_general',
     )

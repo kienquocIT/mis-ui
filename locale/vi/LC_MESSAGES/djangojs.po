@@ -492,7 +492,3 @@ msgstr "Oops, một số dữ liệu đang thiếu. Vui lòng tải lại trang 
 #
 msgid "None Group"
 msgstr "Không có nhóm"
-
-#
-msgid "Group"
-msgstr "Phòng ban"

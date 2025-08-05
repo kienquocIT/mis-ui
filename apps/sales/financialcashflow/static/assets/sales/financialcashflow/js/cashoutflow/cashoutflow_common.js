@@ -28,6 +28,7 @@ class COFPageElements {
         this.$document_date = $('#document_date')
         this.$advance_for_supplier_value = $('#advance_for_supplier_value')
         this.$advance_for_supplier_table = $('#advance-to-supplier-table')
+        this.$payment_to_customer = $('#payment_to_customer')
         this.$ap_invoice_table = $('#ap-invoice-table')
         this.$advance_for_employee_value = $('#advance_for_employee_value')
         this.$detail_payment_value_modal = $('#detail-payment-value-modal')
@@ -635,10 +636,10 @@ class COFHandler {
             frm.dataForm['cash_out_ap_invoice_data'] = cash_out_ap_invoice_data
         }
         else if (pageElements.$cof_type.val() === '1') {
-            frm.dataForm['advance_for_employee_value'] = pageElements.$advance_for_employee_value.attr('value')
+            frm.dataForm['payment_to_customer_value'] = pageElements.$payment_to_customer.attr('value')
         }
         else if (pageElements.$cof_type.val() === '2') {
-
+            frm.dataForm['advance_for_employee_value'] = pageElements.$advance_for_employee_value.attr('value')
         }
         else if (pageElements.$cof_type.val() === '3') {
 
@@ -704,7 +705,12 @@ class COFHandler {
                             data?.['system_status'] === 3
                         )
                     }
-                    if (pageElements.$cof_type.val() === '1') {}
+                    if (pageElements.$cof_type.val() === '1') {
+                        let customer_data = data?.['customer_data'] || {}
+                        pageElements.$customer_name.val(customer_data?.['name'] || '')
+                        pageElements.$customer_name.attr('data-id', customer_data?.['id'] || '')
+                        pageElements.$payment_to_customer.attr('value', data?.['payment_to_customer_value'] ? data?.['payment_to_customer_value'] : 0)
+                    }
                     if (pageElements.$cof_type.val() === '2') {
                         let employee_data = data?.['employee_data'] || {}
                         pageElements.$employee_name.val(employee_data?.['full_name'] || '' + '(' + employee_data?.['group']?.['title'] || '' + ')')

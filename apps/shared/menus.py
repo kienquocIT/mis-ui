@@ -319,18 +319,8 @@ class MenusCRM:
         icon='<i class="fas fas fa-home"></i>',
     )
     DASHBOARD = MenuCommon(
-        name='Dashboard', code='id_menu_dashboard', view_name='#',
+        name='Dashboard', code='id_menu_dashboard', view_name='DashboardCommonPage',
         icon='<i class="fas fa-chart-column"></i>',
-        child=[
-            MenuCommon(
-                name='General', code='id_menu_dashboard_general', view_name='DashboardGeneralList',
-                icon='<i class="fas fa-square-poll-vertical"></i>',
-            ),
-            MenuCommon(
-                name='Pipeline', code='id_menu_dashboard_pipeline', view_name='DashboardPipelineList',
-                icon='<i class="fas fa-chart-bar"></i>',
-            ),
-        ],
     )
     PLANNING = MenuCommon(
         name='Planning', code='id_menu_planning', view_name='#',

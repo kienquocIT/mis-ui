@@ -351,8 +351,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     MEETING_SCHEDULE_CREATE_PAGE = BreadcrumbChildren(_('Meeting schedule create'), 'MeetingScheduleCreate')
     MEETING_SCHEDULE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
+    DASHBOARD_COMMON_PAGE = BreadcrumbChildren(_('Dashboard'), 'DashboardCommonPage')
     DASHBOARD_GENERAL_LIST_PAGE = BreadcrumbChildren(_('General dashboard'), 'DashboardGeneralList')
-
     DASHBOARD_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pipeline dashboard'), 'DashboardPipelineList')
 
     PERIODS_CONFIG_PAGE = BreadcrumbChildren(_('Periods config'), 'PeriodsConfigList')
@@ -1096,8 +1096,8 @@ class BreadcrumbView:
                                     BreadcrumbItem.MEETING_SCHEDULE_CREATE_PAGE]
     MEETING_SCHEDULE_DETAIL_PAGE = MEETING_SCHEDULE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
 
+    DASHBOARD_COMMON_PAGE = [BreadcrumbItem.DASHBOARD_COMMON_PAGE]
     DASHBOARD_GENERAL_LIST_PAGE = [BreadcrumbItem.DASHBOARD_GENERAL_LIST_PAGE]
-
     DASHBOARD_PIPELINE_LIST_PAGE = [BreadcrumbItem.DASHBOARD_PIPELINE_LIST_PAGE]
 
     PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]

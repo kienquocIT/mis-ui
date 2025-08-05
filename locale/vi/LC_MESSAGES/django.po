@@ -12166,3 +12166,11 @@ msgstr "Tên nhân viên trên thiết bị"
 #
 msgid "Hover to see title"
 msgstr "Trỏ vào để xem tiêu đề"
+
+#
+msgid "Overview of revenue, profit and key performance indicators"
+msgstr "Tổng quan doanh thu, lợi nhuận và các chỉ số hiệu suất chính"
+
+#
+msgid "Sales pipeline analysis, conversion rates and deal tracking"
+msgstr "Phân tích pipeline bán hàng, tỷ lệ chuyển đổi và theo dõi tiến độ deal"

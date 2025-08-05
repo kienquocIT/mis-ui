@@ -8,6 +8,7 @@ class COFPageElements {
         this.$supplier_space = $('.supplier-space')
         this.$customer_space = $('.customer-space')
         this.$employee_space = $('.employee-space')
+        this.$account_space = $('.account-space')
         this.$supplier_name = $('#supplier-name')
         this.$customer_name = $('#customer-name')
         this.$employee_name = $('#employee-name')
@@ -15,12 +16,14 @@ class COFPageElements {
         this.$table_select_supplier = $('#table-select-supplier')
         this.$table_select_customer = $('#table-select-customer')
         this.$table_select_employee = $('#table-select-employee')
+        this.$payment_on_account_table = $('#payment-on-account-table')
         this.$supplier_select_modal = $('#supplier-select-modal')
         this.$customer_select_modal = $('#customer-select-modal')
         this.$employee_select_modal = $('#employee-select-modal')
         this.$accept_select_supplier_btn = $('#accept-select-supplier-btn')
         this.$accept_select_customer_btn = $('#accept-select-customer-btn')
         this.$accept_select_employee_btn = $('#accept-select-employee-btn')
+        this.$btn_add_row_account = $('#btn-add-row-account')
         this.$posting_date = $('#posting_date')
         this.$document_date = $('#document_date')
         this.$advance_for_supplier_value = $('#advance_for_supplier_value')
@@ -235,6 +238,80 @@ class COFPageVariables {
                 }
             },
         ]
+        this.payment_on_account_table_cfg = [
+            {
+                className: 'w-5',
+                render: () => {
+                    return ``
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<select class="form-select account-select"></select>`
+                }
+            },
+            {
+                className: 'w-5',
+                render: (data, type, row) => {
+                    return `<span class="account-code" style="font-size: 20px">---</span>`
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<span class="mask-money net-amount-value" data-init-money="0"></span>`
+                }
+            },
+            {
+                className: 'w-5',
+                render: (data, type, row) => {
+                    return `<select class="form-select tax-select"></select>`
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<span class="mask-money total-value" data-init-money="0"></span>`
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<span class="mask-money balance-value" data-init-money="0"></span>`
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<input class="form-control mask-money payment-value" value="0">`
+                }
+            },
+            {
+                className: 'w-5',
+                render: (data, type, row) => {
+                    return `<input class="form-control invoice-date">`
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<input class="form-control invoice-number">`
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<select class="form-select business-partner"></select>`
+                }
+            },
+            {
+                className: 'w-10',
+                render: (data, type, row) => {
+                    return `<span class="business-partner-tax-code">---</span>`
+                }
+            },
+        ]
         this.current_row_ap_invoice = null
         this.is_detail_page = false
     }
@@ -418,6 +495,20 @@ class COFPageFunction {
                 columns: pageVariables.selected_payment_stage_table_cfg,
             });
         }
+    }
+    static LoadPaymentOnAccountTable(data_list=[]) {
+        pageElements.$payment_on_account_table.DataTable().clear().destroy()
+        pageElements.$payment_on_account_table.DataTableDefault({
+            dom: 't',
+            reloadCurrency: true,
+            rowIdx: true,
+            scrollX: true,
+            scrollY: '40vh',
+            scrollCollapse: true,
+            paging: false,
+            data: data_list,
+            columns: pageVariables.payment_on_account_table_cfg
+        });
     }
     static LoadCompanyBankAccount(data) {
         pageElements.$company_bank_account.initSelect2({
@@ -659,21 +750,25 @@ class COFEventHandler {
                 pageElements.$supplier_space.prop('hidden', false)
                 pageElements.$customer_space.prop('hidden', true)
                 pageElements.$employee_space.prop('hidden', true)
+                pageElements.$account_space.prop('hidden', true)
             }
             else if ($(this).val() === '1') {
                 pageElements.$supplier_space.prop('hidden', true)
                 pageElements.$customer_space.prop('hidden', false)
                 pageElements.$employee_space.prop('hidden', true)
+                pageElements.$account_space.prop('hidden', true)
             }
             else if ($(this).val() === '2') {
                 pageElements.$supplier_space.prop('hidden', true)
                 pageElements.$customer_space.prop('hidden', true)
                 pageElements.$employee_space.prop('hidden', false)
+                pageElements.$account_space.prop('hidden', true)
             }
             else if ($(this).val() === '3') {
                 pageElements.$supplier_space.prop('hidden', true)
                 pageElements.$customer_space.prop('hidden', true)
                 pageElements.$employee_space.prop('hidden', true)
+                pageElements.$account_space.prop('hidden', false)
             }
         })
         pageElements.$accept_select_supplier_btn.on('click', function () {
@@ -838,6 +933,11 @@ class COFEventHandler {
         // thay đổi giá trị tạm ứng cho nhân viên
         pageElements.$advance_for_employee_value.on('change', function () {
             COFPageFunction.RecalculateTotalPayment()
+        })
+        // thêm dòng vô bảng tài khoản
+        pageElements.$btn_add_row_account.on('click', function () {
+            UsualLoadPageFunction.AddTableRow(pageElements.$payment_on_account_table)
+            let row_added = pageElements.$payment_on_account_table.find('tbody tr:last-child')
         })
     }
 }

@@ -11625,7 +11625,7 @@ msgstr "Thanh toán cho nhà cung cấp"
 
 #
 msgid "Payment to customer"
-msgstr "Thanh toán cho khách hàng"
+msgstr "Trả tiền cho khách hàng"
 
 #
 msgid "Advance payment to employee"
@@ -11633,7 +11633,7 @@ msgstr "Tạm ứng cho nhân viên"
 
 #
 msgid "Payment on account"
-msgstr "Thanh toán vào tài khoản"
+msgstr "Thanh toán cho đối tượng ngoài danh mục"
 
 #
 msgid "VAT"

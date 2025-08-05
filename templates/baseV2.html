@@ -118,120 +118,12 @@
 
 					<!-- Navbar Nav -->
 					<div class="hk-menu">
-						<!-- Brand -->
-						<div class="menu-header d-xl-none">
-							<span>
-								<a class="navbar-brand" href="index.html">
-									<img class="brand-img img-fluid" src="dist/img/brand-sm.svg" alt="brand" />
-									<img class="brand-img img-fluid" src="dist/img/Jampack.svg" alt="brand" />
-								</a>
-								<button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle">
-									<span class="icon">
-										<span class="svg-icon fs-5">
-											<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-bar-to-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-												<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-												<line x1="10" y1="12" x2="20" y2="12"></line>
-												<line x1="10" y1="12" x2="14" y2="16"></line>
-												<line x1="10" y1="12" x2="14" y2="8"></line>
-												<line x1="4" y1="4" x2="4" y2="20"></line>
-											</svg>
-										</span>
-									</span>
-								</button>
-							</span>
-						</div>
-						<!-- /Brand -->
 
 						<!-- Main Menu -->
 						<div data-simplebar class="nicescroll-bar">
 							<div class="menu-content-wrap">
 								<div class="menu-group">
-									<ul class="navbar-nav flex-column">
-
-                                        <li class="nav-item">
-											<a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#space">
-												<span class="nav-link-text fs-4">
-                                                    {% if base.space_current_detail.name %}
-                                                        {{ base.space_current_detail.icon|safe }} {{ base.space_current_detail.name }}
-                                                    {% else %}
-                                                        _
-                                                    {% endif %}
-                                                </span>
-											</a>
-											<ul id="space" class="nav flex-column collapse nav-children">
-												<li class="nav-item">
-													<ul class="nav flex-column">
-                                                        {% csrf_token %}
-                                                        {% for item in base.space_list %}
-                                                            {% if item.child|length > 0 %}
-                                                                {% for item_child in item.child %}
-                                                                    <li class="nav-item">
-                                                                        <a
-                                                                                class="nav-link space-item d-flex align-items-center gap-2 {% if base.space_current_detail.code == item_child.code %} text-primary {% endif %}"
-                                                                                data-space-code="{{ item_child.code }}"
-                                                                                data-space-name="{{ item_child.name }}"
-                                                                                href="#"
-                                                                        >
-                                                                            {{ item_child.icon|safe }}
-                                                                            <span class="nav-link-text">{{ item_child.name }}</span>
-                                                                        </a>
-                                                                    </li>
-                                                                {% endfor %}
-                                                            {% else %}
-                                                                <li class="nav-item">
-                                                                    <a
-                                                                            class="nav-link  {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
-                                                                            href="#"
-                                                                    >{{ item.name }}
-                                                                    </a>
-                                                                </li>
-                                                            {% endif %}
-                                                        {% endfor %}
-													</ul>
-												</li>
-											</ul>
-										</li>
-
-                                        {% for item in base.menus %}
-                                            {% if item.child|length > 0 %}
-                                                <li class="nav-item">
-                                                    <a
-                                                            class="nav-link d-flex align-items-center gap-2" href="javascript:void(0);" data-bs-toggle="collapse"
-                                                            data-bs-target="#{{ item.code }}"
-                                                            aria-expanded="{% if item.expanded %}true{% else %}false{% endif %}"
-                                                    >
-                                                        <span class="nav-link-text">{% trans item.name %}</span>
-                                                    </a>
-                                                    <ul id="{{ item.code }}" class="nav flex-column collapse nav-children {% if item.expanded %} show {% endif %}">
-                                                        <li class="nav-item">
-                                                            <ul class="nav flex-column">
-                                                                {% for child in item.child %}
-                                                                    <li class="nav-item" id="{{ child.code }}">
-                                                                        <a class="nav-link d-flex align-items-center gap-2" href="{{ child.url }}">
-                                                                        <span class="nav-icon-wrap d-flex align-items-center justify-content-center">
-                                                                            <span class="svg-icon menu-child-icon">
-                                                                                {{ child.icon|safe }}
-                                                                            </span>
-                                                                        </span>
-                                                                            <span class="nav-link-text">
-                                                                            {% trans child.name %}
-                                                                        </span>
-                                                                        </a>
-                                                                    </li>
-                                                                {% endfor %}
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            {% else %}
-                                                <li class="nav-item" id="{{ item.code }}">
-                                                    <a class="nav-link d-flex align-items-center gap-2" href="{{ item.url }}">
-                                                        <span class="nav-link-text">{% trans item.name %}</span>
-                                                    </a>
-                                                </li>
-                                            {% endif %}
-                                        {% endfor %}
-									</ul>
+									{% include 'extends/vertical_nav_main_menuV2.html' %}
 								</div>
 							</div>
 						</div>
@@ -329,42 +221,6 @@
 								<div class="dropdown-divider"></div>
 								<h6 class="dropdown-header">Users
 								</h6>
-								<a href="javascript:void(0);" class="dropdown-item">
-									<div class="media align-items-center">
-										<div class="media-head me-2">
-											<div class="avatar avatar-xs avatar-rounded">
-												<img src="dist/img/avatar3.jpg" alt="user" class="avatar-img">
-											</div>
-										</div>
-										<div class="media-body">
-											Sarah Jone
-										</div>
-									</div>
-								</a>
-								<a href="javascript:void(0);" class="dropdown-item">
-									<div class="media align-items-center">
-										<div class="media-head me-2">
-											<div class="avatar avatar-xs avatar-soft-primary avatar-rounded">
-												<span class="initial-wrap">J</span>
-											</div>
-										</div>
-										<div class="media-body">
-											Joe Jackson
-										</div>
-									</div>
-								</a>
-								<a href="javascript:void(0);" class="dropdown-item">
-									<div class="media align-items-center">
-										<div class="media-head me-2">
-											<div class="avatar avatar-xs avatar-rounded">
-												<img src="dist/img/avatar4.jpg" alt="user" class="avatar-img">
-											</div>
-										</div>
-										<div class="media-body">
-											Maria Richard
-										</div>
-									</div>
-								</a>
 							</div>
 							<div class="dropdown-footer d-xl-flex d-none"><a href="#"><u>Search all</u></a></div>
 						</div>

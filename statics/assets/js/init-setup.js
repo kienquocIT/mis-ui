@@ -6557,17 +6557,32 @@ class DocumentControl {
             });
         }
 
+        // $('.space-item').click(function (event) {
+        //     event.preventDefault();
+        //     let space_selected = $('#menu-tenant').attr('data-space-selected');
+        //     let urlData = $(this).closest('.dropdown-menu').attr('data-url');
+        //     let urlRedirectData = $(this).closest('.dropdown-menu').attr('data-url-redirect');
+        //     let methodData = $(this).closest('.dropdown-menu').attr('data-method');
+        //     let spaceCode = $(this).attr('data-space-code');
+        //     if (spaceCode !== space_selected) {
+        //         executeTimeOutChangeSpace(urlData, methodData, spaceCode, $(this).attr('data-space-name'), urlRedirectData);
+        //     }
+        // })
+
         $('.space-item').click(function (event) {
             event.preventDefault();
-            let space_selected = $('#menu-tenant').attr('data-space-selected');
-            let urlData = $(this).closest('.dropdown-menu').attr('data-url');
-            let urlRedirectData = $(this).closest('.dropdown-menu').attr('data-url-redirect');
-            let methodData = $(this).closest('.dropdown-menu').attr('data-method');
+            let $menuTenant = $('#menu-tenant');
+            let space_selected = $menuTenant.attr('data-space-selected');
+            let urlData = $menuTenant.attr('data-url');
+            let urlRedirectData = $menuTenant.attr('data-url-redirect');
+            let methodData = 'put';
             let spaceCode = $(this).attr('data-space-code');
+            let spaceName = $(this).attr('data-space-name');
             if (spaceCode !== space_selected) {
-                executeTimeOutChangeSpace(urlData, methodData, spaceCode, $(this).attr('data-space-name'), urlRedirectData);
+                executeTimeOutChangeSpace(urlData, methodData, spaceCode, spaceName, urlRedirectData);
             }
         })
+
     }
 
     static active_menu(item) {

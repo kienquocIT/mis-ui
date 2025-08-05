@@ -27,7 +27,10 @@
             data-trans-cof="{% trans 'Cash outflow' %}"
     ></script>
     <script id="url-script"
+            data-url-ap-list-for-recon="{% url 'APInvoiceListForReconAPI' %}"
+            data-url-cof-list-for-recon="{% url 'CashOutflowListForReconAPI' %}"
             data-url-ar-list-for-recon="{% url 'ARInvoiceListForReconAPI' %}"
+            data-url-cif-list-for-recon="{% url 'CashInflowListForReconAPI' %}"
     ></script>
     <form id="form-create-recon" data-method="POST" data-url="{% url 'ReconListAPI' %}" data-url-redirect="{% url 'ReconList' %}">
         {% include 'sales/reconciliation/common/information.html' %}

@@ -12166,3 +12166,19 @@ msgstr "Tên nhân viên trên thiết bị"
 #
 msgid "Hover to see title"
 msgstr "Trỏ vào để xem tiêu đề"
+
+#
+msgid "Attendance device config"
+msgstr "Cấu hình thiết bị chấm công"
+
+#
+msgid "Device name"
+msgstr "Tên thiết bị"
+
+#
+msgid "Device IP"
+msgstr "IP thiết bị"
+
+#
+msgid "Use this device"
+msgstr "Sử dụng thiết bị này"

@@ -1,0 +1,531 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'General Dashboard' %} v2{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        /* Modern Dashboard v2 with Enhanced Design */
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #06b6d4;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --border-radius: 12px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --gradient-info: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        #idxPageContent {
+            min-height: 100vh;
+            padding: 1rem 0;
+            position: relative;
+            background-image: url("{% static 'assets/js/home_1.jpg' %}");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+
+        .container-fluid {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Enhanced Cards */
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.5)
+        }
+
+        /* KPI Cards */
+        .kpi-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+            margin-bottom: 0;
+            flex-shrink: 0;
+        }
+
+        .kpi-icon.primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+
+        .kpi-icon.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .kpi-value {
+            font-size: 1.25rem !important;
+            font-weight: 700 !important;
+            margin: 0 !important;
+            line-height: 1.2 !important;
+            display: block !important;
+        }
+
+        .kpi-label {
+            font-size: 0.7rem !important;
+            color: #64748b !important;
+            font-weight: 500 !important;
+            margin: 0 0 0.25rem 0 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.3px !important;
+            line-height: 1 !important;
+        }
+
+        /* Chart Container Enhancements */
+        .chart-container {
+            position: relative;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* Ensure proper spacing for chart containers */
+        .chart-container > div {
+            position: relative;
+            overflow: visible !important;
+        }
+
+        .chart-title {
+            font-size: 1.125rem !important;
+            font-weight: 700 !important;
+            color: #1e293b !important;
+            margin: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+        }
+
+        .chart-title i {
+            color: var(--primary-color) !important;
+        }
+
+        /* Section Headers */
+        .section-header {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .section-title {
+            font-size: 1.25rem !important;
+            font-weight: 700 !important;
+            color: #1e293b !important;
+            margin: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.75rem !important;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .section-subtitle {
+            font-size: 0.875rem !important;
+            color: #475569 !important;
+            margin: 0.5rem 0 0 0 !important;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6) !important;
+        }
+
+        /* Filter Panel */
+        .custom-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Responsive Enhancements */
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1rem;
+            }
+
+            .kpi-value {
+                font-size: 1.5rem;
+            }
+
+            .kpi-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+
+            .chart-container {
+                padding: 1rem;
+            }
+
+            .section-header {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            #idxPageContent {
+                padding: 1rem 0;
+            }
+
+            .container-fluid {
+                padding: 0 0.5rem;
+            }
+
+            .kpi-value {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Dark mode support preparation */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --light-color: #1e293b;
+                --dark-color: #f1f5f9;
+            }
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    {{ data.data.current_period | json_script:"current_period" }}
+    <script id="script-url"
+            data-url-report-revenue-profit="{% url 'ReportRevenueListAPI' %}"
+            data-url-top-sale-customer-list="{% url 'ReportCustomerListAPI' %}"
+            data-url-top-category-product-list="{% url 'ReportProductListAPIRDashBoard' %}"
+            data-url-company-revenue-plan="{% url 'RevenuePlanListAPI' %}"
+            data-url-revenue-plan-by-report-perm="{% url 'RevenuePlanByReportPermListAPI' %}"
+    ></script>
+    <script id="trans-script"
+            data-trans-m1th="{% trans 'Jan ' %}"
+            data-trans-m2th="{% trans 'Feb ' %}"
+            data-trans-m3th="{% trans 'Mar ' %}"
+            data-trans-m4th="{% trans 'Apr ' %}"
+            data-trans-m5th="{% trans 'May ' %}"
+            data-trans-m6th="{% trans 'Jun ' %}"
+            data-trans-m7th="{% trans 'Jul ' %}"
+            data-trans-m8th="{% trans 'Aug ' %}"
+            data-trans-m9th="{% trans 'Sep ' %}"
+            data-trans-m10th="{% trans 'Oct ' %}"
+            data-trans-m11th="{% trans 'Nov ' %}"
+            data-trans-m12th="{% trans 'Dec ' %}"
+            data-trans-revenue="{% trans 'Revenue' %}"
+            data-trans-profit="{% trans 'Profit' %}"
+            data-trans-month="{% trans 'Month' %}"
+            data-trans-chart-revenue="{% trans 'Revenue chart' %}"
+            data-trans-chart-profit="{% trans 'Profit chart' %}"
+            data-trans-expected="{% trans 'Expected' %}"
+            data-trans-reality="{% trans 'Reality' %}"
+            data-trans-chart-topsale="{% trans 'Top sale' %}"
+            data-trans-chart-topcustomer="{% trans 'Top customer' %}"
+            data-trans-chart-topcategory="{% trans 'Top category' %}"
+            data-trans-chart-topproduct="{% trans 'Top product' %}"
+            data-trans-quarter-1="{% trans 'Quarter' %} 1"
+            data-trans-quarter-2="{% trans 'Quarter' %} 2"
+            data-trans-quarter-3="{% trans 'Quarter' %} 3"
+            data-trans-quarter-4="{% trans 'Quarter' %} 4"
+            data-trans-all="{% trans 'Default all' %}"
+    ></script>
+    
+    <div class="container-fluid mb-10">
+
+        <!-- Filter Section and KPI Cards -->
+        <div class="row">
+            <!-- Filter Section -->
+            <div class="col-12 col-lg-8">
+                <div class="custom-panel">
+                    <div class="row">
+                        <div class="col-12 col-md-3">
+                            <div class="form-group">
+                                <label for="money-display" class="form-label">
+                                    {% trans 'Money display' %}
+                                </label>
+                                <select class="form-select" id="money-display">
+                                    <option value="0" selected>{% trans 'Million' %}</option>
+                                    <option value="1">{% trans 'Billion' %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <div class="form-group">
+                                <label for="money-round" class="form-label">
+                                    {% trans 'Money round' %}
+                                </label>
+                                <input id="money-round" type="number" class="form-control" value="1" min="0">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label for="period-filter" class="form-label">
+                                    {% trans 'Fiscal year' %} <small class="text-muted">({% trans 'for revenue chart & profit chart' %})</small>
+                                </label>
+                                <select class="form-select"
+                                        id="period-filter"
+                                        data-url="{% url 'PeriodsConfigListAPI' %}"
+                                        data-method="GET"
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- KPI Cards -->
+            <div class="col-6 col-lg-2">
+                <div class="custom-panel">
+                    <div class="d-flex align-items-center">
+                        <div class="kpi-icon primary me-3">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <h5 class="kpi-label">{% trans 'This month revenue' %}</h5>
+                            <span class="kpi-value mask-money" style="color: #3b82f6" data-mask-money="0" id="current-revenue"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-2">
+                <div class="custom-panel">
+                    <div class="d-flex align-items-center">
+                        <div class="kpi-icon success me-3">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div>
+                            <h5 class="kpi-label">{% trans 'This month profit' %}</h5>
+                            <span class="kpi-value mask-money" style="color: #10b981" data-mask-money="0" id="current-profit"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue & Profit Charts -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-2">
+                        <!-- Chart Controls -->
+                        <div class="d-flex justify-content-between align-items-center m-2">
+                            <div class="d-flex">
+                                <div class="me-2">
+                                    <div class="input-group" style="width: 400px;">
+                                        <span class="input-group-text">{% trans 'Group' %}</span>
+                                        <select class="form-select" id="revenue-profit-group"
+                                                data-method="GET"
+                                                data-url="{% url 'GroupListAPI' %}"></select>
+                                    </div>
+                                </div>
+                                <div class="me-2">
+                                    <select class="form-select" id="revenue-profit-view-type">
+                                        <option value="0" selected>{% trans 'Period revenue / profit' %}</option>
+                                        <option value="1">{% trans 'Accumulated revenue / profit' %}</option>
+                                    </select>
+                                </div>
+                                <div class="me-2">
+                                    <select class="form-select" id="profit-type">
+                                        <option value="0" selected>{% trans 'Gross profit' %}</option>
+                                        <option value="1">{% trans 'Net income' %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="button"
+                                    id="reload-revenue-profit-data-btn"
+                                    class="btn btn-light btn-sm"
+                                    title="{% trans 'Refresh' %}">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Charts -->
+                        <div class="row p-2">
+                            <div class="col-12 col-lg-6">
+                                <div class="chart-container">
+                                    <div class="position-relative">
+                                        <div id="revenue_chart" style="width: 100%; height: 330px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="chart-container">
+                                    <div class="position-relative">
+                                        <div id="profit_chart" style="width: 100%; height: 330px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Sales & Customers -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-2">
+                        <!-- Chart Controls -->
+                        <div class="d-flex justify-content-between align-items-center m-2">
+                            <div class="d-flex">
+                                <div class="me-2">
+                                    <div class="input-group" style="width: 350px;">
+                                        <span class="input-group-text">{% trans 'Time range' %}</span>
+                                        <select class="form-select" id="top-sale-customer-time">
+                                            <option value="0">{% trans 'Month' %}</option>
+                                            <option value="1">{% trans 'Quarter' %}</option>
+                                            <option value="2" selected>{% trans 'Whole year' %}</option>
+                                        </select>
+                                        <select class="form-select" id="top-sale-customer-time-detail" disabled></select>
+                                    </div>
+                                </div>
+                                <div class="me-2">
+                                    <div class="input-group">
+                                        <span class="input-group-text">{% trans 'Sale number viewed' %}</span>
+                                        <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
+                                    </div>
+                                </div>
+                                <div class="me-2">
+                                    <div class="input-group">
+                                        <span class="input-group-text">{% trans 'Customer number viewed' %}</span>
+                                        <input class="form-control" type="number" id="top-customer-number" min="1" max="20" value="10">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button"
+                                    id="reload-top-sale-customer-data-btn"
+                                    class="btn btn-light btn-sm"
+                                    title="{% trans 'Refresh' %}">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Charts -->
+                        <div class="row p-2">
+                            <div class="col-12 col-lg-6">
+                                <div class="chart-container">
+                                    <div class="position-relative">
+                                        <div id="topsale_chart" style="width: 100%; height: 250px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="chart-container">
+                                    <div class="position-relative">
+                                        <div id="topcustomer_chart" style="width: 100%; height: 250px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Categories & Products -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-2">
+                        <!-- Chart Controls -->
+                        <div class="d-flex justify-content-between align-items-center m-2">
+                            <div class="d-flex">
+                                <div class="me-2">
+                                    <div class="input-group" style="width: 350px;">
+                                        <span class="input-group-text">{% trans 'Time range' %}</span>
+                                        <select class="form-select" id="top-category-product-time">
+                                            <option value="0">{% trans 'Month' %}</option>
+                                            <option value="1">{% trans 'Quarter' %}</option>
+                                            <option value="2" selected>{% trans 'Whole year' %}</option>
+                                        </select>
+                                        <select class="form-select" id="top-category-product-time-detail" disabled></select>
+                                    </div>
+                                </div>
+                                <div class="me-2">
+                                    <div class="input-group">
+                                        <span class="input-group-text">{% trans 'View category number' %}</span>
+                                        <input class="form-control" type="number" id="top-category-number" min="1" max="20" value="10">
+                                    </div>
+                                </div>
+                                <div class="me-2">
+                                    <div class="input-group">
+                                        <span class="input-group-text">{% trans 'View product number' %}</span>
+                                        <input class="form-control" type="number" id="top-product-number" min="1" max="20" value="10">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button"
+                                    id="reload-top-category-product-data-btn"
+                                    class="btn btn-light btn-sm"
+                                    title="{% trans 'Refresh' %}">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Charts -->
+                        <div class="row p-2">
+                            <div class="col-12 col-lg-6">
+                                <div class="chart-container">
+                                    <div class="position-relative">
+                                        <div id="topcategory_chart" style="width: 100%; height: 250px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="chart-container">
+                                    <div class="position-relative">
+                                        <div id="topproduct_chart" style="width: 100%; height: 250px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooterUnCompress %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/echartjs/echart.js' %}"></script>
+    <script src="{% static 'assets/sales/dashboard/dashboard_general_echarts.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
+{% endblock %}

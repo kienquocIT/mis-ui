@@ -111,9 +111,11 @@
 			<div class="container-fluid">
 				<!-- Start Nav -->
 				<div class="nav-start-wrap flex-fill">
-					<!-- Brand -->
-                    {% include 'extends/vertical_nav_brand.html' %}
-					<!-- /Brand -->
+                    <!-- Brand -->
+                    <a class="navbar-brand d-xl-flex d-none flex-shrink-0" href="/">
+                        <img class="brand-img img-fluid rounded" src="{{ request.user.company_logo_uri }}" style="max-width: 50px; max-height: 50px; object-fit: contain;"/>
+                    </a>
+                    <!-- /Brand -->
 					<button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle d-xl-none"><span class="icon"><span class="feather-icon"><i data-feather="align-left"></i></span></span></button>
 
 					<!-- Navbar Nav -->
@@ -122,7 +124,7 @@
 						<!-- Main Menu -->
 						<div data-simplebar class="nicescroll-bar">
 							<div class="menu-content-wrap">
-								<div class="menu-group">
+								<div class="menu-group ml-2">
 									{% include 'extends/vertical_nav_main_menuV2.html' %}
 								</div>
 							</div>
@@ -380,7 +382,7 @@
                                             class="fa-solid fa-bars"
                                     ></i></button>
                                     {% if icon_cls %}
-                                        <div class="d-flex align-items-center justify-content-center mr-2 p-1 w-35p h-35p border rounded-2 {{ icon_bg }}">
+                                        <div class="d-flex align-items-center justify-content-center ml-4 mr-2 p-1 w-35p h-35p border rounded-2 {{ icon_bg }}">
                                             <i class="{{ icon_cls }} text-white fs-4"></i>
                                         </div>
                                     {% endif %}
@@ -392,8 +394,8 @@
                                         class="blog-options-wrap" id="idxPageAction"
                                         style="display: flex; align-items: center;"
                                 >
-                                    {% include 'extends/direct_btn_group.html' %}
-                                    <div class="{% if pk %}hidden{% endif %} mr-1" id="idxRealAction">
+{#                                    {% include 'extends/direct_btn_group.html' %}#}
+                                    <div class="{% if pk %}hidden{% endif %} mr-4" id="idxRealAction">
                                         {% block pageAction %}{% endblock %}
                                     </div>
                                     <button

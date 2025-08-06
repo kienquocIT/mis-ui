@@ -4,10 +4,6 @@
 {% block title %}{% trans 'Revenue plan' %}{% endblock %}
 {% block cssHeader %}
     <style>
-        .sticky {
-            position: sticky;
-            top: 0;
-        }
         td input, td, th {
             text-align: right;
         }
@@ -118,10 +114,10 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-5 mb-10">
-            <div class="col-12 main" style="position: relative; overflow: auto; width: 100%; max-height: 70vh">
+        <div class="row mt-5 mb-5">
+            <div class="col-12">
                 <table class="table nowrap w-100 fixed_header" id="revenue-plan-table" data-group-url="{% url 'GroupDetailAPI' '0' %}">
-                    <thead class="sticky bg-primary">
+                    <thead class="bg-primary">
                         <tr>
                             <th style="min-width: 200px;" class="bg-primary">{% trans 'Employee' %}</th>
                             <th style="min-width: 150px;" class="bg-primary">{% trans 'Target item' %}</th>
@@ -228,6 +224,6 @@
 {% block jsFooterUnCompress %}
 {% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/js/revenue_plan/revenue_plan_common.js' %}"></script>
+    <script src="{% static 'assets/js/revenue_plan/revenue_plan_common_v2.js' %}"></script>
     <script src="{% static 'assets/js/revenue_plan/revenue_plan_detail.js' %}"></script>
 {% endblock %}

@@ -144,13 +144,9 @@
 						<div class="dropdown-toggle no-caret" data-bs-toggle="dropdown" data-dropdown-animation data-bs-auto-close="outside">
 							<a href="#" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover  d-xl-none"><span class="icon"><span class="feather-icon"><i data-feather="search"></i></span></span></a>
 							<div class="input-group d-xl-flex d-none">
-								<span class="input-affix-wrapper input-search affix-border">
+								<span class="input-affix-wrapper input-search">
 									<input type="text" class="form-control bg-transparent form-control-search"  data-navbar-search-close="false" placeholder="{% trans 'Menu finder' %}" aria-label="Search">
-									<span class="input-suffix"><span>/</span>
-										<span class="btn-input-clear"><i class="bi bi-x-circle-fill"></i></span>
-										<span class="spinner-border spinner-border-sm input-loader text-primary" role="status">
-											<span class="sr-only">Loading...</span>
-										</span>
+									<span class="input-suffix"><i class="fa-solid fa-magnifying-glass"></i>
 									</span>
 								</span>
 							</div>
@@ -218,7 +214,7 @@
                                             class="fa-solid fa-bars"
                                     ></i></button>
                                     {% if icon_cls %}
-                                        <div class="d-flex align-items-center justify-content-center ml-2 mr-2 p-1 w-35p h-35p border rounded-2 {{ icon_bg }}">
+                                        <div class="d-flex align-items-center justify-content-center ml-2 mr-2 p-1 w-30p h-30p border rounded-2 {{ icon_bg }}">
                                             <i class="{{ icon_cls }} text-white fs-4"></i>
                                         </div>
                                     {% endif %}

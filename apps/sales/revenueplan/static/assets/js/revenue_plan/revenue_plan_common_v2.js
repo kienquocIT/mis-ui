@@ -286,14 +286,9 @@ function updatePriceAfterReloadGroupMember() {
 
 $(document).on("click", '.minimize-group', function () {
     let group_id = $(this).attr('data-group-id')
-    let hidden_state = $(`.${group_id}:eq(0)`).prop('hidden')
-    revenuePlanTable.find(`.${group_id}`).prop('hidden', !hidden_state)
-    if (hidden_state) {
-        $(this).find('.icon').html('<i class="fas fa-angle-double-up"></i>')
-    }
-    else {
-        $(this).find('.icon').html('<i class="fas fa-angle-double-down"></i>')
-    }
+    let hidden_state = $(`.${group_id}:eq(0)`).closest('tr').prop('hidden')
+    revenuePlanTable.find(`.${group_id}`).closest('tr').prop('hidden', !hidden_state)
+    $(this).find('.icon').html(hidden_state ? '<i class="fas fa-angle-double-up"></i>' : '<i class="fas fa-angle-double-down"></i>')
 })
 
 $(document).on("change", '.month-target', function () {
@@ -667,17 +662,28 @@ function ParseDataRevenuePlan(data, profit_type) {
     return [parsed_data, data_get_group_emp]
 }
 
-function RenderTable(data_list=[], option='create') {
-    console.log(data_list)
+function RenderTable(
+    data_list=[],
+    company_month_target=[],
+    company_quarter_target=[],
+    company_year_target=0,
+    company_month_profit_target=[],
+    company_quarter_profit_target=[],
+    company_year_profit_target=0,
+    option='create'
+) {
     revenuePlanTable.DataTable().clear().destroy()
     revenuePlanTable.DataTableDefault({
         styleDom: 'hide-foot',
         reloadCurrency: true,
         rowIdx: false,
         scrollX: true,
-        scrollY: '60vh',
+        scrollY: '55vh',
         scrollCollapse: true,
         paging: false,
+        fixedColumns: {
+            leftColumns: 2,
+        },
         data: data_list,
         columns: [
             {
@@ -689,7 +695,7 @@ function RenderTable(data_list=[], option='create') {
                                     <span class="icon"><i class="fas fa-angle-double-up"></i></span>
                                 </span>`
                     }
-                    return `<span class="employee-mapped text-blue bg-white" data-employee-id="${row.group_employee_valid?.['id']}">${row.group_employee_valid?.['full_name']}</span>`
+                    return `<span class="employee-mapped text-blue bg-white ${row.group_selected.id}" data-employee-id="${row.group_employee_valid?.['id']}">${row.group_employee_valid?.['full_name']}</span>`
                 }
             },
             {
@@ -710,8 +716,8 @@ function RenderTable(data_list=[], option='create') {
                         return `<input readonly disabled class="mb-1 sum-group-m1 mask-money form-control text-primary" value="${row.group_month_target[0]}">
                                 <input readonly disabled class="sum-group-m1-profit mask-money form-control text-secondary" value="${row.group_month_profit_target[0]}">`
                     }
-                    return `<input readonly disabled value="${row.emp_month_target[0]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter1belong m1targetvalue">
-                            <input readonly disabled value="${row.emp_month_profit_target[0]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter1belong-profit m1targetvalue-profit">`
+                    return `<input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_target[0]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter1belong m1targetvalue">
+                            <input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_profit_target[0]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter1belong-profit m1targetvalue-profit">`
                 }
             },
             {
@@ -721,8 +727,8 @@ function RenderTable(data_list=[], option='create') {
                         return `<input readonly disabled class="mb-1 sum-group-m2 mask-money form-control text-primary" value="${row.group_month_target[1]}">
                                 <input readonly disabled class="sum-group-m2-profit mask-money form-control text-secondary" value="${row.group_month_profit_target[1]}">`
                     }
-                    return `<input readonly disabled value="${row.emp_month_target[1]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter1belong m2targetvalue">
-                            <input readonly disabled value="${row.emp_month_profit_target[1]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter1belong-profit m2targetvalue-profit">`
+                    return `<input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_target[1]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter1belong m2targetvalue">
+                            <input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_profit_target[1]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter1belong-profit m2targetvalue-profit">`
                 }
             },
             {
@@ -732,8 +738,8 @@ function RenderTable(data_list=[], option='create') {
                         return `<input readonly disabled class="mb-1 sum-group-m3 mask-money form-control text-primary" value="${row.group_month_target[2]}">
                                 <input readonly disabled class="sum-group-m3-profit mask-money form-control text-secondary" value="${row.group_month_profit_target[2]}">`
                     }
-                    return `<input readonly disabled value="${row.emp_month_target[2]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter1belong m3targetvalue">
-                            <input readonly disabled value="${row.emp_month_profit_target[2]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter1belong-profit m3targetvalue-profit">`
+                    return `<input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_target[2]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter1belong m3targetvalue">
+                            <input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_profit_target[2]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter1belong-profit m3targetvalue-profit">`
                 }
             },
             {
@@ -754,8 +760,8 @@ function RenderTable(data_list=[], option='create') {
                         return `<input readonly disabled class="mb-1 sum-group-m4 mask-money form-control text-primary" value="${row.group_month_target[3]}">
                                 <input readonly disabled class="sum-group-m4-profit mask-money form-control text-secondary" value="${row.group_month_profit_target[3]}">`
                     }
-                    return `<input readonly disabled value="${row.emp_month_target[3]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter2belong m4targetvalue">
-                            <input readonly disabled value="${row.emp_month_profit_target[3]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter2belong-profit m4targetvalue-profit">`
+                    return `<input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_target[3]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter2belong m4targetvalue">
+                            <input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_profit_target[3]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter2belong-profit m4targetvalue-profit">`
                 }
             },
             {
@@ -765,8 +771,8 @@ function RenderTable(data_list=[], option='create') {
                         return `<input readonly disabled class="mb-1 sum-group-m5 mask-money form-control text-primary" value="${row.group_month_target[4]}">
                                 <input readonly disabled class="sum-group-m5-profit mask-money form-control text-secondary" value="${row.group_month_profit_target[4]}">`
                     }
-                    return `<input readonly disabled value="${row.emp_month_target[4]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter2belong m5targetvalue">
-                            <input readonly disabled value="${row.emp_month_profit_target[4]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter2belong-profit m5targetvalue-profit">`
+                    return `<input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_target[4]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter2belong m5targetvalue">
+                            <input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_profit_target[4]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter2belong-profit m5targetvalue-profit">`
                 }
             },
             {
@@ -776,8 +782,8 @@ function RenderTable(data_list=[], option='create') {
                         return `<input readonly disabled class="mb-1 sum-group-m6 mask-money form-control text-primary" value="${row.group_month_target[5]}">
                                 <input readonly disabled class="sum-group-m6-profit mask-money form-control text-secondary" value="${row.group_month_profit_target[5]}">`
                     }
-                    return `<input readonly disabled value="${row.emp_month_target[5]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter2belong m6targetvalue">
-                            <input readonly disabled value="${row.emp_month_profit_target[5]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter2belong-profit m6targetvalue-profit">`
+                    return `<input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_target[5]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter2belong m6targetvalue">
+                            <input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_profit_target[5]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter2belong-profit m6targetvalue-profit">`
                 }
             },
             {
@@ -798,8 +804,8 @@ function RenderTable(data_list=[], option='create') {
                         return `<input readonly disabled class="mb-1 sum-group-m7 mask-money form-control text-primary" value="${row.group_month_target[6]}">
                                 <input readonly disabled class="sum-group-m7-profit mask-money form-control text-secondary" value="${row.group_month_profit_target[6]}">`
                     }
-                    return `<input readonly disabled value="${row.emp_month_target[6]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter3belong m7targetvalue">
-                            <input readonly disabled value="${row.emp_month_profit_target[6]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter3belong-profit m7targetvalue-profit">`
+                    return `<input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_target[6]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter3belong m7targetvalue">
+                            <input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_profit_target[6]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter3belong-profit m7targetvalue-profit">`
                 }
             },
             {
@@ -809,8 +815,8 @@ function RenderTable(data_list=[], option='create') {
                         return `<input readonly disabled class="mb-1 sum-group-m8 mask-money form-control text-primary" value="${row.group_month_target[7]}">
                                 <input readonly disabled class="sum-group-m8-profit mask-money form-control text-secondary" value="${row.group_month_profit_target[7]}">`
                     }
-                    return `<input readonly disabled value="${row.emp_month_target[7]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter3belong m8targetvalue">
-                            <input readonly disabled value="${row.emp_month_profit_target[7]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter3belong-profit m8targetvalue-profit">`
+                    return `<input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_target[7]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter3belong m8targetvalue">
+                            <input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_profit_target[7]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter3belong-profit m8targetvalue-profit">`
                 }
             },
             {
@@ -820,8 +826,8 @@ function RenderTable(data_list=[], option='create') {
                         return `<input readonly disabled class="mb-1 sum-group-m9 mask-money form-control text-primary" value="${row.group_month_target[8]}">
                                 <input readonly disabled class="sum-group-m9-profit mask-money form-control text-secondary" value="${row.group_month_profit_target[8]}">`
                     }
-                    return `<input readonly disabled value="${row.emp_month_target[8]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter3belong m9targetvalue">
-                            <input readonly disabled value="${row.emp_month_profit_target[8]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter3belong-profit m9targetvalue-profit">`
+                    return `<input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_target[8]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter3belong m9targetvalue">
+                            <input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_profit_target[8]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter3belong-profit m9targetvalue-profit">`
                 }
             },
             {
@@ -842,8 +848,8 @@ function RenderTable(data_list=[], option='create') {
                         return `<input readonly disabled class="mb-1 sum-group-m10 mask-money form-control text-primary" value="${row.group_month_target[9]}">
                                 <input readonly disabled class="sum-group-m10-profit mask-money form-control text-secondary" value="${row.group_month_profit_target[9]}">`
                     }
-                    return `<input readonly disabled value="${row.emp_month_target[9]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter4belong m10targetvalue">
-                            <input readonly disabled value="${row.emp_month_profit_target[9]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter4belong-profit m10targetvalue-profit">`
+                    return `<input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_target[9]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter4belong m10targetvalue">
+                            <input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_profit_target[9]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter4belong-profit m10targetvalue-profit">`
                 }
             },
             {
@@ -853,8 +859,8 @@ function RenderTable(data_list=[], option='create') {
                         return `<input readonly disabled class="mb-1 sum-group-m11 mask-money form-control text-primary" value="${row.group_month_target[10]}">
                                 <input readonly disabled class="sum-group-m11-profit mask-money form-control text-secondary" value="${row.group_month_profit_target[10]}">`
                     }
-                    return `<input readonly disabled value="${row.emp_month_target[10]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter4belong m11targetvalue">
-                            <input readonly disabled value="${row.emp_month_profit_target[10]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter4belong-profit m11targetvalue-profit">`
+                    return `<input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_target[10]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter4belong m11targetvalue">
+                            <input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_profit_target[10]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter4belong-profit m11targetvalue-profit">`
                 }
             },
             {
@@ -864,8 +870,8 @@ function RenderTable(data_list=[], option='create') {
                         return `<input readonly disabled class="mb-1 sum-group-m12 mask-money form-control text-primary" value="${row.group_month_target[11]}">
                                 <input readonly disabled class="sum-group-m12-profit mask-money form-control text-secondary" value="${row.group_month_profit_target[11]}">`
                     }
-                    return `<input readonly disabled value="${row.emp_month_target[11]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter4belong m12targetvalue">
-                            <input readonly disabled value="${row.emp_month_profit_target[11]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter4belong-profit m12targetvalue-profit">`
+                    return `<input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_target[11]}" data-return-type="number" class="mb-1 mask-money form-control month-target text-primary quarter4belong m12targetvalue">
+                            <input ${option==='detail' ? 'disabled readonly' : ''} value="${row.emp_month_profit_target[11]}" data-return-type="number" class="net-income-form-control mask-money form-control month-target-profit quarter4belong-profit m12targetvalue-profit">`
                 }
             },
             {
@@ -891,7 +897,32 @@ function RenderTable(data_list=[], option='create') {
                 }
             },
         ],
-        initComplete: function () {}
+        initComplete: function () {
+            revenuePlanTable.find('tbody tr').each(function (index, ele) {
+                for (let i=1; i <= 12; i++) {
+                    $(ele).find(`.sum-group-m${i}:eq(0)`).closest('tr').attr('class', `sum-m${i}`)
+                }
+                for (let i=1; i <= 4; i++) {
+                    $(ele).find(`.sum-group-q${i}:eq(0)`).closest('tr').attr('class', `sum-q${i}`)
+                }
+            })
+
+            for (let i = 0; i < company_month_target.length; i++) {
+                $(`.sum-m${i+1} .sum-company-m${i+1}`).attr('value', company_month_target[i])
+            }
+            for (let i = 0; i < company_quarter_target.length; i++) {
+                $(`.sum-q${i+1} .sum-company-q${i+1}`).attr('value', company_quarter_target[i])
+            }
+            $(`.sum-company-year`).attr('value', company_year_target)
+
+            for (let i = 0; i < company_month_profit_target.length; i++) {
+                $(`.sum-m${i+1} .sum-company-m${i+1}-profit`).attr('value', company_month_profit_target[i])
+            }
+            for (let i = 0; i < company_quarter_profit_target.length; i++) {
+                $(`.sum-q${i+1} .sum-company-q${i+1}-profit`).attr('value', company_quarter_profit_target[i])
+            }
+            $(`.sum-company-year-profit`).attr('value', company_year_profit_target)
+        }
     })
 }
 
@@ -1263,7 +1294,6 @@ function Disabled(option) {
         $('#revenue-plan-table input').prop('readonly', false).prop('disabled', false)
         $('.qtarget-td input').prop('readonly', true).prop('disabled', true)
         $('.ytarget-td input').prop('readonly', true).prop('disabled', true)
-        $('#revenue-plan-table .company-row input').prop('readonly', true).prop('disabled', true)
         $('#revenue-plan-table .group-row input').prop('readonly', true).prop('disabled', true)
     }
 }
@@ -1302,29 +1332,22 @@ function LoadDetailRevenuePlan(option) {
             $('#quarterly').prop('checked', data?.['quarterly'])
             $('#equal').prop('checked', data?.['auto_sum_target'])
 
-            for (let i = 0; i < data?.['company_month_target'].length; i++) {
-                revenuePlanTable.find('thead .company-row').find(`.sum-m${i+1} .sum-company-m${i+1}`).attr('value', data?.['company_month_target'][i])
-            }
-            for (let i = 0; i < data?.['company_quarter_target'].length; i++) {
-                revenuePlanTable.find('thead .company-row').find(`.sum-q${i+1} .sum-company-q${i+1}`).attr('value', data?.['company_quarter_target'][i])
-            }
-            revenuePlanTable.find('thead .company-row').find(`.sum-company-year`).attr('value', data?.['company_year_target'])
-
-            for (let i = 0; i < data?.['company_month_profit_target'].length; i++) {
-                revenuePlanTable.find('thead .company-row').find(`.sum-m${i+1} .sum-company-m${i+1}-profit`).attr('value', data?.['company_month_profit_target'][i])
-            }
-            for (let i = 0; i < data?.['company_quarter_profit_target'].length; i++) {
-                revenuePlanTable.find('thead .company-row').find(`.sum-q${i+1} .sum-company-q${i+1}-profit`).attr('value', data?.['company_quarter_profit_target'][i])
-            }
-            revenuePlanTable.find('thead .company-row').find(`.sum-company-year-profit`).attr('value', data?.['company_year_profit_target'])
-
             $('#net-income').prop('checked', data?.['profit_target_type'])
 
             let profit_type = data?.['profit_target_type'] ? trans_script.attr('data-trans-net-profit') : trans_script.attr('data-trans-gross-profit')
             $('.profit-type-span').text(profit_type)
 
             let [parsed_data, data_get_group_emp] = ParseDataRevenuePlan(data, profit_type)
-            RenderTable(parsed_data, option)
+            RenderTable(
+                parsed_data,
+                data?.['company_month_target'] || [],
+                data?.['company_quarter_target'] || [],
+                data?.['company_year_target'] || 0,
+                data?.['company_month_profit_target'] || [],
+                data?.['company_quarter_profit_target'] || [],
+                data?.['company_year_profit_target'] || 0,
+                option
+            )
 
             // check group changed
             for (let i = 0; i < data?.['group_mapped_list'].length; i++) {

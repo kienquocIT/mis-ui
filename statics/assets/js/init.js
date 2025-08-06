@@ -464,7 +464,7 @@ var navheadMenu = function () {
         if (navbarMenu.children("ul").children("li.more-nav-item").remove(), navbarMenu.children("ul").children("li").each(function (index) {
             $(this).removeAttr("style"), liTotalWidth += $(this).outerWidth(!0), liCount++
         }), !(window.innerWidth < 1199)) {
-            var visibleLi = parseInt(navbarMenuRect.width / (liTotalWidth / liCount)) - 2;
+            var visibleLi = parseInt(navbarMenuRect.width / (liTotalWidth / liCount));
             if ((visibleLi -= extraLiHide) < liCount) for (
                 var navWrapper = function (navbarMenu) {
                     navbarMenu.children("ul").append("<li class='nav-item more-nav-item'><a class='nav-link' href='javascript:void(0);' data-bs-toggle='collapse' data-bs-target='#dash_more'><span class='nav-icon-wrap'><span class='feather-icon'><i data-feather='more-horizontal'></i></span></span></a><ul id='dash_more' class='nav flex-column collapse nav-children'></ul></li>");

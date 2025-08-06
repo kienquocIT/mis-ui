@@ -81973,7 +81973,7 @@ Project:	Jampack
   align-items: center;
 }
 .hk-wrapper .hk-navbar .navbar-brand .brand-img:last-child {
-  margin-left: 0.5rem;
+  /*margin-left: 0.5rem;*/
 }
 .hk-wrapper[data-navbar-style="collapsed"] .hk-navbar {
   -webkit-transform: translateY(-100%);
@@ -87956,7 +87956,7 @@ Project:	Jampack
   display: -ms-flexbox;
   display: flex;
   overflow: hidden;
-  padding-left: 270px;
+  /*padding-left: 270px;*/
   position: relative;
   height: 100%;
   left: 0;
@@ -87974,7 +87974,7 @@ Project:	Jampack
   justify-content: space-between;
   -webkit-justify-content: space-between;
   -ms-flex-pack: space-between;
-  height: 65px;
+  height: 60px;
   padding: 0 1.25rem;
   background: #fff;
   border-bottom: 1px solid #eaeaea;

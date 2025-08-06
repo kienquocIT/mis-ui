@@ -18,6 +18,8 @@ class HomeView(View):
         breadcrumb='HOME_PAGE',
         menu_active='id_menu_home_page',
         jsi18n='home',
+        icon_cls='fa-solid fa-house-laptop',
+        icon_bg='bg-blue',
     )
     def get(self, request, *args, **kwargs):
         next_url = request.GET.get('next', '')

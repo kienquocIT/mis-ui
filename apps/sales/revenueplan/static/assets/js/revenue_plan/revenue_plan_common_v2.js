@@ -675,7 +675,7 @@ function RenderTable(data_list=[], option='create') {
         reloadCurrency: true,
         rowIdx: false,
         scrollX: true,
-        scrollY: '65vh',
+        scrollY: '60vh',
         scrollCollapse: true,
         paging: false,
         data: data_list,

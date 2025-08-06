@@ -22,13 +22,25 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-12 col-md-5 col-lg-5">
+                        <div class="col-12 col-md-4 col-lg-4">
                             <label class="form-label"
                                    for="txt_title">{% trans 'Department / Employee Filter' %}</label>
                             <div id="select_employee" class="form-control d-flex align-items-center"
                                  style="cursor: pointer;">
                                 <span class="employee-icon"><i class="fa-solid fa-user-group"></i></span>
                                 <span class="employee-text ms-2">{% trans "All Department & Employee" %}</span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-2 col-lg-2">
+                            <div class="form-group">
+                                <label class="form-label" for="box-month">{% trans 'Month' %}</label>
+                                <select
+                                        class="form-select area-period-element"
+                                        id="box-month"
+                                        data-url=""
+                                        data-method="GET"
+                                        name="month"
+                                ></select>
                             </div>
                         </div>
                         <div class="col-12 col-md-2 col-lg-2">
@@ -43,7 +55,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-5 col-lg-5">
+                        <div class="col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label required" for="date_to">{% trans 'To' %}</label>
                                 <div style="display: flex;">
@@ -90,10 +102,18 @@
 {% block dataHiddenGroup %}
     <input type="text" id="url-factory"
            data-md-employee="{% url 'EmployeeListAllAPI' %}"
-           data-md-group="{% url 'GroupDDListAPI' %}">
+           data-md-group="{% url 'GroupDDListAPI' %}"
+           data-fiscal-year="{% url "PeriodsConfigListAPI" %}"
+    >
     <input type="text" id="group-checked">
     <input type="text" id="employee-checked">
     <input type="text" id="url-attendance-data" data-attendance="{% url "AttendanceListAPI" %}">
+
+    <input
+            type="text"
+            id="data-fiscal-year"
+    >
+    {{ data.filter_month|json_script:'filter_month' }}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>

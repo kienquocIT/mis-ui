@@ -423,6 +423,100 @@ class AttendancePageFunction {
         return result;
     }
 
+    // months of fiscal year
+
+    static $boxMonth = $('#box-month');
+    static $fiscalYear = $('#data-fiscal-year');
+    static dataMonth = JSON.parse($('#filter_month').text());
+
+    static getAllMonthsFiscalYear() {
+        let months = [];
+        if (AttendancePageFunction.$fiscalYear.val()) {
+            let year = new Date().getFullYear();
+            let dataFiscalYear = JSON.parse(AttendancePageFunction.$fiscalYear.val());
+            if (dataFiscalYear.length > 0) {
+                for (let dataFY of dataFiscalYear) {
+                    if (dataFY?.['fiscal_year'] === year) {
+                        let startDateFY = new Date(dataFY?.['start_date']);
+                        let currentDate = new Date(startDateFY);
+                        // Loop for 12 months
+                        for (let i = 0; i < 12; i++) {
+                            let formattedMonth = currentDate.toISOString().slice(0, 7);
+                            months.push(formattedMonth);
+                            // Move to the next month
+                            currentDate.setMonth(currentDate.getMonth() + 1);
+                        }
+                        break;
+                    }
+                }
+
+            }
+        }
+        return months;
+    };
+
+    static parseMonthJSON() {
+        let result = [];
+        let dataMonths = AttendancePageFunction.getAllMonthsFiscalYear();
+        for (let monthYear of dataMonths) {
+            const [year, month] = monthYear.split('-').map(Number);
+            result.push({
+                year,
+                month,
+            });
+        }
+        return result;
+    };
+
+    static storeFiscalYear() {
+        $.fn.callAjax2({
+                'url': pageElements.$urlEle.attr('data-fiscal-year'),
+                'method': "GET",
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('periods_list') && Array.isArray(data.periods_list)) {
+                        AttendancePageFunction.$fiscalYear.val(JSON.stringify(data.periods_list));
+                        AttendancePageFunction.loadBoxMonth();
+                        let currentDate = new Date();
+                        let currentMonth = currentDate.getMonth() + 1;
+                        AttendancePageFunction.$boxMonth.val(currentMonth).trigger('change');
+                    }
+                }
+            }
+        )
+    };
+
+    static loadBoxMonth() {
+        let data = [];
+        let dataMonths = AttendancePageFunction.parseMonthJSON();
+        for (let monthYear of dataMonths) {
+            data.push({
+                'id': monthYear?.['month'],
+                'title': AttendancePageFunction.dataMonth[monthYear?.['month'] - 1][1],
+                'month': monthYear?.['month'],
+                'year': monthYear?.['year'],
+            })
+        }
+        data.push({
+            'id': '',
+            'title': 'Select...',
+            'month': 0,
+            'year': 0,
+        })
+        AttendancePageFunction.$boxMonth.empty();
+        AttendancePageFunction.$boxMonth.initSelect2({
+            data: data,
+            'allowClear': true,
+            templateResult: function (state) {
+                let groupHTML = `<span class="badge badge-soft-success ml-2">${state?.['data']?.['year'] ? state?.['data']?.['year'] : "_"}</span>`
+                return $(`<span>${state.text} ${groupHTML}</span>`);
+            },
+        });
+    };
+
     /**
      * Fetches and processes employee attendance data based on selected filters.
      *
@@ -459,9 +553,9 @@ class AttendancePageFunction {
 
                 // build input parameters for filter processing
                 let dataParams = {
-                    'employee_id_lst': checkedEmployeeData.join(","),
-                    'date_start': DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", dateStart),
-                    'date_end': DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", dateEnd),
+                    'employee_id__in': checkedEmployeeData.join(","),
+                    'date__gte': DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", dateStart),
+                    'date__lte': DateTimeControl.formatDateType("DD/MM/YYYY", "YYYY-MM-DD", dateEnd),
                 }
 
                 // build ajax to get necessary data (filter processing occurred in view)
@@ -641,6 +735,19 @@ class AttendanceEventHandler {
 
             $('#offcanvas_attendance_detail').offcanvas("show");
         });
+
+        AttendancePageFunction.$boxMonth.on('change', function () {
+            let data = SelectDDControl.get_data_from_idx(AttendancePageFunction.$boxMonth, AttendancePageFunction.$boxMonth.val());
+            if (data?.['month'] && data?.['year']) {
+                $('.flat-picker').each(function () {
+                    DateTimeControl.initFlatPickrDateInMonth(this, data?.['month'], data?.['year']);
+                });
+                let dataMonth = DateTimeControl.getMonthInfo(data?.['month'], data?.['year']);
+                pageElements.$startDate.val(dataMonth?.['from']);
+                pageElements.$endDate.val(dataMonth?.['to']);
+            }
+        });
+
     }
 }
 
@@ -649,6 +756,7 @@ $(document).ready(function () {
     $('.flat-picker').each(function () {
         DateTimeControl.initFlatPickrDate(this);
     });
+    AttendancePageFunction.storeFiscalYear();
 
     AttendanceEventHandler.InitPageEvent();
     AttendanceLoadDataHandle.loadEmployeeList();

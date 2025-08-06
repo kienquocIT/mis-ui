@@ -12174,3 +12174,19 @@ msgstr "Tổng quan doanh thu, lợi nhuận và các chỉ số hiệu suất c
 #
 msgid "Sales pipeline analysis, conversion rates and deal tracking"
 msgstr "Phân tích pipeline bán hàng, tỷ lệ chuyển đổi và theo dõi tiến độ deal"
+
+#
+msgid "Attendance device config"
+msgstr "Cấu hình thiết bị chấm công"
+
+#
+msgid "Device name"
+msgstr "Tên thiết bị"
+
+#
+msgid "Device IP"
+msgstr "IP thiết bị"
+
+#
+msgid "Use this device"
+msgstr "Sử dụng thiết bị này"

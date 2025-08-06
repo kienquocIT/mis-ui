@@ -536,6 +536,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Device integrate
     DEVICE_EMPLOYEE_INTEGRATE_LIST_PAGE = BreadcrumbChildren(_('Synchronize employee'), 'DeviceIntegrateEmployeeList')
 
+    # Attendance device
+    ATTENDANCE_DEVICE_LIST_PAGE = BreadcrumbChildren(_('Attendance device config'), 'AttendanceDeviceList')
+
     # Absence explanation
     ABSENCE_EXPLANATION_LIST = BreadcrumbChildren(_('Absence Explanation'), 'AbsenceExplanationList')
 
@@ -1456,6 +1459,12 @@ class BreadcrumbView:
     DEVICE_INTEGRATE_EMPLOYEE_LIST_PAGE = [
         BreadcrumbItem.DEVICE_EMPLOYEE_INTEGRATE_LIST_PAGE
     ]
+
+    # Attendance Device
+    ATTENDANCE_DEVICE_LIST_PAGE = [
+        BreadcrumbItem.ATTENDANCE_DEVICE_LIST_PAGE
+    ]
+
 
     # Absence explanation
     ABSENCE_EXPLANATION_LIST_PAGE = [

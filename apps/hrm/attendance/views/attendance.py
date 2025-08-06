@@ -3,6 +3,22 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared.msg import ReportMsg
+
+FILTER_MONTH = (
+    (1, ReportMsg.MONTH_JANUARY),
+    (2, ReportMsg.MONTH_FEBRUARY),
+    (3, ReportMsg.MONTH_MARCH),
+    (4, ReportMsg.MONTH_APRIL),
+    (5, ReportMsg.MONTH_MAY),
+    (6, ReportMsg.MONTH_JUNE),
+    (7, ReportMsg.MONTH_JULY),
+    (8, ReportMsg.MONTH_AUGUST),
+    (9, ReportMsg.MONTH_SEPTEMBER),
+    (10, ReportMsg.MONTH_OCTOBER),
+    (11, ReportMsg.MONTH_NOVEMBER),
+    (12, ReportMsg.MONTH_DECEMBER),
+)
 
 
 class HRMAttendanceList(View):
@@ -16,7 +32,7 @@ class HRMAttendanceList(View):
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
         if len(resp1.result) > 0:
-            return {'data': {'current_period': resp1.result[0]}}, status.HTTP_200_OK
+            return {'data': {'current_period': resp1.result[0]}, 'filter_month': FILTER_MONTH}, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
 
 

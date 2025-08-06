@@ -14,8 +14,8 @@
                     <label class="form-label required" for="cof_type">{% trans "Cash outflow type" %}</label>
                     <select required id="cof_type" class="form-select">
                         <option value="0" selected>{% trans 'Payment to supplier' %}</option>
-{#                        <option value="1">{% trans 'Payment to customer' %}</option>#}
-{#                        <option value="2">{% trans 'Advance payment to employee' %}</option>#}
+                        <option value="1">{% trans 'Payment to customer' %}</option>
+                        <option value="2">{% trans 'Advance payment to employee' %}</option>
 {#                        <option value="3">{% trans 'Payment on account' %}</option>#}
                     </select>
                 </div>
@@ -83,14 +83,12 @@
     </div>
 </div>
 <div class="row mt-5 supplier-space">
-    <div class="col-12 col-md-5 col-lg-5">
+    <div class="col-12">
         <div class="form-group">
-            <label class="form-check-label fw-bold h5">{% trans "Advance payment to supplier (not according to Purchase order)" %}</label>
+            <label for="advance_for_supplier_value" class="form-check-label fw-bold h5">{% trans "Advance payment to supplier (not according to Purchase order)" %}</label>
             <input class="form-control mask-money" value="0" id="advance_for_supplier_value">
         </div>
     </div>
-</div>
-<div class="row supplier-space">
     <div class="col-12 mt-5">
         <label class="form-check-label fw-bold h5">{% trans 'Advance payment to supplier (according to Purchase order)' %}</label>
         <span class="small text-muted" style="float: right;">({% trans 'Order by Due date' %})</span>
@@ -147,6 +145,35 @@
             </label>
             <input class="form-control mask-money" value="0" id="advance_for_employee_value">
         </div>
+    </div>
+</div>
+<div class="row mt-5 account-space" hidden>
+    <div class="col-12">
+        <table class="table nowrap w-100" id="payment-on-account-table">
+            <thead>
+                <tr>
+                    <th style="min-width: 30px"></th>
+                    <th style="min-width: 200px">{% trans 'Account name' %}</th>
+                    <th style="min-width: 100px">{% trans 'Account code' %}</th>
+                    <th style="min-width: 150px">{% trans 'Net value' %}</th>
+                    <th style="min-width: 150px">{% trans 'Tax' %}</th>
+                    <th style="min-width: 150px">{% trans 'Total' %}</th>
+                    <th style="min-width: 150px">{% trans 'Balance' %}</th>
+                    <th style="min-width: 200px">{% trans 'Payment' %}</th>
+                    <th style="min-width: 150px">{% trans 'Invoice date' %}</th>
+                    <th style="min-width: 150px">{% trans 'Invoice number' %}</th>
+                    <th style="min-width: 200px">{% trans 'Business partner' %}</th>
+                    <th style="min-width: 150px">{% trans 'Tax code' %}</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="col-12 mt-3">
+        <button type="button" id="btn-add-row-account" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus-circle"></i>
+            {% trans 'Add new row' %}
+        </button>
     </div>
 </div>
 <div class="row mt-5">

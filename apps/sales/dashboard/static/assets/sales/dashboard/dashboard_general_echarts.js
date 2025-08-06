@@ -91,8 +91,6 @@ $(document).ready(function () {
             keyId: 'id',
             keyText: 'title',
         }).on('change', function () {
-            $('#revenue-spinner').prop('hidden', false)
-            $('#profit-spinner').prop('hidden', false)
             period_selected_Setting = SelectDDControl.get_data_from_idx(periodFiscalYearFilterEle, periodFiscalYearFilterEle.val())
             fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
             space_month_Setting = period_selected_Setting?.['space_month']
@@ -134,7 +132,7 @@ $(document).ready(function () {
     let COMPANY_CURRENT_REVENUE = null
     let COMPANY_CURRENT_PROFIT = null
 
-    function RevenueProfitChartCfg(labelX, data_list, chart_title='', titleX='', titleY='', isLine=true) {
+    function RevenueProfitChartCfg(labelX, data_list, chart_title='', titleX='', titleY='') {
         return {
             textStyle: {
                 fontFamily: 'Arial, Helvetica, sans-serif'
@@ -151,7 +149,7 @@ $(document).ready(function () {
             tooltip: {
                 trigger: 'axis',
                 axisPointer: {
-                    type: isLine ? 'cross' : 'shadow',
+                    type: 'cross',
                     animation: true
                 },
                 formatter: function(params) {
@@ -253,7 +251,7 @@ $(document).ready(function () {
             animationEasingUpdate: 'cubicOut',
             series: data_list.map((item, index) => ({
                 ...item,
-                type: isLine ? 'line' : 'bar',
+                type: 'line',
                 smooth: true,
                 emphasis: {
                     focus: 'series',
@@ -267,7 +265,7 @@ $(document).ready(function () {
                     width: 3
                 },
                 itemStyle: {
-                    borderRadius: isLine ? 0 : [8, 8, 0, 0]
+                    borderRadius: 0
                 },
                 animationDelay: function (idx) {
                     return idx * 10 + index * 100;
@@ -277,8 +275,6 @@ $(document).ready(function () {
     }
 
     function DrawRevenueProfitChart(is_init=false) {
-        $('#revenue-spinner').prop('hidden', false)
-        $('#profit-spinner').prop('hidden', false)
         let report_revenue_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-report-revenue-profit'),
             data: {},
@@ -363,10 +359,7 @@ $(document).ready(function () {
                     trans_script.attr('data-trans-chart-revenue'),
                     trans_script.attr('data-trans-month'),
                     trans_script.attr('data-trans-revenue'),
-                    revenueprofitChartTypeEle.val() === '0'
                 ))
-                
-                $('#revenue-spinner').prop('hidden', true)
                 
                 profit_chart.setOption(RevenueProfitChartCfg(
                     getMonthOrder(space_month_Setting),
@@ -374,10 +367,7 @@ $(document).ready(function () {
                     trans_script.attr('data-trans-chart-profit'),
                     trans_script.attr('data-trans-month'),
                     trans_script.attr('data-trans-profit'),
-                    revenueprofitChartTypeEle.val() === '0'
                 ))
-                
-                $('#profit-spinner').prop('hidden', true)
             })
     }
 
@@ -491,11 +481,6 @@ $(document).ready(function () {
     }
 
     $('#reload-revenue-profit-data-btn').on('click', function () {
-        DrawRevenueProfitChart(false)
-    })
-
-    const revenueprofitChartTypeEle = $('#revenue-profit-chart-type')
-    revenueprofitChartTypeEle.on('change', function () {
         DrawRevenueProfitChart(false)
     })
 
@@ -653,13 +638,6 @@ $(document).ready(function () {
     }
 
     function DrawTopSaleCustomerChart(is_init=false, chart_name=['sale', 'customer']) {
-        if (chart_name.includes('sale')) {
-            $('#topsale-spinner').prop('hidden', false)
-        }
-        if (chart_name.includes('customer')) {
-            $('#topcustomer-spinner').prop('hidden', false)
-        }
-
         let report_top_sale_customer_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-top-sale-customer-list'),
             data: {},
@@ -699,7 +677,6 @@ $(document).ready(function () {
                         trans_script.attr('data-trans-revenue'),
                         ''
                     ))
-                    $('#topsale-spinner').prop('hidden', true)
                 }
                 if (chart_name.includes('customer')) {
                     topCustomer_DF = (results[0] ? results[0] : []).filter(item => {
@@ -721,7 +698,6 @@ $(document).ready(function () {
                         trans_script.attr('data-trans-revenue'),
                         ''
                     ))
-                    $('#topcustomer-spinner').prop('hidden', true)
                 }
             })
     }
@@ -1017,13 +993,6 @@ $(document).ready(function () {
     }
 
     function DrawTopCategoryProductChart(is_init=false, chart_name=['category', 'product']) {
-        if (chart_name.includes('category')) {
-            $('#topcategory-spinner').prop('hidden', false)
-        }
-        if (chart_name.includes('product')) {
-            $('#topproduct-spinner').prop('hidden', false)
-        }
-
         let report_top_category_product_ajax = $.fn.callAjax2({
             url: scriptUrlEle.attr('data-url-top-category-product-list'),
             data: {},
@@ -1063,7 +1032,6 @@ $(document).ready(function () {
                         trans_script.attr('data-trans-revenue'),
                         ''
                     ))
-                    $('#topcategory-spinner').prop('hidden', true)
                 }
                 if (chart_name.includes('product')) {
                     topProduct_DF = (results[0] ? results[0] : []).filter(item => {
@@ -1085,7 +1053,6 @@ $(document).ready(function () {
                         trans_script.attr('data-trans-revenue'),
                         ''
                     ))
-                    $('#topproduct-spinner').prop('hidden', true)
                 }
             })
     }

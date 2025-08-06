@@ -17,6 +17,7 @@ $(document).ready(function () {
     })
     COFPageFunction.LoadAdvanceToSupplierTable()
     COFPageFunction.LoadAPInvoiceTable()
+    COFPageFunction.LoadPaymentOnAccountTable()
     COFPageFunction.LoadCompanyBankAccount()
     WFRTControl.setWFInitialData('cashoutflow')
     COFHandler.LoadDetailCOF('update')

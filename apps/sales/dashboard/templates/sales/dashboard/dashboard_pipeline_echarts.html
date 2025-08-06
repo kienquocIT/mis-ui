@@ -5,12 +5,30 @@
 {% block cssHeader %}
     <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
     <style>
-        /* Modern Dashboard with Light Gray Theme */
+        /* Modern Dashboard v2 with Enhanced Design */
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #06b6d4;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --border-radius: 12px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --gradient-info: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
         #idxPageContent {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
-            padding-top: 1.5rem;
-            position: relative;
+            padding: 1rem 0;
         }
 
         .container-fluid {
@@ -18,48 +36,186 @@
             z-index: 1;
         }
 
-        /* Spinner Custom */
-        .spinner-grow {
-            width: 2.5rem !important;
-            height: 2.5rem !important;
-        }
-
-        /* Card Styling */
+        /* Enhanced Cards */
         .card {
             border: none;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
             transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.5)
         }
 
-        .card:hover {
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        /* KPI Cards */
+        .kpi-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+            margin-bottom: 0;
+            flex-shrink: 0;
         }
 
-        /* Chart Container */
+        .kpi-icon.primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+
+        .kpi-icon.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .kpi-value {
+            font-size: 1.25rem !important;
+            font-weight: 700 !important;
+            margin: 0 !important;
+            line-height: 1.2 !important;
+            display: block !important;
+        }
+
+        .kpi-label {
+            font-size: 0.7rem !important;
+            color: #64748b !important;
+            font-weight: 500 !important;
+            margin: 0 0 0.25rem 0 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.3px !important;
+            line-height: 1 !important;
+        }
+
+        /* Chart Container Enhancements */
         .chart-container {
             position: relative;
-            min-height: 350px;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            box-shadow: var(--shadow-sm);
         }
 
-        /* Responsive Grid */
+        /* Ensure proper spacing for chart containers */
+        .chart-container > div {
+            position: relative;
+            overflow: visible !important;
+        }
+
+        .chart-title {
+            font-size: 1.125rem !important;
+            font-weight: 700 !important;
+            color: #1e293b !important;
+            margin: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+        }
+
+        .chart-title i {
+            color: var(--primary-color) !important;
+        }
+
+        /* Section Headers */
+        .section-header {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .section-title {
+            font-size: 1.25rem !important;
+            font-weight: 700 !important;
+            color: #1e293b !important;
+            margin: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.75rem !important;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .section-subtitle {
+            font-size: 0.875rem !important;
+            color: #475569 !important;
+            margin: 0.5rem 0 0 0 !important;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6) !important;
+        }
+
+        /* Filter Panel */
+        .custom-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Responsive Enhancements */
         @media (max-width: 768px) {
             .card-body {
                 padding: 1rem;
             }
 
-            .form-label {
-                font-size: 0.75rem;
+            .kpi-value {
+                font-size: 1.5rem;
             }
 
-            .card-title {
+            .kpi-icon {
+                width: 32px;
+                height: 32px;
                 font-size: 1rem;
             }
 
             .chart-container {
-                min-height: 250px;
+                padding: 1rem;
+            }
+
+            .section-header {
+                padding: 1rem;
             }
         }
 
+        @media (max-width: 576px) {
+            #idxPageContent {
+                padding: 1rem 0;
+            }
+
+            .container-fluid {
+                padding: 0 0.5rem;
+            }
+
+            .kpi-value {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Dark mode support preparation */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --light-color: #1e293b;
+                --dark-color: #f1f5f9;
+            }
+        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -107,36 +263,77 @@
             data-trans-reality="{% trans 'Reality' %}"
     ></script>
     
-    <div class="container-fluid">
-        <!-- Global Settings Row -->
+    <div class="container-fluid mb-10">
+        <!-- Filter Section -->
+        <div class="row">
+            <div class="col-12 col-md-8">
+                <div class="custom-panel">
+                    <div class="row">
+                        <div class="col-12 col-md-3">
+                            <div class="form-group">
+                                <label for="money-display" class="form-label">{% trans 'Money display' %}</label>
+                                <select class="form-select" id="money-display">
+                                    <option value="0" selected>{% trans 'Million' %}</option>
+                                    <option value="1">{% trans 'Billion' %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <div class="form-group">
+                                <label for="money-round" class="form-label">{% trans 'Money round' %}</label>
+                                <input id="money-round" type="number" class="form-control" value="1" min="0">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label for="period-filter" class="form-label">{% trans 'Fiscal year' %}</label>
+                                <select class="form-select"
+                                        id="period-filter"
+                                        data-url="{% url 'PeriodsConfigListAPI' %}"
+                                        data-method="GET"
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Pipeline & Top Sale Charts -->
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12 col-md-3">
-                                <div class="form-group">
-                                    <label for="money-display" class="form-label">{% trans 'Money display' %}</label>
-                                    <select class="form-select" id="money-display">
-                                        <option value="0" selected>{% trans 'Million' %}</option>
-                                        <option value="1">{% trans 'Billion' %}</option>
-                                    </select>
+                    <div class="card-body p-2">
+                        <!-- Chart Controls -->
+                        <div class="d-flex justify-content-between align-items-center m-2">
+                            <div class="d-flex">
+                                <div class="me-2">
+                                    <div class="input-group" style="width: 400px;">
+                                        <span class="input-group-text">{% trans 'Group' %}</span>
+                                        <select class="form-select" id="pipeline-group"
+                                                data-method="GET"
+                                                data-url="{% url 'GroupListAPI' %}"></select>
+                                    </div>
+                                </div>
+                                <div class="me-2">
+                                    <div class="input-group">
+                                        <span class="input-group-text">{% trans 'Sale number viewed' %}</span>
+                                        <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-3">
-                                <div class="form-group">
-                                    <label for="money-round" class="form-label">{% trans 'Money round' %}</label>
-                                    <input id="money-round" type="number" class="form-control" value="1" min="0">
+                        </div>
+
+                        <!-- Charts -->
+                        <div class="row p-2">
+                            <div class="col-12 col-lg-6">
+                                <div class="chart-container">
+                                    <div id="total_pipeline_chart" style="width: 100%; height: 350px;"></div>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6">
-                                <div class="form-group">
-                                    <label for="period-filter" class="form-label">{% trans 'Fiscal year' %}</label>
-                                    <select class="form-select"
-                                            id="period-filter"
-                                            data-url="{% url 'PeriodsConfigListAPI' %}"
-                                            data-method="GET"
-                                    ></select>
+                            <div class="col-12 col-lg-6">
+                                <div class="chart-container">
+                                    <div id="top_sale_chart" style="width: 100%; height: 350px;"></div>
                                 </div>
                             </div>
                         </div>
@@ -145,99 +342,65 @@
             </div>
         </div>
 
-        <!-- Pipeline Charts Section -->
-        <div class="row dashboard-space mb-10">
-            <!-- Total Pipeline & Top Sale Charts -->
-            <div class="view-space col-12">
+        <!-- Forecast Chart -->
+        <div class="row">
+            <div class="col-12">
                 <div class="card">
-                    <div class="px-3 py-2">
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label" for="pipeline-group">{% trans 'Group' %}</label>
-                                    <select class="form-select" id="pipeline-group" 
-                                            data-method="GET" 
-                                            data-url="{% url 'GroupListAPI' %}"></select>
+                    <div class="card-body p-2">
+                        <!-- Chart Controls -->
+                        <div class="d-flex justify-content-between align-items-center m-2">
+                            <div class="d-flex">
+                                <div class="me-2">
+                                    <div class="input-group" style="width: 400px;">
+                                        <span class="input-group-text">{% trans 'Group' %}</span>
+                                        <select class="form-select" id="forecast-group"
+                                                data-method="GET"
+                                                data-url="{% url 'GroupListAPI' %}"></select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <div class="form-group">
-                                    <label for="top-sale-number" class="form-label">{% trans 'Sale number viewed' %}</label>
-                                    <input class="form-control" type="number" id="top-sale-number" min="1" max="20" value="10">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12 col-lg-6">
-                                <div class="chart-container">
-                                    <div id="total-pipeline-spinner" class="spinner-grow text-primary position-absolute top-50 start-50 translate-middle" role="status"></div>
-                                    <div id="total_pipeline_chart" style="width: 100%; height: 350px;"></div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <div class="chart-container">
-                                    <div id="top-sale-spinner" class="spinner-grow text-warning position-absolute top-50 start-50 translate-middle" role="status"></div>
-                                    <div id="top_sale_chart" style="width: 100%; height: 350px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Forecast Chart -->
-            <div class="view-space col-12 col-lg-6">
-                <div class="card h-100">
-                    <div class="px-3 py-2">
-                        <div class="row">
-                            <div class="col-12 col-md-4">
-                                <div class="form-group">
-                                    <label for="forecast-viewby" class="form-label">{% trans 'View by' %}</label>
-                                    <select class="form-select" id="forecast-viewby">
-                                        <option value="0" selected>{% trans 'Month' %}</option>
-                                        <option value="1">{% trans 'Quarter' %}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <div class="form-group">
-                                    <label for="winrate-threshold" class="form-label">{% trans 'Winrate threshold' %}</label>
+                                <div class="me-2">
                                     <div class="input-group">
+                                        <span class="input-group-text">{% trans 'View by' %}</span>
+                                        <select class="form-select" id="forecast-viewby">
+                                            <option value="0" selected>{% trans 'Month' %}</option>
+                                            <option value="1">{% trans 'Quarter' %}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="me-2">
+                                    <div class="input-group">
+                                        <span class="input-group-text">{% trans 'Winrate threshold' %}</span>
                                         <input class="form-control" type="number" id="winrate-threshold" step="5" min="0" max="100" value="70">
                                         <span class="input-group-text">%</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label" for="forecast-group">{% trans 'Group' %}</label>
-                                    <select class="form-select" id="forecast-group" 
-                                            data-method="GET" 
-                                            data-url="{% url 'GroupListAPI' %}"></select>
+                        </div>
+
+                        <!-- Charts -->
+                        <div class="row p-2">
+                            <div class="col-12">
+                                <div class="chart-container">
+                                    <div id="forecast_chart" style="width: 100%; height: 350px;"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="chart-container">
-                            <div id="forecast-spinner" class="spinner-grow text-success position-absolute top-50 start-50 translate-middle" role="status"></div>
-                            <div id="forecast_chart" style="width: 100%; height: 350px;"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Activity Chart -->
-            <div class="view-space col-12 col-lg-6">
-                <div class="card h-100">
-                    <div class="px-3 py-2">
-                        <div class="row">
-                            <div class="col-12 col-md-8">
-                                <div class="form-group">
-                                    <label class="form-label" for="activity-time">{% trans 'Time range' %}</label>
+        <!-- Activity Chart -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-2">
+                        <!-- Chart Controls -->
+                        <div class="d-flex justify-content-between align-items-center m-2">
+                            <div class="d-flex">
+                                <div class="me-2" style="width: 350px;">
                                     <div class="input-group">
+                                        <span class="input-group-text">{% trans 'Time range' %}</span>
                                         <select class="form-select" id="activity-time">
                                             <option value="0">{% trans 'Month' %}</option>
                                             <option value="1">{% trans 'Quarter' %}</option>
@@ -246,19 +409,22 @@
                                         <select class="form-select" id="activity-time-detail" disabled></select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <div class="form-group">
-                                    <label for="top-customer-number" class="form-label">{% trans 'Customer number viewed' %}</label>
-                                    <input class="form-control" type="number" id="top-customer-number" min="1" max="20" value="10">
+                                <div class="me-2">
+                                    <div class="input-group">
+                                        <span class="input-group-text">{% trans 'Customer number viewed' %}</span>
+                                        <input class="form-control" type="number" id="top-customer-number" min="1" max="20" value="10">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-container">
-                            <div id="activity-spinner" class="spinner-grow text-info position-absolute top-50 start-50 translate-middle" role="status"></div>
-                            <div id="activity_chart" style="width: 100%; height: 350px;"></div>
+
+                        <!-- Charts -->
+                        <div class="row p-2">
+                            <div class="col-12">
+                                <div class="chart-container">
+                                    <div id="activity_chart" style="width: 100%; height: 350px;"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

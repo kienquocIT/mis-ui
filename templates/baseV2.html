@@ -139,17 +139,30 @@
 
 				<!-- End Nav -->
 				<div class="nav-end-wrap">
-					<!-- Search -->
-                    <ul class="navbar-nav flex-column">
-                        <a
-                                class="nav-link" href="#"
-                                data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Menu finder' %}"
-                        >
-                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-toggle="modal" data-bs-target="#modalSearchMenu">
-                                <span class="icon"><i class="fa-solid fa-magnifying-glass"></i></span>
-                            </button>
-                        </a>
-                    </ul>
+                    <!-- Search -->
+                    <form class="dropdown navbar-search me-2" id="modalSearchMenu" data-url="{% url 'MenuFinder' %}">
+						<div class="dropdown-toggle no-caret" data-bs-toggle="dropdown" data-dropdown-animation data-bs-auto-close="outside">
+							<a href="#" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover  d-xl-none"><span class="icon"><span class="feather-icon"><i data-feather="search"></i></span></span></a>
+							<div class="input-group d-xl-flex d-none">
+								<span class="input-affix-wrapper input-search affix-border">
+									<input type="text" class="form-control bg-transparent form-control-search"  data-navbar-search-close="false" placeholder="{% trans 'Menu finder' %}" aria-label="Search">
+									<span class="input-suffix"><span>/</span>
+										<span class="btn-input-clear"><i class="bi bi-x-circle-fill"></i></span>
+										<span class="spinner-border spinner-border-sm input-loader text-primary" role="status">
+											<span class="sr-only">Loading...</span>
+										</span>
+									</span>
+								</span>
+							</div>
+						</div>
+						<div  class="dropdown-menu p-0 mt-3 w-300p">
+							<!--/ Mobile Search -->
+							<div data-simplebar class="dropdown-body p-2">
+                                <div data-simplebar class="data-favorite border-bottom"></div>
+                                <div class="data-list"></div>
+							</div>
+						</div>
+					</form>
 					<!-- /Search -->
 
 					<ul class="navbar-nav flex-row">
@@ -517,6 +530,8 @@
 
     <script src="{% static 'vendors/dropify/dist/js/dropify.min.js' %}"></script>
     <!-- // Init JS -->
+
+    <script src="{% static 'assets/js/extends/base/base.js' %}"></script>
 
     <script type="application/javascript">
         let isDenied = false;

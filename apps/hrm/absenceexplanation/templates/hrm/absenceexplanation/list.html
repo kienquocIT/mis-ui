@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Absence Explanation list' %}
+{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+
+{% block pageAction %}
+    <a href="{% url 'AbsenceExplanationCreate' %}">
+        <button class="btn btn-outline-primary">
+            <span>
+                <span>{% trans 'Add' %}</span>
+                <span class="icon"><i class="fa-solid fa-plus"></i></span>
+            </span>
+        </button>
+    </a>
+{% endblock %}
+
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100" data-method="get"
+                   data-url="{% url 'IncomingDocumentListAPI' %}"
+                   data-url-detail="{% url 'AbsenceExplanationDetail' 0 %}" id="tbl_absence_explanation">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans 'Title' %}</th>
+                    <th>{% trans 'Type' %}</th>
+                    <th>{% trans 'Employee' %}</th>
+                    <th>{% trans 'Created date' %}</th>
+                    <th>{% trans 'Status' %}</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/hrm/absenceexplanation/js/list.js' %}"></script>
+{% endblock %}
+
+

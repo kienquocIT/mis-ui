@@ -1,0 +1,68 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label" for="add-product-remark">{% trans 'Description' %}</label>
+                    <textarea name="remark" class="form-control" id="description_remark"></textarea>
+                </div>
+            </div>
+            <div class="col-12 mt-2">
+                <div class="form-group">
+                    <label class="form-label" for="selected_employee">{% trans 'Employee' %}</label>
+                    <select class="form-select select2" id="selected_employee"
+                            data-url="{% url 'EmployeeListAllAPI' %}" name="employee_list">
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 mt-2">
+                <div class="form-group">
+                    <label class="form-label" for="date">{% trans 'Date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input class="form-control pl-2 date-picker" id="date" type="text" name="date"/>
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-2">
+                <div class="form-group">
+                    <label class="form-label" for="selected_type">{% trans 'Type' %}</label>
+                    <select name="absence_explanation_type" class="form-control select2" id="selected_type">
+                        <option disabled selected value="">{% trans "Select type" %}</option>
+                        <option value="0">{% trans "Check in" %}</option>
+                        <option value="1">{% trans "Check out" %}</option>
+                        <option value="2">{% trans "All day" %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-12 mt-2">
+                <div class="form-group">
+                    <label class="form-label" for="add-product-note">{% trans 'Note' %}</label>
+                    <textarea name="note" class="form-control" id="note" rows="5"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-2 col-lg-2"></div>
+    <div class="col-12 col-md-4 col-lg-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-label" for="created_date">{% trans 'Created date' %}</label>
+                    <div class="input-affix-wrapper">
+                        <input class="form-control pl-2 date-picker" id="created_date" type="text" name="created_date"/>
+                        <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-2">
+                <div class="form-group">
+                    <label class="form-label" for="txt_title">{% trans 'Status' %}</label>
+                    <input type="text" class="form-control" name="title" id="attendance_status">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

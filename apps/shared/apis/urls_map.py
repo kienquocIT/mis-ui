@@ -999,3 +999,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # attendance/device integrate
     DEVICE_INTEGRATE_EMPLOYEE_LIST = StringUrl('hrm/attendance/device-integrate-employee/list')
     DEVICE_INTEGRATE_EMPLOYEE_DETAIL = StringUrl('hrm/attendance/device-integrate-employee/{pk}')
+
+    # HRM - Absence Explanation
+    ABSENCE_EXPLANATION_LIST = StringUrl('hrm/absence-explanation/list')
+    ABSENCE_EXPLANATION_DETAIL = StringUrl('kms/absence-explanation/detail/{pk}')

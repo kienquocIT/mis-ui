@@ -529,12 +529,15 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Shift assignment
     SHIFT_ASSIGNMENT_LIST_PAGE = BreadcrumbChildren(_('Shift assignment'), 'ShiftAssignmentList')
-    
-	# Attendance
+
+    # Attendance
     HRM_ATTENDANCE_LIST_PAGE = BreadcrumbChildren(_('HRM Attendance info'), 'HRMAttendanceList')
 
     # Device integrate
     DEVICE_EMPLOYEE_INTEGRATE_LIST_PAGE = BreadcrumbChildren(_('Synchronize employee'), 'DeviceIntegrateEmployeeList')
+
+    # Absence explanation
+    ABSENCE_EXPLANATION_LIST = BreadcrumbChildren(_('Absence Explanation'), 'AbsenceExplanationList')
 
 
 class BreadcrumbView:
@@ -1442,8 +1445,8 @@ class BreadcrumbView:
     SHIFT_ASSIGNMENT_LIST_PAGE = [
         BreadcrumbItem.SHIFT_ASSIGNMENT_LIST_PAGE
     ]
-    
-	# Attendance
+
+    # Attendance
     HRM_ATTENDANCE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.HRM_ATTENDANCE_LIST_PAGE
@@ -1453,3 +1456,10 @@ class BreadcrumbView:
     DEVICE_INTEGRATE_EMPLOYEE_LIST_PAGE = [
         BreadcrumbItem.DEVICE_EMPLOYEE_INTEGRATE_LIST_PAGE
     ]
+
+    # Absence explanation
+    ABSENCE_EXPLANATION_LIST_PAGE = [
+        BreadcrumbItem.ABSENCE_EXPLANATION_LIST
+    ]
+    ABSENCE_EXPLANATION_CREATE_PAGE = [BreadcrumbItem.ABSENCE_EXPLANATION_LIST] + [BreadcrumbItem.BASTION_CREATE]
+

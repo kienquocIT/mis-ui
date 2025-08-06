@@ -25,5 +25,51 @@ msgstr "Thêm ca mới"
 msgid "Update shift"
 msgstr "Cập nhật ca"
 
+#
+msgid "Employee Name"
+msgstr "Tên nhân viên"
 
+#
+msgid "Employee"
+msgstr "Nhân viên"
+
+#
+msgid "Date"
+msgstr "Ngày"
+
+#
+msgid "Shift"
+msgstr "Ca làm việc"
+
+#
+msgid "Check In"
+msgstr "Giờ vào"
+
+#
+msgid "Check Out"
+msgstr "Giờ ra"
+
+#
+msgid "Status"
+msgstr "Trạng thái"
+
+#
+msgid "Is Late"
+msgstr "Đi Trễ"
+
+#
+msgid "Is Early Leave"
+msgstr "Về sớm"
+
+#
+msgid "Regular Overtime Hours"
+msgstr "Số giờ làm tăng ca"
+
+#
+msgid "Weekend Overtime Hours"
+msgstr "Số giờ làm tăng ca trong tuần"
+
+#
+msgid "Holiday Overtime Hours"
+msgstr "Số giờ làm tăng ca ngày lễ"
 

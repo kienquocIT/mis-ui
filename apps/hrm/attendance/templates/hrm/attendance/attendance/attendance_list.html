@@ -14,60 +14,62 @@
     {{ data.data.current_period | json_script:"current_period" }}
 
     <div class="row">
-        <div class="col-12">
-            <div class="row">
-                <!-- Filter area -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">{% trans "Attendance Filter" %}</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12 col-md-5 col-lg-5">
-                                <label class="form-label"
-                                       for="txt_title">{% trans 'Department / Employee Filter' %}</label>
-                                <div id="select_employee" class="form-control d-flex align-items-center"
-                                     style="cursor: pointer;">
-                                    <span class="employee-icon"><i class="fa-solid fa-user-group"></i></span>
-                                    <span class="employee-text ms-2">{% trans "All Department & Employee" %}</span>
-                                </div>
+        <!-- Filter area -->
+        <div class="col-12 mb-5">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "Attendance Filter" %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-5 col-lg-5">
+                            <label class="form-label"
+                                   for="txt_title">{% trans 'Department / Employee Filter' %}</label>
+                            <div id="select_employee" class="form-control d-flex align-items-center"
+                                 style="cursor: pointer;">
+                                <span class="employee-icon"><i class="fa-solid fa-user-group"></i></span>
+                                <span class="employee-text ms-2">{% trans "All Department & Employee" %}</span>
                             </div>
-                            <div class="col-12 col-md-2 col-lg-2">
-                                <div class="form-group">
-                                    <label class="form-label" for="date_from">{% trans 'From' %}</label>
-                                    <div class="input-affix-wrapper">
-                                        <input type="text" name="date_from" id="date_from"
-                                               class="form-control flat-picker" autocomplete="off">
-                                        <div class="input-suffix">
-                                            <i class="fas fa-calendar-alt"></i>
-                                        </div>
+                        </div>
+                        <div class="col-12 col-md-2 col-lg-2">
+                            <div class="form-group">
+                                <label class="form-label required" for="date_from">{% trans 'From' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="date_from" id="date_from"
+                                           class="form-control flat-picker" autocomplete="off" required>
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-2 col-lg-2">
-                                <div class="form-group">
-                                    <label class="form-label" for="date_to">{% trans 'To' %}</label>
+                        </div>
+                        <div class="col-12 col-md-5 col-lg-5">
+                            <div class="form-group">
+                                <label class="form-label required" for="date_to">{% trans 'To' %}</label>
+                                <div style="display: flex;">
                                     <div class="input-affix-wrapper">
                                         <input type="text" name="date_to" id="date_to"
-                                               class="form-control flat-picker" autocomplete="off">
+                                                   class="form-control flat-picker" autocomplete="off" required>
                                         <div class="input-suffix">
                                             <i class="fas fa-calendar-alt"></i>
                                         </div>
                                     </div>
+                                    <button id="apply_filter"
+                                            type="button" class="btn btn-sm ml-4 btn-primary">
+                                        <span>
+                                            <span class="icon"><span class="feather-icon"><i class="fa-solid fa-filter"></i></span></span>
+                                            <span>{% trans 'Apply Filter' %}</span>
+                                        </span>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-1 col-lg-1 d-flex align-items-center">
-                                <button id="apply_filter" class="btn btn-success text-white">
-                                    <i class="fa-solid fa-filter"></i> {% trans 'Apply Filter' %}
-                                </button>
-                            </div>
-                            <div class="col-12 col-md-2 col-lg-2"></div>
+                        </div>
                     </div>
                 </div>
-                <!-- Table -->
-                <div class="col-12 mt-3" id="space_main_table_employee"></div>
             </div>
         </div>
+        <!-- Table -->
+        <div class="col-12" id="space_main_table_employee"></div>
     </div>
 
     <div class="d-flex align-content-between hidden" id="table-note">

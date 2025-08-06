@@ -864,7 +864,7 @@ class MenusHRM:
     )
     ATTENDANCE = MenuCommon(
         name='Attendance', code='menu_attendance', view_name='',
-        icon='<i class="fa-solid fa-users-viewfinder"></i>',
+        icon='<i class="fas fa-calendar-check"></i>',
         child=[
             MenuCommon(
                 name='Shift assignment', code='menu_shift_assignment_list', view_name='ShiftAssignmentList',

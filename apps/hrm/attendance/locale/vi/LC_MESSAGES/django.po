@@ -73,4 +73,62 @@ msgstr "Thời gian kết thúc vào/ra tối đa"
 msgid "Threshold late / Leave early"
 msgstr "Ngưỡng đi trễ / về sớm cho phép"
 
+#
+msgid "Attendance table"
+msgstr "Bảng chấm công"
 
+#
+msgid "Attendance Table"
+msgstr "Bảng chấm công"
+
+#
+msgid "Attendance Filter"
+msgstr "Bộ Lọc"
+
+#
+msgid "Department / Employee Filter"
+msgstr "Lọc theo phòng ban / nhân viên"
+
+#
+msgid "All Department & Employee"
+msgstr "Tất cả phòng ban / nhân viên"
+
+#
+msgid "Apply Filter"
+msgstr "Áp dụng lọc"
+
+#
+msgid "Attendance Detail"
+msgstr "Dữ liệu chấm công chi tiết"
+
+#
+msgid "P: Present"
+msgstr "P: Đi Làm Bình Thường"
+
+#
+msgid "A: Absent"
+msgstr "A: Vắng mặt"
+
+#
+msgid "L: Leave"
+msgstr "L: Nghỉ phép"
+
+#
+msgid "B: Business Trip"
+msgstr "B: Ngày Công Tác"
+
+#
+msgid "H: Holiday"
+msgstr "H: Ngày lễ"
+
+#
+msgid "W: Weekend"
+msgstr "W: Cuối tuần"
+
+#
+msgid "O: Overtime"
+msgstr "O: Tăng ca"
+
+#
+msgid "OB: Overtime on business trip"
+msgstr "OB: Tăng Ca Trong Thời Gian Công Tác"

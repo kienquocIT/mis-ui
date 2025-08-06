@@ -140,93 +140,16 @@
 				<!-- End Nav -->
 				<div class="nav-end-wrap">
 					<!-- Search -->
-					<form class="dropdown navbar-search me-2">
-						<div class="dropdown-toggle no-caret" data-bs-toggle="dropdown" data-dropdown-animation data-bs-auto-close="outside">
-							<a href="#" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover  d-xl-none"><span class="icon"><span class="feather-icon"><i data-feather="search"></i></span></span></a>
-							<div class="input-group d-xl-flex d-none">
-								<span class="input-affix-wrapper input-search affix-border">
-									<input type="text" class="form-control  bg-transparent"  data-navbar-search-close="false" placeholder="Search..." aria-label="Search">
-									<span class="input-suffix"><span>/</span>
-										<span class="btn-input-clear"><i class="bi bi-x-circle-fill"></i></span>
-										<span class="spinner-border spinner-border-sm input-loader text-primary" role="status">
-											<span class="sr-only">Loading...</span>
-										</span>
-									</span>
-								</span>
-							</div>
-						</div>
-						<div  class="dropdown-menu p-0">
-							<!-- Mobile Search -->
-							<div class="dropdown-item d-xl-none bg-transparent">
-								<div class="input-group mobile-search">
-									<span class="input-affix-wrapper input-search">
-										<input type="text" class="form-control" placeholder="Search..." aria-label="Search">
-										<span class="input-suffix">
-											<span class="btn-input-clear"><i class="bi bi-x-circle-fill"></i></span>
-											<span class="spinner-border spinner-border-sm input-loader text-primary" role="status">
-												<span class="sr-only">Loading...</span>
-											</span>
-										</span>
-									</span>
-								</div>
-							</div>
-							<!--/ Mobile Search -->
-							<div data-simplebar class="dropdown-body p-2">
-								<h6 class="dropdown-header">Recent Search
-								</h6>
-								<div class="dropdown-item bg-transparent">
-									<a href="#" class="badge badge-pill badge-soft-secondary">Grunt</a>
-									<a href="#" class="badge badge-pill badge-soft-secondary">Node JS</a>
-									<a href="#" class="badge badge-pill badge-soft-secondary">SCSS</a>
-								</div>
-								<div class="dropdown-divider"></div>
-								<h6 class="dropdown-header">Help
-								</h6>
-								<a href="javascript:void(0);" class="dropdown-item">
-									<div class="media align-items-center">
-										<div class="media-head me-2">
-											<div class="avatar avatar-icon avatar-xs avatar-soft-light avatar-rounded">
-												<span class="initial-wrap">
-													<span class="svg-icon">
-														<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-corner-down-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-															<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-															<path d="M6 6v6a3 3 0 0 0 3 3h10l-4 -4m0 8l4 -4"></path>
-														 </svg>
-													</span>
-												</span>
-											</div>
-										</div>
-										<div class="media-body">
-											How to setup theme?
-										</div>
-									</div>
-								</a>
-								<a href="javascript:void(0);" class="dropdown-item">
-									<div class="media align-items-center">
-										<div class="media-head me-2">
-											<div class="avatar avatar-icon avatar-xs avatar-soft-light avatar-rounded">
-												<span class="initial-wrap">
-													<span class="svg-icon">
-														<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-corner-down-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-															<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-															<path d="M6 6v6a3 3 0 0 0 3 3h10l-4 -4m0 8l4 -4"></path>
-														 </svg>
-													</span>
-												</span>
-											</div>
-										</div>
-										<div class="media-body">
-											View detail documentation
-										</div>
-									</div>
-								</a>
-								<div class="dropdown-divider"></div>
-								<h6 class="dropdown-header">Users
-								</h6>
-							</div>
-							<div class="dropdown-footer d-xl-flex d-none"><a href="#"><u>Search all</u></a></div>
-						</div>
-					</form>
+                    <ul class="navbar-nav flex-column">
+                        <a
+                                class="nav-link" href="#"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Menu finder' %}"
+                        >
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-toggle="modal" data-bs-target="#modalSearchMenu">
+                                <span class="icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            </button>
+                        </a>
+                    </ul>
 					<!-- /Search -->
 
 					<ul class="navbar-nav flex-row">
@@ -241,139 +164,39 @@
 		</nav>
 		<!-- /Top Navbar -->
 
+        <div
+                class="modal fade"
+                id="modalSearchMenu" tabindex="-1" role="dialog" aria-labelledby="modalSearchMenu"
+                data-bs-keyboard="true" data-bs-backdrop="static"
+                data-url="{% url 'MenuFinder' %}"
+        >
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal-title">
+                            <h5>{% trans 'Menu finder' %}</h5>
+                            <p class="text-muted">{% trans 'Press esc to exit' %}</p>
+                        </div>
+                        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <div class="p-3">
+                            <input type="text" class="form-control" placeholder="{% trans 'Enter your search text' %}"/>
+                        </div>
+                        <div class="w-100 d-flex min-h-200p" style="max-height: 500px;">
+                            <div class="data-favorite p-3" style="flex: 1;overflow-y: auto;border-right: 1px solid #f1f1f1;"></div>
+                            <div class="data-list p-3" style="flex: 1;overflow-y: auto;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 		<!-- Main Content -->
 		<div class="hk-pg-wrapper pb-0">
 			<!-- Page Body -->
 			<div class="hk-pg-body py-0">
 				<div class="contactapp-wrap">
-					<nav class="contactapp-sidebar">
-						<div data-simplebar class="nicescroll-bar">
-							<div class="menu-content-wrap">
-								<button type="button" class="btn btn-primary btn-rounded btn-block mb-4" data-bs-toggle="modal" data-bs-target="#add_new_contact">
-									Add new contact
-								</button>
-								<div class="menu-group">
-									<ul class="nav nav-light navbar-nav flex-column">
-										<li class="nav-item active">
-											<a class="nav-link" href="javascript:void(0);">
-												<span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="inbox"></i></span></span>
-												<span class="nav-link-text">All Contacts</span>
-											</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link" href="javascript:void(0);">
-												<span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="star"></i></span></span>
-												<span class="nav-link-text">Important</span>
-											</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link" href="javascript:void(0);">
-												<span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="archive"></i></span></span>
-												<span class="nav-link-text">Archive</span>
-											</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link" href="javascript:void(0);">
-												<span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="edit"></i></span></span>
-												<span class="nav-link-text">Pending</span>
-											</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link" href="javascript:void(0);">
-												<span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span>
-												<span class="nav-link-text">Deleted</span>
-											</a>
-										</li>
-									</ul>
-								</div>
-								<div class="separator separator-light"></div>
-								<div class="menu-group">
-									<ul class="nav nav-light navbar-nav flex-column">
-										<li class="nav-item">
-											<a class="nav-link" href="javascript:void(0);">
-												<span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="upload"></i></span></span>
-												<span class="nav-link-text">Export</span>
-											</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link" href="javascript:void(0);">
-												<span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="download"></i></span></span>
-												<span class="nav-link-text">Import</span>
-											</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link" href="javascript:void(0);">
-												<span class="nav-icon-wrap"><span class="feather-icon"><i data-feather="printer"></i></span></span>
-												<span class="nav-link-text">Print</span>
-											</a>
-										</li>
-									</ul>
-								</div>
-								<div class="separator separator-light"></div>
-								<div class="d-flex align-items-center justify-content-between mb-2">
-									<div class="title-sm text-primary mb-0">Labels</div>
-									<a href="#" class="btn btn-xs btn-icon btn-rounded btn-light" data-bs-toggle="modal" data-bs-target="#add_new_label"><span class="icon" data-bs-toggle="tooltip" data-placement="top" title="" data-bs-original-title="Add Label"><span class="feather-icon"><i data-feather="plus"></i></span></span></a>
-								</div>
-								<div class="menu-group">
-									<ul class="nav nav-light navbar-nav flex-column">
-										<li class="nav-item">
-											<a class="nav-link link-badge-right" href="#">
-												<span class="nav-link-text">Design</span>
-												<span class="badge badge-pill badge-sm badge-soft-primary ms-auto">136</span>
-											</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link link-badge-right" href="#">
-												<span class="nav-link-text">Development</span>
-												<span class="badge badge-pill badge-sm badge-soft-primary ms-auto">2</span>
-											</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link link-badge-right" href="#">
-												<span class="nav-link-text">Inventory</span>
-												<span class="badge badge-pill badge-sm badge-soft-primary ms-auto">86</span>
-											</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link link-badge-right" href="#">
-												<span class="nav-link-text">Human Resource</span>
-												<span class="badge badge-pill badge-sm badge-soft-primary ms-auto">34</span>
-											</a>
-										</li>
-									</ul>
-								</div>
-								<div class="separator separator-light"></div>
-								<div class="d-flex align-items-center justify-content-between mb-4">
-									<div class="title-sm text-primary mb-0">Tags</div>
-									<a href="#" class="btn btn-xs btn-icon btn-rounded btn-light" data-bs-toggle="modal" data-bs-target="#add_new_tag"><span class="icon" data-bs-toggle="tooltip" data-placement="top" title="" data-bs-original-title="Add Tag"><span class="feather-icon"><i data-feather="plus"></i></span></span></a>
-								</div>
-								<div class="tag-cloud">
-									<a href="#" class="badge badge-outline badge-light">Collaboration</a>
-									<a href="#" class="badge badge-outline badge-light">React Developer</a>
-									<a href="#" class="badge badge-outline badge-light">Angular Developer</a>
-									<a href="#" class="badge badge-outline badge-light">promotion</a>
-									<a href="#" class="badge badge-outline badge-light">Advertisement</a>
-								</div>
-							</div>
-						</div>
-						<!--Sidebar Fixnav-->
-						<div class="contactapp-fixednav">
-							<div class="hk-toolbar">
-								<ul class="nav nav-light">
-									<li class="nav-item nav-link">
-										<a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Settings" href="#"><span class="icon"><span class="feather-icon"><i data-feather="settings"></i></span></span></a>
-									</li>
-									<li class="nav-item nav-link">
-										<a href="#" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Archive"><span class="icon"><span class="feather-icon"><i data-feather="archive"></i></span></span></a>
-									</li>
-									<li class="nav-item nav-link">
-										<a href="#" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Help"><span class="icon"><span class="feather-icon"><i data-feather="book"></i></span></span></a>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<!--/ Sidebar Fixnav-->
-					</nav>
 					<div class="contactapp-content">
 						<div class="contactapp-detail-wrap">
 							<header class="contact-header">
@@ -382,7 +205,7 @@
                                             class="fa-solid fa-bars"
                                     ></i></button>
                                     {% if icon_cls %}
-                                        <div class="d-flex align-items-center justify-content-center ml-4 mr-2 p-1 w-35p h-35p border rounded-2 {{ icon_bg }}">
+                                        <div class="d-flex align-items-center justify-content-center ml-2 mr-2 p-1 w-35p h-35p border rounded-2 {{ icon_bg }}">
                                             <i class="{{ icon_cls }} text-white fs-4"></i>
                                         </div>
                                     {% endif %}
@@ -395,7 +218,7 @@
                                         style="display: flex; align-items: center;"
                                 >
 {#                                    {% include 'extends/direct_btn_group.html' %}#}
-                                    <div class="{% if pk %}hidden{% endif %} mr-4" id="idxRealAction">
+                                    <div class="{% if pk %}hidden{% endif %} mr-2" id="idxRealAction">
                                         {% block pageAction %}{% endblock %}
                                     </div>
                                     <button

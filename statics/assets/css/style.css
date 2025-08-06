@@ -87956,7 +87956,7 @@ Project:	Jampack
   display: -ms-flexbox;
   display: flex;
   overflow: hidden;
-  padding-left: 270px;
+  /*padding-left: 270px;*/
   position: relative;
   height: 100%;
   left: 0;

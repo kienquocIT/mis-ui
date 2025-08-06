@@ -4,29 +4,11 @@
 {% block title %}{% trans 'Revenue plan' %}{% endblock %}
 {% block cssHeader %}
     <style>
-        td, th {
-            min-width: 230px;
-        }
-        .sticky {
-            position: sticky;
-            top: 0;
-        }
-        td input {
-            text-align: right;
-        }
-        td {
+        td input, td, th {
             text-align: right;
         }
         th {
-            text-align: right;
-        }
-        .company-row input[readonly] {
-            border: none;
-            background-color: #ebf5f5;
-        }
-        .group-row input[readonly] {
-            border: none;
-            background-color: white;
+            color: white !important;
         }
     </style>
 {% endblock %}
@@ -146,12 +128,12 @@
                 <span hidden class="spinner-border spinner-border-sm" id="loading-update-group" role="status"></span>
             </div>
         </div>
-        <div class="row mt-5 mb-10">
-            <div class="col-12 main" style="position: relative; overflow: auto; width: 100%; max-height: 70vh">
-                <table class="table nowrap w-100 fixed_header" id="revenue-plan-table"
+        <div class="row mt-5 mb-5">
+            <div class="col-12 main">
+                <table class="table nowrap w-100" id="revenue-plan-table"
                        data-group-url="{% url 'GroupDetailAPI' '0' %}"
                 >
-                    <thead class="sticky bg-primary">
+                    <thead class="bg-primary">
                         <tr>
                             <th class="text-white bg-primary">{% trans 'Employee' %}</th>
                             <th class="text-white bg-primary">{% trans 'Target item' %}</th>

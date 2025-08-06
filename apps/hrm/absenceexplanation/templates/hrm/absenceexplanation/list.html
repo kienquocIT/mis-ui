@@ -21,12 +21,12 @@
     <div class="row">
         <div class="col-12">
             <table class="table nowrap w-100" data-method="get"
-                   data-url="{% url 'IncomingDocumentListAPI' %}"
+                   data-url="{% url 'AbsenceExplanationListAPI' %}"
                    data-url-detail="{% url 'AbsenceExplanationDetail' 0 %}" id="tbl_absence_explanation">
                 <thead>
                 <tr>
                     <th></th>
-                    <th>{% trans 'Title' %}</th>
+                    <th>{% trans 'Description' %}</th>
                     <th>{% trans 'Type' %}</th>
                     <th>{% trans 'Employee' %}</th>
                     <th>{% trans 'Created date' %}</th>
@@ -38,7 +38,9 @@
     </div>
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'assets/hrm/absenceexplanation/js/common.js' %}"></script>
     <script src="{% static 'assets/hrm/absenceexplanation/js/list.js' %}"></script>
 {% endblock %}
+
 
 

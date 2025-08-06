@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block title %}
-    {% trans 'Absence explanation' %}
+    {% trans 'Absence explanation update' %}
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
@@ -9,13 +9,11 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
-    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='frm_create_absence_explanation' %}
+    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='frm_absence_explanation_detail' %}
 {% endblock %}
-
 {% block pageContent %}
-    <form id="frm_create_absence_explanation"
-          data-method="POST"
-          data-url="{% url 'AbsenceExplanationListAPI' %}"
+    <form id="frm_absence_explanation_detail" data-method="PUT"
+          data-url="{% url 'AbsenceExplanationDetailAPI' data.pk %}"
           data-url-redirect="{% url 'AbsenceExplanationList' %}">
         {% csrf_token %}
         {% include 'hrm/absenceexplanation/common.html' %}
@@ -33,5 +31,5 @@
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/hrm/absenceexplanation/js/common.js' %}"></script>
-    <script src="{% static 'assets/hrm/absenceexplanation/js/create.js' %}"></script>
+    <script src="{% static 'assets/hrm/absenceexplanation/js/edit.js' %}"></script>
 {% endblock %}

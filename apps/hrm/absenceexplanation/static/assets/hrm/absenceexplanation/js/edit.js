@@ -1,11 +1,8 @@
 $(document).ready(function () {
-    WFRTControl.setWFInitialData('absenceexplanation');
-
-    UsualLoadPageFunction.LoadDate({element: pageElements.$createDateEle, auto_load: true, empty: false})
     UsualLoadPageFunction.LoadDate({element: pageElements.$dateEle, empty: true})
-    AbsenceExplanationPageFunction.loadEmployee();
 
-    const $form = $('#frm_create_absence_explanation');
+    AbsenceExplanationPageFunction.loadDetailAbsenceExplanation('update');
+    const $form = $('#frm_absence_explanation_detail');
     $form.validate({
         submitHandler: function (form) {
             const form_data = AbsenceExplanationLoadDataHandle.combineData(form);
@@ -13,5 +10,5 @@ $(document).ready(function () {
                 WFRTControl.callWFSubmitForm(form_data);
             }
         }
-    })
-})
+    });
+});

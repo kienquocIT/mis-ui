@@ -67,3 +67,49 @@ class AbsenceExplanationDetail(View):
     )
     def get(self, request, pk, *args, **kwargs):
         return {'pk': pk}, status.HTTP_200_OK
+
+
+class AbsenceExplanationDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(
+            user=request.user,
+            url=ApiURL.ABSENCE_EXPLANATION_DETAIL.fill_key(pk=pk)
+        ).get()
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(
+            user=request.user,
+            url=ApiURL.ABSENCE_EXPLANATION_DETAIL.fill_key(pk=pk)
+        ).put(request.data)
+        if resp.state:
+            resp.result['message'] = HRMMsg.ABSENCE_EXPLANATION_DETAIL
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class AbsenceExplanationEdit(View):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        template='hrm/absenceexplanation/edit.html',
+        menu_active='menu_absence_explanation_list',
+        breadcrumb='ABSENCE_EXPLANATION_UPDATE_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        ctx = {
+            'pk': pk,
+            'data': {'doc_id': pk},
+            'form_id': 'frm_absence_explanation_detail'
+        }
+        return ctx, status.HTTP_200_OK

@@ -272,7 +272,7 @@ PLAN_APP_OF_HRM = {
     },
     'absenceexplanation': {
         'hrmabsenceexplanation': ReverseUrlCommon(
-            list_view_name='IncomingDocumentList', detail_view_name='AbsenceExplanationDetail'
+            list_view_name='AbsenceExplanationList', detail_view_name='AbsenceExplanationDetail'
         ).data,
     },
 }

@@ -26,23 +26,29 @@ $('document').ready(function () {
                         }
                     },
                     {
-                        className: "ellipsis-cell-lg w-10",
+                        className: "ellipsis-cell-lg w-35",
                         render: (data, type, row) => {
                             const link = $tb.attr('data-url-detail').replace('0', row?.['id']);
-                            const code = row?.['code'] || '--';
-                            return `<a href="${link}" class="link-primary underline_hover" title="${code}">${code}</a>`;
+                            const description = row?.['description'] || '--';
+                            return `<a href="${link}" class="link-primary underline_hover"
+                                    title="${description}">${description}</a>`;
                         }
                     },
                     {
                         className: "w-10",
-                        render: () => {
-                            return ""
+                        render: (data, type, row) => {
+                            let absence_type = row?.['type'] ?? '';
+                            return pageElements.$absenceTypeDict?.[absence_type] || '';
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-30', render: (data, type, row) => {
-                            const link = $tb.attr('data-url-detail').replace('0', row?.['id']);
-                            return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
+                        className: 'ellipsis-cell-lg w-20', render: (data, type, row) => {
+                            let employeeInfo = row?.['employee'] || {};
+                            if (employeeInfo) {
+                                return employeeInfo?.['full_name'] || '';
+                            } else {
+                                return ''
+                            }
                         }
                     },
                     {
@@ -52,7 +58,7 @@ $('document').ready(function () {
                         }
                     },
                     {
-                        className: "w-30",
+                        className: "w-15",
                         render: (data, type, row) => {
                             return WFRTControl.displayRuntimeStatus(row?.['system_status']);
                         }

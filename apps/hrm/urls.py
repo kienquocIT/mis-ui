@@ -5,4 +5,6 @@ urlpatterns = [
     path('employee-data/', include('apps.hrm.employee.urls')),
     # attendance HRM page
     path('attendance/', include('apps.hrm.attendance.urls')),
+    # absenceexplanation page
+    path('absenceexplanation/', include('apps.hrm.absenceexplanation.urls')),
 ]

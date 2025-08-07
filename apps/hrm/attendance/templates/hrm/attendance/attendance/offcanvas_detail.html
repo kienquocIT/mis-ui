@@ -1,27 +1,71 @@
 {% load i18n %}
 
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas_attendance_detail" data-method="GET"  data-key="">
-    <div class="offcanvas-header border-bottom">
-        <h5 class="offcanvas-title fw-bold">{% trans 'Attendance Detail' %}</h5>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas_attendance_detail" data-method="GET"  data-key="" style="width: 450px;">
+    <div class="offcanvas-header border-bottom bg-light">
+        <h5 class="offcanvas-title fw-bold">
+            <i class="bi bi-calendar-check me-2"></i>{% trans 'Attendance Detail' %}
+        </h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
 
     <div class="offcanvas-body d-flex flex-column">
-        <div class="row mt-3" id="emp_name_detail"></div>
-        <div class="row mt-2" id="date_detail"></div>
-        <div class="row mt-2" id="shift_detail"></div>
-        <div class="row mt-2" id="checkin_detail"></div>
-        <div class="row mt-2" id="checkout_detail"></div>
-        <div class="row mt-2" id="status_detail"></div>
-        <div class="row mt-2" id="is_late_detail"></div>
-        <div class="row mt-2" id="is_early_detail"></div>
-        <div class="row mt-2" id="regular_ovt_detail"></div>
-        <div class="row mt-2" id="weekend_ovt_detail"></div>
-        <div class="row mt-2" id="holiday_ovt_detail"></div>
+        <!-- Employee Information Section -->
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3 fs-6">
+                    <i class="bi bi-person-circle me-2"></i>{% trans 'Employee Information' %}
+                </h6>
+                <div class="row align-items-center py-2" id="emp_name_detail"></div>
+                <hr class="my-2">
+                <div class="row align-items-center py-2" id="date_detail"></div>
+                <hr class="my-2">
+                <div class="row align-items-center py-2" id="shift_detail"></div>
+            </div>
+        </div>
 
-        <div class="mt-auto pt-4 text-end">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">
-                {% trans 'Close' %}
+        <!-- Attendance Time Section -->
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3 fs-6">
+                    <i class="bi bi-clock-history me-2"></i>{% trans 'Attendance Time' %}
+                </h6>
+                <div class="row align-items-center py-2" id="checkin_detail"></div>
+                <hr class="my-2">
+                <div class="row align-items-center py-2" id="checkout_detail"></div>
+            </div>
+        </div>
+
+        <!-- Status Section -->
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3 fs-6">
+                    <i class="bi bi-info-circle me-2"></i>{% trans 'Status Information' %}
+                </h6>
+                <div class="row align-items-center py-2" id="status_detail"></div>
+                <hr class="my-2">
+                <div class="row align-items-center py-2" id="is_late_detail"></div>
+                <hr class="my-2">
+                <div class="row align-items-center py-2" id="is_early_detail"></div>
+            </div>
+        </div>
+
+        <!-- Overtime Section -->
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3 fs-6">
+                    <i class="bi bi-hourglass-split me-2"></i>{% trans 'Overtime Hours' %}
+                </h6>
+                <div class="row align-items-center py-2" id="regular_ovt_detail"></div>
+                <hr class="my-2">
+                <div class="row align-items-center py-2" id="weekend_ovt_detail"></div>
+                <hr class="my-2">
+                <div class="row align-items-center py-2" id="holiday_ovt_detail"></div>
+            </div>
+        </div>
+
+        <div class="mt-auto pt-3 text-end">
+            <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="offcanvas">
+                <i class="bi bi-x-lg me-2"></i>{% trans 'Close' %}
             </button>
         </div>
     </div>

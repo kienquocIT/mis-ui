@@ -270,6 +270,11 @@ PLAN_APP_OF_HRM = {
             list_view_name='HRMEmployeeList', detail_view_name='HRMRuntimeSignatureDetail'
         ).data,
     },
+    'absenceexplanation': {
+        'hrmabsenceexplanation': ReverseUrlCommon(
+            list_view_name='AbsenceExplanationList', detail_view_name='AbsenceExplanationDetail'
+        ).data,
+    },
 }
 
 PLAN_APP_OF_KMS = {

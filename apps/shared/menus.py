@@ -886,6 +886,12 @@ class MenusHRM:
                 view_name='DeviceIntegrateEmployeeList',
                 icon='<i class="fas fa-repeat"></i>',
             ),
+            MenuCommon(
+                name='Absence explanation',
+                code='menu_absence_explanation_list',
+                view_name='AbsenceExplanationList',
+                icon='<i class="fas fa-comment-alt absence-explanation-icon"></i>',
+            ),
         ]
     )
 

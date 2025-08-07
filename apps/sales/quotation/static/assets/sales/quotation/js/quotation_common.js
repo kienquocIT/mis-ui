@@ -2678,6 +2678,9 @@ class QuotationLoadDataHandle {
         for (let ele of table[0].querySelectorAll('.table-row-item')) {
             ele.setAttribute('readonly', 'true');
         }
+        for (let ele of table[0].querySelectorAll('.table-row-description')) {
+            ele.setAttribute('readonly', 'true');
+        }
         for (let ele of table[0].querySelectorAll('.table-row-labor-item')) {
             ele.setAttribute('readonly', 'true');
         }
@@ -2938,10 +2941,15 @@ class QuotationDataTableHandle {
                         let des = "--";
                         if (itemType === 0) {  // PRODUCT
                             des = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '';
+                            if (row?.['product_description']) {
+                                if (row?.['product_description'] !== "") {
+                                    des = row?.['product_description'] ? row?.['product_description'] : '';
+                                }
+                            }
                         } else if (itemType === 1) {  // PROMOTION
                             des = row?.['promotion_data']?.['product_data']?.['description'] ? row?.['promotion_data']?.['product_data']?.['description'] : '';
                         }
-                        return `<textarea class="form-control table-row-description zone-readonly" rows="2" data-zone="${dataZone}" readonly>${des}</textarea>`;
+                        return `<textarea class="form-control table-row-description" rows="2" data-zone="${dataZone}">${des}</textarea>`;
                     }
                 },
                 {
@@ -3302,12 +3310,16 @@ class QuotationDataTableHandle {
                         if (row?.['shipping_id']) {
                             disabled = 'disabled'  // shipping
                         }
+                        let costPrice = row?.['product_cost_price'] ? row?.['product_cost_price'] : 0;
+                        if (costPrice === 0) {
+                            costPrice = row?.['product_data']?.['standard_price'] ? row?.['product_data']?.['standard_price'] : 0;
+                        }
                         return `<div class="d-flex">
                                     <div class="input-group-price">
                                         <input 
                                             type="text" 
                                             class="form-control mask-money table-row-price disabled-custom-show valid-num" 
-                                            value="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"
+                                            value="${costPrice}"
                                             data-return-type="number"
                                             data-zone="${dataZone}"
                                         >
@@ -4507,7 +4519,7 @@ class QuotationDataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
-            scrollY: "60vh",
+            scrollY: "50vh",
             columns: [
                 {
                     targets: 0,
@@ -4620,7 +4632,7 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            scrollY: "60vh",
+            scrollY: "50vh",
             columns: [
                 {
                     targets: 0,
@@ -4709,7 +4721,7 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            scrollY: "60vh",
+            scrollY: "50vh",
             columns: [
                 {
                     targets: 0,
@@ -4780,7 +4792,7 @@ class QuotationDataTableHandle {
             info: false,
             autoWidth: true,
             scrollX: true,
-            scrollY: "60vh",
+            scrollY: "50vh",
             columns: [
                 {
                     targets: 0,
@@ -7150,7 +7162,7 @@ class QuotationSubmitHandle {
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
-                    rowData['product_description'] = eleDescription.innerHTML;
+                    rowData['product_description'] = $(eleDescription).val();
                 }
                 let elePrice = row.querySelector('.table-row-price');
                 if (elePrice) {
@@ -7225,7 +7237,7 @@ class QuotationSubmitHandle {
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
-                    rowData['product_description'] = eleDescription.value;
+                    rowData['product_description'] = $(eleDescription).val();
                 }
                 let eleQuantity = row.querySelector('.table-row-quantity');
                 if (eleQuantity) {
@@ -7277,7 +7289,7 @@ class QuotationSubmitHandle {
                 }
                 let eleDescription = row.querySelector('.table-row-description');
                 if (eleDescription) {
-                    rowData['product_description'] = eleDescription.value;
+                    rowData['product_description'] = $(eleDescription).val();
                 }
                 let eleQuantity = row.querySelector('.table-row-quantity');
                 if (eleQuantity) {

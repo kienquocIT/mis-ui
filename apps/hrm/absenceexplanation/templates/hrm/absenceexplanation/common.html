@@ -1,0 +1,53 @@
+{% load i18n %}
+
+<div class="container mt-4">
+    <div class="card shadow-sm p-4">
+        <h4 class="mb-3"><i class="fa-solid fa-user-clock"></i> {% trans 'Absence Explanation' %}</h4>
+
+        <div class="mb-3">
+            <label for="description_remark" class="form-label required">{% trans 'Description' %}</label>
+            <textarea name="description" class="form-control" id="description_remark" rows="2" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="selected_employee" class="form-label required">{% trans 'Employee' %}</label>
+            <select class="form-select select2" id="selected_employee"
+                    data-url="{% url 'EmployeeListAllAPI' %}" name="employee" required>
+            </select>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="date" class="form-label required">{% trans 'Date' %}</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></span>
+                    <input type="text" class="form-control date-picker" id="date" name="date" required>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <label for="selected_type" class="form-label required">{% trans 'Type' %}</label>
+                <select name="type" class="form-select" id="selected_type" required>
+                    <option value=""></option>
+                    <option value="0">{% trans "Check in" %}</option>
+                    <option value="1">{% trans "Check out" %}</option>
+                    <option value="2">{% trans "All day" %}</option>
+                </select>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="note" class="form-label">{% trans 'Note' %}</label>
+            <textarea name="reason" class="form-control" id="note" rows="5"></textarea>
+        </div>
+
+        <div class="d-flex gap-3 mb-3">
+            <div class="flex-fill">
+                <label for="created_date" class="form-label">{% trans 'Date created' %}</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></span>
+                    <input type="text" class="form-control date-picker" id="created_date" name="created_date" disabled>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

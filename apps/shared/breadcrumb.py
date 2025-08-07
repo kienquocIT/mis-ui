@@ -529,8 +529,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Shift assignment
     SHIFT_ASSIGNMENT_LIST_PAGE = BreadcrumbChildren(_('Shift assignment'), 'ShiftAssignmentList')
-    
-	# Attendance
+
+    # Attendance
     HRM_ATTENDANCE_LIST_PAGE = BreadcrumbChildren(_('HRM Attendance info'), 'HRMAttendanceList')
 
     # Device integrate
@@ -538,6 +538,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Attendance device
     ATTENDANCE_DEVICE_LIST_PAGE = BreadcrumbChildren(_('Attendance device config'), 'AttendanceDeviceList')
+
+    # Absence explanation
+    ABSENCE_EXPLANATION_LIST = BreadcrumbChildren(_('Absence Explanation'), 'AbsenceExplanationList')
 
     # Service order
     SERVICE_ORDER_PAGE = BreadcrumbChildren(_('Service order'), 'ServiceOrderList')
@@ -1447,8 +1450,8 @@ class BreadcrumbView:
     SHIFT_ASSIGNMENT_LIST_PAGE = [
         BreadcrumbItem.SHIFT_ASSIGNMENT_LIST_PAGE
     ]
-    
-	# Attendance
+
+    # Attendance
     HRM_ATTENDANCE_LIST_PAGE = [
         BreadcrumbItem.HOME_PAGE,
         BreadcrumbItem.HRM_ATTENDANCE_LIST_PAGE
@@ -1473,3 +1476,11 @@ class BreadcrumbView:
     SERVICE_ORDER_CREATE_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_CREATE]
     SERVICE_ORDER_DETAIL_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_DETAIL]
     SERVICE_ORDER_UPDATE_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_UPDATE]
+
+    # Absence explanation
+    ABSENCE_EXPLANATION_LIST_PAGE = [
+        BreadcrumbItem.ABSENCE_EXPLANATION_LIST
+    ]
+    ABSENCE_EXPLANATION_CREATE_PAGE = [BreadcrumbItem.ABSENCE_EXPLANATION_LIST] + [BreadcrumbItem.BASTION_CREATE]
+    ABSENCE_EXPLANATION_DETAIL_PAGE = [BreadcrumbItem.ABSENCE_EXPLANATION_LIST] + [BreadcrumbItem.BASTION_DETAIL]
+    ABSENCE_EXPLANATION_UPDATE_PAGE = [BreadcrumbItem.ABSENCE_EXPLANATION_LIST] + [BreadcrumbItem.BASTION_UPDATE]

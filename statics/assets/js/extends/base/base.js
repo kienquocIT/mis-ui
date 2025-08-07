@@ -199,6 +199,138 @@ $(document).ready(function () {
         });
     });
 
+    new InteractiveMenu();
+});
 
+class InteractiveMenu {
+    constructor() {
+        this.menu = document.getElementById('top-header-menu');
+        this.hoverBg = document.getElementById('hoverBg');
+        this.activeBg = document.getElementById('activeBg');
+        this.menuItems = document.querySelectorAll('.navbar-nav > .nav-item');
+        this.activeItem = document.querySelector('.navbar-nav > .nav-item.active');
 
-})
+        this.init();
+    }
+
+    init() {
+        this.setActiveBackground();
+        this.bindEvents();
+    }
+
+    bindEvents() {
+        // Hover events
+        this.menuItems.forEach(item => {
+            item.addEventListener('mouseenter', (e) => this.handleHover(e));
+            item.addEventListener('mouseleave', () => this.handleHoverOut());
+            item.addEventListener('click', (e) => this.handleClick(e));
+        });
+
+        // Menu leave event
+        this.menu.addEventListener('mouseleave', () => {
+            this.hoverBg.classList.remove('show');
+        });
+    }
+
+    handleHover(e) {
+        // Lấy đúng element li.nav-item
+        let item = e.target;
+
+        // Nếu target là span hoặc a, tìm parent li.nav-item
+        if (item.tagName !== 'LI') item = item.closest('.nav-item')
+
+        const itemRect = item.getBoundingClientRect();
+        const menuRect = this.menu.getBoundingClientRect();
+        
+        const left = itemRect.left - menuRect.left;
+        const width = itemRect.width;
+
+        // Di chuyển background hover
+        this.hoverBg.style.left = left + 7 + 'px';
+        this.hoverBg.style.width = width + 'px';
+        this.hoverBg.classList.add('show');
+    }
+
+    handleHoverOut() {
+        // Không cần làm gì vì mouseleave của menu sẽ xử lý
+        return true
+    }
+
+    handleClick(e) {
+        // Lấy đúng element li.nav-item
+        let clickedItem = e.target;
+
+        // Nếu target là span hoặc a, tìm parent li.nav-item
+        if (clickedItem.tagName !== 'LI') {
+            clickedItem = clickedItem.closest('.nav-item');
+        }
+        
+        // Nếu không tìm thấy nav-item, không làm gì
+        if (!clickedItem) return;
+
+        // Kiểm tra xem có phải là menu cha (cấp 1) không
+        // Menu cha là con trực tiếp của .navbar-nav
+        if (!clickedItem.parentElement.classList.contains('navbar-nav')) {
+            return; // Không xử lý nếu là menu con
+        }
+
+        // Tìm thẻ a trong nav-item
+        const link = clickedItem.querySelector('a.nav-link');
+        
+        // Chỉ preventDefault nếu href là javascript:void(0) hoặc bắt đầu bằng javascript:
+        if (link && link.href && link.href.startsWith('javascript:')) {
+            e.preventDefault();
+        }
+
+        // Tạo hiệu ứng ripple
+        this.createRipple(e);
+
+        // Update active item - chỉ cho menu cấp 1
+        $('.navbar-nav > .nav-item').removeClass('active');
+        clickedItem.classList.add('active');
+        this.activeItem = clickedItem;
+
+        // Update active background
+        setTimeout(() => {
+            this.setActiveBackground();
+        }, 100);
+    }
+
+    setActiveBackground() {
+        if (this.activeItem) {
+            const itemRect = this.activeItem.getBoundingClientRect();
+            const menuRect = this.menu.getBoundingClientRect();
+
+            // Tính toán vị trí
+            
+            const left = itemRect.left - menuRect.left;
+            const width = itemRect.width;
+
+            this.activeBg.style.left = left + 7 + 'px';
+            this.activeBg.style.width = width + 'px';
+            this.activeBg.classList.add('show');
+        }
+    }
+
+    createRipple(e) {
+        const item = e.target;
+        const rect = item.getBoundingClientRect();
+        const ripple = document.createElement('span');
+
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+
+        ripple.classList.add('ripple');
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+
+        item.appendChild(ripple);
+
+        // Xóa ripple sau khi animation kết thúc
+        setTimeout(() => {
+            ripple.remove();
+        }, 600);
+    }
+}

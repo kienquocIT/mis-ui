@@ -2,7 +2,8 @@ class ShiftAssignHandle {
     static $form = $('#frm_shift_assignment');
     static $wrapperEle = $('#calendarapp-wrapper');
     static $calendarEle = $('#calendar');
-    static $drawerBodyShift = $('#drawer_body_shift');
+    static $canvas = $('#shiftCanvas');
+    static $canvasBodyShift = $('#canvas_body_shift');
     static $allCompanyEle = $('#checkbox_all_company');
     static $tableEmployee = $('#table_employee');
     static $tableGroup = $('#table_group');
@@ -137,23 +138,22 @@ class ShiftAssignHandle {
 
         // click show detail of calendar
         $(document).on("click", ".calendarapp-wrap .fc-daygrid-event", function () {
-            $('.hk-drawer.calendar-drawer').css({
-                "border": "none",
-                "box-shadow": "0 8px 10px rgba(0, 0, 0, 0.1)"
-            }).addClass('drawer-toggle');
+            ShiftAssignHandle.$canvas.offcanvas('show');
             if ($(this).attr('data-shift')) {
-                let shiftNameEle = ShiftAssignHandle.$drawerBodyShift[0].querySelector('.shift-name');
-                let workingHoursEle = ShiftAssignHandle.$drawerBodyShift[0].querySelector('.shift-working-hours');
-                let breakTimeEle = ShiftAssignHandle.$drawerBodyShift[0].querySelector('.shift-break-time');
+                let shiftNameEle = ShiftAssignHandle.$canvasBodyShift[0].querySelector('.shift-name');
+                let workingHoursEle = ShiftAssignHandle.$canvasBodyShift[0].querySelector('.shift-working-hours');
+                let breakTimeEle = ShiftAssignHandle.$canvasBodyShift[0].querySelector('.shift-break-time');
                 if (shiftNameEle && workingHoursEle && breakTimeEle) {
+
+                    const formatTime = (timeStr) => timeStr ? timeStr.slice(0, 5) : '';
                     let shiftData = JSON.parse($(this).attr('data-shift'));
                     $(shiftNameEle).empty();
                     $(workingHoursEle).empty();
                     $(breakTimeEle).empty();
 
                     $(shiftNameEle).html(`${shiftData?.['title']}`);
-                    $(workingHoursEle).html(`<span>${shiftData?.['checkin_time']}</span> - <span>${shiftData?.['checkout_time']}</span>`);
-                    $(breakTimeEle).html(`<span>${shiftData?.['break_in_time']}</span> - <span>${shiftData?.['break_out_time']}</span>`);
+                    $(workingHoursEle).html(`<span>${formatTime(shiftData?.['checkin_time'])}</span> - <span>${formatTime(shiftData?.['checkout_time'])}</span>`);
+                    $(breakTimeEle).html(`<span>${formatTime(shiftData?.['break_in_time'])}</span> - <span>${formatTime(shiftData?.['break_out_time'])}</span>`);
 
                 }
             }

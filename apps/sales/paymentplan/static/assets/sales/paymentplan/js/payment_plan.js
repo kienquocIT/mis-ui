@@ -988,6 +988,9 @@ $(function () {
                         if (data.hasOwnProperty('periods_list') && Array.isArray(data.periods_list)) {
                             $eleFiscalYear.val(JSON.stringify(data.periods_list));
                             loadBoxMonth();
+                            let currentDate = new Date();
+                            let currentMonth = currentDate.getMonth() + 1;
+                            $boxMonth.val(currentMonth).trigger('change');
                         }
                     }
                 }

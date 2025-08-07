@@ -845,6 +845,7 @@ class UsualLoadPageFunction {
                     if (shouldExclude(el)) return;
                     if (el.matches('select')) el.disabled = true;
                     if (el.matches('input')) el.readOnly = true;
+                    if (el.matches('input')) el.disabled = true;
                     if (el.matches('textarea')) el.readOnly = true;
                     if (el.matches('button')) el.disabled = true;
                 });
@@ -855,6 +856,7 @@ class UsualLoadPageFunction {
                             if (node.nodeType === 1 && !shouldExclude(node)) {
                                 if (node.matches('select')) node.disabled = true;
                                 if (node.matches('input')) node.readOnly = true;
+                                if (node.matches('input')) node.disabled = true;
                                 if (node.matches('textarea')) node.readOnly = true;
                                 if (node.matches('button')) node.disabled = true;
                             }

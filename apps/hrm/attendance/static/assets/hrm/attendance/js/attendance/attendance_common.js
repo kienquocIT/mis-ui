@@ -31,6 +31,8 @@ class AttendanceElements {
         this.$fiscalYear = $('#data-fiscal-year');
         this.dataMonth = JSON.parse($('#filter_month').text());
 
+        this.$btnRefresh = $('#sync_attendance');
+
         // sub-element
         this.$statusColors = {
             0: 'bg-success-light-5',
@@ -521,6 +523,34 @@ class AttendancePageFunction {
         });
     };
 
+    static callRefresh() {
+        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
+        let dataMonth = SelectDDControl.get_data_from_idx(pageElements.$boxMonth, pageElements.$boxMonth.val());
+        $.fn.callAjax2(
+            {
+                'url': pageElements.$urlAttendanceEle.attr('data-attendance'),
+                'method': "POST",
+                'data': {'year': dataMonth?.['year'], 'month': dataMonth?.['month']},
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                    $.fn.notifyB({description: data.message}, 'success');
+                    setTimeout(() => {
+                        AttendancePageFunction.fetchAttendanceData();
+                        WindowControl.hideLoading();
+                    }, 2000);
+                }
+            }, (err) => {
+                setTimeout(() => {
+                    WindowControl.hideLoading();
+                }, 1000)
+                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+            }
+        )
+    }
+
     /**
      * Fetches and processes employee attendance data based on selected filters.
      *
@@ -804,6 +834,11 @@ class AttendanceEventHandler {
                 pageElements.$endDate.val(dataMonth?.['to']);
             }
         });
+
+        pageElements.$btnRefresh.on('click', function () {
+            AttendancePageFunction.callRefresh();
+        });
+
     }
 }
 

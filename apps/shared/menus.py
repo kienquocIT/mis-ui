@@ -402,6 +402,10 @@ class MenusCRM:
         name='Work order', code='menu_work_order_list', view_name='WorkOrderList',
         icon='<i class="fas fa-pencil-ruler"></i>',
     )
+    SERVICE_ORDER = MenuCommon(
+        name='Service order', code='menu_service_order_list', view_name='ServiceOrderList',
+        icon='<i class="fa-solid fa-calendar-check"></i>',
+    )
     AR_INVOICE = MenuCommon(
         name='AR invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
         icon='<i class="fas bi bi-receipt"></i>',
@@ -1029,6 +1033,7 @@ class SpaceItem:
                 MenusCRM.AR_INVOICE,
                 MenusCRM.LEASE_ASSET_LIST,
                 MenusCRM.RECURRENCE,
+                MenusCRM.SERVICE_ORDER,
                 MenusCRM.WORK_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.CONTRACT_APPROVAL,

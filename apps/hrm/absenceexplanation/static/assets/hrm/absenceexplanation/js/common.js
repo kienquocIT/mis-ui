@@ -24,7 +24,7 @@ class AbsenceExplanationLoadDataHandle {
         frm.dataForm['description'] = pageElements.$descriptionEle.val();
         frm.dataForm['employee'] = pageElements.$employeeEle.val();
         frm.dataForm['date'] = parsedDate.isValid() ? parsedDate.format('YYYY-MM-DD') : null;
-        frm.dataForm['type'] = parseInt(pageElements.$typeEle.val());
+        frm.dataForm['absence_type'] = parseInt(pageElements.$typeEle.val());
         frm.dataForm['reason'] = pageElements.$noteEle.val() || '';
         return frm;
     }
@@ -65,7 +65,7 @@ class AbsenceExplanationPageFunction {
                 // fill data to element
                 pageElements.$descriptionEle.val(data?.description);
                 pageElements.$dateEle.val(date);
-                pageElements.$typeEle.val(data?.type);
+                pageElements.$typeEle.val(data?.absence_type);
                 pageElements.$noteEle.val(data?.reason);
                 pageElements.$createDateEle.val(created_date);
                 AbsenceExplanationPageFunction.loadEmployee(data?.employee || {});

@@ -37,7 +37,7 @@ $('document').ready(function () {
                     {
                         className: "w-10",
                         render: (data, type, row) => {
-                            let absence_type = row?.['type'] ?? '';
+                            let absence_type = row?.['absence_type'] ?? '';
                             return pageElements.$absenceTypeDict?.[absence_type] || '';
                         }
                     },

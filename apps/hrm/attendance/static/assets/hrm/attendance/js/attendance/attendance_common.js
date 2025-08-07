@@ -26,6 +26,11 @@ class AttendanceElements {
         this.$isWeekendDetailEle = $('#weekend_ovt_detail');
         this.$isHolidayDetailEle = $('#holiday_ovt_detail');
 
+        // date - month field
+        this.$boxMonth = $('#box-month');
+        this.$fiscalYear = $('#data-fiscal-year');
+        this.dataMonth = JSON.parse($('#filter_month').text());
+
         // sub-element
         this.$statusColors = {
             0: 'bg-success-light-5',
@@ -389,25 +394,30 @@ class AttendancePageFunction {
     }
 
     static formatToStandardData(raw_data) {
-        const grouped = [];
+        const grouped = {};
 
         for (let item of raw_data) {
-            const employeeInfo = item?.employee || {};
-            if (!grouped[employeeInfo]) {
-                grouped[employeeInfo] = {
-                    employee_id: employeeInfo?.id || '',
-                    code: employeeInfo?.code || '',
-                    full_name: employeeInfo?.full_name || '',
+            const emp = item?.employee || {};
+            const employeeId = emp.id;
+
+            if (!employeeId) continue;
+
+            if (!grouped[employeeId]) {
+                grouped[employeeId] = {
+                    employee_id: employeeId,
+                    code: emp.code || '',
+                    full_name: emp.full_name || '',
                     attendance: []
                 };
             }
 
-            // Clone the item but exclude employee_id, code, full_name
-            const {employee_id, code, full_name, ...attendanceItem} = item;
-            grouped[employeeInfo].attendance.push(attendanceItem);
+            const {employee, ...attendanceItem} = item;
+            grouped[employeeId].attendance.push(attendanceItem);
         }
+
         return Object.values(grouped);
     }
+
 
     static fillAttendancePerDay(standardData, dayCount, dayStart) {
         const result = [];
@@ -423,17 +433,11 @@ class AttendancePageFunction {
         return result;
     }
 
-    // months of fiscal year
-
-    static $boxMonth = $('#box-month');
-    static $fiscalYear = $('#data-fiscal-year');
-    static dataMonth = JSON.parse($('#filter_month').text());
-
     static getAllMonthsFiscalYear() {
         let months = [];
-        if (AttendancePageFunction.$fiscalYear.val()) {
+        if (pageElements.$fiscalYear.val()) {
             let year = new Date().getFullYear();
-            let dataFiscalYear = JSON.parse(AttendancePageFunction.$fiscalYear.val());
+            let dataFiscalYear = JSON.parse(pageElements.$fiscalYear.val());
             if (dataFiscalYear.length > 0) {
                 for (let dataFY of dataFiscalYear) {
                     if (dataFY?.['fiscal_year'] === year) {
@@ -478,11 +482,11 @@ class AttendancePageFunction {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('periods_list') && Array.isArray(data.periods_list)) {
-                        AttendancePageFunction.$fiscalYear.val(JSON.stringify(data.periods_list));
+                        pageElements.$fiscalYear.val(JSON.stringify(data.periods_list));
                         AttendancePageFunction.loadBoxMonth();
                         let currentDate = new Date();
                         let currentMonth = currentDate.getMonth() + 1;
-                        AttendancePageFunction.$boxMonth.val(currentMonth).trigger('change');
+                        pageElements.$boxMonth.val(currentMonth).trigger('change');
                     }
                 }
             }
@@ -495,7 +499,7 @@ class AttendancePageFunction {
         for (let monthYear of dataMonths) {
             data.push({
                 'id': monthYear?.['month'],
-                'title': AttendancePageFunction.dataMonth[monthYear?.['month'] - 1][1],
+                'title': pageElements.dataMonth[monthYear?.['month'] - 1][1],
                 'month': monthYear?.['month'],
                 'year': monthYear?.['year'],
             })
@@ -506,8 +510,8 @@ class AttendancePageFunction {
             'month': 0,
             'year': 0,
         })
-        AttendancePageFunction.$boxMonth.empty();
-        AttendancePageFunction.$boxMonth.initSelect2({
+        pageElements.$boxMonth.empty();
+        pageElements.$boxMonth.initSelect2({
             data: data,
             'allowClear': true,
             templateResult: function (state) {
@@ -661,7 +665,12 @@ class AttendanceEventHandler {
             let count = checkedEmployeeData.length;
             let displayText = count === 0
                 ? gettext('All Department & Employee')
-                : `${count} employee${count > 1 ? 's' : ''} selected`;
+                : ngettext(
+                    '%(count)s employee selected',
+                    '%(count)s employees selected',
+                    count
+                ).replace('%(count)s', count);
+
 
             pageElements.$select_employee.find('.employee-text').text(displayText);
             $('#filterModal').modal('hide');
@@ -687,57 +696,105 @@ class AttendanceEventHandler {
             let fullname = $(this).attr('data-fullname') || '';
             let status = attendanceData?.attendance_status !== undefined ? attendanceData?.attendance_status : '';
             let statusStr = pageElements.$parseStatusInfo?.[status] || '';
+            let attendanceDate = DateTimeControl.formatDateType("YYYY-MM-DD", "DD/MM/YYYY", attendanceData?.date || '');
 
+            // Format boolean values with badges
+            const formatBoolean = (value) => {
+                if (value === true || value === 'true') {
+                    return `<span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>${$.fn.gettext('Yes')}</span>`;
+                }
+                return `<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>${$.fn.gettext('No')}</span>`;
+            };
+
+            // Format status with appropriate badge and icon
+            const formatStatus = (statusStr) => {
+                if (!statusStr) return '<span class="text-muted">N/A</span>';
+                let badgeClass = 'bg-secondary';
+                let iconClass = 'bi-question-circle';
+                
+                if (statusStr.toLowerCase().includes('present')) {
+                    badgeClass = 'bg-success';
+                    iconClass = 'bi-check-circle-fill';
+                } else if (statusStr.toLowerCase().includes('absent')) {
+                    badgeClass = 'bg-danger';
+                    iconClass = 'bi-x-circle-fill';
+                } else if (statusStr.toLowerCase().includes('leave')) {
+                    badgeClass = 'bg-warning';
+                    iconClass = 'bi-calendar-x';
+                } else if (statusStr.toLowerCase().includes('business')) {
+                    badgeClass = 'bg-info';
+                    iconClass = 'bi-briefcase';
+                } else if (statusStr.toLowerCase().includes('holiday') || statusStr.toLowerCase().includes('weekend')) {
+                    badgeClass = 'bg-primary';
+                    iconClass = 'bi-calendar-check';
+                }
+                
+                return `<span class="badge ${badgeClass}"><i class="bi ${iconClass} me-1"></i>${statusStr}</span>`;
+            };
+
+            // Employee Information Section
             pageElements.$employeeDetailEle.html(`
-                <div class="col-4 fw-semibold">${$.fn.gettext('Employee Name')}:</div>
-                <div class="col-8">${fullname}</div>
+                <div class="col-5 text-muted">${$.fn.gettext('Employee')}:</div>
+                <div class="col-7"><strong class="text-dark">${fullname}</strong></div>
             `);
+            
             pageElements.$dateDetailEle.html(`
-                <div class="col-4 fw-semibold">${$.fn.gettext('Date')}:</div>
-                <div class="col-8">${attendanceData?.date || ''}</div>
+                <div class="col-5 text-muted">${$.fn.gettext('Date')}:</div>
+                <div class="col-7"><span>${attendanceDate}</span></div>
             `);
+
             pageElements.$shiftDetailEle.html(`
-                <div class="col-4 fw-semibold">${$.fn.gettext('Shift')}:</div>
-                <div class="col-8">${(attendanceData?.shift || {})?.title || ''}</div>
+                <div class="col-5 text-muted">${$.fn.gettext('Shift')}:</div>
+                <div class="col-7">
+                    <span>${(attendanceData?.shift || {})?.title || '<span class="text-muted">N/A</span>'}</span>
+                </div>
             `);
+            
+            // Attendance Time Section
             pageElements.$checkinDetailEle.html(`
-                <div class="col-4 fw-semibold">${$.fn.gettext('Check In')}:</div>
-                <div class="col-8">${(attendanceData?.checkin_time || '').replace('T', ' ')}</div>
+                <div class="col-5 text-muted">${$.fn.gettext('Check In')}:</div>
+                <div class="col-7">${attendanceData?.checkin_time ? attendanceData.checkin_time.replace('T', ' ') : '--:--'}</div>
             `);
+            
             pageElements.$checkoutDetailEle.html(`
-                <div class="col-4 fw-semibold">${$.fn.gettext('Check Out')}:</div>
-                <div class="col-8">${(attendanceData?.checkout_time || '').replace('T', ' ')}</div>
+                <div class="col-5 text-muted">${$.fn.gettext('Check Out')}:</div>
+                <div class="col-7">${attendanceData?.checkout_time ? attendanceData.checkout_time.replace('T', ' ') : '--:--'}</div>
             `);
+            
+            // Status Information Section
             pageElements.$statusDetailEle.html(`
-                <div class="col-4 fw-semibold">${$.fn.gettext('Status')}:</div>
-                <div class="col-8">${statusStr}</div>
+                <div class="col-5 text-muted">${$.fn.gettext('Status')}:</div>
+                <div class="col-7">${formatStatus(statusStr)}</div>
             `);
+            
             pageElements.$isLateDetailEle.html(`
-                <div class="col-4 fw-semibold">${$.fn.gettext('Is Late')}:</div>
-                <div class="col-8">${attendanceData?.is_late || false}</div>
+                <div class="col-5 text-muted">${$.fn.gettext('Late Arrival')}:</div>
+                <div class="col-7">${formatBoolean(attendanceData?.is_late)} </div>
             `);
+            
             pageElements.$isEarlyDetailEle.html(`
-                <div class="col-4 fw-semibold">${$.fn.gettext('Is Early Leave')}:</div>
-                <div class="col-8">${attendanceData?.is_early_leave || false}</div>
+                <div class="col-5 text-muted">${$.fn.gettext('Early Leave')}:</div>
+                <div class="col-7">${formatBoolean(attendanceData?.is_early_leave)}</div>
             `);
+            
+            // Overtime Hours Section
             pageElements.$isRegularDetailEle.html(`
-                <div class="col-5 fw-semibold">${$.fn.gettext('Regular Overtime Hours')}:</div>
-                <div class="col-7">${attendanceData?.regular_overtime_hours || ''}</div>
+                <div class="col-5 text-muted">${$.fn.gettext('Regular OT')}:</div>
+                <div class="col-7">${attendanceData?.regular_overtime_hours || 0} hours</div>
             `);
             pageElements.$isWeekendDetailEle.html(`
-                <div class="col-6 fw-semibold">${$.fn.gettext('Weekend Overtime Hours')}:</div>
-                <div class="col-6">${attendanceData?.weekend_overtime_hourse || ''}</div>
+                <div class="col-5 text-muted"> ${$.fn.gettext('Weekend OT')}:</div>
+                <div class="col-7">${attendanceData?.weekend_overtime_hourse || 0} hours</div>
             `);
             pageElements.$isHolidayDetailEle.html(`
-                <div class="col-5 fw-semibold">${$.fn.gettext('Holiday Overtime Hours')}:</div>
-                <div class="col-7">${attendanceData?.holiday_overtime_hours || ''}</div>
+                <div class="col-5 text-muted">${$.fn.gettext('Holiday OT')}:</div>
+                <div class="col-7">${attendanceData?.holiday_overtime_hours || 0} hours</div>
             `);
-
             $('#offcanvas_attendance_detail').offcanvas("show");
         });
 
-        AttendancePageFunction.$boxMonth.on('change', function () {
-            let data = SelectDDControl.get_data_from_idx(AttendancePageFunction.$boxMonth, AttendancePageFunction.$boxMonth.val());
+        pageElements.$boxMonth.on('change', function () {
+            let data = SelectDDControl.get_data_from_idx(pageElements.$boxMonth, pageElements.$boxMonth.val());
             if (data?.['month'] && data?.['year']) {
                 $('.flat-picker').each(function () {
                     DateTimeControl.initFlatPickrDateInMonth(this, data?.['month'], data?.['year']);
@@ -747,7 +804,6 @@ class AttendanceEventHandler {
                 pageElements.$endDate.val(dataMonth?.['to']);
             }
         });
-
     }
 }
 

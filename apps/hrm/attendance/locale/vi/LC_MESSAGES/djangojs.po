@@ -73,3 +73,36 @@ msgstr "Số giờ làm tăng ca trong tuần"
 msgid "Holiday Overtime Hours"
 msgstr "Số giờ làm tăng ca ngày lễ"
 
+#
+msgid "Late Arrival"
+msgstr "Đi Trễ"
+
+#
+msgid "Early Leave"
+msgstr "Về sớm"
+
+#
+msgid "Regular OT"
+msgstr "Số giờ làm tăng ca"
+
+#
+msgid "Weekend OT"
+msgstr "Số giờ làm tăng ca trong tuần"
+
+#
+msgid "Holiday OT"
+msgstr "Số giờ làm tăng ca ngày lễ"
+
+#
+msgid "%(count)s employee selected"
+msgid_plural "%(count)s employees selected"
+msgstr[0] "%(count)s nhân viên được chọn"
+msgstr[1] "%(count)s nhân viên được chọn"
+
+#
+msgid "Yes"
+msgstr "Có"
+
+#
+msgid "No"
+msgstr "Không"

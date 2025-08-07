@@ -1,42 +1,423 @@
-const pageElement = {
-    commonData: {
-        $createdDate: $('#so-created-date'),
-        $startDate: $('#so-start-date'),
-        $endDate: $('#so-end-date'),
-        $customer: $('#so-customer'),
-    }
-}
+//IIFE pattern, hide pageElement and pageVariable from browser console
+const ServiceOrder = (function($) {
+    const pageElement = {
+        $urlScript: $('#script-url'),
+        commonData: {
+            $createdDate: $('#so-created-date'),
+            $startDate: $('#so-start-date'),
+            $endDate: $('#so-end-date'),
+            $customer: $('#so-customer'),
+        },
+        modalData: {
+            $tableProduct: $('#modal-table-product'),
+            $btnSaveProduct: $('#btn-save-product'),
 
-function initSelect($ele, opts = {}) {
-    if ($ele.hasClass("select2-hidden-accessible")) {
-        $ele.select2('destroy')
-    }
-    $ele.empty()
-    $ele.initSelect2({
-        ...opts
-    })
-}
+            $tableExchangeRate: $('#modal-table-exchange-rate'),
+            $btnSaveExchangeRate: $('#btn-save-exchange-rate'),
+        },
+        serviceDetail: {
+            $table: $('#table-service-detail'),
 
-function initDateTime() {
-    UsualLoadPageFunction.LoadDate({
-        element: pageElement.commonData.$createdDate,
-        empty: false
-    })
-
-    UsualLoadPageFunction.LoadDate({
-        element: pageElement.commonData.$startDate,
-        empty: false
-    })
-
-    UsualLoadPageFunction.LoadDate({
-        element: pageElement.commonData.$endDate,
-    })
-}
-
-function initPageSelect() {
-    initSelect(pageElement.commonData.$customer, {
-        dataParams: {
-            account_types_mapped__account_type_order: 0
         }
-    })
-}
+    }
+
+    const pageVariable = {
+        currencyList: null
+    }
+
+    function initSelect($ele, opts = {}) {
+        if ($ele.hasClass("select2-hidden-accessible")) {
+            $ele.select2('destroy')
+        }
+        $ele.empty()
+        $ele.initSelect2({
+            ...opts
+        })
+    }
+
+    function initDateTime() {
+        UsualLoadPageFunction.LoadDate({
+            element: pageElement.commonData.$createdDate,
+            empty: false
+        })
+
+        UsualLoadPageFunction.LoadDate({
+            element: pageElement.commonData.$startDate,
+            empty: false
+        })
+
+        UsualLoadPageFunction.LoadDate({
+            element: pageElement.commonData.$endDate,
+        })
+    }
+
+    function initPageSelect() {
+        initSelect(pageElement.commonData.$customer, {
+            dataParams: {
+                account_types_mapped__account_type_order: 0
+            }
+        })
+    }
+
+// --------------------LOAD DATA---------------------
+    function loadCurrencyRateData() {
+        const currencyListUrl = pageElement.$urlScript.attr('data-currency-list-url')
+        $.fn.callAjax2({
+            url: currencyListUrl,
+            type: 'GET',
+            dataType: 'json',
+            success: function (resp) {
+                let data = $.fn.switcherResp(resp)
+                if (data && resp.data['currency_list']) {
+                    let currencyList = resp.data['currency_list']
+                    currencyList.map(item => {
+                        if (item.rate === null){
+                            item.rate = 0
+                        }
+                        return item
+                    })
+                    pageVariable.currencyList = currencyList
+                }
+            },
+            error: function (error) {
+                console.error('Failed to load currency:', error)
+            }
+        }).then(data => {
+            initCurrencyRateModalDataTable(pageVariable.currencyList)
+        })
+    }
+
+
+// --------------------HANDLE INIT DATATABLES---------------------
+    function initProductModalDataTable() {
+        pageElement.modalData.$tableProduct.DataTableDefault({
+            useDataServer: true,
+            reloadCurrency: true,
+            autoWidth: false,
+            scrollCollapse: true,
+            scrollY: '35vh',
+            ajax: {
+                url: pageElement.modalData.$tableProduct.attr('data-url'),
+                type: 'GET',
+                data: function (params) {
+
+                },
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        return resp.data['product_list'] ? resp.data['product_list'] : [];
+                    }
+                    return [];
+                },
+            },
+            columns: [
+                {
+                    targets: 0,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return ``
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '30%',
+                    className: 'min-w-150p',
+                    render: (data, type, row) => {
+                        const code = row?.['code']
+                        return `<div>${code}</div>`
+                    }
+                },
+                {
+                    targets: 2,
+                    width: '50%',
+                    className: 'min-w-210p',
+                    render: (data, type, row) => {
+                        const name = row?.['title']
+                        return `<div>${name}</div>`
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        const productId = row?.['id']
+                        return `<div class="form-check">
+                                <input 
+                                    type="checkbox"  
+                                    class="form-check-input"
+                                    name="select-product" 
+                                    data-product-id="${productId}"
+                                />
+                            </div>`
+                    }
+                },
+            ],
+        })
+    }
+
+    function initCurrencyRateModalDataTable(data = []) {
+        if ($.fn.DataTable.isDataTable(pageElement.modalData.$tableExchangeRate)) {
+            pageElement.modalData.$tableExchangeRate.DataTable().destroy()
+        }
+
+        pageElement.modalData.$tableExchangeRate.DataTableDefault({
+            data: data,
+            autoWidth: false,
+            rowIdx: true,
+            scrollCollapse: true,
+            scrollY: '35vh',
+            columns: [
+                {
+                    targets: 0,
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return ``
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '0%',
+                    className: 'min-w-150p',
+                    render: (data, type, row) => {
+                        const abbreviation = row?.['abbreviation']
+                        return `<div>${abbreviation}</div>`
+                    }
+                },
+                {
+                    targets: 2,
+                    width: '40%',
+                    className: 'min-w-210p',
+                    render: (data, type, row) => {
+                        const name = row?.['title']
+                        const isPrimary = row?.['is_primary']
+                        return `<div>
+                                    ${name} ${isPrimary ? ' (primary)' : ''}
+                                </div>`
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '30%',
+                    render: (data, type, row) => {
+                        const rate = row?.['rate']
+                        const isPrimary = row?.['is_primary']
+                        return `<div class="input-group">
+                                    <input 
+                                        ${isPrimary ? 'disabled' : ''}
+                                        type="text"  
+                                        class="form-control"
+                                        value="${rate}"
+                                    />
+                                </div>`
+                    }
+                },
+            ],
+        })
+    }
+
+    function initServiceDetailDataTable(data = []) {
+        if ($.fn.DataTable.isDataTable(pageElement.serviceDetail.$table)) {
+            pageElement.serviceDetail.$table.DataTable().destroy()
+        }
+
+        pageElement.serviceDetail.$table.DataTableDefault({
+            data: data,
+            reloadCurrency: true,
+            rowIdx: true,
+            autoWidth: false,
+            scrollX: true,
+            scrollY: '60vh',
+            scrollCollapse: true,
+            columns: [
+                {
+                    width: '1',
+                    title: $.fn.gettext(''),
+                    render: (data, type, row) => {
+                        return ``
+                    }
+                },
+                {
+                    width: '5%',
+                    title: $.fn.gettext('Code'),
+                    render: (data, type, row) => {
+                        return row.code || ''
+                    }
+                },
+                {
+                    width: '20%',
+                    title: $.fn.gettext('Name'),
+                    render: (data, type, row) => {
+                        return row.name || ''
+                    }
+                },
+                {
+                    width: '20%',
+                    title: $.fn.gettext('Description'),
+                    render: (data, type, row) => {
+                        const rowDescription = row.description || ''
+                        return `<div class="input-group">
+                                <textarea class="form-control cost-description">${rowDescription}</textarea>
+                            </div>`
+                    }
+                },
+                {
+                    width: '8%',
+                    title: $.fn.gettext('Quantity'),
+                    render: (data, type, row) => {
+                        const rowQuantity = row.quantity || 1
+                        return `<div class="input-group">
+                                <input type="number" class="form-control service-quantity" value="${rowQuantity}" min="0">
+                            </div>`
+                    }
+                },
+                {
+                    width: '7%',
+                    title: $.fn.gettext('Unit'),
+                    render: (data, type, row) => {
+                        return row.uom || ''
+                    }
+                },
+                {
+                    width: '15%',
+                    title: $.fn.gettext('Price'),
+                    render: (data, type, row) => {
+                        const price = row.price || 0
+                        return `<div class="input-group">
+                                <span class="mask-money" data-init-money="${price}">
+                            </div>`
+                    }
+                },
+                {
+                    width: '10%',
+                    title: $.fn.gettext('Tax'),
+                    render: (data, type, row) => {
+                        return row.tax || ''
+                    }
+                },
+                {
+                    width: '15%',
+                    title: $.fn.gettext('Total amount'),
+                    render: (data, type, row) => {
+                        const total = row.total || 0
+                        return `<div class="input-group">
+                                <span class="mask-money" data-init-money="${total}">
+                            </div>`
+                    }
+                },
+                {
+                    width: '5%',
+                    title: $.fn.gettext('Action'),
+                    render: (data, type, row) => {
+                        return `<div class="d-flex justify-content-center">
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover service-del-row"
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="bottom"
+                                    >
+                                        <span class="icon"><i class="far fa-trash-alt"></i></span>
+                                    </button>
+                                </div>`
+
+                    }
+                },
+            ]
+        })
+    }
+
+
+// --------------------HANDLE EVENTS---------------------
+    function handleSaveProductAndService() {
+        pageElement.modalData.$btnSaveProduct.on('click', function (e) {
+            // Get all checked products from modal table
+            const checkedProducts = [];
+            pageElement.modalData.$tableProduct.find('input[name="select-product"]:checked').each(function () {
+                const $row = $(this).closest('tr');
+                const rowData = pageElement.modalData.$tableProduct.DataTable().row($row).data();
+
+                if (rowData) {
+                    const price = rowData.general_price || 0
+                    const taxRate = (rowData?.sale_tax?.rate || 0) / 100
+                    const taxAmount = price * taxRate
+                    const total = taxAmount + price
+
+                    checkedProducts.push({
+                        product_id: $(this).data('product-id'),
+                        code: rowData.code,
+                        name: rowData.title,
+                        description: rowData.description || '',
+                        quantity: 1,
+                        uom: rowData?.sale_default_uom?.title || '',
+                        price: rowData.general_price || 0,
+                        tax: rowData?.sale_tax?.code || '',
+                        tax_data: rowData?.sale_tax || {},
+                        total: total
+                    });
+                }
+            });
+
+            // Add checked products to service detail table
+            if (checkedProducts.length > 0) {
+                const serviceDetailTable = pageElement.serviceDetail.$table.DataTable()
+                const currentData = serviceDetailTable.data().toArray()
+                const newData = [...currentData, ...checkedProducts]
+
+                serviceDetailTable.clear().rows.add(newData).draw(false)
+
+                pageElement.modalData.$tableProduct.find('input[name="select-product"]').prop('checked', false)
+            }
+        })
+    }
+
+    function handleChangeServiceQuantity() {
+        pageElement.serviceDetail.$table.on('change', '.service-quantity', function (e) {
+            const $input = $(this)
+            const $row = $input.closest('tr')
+            const table = pageElement.serviceDetail.$table.DataTable()
+            const rowData = table.row($row).data()
+
+            if (rowData) {
+                const newQuantity = parseFloat($input.val()) || 0
+
+                // Update row data
+                rowData.quantity = newQuantity
+
+                // Calculate new total (quantity * price)
+                const price = parseFloat(rowData.price) || 0;
+                const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
+                const subtotal = newQuantity * price
+                const taxAmount = subtotal * taxRate
+                rowData.total = subtotal + taxAmount
+
+                // Update the row data in DataTable
+                table.row($row).data(rowData).draw(false)
+            }
+        })
+    }
+
+    function handleChangeDescription() {
+        pageElement.serviceDetail.$table.on('change', 'textarea', function (e) {
+            const $textArea = $(this)
+            const $row = $textArea.closest('tr')
+            const table = pageElement.serviceDetail.$table.DataTable()
+            const rowData = table.row($row).data()
+            const newDescription = $textArea.val()
+            if (rowData) {
+                rowData.description = newDescription
+                table.row($row).data(rowData)
+            }
+        })
+    }
+
+
+    return  {
+        initDateTime,
+        initPageSelect,
+        loadCurrencyRateData,
+        initProductModalDataTable,
+        initServiceDetailDataTable,
+        handleSaveProductAndService,
+        handleChangeServiceQuantity,
+        handleChangeDescription,
+    }
+})(jQuery)

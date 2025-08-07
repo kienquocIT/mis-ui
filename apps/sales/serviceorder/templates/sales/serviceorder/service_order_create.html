@@ -3,6 +3,7 @@
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/sales/serviceorder/css/service_order.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="form-service-order">
@@ -20,12 +21,25 @@
     >
         {% csrf_token %}
         {% include 'sales/serviceorder/common/common_data.html' %}
+        {% include 'sales/serviceorder/common/tab_data.html' %}
     </form>
 {% endblock %}
 
 {% block modalData %}
-
+    {% include 'sales/serviceorder/common/modal_data.html' %}
 {% endblock %}
+
+{% block dataHiddenGroup %}
+    <script id="script-url"
+            data-expense-item-list-url="{% url 'ExpenseItemListAPI' %}"
+            data-tax-list-url = '{% url 'TaxListAPI' %}'
+            data-company-config-url = '{% url 'CompanyConfigDetailAPI' %}'
+            data-currency-list-url = '{% url 'CurrencyListAPI' %}'
+            data-uom-list-url = '{% url 'UnitOfMeasureListAPI' %}'
+            data-opp-detail-url= '{% url 'OpportunityDetailAPI' pk=0 %}'
+    ></script>
+{% endblock %}
+
 
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>

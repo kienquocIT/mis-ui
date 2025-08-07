@@ -18,6 +18,9 @@ const ServiceOrder = (function($) {
         serviceDetail: {
             $table: $('#table-service-detail'),
 
+        },
+        workOrder:{
+            $table: $('#table-work-order'),
         }
     }
 
@@ -215,7 +218,7 @@ const ServiceOrder = (function($) {
         })
     }
 
-    function initServiceDetailDataTable(data = []) {
+    function initServiceDetailDataTable(data = [{},{},{},{},{},{},{}]) {
         if ($.fn.DataTable.isDataTable(pageElement.serviceDetail.$table)) {
             pageElement.serviceDetail.$table.DataTable().destroy()
         }
@@ -226,7 +229,7 @@ const ServiceOrder = (function($) {
             rowIdx: true,
             autoWidth: false,
             scrollX: true,
-            scrollY: '60vh',
+            scrollY: '50vh',
             scrollCollapse: true,
             columns: [
                 {
@@ -325,6 +328,155 @@ const ServiceOrder = (function($) {
         })
     }
 
+    function initWorkOrderDataTable(data = [{},{},{},{},{},{},{}]) {
+        if ($.fn.DataTable.isDataTable(pageElement.workOrder.$table)) {
+            pageElement.workOrder.$table.DataTable().destroy()
+        }
+
+        pageElement.workOrder.$table.DataTableDefault({
+            data: data,
+            reloadCurrency: true,
+            rowIdx: true,
+            autoWidth: false,
+            scrollX: true,
+            scrollY: '50vh',
+            scrollCollapse: true,
+            columns: [
+                {
+                    width: '1%',
+                    title: $.fn.gettext(''),
+                    render: (data, type, row) => {
+                        return ``
+                    }
+                },
+                {
+                    width: '5%',
+                    title: $.fn.gettext('Code'),
+                    render: (data, type, row) => {
+                        return row.code || ''
+                    }
+                },
+                {
+                    width: '15%',
+                    title: $.fn.gettext('Description'),
+                    render: (data, type, row) => {
+                        const description = row.description || ''
+                        return `<div class="text-truncate" title="${description}">${description}</div>`
+                    }
+                },
+                {
+                    width: '10%',
+                    title: $.fn.gettext('Start Date'),
+                    render: (data, type, row) => {
+                        const startDate = row.start_date || ''
+                        return `<div class="input-group">
+                                <input type="text" class="form-control work-order-start-date" value="${startDate}" placeholder="DD/MM/YYYY">
+                            </div>`
+                    }
+                },
+                {
+                    width: '10%',
+                    title: $.fn.gettext('End Date'),
+                    render: (data, type, row) => {
+                        const endDate = row.end_date || ''
+                        return `<div class="input-group">
+                                <input type="text" class="form-control work-order-end-date" value="${endDate}" placeholder="DD/MM/YYYY">
+                            </div>`
+                    }
+                },
+                {
+                    width: '10%',
+                    title: $.fn.gettext('Is Service Delivery'),
+                    render: (data, type, row) => {
+                        const isServiceDelivery = row.is_service_delivery || false
+                        const rowId = row.id || Math.random().toString(36).substr(2, 9)
+                        return `<div class="d-flex align-items-center">
+                                <div class="form-check me-2">
+                                    <input 
+                                        type="checkbox"  
+                                        class="form-check-input work-order-service-delivery"
+                                        ${isServiceDelivery ? 'checked' : ''}
+                                    />
+                                </div>
+                                <button 
+                                    type="button" 
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover work-order-delivery-modal"
+                                    data-row-id="${rowId}"
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="bottom"
+                                    title="Open service delivery details"
+                                >
+                                    <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                                </button>
+                            </div>`
+                    }
+                },
+                {
+                    width: '8%',
+                    title: $.fn.gettext('Quantity'),
+                    render: (data, type, row) => {
+                        const quantity = row.quantity || 1
+                        return `<div class="input-group">
+                                <input type="number" class="form-control work-order-quantity" value="${quantity}" min="0">
+                            </div>`
+                    }
+                },
+                {
+                    width: '12%',
+                    title: $.fn.gettext('Unit Cost'),
+                    render: (data, type, row) => {
+                        const unitCost = row.unit_cost || 0
+                        return `<div class="input-group">
+                                <span class="mask-money" data-init-money="${unitCost}">
+                            </div>`
+                    }
+                },
+                {
+                    width: '12%',
+                    title: $.fn.gettext('Total Amount'),
+                    render: (data, type, row) => {
+                        const totalAmount = row.total_amount || 0
+                        return `<div class="input-group">
+                                    <span class="mask-money" data-init-money="${totalAmount}">
+                                </div>`
+                    }
+                },
+                {
+                    width: '8%',
+                    title: $.fn.gettext('Status'),
+                    render: (data, type, row) => {
+                        const status = row.status || 'pending'
+                        const statusOptions = {
+                            'pending': { label: 'Pending', class: 'badge-warning' },
+                            'in_progress': { label: 'In Progress', class: 'badge-info' },
+                            'completed': { label: 'Completed', class: 'badge-success' },
+                            'cancelled': { label: 'Cancelled', class: 'badge-danger' }
+                        }
+                        const statusInfo = statusOptions[status] || statusOptions['pending']
+                        return `<span class="badge ${statusInfo.class}">${$.fn.gettext(statusInfo.label)}</span>`
+                    }
+                },
+                {
+                    width: '5%',
+                    title: $.fn.gettext('Action'),
+                    render: (data, type, row) => {
+                        return `<div class="d-flex justify-content-center">
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover work-order-del-row"
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="bottom"
+                                        title="Delete"
+                                    >
+                                        <span class="icon"><i class="far fa-trash-alt"></i></span>
+                                    </button>
+                                </div>`
+                    }
+                },
+            ],
+
+        })
+    }
 
 // --------------------HANDLE EVENTS---------------------
     function handleSaveProductAndService() {
@@ -416,6 +568,7 @@ const ServiceOrder = (function($) {
         loadCurrencyRateData,
         initProductModalDataTable,
         initServiceDetailDataTable,
+        initWorkOrderDataTable,
         handleSaveProductAndService,
         handleChangeServiceQuantity,
         handleChangeDescription,

@@ -1,5 +1,7 @@
 #service-order-tab-content .tab-pane {
-    height: 60vh;
-    overflow-y: auto;
-    overflow-x: hidden;
+    height: 65vh;
+}
+
+.min-w-1200p{
+    min-width: 1200px !important;
 }

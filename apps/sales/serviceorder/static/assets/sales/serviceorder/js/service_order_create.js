@@ -5,6 +5,7 @@ $(document).ready(function () {
 
     ServiceOrder.initProductModalDataTable()
     ServiceOrder.initServiceDetailDataTable()
+    ServiceOrder.initWorkOrderDataTable()
 
     ServiceOrder.handleSaveProductAndService()
     ServiceOrder.handleChangeServiceQuantity()

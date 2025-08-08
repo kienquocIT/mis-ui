@@ -321,6 +321,10 @@ $(document).ready(function () {
                 revenue_expected_DF = Array(12).fill(0)
                 profit_expected_DF = Array(12).fill(0)
                 profit_expected_type = results[1].length ? results[1][0]?.['profit_target_type'] : null
+
+                // auto change profit type
+                profitTypeEle.val(profit_expected_type)
+
                 if (parseInt(profit_expected_type) === parseInt(profitTypeEle.val())) {
                     for (let i = 0; i < results[1].length; i++) {
                         if (!revenueprofitGroupEle.val() || results[1][i]?.['employee_mapped']?.['group']?.['id'] === revenueprofitGroupEle.val()) {

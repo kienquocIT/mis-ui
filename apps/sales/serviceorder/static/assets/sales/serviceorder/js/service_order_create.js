@@ -10,4 +10,5 @@ $(document).ready(function () {
     ServiceOrder.handleSaveProductAndService()
     ServiceOrder.handleChangeServiceQuantity()
     ServiceOrder.handleChangeDescription()
+    ServiceOrder.handleChangeWorkOrderDate()
 })

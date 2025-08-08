@@ -328,7 +328,7 @@ const ServiceOrder = (function($) {
         })
     }
 
-    function initWorkOrderDataTable(data = [{},{},{},{},{},{},{}]) {
+    function initWorkOrderDataTable(data = [{unit_cost:100000000000, total: 100000000000},{},{},{},{},{},{}]) {
         if ($.fn.DataTable.isDataTable(pageElement.workOrder.$table)) {
             pageElement.workOrder.$table.DataTable().destroy()
         }
@@ -370,7 +370,7 @@ const ServiceOrder = (function($) {
                     render: (data, type, row) => {
                         const startDate = row.start_date || ''
                         return `<div class="input-group">
-                                <input type="text" class="form-control work-order-start-date" value="${startDate}" placeholder="DD/MM/YYYY">
+                                <input type="text" class="form-control date-input work-order-start-date" value="${startDate}" placeholder="DD/MM/YYYY">
                             </div>`
                     }
                 },
@@ -380,7 +380,7 @@ const ServiceOrder = (function($) {
                     render: (data, type, row) => {
                         const endDate = row.end_date || ''
                         return `<div class="input-group">
-                                <input type="text" class="form-control work-order-end-date" value="${endDate}" placeholder="DD/MM/YYYY">
+                                <input type="text" class="form-control date-input work-order-end-date" value="${endDate}" placeholder="DD/MM/YYYY">
                             </div>`
                     }
                 },
@@ -435,7 +435,7 @@ const ServiceOrder = (function($) {
                     width: '12%',
                     title: $.fn.gettext('Total Amount'),
                     render: (data, type, row) => {
-                        const totalAmount = row.total_amount || 0
+                        const totalAmount = row.total || 0
                         return `<div class="input-group">
                                     <span class="mask-money" data-init-money="${totalAmount}">
                                 </div>`
@@ -474,7 +474,18 @@ const ServiceOrder = (function($) {
                     }
                 },
             ],
+            drawCallback: function (data, type, row) {
+                pageElement.workOrder.$table.find('input.date-input').each(function(){
+                    const $input = $(this)
+                    const value = $input.val()
 
+                    UsualLoadPageFunction.LoadDate({ element: $input })
+
+                    if (value && $input.data('daterangepicker')) {
+                        $input.data('daterangepicker').setStartDate(value)
+                    }
+                })
+            }
         })
     }
 
@@ -556,11 +567,53 @@ const ServiceOrder = (function($) {
             const newDescription = $textArea.val()
             if (rowData) {
                 rowData.description = newDescription
-                table.row($row).data(rowData)
             }
         })
     }
 
+    function handleChangeWorkOrderDate() {
+        function validateDates(rowData) {
+            if (rowData.start_date && rowData.end_date) {
+                const startDate = moment(rowData.start_date, 'DD/MM/YYYY')
+                const endDate = moment(rowData.end_date, 'DD/MM/YYYY')
+
+                if (endDate.isSameOrBefore(startDate)) {
+                    $.fn.notifyB({description: $.fn.gettext('End date must be greater than start date')}, 'failure')
+                    return false
+                }
+            }
+            return true
+        }
+
+        pageElement.workOrder.$table.on('apply.daterangepicker', '.work-order-start-date', function (ev, picker) {
+            const $input = $(ev.currentTarget)
+            const $row = $input.closest('tr')
+            const table = pageElement.workOrder.$table.DataTable()
+            const rowData = table.row($row).data()
+            const oldStartDate = rowData.start_date
+            rowData.start_date = moment(picker.startDate).format('DD/MM/YYYY')
+            if (!validateDates(rowData)) {
+                rowData.start_date = oldStartDate
+                $input.val(oldStartDate || '')
+            }
+        })
+        pageElement.workOrder.$table.on('apply.daterangepicker', '.work-order-end-date', function (ev, picker) {
+            const $input = $(ev.currentTarget)
+            const $row = $input.closest('tr')
+            const table = pageElement.workOrder.$table.DataTable()
+            const rowData = table.row($row).data()
+            const oldEndDate = rowData.end_date
+            rowData.end_date = moment(picker.endDate).format('DD/MM/YYYY')
+            if (!validateDates(rowData)) {
+                rowData.end_date = oldEndDate
+                $input.val(oldEndDate || '')
+            }
+        })
+    }
+
+    function handleSaveWorkOrderProduct(){
+
+    }
 
     return  {
         initDateTime,
@@ -572,5 +625,6 @@ const ServiceOrder = (function($) {
         handleSaveProductAndService,
         handleChangeServiceQuantity,
         handleChangeDescription,
+        handleChangeWorkOrderDate
     }
 })(jQuery)

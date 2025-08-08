@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Absence explanation' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block pageAction %}
+    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='frm_create_absence_explanation' %}
+{% endblock %}
+
+{% block pageContent %}
+    <form id="frm_create_absence_explanation"
+          data-method="POST"
+          data-url="{% url 'AbsenceExplanationListAPI' %}"
+          data-url-redirect="{% url 'AbsenceExplanationList' %}">
+        {% csrf_token %}
+        {% include 'hrm/absenceexplanation/common.html' %}
+    </form>
+{% endblock %}
+{% block modalData %}
+{% endblock %}
+{% block dataHiddenGroup %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static 'assets/hrm/absenceexplanation/js/common.js' %}"></script>
+    <script src="{% static 'assets/hrm/absenceexplanation/js/create.js' %}"></script>
+{% endblock %}

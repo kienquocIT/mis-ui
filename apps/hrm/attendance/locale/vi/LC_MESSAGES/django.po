@@ -132,3 +132,19 @@ msgstr "O: Tăng ca"
 #
 msgid "OB: Overtime on business trip"
 msgstr "OB: Tăng Ca Trong Thời Gian Công Tác"
+
+#
+msgid "Employee Information"
+msgstr "Thông tin nhân viên"
+
+#
+msgid "Attendance Time"
+msgstr "Thời gian chấm công"
+
+#
+msgid "Status Information"
+msgstr "Thông tin trạng thái"
+
+#
+msgid "Overtime Hours"
+msgstr "Số giờ tăng ca"

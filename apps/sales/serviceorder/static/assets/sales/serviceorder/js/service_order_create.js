@@ -6,8 +6,9 @@ $(document).ready(function () {
     ServiceOrder.initProductModalDataTable()
     ServiceOrder.initServiceDetailDataTable()
     ServiceOrder.initWorkOrderDataTable()
+    ServiceOrder.initModalContextTracking()
 
-    ServiceOrder.handleSaveProductAndService()
+    ServiceOrder.handleSaveProduct()
     ServiceOrder.handleChangeServiceQuantity()
     ServiceOrder.handleChangeDescription()
     ServiceOrder.handleChangeWorkOrderDate()

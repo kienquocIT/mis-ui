@@ -17,7 +17,7 @@ const ServiceOrder = (function($) {
         },
         serviceDetail: {
             $table: $('#table-service-detail'),
-
+            $btnOpenServiceProductModal: $('#btn-open-service-product-modal'),
         },
         workOrder:{
             $table: $('#table-work-order'),
@@ -25,8 +25,11 @@ const ServiceOrder = (function($) {
     }
 
     const pageVariable = {
-        currencyList: null
+        currencyList: null,
+        modalProductContext: null
     }
+
+
 
     function initSelect($ele, opts = {}) {
         if ($ele.hasClass("select2-hidden-accessible")) {
@@ -61,6 +64,76 @@ const ServiceOrder = (function($) {
             }
         })
     }
+
+    function initModalContextTracking() {
+        pageElement.serviceDetail.$btnOpenServiceProductModal.on('click', function(e) {
+            pageVariable.modalContext = 'serviceDetail'
+        })
+
+        $('[data-bs-target="#modal-product"]:not(#btn-open-service-product-modal)').on('click', function(e) {
+            pageVariable.modalContext = 'workOrder'
+        })
+
+        // Clear context when modal is closed
+        $('#modal-product').on('hidden.bs.modal', function() {
+            pageVariable.modalContext = null
+        })
+    }
+
+    function transformProductData(rowData, productId) {
+        const baseData = {
+            product_id: productId,
+            code: rowData.code,
+            name: rowData.title,
+            description: rowData.description || '',
+            quantity: 1,
+            uom: rowData?.sale_default_uom?.title || '',
+        }
+
+        if (pageVariable.modalContext === 'serviceDetail') {
+            const price = rowData.general_price || 0
+            const taxRate = (rowData?.sale_tax?.rate || 0) / 100
+            const taxAmount = price * taxRate
+            const total = taxAmount + price
+
+            return {
+                ...baseData,
+                price: price,
+                tax: rowData?.sale_tax?.code || '',
+                tax_data: rowData?.sale_tax || {},
+                total: total
+            }
+        } else if (pageVariable.modalContext === 'workOrder') {
+            const unitCost = rowData.general_price || 0
+
+            return {
+                ...baseData,
+                unit_cost: unitCost,
+                total: unitCost, // Will be recalculated when quantity changes
+                start_date: '',
+                end_date: '',
+                is_service_delivery: false,
+                status: 'pending'
+            }
+        }
+
+        return baseData
+    }
+
+    function addProductsToServiceDetail(products) {
+        const table = pageElement.serviceDetail.$table.DataTable()
+        const currentData = table.data().toArray()
+        const newData = [...currentData, ...products]
+        table.clear().rows.add(newData).draw(false)
+    }
+
+    function addProductsToWorkOrder(products) {
+        const table = pageElement.workOrder.$table.DataTable()
+        const currentData = table.data().toArray()
+        const newData = [...currentData, ...products]
+        table.clear().rows.add(newData).draw(false)
+    }
+
 
 // --------------------LOAD DATA---------------------
     function loadCurrencyRateData() {
@@ -218,7 +291,7 @@ const ServiceOrder = (function($) {
         })
     }
 
-    function initServiceDetailDataTable(data = [{},{},{},{},{},{},{}]) {
+    function initServiceDetailDataTable(data = []) {
         if ($.fn.DataTable.isDataTable(pageElement.serviceDetail.$table)) {
             pageElement.serviceDetail.$table.DataTable().destroy()
         }
@@ -328,7 +401,7 @@ const ServiceOrder = (function($) {
         })
     }
 
-    function initWorkOrderDataTable(data = [{unit_cost:100000000000, total: 100000000000},{},{},{},{},{},{}]) {
+    function initWorkOrderDataTable(data = []) {
         if ($.fn.DataTable.isDataTable(pageElement.workOrder.$table)) {
             pageElement.workOrder.$table.DataTable().destroy()
         }
@@ -360,8 +433,8 @@ const ServiceOrder = (function($) {
                     width: '15%',
                     title: $.fn.gettext('Description'),
                     render: (data, type, row) => {
-                        const description = row.description || ''
-                        return `<div class="text-truncate" title="${description}">${description}</div>`
+                        const name = row.name || ''
+                        return `<div class="" title="${name}">${name}</div>`
                     }
                 },
                 {
@@ -490,7 +563,7 @@ const ServiceOrder = (function($) {
     }
 
 // --------------------HANDLE EVENTS---------------------
-    function handleSaveProductAndService() {
+    function handleSaveProduct() {
         pageElement.modalData.$btnSaveProduct.on('click', function (e) {
             // Get all checked products from modal table
             const checkedProducts = [];
@@ -499,34 +572,18 @@ const ServiceOrder = (function($) {
                 const rowData = pageElement.modalData.$tableProduct.DataTable().row($row).data();
 
                 if (rowData) {
-                    const price = rowData.general_price || 0
-                    const taxRate = (rowData?.sale_tax?.rate || 0) / 100
-                    const taxAmount = price * taxRate
-                    const total = taxAmount + price
-
-                    checkedProducts.push({
-                        product_id: $(this).data('product-id'),
-                        code: rowData.code,
-                        name: rowData.title,
-                        description: rowData.description || '',
-                        quantity: 1,
-                        uom: rowData?.sale_default_uom?.title || '',
-                        price: rowData.general_price || 0,
-                        tax: rowData?.sale_tax?.code || '',
-                        tax_data: rowData?.sale_tax || {},
-                        total: total
-                    });
+                    checkedProducts.push(transformProductData(rowData, $(this).data('product-id')));
                 }
             });
 
             // Add checked products to service detail table
             if (checkedProducts.length > 0) {
-                const serviceDetailTable = pageElement.serviceDetail.$table.DataTable()
-                const currentData = serviceDetailTable.data().toArray()
-                const newData = [...currentData, ...checkedProducts]
-
-                serviceDetailTable.clear().rows.add(newData).draw(false)
-
+                if (pageVariable.modalContext === 'serviceDetail') {
+                    addProductsToServiceDetail(checkedProducts)
+                } else if (pageVariable.modalContext === 'workOrder') {
+                    addProductsToWorkOrder(checkedProducts)
+                }
+                // Clear selections
                 pageElement.modalData.$tableProduct.find('input[name="select-product"]').prop('checked', false)
             }
         })
@@ -611,9 +668,26 @@ const ServiceOrder = (function($) {
         })
     }
 
-    function handleSaveWorkOrderProduct(){
-
-    }
+    // function handleAddNonItem() {
+    //     pageElement.buttons.$btnAddNonItem.on('click', function(e) {
+    //         e.preventDefault()
+    //
+    //         // Add empty row to work order for manual entry
+    //         const emptyWorkOrderItem = {
+    //             code: '',
+    //             description: '',
+    //             quantity: 1,
+    //             unit_cost: 0,
+    //             total: 0,
+    //             start_date: '',
+    //             end_date: '',
+    //             is_service_delivery: false,
+    //             status: 'pending'
+    //         }
+    //
+    //         addProductsToWorkOrder([emptyWorkOrderItem])
+    //     })
+    // }
 
     return  {
         initDateTime,
@@ -622,7 +696,8 @@ const ServiceOrder = (function($) {
         initProductModalDataTable,
         initServiceDetailDataTable,
         initWorkOrderDataTable,
-        handleSaveProductAndService,
+        initModalContextTracking,
+        handleSaveProduct,
         handleChangeServiceQuantity,
         handleChangeDescription,
         handleChangeWorkOrderDate

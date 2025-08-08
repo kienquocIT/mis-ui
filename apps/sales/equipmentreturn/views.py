@@ -11,6 +11,8 @@ class EquipmentReturnList(View):
         template='equipmentreturn/equipment_return_list.html',
         breadcrumb='EQUIPMENT_RETURN_LIST_PAGE',
         menu_active='id_menu_equipment_return',
+        icon_cls='fa-solid fa-rotate-left',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -48,6 +50,8 @@ class EquipmentReturnCreate(View):
         template='equipmentreturn/equipment_return_create.html',
         breadcrumb='EQUIPMENT_RETURN_CREATE_PAGE',
         menu_active='',
+        icon_cls='fa-solid fa-rotate-left',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -63,6 +67,8 @@ class EquipmentReturnDetail(View):
         template='equipmentreturn/equipment_return_detail.html',
         breadcrumb='EQUIPMENT_RETURN_DETAIL_PAGE',
         menu_active='',
+        icon_cls='fa-solid fa-rotate-left',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -76,6 +82,8 @@ class EquipmentReturnUpdate(View):
         template='equipmentreturn/equipment_return_update.html',
         breadcrumb='EQUIPMENT_RETURN_UPDATE_PAGE',
         menu_active='',
+        icon_cls='fa-solid fa-rotate-left',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {

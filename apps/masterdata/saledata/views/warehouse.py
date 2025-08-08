@@ -16,6 +16,8 @@ class WareHouseList(View):
         template='masterdata/saledata/warehouse/list.html',
         breadcrumb='WAREHOUSE_LIST_PAGE',
         menu_active='menu_warehouse_list',
+        icon_cls='fas fas fa-warehouse',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -99,6 +101,8 @@ class WareHouseCreate(View):
         template='masterdata/saledata/warehouse/create.html',
         breadcrumb='WAREHOUSE_CREATE_PAGE',
         menu_active='menu_warehouse_list',
+        icon_cls='fas fas fa-warehouse',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -110,6 +114,8 @@ class WareHouseDetail(View):
         template='masterdata/saledata/warehouse/detail.html',
         breadcrumb='WAREHOUSE_DETAIL_PAGE',
         menu_active='menu_warehouse_list',
+        icon_cls='fas fas fa-warehouse',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -121,6 +127,8 @@ class WareHouseUpdate(View):
         template='masterdata/saledata/warehouse/update.html',
         breadcrumb='WAREHOUSE_UPDATE_PAGE',
         menu_active='menu_warehouse_list',
+        icon_cls='fas fas fa-warehouse',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

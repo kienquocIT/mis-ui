@@ -13,6 +13,8 @@ class BankMasterDataList(View):
         template='masterdata/saledata/masterdata/bank.html',
         breadcrumb='BANK_MASTER_DATA_LIST_PAGE',
         menu_active='id_menu_master_data_bank',
+        icon_cls='fas fa-solid fa-building-columns',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

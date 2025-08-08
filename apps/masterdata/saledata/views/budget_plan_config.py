@@ -15,6 +15,8 @@ class BudgetPlanConfigList(View):
         template='masterdata/saledata/masterdata/budget_plan_config.html',
         breadcrumb='BUDGET_PLAN_CONFIG_PAGE',
         menu_active='id_menu_master_data_budget_plan_config',
+        icon_cls='fas fa-wallet',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(url=ApiURL.BUDGET_PLAN_CONFIG_LIST, user=request.user).get()

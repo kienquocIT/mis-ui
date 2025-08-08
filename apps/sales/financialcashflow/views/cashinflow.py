@@ -10,6 +10,8 @@ class CashInflowList(View):
         template='sales/financialcashflow/cashinflow/cashinflow_list.html',
         menu_active='menu_cash_inflow',
         breadcrumb='CASH_INFLOW_LIST_PAGE',
+        icon_cls='fas fa-reply',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -21,6 +23,8 @@ class CashInflowCreate(View):
         template='sales/financialcashflow/cashinflow/cashinflow_create.html',
         menu_active='',
         breadcrumb='CASH_INFLOW_CREATE_PAGE',
+        icon_cls='fas fa-reply',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
@@ -38,6 +42,8 @@ class CashInflowDetail(View):
         template='sales/financialcashflow/cashinflow/cashinflow_detail.html',
         menu_active='',
         breadcrumb='CASH_INFLOW_DETAIL_PAGE',
+        icon_cls='fas fa-reply',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
@@ -54,6 +60,8 @@ class CashInflowUpdate(View):
         template='sales/financialcashflow/cashinflow/cashinflow_update.html',
         menu_active='',
         breadcrumb='CASH_INFLOW_UPDATE_PAGE',
+        icon_cls='fas fa-reply',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE

@@ -13,7 +13,9 @@ class GoodsIssueList(View):
         auth_require=True,
         template='sales/inventory/goods_issue/list.html',
         menu_active='menu_goods_issue_list',
-        breadcrumb='GOODS_ISSUE_LIST_PAGE'
+        breadcrumb='GOODS_ISSUE_LIST_PAGE',
+        icon_cls='fas fa-file-export',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -24,7 +26,9 @@ class GoodsIssueCreate(View):
         auth_require=True,
         template='sales/inventory/goods_issue/create.html',
         menu_active='menu_goods_issue_list',
-        breadcrumb='GOODS_ISSUE_CREATE_PAGE'
+        breadcrumb='GOODS_ISSUE_CREATE_PAGE',
+        icon_cls='fas fa-file-export',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -37,7 +41,9 @@ class GoodsIssueDetail(View):
         auth_require=True,
         template='sales/inventory/goods_issue/detail.html',
         menu_active='menu_goods_issue_list',
-        breadcrumb='GOODS_ISSUE_DETAIL_PAGE'
+        breadcrumb='GOODS_ISSUE_DETAIL_PAGE',
+        icon_cls='fas fa-file-export',
+        icon_bg='bg-primary',
     )
     def get(self, request, pk, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -89,7 +95,9 @@ class GoodsIssueUpdate(View):
         auth_require=True,
         template='sales/inventory/goods_issue/update.html',
         menu_active='menu_goods_issue_list',
-        breadcrumb='GOODS_ISSUE_UPDATE_PAGE'
+        breadcrumb='GOODS_ISSUE_UPDATE_PAGE',
+        icon_cls='fas fa-file-export',
+        icon_bg='bg-primary',
     )
     def get(self, request, pk, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_ISSUE

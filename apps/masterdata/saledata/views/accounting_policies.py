@@ -15,6 +15,8 @@ class AccountingPoliciesList(View):
         template='masterdata/saledata/masterdata/accounting_policies.html',
         breadcrumb='ACCOUNTING_POLICIES_PAGE',
         menu_active='id_menu_master_data_accounting_policies',
+        icon_cls='fas bi bi-calculator',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).get()

@@ -171,13 +171,6 @@ $(document).ready(function () {
                 right: '2%',
                 top: '2%',
                 feature: {
-                    dataZoom: {
-                        yAxisIndex: 'none',
-                        title: {
-                            zoom: 'Phóng to',
-                            back: 'Thu nhỏ'
-                        }
-                    },
                     dataView: {
                         readOnly: false,
                         title: 'Xem dữ liệu',

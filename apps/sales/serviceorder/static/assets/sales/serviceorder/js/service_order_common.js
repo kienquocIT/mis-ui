@@ -14,6 +14,8 @@ const ServiceOrder = (function($) {
 
             $tableExchangeRate: $('#modal-table-exchange-rate'),
             $btnSaveExchangeRate: $('#btn-save-exchange-rate'),
+
+            $tableWorkOrderCost: $('#modal-work-order-cost'),
         },
         serviceDetail: {
             $table: $('#table-service-detail'),
@@ -406,7 +408,7 @@ const ServiceOrder = (function($) {
         })
     }
 
-    function initWorkOrderDataTable(data = [{unit_cost: 1000000000}]) {
+    function initWorkOrderDataTable(data = []) {
         if ($.fn.DataTable.isDataTable(pageElement.workOrder.$table)) {
             pageElement.workOrder.$table.DataTable().destroy()
         }
@@ -572,6 +574,208 @@ const ServiceOrder = (function($) {
             }
         })
     }
+
+    // function initWorkOrderCostModalDataTable(data=[]){
+    //     if ($.fn.DataTable.isDataTable(pageElement.modalData.$tableWorkOrderCost)) {
+    //         pageElement.modalData.$tableWorkOrderCost.DataTable().destroy()
+    //     }
+    //
+    //     pageElement.modalData.$tableWorkOrderCost.DataTableDefault({
+    //         data: data,
+    //         reloadCurrency: true,
+    //         rowIdx: true,
+    //         autoWidth: false,
+    //         scrollX: true,
+    //         scrollY: '35vh',
+    //         scrollCollapse: true,
+    //         columns: [
+    //             {
+    //                 width: '3%',
+    //                 title: $.fn.gettext(''),
+    //                 className: 'text-center',
+    //                 render: (data, type, row, meta) => {
+    //                     return `<button
+    //                                 type="button"
+    //                                 class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover add-cost-row"
+    //                                 data-bs-toggle="tooltip"
+    //                                 data-bs-placement="bottom"
+    //                                 title="Add new row"
+    //                             >
+    //                                 <span class="icon"><i class="fas fa-plus"></i></span>
+    //                             </button>`
+    //                 }
+    //             },
+    //             {
+    //                 width: '5%',
+    //                 title: $.fn.gettext('Order'),
+    //                 className: 'text-center',
+    //                 render: (data, type, row, meta) => {
+    //                     return meta.row + 1
+    //                 }
+    //             },
+    //             {
+    //                 width: '15%',
+    //                 title: $.fn.gettext('Title'),
+    //                 render: (data, type, row) => {
+    //                     const title = row.title || ''
+    //                     return `<div class="input-group">
+    //                                 <input
+    //                                     type="text"
+    //                                     class="form-control cost-title"
+    //                                     value="${title}"
+    //                                     placeholder="Enter title"
+    //                                 />
+    //                             </div>`
+    //                 }
+    //             },
+    //             {
+    //                 width: '20%',
+    //                 title: $.fn.gettext('Description'),
+    //                 render: (data, type, row) => {
+    //                     const description = row.description || ''
+    //                     return `<div class="input-group">
+    //                                 <textarea
+    //                                     class="form-control cost-description"
+    //                                     rows="1"
+    //                                     placeholder="Enter description"
+    //                                 >${description}</textarea>
+    //                             </div>`
+    //                 }
+    //             },
+    //             {
+    //                 width: '8%',
+    //                 title: $.fn.gettext('Quantity'),
+    //                 render: (data, type, row) => {
+    //                     const quantity = row.quantity || 1
+    //                     return `<div class="input-group">
+    //                                 <input
+    //                                     type="number"
+    //                                     class="form-control cost-quantity"
+    //                                     value="${quantity}"
+    //                                     min="0"
+    //                                     step="0.01"
+    //                                 />
+    //                             </div>`
+    //                 }
+    //             },
+    //             {
+    //                 width: '10%',
+    //                 title: $.fn.gettext('Unit Cost'),
+    //                 render: (data, type, row) => {
+    //                     const unitCost = row.unit_cost || 0
+    //                     return `<div class="input-group">
+    //                                 <input
+    //                                     type="number"
+    //                                     class="form-control cost-unit-price"
+    //                                     value="${unitCost}"
+    //                                     min="0"
+    //                                     step="0.01"
+    //                                 />
+    //                             </div>`
+    //                 }
+    //             },
+    //             {
+    //                 width: '10%',
+    //                 title: $.fn.gettext('Currency'),
+    //                 render: (data, type, row) => {
+    //                     const selectedCurrency = row.currency_id || ''
+    //                     let options = '<option value="">Select</option>'
+    //
+    //                     if (pageVariable.currencyList) {
+    //                         pageVariable.currencyList.forEach(currency => {
+    //                             const selected = currency.id == selectedCurrency ? 'selected' : ''
+    //                             options += `<option value="${currency.id}" data-rate="${currency.rate}" ${selected}>
+    //                                             ${currency.abbreviation}
+    //                                         </option>`
+    //                         })
+    //                     }
+    //
+    //                     return `<div class="input-group">
+    //                                 <select class="form-select cost-currency">
+    //                                     ${options}
+    //                                 </select>
+    //                             </div>`
+    //                 }
+    //             },
+    //             {
+    //                 width: '10%',
+    //                 title: $.fn.gettext('Tax'),
+    //                 render: (data, type, row) => {
+    //                     const selectedTax = row.tax_id || ''
+    //                     // This would typically be populated from tax data
+    //                     return `<div class="input-group">
+    //                                 <select class="form-select cost-tax">
+    //                                     <option value="">No Tax</option>
+    //                                     <option value="vat10" ${selectedTax === 'vat10' ? 'selected' : ''}>VAT 10%</option>
+    //                                     <option value="vat8" ${selectedTax === 'vat8' ? 'selected' : ''}>VAT 8%</option>
+    //                                     <option value="vat5" ${selectedTax === 'vat5' ? 'selected' : ''}>VAT 5%</option>
+    //                                 </select>
+    //                             </div>`
+    //                 }
+    //             },
+    //             {
+    //                 width: '10%',
+    //                 title: $.fn.gettext('Total Amount'),
+    //                 render: (data, type, row) => {
+    //                     const quantity = parseFloat(row.quantity) || 1
+    //                     const unitCost = parseFloat(row.unit_cost) || 0
+    //                     const taxRate = getTaxRate(row.tax_id)
+    //                     const subtotal = quantity * unitCost
+    //                     const taxAmount = subtotal * taxRate
+    //                     const total = subtotal + taxAmount
+    //
+    //                     return `<div class="text-end">
+    //                                 <span class="cost-total mask-money" data-init-money="${total}"></span>
+    //                             </div>`
+    //                 }
+    //             },
+    //             {
+    //                 width: '12%',
+    //                 title: $.fn.gettext('Total (VND)'),
+    //                 render: (data, type, row) => {
+    //                     const quantity = parseFloat(row.quantity) || 1
+    //                     const unitCost = parseFloat(row.unit_cost) || 0
+    //                     const taxRate = getTaxRate(row.tax_id)
+    //                     const subtotal = quantity * unitCost
+    //                     const taxAmount = subtotal * taxRate
+    //                     const total = subtotal + taxAmount
+    //
+    //                     // Convert to VND using currency rate
+    //                     let totalVND = total
+    //                     if (row.currency_id && pageVariable.currencyList) {
+    //                         const currency = pageVariable.currencyList.find(c => c.id == row.currency_id)
+    //                         if (currency && currency.rate) {
+    //                             totalVND = total * currency.rate
+    //                         }
+    //                     }
+    //
+    //                     return `<div class="text-end">
+    //                                 <span class="cost-total-vnd mask-money" data-init-money="${totalVND}"></span>
+    //                             </div>`
+    //                 }
+    //             },
+    //             {
+    //                 width: '5%',
+    //                 title: $.fn.gettext('Action'),
+    //                 className: 'text-center',
+    //                 render: (data, type, row) => {
+    //                     return `<button
+    //                                 type="button"
+    //                                 class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover delete-cost-row"
+    //                                 data-bs-toggle="tooltip"
+    //                                 data-bs-placement="bottom"
+    //                                 title="Delete"
+    //                             >
+    //                                 <span class="icon"><i class="far fa-trash-alt"></i></span>
+    //                             </button>`
+    //                 }
+    //             }
+    //         ],
+    //         drawCallback: function(settings) {
+    //             $('[data-bs-toggle="tooltip"]').tooltip()
+    //         }
+    //     })
+    // }
 
 // --------------------HANDLE EVENTS---------------------
     function handleSaveProduct() {

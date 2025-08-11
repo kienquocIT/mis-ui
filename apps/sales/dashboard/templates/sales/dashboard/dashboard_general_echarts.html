@@ -28,6 +28,9 @@
         #idxPageContent {
             {#background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);#}
             background-image: url("{% static 'assets/js/home_4.jpg' %}");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
             padding: 1rem 0;
         }
 
@@ -286,7 +289,7 @@
                                 <label for="money-round" class="form-label">
                                     {% trans 'Money round' %}
                                 </label>
-                                <input id="money-round" type="number" class="form-control" value="1" min="0">
+                                <input id="money-round" type="number" class="form-control" value="2" min="0">
                             </div>
                         </div>
                         <div class="col-12 col-md-6">

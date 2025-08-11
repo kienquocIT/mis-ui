@@ -1,9 +1,12 @@
 $(document).ready(function () {
-    new RevenuePlanHandle().load();
+    RevenuePlanEventHandler.InitPageEven()
+    RevenuePlanPageFunction.LoadPeriod()
+    RevenuePlanPageFunction.LoadModalGroup()
+    RevenuePlanPageFunction.RenderRPTable()
 
     $('#form-create-revenue-plan').submit(function (event) {
         event.preventDefault();
-        let combinesData = new RevenuePlanHandle().combinesData($(this));
+        let combinesData = RevenuePlanHandler.CombinesData($(this));
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

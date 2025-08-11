@@ -12,6 +12,8 @@ class MeetingScheduleList(View):
         template='meeting/meeting_list.html',
         breadcrumb='MEETING_SCHEDULE_LIST_PAGE',
         menu_active='menu_meeting_list',
+        icon_cls='fas fa-chalkboard-teacher',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -23,6 +25,8 @@ class MeetingScheduleCreate(View):
         template='meeting/meeting_create.html',
         breadcrumb='MEETING_SCHEDULE_CREATE_PAGE',
         menu_active='menu_meeting_create',
+        icon_cls='fas fa-chalkboard-teacher',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(user=request.user, url=ApiURL.MEETING_ZOOM_CONFIG_LIST).get()
@@ -39,6 +43,8 @@ class MeetingScheduleDetail(View):
         template='meeting/meeting_detail.html',
         breadcrumb='MEETING_SCHEDULE_DETAIL_PAGE',
         menu_active='menu_meeting_create',
+        icon_cls='fas fa-chalkboard-teacher',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(user=request.user, url=ApiURL.MEETING_ZOOM_CONFIG_LIST).get()

@@ -2,7 +2,7 @@ from django.views import View
 from rest_framework import status
 from rest_framework.views import APIView
 
-from apps.shared import mask_view, ServerAPI, ApiURL
+from apps.shared import mask_view, ServerAPI, ApiURL, BaseView
 from apps.shared.msg import ReportMsg
 
 FILTER_MONTH = (
@@ -45,3 +45,13 @@ class AttendanceListAPI(APIView):
         data_params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.ATTENDANCE_LIST).get(data_params)
         return resp.auto_return(key_success='attendance_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        return BaseView.run_create(
+            request=request,
+            url=ApiURL.ATTENDANCE_LIST,
+        )

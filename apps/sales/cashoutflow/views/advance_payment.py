@@ -12,6 +12,8 @@ class AdvancePaymentList(View):
         template='advancepayment/advance_payment_list.html',
         breadcrumb='ADVANCE_PAYMENT_LIST_PAGE',
         menu_active='id_menu_advance_payment',
+        icon_cls='fas fa-hand-holding-usd',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -25,6 +27,8 @@ class AdvancePaymentCreate(View):
         template='advancepayment/advance_payment_create.html',
         breadcrumb='ADVANCE_PAYMENT_CREATE_PAGE',
         menu_active='menu_advance_payment_list',
+        icon_cls='fas fa-hand-holding-usd',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
@@ -44,6 +48,8 @@ class AdvancePaymentDetail(View):
         template='advancepayment/advance_payment_detail.html',
         breadcrumb='ADVANCE_PAYMENT_DETAIL_PAGE',
         menu_active='',
+        icon_cls='fas fa-hand-holding-usd',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE
@@ -62,6 +68,8 @@ class AdvancePaymentUpdate(View):
         template='advancepayment/advance_payment_update.html',
         breadcrumb='ADVANCE_PAYMENT_UPDATE_PAGE',
         menu_active='',
+        icon_cls='fas fa-hand-holding-usd',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_ADVANCE

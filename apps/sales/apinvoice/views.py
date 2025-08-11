@@ -12,6 +12,8 @@ class APInvoiceList(View):
         template='apinvoice/ap_invoice_list.html',
         breadcrumb='AP_INVOICE_LIST_PAGE',
         menu_active='id_menu_ap_invoice',
+        icon_cls='fas bi bi-receipt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -49,6 +51,8 @@ class APInvoiceCreate(View):
         template='apinvoice/ap_invoice_create.html',
         breadcrumb='AP_INVOICE_CREATE_PAGE',
         menu_active='menu_ap_invoice_list',
+        icon_cls='fas bi bi-receipt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
@@ -66,6 +70,8 @@ class APInvoiceDetail(View):
         template='apinvoice/ap_invoice_detail.html',
         breadcrumb='AP_INVOICE_DETAIL_PAGE',
         menu_active='menu_ap_invoice_detail',
+        icon_cls='fas bi bi-receipt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
@@ -82,6 +88,8 @@ class APInvoiceUpdate(View):
         template='apinvoice/ap_invoice_update.html',
         breadcrumb='AP_INVOICE_UPDATE_PAGE',
         menu_active='menu_ap_invoice_detail',
+        icon_cls='fas bi bi-receipt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()

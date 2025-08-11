@@ -11,6 +11,8 @@ class BudgetPlanList(View):
         template='budget_plan/budget_plan_list.html',
         menu_active='menu_budget_plan_list',
         breadcrumb='BUDGET_PLAN_LIST_PAGE',
+        icon_cls='fas fa-wallet',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -24,6 +26,8 @@ class BudgetPlanCreate(View):
         template='budget_plan/budget_plan_create.html',
         menu_active='',
         breadcrumb='BUDGET_PLAN_CREATE_PAGE',
+        icon_cls='fas fa-wallet',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -37,6 +41,8 @@ class BudgetPlanDetail(View):
         template='budget_plan/budget_plan_detail.html',
         menu_active='',
         breadcrumb='BUDGET_PLAN_DETAIL_PAGE',
+        icon_cls='fas fa-wallet',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -50,6 +56,8 @@ class BudgetPlanUpdate(View):
         template='budget_plan/budget_plan_update.html',
         menu_active='',
         breadcrumb='BUDGET_PLAN_UPDATE_PAGE',
+        icon_cls='fas fa-wallet',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

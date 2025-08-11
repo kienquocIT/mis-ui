@@ -17,6 +17,8 @@ class ARInvoiceList(View):
         template='arinvoice/ar_invoice_list.html',
         breadcrumb='AR_INVOICE_LIST_PAGE',
         menu_active='id_menu_ar_invoice',
+        icon_cls='fas fa-file-invoice',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -54,6 +56,8 @@ class ARInvoiceCreate(View):
         template='arinvoice/ar_invoice_create.html',
         breadcrumb='AR_INVOICE_CREATE_PAGE',
         menu_active='menu_ar_invoice_list',
+        icon_cls='fas fa-file-invoice',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
@@ -71,6 +75,8 @@ class ARInvoiceDetail(View):
         template='arinvoice/ar_invoice_detail.html',
         breadcrumb='AR_INVOICE_DETAIL_PAGE',
         menu_active='menu_ar_invoice_detail',
+        icon_cls='fas fa-file-invoice',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()
@@ -87,6 +93,8 @@ class ARInvoiceUpdate(View):
         template='arinvoice/ar_invoice_update.html',
         breadcrumb='AR_INVOICE_UPDATE_PAGE',
         menu_active='menu_ar_invoice_detail',
+        icon_cls='fas fa-file-invoice',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.INVOICE_SIGN_LIST).get()

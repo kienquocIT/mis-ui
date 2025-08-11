@@ -13,6 +13,8 @@ class RevenuePlanList(View):
         template='revenue_plan/revenue_plan_list.html',
         menu_active='menu_revenue_plan_list',
         breadcrumb='REVENUE_PLAN_LIST_PAGE',
+        icon_cls='fas fa-circle-dollar-to-slot',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -26,6 +28,8 @@ class RevenuePlanCreate(View):
         template='revenue_plan/revenue_plan_create.html',
         menu_active='',
         breadcrumb='REVENUE_PLAN_CREATE_PAGE',
+        icon_cls='fas fa-circle-dollar-to-slot',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(url=ApiURL.REVENUE_PLAN_CONFIG_LIST, user=request.user).get()
@@ -42,6 +46,8 @@ class RevenuePlanDetail(View):
         template='revenue_plan/revenue_plan_detail.html',
         menu_active='',
         breadcrumb='REVENUE_PLAN_DETAIL_PAGE',
+        icon_cls='fas fa-circle-dollar-to-slot',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(url=ApiURL.REVENUE_PLAN_CONFIG_LIST, user=request.user).get()
@@ -58,6 +64,8 @@ class RevenuePlanUpdate(View):
         template='revenue_plan/revenue_plan_update.html',
         menu_active='',
         breadcrumb='REVENUE_PLAN_UPDATE_PAGE',
+        icon_cls='fas fa-circle-dollar-to-slot',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(url=ApiURL.REVENUE_PLAN_CONFIG_LIST, user=request.user).get()

@@ -11,6 +11,8 @@ class ProductModificationBOMList(View):
         template='productmodificationbom/product_modification_bom_list.html',
         breadcrumb='PRODUCT_MODIFICATION_BOM_LIST_PAGE',
         menu_active='id_menu_product_modification_bom',
+        icon_cls='fas fa-wrench',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -48,6 +50,8 @@ class ProductModificationBOMCreate(View):
         template='productmodificationbom/product_modification_bom_create.html',
         breadcrumb='PRODUCT_MODIFICATION_BOM_CREATE_PAGE',
         menu_active='',
+        icon_cls='fas fa-wrench',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -63,6 +67,8 @@ class ProductModificationBOMDetail(View):
         template='productmodificationbom/product_modification_bom_detail.html',
         breadcrumb='PRODUCT_MODIFICATION_BOM_DETAIL_PAGE',
         menu_active='',
+        icon_cls='fas fa-wrench',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -76,6 +82,8 @@ class ProductModificationBOMUpdate(View):
         template='productmodificationbom/product_modification_bom_update.html',
         breadcrumb='PRODUCT_MODIFICATION_BOM_UPDATE_PAGE',
         menu_active='',
+        icon_cls='fas fa-wrench',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {

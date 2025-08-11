@@ -11,6 +11,8 @@ class DistributionPlanList(View):
         template='sales/distributionplan/distribution_plan_list.html',
         breadcrumb='DISTRIBUTION_PLAN_LIST_PAGE',
         menu_active='menu_distribution_plan_list',
+        icon_cls='fas fa-expand-arrows-alt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -22,6 +24,8 @@ class DistributionPlanCreate(View):
         template='sales/distributionplan/distribution_plan_create.html',
         breadcrumb='DISTRIBUTION_PLAN_CREATE_PAGE',
         menu_active='',
+        icon_cls='fas fa-expand-arrows-alt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.DISTRIBUTION_PLAN_DB
@@ -38,6 +42,8 @@ class DistributionPlanDetail(View):
         template='sales/distributionplan/distribution_plan_detail.html',
         breadcrumb='DISTRIBUTION_PLAN_DETAIL_PAGE',
         menu_active='',
+        icon_cls='fas fa-expand-arrows-alt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.DISTRIBUTION_PLAN_DB
@@ -54,6 +60,8 @@ class DistributionPlanUpdate(View):
         template='sales/distributionplan/distribution_plan_update.html',
         breadcrumb='DISTRIBUTION_PLAN_UPDATE_PAGE',
         menu_active='',
+        icon_cls='fas fa-expand-arrows-alt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.DISTRIBUTION_PLAN_DB

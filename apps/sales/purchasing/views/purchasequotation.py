@@ -13,6 +13,8 @@ class PurchaseQuotationList(View):
         menu_active='id_menu_purchase_quotation_list',
         breadcrumb='PURCHASE_QUOTATION_LIST_PAGE',
         perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_LIST, method='GET'),
+        icon_cls='fas fa-file-alt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -48,6 +50,8 @@ class PurchaseQuotationCreate(View):
         menu_active='',
         breadcrumb='PURCHASE_QUOTATION_CREATE_PAGE',
         perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_LIST, method='POST'),
+        icon_cls='fas fa-file-alt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -62,6 +66,8 @@ class PurchaseQuotationDetail(View):
         menu_active='',
         breadcrumb='PURCHASE_QUOTATION_DETAIL_PAGE',
         perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_DETAIL, method='GET', fill_key=['pk']),
+        icon_cls='fas fa-file-alt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -94,6 +100,8 @@ class PurchaseQuotationUpdate(View):
         menu_active='',
         breadcrumb='PURCHASE_QUOTATION_UPDATE_PAGE',
         perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_DETAIL, method='PUT', fill_key=['pk']),
+        icon_cls='fas fa-file-alt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

@@ -10,6 +10,8 @@ class ReconList(View):
         template='sales/reconciliation/reconciliation_list.html',
         menu_active='menu_reconciliation',
         breadcrumb='RECON_LIST_PAGE',
+        icon_cls='fas bi bi-ui-checks',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -21,6 +23,8 @@ class ReconCreate(View):
         template='sales/reconciliation/reconciliation_create.html',
         menu_active='',
         breadcrumb='RECON_CREATE_PAGE',
+        icon_cls='fas bi bi-ui-checks',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.RECON_DATA_MAP
@@ -38,6 +42,8 @@ class ReconDetail(View):
         template='sales/reconciliation/reconciliation_detail.html',
         menu_active='',
         breadcrumb='RECON_DETAIL_PAGE',
+        icon_cls='fas bi bi-ui-checks',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.RECON_DATA_MAP
@@ -54,6 +60,8 @@ class ReconUpdate(View):
         template='sales/reconciliation/reconciliation_update.html',
         menu_active='',
         breadcrumb='RECON_UPDATE_PAGE',
+        icon_cls='fas bi bi-ui-checks',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.RECON_DATA_MAP

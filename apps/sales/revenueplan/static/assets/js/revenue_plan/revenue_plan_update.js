@@ -1,11 +1,15 @@
 $(document).ready(function () {
-    new RevenuePlanHandle().load();
-    LoadDetailRevenuePlan('update');
+    RevenuePlanEventHandler.InitPageEven()
+    RevenuePlanPageFunction.LoadPeriod()
+    RevenuePlanPageFunction.LoadModalGroup()
+    RevenuePlanPageFunction.RenderRPTable()
+
+    RevenuePlanHandler.LoadDetailRevenuePlan('update')
 
     let pk = $.fn.getPkDetail();
     $('#form-detail-revenue-plan').submit(function (event) {
         event.preventDefault();
-        let combinesData = new RevenuePlanHandle().combinesData($(this), true);
+        let combinesData = RevenuePlanHandler.CombinesData($(this), true);
         if (combinesData) {
             WindowControl.showLoading();
             $.fn.callAjax2(combinesData)

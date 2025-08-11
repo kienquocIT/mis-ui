@@ -15,6 +15,8 @@ class MeetingScheduleMasterdataList(View):
         template='masterdata/saledata/masterdata/meetingschedule.html',
         breadcrumb='MEETING_CONFIG_PAGE',
         menu_active='id_menu_master_data_meeting_schedule',
+        icon_cls='fas fa-chalkboard-teacher',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

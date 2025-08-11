@@ -10,6 +10,8 @@ class CashOutflowList(View):
         template='sales/financialcashflow/cashoutflow/cashoutflow_list.html',
         menu_active='menu_cash_outflow',
         breadcrumb='CASH_OUTFLOW_LIST_PAGE',
+        icon_cls='fas fa-share',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -21,6 +23,8 @@ class CashOutflowCreate(View):
         template='sales/financialcashflow/cashoutflow/cashoutflow_create.html',
         menu_active='',
         breadcrumb='CASH_OUTFLOW_CREATE_PAGE',
+        icon_cls='fas fa-share',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -34,6 +38,8 @@ class CashOutflowDetail(View):
         template='sales/financialcashflow/cashoutflow/cashoutflow_detail.html',
         menu_active='',
         breadcrumb='CASH_OUTFLOW_DETAIL_PAGE',
+        icon_cls='fas fa-share',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -45,6 +51,8 @@ class CashOutflowUpdate(View):
         template='sales/financialcashflow/cashoutflow/cashoutflow_update.html',
         menu_active='',
         breadcrumb='CASH_OUTFLOW_UPDATE_PAGE',
+        icon_cls='fas fa-share',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         # input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_RETURN

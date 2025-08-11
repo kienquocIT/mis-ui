@@ -12,6 +12,8 @@ class PurchaseQuotationRequestList(View):
         menu_active='id_menu_purchase_quotation_request_list',
         breadcrumb='PURCHASE_QUOTATION_REQUEST_LIST_PAGE',
         perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_REQUEST_LIST, method='GET'),
+        icon_cls='fas fa-file-invoice-dollar',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -46,6 +48,8 @@ class PurchaseQuotationRequestCreateFromPR(View):
         menu_active='',
         breadcrumb='PURCHASE_QUOTATION_REQUEST_CREATE_PAGE_FROM_PR',
         perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_REQUEST_LIST, method='POST'),
+        icon_cls='fas fa-file-invoice-dollar',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -73,6 +77,8 @@ class PurchaseQuotationRequestCreateManual(View):
         menu_active='',
         breadcrumb='PURCHASE_QUOTATION_REQUEST_CREATE_PAGE_MANUAL',
         perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_REQUEST_LIST, method='POST'),
+        icon_cls='fas fa-file-invoice-dollar',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -100,6 +106,8 @@ class PurchaseQuotationRequestDetail(View):
         menu_active='',
         breadcrumb='PURCHASE_QUOTATION_REQUEST_DETAIL_PAGE',
         perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_REQUEST_DETAIL, method='GET', fill_key=['pk']),
+        icon_cls='fas fa-file-invoice-dollar',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -112,6 +120,8 @@ class PurchaseQuotationRequestUpdate(View):
         menu_active='',
         breadcrumb='PURCHASE_QUOTATION_REQUEST_UPDATE_PAGE',
         perm_check=PermCheck(url=ApiURL.PURCHASE_QUOTATION_REQUEST_DETAIL, method='GET', fill_key=['pk']),
+        icon_cls='fas fa-file-invoice-dollar',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

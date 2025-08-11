@@ -14,6 +14,8 @@ class BalanceInitList(View):
         template='masterdata/saledata/masterdata/balance_init.html',
         breadcrumb='BALANCE_INIT_PAGE',
         menu_active='menu_balance_init',
+        icon_cls='fas fa-balance-scale',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PERIODS_CONFIG_LIST).get()

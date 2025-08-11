@@ -14,6 +14,8 @@ class PaymentList(View):
         template='payment/payment_list.html',
         breadcrumb='PAYMENT_LIST_PAGE',
         menu_active='id_menu_payment',
+        icon_cls='fas far fa-credit-card',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -27,6 +29,8 @@ class PaymentCreate(View):
         template='payment/payment_create.html',
         breadcrumb='PAYMENT_CREATE_PAGE',
         menu_active='menu_advance_payment_list',
+        icon_cls='fas far fa-credit-card',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_PAYMENT
@@ -47,6 +51,8 @@ class PaymentDetail(View):
         template='payment/payment_detail.html',
         breadcrumb='PAYMENT_DETAIL_PAGE',
         menu_active='menu_payment_detail',
+        icon_cls='fas far fa-credit-card',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_PAYMENT
@@ -66,6 +72,8 @@ class PaymentUpdate(View):
         template='payment/payment_update.html',
         breadcrumb='PAYMENT_DETAIL_PAGE',
         menu_active='menu_payment_detail',
+        icon_cls='fas far fa-credit-card',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.CASHOUTFLOW_PAYMENT

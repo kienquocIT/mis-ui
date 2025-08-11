@@ -11,6 +11,8 @@ class GoodsRegistrationList(View):
         template='sales/inventory/goods_registration/goods_registration_list.html',
         menu_active='menu_goods_registration',
         breadcrumb='GOODS_REGISTRATION_LIST_PAGE',
+        icon_cls='fas bi bi-ui-radios-grid',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -43,6 +45,8 @@ class GoodsRegistrationDetail(View):
         template='sales/inventory/goods_registration/goods_registration_detail.html',
         breadcrumb='GOODS_REGISTRATION_DETAIL_PAGE',
         menu_active='menu_goods_registration',
+        icon_cls='fas bi bi-ui-radios-grid',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

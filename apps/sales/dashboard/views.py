@@ -9,12 +9,26 @@ import requests
 from apps.shared.msg import SaleMsg
 
 
+class DashboardCommonPage(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/dashboard/dashboard.html',
+        breadcrumb='DASHBOARD_COMMON_PAGE',
+        menu_active='id_menu_dashboard',
+        icon_cls='fas fa-chart-column',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class DashboardGeneralList(View):
     @mask_view(
         auth_require=True,
-        template='sales/dashboard/dashboard_general.html',
+        template='sales/dashboard/dashboard_general_echarts.html',
         breadcrumb='DASHBOARD_GENERAL_LIST_PAGE',
-        menu_active='id_menu_dashboard_general',
+        icon_cls='fas fa-chart-line',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
@@ -28,9 +42,10 @@ class DashboardGeneralList(View):
 class DashboardPipelineList(View):
     @mask_view(
         auth_require=True,
-        template='sales/dashboard/dashboard_pipeline.html',
+        template='sales/dashboard/dashboard_pipeline_echarts.html',
         breadcrumb='DASHBOARD_PIPELINE_LIST_PAGE',
-        menu_active='id_menu_dashboard_pipeline',
+        icon_cls='fas fa-filter',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()

@@ -11,6 +11,8 @@ class ProductModificationList(View):
         template='productmodification/product_modification_list.html',
         breadcrumb='PRODUCT_MODIFICATION_LIST_PAGE',
         menu_active='id_menu_product_modification',
+        icon_cls='fa-solid fa-boxes-stacked',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -48,6 +50,8 @@ class ProductModificationCreate(View):
         template='productmodification/product_modification_create.html',
         breadcrumb='PRODUCT_MODIFICATION_CREATE_PAGE',
         menu_active='',
+        icon_cls='fa-solid fa-boxes-stacked',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -63,6 +67,8 @@ class ProductModificationDetail(View):
         template='productmodification/product_modification_detail.html',
         breadcrumb='PRODUCT_MODIFICATION_DETAIL_PAGE',
         menu_active='',
+        icon_cls='fa-solid fa-boxes-stacked',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -76,6 +82,8 @@ class ProductModificationUpdate(View):
         template='productmodification/product_modification_update.html',
         breadcrumb='PRODUCT_MODIFICATION_UPDATE_PAGE',
         menu_active='',
+        icon_cls='fa-solid fa-boxes-stacked',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {

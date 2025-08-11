@@ -515,28 +515,36 @@ if (_form.dataForm.hasOwnProperty('attachment')) {
 
 ---
 ## CÁCH ÁP DỤNG PRINT CHO CHỨC NĂNG:
-
-```js
-BƯỚC 1:
-- Thêm extend html của print vào trang html detail của chức năng:
+page tham khảo: 
+> quotation/templates/sales/quotation/quotation_detail.html
+### BƯỚC 1:
+1. Thêm extend html của print vào trang html detail của chức năng:
 VD:
+```html
 {% include 'printer/print.html' %}
+```
+2. thêm button HTML vào page detail, button phải có id là <b>print-document</b>
+```html
+<button type="button" class="btn btn-outline-secondary" id="print-document" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Print' %}" hidden><i class="fas fa-print"></i></button>
+```
 
-BƯỚC 2:
-- Thêm extend js và <script></script> vào {% block jsFooter %} trang html detail của chức năng:
+### BƯỚC 2:
+1. Thêm extend js và <script></script> vào {% block jsFooter %} trang html detail của chức năng:
 VD:
+```html
 <script src="{% static 'printer/print.js' %}"></script>
-
- <script>
-     $(document).ready(function () {
-         $('#print-document').on('click', function () {
-             PrintTinymceControl.open_modal();
-         });
-     });
- </script>
+<script>
+  $(document).ready(function () {
+      $('#print-document').on('click', function () {
+          PrintTinymceControl.open_modal();
+      });
+  });
+</script>
+```
 
 BƯỚC 3: Thêm init print trong file js detail:
 VD:
+```js
 $.fn.callAjax2({
    url: LeaseOrderLoadDataHandle.$form.data('url'),
    method: 'GET',
@@ -549,12 +557,11 @@ $.fn.callAjax2({
        }
    }
    )
-Lưu ý: '010404b3-bb91-4b24-9538-075f5f00ef14' là ID của chức năng khai báo trong apps/sharedapp/data/base/plan_app_sub/ (Source API)
-
 ```
----
 
-9. Mọi z-index đều nhỏ hơn 9999
+>  ### Lưu ý:
+> '010404b3-bb91-4b24-9538-075f5f00ef14' là <b>app_ID</b> của chức năng khai báo trong apps/sharedapp/data/base/plan_app_sub/ (Source API)
+---
 
 ---
 #### MEDIA CLOUD Config

@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Dashboard' %}{% endblock %}
+{% block cssHeader %}
+    <style>
+        #idxPageContent {
+            {#background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);#}
+            background-image: url("{% static 'assets/js/home_4.jpg' %}");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            padding: 1rem 0;
+        }
+        
+        .dashboard-cards {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            width: 40vw;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-description {
+            font-size: 1.2rem;
+            color: #706f6f;
+            margin-bottom: 0;
+            line-height: 1.5;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            #idxPageContent {
+                padding: 20px 15px;
+            }
+            
+            .dashboard-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .dashboard-card {
+                width: 100%;
+                max-width: 320px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .dashboard-card {
+                padding: 25px 15px;
+            }
+            
+            .card-icon {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+{% endblock %}
+{% block pageContent %}
+    <div class="dashboard-cards">
+        <a href="{% url 'DashboardGeneralList' %}" class="dashboard-card">
+            <div class="card-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3 class="card-title">{% trans 'General' %}</h3>
+            <p class="card-description">{% trans 'Overview of revenue, profit and key performance indicators' %}</p>
+        </a>
+        
+        <a href="{% url 'DashboardPipelineList' %}" class="dashboard-card pipeline-card">
+            <div class="card-icon">
+                <i class="fas fa-filter"></i>
+            </div>
+            <h3 class="card-title">{% trans 'Pipeline' %}</h3>
+            <p class="card-description">{% trans 'Sales pipeline analysis, conversion rates and deal tracking' %}</p>
+        </a>
+    </div>
+{% endblock %}
+{% block jsFooter %}
+{% endblock %}

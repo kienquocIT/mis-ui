@@ -13,6 +13,8 @@ class PurchaseRequestCreate(View):
         menu_active='menu_purchase_request_list',
         breadcrumb='PURCHASE_REQUEST_CREATE_PAGE',
         perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_LIST, method='POST'),
+        icon_cls='fas fa-file-upload',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -27,6 +29,8 @@ class PurchaseRequestList(View):
         menu_active='menu_purchase_request_list',
         breadcrumb='PURCHASE_REQUEST_LIST_PAGE',
         perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_LIST, method='GET'),
+        icon_cls='fas fa-file-upload',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -61,6 +65,8 @@ class PurchaseRequestDetail(View):
         menu_active='menu_purchase_request_list',
         breadcrumb='PURCHASE_REQUEST_DETAIL_PAGE',
         perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_DETAIL, method='GET', fill_key=['pk']),
+        icon_cls='fas fa-file-upload',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -112,6 +118,8 @@ class PurchaseRequestConfig(View):
         menu_active='menu_purchase_request_config',
         breadcrumb='PURCHASE_REQUEST_CONFIG_PAGE',
         perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_CONFIG, method='GET'),
+        icon_cls='fas fa-file-upload',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -144,6 +152,8 @@ class PurchaseRequestUpdate(View):
         menu_active='menu_purchase_request_list',
         breadcrumb='PURCHASE_REQUEST_UPDATE_PAGE',
         perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_DETAIL, method='PUT', fill_key=['pk']),
+        icon_cls='fas fa-file-upload',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_REQUEST

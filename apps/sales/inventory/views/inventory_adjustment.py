@@ -14,6 +14,8 @@ class InventoryAdjustmentList(View):
         template='sales/inventory/inventory_adjustment/inventory_adjustment_list.html',
         menu_active='menu_inventory_activities',
         breadcrumb='INVENTORY_ADJUSTMENT_LIST_PAGE',
+        icon_cls='fas bi bi-sliders',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -48,6 +50,8 @@ class InventoryAdjustmentCreate(View):
         template='sales/inventory/inventory_adjustment/inventory_adjustment_create.html',
         menu_active='menu_inventory_activities',
         breadcrumb='INVENTORY_ADJUSTMENT_CREATE_PAGE',
+        icon_cls='fas bi bi-sliders',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.COMPANY_CONFIG).get()
@@ -66,6 +70,8 @@ class InventoryAdjustmentDetail(View):
         template='sales/inventory/inventory_adjustment/inventory_adjustment_detail.html',
         breadcrumb='INVENTORY_ADJUSTMENT_DETAIL_PAGE',
         menu_active='menu_inventory_activities',
+        icon_cls='fas bi bi-sliders',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get()
@@ -82,6 +88,8 @@ class InventoryAdjustmentUpdate(View):
         template='sales/inventory/inventory_adjustment/inventory_adjustment_update.html',
         breadcrumb='INVENTORY_ADJUSTMENT_UPDATE_PAGE',
         menu_active='menu_inventory_activities',
+        icon_cls='fas bi bi-sliders',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_PRODUCT_LIST).get()

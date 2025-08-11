@@ -14,6 +14,8 @@ class GoodsDetail(View):
         template='sales/inventory/goods_detail/goods_detail.html',
         menu_active='menu_goods_detail_list',
         breadcrumb='GOODS_DETAIL_PAGE',
+        icon_cls='fas bi bi-info-square',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {

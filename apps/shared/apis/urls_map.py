@@ -857,6 +857,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Recon
     FINANCIAL_RECON_LIST = StringUrl('financial-reconciliation/list')
     FINANCIAL_RECON_DETAIL = StringUrl('financial-reconciliation/detail/{pk}')
+    AP_INVOICE_LIST_FOR_RECON = StringUrl('financial-reconciliation/ap-invoice-for-recon/list')
+    COF_LIST_FOR_RECON = StringUrl('financial-reconciliation/cash-outflow-for-recon/list')
     AR_INVOICE_LIST_FOR_RECON = StringUrl('financial-reconciliation/ar-invoice-for-recon/list')
     CIF_LIST_FOR_RECON = StringUrl('financial-reconciliation/cash-inflow-for-recon/list')
 
@@ -990,3 +992,17 @@ class ApiURL:  # pylint: disable=too-few-public-methods
 
     # attendance/shift assignment
     SHIFT_ASSIGNMENT_LIST = StringUrl('hrm/attendance/shift-assignment/list')
+
+    # attendance/attendance
+    ATTENDANCE_LIST = StringUrl('hrm/attendance/attendance/list')
+
+    # attendance/device integrate
+    ATTENDANCE_DEVICE_LIST = StringUrl('hrm/attendance/attendance-device/list')
+    ATTENDANCE_DEVICE_DETAIL = StringUrl('hrm/attendance/attendance-device/{pk}')
+    DEVICE_INTEGRATE_EMPLOYEE_LIST = StringUrl('hrm/attendance/device-integrate-employee/list')
+    DEVICE_INTEGRATE_EMPLOYEE_DETAIL = StringUrl('hrm/attendance/device-integrate-employee/{pk}')
+
+    # HRM - Absence Explanation
+    ABSENCE_EXPLANATION_LIST = StringUrl('hrm/absenceexplanation/list')
+    ABSENCE_EXPLANATION_DETAIL = StringUrl('hrm/absenceexplanation/detail/{pk}')
+

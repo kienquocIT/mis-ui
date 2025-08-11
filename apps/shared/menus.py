@@ -319,18 +319,8 @@ class MenusCRM:
         icon='<i class="fas fas fa-home"></i>',
     )
     DASHBOARD = MenuCommon(
-        name='Dashboard', code='id_menu_dashboard', view_name='#',
+        name='Dashboard', code='id_menu_dashboard', view_name='DashboardCommonPage',
         icon='<i class="fas fa-chart-column"></i>',
-        child=[
-            MenuCommon(
-                name='General', code='id_menu_dashboard_general', view_name='DashboardGeneralList',
-                icon='<i class="fas fa-square-poll-vertical"></i>',
-            ),
-            MenuCommon(
-                name='Pipeline', code='id_menu_dashboard_pipeline', view_name='DashboardPipelineList',
-                icon='<i class="fas fa-chart-bar"></i>',
-            ),
-        ],
     )
     PLANNING = MenuCommon(
         name='Planning', code='id_menu_planning', view_name='#',
@@ -378,10 +368,10 @@ class MenusCRM:
         name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
         icon='<i class="fas fa-shopping-cart"></i>',
     )
-    GROUP_ORDER = MenuCommon(
-        name='Group order', code='menu_group_order_list', view_name='GroupOrderList',
-        icon='<i class="fas fa-file-invoice"></i>',
-    )
+    # GROUP_ORDER = MenuCommon(
+    #     name='Group order', code='menu_group_order_list', view_name='GroupOrderList',
+    #     icon='<i class="fas fa-file-invoice"></i>',
+    # )
     LEASE_ORDER = MenuCommon(
         name='Lease order', code='menu_lease_order_list', view_name='LeaseOrderList',
         icon='<i class="fas fa-handshake"></i>',
@@ -874,11 +864,33 @@ class MenusHRM:
     )
     ATTENDANCE = MenuCommon(
         name='Attendance', code='menu_attendance', view_name='',
-        icon='<i class="fas fa-solid fa-person"></i>',
+        icon='<i class="fas fa-calendar-check"></i>',
         child=[
             MenuCommon(
                 name='Shift assignment', code='menu_shift_assignment_list', view_name='ShiftAssignmentList',
                 icon='<i class="fas fa-user-clock"></i>',
+            ),
+            MenuCommon(
+                name='Attendance table', code='menu_attendance_list', view_name='HRMAttendanceList',
+                icon='<i class="fa-solid fa-table-columns"></i>',
+            ),
+            MenuCommon(
+                name='Attendance device config',
+                code='menu_attendance_device_list',
+                view_name='AttendanceDeviceList',
+                icon='<i class="fa-solid fa-gears"></i>',
+            ),
+            MenuCommon(
+                name='Synchronize employee',
+                code='menu_device_integrate_employee_list',
+                view_name='DeviceIntegrateEmployeeList',
+                icon='<i class="fas fa-repeat"></i>',
+            ),
+            MenuCommon(
+                name='Absence explanation',
+                code='menu_absence_explanation_list',
+                view_name='AbsenceExplanationList',
+                icon='<i class="fas fa-comment-alt absence-explanation-icon"></i>',
             ),
         ]
     )
@@ -1004,23 +1016,23 @@ class SpaceItem:
         'crm': SpaceCommon(
             'Sales',
             'crm',
-            icon='<i class="fas fa-solid fa-users-gear"></i>',
+            icon='<i class="fa-solid fa-comments-dollar"></i>',
             menus=[
                 MenusCRM.HOME,
                 MenusCRM.DASHBOARD,
-                MenusCRM.PLANNING,
                 MenusCRM.LEAD,
-                MenusCRM.CALENDAR,
                 MenusCRM.CONTACT,
                 MenusCRM.ACCOUNT,
                 MenusCRM.OPPORTUNITY,
                 MenusCRM.QUOTATION,
+                MenusCRM.SALE_ORDER,
+                MenusCRM.LEASE_ORDER,
+                MenusCRM.CALENDAR,
                 MenusCRM.CONSULTING,
                 MenusCRM.BIDDING,
-                MenusCRM.SALE_ORDER,
-                MenusCRM.GROUP_ORDER,
+                MenusCRM.PLANNING,
+                # MenusCRM.GROUP_ORDER,
                 MenusCRM.AR_INVOICE,
-                MenusCRM.LEASE_ORDER,
                 MenusCRM.LEASE_ASSET_LIST,
                 MenusCRM.RECURRENCE,
                 MenusCRM.WORK_ORDER,

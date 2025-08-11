@@ -351,8 +351,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     MEETING_SCHEDULE_CREATE_PAGE = BreadcrumbChildren(_('Meeting schedule create'), 'MeetingScheduleCreate')
     MEETING_SCHEDULE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
+    DASHBOARD_COMMON_PAGE = BreadcrumbChildren(_('Dashboard'), 'DashboardCommonPage')
     DASHBOARD_GENERAL_LIST_PAGE = BreadcrumbChildren(_('General dashboard'), 'DashboardGeneralList')
-
     DASHBOARD_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pipeline dashboard'), 'DashboardPipelineList')
 
     PERIODS_CONFIG_PAGE = BreadcrumbChildren(_('Periods config'), 'PeriodsConfigList')
@@ -529,6 +529,18 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Shift assignment
     SHIFT_ASSIGNMENT_LIST_PAGE = BreadcrumbChildren(_('Shift assignment'), 'ShiftAssignmentList')
+
+    # Attendance
+    HRM_ATTENDANCE_LIST_PAGE = BreadcrumbChildren(_('HRM Attendance info'), 'HRMAttendanceList')
+
+    # Device integrate
+    DEVICE_EMPLOYEE_INTEGRATE_LIST_PAGE = BreadcrumbChildren(_('Synchronize employee'), 'DeviceIntegrateEmployeeList')
+
+    # Attendance device
+    ATTENDANCE_DEVICE_LIST_PAGE = BreadcrumbChildren(_('Attendance device config'), 'AttendanceDeviceList')
+
+    # Absence explanation
+    ABSENCE_EXPLANATION_LIST = BreadcrumbChildren(_('Absence Explanation'), 'AbsenceExplanationList')
 
 
 class BreadcrumbView:
@@ -1090,8 +1102,8 @@ class BreadcrumbView:
                                     BreadcrumbItem.MEETING_SCHEDULE_CREATE_PAGE]
     MEETING_SCHEDULE_DETAIL_PAGE = MEETING_SCHEDULE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
 
+    DASHBOARD_COMMON_PAGE = [BreadcrumbItem.DASHBOARD_COMMON_PAGE]
     DASHBOARD_GENERAL_LIST_PAGE = [BreadcrumbItem.DASHBOARD_GENERAL_LIST_PAGE]
-
     DASHBOARD_PIPELINE_LIST_PAGE = [BreadcrumbItem.DASHBOARD_PIPELINE_LIST_PAGE]
 
     PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
@@ -1436,3 +1448,28 @@ class BreadcrumbView:
     SHIFT_ASSIGNMENT_LIST_PAGE = [
         BreadcrumbItem.SHIFT_ASSIGNMENT_LIST_PAGE
     ]
+
+    # Attendance
+    HRM_ATTENDANCE_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.HRM_ATTENDANCE_LIST_PAGE
+    ]
+
+    # Device integrate
+    DEVICE_INTEGRATE_EMPLOYEE_LIST_PAGE = [
+        BreadcrumbItem.DEVICE_EMPLOYEE_INTEGRATE_LIST_PAGE
+    ]
+
+    # Attendance Device
+    ATTENDANCE_DEVICE_LIST_PAGE = [
+        BreadcrumbItem.ATTENDANCE_DEVICE_LIST_PAGE
+    ]
+
+
+    # Absence explanation
+    ABSENCE_EXPLANATION_LIST_PAGE = [
+        BreadcrumbItem.ABSENCE_EXPLANATION_LIST
+    ]
+    ABSENCE_EXPLANATION_CREATE_PAGE = [BreadcrumbItem.ABSENCE_EXPLANATION_LIST] + [BreadcrumbItem.BASTION_CREATE]
+    ABSENCE_EXPLANATION_DETAIL_PAGE = [BreadcrumbItem.ABSENCE_EXPLANATION_LIST] + [BreadcrumbItem.BASTION_DETAIL]
+    ABSENCE_EXPLANATION_UPDATE_PAGE = [BreadcrumbItem.ABSENCE_EXPLANATION_LIST] + [BreadcrumbItem.BASTION_UPDATE]

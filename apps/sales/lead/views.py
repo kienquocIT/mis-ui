@@ -13,6 +13,8 @@ class LeadList(View):
         template='sales/lead/lead_list.html',
         breadcrumb='LEAD_LIST_PAGE',
         menu_active='menu_lead_list',
+        icon_cls='fas far fa-star',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -24,6 +26,8 @@ class LeadCreate(View):
         template='sales/lead/lead_create.html',
         breadcrumb='LEAD_CREATE_PAGE',
         menu_active='',
+        icon_cls='fas far fa-star',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.LEAD_STAGE_LIST).get()
@@ -41,6 +45,8 @@ class LeadDetail(View):
         template='sales/lead/lead_detail.html',
         breadcrumb='LEAD_DETAIL_PAGE',
         menu_active='',
+        icon_cls='fas far fa-star',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.LEAD_STAGE_LIST).get()
@@ -58,6 +64,8 @@ class LeadUpdate(View):
         template='sales/lead/lead_update.html',
         breadcrumb='LEAD_UPDATE_PAGE',
         menu_active='',
+        icon_cls='fas far fa-star',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.LEAD_STAGE_LIST).get()

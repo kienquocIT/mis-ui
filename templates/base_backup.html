@@ -34,6 +34,10 @@
                 href="{% static 'vendors/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}"
                 rel="stylesheet" type="text/css"
         />
+        <link
+                href="{% static 'vendors/datatables-advance/fixed-columns.css' %}"
+                rel="stylesheet" type="text/css"
+        />
 
         <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
         <link
@@ -97,136 +101,6 @@
         {% block jsHeader %}{% endblock %}
     {% endcompress %}
     {% block jsHeaderUnCompress %}{% endblock %}
-
-    <style>
-        {#sidebar css#}
-        body {
-            background-color: #f0f2f5;
-            transition: all 0.3s ease-in-out;
-        }
-        #content {
-            margin-left: 300px;
-            width: calc(100% - 300px);
-            transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-        }
-        #content.full-width {
-            margin-left: 65px;
-            width: calc(100% - 65px);
-        }
-        #content .blogapp-wrap {
-          position: relative; !important;
-          height: 100vh; !important;
-        }
-        .sidebar {
-            background: white;
-            font-size: 14px;
-            height: 100vh;
-            width: 300px;
-            position: fixed;
-            padding: 10px;
-            left: 0;
-            border-right: 1px solid #eaeaea;
-        }
-        .sidebar.hidden {
-            left: -300px;
-        }
-        .sidebar .logo {
-            font-weight: bold;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-        }
-        .sidebar .menu {
-            list-style: none;
-            padding: 0;
-            height: 77vh;
-            overflow-y: auto
-        }
-        .sidebar .menu .main-menu-item {
-            padding: 5px 10px;
-            border-radius: 8px;
-        }
-        .sidebar .menu .child-menu-item {
-            padding: 5px 5px;
-            border-radius: 8px;
-        }
-        .sidebar .menu .main-menu-item:not(.active):hover {
-            background: rgba(0, 0, 0, 0.05);
-        }
-        .sidebar .menu .child-menu-item:hover {
-            transform: translateX(10px);
-            transition: 0.3s;
-        }
-        .sidebar .menu li.active {
-            font-size: large;
-            font-weight: bold;
-            color: #007D88;
-        }
-        .sidebar .menu li a {
-            color: inherit;
-        }
-        .sidebar .menu li a i, #menu-tenant a i {
-            width: 20px;
-            text-align: center;
-            display: inline-block;
-        }
-        .sidebar .navbar-toggle:hover {
-            transform: translateX(-5px);
-            transition: 0.3s;
-        }
-
-        .sidebar.icon-only {
-            width: 65px !important;
-        }
-        .sidebar.icon-only .logo span,
-        .sidebar.icon-only .menu .menu-text,
-        .sidebar.icon-only .btn .btn-text,
-        .sidebar.icon-only .btn-group,
-        .sidebar.icon-only .dropdown-menu,
-        .sidebar.icon-only .space-item,
-        .sidebar.icon-only .blog-header .btn,
-        .sidebar.icon-only #menu-tenant-text,
-        .sidebar.icon-only .blog-options-wrap,
-        .sidebar.icon-only .hk-menu-backdrop {
-            display: none !important;
-        }
-        .sidebar.icon-only .menu {
-            list-style: none;
-            padding: 0;
-            height: 90vh !important;
-            overflow-y: auto
-        }
-        .sidebar.icon-only .menu .main-menu-item {
-            text-align: center;
-            padding: 8px;
-        }
-        .sidebar.icon-only .menu li a i {
-            margin-right: 0;
-            width: 100%;
-        }
-        .sidebar.icon-only .logo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .sidebar.icon-only .logo button {
-            display: block;
-            margin-top: 10px;
-        }
-        .sidebar:not(.icon-only) .logo {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .sidebar:not(.icon-only) .logo button {
-            margin-left: auto;
-            margin-top: 0;
-        }
-        .sidebar.icon-only .navbar-toggle:hover {
-            transform: translateX(5px);
-            transition: 0.3s;
-        }
-    </style>
 </head>
 <body>
 
@@ -254,210 +128,201 @@
 </button>
 <!-- // Bubble -->
 
-<!-- Sidebar -->
-<div class="sidebar icon-only" id="sidebar">
-    <p style="display: none" id="get-menu-active" data-nav-menu="{{ nav.menu_id_current }}" data-nav-tenant="{{ nav.space_code_current }}"></p>
-    {% include 'extends/top_nav_v2.html' %}
-    {% include 'extends/vertical_nav_brand_v2.html' %}
-    <button class="btn btn-outline-light btn-rounded btn-custom mb-3 w-100" type="button" data-bs-toggle="modal" data-bs-target="#modalSearchMenu">
-        <span class="icon">
-            <i class="fa-solid fa-magnifying-glass"></i><span class="btn-text">{% trans 'Menu finder' %}</span>
-        </span>
-    </button>
-    <div class="btn-group mb-3 w-100" id="menu-tenant" data-space-selected="{{ base.space_current_detail.code }}">
-        <button id="menu-tenant-text" type="button" class="btn btn-lg btn-animated btn-custom btn-dark btn-floating rounded" data-bs-toggle="dropdown" data-dropdown-animation aria-haspopup="true" aria-expanded="false">
-            {% if base.space_current_detail.name %}
-                 <span>
-                    <span class="icon">
-                        <span class="feather-icon">{{ base.space_current_detail.icon|safe }}</span>
-                    </span>
-                    <span>{{ base.space_current_detail.name }}</span>
-                    <span class="icon">
-                        <span class="feather-icon"><i class="fa-solid fa-caret-down"></i></span>
-                    </span>
-                </span>
-            {% else %}
-                --
-            {% endif %}
+<!-- Wrapper -->
+<div
+        class="hk-wrapper"
+        data-layout="vertical"
+        data-layout-style="collapsed"
+        data-menu="light"
+        data-footer="simple"
+        data-hover="active"
+        data-navbar-style="collapsed"
+>
+    <p
+            style="display: none" id="get-menu-active" data-nav-menu="{{ nav.menu_id_current }}"
+            data-nav-tenant="{{ nav.space_code_current }}"
+    ></p>
+    {% include 'extends/top_nav.html' %}
 
-        </button>
-        <div class="dropdown-menu dropdown-menu-dark dropdown-bordered w-80" data-url="{% url 'SpaceChangeView' %}" data-url-redirect="{% url 'HomeView' %}" data-method="PUT">
-            {% csrf_token %}
-            {% for item in base.space_list %}
-                {% if item.child|length > 0 %}
-                    {% for item_child in item.child %}
-                        <a class="dropdown-item space-item {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}"
-                           data-space-code="{{ item_child.code }}"
-                           data-space-name="{{ item_child.name }}"
-                           href="#"
-                        >
-                            {{ item_child.icon|safe }} {{ item_child.name }}
-                        </a>
-                    {% endfor %}
-                {% else %}
-                    <a class="dropdown-item {% if base.space_current_detail.code == item_child.code %} text-success {% endif %}" href="#">{{ item.name }}</a>
-                {% endif %}
-            {% endfor %}
-        </div>
+    <!-- Vertical Nav -->
+    <div class="hk-menu">
+        {% include 'extends/vertical_nav_brand.html' %}
+
+        {% include 'extends/vertical_nav_main_menu.html' %}
     </div>
-    {% include 'extends/vertical_nav_main_menu_v2.html' %}
     <div id="hk_menu_backdrop" class="hk-menu-backdrop"></div>
-</div>
+    <!-- /Vertical Nav -->
 
-<!-- Main Content -->
-{% block fullBody %}
-<div class="full-width" id="content">
-    <div class="blogapp-wrap blogapp-sidebar-toggle">
-        <div class="blogapp-content">
-            <div class="blogapp-detail-wrap w-100">
-                {% block blockBreadcrumb %}
-                    <header class="blog-header" style="height: var(--blog-header-height);">
-                        <div class="d-flex align-items-center">
-                            <button class="btn mr-1 hidden" id="btn-show-breadcrumb">
-                                <i class="fa-solid fa-bars"></i>
-                            </button>
-
-                            <div id="breadcrumb-data">
-                                {% include 'extends/breadcrumb.html' %}
-                            </div>
-                        </div>
-                        <div
-                                class="blog-options-wrap" id="idxPageAction"
-                                style="display: flex; align-items: center;"
-                        >
-                            {% include 'extends/direct_btn_group.html' %}
-                            <div class="{% if pk %}hidden{% endif %} mr-1" id="idxRealAction">
-                                {% block pageAction %}{% endblock %}
-                            </div>
-                            <button
-                                    type="button"
-                                    class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                    id="btn-active-edit-zone-wf"
-                            >
-                                <span
-                                        class="icon"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="bottom"
-                                        data-bs-original-title="{% trans 'Open edit in Zones' %}"
-                                >
-                                    <i class="fa-solid fa-unlock"></i>
-                                </span>
-                            </button>
-                            <div class="d-flex justify-content-between">
-                                <button
-                                        class="hidden btn-action-wf btn btn-outline-primary mr-1"
-                                        type="submit"
-                                        form=""
-                                        data-value=""
-                                        id="idxSaveInZoneWF"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="bottom"
-                                        title="{% trans 'Save edit zone' %}"
-                                >{% trans 'Save' %}</button>
-                                <button
-                                        class="hidden btn-action-wf btn btn-outline-primary mr-1"
-                                        type="submit"
-                                        form=""
-                                        data-wf-action=""
-                                        id="idxSaveInZoneWFThenNext"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="bottom"
-                                        title="{% trans 'Save edit zone and approve' %}"
-                                >{% trans 'Save and approve' %}</button>
-                                <button
-                                        type="button"
-                                        class="hidden btn-action-wf btn btn-primary"
-                                        data-value=""
-                                        id="btnMainApprove"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="bottom"
-                                        title="{% trans 'Approval' %}"
-                                >{% trans 'Approve' %}</button>
-                            </div>
-                            <div class="dropdown hidden">
-                                <button
-                                        aria-expanded="false" data-bs-toggle="dropdown"
-                                        class="btn btn-default btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                        type="button"
-                                >
-                                <span
-                                        class="icon"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="bottom"
-                                        data-bs-original-title="{% trans 'More actions' %}"
-                                >
-                                    <i class="fas fa-ellipsis-h"></i>
-                                </span>
-                                </button>
-                                <div role="menu" class="dropdown-menu dropdown-bordered" id="idxGroupAction">
-                                    {% for key, value in base_workflow.items %}
-                                        <li class="hidden btn-action-wf" data-value="{{ key }}">
-                                            <div class="dropdown-item"><i
-                                                    class="icon-action-wf mr-1 {{ value.1 }}"
-                                            ></i> {{ value.0 }}</div>
-                                        </li>
-                                    {% endfor %}
+    <!-- Main Content -->
+    {% block fullBody %}
+        <div class="hk-pg-wrapper pb-0">
+            <div class="hk-pg-body py-0">
+                <div class="blogapp-wrap blogapp-sidebar-toggle">
+                    <div class="blogapp-content">
+                        <div class="blogapp-detail-wrap w-100">
+                            {% block blockBreadcrumb %}
+                                <header class="blog-header" style="height: var(--blog-header-height);">
+                                    <button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle d-xl-none">
+                                        <span class="icon">
+                                            <span class="feather-icon"><i data-feather="align-left"></i></span>
+                                        </span>
+                                    </button>
+                                    <div class="d-flex align-items-center">
+                                        <button class="btn mr-1 hidden" id="btn-show-breadcrumb"><i
+                                                class="fa-solid fa-bars"
+                                        ></i></button>
+                                        {% if icon_cls %}
+                                            <div class="d-flex align-items-center justify-content-center mr-2 p-1 w-35p h-35p border rounded-2 {{ icon_bg }}">
+                                                <i class="{{ icon_cls }} text-white fs-4"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div id="breadcrumb-data">
+                                            {% include 'extends/breadcrumb.html' %}
+                                        </div>
+                                    </div>
+                                    <div
+                                            class="blog-options-wrap" id="idxPageAction"
+                                            style="display: flex; align-items: center;"
+                                    >
+                                        {% include 'extends/direct_btn_group.html' %}
+                                        <div class="{% if pk %}hidden{% endif %} mr-1" id="idxRealAction">
+                                            {% block pageAction %}{% endblock %}
+                                        </div>
+                                        <button
+                                                type="button"
+                                                class="hidden btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                id="btn-active-edit-zone-wf"
+                                        >
+                                            <span
+                                                    class="icon"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom"
+                                                    data-bs-original-title="{% trans 'Open edit in Zones' %}"
+                                            >
+                                                <i class="fa-solid fa-unlock"></i>
+                                            </span>
+                                        </button>
+                                        <div class="d-flex justify-content-between">
+                                            <button
+                                                    class="hidden btn-action-wf btn btn-outline-primary mr-1"
+                                                    type="submit"
+                                                    form=""
+                                                    data-value=""
+                                                    id="idxSaveInZoneWF"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom"
+                                                    title="{% trans 'Save edit zone' %}"
+                                            >{% trans 'Save' %}</button>
+                                            <button
+                                                    class="hidden btn-action-wf btn btn-outline-primary mr-1"
+                                                    type="submit"
+                                                    form=""
+                                                    data-wf-action=""
+                                                    id="idxSaveInZoneWFThenNext"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom"
+                                                    title="{% trans 'Save edit zone and approve' %}"
+                                            >{% trans 'Save and approve' %}</button>
+                                            <button
+                                                    type="button"
+                                                    class="hidden btn-action-wf btn btn-primary"
+                                                    data-value=""
+                                                    id="btnMainApprove"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom"
+                                                    title="{% trans 'Approval' %}"
+                                            >{% trans 'Approve' %}</button>
+                                        </div>
+                                        <div class="dropdown hidden">
+                                            <button
+                                                    aria-expanded="false" data-bs-toggle="dropdown"
+                                                    class="btn btn-default btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                    type="button"
+                                            >
+                                            <span
+                                                    class="icon"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom"
+                                                    data-bs-original-title="{% trans 'More actions' %}"
+                                            >
+                                                <i class="fas fa-ellipsis-h"></i>
+                                            </span>
+                                            </button>
+                                            <div role="menu" class="dropdown-menu dropdown-bordered" id="idxGroupAction">
+                                                {% for key, value in base_workflow.items %}
+                                                    <li class="hidden btn-action-wf" data-value="{{ key }}">
+                                                        <div class="dropdown-item"><i
+                                                                class="icon-action-wf mr-1 {{ value.1 }}"
+                                                        ></i> {{ value.0 }}</div>
+                                                    </li>
+                                                {% endfor %}
+                                            </div>
+                                            {% if base_workflow.length > 0 %}
+                                                {% csrf_token %}
+                                            {% endif %}
+                                        </div>
+                                        <button
+                                                id="btnLogShow"
+                                                class="hidden btn btn-icon btn-rounded bg-dark-hover mr-1 ntt-drawer-toggle-link"
+                                                data-drawer-target="#drawer_log_data"
+                                                data-drawer-active="false"
+                                                href="#"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="bottom"
+                                                data-bs-original-title="{% trans 'Log' %}"
+                                                data-url-runtime-detail="{% url 'FlowRuntimeDetailAPI' pk=1 %}"
+                                                data-url-current-wf="{% url 'WorkflowCurrentOfAppListAPI' %}"
+                                                data-url-app-emp-config="{% url 'AppEmpConfigListAPI' %}"
+                                        >
+                                            <span class="icon icon-xs">
+                                                <i class="fas fa-history fa-sm"></i>
+                                            </span>
+                                        </button>
+                                        <div>
+                                            <div class="v-separator d-lg-inline-block d-none"></div>
+                                            {% include 'extends/head_system_right.html' %}
+                                        </div>
+                                    </div>
+                                    <div class="hk-sidebar-togglable active"></div>
+                                </header>
+                            {% endblock %}
+                            <div class="blog-body">
+                                <div id="idxPageContent">
+                                    {% block pageContent %}
+                                    {% endblock %}
                                 </div>
-                                {% if base_workflow.length > 0 %}
-                                    {% csrf_token %}
-                                {% endif %}
                             </div>
-                            <button
-                                    id="btnLogShow"
-                                    class="hidden btn btn-icon btn-rounded bg-dark-hover mr-1 ntt-drawer-toggle-link"
-                                    data-drawer-target="#drawer_log_data"
-                                    data-drawer-active="false"
-                                    href="#"
-                                    data-bs-toggle="tooltip"
-                                    data-bs-placement="bottom"
-                                    data-bs-original-title="{% trans 'Log' %}"
-                                    data-url-runtime-detail="{% url 'FlowRuntimeDetailAPI' pk=1 %}"
-                                    data-url-current-wf="{% url 'WorkflowCurrentOfAppListAPI' %}"
-                                    data-url-app-emp-config="{% url 'AppEmpConfigListAPI' %}"
-                            >
-                                <span class="icon icon-xs">
-                                    <i class="fas fa-history fa-sm"></i>
-                                </span>
-                            </button>
-                            <div>
-                                <div class="v-separator d-lg-inline-block d-none"></div>
-                                {% include 'extends/head_system_right.html' %}
+                            <div class="blog-utility">
+                                <!-- /Message translate base -->
+                                {% include 'trans.html' %}
+                                <!-- /Message translate base -->
+
+                                <!-- Some data in single page | please override block in feature template-->
+                                <div class="hidden">
+                                    <!-- Render Company Config and some json -->
+                                    {% if data.input_mapping_properties %}
+                                        {{ data.input_mapping_properties|json_script:"input_mapping_properties" }}
+                                    {% endif %}
+                                    {{ config|json_script:"idConfigValue" }}
+                                    <!-- // Render Company Config and some json -->
+
+                                    {% block dataHiddenGroup %}{% endblock %}
+                                </div>
+                                <!-- // Some data in single page | please override block in feature template-->
+
+                                <!-- Drawer Log and Activity -->
+                                {% include "extends/utility/drawer_log.html" %}
+                                <!-- // Drawer Log and Activity -->
                             </div>
                         </div>
-                        <div class="hk-sidebar-togglable active"></div>
-                    </header>
-                {% endblock %}
-                <div id="idxPageContent">
-                    {% block pageContent %}
-                    {% endblock %}
-                </div>
-                <div class="blog-utility">
-                    <!-- /Message translate base -->
-                    {% include 'trans.html' %}
-                    <!-- /Message translate base -->
-
-                    <!-- Some data in single page | please override block in feature template-->
-                    <div class="hidden">
-                        <!-- Render Company Config and some json -->
-                        {% if data.input_mapping_properties %}
-                            {{ data.input_mapping_properties|json_script:"input_mapping_properties" }}
-                        {% endif %}
-                        {{ config|json_script:"idConfigValue" }}
-                        <!-- // Render Company Config and some json -->
-
-                        {% block dataHiddenGroup %}{% endblock %}
                     </div>
-                    <!-- // Some data in single page | please override block in feature template-->
-
-                    <!-- Drawer Log and Activity -->
-                    {% include "extends/utility/drawer_log.html" %}
-                    <!-- // Drawer Log and Activity -->
                 </div>
             </div>
         </div>
-    </div>
+    {% endblock %}
+    <!-- /Main Content -->
 </div>
-{% endblock %}
+<!-- /Wrapper -->
 
 <!-- Modal -->
 <!-- Raise a ticket -->
@@ -467,37 +332,6 @@
 {% include 'extends/extends_of_base.html' %}
 <!-- // Some plugin import to base -->
 <div class="idxModalData">
-    <div class="modal fade"
-         id="modalSearchMenu"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="modalSearchMenu"
-         data-bs-keyboard="true"
-         data-bs-backdrop="static"
-         data-url="{% url 'MenuFinder' %}">
-        <div class="modal-dialog" style="min-width: 70%" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h5>{% trans 'Menu finder' %}</h5>
-                        <p class="text-muted">{% trans 'Press esc to exit' %}</p>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span>&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="p-3">
-                        <input type="text" class="form-control" placeholder="{% trans 'Enter your search text' %}"/>
-                    </div>
-                    <div class="w-100 d-flex min-h-200p" style="max-height: 500px;">
-                        <div class="data-favorite p-3" style="flex: 2; overflow-y: auto; border-right: 1px solid #f1f1f1;"></div>
-                        <div class="data-list p-3" style="flex: 3; overflow-y: auto;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 {% block modalData %}{% endblock %}
 </div>
 <!-- /Modal -->
@@ -538,6 +372,7 @@
     <script src="{% static 'vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables-advance/fixed-columns.js' %}"></script>
     <!-- // Data Table JS -->
 
     <!-- Timeline ME -->
@@ -679,7 +514,7 @@
                 $('#breadcrumb-data').addClass('hidden');
             }
             if (wWidth < 350) {
-                $('#menu-tenant-text').text("--");
+                $('#menu-tenant-text').text("_");
             }
         }
 
@@ -904,24 +739,5 @@
 {% if is_ga_enabled %}
     <script async src="{{ ga_config.script }}"></script>
 {% endif %}
-
-<script>
-    function toggleSidebar() {
-        $('#full-brand-img').toggleClass('hidden')
-        $('.child-drop-down').toggleClass('dropdown-toggle')
-
-        $('#sidebar').toggleClass('icon-only');
-        $('#content').toggleClass('full-width');
-        if ($('.sidebar').hasClass('icon-only')) {
-            $('.collapse').removeClass('show');
-        }
-    }
-
-    $('.sidebar .menu .main-menu-item').on('click', function () {
-        if ($(this).closest('.sidebar').hasClass('icon-only')) {
-            toggleSidebar()
-        }
-    })
-</script>
 </body>
 </html>

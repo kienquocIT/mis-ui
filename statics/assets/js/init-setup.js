@@ -5999,7 +5999,7 @@ class WindowControl {
                 <div class="me-3"><img style="width: 60px; height: 60px" src="${resolve_icon()[0]}" alt="icon"></div>
                 <div>
                     <h4 class="text-${resolve_icon()[1]}">${resolve_title()}</h4>
-                    <p>${$.fn.gettext('Please wait')}...</p>
+                    <p class="small">${$.fn.gettext('Please wait')}...</p>
                 </div>
                 <div class="ms-auto"><div class="swal2-loader" style="display: flex;"></div></div>
             </div>`,
@@ -6092,7 +6092,7 @@ class WindowControl {
                 <div class="me-3"><img style="width: 60px; height: 60px" src="/static/assets/images/systems/forbidden.gif" alt="icon"></div>
                 <div>
                     <h4 class="text-danger">${$.fn.gettext("Forbidden")}</h4>
-                    <p>${$.fn.gettext('You do not have permission to access this function!')}</p>
+                    <p class="small">${$.fn.gettext('You do not have permission to access this function!')}</p>
                 </div>
             </div>`,
             customClass: {
@@ -6124,7 +6124,7 @@ class WindowControl {
                 <div class="me-3"><img style="width: 60px; height: 60px" src="/static/assets/images/systems/not_found.gif" alt="icon"></div>
                 <div>
                     <h4 class="text-warning">${$.fn.gettext("Not found")}</h4>
-                    <p>${$.fn.gettext('The requested content was not found!')}</p>
+                    <p class="small">${$.fn.gettext('The requested content was not found!')}</p>
                 </div>
             </div>`,
             customClass: {
@@ -6194,7 +6194,7 @@ class WindowControl {
                     <div class="me-3"><img style="width: 60px; height: 60px" src="/static/assets/images/systems/logout.gif" alt="icon"></div>
                     <div>
                         <h4 class="text-danger">${$.fn.gettext('The session login was expired')}</h4>
-                        <p>${$.fn.gettext('You will be logged out!')}</p>
+                        <p class="small">${$.fn.gettext('You will be logged out!')}</p>
                     </div>
                 </div>`,
                 customClass: {
@@ -6223,7 +6223,7 @@ class WindowControl {
                     <div class="me-3"><img style="width: 60px; height: 60px" src="/static/assets/images/systems/logout.gif" alt="icon"></div>
                     <div>
                         <h4 class="text-danger">${$.fn.gettext('The session login was expired')}</h4>
-                        <p>${$.fn.gettext('You will be logged out!')}</p>
+                        <p class="small">${$.fn.gettext('You will be logged out!')}</p>
                     </div>
                 </div>`,
                 customClass: {
@@ -6250,7 +6250,7 @@ class WindowControl {
                 <div class="me-3"><img style="width: 60px; height: 60px" src="/static/assets/images/systems/error.gif" alt="icon"></div>
                 <div>
                     <h4 class="text-danger">${$.fn.gettext("Internal Server Errors")}</h4>
-                    <p>${$.fn.gettext('An error occurred while interacting with the data!')}</p>
+                    <p class="small">${$.fn.gettext('An error occurred while interacting with the data!')}</p>
                 </div>
             </div>`,
             customClass: {
@@ -6510,13 +6510,17 @@ class DocumentControl {
         function executeTimeOutChangeSpace(urlData, methodData, spaceCode, spaceName, urlRedirectData) {
             let baseMsg = $.fn.transEle;
             Swal.fire({
-                title: $.fn.transEle.attr('data-msgLabelReloadPageIn') + `"${spaceName}"`,
-                html: $.fn.transEle.attr('data-msgReloadPageIn') + '<br>',
-                timer: 2000,
+                html:
+                `<div>
+                    <h4 class="text-blue">${$.fn.transEle.attr('data-msgLabelReloadPageIn')} "${spaceName}"</h4>
+                    <p class="small">${$.fn.transEle.attr('data-msgReloadPageIn')}</p>
+                </div>`,
+                allowOutsideClick: false,
+                timer: 1000,
                 timerProgressBar: true,
                 showCancelButton: true,
                 cancelButtonText: baseMsg.attr('data-cancel'),
-                showConfirmButton: true,  // Hiển thị nút Confirm
+                showConfirmButton: false,
                 confirmButtonText: baseMsg.attr('data-confirm'),
             }).then((result) => {
                 if (result.dismiss === Swal.DismissReason.timer || result.isConfirmed || result.value) {
@@ -6553,17 +6557,32 @@ class DocumentControl {
             });
         }
 
+        // $('.space-item').click(function (event) {
+        //     event.preventDefault();
+        //     let space_selected = $('#menu-tenant').attr('data-space-selected');
+        //     let urlData = $(this).closest('.dropdown-menu').attr('data-url');
+        //     let urlRedirectData = $(this).closest('.dropdown-menu').attr('data-url-redirect');
+        //     let methodData = $(this).closest('.dropdown-menu').attr('data-method');
+        //     let spaceCode = $(this).attr('data-space-code');
+        //     if (spaceCode !== space_selected) {
+        //         executeTimeOutChangeSpace(urlData, methodData, spaceCode, $(this).attr('data-space-name'), urlRedirectData);
+        //     }
+        // })
+
         $('.space-item').click(function (event) {
             event.preventDefault();
-            let space_selected = $('#menu-tenant').attr('data-space-selected');
-            let urlData = $(this).closest('.dropdown-menu').attr('data-url');
-            let urlRedirectData = $(this).closest('.dropdown-menu').attr('data-url-redirect');
-            let methodData = $(this).closest('.dropdown-menu').attr('data-method');
+            let $menuTenant = $('#menu-tenant');
+            let space_selected = $menuTenant.attr('data-space-selected');
+            let urlData = $menuTenant.attr('data-url');
+            let urlRedirectData = $menuTenant.attr('data-url-redirect');
+            let methodData = 'put';
             let spaceCode = $(this).attr('data-space-code');
+            let spaceName = $(this).attr('data-space-name');
             if (spaceCode !== space_selected) {
-                executeTimeOutChangeSpace(urlData, methodData, spaceCode, $(this).attr('data-space-name'), urlRedirectData);
+                executeTimeOutChangeSpace(urlData, methodData, spaceCode, spaceName, urlRedirectData);
             }
         })
+
     }
 
     static active_menu(item) {

@@ -10,6 +10,8 @@ class ReconList(View):
         template='sales/reconciliation/reconciliation_list.html',
         menu_active='menu_reconciliation',
         breadcrumb='RECON_LIST_PAGE',
+        icon_cls='fas bi bi-ui-checks',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -21,6 +23,8 @@ class ReconCreate(View):
         template='sales/reconciliation/reconciliation_create.html',
         menu_active='',
         breadcrumb='RECON_CREATE_PAGE',
+        icon_cls='fas bi bi-ui-checks',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.RECON_DATA_MAP
@@ -38,6 +42,8 @@ class ReconDetail(View):
         template='sales/reconciliation/reconciliation_detail.html',
         menu_active='',
         breadcrumb='RECON_DETAIL_PAGE',
+        icon_cls='fas bi bi-ui-checks',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.RECON_DATA_MAP
@@ -54,6 +60,8 @@ class ReconUpdate(View):
         template='sales/reconciliation/reconciliation_update.html',
         menu_active='',
         breadcrumb='RECON_UPDATE_PAGE',
+        icon_cls='fas bi bi-ui-checks',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.RECON_DATA_MAP
@@ -105,6 +113,28 @@ class ReconDetailAPI(APIView):
             resp.result['message'] = SaleMsg.CIF_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+# related
+class APInvoiceListForReconAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.AP_INVOICE_LIST_FOR_RECON).get(data)
+        return resp.auto_return(key_success='ap_invoice_list')
+
+
+class CashOutflowListForReconAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.COF_LIST_FOR_RECON).get(data)
+        return resp.auto_return(key_success='cash_outflow_list')
 
 
 class ARInvoiceListForReconAPI(APIView):

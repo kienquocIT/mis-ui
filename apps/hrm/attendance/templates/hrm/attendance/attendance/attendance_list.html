@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Attendance Table' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    {{ data.data.current_period | json_script:"current_period" }}
+
+    <div class="row">
+        <!-- Filter area -->
+        <div class="col-12 mb-5">
+            <div class="row">
+                <div class="col-12 col-md-1 col-lg-1"></div>
+                <div class="col-12 col-md-4 col-lg-4">
+                    <label class="form-label" for="txt_title">{% trans 'Department / Employee Filter' %}</label>
+                    <div id="select_employee" class="form-control d-flex align-items-center" style="cursor: pointer;">
+                        <span class="employee-icon"><i class="fa-solid fa-user-group"></i></span>
+                        <span class="employee-text ms-2">{% trans "All Department & Employee" %}</span>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-2 col-lg-2">
+                    <div class="form-group">
+                        <label class="form-label" for="box-month">{% trans 'Month' %}</label>
+                        <select class="form-select area-period-element" id="box-month" data-url="" data-method="GET"
+                                name="month"></select>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-2 col-lg-2">
+                    <div class="form-group">
+                        <label class="form-label required" for="date_from">{% trans 'From' %}</label>
+                        <div class="input-affix-wrapper">
+                            <input type="text" name="date_from" id="date_from" class="form-control flat-picker"
+                                   autocomplete="off" required>
+                            <div class="input-suffix">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-2 col-lg-2">
+                    <div class="form-group">
+                        <label class="form-label required" for="date_to">{% trans 'To' %}</label>
+                        <div class="input-affix-wrapper">
+                            <input type="text" name="date_to" id="date_to" class="form-control flat-picker"
+                                   autocomplete="off" required>
+                            <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-1 col-lg-1"></div>
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="d-flex">
+                        <button id="apply_filter" type="button" class="btn btn-sm btn-primary d-flex align-items-center">
+                            <span class="icon me-1 d-flex align-items-center">
+                                <span class="feather-icon">
+                                    <i class="fa-solid fa-filter"></i>
+                                </span>
+                            </span>
+                            <span>{% trans 'Apply Filter' %}</span>
+                        </button>
+
+                        <button id="sync_attendance" type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center ml-2">
+                            <span class="icon me-1 d-flex align-items-center">
+                                <span class="feather-icon">
+                                    <i class="fas fa-redo-alt"></i>
+                                </span>
+                            </span>
+                            <span>{% trans 'Sync attendance' %}</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="col-12" id="space_main_table_employee"></div>
+    </div>
+
+    <div class="d-flex align-content-between hidden" id="table-note">
+        <span class="mr-5">{% trans "P: Present" %}</span>
+        <span class="mr-5">{% trans "A: Absent" %}</span>
+        <span class="mr-5">{% trans "L: Leave" %}</span>
+        <span class="mr-5">{% trans "B: Business Trip" %}</span>
+        <span class="mr-5">{% trans "H: Holiday" %}</span>
+        <span class="mr-5">{% trans "W: Weekend" %}</span>
+        <span class="mr-5">{% trans "O: Overtime" %}</span>
+        <span class="mr-5">{% trans "OB: Overtime on business trip" %}</span>
+    </div>
+{% endblock %}
+{% block modalData %}
+    {% include 'hrm/attendance/attendance/dept_employee_modal.html' %}
+    {% include 'hrm/attendance/attendance/offcanvas_detail.html' %}
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory"
+           data-md-employee="{% url 'EmployeeListAllAPI' %}"
+           data-md-group="{% url 'GroupDDListAPI' %}"
+           data-fiscal-year="{% url "PeriodsConfigListAPI" %}"
+    >
+    <input type="text" id="group-checked">
+    <input type="text" id="employee-checked">
+    <input type="text" id="url-attendance-data" data-attendance="{% url "AttendanceListAPI" %}">
+
+    <input
+            type="text"
+            id="data-fiscal-year"
+    >
+    {{ data.filter_month|json_script:'filter_month' }}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
+    <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
+    {% if base.language == 'vi' %}
+        <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
+    {% endif %}
+    <script src="{% static 'assets/hrm/attendance/js/attendance/attendance_common.js' %}"></script>
+{% endblock %}

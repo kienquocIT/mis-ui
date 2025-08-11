@@ -1,34 +1,157 @@
 {% load i18n %}
 
+<style>
+    /* Overview Cards Styling */
+    .overview-card {
+        border-radius: 12px;
+        background: white;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+        transform: translateY(0);
+    }
+
+    .overview-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+    }
+
+    .overview-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .overview-card-body {
+        padding: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .overview-icon-wrapper {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .overview-icon-wrapper.blue {
+        background: linear-gradient(135deg, #60a5fa, #3b82f6);
+        color: white;
+    }
+
+    .overview-icon-wrapper.primary {
+        background: linear-gradient(135deg, #818cf8, #6366f1);
+        color: white;
+    }
+
+    .overview-icon-wrapper.success {
+        background: linear-gradient(135deg, #34d399, #10b981);
+        color: white;
+    }
+
+    .overview-content {
+        flex-grow: 1;
+    }
+
+    .overview-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .overview-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1;
+    }
+
+    /* Subtle Float Animation */
+    .overview-card {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    .col-12.col-md-4:nth-child(1) .overview-card {
+        animation-delay: 0.1s;
+    }
+
+    .col-12.col-md-4:nth-child(2) .overview-card {
+        animation-delay: 0.15s;
+    }
+
+    .col-12.col-md-4:nth-child(3) .overview-card {
+        animation-delay: 0.2s;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
 <div class="col-12 col-md-9 col-lg-9">
-    <div class="row d-flex">
-        <div class="col-4">
-            <div class="row text-center">
-                <div class="col-12">
-                    <h5 class="text-blue fw-bold small">{% trans "Number of order" %}</h5>
-                </div>
-                <div class="col-12">
-                    <span class="fw-bold text-blue fs-5" id="no-order">0</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-4" style="border-left: 1px solid gray; border-right: 1px solid gray">
-            <div class="row text-center">
-                <div class="col-12">
-                    <h5 class="text-primary fw-bold small">{% trans "Revenue ytd" %}</h5>
-                </div>
-                <div class="col-12">
-                    <span class="mask-money fw-bold text-primary fs-5" id="revenue-ytd">0</span>
+    <div class="row" id="account-overview">
+        <!-- Number of Orders Card -->
+        <div class="col-12 col-md-4">
+            <div class="overview-card">
+                <div class="overview-card-body">
+                    <div class="overview-icon-wrapper blue">
+                        <i class="bi bi-cart-fill"></i>
+                    </div>
+                    <div class="overview-content">
+                        <h6 class="overview-label">{% trans "Number of order" %}</h6>
+                        <span class="overview-value text-blue" id="no-order"></span>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-4">
-            <div class="row text-center">
-                <div class="col-12">
-                    <h5 class="text-success fw-bold small">{% trans "Revenue average" %}</h5>
+        
+        <!-- Revenue YTD Card -->
+        <div class="col-12 col-md-4">
+            <div class="overview-card">
+                <div class="overview-card-body">
+                    <div class="overview-icon-wrapper primary">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <div class="overview-content">
+                        <h6 class="overview-label">{% trans "Revenue ytd" %}</h6>
+                        <span class="overview-value text-primary mask-money" id="revenue-ytd"></span>
+                    </div>
                 </div>
-                <div class="col-12">
-                    <span class="mask-money fw-bold text-success fs-5" id="revenue-avg">0</span>
+            </div>
+        </div>
+        
+        <!-- Revenue Average Card -->
+        <div class="col-12 col-md-4">
+            <div class="overview-card">
+                <div class="overview-card-body">
+                    <div class="overview-icon-wrapper success">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+                    <div class="overview-content">
+                        <h6 class="overview-label">{% trans "Revenue average" %}</h6>
+                        <span class="overview-value text-success mask-money" id="revenue-avg"></span>
+                    </div>
                 </div>
             </div>
         </div>

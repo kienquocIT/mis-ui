@@ -21,25 +21,64 @@
     >
         {% csrf_token %}
 
+
         <div class="row">
             <div class="col-12 col-md-3 col-lg-3 border-right">
                 <h5>{% trans 'Applicable object' %}</h5>
-                <br>
                 <div data-simplebar class="nicescroll-bar">
                     <div class="form-check form-switch form-switch-lg">
                         <input type="checkbox" class="form-check-input" id="checkbox_all_company">
                         <label class="form-check-label" for="checkbox_all_company">{% trans 'All company' %}</label>
                     </div>
-                    <table id="table_group" class="table nowrap w-100 mb-5">
-                        {% csrf_token %}
-                        <thead>
-                        <tr>
-                            <th>{% trans 'Group' %}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+
+                    <div class="row">
+                        <ul class="nav nav-line nav-tabs nav-light">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                                    <span class="nav-icon-wrap mr-1"><i class="fas fa-user-tie"></i></span>
+                                    <span class="nav-link-text">{% trans 'View by employee' %}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                                    <span class="nav-icon-wrap mr-1"><i class="fas fa-users"></i></span>
+                                    <span class="nav-link-text">{% trans 'View by group' %}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tab_block_1">
+                            <table id="table_employee" class="table nowrap w-100 mb-5">
+                                <thead>
+                                <tr>
+                                    <th class="w-70">{% trans 'Employee' %}</th>
+                                    <th class="w-30">{% trans 'Code' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade show" id="tab_block_2">
+                            <table id="table_group" class="table nowrap w-100 mb-5">
+                                {% csrf_token %}
+                                <thead>
+                                <tr>
+                                    <th>{% trans 'Group' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+
+
                 </div>
             </div>
             <div class="col-12 col-md-7 col-lg-7 border-right">
@@ -103,190 +142,35 @@
 
     </form>
 
-    <!-- Calendar Drawer -->
-        <div class="hk-drawer calendar-drawer drawer-right">
-			<div>
-				<div class="drawer-header">
-					<div class="drawer-header-action">
-						<button type="button" class="drawer-close btn-close">
-							<span aria-hidden="true">×</span>
-						</button>
-					</div>
-				</div>
-				<div class="drawer-body" id="drawer_body_shift">
-					<div data-simplebar class="nicescroll-bar">
-						<div class="drawer-content-wrap">
-							<div class="event-head mb-4">
-								<div>
-									<div class="event-name text-primary shift-name"></div>
-								</div>
-							</div>
-                            <div class="row">
-                                <div class="row mb-5">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="fas fa-clock text-gold"></i>
-                                        <span>{% trans 'Working hours' %}: </span>
-                                    </div>
-                                    <div class="shift-working-hours ml-2"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="fas fa-utensils text-smoke"></i>
-                                        <span>{% trans 'Break time' %}: </span>
-                                    </div>
-                                    <div class="shift-break-time ml-2"></div>
-                                </div>
-                            </div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="d-none">
-				<div class="drawer-header">
-					<div class="drawer-header-action">
-						<a href="#" class="btn btn-sm btn-icon btn-flush-secondary btn-rounded flush-soft-hover me-2"><span class="icon"><span class="feather-icon"><i data-feather="external-link"></i></span></span></a>
-						<button type="button" class="drawer-edit-close btn-close">
-							<span aria-hidden="true">×</span>
-						</button>
-					</div>
-				</div>
-				<div class="drawer-body">
-					<div data-simplebar class="nicescroll-bar">
-						<div class="drawer-content-wrap">
-							<div class="event-head mb-4">
-								<span class="badge badge-violet badge-indicator badge-indicator-xl flex-shrink-0 me-2"></span>
-								<div>
-									<div class="event-name" contenteditable="true">Jampack Team Meet</div>
-									<div class="form-group mt-2 mb-0">
-										<div class="form-check form-check-inline ps-0">
-											<div class="form-check">
-												<input type="radio" id="event_1" name="eventSelect" class="form-check-input" checked=""	>
-												<label class="form-check-label" for="event_1">Event</label>
-											</div>
-										</div>
-										<div class="form-check form-check-inline ps-0">
-											<div class="form-check">
-												<input type="radio" id="reminder_1" name="eventSelect" class="form-check-input" >
-												<label class="form-check-label" for="reminder_1">Reminder</label>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="drawer-footer d-flex justify-content-end">
-					<button class="btn btn-secondary drawer-edit-close me-2">discard</button>
-					<button class="btn btn-primary drawer-edit-close">save</button>
-				</div>
-			</div>
-		</div>
-        <!-- /Calendar Drawer -->
-
-
-
-
-
 
     <div class="modal-canvas-area">
 
-        <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="filterListCanvas" aria-labelledby="offcanvasTopLabel">
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="shiftCanvas" aria-labelledby="shiftCanvas">
             <div class="modal-header">
-                <h5><b>{% trans 'Filter' %}</b></h5>
                 <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
             </div>
-            <div class="offcanvas-body">
-                <b>{% trans 'Common information' %}</b>
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label class="form-label" for="box-customer-1">{% trans 'Customer' %}</label>
-                            <select
-                                    class="form-select"
-                                    id="box-customer-1"
-                                    data-url="{% url "AccountDDListAPI" %}"
-                                    data-method="GET"
-                                    data-keyResp="account_dd_list"
-                                    data-keyText="name"
-                                    multiple
-                            ></select>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label class="form-label" for="box-so-1">{% trans 'Sale order' %}</label>
-                            <select
-                                    class="form-select"
-                                    id="box-so-1"
-                                    data-url="{% url "SaleOrderDDListAPI" %}"
-                                    data-method="GET"
-                                    data-keyResp="sale_order_dd_list"
-                                    multiple
-                            ></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label class="form-label" for="box-supplier-1">{% trans 'Supplier' %}</label>
-                            <select
-                                    class="form-select"
-                                    id="box-supplier-1"
-                                    data-url="{% url "AccountDDListAPI" %}"
-                                    data-method="GET"
-                                    data-keyResp="account_dd_list"
-                                    data-keyText="name"
-                                    multiple
-                            ></select>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label class="form-label" for="box-po-1">{% trans 'Purchase order' %}</label>
-                            <select
-                                    class="form-select"
-                                    id="box-po-1"
-                                    data-url="{% url "PurchaseOrderDDListAPI" %}"
-                                    data-method="GET"
-                                    data-keyResp="purchase_order_dd_list"
-                                    multiple
-                            ></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <div class="form-check form-check-lg d-flex align-items-center">
-                            <input type="checkbox" name="checkbox_not_paid_list" class="form-check-input" id="checkbox-not-paid-1">
-                            <label class="form-check-label" for="checkbox-not-paid-1">{% trans 'Not paid' %}</label>
-                        </div>
-                    </div>
-                </div>
-                <b>{% trans 'Payment time' %}</b>
-                <div class="row">
-                    <div class="col-12 col-md-3 col-lg-3">
-                        <div class="form-group">
-                            <label class="form-label" for="date-from">{% trans 'From' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" name="date_from" id="date-from-1"
-                                       class="form-control flat-picker" autocomplete="off">
-                                <div class="input-suffix">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </div>
+            <div class="offcanvas-body" id="canvas_body_shift">
+                <div data-simplebar class="nicescroll-bar">
+                    <div class="drawer-content-wrap">
+                        <div class="event-head mb-4">
+                            <div>
+                                <H5 class="event-name text-primary shift-name"></H5>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12 col-md-3 col-lg-3">
-                        <div class="form-group">
-                            <label class="form-label" for="date-to">{% trans 'To' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" name="date_from" id="date-to-1"
-                                       class="form-control flat-picker" autocomplete="off">
-                                <div class="input-suffix">
-                                    <i class="fas fa-calendar-alt"></i>
+                        <div class="row">
+                            <div class="row mb-5">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fas fa-clock text-gold"></i>
+                                    <span>{% trans 'Working hours' %}: </span>
                                 </div>
+                                <div class="shift-working-hours ml-4"></div>
+                            </div>
+                            <div class="row">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fas fa-utensils text-smoke"></i>
+                                    <span>{% trans 'Break time' %}: </span>
+                                </div>
+                                <div class="shift-break-time ml-4"></div>
                             </div>
                         </div>
                     </div>
@@ -294,129 +178,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
-                <button type="button" class="btn btn-primary" id="btn-apply-filter-list" data-bs-dismiss="offcanvas">{% trans 'Apply' %}</button>
-            </div>
-        </div>
-
-
-        <div class="offcanvas offcanvas-end w-60" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
-            <div class="modal-header">
-                <h5><b>{% trans 'Filter' %}</b></h5>
-                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
-            </div>
-            <div class="offcanvas-body">
-                <b>{% trans 'Common information' %}</b>
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label class="form-label" for="box-customer">{% trans 'Customer' %}</label>
-                            <select
-                                    class="form-select"
-                                    id="box-customer"
-                                    data-url="{% url "AccountDDListAPI" %}"
-                                    data-method="GET"
-                                    data-keyResp="account_dd_list"
-                                    data-keyText="name"
-                                    multiple
-                            ></select>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label class="form-label" for="box-so">{% trans 'Sale order' %}</label>
-                            <select
-                                    class="form-select"
-                                    id="box-so"
-                                    data-url="{% url "SaleOrderDDListAPI" %}"
-                                    data-method="GET"
-                                    data-keyResp="sale_order_dd_list"
-                                    multiple
-                            ></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label class="form-label" for="box-supplier">{% trans 'Supplier' %}</label>
-                            <select
-                                    class="form-select"
-                                    id="box-supplier"
-                                    data-url="{% url "AccountDDListAPI" %}"
-                                    data-method="GET"
-                                    data-keyResp="account_dd_list"
-                                    data-keyText="name"
-                                    multiple
-                            ></select>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="form-group">
-                            <label class="form-label" for="box-po">{% trans 'Purchase order' %}</label>
-                            <select
-                                    class="form-select"
-                                    id="box-po"
-                                    data-url="{% url "PurchaseOrderDDListAPI" %}"
-                                    data-method="GET"
-                                    data-keyResp="purchase_order_dd_list"
-                                    multiple
-                            ></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <div class="form-check form-check-lg d-flex align-items-center">
-                            <input type="checkbox" name="checkbox_not_paid_detail" class="form-check-input" id="checkbox-not-paid">
-                            <label class="form-check-label" for="checkbox-not-paid">{% trans 'Not paid' %}</label>
-                        </div>
-                    </div>
-                </div>
-                <b>{% trans 'Payment time' %}</b>
-                <div class="row">
-                    <div class="col-12 col-md-3 col-lg-3">
-                        <div class="form-group">
-                            <label class="form-label" for="box-month">{% trans 'Month' %}</label>
-                            <select
-                                    class="form-select area-period-element"
-                                    id="box-month"
-                                    data-url=""
-                                    data-method="GET"
-                                    name="month"
-                            ></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <div class="form-group">
-                            <label class="form-label" for="date-from">{% trans 'From' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" name="date_from" id="date-from"
-                                       class="form-control flat-picker-in-month" autocomplete="off">
-                                <div class="input-suffix">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-2 col-lg-2">
-                        <div class="form-group">
-                            <label class="form-label" for="date-to">{% trans 'To' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" name="date_from" id="date-to"
-                                       class="form-control flat-picker-in-month" autocomplete="off">
-                                <div class="input-suffix">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
-                <button type="button" class="btn btn-primary" id="btn-apply-filter" data-bs-dismiss="offcanvas">{% trans 'Apply' %}</button>
             </div>
         </div>
 

@@ -56,6 +56,8 @@ class BOMList(View):
         template='sales/production/bom/bom_list.html',
         breadcrumb='BOM_LIST_PAGE',
         menu_active='menu_bom_list',
+        icon_cls='fas fab fa-connectdevelop',
+        icon_bg = 'bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -67,6 +69,8 @@ class BOMCreate(View):
         template='sales/production/bom/bom_create.html',
         breadcrumb='BOM_CREATE_PAGE',
         menu_active='',
+        icon_cls='fas fab fa-connectdevelop',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -84,6 +88,8 @@ class BOMDetail(View):
         template='sales/production/bom/bom_detail.html',
         breadcrumb='BOM_DETAIL_PAGE',
         menu_active='',
+        icon_cls='fas fab fa-connectdevelop',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -101,6 +107,8 @@ class BOMUpdate(View):
         template='sales/production/bom/bom_update.html',
         breadcrumb='BOM_UPDATE_PAGE',
         menu_active='',
+        icon_cls='fas fab fa-connectdevelop',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

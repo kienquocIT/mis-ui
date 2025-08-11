@@ -77,3 +77,35 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="modal-work-order-cost" tabindex="-1" role="dialog" aria-labelledby="modal-work-order-cost" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Work Order Cost" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow: auto">
+                <div class="nicescroll-bar">
+                    <table class="table nowrap w-100" id="modal-table-work-order-cost">
+                        <thead>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                </button>
+                <button type="button" id="btn-save-work-order-cost" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Save' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

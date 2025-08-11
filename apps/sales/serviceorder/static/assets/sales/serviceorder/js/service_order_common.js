@@ -29,7 +29,12 @@ const ServiceOrder = (function($) {
         modalProductContext: null
     }
 
-
+    const WORK_ORDER_STATUS = {
+        pending: 0,
+        in_progress: 1,
+        completed: 2,
+        cancelled: 3,
+    }
 
     function initSelect($ele, opts = {}) {
         if ($ele.hasClass("select2-hidden-accessible")) {
@@ -112,8 +117,8 @@ const ServiceOrder = (function($) {
                 total: unitCost, // Will be recalculated when quantity changes
                 start_date: '',
                 end_date: '',
-                is_service_delivery: false,
-                status: 'pending'
+                is_delivery_point: false,
+                status: WORK_ORDER_STATUS.pending
             }
         }
 
@@ -401,7 +406,7 @@ const ServiceOrder = (function($) {
         })
     }
 
-    function initWorkOrderDataTable(data = []) {
+    function initWorkOrderDataTable(data = [{unit_cost: 1000000000}]) {
         if ($.fn.DataTable.isDataTable(pageElement.workOrder.$table)) {
             pageElement.workOrder.$table.DataTable().destroy()
         }
@@ -438,7 +443,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '10%',
+                    width: '8%',
                     title: $.fn.gettext('Start Date'),
                     render: (data, type, row) => {
                         const startDate = row.start_date || ''
@@ -448,7 +453,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '10%',
+                    width: '8%',
                     title: $.fn.gettext('End Date'),
                     render: (data, type, row) => {
                         const endDate = row.end_date || ''
@@ -461,7 +466,7 @@ const ServiceOrder = (function($) {
                     width: '10%',
                     title: $.fn.gettext('Is Service Delivery'),
                     render: (data, type, row) => {
-                        const isServiceDelivery = row.is_service_delivery || false
+                        const isServiceDelivery = row.is_delivery_point || false
                         const rowId = row.id || Math.random().toString(36).substr(2, 9)
                         return `<div class="d-flex align-items-center">
                                 <div class="form-check me-2">
@@ -495,13 +500,19 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '12%',
+                    width: '16%',
                     title: $.fn.gettext('Unit Cost'),
                     render: (data, type, row) => {
                         const unitCost = row.unit_cost || 0
-                        return `<div class="input-group">
-                                <span class="mask-money" data-init-money="${unitCost}">
-                            </div>`
+                        return `<div class="d-flex align-items-center">
+                                    <div>
+                                        <span class="mask-money" data-init-money="${unitCost}">
+                                    </div>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover ml-2"
+                                            data-bs-toggle="modal" data-bs-target="#modal-work-order-cost">
+                                        <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                                    </button>
+                                </div>`
                     }
                 },
                 {
@@ -518,14 +529,14 @@ const ServiceOrder = (function($) {
                     width: '8%',
                     title: $.fn.gettext('Status'),
                     render: (data, type, row) => {
-                        const status = row.status || 'pending'
+                        const status = row.status || WORK_ORDER_STATUS.pending
                         const statusOptions = {
-                            'pending': { label: 'Pending', class: 'badge-warning' },
-                            'in_progress': { label: 'In Progress', class: 'badge-info' },
-                            'completed': { label: 'Completed', class: 'badge-success' },
-                            'cancelled': { label: 'Cancelled', class: 'badge-danger' }
+                            0: { label: 'Pending', class: 'badge-warning' },
+                            1: { label: 'In Progress', class: 'badge-info' },
+                            2: { label: 'Completed', class: 'badge-success' },
+                            3: { label: 'Cancelled', class: 'badge-danger' }
                         }
-                        const statusInfo = statusOptions[status] || statusOptions['pending']
+                        const statusInfo = statusOptions[status] || statusOptions[0]
                         return `<span class="badge ${statusInfo.class}">${$.fn.gettext(statusInfo.label)}</span>`
                     }
                 },
@@ -681,7 +692,7 @@ const ServiceOrder = (function($) {
     //             total: 0,
     //             start_date: '',
     //             end_date: '',
-    //             is_service_delivery: false,
+    //             is_delivery_point: false,
     //             status: 'pending'
     //         }
     //

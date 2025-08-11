@@ -276,7 +276,7 @@ class RevenuePlanPageFunction {
             data: data_list,
             columns: [
                 {
-                    className: 'w-15 bg-primary-light-5',
+                    className: 'w-5 bg-primary-light-5',
                     render: (data, type, row) => {
                         if (row?.['type'] === 'group-sum-row') {
                             return `<span data-group-id="${row.group_selected.id}" class="minimize-group w-100">

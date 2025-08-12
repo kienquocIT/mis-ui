@@ -542,6 +542,8 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Absence explanation
     ABSENCE_EXPLANATION_LIST = BreadcrumbChildren(_('Absence Explanation'), 'AbsenceExplanationList')
 
+    # Service order
+    SERVICE_ORDER_PAGE = BreadcrumbChildren(_('Service order'), 'ServiceOrderList')
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1465,6 +1467,15 @@ class BreadcrumbView:
         BreadcrumbItem.ATTENDANCE_DEVICE_LIST_PAGE
     ]
 
+    # Service Order
+    SERVICE_ORDER = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.SERVICE_ORDER_PAGE
+    ]
+    SERVICE_ORDER_LIST_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_LIST]
+    SERVICE_ORDER_CREATE_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_CREATE]
+    SERVICE_ORDER_DETAIL_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_DETAIL]
+    SERVICE_ORDER_UPDATE_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_UPDATE]
 
     # Absence explanation
     ABSENCE_EXPLANATION_LIST_PAGE = [

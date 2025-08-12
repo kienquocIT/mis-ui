@@ -144,6 +144,9 @@ $(document).ready(function(){
                 enable_edit: false,
                 data: data.attachment,
             })
+
+            // init print
+            new PrintTinymceControl().render('87ce1662-ca9d-403f-a32e-9553714ebc6d', data, false);
         },
         (err) => $.fn.notifyB({description: err.data.errors}, 'failure')
     )

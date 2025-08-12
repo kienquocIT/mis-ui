@@ -198,7 +198,7 @@ class PrintTemplateUpdateView(View):
         auth_require=False,
         template='printer/update.html',
         breadcrumb='PRINTER_CONFIG_UPDATE_PAGE',
-        # menu_active='menu_company_list',
+        menu_active='menu_print_template',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

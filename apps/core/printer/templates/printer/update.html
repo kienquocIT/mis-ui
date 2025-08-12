@@ -14,10 +14,10 @@
 
 {% block pageContent %}
     <form
-            id="frm-detail-print-template"
+            id="frm-detail-print-template" class="pb-10"
             data-url="{% url 'PrintTemplateDetailAPI' pk=pk %}"
             data-url-upload="{% url 'PublicAttachmentUpload' %}"
-            data-url-template = {% url 'PrintApplicationTemplateSample' app_id='__app_id__' %}
+            data-url-template ="{% url 'PrintApplicationTemplateSample' app_id='__app_id__' %}"
             data-method="PUT"
     >
         <div class="row mb-3">

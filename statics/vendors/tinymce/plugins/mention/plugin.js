@@ -352,7 +352,7 @@
         offset: function () {
             var rtePosition = $(this.editor.getContainer()).offset(),
                 contentAreaPosition = $(this.editor.getContentAreaContainer()).position(),
-                nodePosition = $(this.editor.dom.select('span#autocomplete')).position();
+                nodePosition = $(this.editor.dom.select('span#autocomplete')).offset();
 
             return {
                 top: rtePosition.top + contentAreaPosition.top + nodePosition.top + $(this.editor.selection.getNode()).innerHeight() - $(this.editor.getDoc()).scrollTop() + 5,

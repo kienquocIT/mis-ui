@@ -14,6 +14,8 @@ class ContactMasterDataList(View):
         template='masterdata/saledata/masterdata/saledata_contact_list.html',
         breadcrumb='CONTACT_MASTER_DATA_LIST_PAGE',
         menu_active='id_menu_master_data_contact',
+        icon_cls='fas bi bi-journal-bookmark-fill',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -123,6 +125,8 @@ class ContactList(View):
         breadcrumb='CONTACT_LIST_PAGE',
         menu_active='id_menu_contact',
         perm_check=PermCheck(url=ApiURL.CONTACT_LIST, method='get'),
+        icon_cls='fas bi bi-journal-bookmark-fill',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -146,6 +150,8 @@ class ContactCreate(View):
         breadcrumb='CONTACT_CREATE_PAGE',
         menu_active='menu_contact_list',
         perm_check=PermCheck(url=ApiURL.CONTACT_LIST, method='post'),
+        icon_cls='fas bi bi-journal-bookmark-fill',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -175,6 +181,8 @@ class ContactDetail(View):
         breadcrumb='CONTACT_DETAIL_PAGE',
         menu_active='menu_contact_detail',
         perm_check=PermCheck(url=ApiURL.CONTACT_LIST, method='get'),
+        icon_cls='fas bi bi-journal-bookmark-fill',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -198,6 +206,8 @@ class ContactUpdate(View):
         breadcrumb='CONTACT_UPDATE_PAGE',
         menu_active='menu_contact_detail',
         perm_check=PermCheck(url=ApiURL.CONTACT_DETAIL, method='put', fill_key=['pk']),
+        icon_cls='fas bi bi-journal-bookmark-fill',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, pk, **kwargs):
         input_mapping_properties = InputMappingProperties.SALE_DATA_CONTACT
@@ -231,6 +241,8 @@ class AccountMasterDataList(View):
         template='masterdata/saledata/masterdata/saledata_account_list.html',
         breadcrumb='ACCOUNT_MASTER_DATA_LIST_PAGE',
         menu_active='id_menu_master_data_account',
+        icon_cls='fas bi bi-person-rolodex',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -378,6 +390,8 @@ class AccountList(View):
         breadcrumb='ACCOUNT_LIST_PAGE',
         menu_active='id_menu_account',
         perm_check=PermCheck(url=ApiURL.ACCOUNT_LIST, method='get'),
+        icon_cls='fas bi bi-person-rolodex',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -434,6 +448,8 @@ class AccountCreate(View):
         breadcrumb='ACCOUNT_CREATE_PAGE',
         menu_active='menu_account_list',
         perm_check=PermCheck(url=ApiURL.ACCOUNT_LIST, method='post'),
+        icon_cls='fas bi bi-person-rolodex',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {'company_size': COMPANY_SIZE, 'customer_revenue': CUSTOMER_REVENUE}, status.HTTP_200_OK
@@ -453,6 +469,8 @@ class AccountDetail(View):
         breadcrumb='ACCOUNT_DETAIL_PAGE',
         menu_active='menu_account_detail',
         perm_check=PermCheck(url=ApiURL.ACCOUNT_LIST, method='get'),
+        icon_cls='fas bi bi-person-rolodex',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {'company_size': COMPANY_SIZE, 'customer_revenue': CUSTOMER_REVENUE}, status.HTTP_200_OK
@@ -465,6 +483,8 @@ class AccountUpdate(View):
         breadcrumb='ACCOUNT_UPDATE_PAGE',
         menu_active='menu_account_update',
         perm_check=PermCheck(url=ApiURL.ACCOUNT_DETAIL, method='put', fill_key=['pk']),
+        icon_cls='fas bi bi-person-rolodex',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, pk, **kwargs):
         input_mapping_properties = InputMappingProperties.SALE_DATA_ACCOUNT

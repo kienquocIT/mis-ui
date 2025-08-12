@@ -15,6 +15,8 @@ class PeriodsConfigList(View):
         template='masterdata/saledata/masterdata/periods.html',
         breadcrumb='PERIODS_CONFIG_PAGE',
         menu_active='id_menu_master_data_periods_config',
+        icon_cls='fas far fa-calendar-alt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    LoadDetailRevenuePlan('detail');
+    RevenuePlanHandler.LoadDetailRevenuePlan('detail')
 })

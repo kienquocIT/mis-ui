@@ -14,6 +14,8 @@ class ProductMasterDataList(View):
         template='masterdata/saledata/masterdata/saledata_product_list.html',
         breadcrumb='PRODUCT_MASTER_DATA_LIST_PAGE',
         menu_active='id_menu_master_data_product',
+        icon_cls='fas bi bi-diagram-2-fill',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -275,6 +277,8 @@ class ProductList(View):
         template='masterdata/saledata/product/product_list.html',
         breadcrumb='PRODUCT_LIST_PAGE',
         menu_active='id_menu_product_list',
+        icon_cls='fas bi bi-diagram-2-fill',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -289,6 +293,8 @@ class ProductCreate(View):
         breadcrumb='PRODUCT_CREATE_PAGE',
         menu_active='menu_product_list',
         perm_check=PermCheck(url=ApiURL.PRODUCT_LIST, method='post'),
+        icon_cls='fas bi bi-diagram-2-fill',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -339,6 +345,8 @@ class ProductDetail(View):
         template='masterdata/saledata/product/product_detail.html',
         breadcrumb='PRODUCT_DETAIL_PAGE',
         menu_active='menu_product_detail',
+        icon_cls='fas bi bi-diagram-2-fill',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         result = {}
@@ -353,6 +361,8 @@ class ProductUpdate(View):
         template='masterdata/saledata/product/product_update.html',
         breadcrumb='PRODUCT_UPDATE_PAGE',
         menu_active='menu_product_update',
+        icon_cls='fas bi bi-diagram-2-fill',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         result = {}

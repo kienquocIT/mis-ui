@@ -15,6 +15,8 @@ class RevenuePlanConfigList(View):
         template='masterdata/saledata/masterdata/revenue_plan_config.html',
         breadcrumb='REVENUE_PLAN_CONFIG_PAGE',
         menu_active='id_menu_master_data_revenue_plan_config',
+        icon_cls='fas fa-hand-holding-usd',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp0 = ServerAPI(url=ApiURL.REVENUE_PLAN_CONFIG_LIST, user=request.user).get()

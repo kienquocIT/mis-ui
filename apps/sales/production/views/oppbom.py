@@ -56,6 +56,8 @@ class OpportunityBOMList(View):
         template='sales/production/opportunitybom/oppbom_list.html',
         breadcrumb='OPP_BOM_LIST_PAGE',
         menu_active='menu_project_bom_list',
+        icon_cls='fas fa-dice',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -67,6 +69,8 @@ class OpportunityBOMCreate(View):
         template='sales/production/opportunitybom/oppbom_create.html',
         breadcrumb='OPP_BOM_CREATE_PAGE',
         menu_active='',
+        icon_cls='fas fa-dice',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -80,6 +84,8 @@ class OpportunityBOMDetail(View):
         template='sales/production/opportunitybom/oppbom_detail.html',
         breadcrumb='OPP_BOM_DETAIL_PAGE',
         menu_active='',
+        icon_cls='fas fa-dice',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -91,6 +97,8 @@ class OpportunityBOMUpdate(View):
         template='sales/production/opportunitybom/oppbom_update.html',
         breadcrumb='OPP_BOM_UPDATE_PAGE',
         menu_active='',
+        icon_cls='fas fa-dice',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {

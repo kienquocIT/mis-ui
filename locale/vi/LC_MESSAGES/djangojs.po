@@ -492,3 +492,7 @@ msgstr "Oops, một số dữ liệu đang thiếu. Vui lòng tải lại trang 
 #
 msgid "None Group"
 msgstr "Không có nhóm"
+
+#
+msgid "In each row, the first input is Revenue, the next one is Profit"
+msgstr "Ở mỗi dòng, ô đầu tiên là Doanh thu, ô tiếp theo là Lợi nhuận"

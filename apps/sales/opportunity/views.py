@@ -31,6 +31,8 @@ class OpportunityList(View):
         menu_active='menu_opportunity_list',
         breadcrumb='OPPORTUNITY_LIST_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_LIST, method='GET'),
+        icon_cls='fas far fa-lightbulb',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -68,6 +70,8 @@ class OpportunityDetail(View):
         menu_active='',
         breadcrumb='OPPORTUNITY_DETAIL_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='GET', fill_key=['pk']),
+        icon_cls='fas far fa-lightbulb',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -89,6 +93,8 @@ class OpportunityUpdate(View):
         menu_active='',
         breadcrumb='OPPORTUNITY_UPDATE_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DETAIL, method='PUT', fill_key=['pk']),
+        icon_cls='fas far fa-lightbulb',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         # "list_from_app" this field for task form, who field choice employee follow by permission in opps.
@@ -218,6 +224,8 @@ class OpportunityConfig(View):
         menu_active='menu_opportunity_config',
         breadcrumb='OPPORTUNITY_CONFIG_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_CONFIG, method='GET'),
+        icon_cls='fas far fa-lightbulb',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.APPLICATION_PROPERTY_OPPORTUNITY_LIST).get()
@@ -307,6 +315,8 @@ class OpportunityCallLogList(View):
         template='sales/opportunity/activities/call_log/call_log_list.html',
         menu_active='id_menu_log_a_call',
         breadcrumb='CALL_LOG_LIST_PAGE',
+        icon_cls='fas fa-phone-volume',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         result = {
@@ -359,6 +369,8 @@ class OpportunityEmailList(View):
         template='sales/opportunity/activities/email/email_list.html',
         menu_active='id_menu_email',
         breadcrumb='EMAIL_LIST_PAGE',
+        icon_cls='fas bi bi-envelope-fill',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         result = {
@@ -412,6 +424,8 @@ class OpportunityMeetingList(View):
         template='sales/opportunity/activities/meeting/meeting_list.html',
         menu_active='id_menu_meeting',
         breadcrumb='MEETING_LIST_PAGE',
+        icon_cls='fas bi bi-person-workspace',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         result = {
@@ -479,6 +493,8 @@ class OpportunityDocumentList(View):
         menu_active='menu_opportunity_document',
         breadcrumb='OPPORTUNITY_DOCUMENT_LIST_PAGE',
         perm_check=PermCheck(url=ApiURL.OPPORTUNITY_DOCUMENT_LIST, method='GET'),
+        icon_cls='fas bi bi-file-earmark',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

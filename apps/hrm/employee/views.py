@@ -15,6 +15,8 @@ class HRMEmployeeList(View):
         template='hrm/employee/list.html',
         breadcrumb='HRM_EMPLOYEE_LIST_PAGE',
         menu_active='menu_employee_data_list',
+        icon_cls='fas fa-user-tie',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -36,6 +38,8 @@ class HRMEmployeeCreate(View):
         template='hrm/employee/create.html',
         breadcrumb='HRM_EMPLOYEE_CREATE_PAGE',
         menu_active='menu_employee_data_list',
+        icon_cls='fas fa-user-tie',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         language = getattr(request.user, 'language', settings.LANGUAGE_CODE)
@@ -91,6 +95,8 @@ class HRMEmployeeDetail(View):
         breadcrumb='HRM_EMPLOYEE_DETAIL_PAGE',
         menu_active='menu_employee_data_list',
         jsi18n='hrm',
+        icon_cls='fas fa-user-tie',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, pk, **kwargs):
         language = getattr(request.user, 'language', settings.LANGUAGE_CODE)
@@ -126,6 +132,8 @@ class HRMEmployeeUpdate(View):
         breadcrumb='HRM_EMPLOYEE_UPDATE_PAGE',
         menu_active='menu_employee_data_list',
         jsi18n='hrm',
+        icon_cls='fas fa-user-tie',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, pk, **kwargs):
         language = getattr(request.user, 'language', settings.LANGUAGE_CODE)

@@ -12,6 +12,8 @@ class ReturnAdvanceList(View):
         template='return_advance/return_advance_list.html',
         breadcrumb='RETURN_ADVANCE_LIST_PAGE',
         menu_active='id_menu_return_advance',
+        icon_cls='fas fa-hand-holding-usd fa-flip-horizontal',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -24,6 +26,8 @@ class ReturnAdvanceCreate(View):
         template='return_advance/return_advance_create.html',
         breadcrumb='RETURN_ADVANCE_CREATE_PAGE',
         menu_active='menu_return_advance_list',
+        icon_cls='fas fa-hand-holding-usd fa-flip-horizontal',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -60,7 +64,9 @@ class ReturnAdvanceDetail(View):
         auth_require=True,
         template='return_advance/return_advance_detail.html',
         breadcrumb='RETURN_ADVANCE_DETAIL_PAGE',
-        menu_active='menu_return_advance_list'
+        menu_active='menu_return_advance_list',
+        icon_cls='fas fa-hand-holding-usd fa-flip-horizontal',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -74,7 +80,9 @@ class ReturnAdvanceUpdate(View):
         auth_require=True,
         template='return_advance/return_advance_update.html',
         breadcrumb='RETURN_ADVANCE_UPDATE_PAGE',
-        menu_active='menu_return_advance_list'
+        menu_active='menu_return_advance_list',
+        icon_cls='fas fa-hand-holding-usd fa-flip-horizontal',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {

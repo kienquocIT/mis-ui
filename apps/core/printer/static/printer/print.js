@@ -211,7 +211,8 @@ function ParamGetData(data, key, configData) {
             let _momentNow = moment();
             currentData = `ngày ${_momentNow.get('date')} tháng ${_momentNow.get('month') + 1} năm ${_momentNow.get('year')}`
         }
-    } else {
+    }
+    else {
         for (let i = 0; i < key.length; i++) {
             if (!currentData) break;  // stop (break loop) when bastion data is blank|empty
             if (i === 0) {
@@ -366,6 +367,9 @@ class PrintTinymceControl {
                 (templateResult) => {
                     let tinymceEditor = null;
                     textarea$.val(content);
+                    let mentionCurrentPage = 1;
+                    let mentionTotalPages = 1;
+                    let lastQuery = '';
 
                     const defaultOptions = {
                         skin: 'oxide',
@@ -373,7 +377,7 @@ class PrintTinymceControl {
                         branding: false,
                         readonly: 0,
                         menubar: true,
-                        height: 120,
+                        // height: 120,
                         plugins: [
                             'columns', 'mention', 'print', 'preview', 'paste', 'importcss', 'searchreplace',
                             'autolink', 'autosave', 'save', 'directionality', 'code', 'visualblocks',
@@ -394,7 +398,7 @@ class PrintTinymceControl {
                                 items: 'ltr rtl | charmap emoticons | superscript subscript | nonbreaking anchor media | undo redo'
                             }
                         },
-                        fontsize_formats: '8px 9px 10px 11px 12px 14px 16px 18px 20px 22px 24px 26px 28px 36px 48px 72px',
+                        fontsize_formats: '8pt 9pt 10pt 11pt 12pt 14pt 16pt 18pt 20pt 22pt 24pt 26pt 28pt 36pt 48pt 72pt',
                         pagebreak_split_block: true,
                         pagebreak_separator: '<span class="page-break-here"><!-- my page break --></span>',
                         nonbreaking_force_tab: true,
@@ -402,7 +406,7 @@ class PrintTinymceControl {
                         quickbars_insert_toolbar: 'link image | numlist bullist table twoColumn threeColumn | hr pagebreak | removeSelectionEle',
                         content_css: textarea$.attr('data-css-url-render'),
                         content_style: `
-                            body { font-family: Arial, Helvetica, 'Times New Roman', Times, serif, sans-serif; font-size: 11px; }
+                            body { font-family: Times New Roman, Times, serif, sans-serif; font-size: 12pt; }
                             table tr { vertical-align: top; }
                             @media print {
                                 .mce-visual-caret { display: none; }
@@ -419,10 +423,11 @@ class PrintTinymceControl {
                             delimiter: '#',
                             source: function(query, process, delimiter) {
                                 if (delimiter === '#') {
+                                    lastQuery = query || '';
                                     let params = $.param(
                                         $.extend(
                                             {
-                                                'page': 1,
+                                                'page': mentionCurrentPage,
                                                 'pageSize': 20,
                                                 'ordering': 'title',
                                                 // 'application': application_id,
@@ -441,6 +446,27 @@ class PrintTinymceControl {
                                                 let resource = (data?.['application_property_list'] || []).map(
                                                     (item) => {return UtilControl.flattenObject(item)}
                                                 )
+
+                                                // Tính total pages
+                                                mentionTotalPages = Math.ceil(data['page_count'] / 20);
+
+                                                // Thêm navigation items
+                                                if (mentionCurrentPage > 1) {
+                                                    resource.unshift({
+                                                        code: '__prev_page__',
+                                                        title: '← Trang trước',
+                                                        action: 'prev'
+                                                    });
+                                                }
+
+                                                if (mentionCurrentPage < mentionTotalPages) {
+                                                    resource.push({
+                                                        code: '__next_page__',
+                                                        title: 'Trang sau →',
+                                                        action: 'next'
+                                                    });
+                                                }
+
                                                 process(resource);
                                             }
                                         },
@@ -451,15 +477,33 @@ class PrintTinymceControl {
                             insert: function (item) {
                                 // zero with space: \u200B&nbsp; or \u200B
                                 // return `<span id="idx-${$x.fn.randomStr(16)}" class="params-data" data-code="${item.code}" style="padding: 3px;background-color: #f1f1f1;">#${item.title}</span>\u200B`;
+                                // Handle navigation
+                                if (item.action === 'prev') {
+                                    mentionCurrentPage--;
+
+                                    tinymce.activeEditor.fire('reloadMentions', {
+                                        query: lastQuery
+                                    });
+
+                                    return false;  // Không insert, trigger lại search
+                                }
+                                if (item.action === 'next') {
+                                    mentionCurrentPage++;
+                                    setTimeout(() => {
+                                        tinymce.activeEditor.fire('reloadMentions', {
+                                            query: lastQuery
+                                        });
+                                    }, 10);
+                                    return false;
+                                }
+
                                 return `
                                         <span 
                                             id="idx-${$x.fn.randomStr(16)}"
                                             class="params-data badge badge-light border px-2 py-1 rounded-pill d-inline-block" 
                                             data-code="${item.code}" 
                                             style="background-color: #e0f3ff; color: #007bff; font-weight: 500;"
-                                        >
-                                        #${item.title}
-                                        </span>&nbsp;
+                                        >#${item.title}</span>&nbsp;
                                         `;
                             },
                             render: function(item) {
@@ -484,7 +528,8 @@ class PrintTinymceControl {
                                 `;
                             },
                             renderDropdown: function() {
-                                return `<div data-bs-spy="scroll" data-bs-smooth-scroll="true" class="rte-autocomplete dropdown-menu mention-person-list w-300p h-250p position-relative overflow-y-scroll position-absolute" style="z-index: 10000;"></div>`;
+                                return `<div data-bs-spy="scroll" data-bs-smooth-scroll="true" `
+                                    +`class="rte-autocomplete dropdown-menu mention-person-list w-300p h-250p position-fixed overflow-y-scroll" style="z-index: 10000;"></div>`;
                             },
                             matcher: function (item) {
                                 return item;
@@ -510,6 +555,24 @@ class PrintTinymceControl {
                                         e.stopImmediatePropagation();
                                     }
                                 });
+                            });
+
+                            // Custom event để reload mentions
+                            editor.on('reloadMentions', function (e) {
+
+                                const query = e.query || '';
+
+                                // Xóa text hiện tại và chèn lại #
+                                editor.selection.setContent('#' + query);
+
+                                // Di chuyển cursor sau #
+                                const range = editor.selection.getRng();
+                                range.setStartAfter(editor.selection.getNode());
+                                range.collapse(true);
+                                editor.selection.setRng(range);
+
+                                // Trigger mentions plugin
+                                editor.fire('keyup', {key: query || ' '});
                             });
                         },
                         init_instance_callback: function(editor) {

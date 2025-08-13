@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Product/ service attribute' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block pageAction %}{% endblock %}
+
+{% block pageContent %}
+
+    <form
+            data-url="{% url 'AttendanceDeviceListAPI' %}"
+            data-url-redirect="{% url 'AttendanceDeviceList' %}"
+            data-method="POST"
+            id="frm_attribute"
+            method="post"
+    >
+        {% csrf_token %}
+
+        <table
+                id="table_attribute"
+                class="table nowrap min-w-1366p w-100"
+        >
+            <thead>
+            <tr class="bg-light">
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <div class="modal-canvas-area">
+
+            <div
+                    class="modal fade" id="mainModal" tabindex="-1"
+                    role="dialog" aria-labelledby="mainModal"
+                    aria-hidden="true"
+                    data-method="post" data-id=""
+            >
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b class="modal-title-custom"></b></h5>
+                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="form-label required" for="title">{% trans 'Title' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        name="title"
+                                        id="title"
+                                        required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required" for="device_ip">{% trans 'Device IP' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        name="device_ip"
+                                        id="device_ip"
+                                        required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required" for="username">{% trans 'Username' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        name="username"
+                                        id="username"
+                                        required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label required" for="password">{% trans 'Password' %}</label>
+                                <input
+                                        type="text" class="form-control"
+                                        name="password"
+                                        id="password"
+                                        required
+                                >
+                            </div>
+                            <div class="form-check form-switch form-switch-lg">
+                                <input type="checkbox" class="form-check-input" name="is_using" id="is_using">
+                                <label class="form-check-label" for="is_using">{% trans 'Use this device' %}</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            <button type="submit" class="btn btn-primary" form="frm_attendance_device" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+
+
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-employee="{% trans 'Employee' %}"
+        data-add-new="{% trans 'Add new' %}"
+        data-modal-add="{% trans 'Add attendance device' %}"
+        data-modal-update="{% trans 'Update attendance device' %}"
+    >
+    <input
+        type="text"
+        id="app-url-factory"
+        data-api-attendance-device-list="{% url 'AttendanceDeviceListAPI' %}"
+        data-api-detail-attendance-device="{% url 'AttendanceDeviceDetailAPI' 1 %}"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+
+    <script src="{% static 'assets/hrm/attendance/js/deviceintegrate/attendance_device.js' %}"></script>
+
+{% endblock %}

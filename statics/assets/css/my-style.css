@@ -1402,9 +1402,9 @@ table.dataTable tr.dtrg-group th {
 }
 .menu-background {
     position: absolute;
-    top: 8px;
+    top: 15px;
     left: 8px;
-    height: calc(100% - 16px);
+    height: calc(100% - 30px);
     background: linear-gradient(135deg,
         rgba(0, 0, 0, 0.08) 0%,
         rgba(0, 0, 0, 0.05) 50%,
@@ -1424,9 +1424,9 @@ table.dataTable tr.dtrg-group th {
 /* Active background */
 .menu-background-active {
     position: absolute;
-    top: 8px;
+    top: 15px;
     left: 8px;
-    height: calc(100% - 16px);
+    height: calc(100% - 30px);
     background: linear-gradient(135deg,
         rgba(74, 144, 226, 0.8) 0%,
         rgba(80, 200, 120, 0.8) 100%);

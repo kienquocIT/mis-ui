@@ -13,6 +13,8 @@ class WarehouseConfigList(View):
         template='masterdata/saledata/masterdata/warehouse_config.html',
         breadcrumb='INVENTORY_INTERACT_CONFIG',
         menu_active='menu_warehouse_config',
+        icon_cls='fas fas fa-warehouse',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.WAREHOUSE_LIST + '?is_virtual=1').get()

@@ -34,6 +34,8 @@ class PriceMasterDataList(View):
         template='masterdata/saledata/masterdata/saledata_price.html',
         breadcrumb='MASTER_DATA_PRICE_PAGE',
         menu_active='id_menu_master_data_price',
+        icon_cls='fas bi bi-currency-exchange',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -249,6 +251,8 @@ class PriceList(View):
         breadcrumb='PRICE_LIST_PAGE',
         menu_active='id_menu_pricing_list',
         perm_check=PermCheck(url=ApiURL.PRICE_LIST, method='GET'),
+        icon_cls='fas bi bi-currency-exchange',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -263,6 +267,8 @@ class PriceListDetail(View):
         breadcrumb='PRICE_LIST_DETAIL_PAGE',
         menu_active='menu_contact_list',
         perm_check=PermCheck(url=ApiURL.PRICE_DETAIL, method='GET', fill_key=['pk']),
+        icon_cls='fas bi bi-currency-exchange',
+        icon_bg='bg-primary',
     )
     def get(self, request, pk, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -277,6 +283,8 @@ class PriceListUpdate(View):
         breadcrumb='PRICE_LIST_UPDATE_PAGE',
         menu_active='menu_contact_list',
         perm_check=PermCheck(url=ApiURL.PRICE_DETAIL, method='PUT', fill_key=['pk']),
+        icon_cls='fas bi bi-currency-exchange',
+        icon_bg='bg-primary',
     )
     def get(self, request, pk, *args, **kwargs):
         return {

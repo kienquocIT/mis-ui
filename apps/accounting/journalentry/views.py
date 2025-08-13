@@ -11,6 +11,8 @@ class JournalEntryList(View):
         template='journalentry/journalentry_list.html',
         breadcrumb='JOURNAL_ENTRY_LIST_PAGE',
         menu_active='menu_journal_entry_list',
+        icon_cls='fas bi bi-journal-text',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -22,6 +24,8 @@ class JournalEntryCreate(View):
         template='journalentry/journalentry_create.html',
         breadcrumb='JOURNAL_ENTRY_CREATE_PAGE',
         menu_active='',
+        icon_cls='fas bi bi-journal-text',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -33,6 +37,8 @@ class JournalEntryDetail(View):
         template='journalentry/journalentry_detail.html',
         breadcrumb='JOURNAL_ENTRY_DETAIL_PAGE',
         menu_active='',
+        icon_cls='fas bi bi-journal-text',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

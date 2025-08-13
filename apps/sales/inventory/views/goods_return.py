@@ -11,6 +11,8 @@ class GoodsReturnList(View):
         template='sales/inventory/goods_return/goods_return_list.html',
         menu_active='menu_goods_return',
         breadcrumb='GOODS_RETURN_LIST_PAGE',
+        icon_cls='fas far fa-arrow-alt-circle-left',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -44,6 +46,8 @@ class GoodsReturnCreate(View):
         template='sales/inventory/goods_return/goods_return_create.html',
         menu_active='menu_goods_return',
         breadcrumb='GOODS_RETURN_CREATE_PAGE',
+        icon_cls='fas far fa-arrow-alt-circle-left',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -57,6 +61,8 @@ class GoodsReturnDetail(View):
         template='sales/inventory/goods_return/goods_return_detail.html',
         breadcrumb='GOODS_RETURN_DETAIL_PAGE',
         menu_active='menu_goods_return',
+        icon_cls='fas far fa-arrow-alt-circle-left',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -68,6 +74,8 @@ class GoodsReturnUpdate(View):
         template='sales/inventory/goods_return/goods_return_update.html',
         breadcrumb='GOODS_RETURN_UPDATE_PAGE',
         menu_active='menu_goods_return',
+        icon_cls='fas far fa-arrow-alt-circle-left',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_RETURN

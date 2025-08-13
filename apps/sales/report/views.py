@@ -125,6 +125,8 @@ class ReportInventoryDetailList(View):
         template='sales/inventory_report/items_detail_report.html',
         menu_active='menu_items_detail_report',
         breadcrumb='REPORT_INVENTORY_STOCK_LIST_PAGE',
+        icon_cls='fas bi bi-dot',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
@@ -159,6 +161,8 @@ class ReportInventoryList(View):
         template='sales/inventory_report/inventory_report.html',
         menu_active='menu_inventory_report',
         breadcrumb='REPORT_INVENTORY_COST_LIST_PAGE',
+        icon_cls='fas bi bi-dot',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()
@@ -395,6 +399,8 @@ class PurchaseOrderReportList(View):
         template='sales/purchasing_report/po_report.html',
         menu_active='menu_po_report',
         breadcrumb='REPORT_PURCHASING_LIST_PAGE',
+        icon_cls='fas bi bi-dot',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()

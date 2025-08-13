@@ -11,6 +11,8 @@ class EquipmentLoanList(View):
         template='equipmentloan/equipment_loan_list.html',
         breadcrumb='EQUIPMENT_LOAN_LIST_PAGE',
         menu_active='id_menu_equipment_loan',
+        icon_cls='fa-solid fa-boxes-packing',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -48,6 +50,8 @@ class EquipmentLoanCreate(View):
         template='equipmentloan/equipment_loan_create.html',
         breadcrumb='EQUIPMENT_LOAN_CREATE_PAGE',
         menu_active='',
+        icon_cls='fa-solid fa-boxes-packing',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -63,6 +67,8 @@ class EquipmentLoanDetail(View):
         template='equipmentloan/equipment_loan_detail.html',
         breadcrumb='EQUIPMENT_LOAN_DETAIL_PAGE',
         menu_active='',
+        icon_cls='fa-solid fa-boxes-packing',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -76,6 +82,8 @@ class EquipmentLoanUpdate(View):
         template='equipmentloan/equipment_loan_update.html',
         breadcrumb='EQUIPMENT_LOAN_UPDATE_PAGE',
         menu_active='',
+        icon_cls='fa-solid fa-boxes-packing',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {

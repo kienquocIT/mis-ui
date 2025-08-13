@@ -10,7 +10,9 @@ class GoodsTransferList(View):
         auth_require=True,
         template='sales/inventory/goods_transfer/list.html',
         menu_active='menu_goods_transfer_list',
-        breadcrumb='GOODS_TRANSFER_LIST_PAGE'
+        breadcrumb='GOODS_TRANSFER_LIST_PAGE',
+        icon_cls='fas fa-exchange-alt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -21,7 +23,9 @@ class GoodsTransferCreate(View):
         auth_require=True,
         template='sales/inventory/goods_transfer/create.html',
         menu_active='menu_goods_transfer_list',
-        breadcrumb='GOODS_TRANSFER_CREATE_PAGE'
+        breadcrumb='GOODS_TRANSFER_CREATE_PAGE',
+        icon_cls='fas fa-exchange-alt',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {
@@ -34,7 +38,9 @@ class GoodsTransferDetail(View):
         auth_require=True,
         template='sales/inventory/goods_transfer/detail.html',
         menu_active='menu_goods_transfer_list',
-        breadcrumb='GOODS_TRANSFER_DETAIL_PAGE'
+        breadcrumb='GOODS_TRANSFER_DETAIL_PAGE',
+        icon_cls='fas fa-exchange-alt',
+        icon_bg='bg-primary',
     )
     def get(self, request, pk, *args, **kwargs):
         return {
@@ -47,7 +53,9 @@ class GoodsTransferUpdate(View):
         auth_require=True,
         template='sales/inventory/goods_transfer/update.html',
         menu_active='menu_goods_transfer_list',
-        breadcrumb='GOODS_TRANSFER_UPDATE_PAGE'
+        breadcrumb='GOODS_TRANSFER_UPDATE_PAGE',
+        icon_cls='fas fa-exchange-alt',
+        icon_bg='bg-primary',
     )
     def get(self, request, pk, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.INVENTORY_GOODS_TRANSFER

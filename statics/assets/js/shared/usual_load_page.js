@@ -777,26 +777,18 @@ class UsualLoadPageFunction {
     }
 
     /**
-     * Thêm dòng vào vị trí k trong bảng DataTable
-     * @param {HTMLElement|jQuery} table - Bảng DOM đã init DataTable
-     * @param {Object} [data={}] - Dữ liệu dòng mới
-     * @param {number} [index=0] - Vị trí muốn chèn (0-based)
-     * @param {function(rowEl: jQuery, oldData: Object): Object} extractFn - Hàm lấy lại dữ liệu từ DOM
-     * @param {Boolean} [is_draw=true] - vẽ lại bảng
+     * Thêm 1 dòng trống vào bảng DataTable đã khởi tạo
+     * @param {HTMLElement|jQuery} table - Bảng đã init DataTable
+     * @param {Object} [data={}] - Dữ liệu dòng
+     * @param {number} [index] - Thêm vào vị trí đó
      */
-    static AddTableRowAtIndex(table, data={}, index=0, extractFn, is_draw=true) {
-        const dt = table.DataTable();
-        const currentData = [];
-        dt.rows().every(function () {
-            const $row = $(this.node());
-            const oldData = this.data();
-
-            const updatedData = extractFn($row, oldData);
-            currentData.push(updatedData);
-        });
-        currentData.splice(index, 0, data);
-        dt.clear();
-        dt.rows.add(currentData).draw(is_draw);
+    static AddTableRowAtIndex(table, data={}, index) {
+        const dt = $(table).DataTable();
+        if (index && index < dt.rows().count()) {
+            const currentData = dt.rows().data().toArray();
+            currentData.splice(index, 0, data);
+            dt.clear().rows.add(currentData).draw(false);
+        }
     }
 
     /**
@@ -845,6 +837,7 @@ class UsualLoadPageFunction {
                     if (shouldExclude(el)) return;
                     if (el.matches('select')) el.disabled = true;
                     if (el.matches('input')) el.readOnly = true;
+                    if (el.matches('input')) el.disabled = true;
                     if (el.matches('textarea')) el.readOnly = true;
                     if (el.matches('button')) el.disabled = true;
                 });
@@ -855,6 +848,7 @@ class UsualLoadPageFunction {
                             if (node.nodeType === 1 && !shouldExclude(node)) {
                                 if (node.matches('select')) node.disabled = true;
                                 if (node.matches('input')) node.readOnly = true;
+                                if (node.matches('input')) node.disabled = true;
                                 if (node.matches('textarea')) node.readOnly = true;
                                 if (node.matches('button')) node.disabled = true;
                             }

@@ -1,0 +1,210 @@
+{% load i18n %}
+
+<form
+            data-url="{% url 'AttributeListAPI' %}"
+            data-url-redirect="{% url 'AttributeList' %}"
+            data-method="POST"
+            id="frm_attribute"
+            method="post"
+    >
+        {% csrf_token %}
+    <div class="offcanvas offcanvas-end w-45" tabindex="-1" id="addCanvas" aria-labelledby="offcanvasTopLabel">
+        <div class="modal-header">
+            <h5><b>{% trans 'Create attribute' %}</b></h5>
+            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="row d-flex justify-content-center align-items-center">
+                <ul class="nav nav-justified nav-light nav-tabs nav-segmented-tabs w-90">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                            <span class="nav-link-text">{% trans 'Attribute' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                            <span class="nav-link-text">{% trans 'Category' %}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+
+            <div class="row mt-5">
+                <div class="form-group">
+                    <label class="form-label required" for="title">{% trans 'Name' %}</label>
+                    <input
+                            type="text" class="form-control"
+                            name="title"
+                            id="title"
+                            required
+                    >
+                </div>
+                <div class="form-group">
+                    <label class="form-label required" for="box_parent">{% trans 'Parent' %}</label>
+                    <select
+                            class="form-select"
+                            id="box_parent"
+                            name="parent_n"
+                            data-url="{% url "AttributeListAPI" %}"
+                            data-method="GET"
+                            data-keyResp="attribute_list"
+                            required
+                    ></select>
+                </div>
+            </div>
+
+
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab_block_1">
+
+                    <label class="form-label">{% trans 'Price config' %}</label>
+                    <ul class="nav nav-justified nav-light nav-tabs nav-segmented-tabs w-60">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#tab_numeric">
+                                <span class="nav-link-text">{% trans 'Numeric' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_list">
+                                <span class="nav-link-text">{% trans 'List' %}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab_warranty">
+                                <span class="nav-link-text">{% trans 'Warranty' %}</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="row mt-5">
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <div class="form-check form-check-lg d-flex align-items-center">
+                                <input type="checkbox" name="is_inventory" id="is_inventory" class="form-check-input">
+                                <label class="form-check-label" for="is_inventory">{% trans 'Inventory' %}</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tab_numeric">
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="numeric_attribute_unit">{% trans 'Attribute unit' %}</label>
+                                        <input
+                                                type="text" class="form-control"
+                                                name="numeric_attribute_unit"
+                                                id="numeric_attribute_unit"
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="numeric_duration_unit">{% trans 'Duration unit' %}</label>
+                                        <input
+                                                type="text" class="form-control"
+                                                name="numeric_duration_unit"
+                                                id="numeric_duration_unit"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="numeric_min">{% trans 'Min' %}</label>
+                                        <input
+                                                type="text" class="form-control"
+                                                name="numeric_min"
+                                                id="numeric_min"
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="numeric_max">{% trans 'Max' %}</label>
+                                        <input
+                                                type="text" class="form-control"
+                                                name="numeric_max"
+                                                id="numeric_max"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="numeric_increment">{% trans 'Increment' %}</label>
+                                        <input
+                                                type="text" class="form-control"
+                                                name="numeric_increment"
+                                                id="numeric_increment"
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="numeric_cost_increase">{% trans 'Cost per increment' %}</label>
+                                        <input
+                                                type="text" class="form-control"
+                                                name="numeric_cost_increase"
+                                                id="numeric_cost_increase"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show" id="tab_list">
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="list_duration_unit">{% trans 'Duration unit' %}</label>
+                                        <input
+                                                type="text" class="form-control"
+                                                name="list_duration_unit"
+                                                id="list_duration_unit"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="table_list" class="table nowrap w-100 mb-5">
+                                <thead>
+                                <tr>
+                                    <th class="w-50">{% trans 'Value name' %}</th>
+                                    <th class="w-40">{% trans 'Additional cost' %}</th>
+                                    <th class="w-10"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade show" id="tab_warranty">
+                            <table id="table_warranty" class="table nowrap w-100 mb-5">
+                                <thead>
+                                <tr>
+                                    <th class="w-40">{% trans 'Value name' %}</th>
+                                    <th class="w-10">{% trans 'Quantity' %}</th>
+                                    <th class="w-20">{% trans 'Duration unit' %}</th>
+                                    <th class="w-20">{% trans 'Additional cost' %}</th>
+                                    <th class="w-10"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane fade show" id="tab_block_2"></div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+            <button type="button" class="btn btn-primary" id="btn-apply-filter" data-bs-dismiss="offcanvas">{% trans 'Save' %}</button>
+        </div>
+    </div>
+</form>

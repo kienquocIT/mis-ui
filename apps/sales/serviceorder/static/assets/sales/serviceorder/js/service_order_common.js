@@ -15,7 +15,8 @@ const ServiceOrder = (function($) {
             $tableExchangeRate: $('#modal-table-exchange-rate'),
             $btnSaveExchangeRate: $('#btn-save-exchange-rate'),
 
-            $tableWorkOrderCost: $('#modal-work-order-cost'),
+            $tableWorkOrderCost: $('#modal-table-work-order-cost'),
+            $btnSaveWorkOrderCost: $('#btn-save-work-order-cost'),
         },
         serviceDetail: {
             $table: $('#table-service-detail'),
@@ -23,12 +24,16 @@ const ServiceOrder = (function($) {
         },
         workOrder:{
             $table: $('#table-work-order'),
+            $btnAddNonItem: $('#btn-add-non-item'),
         }
     }
 
     const pageVariable = {
         currencyList: null,
-        modalProductContext: null
+        taxList: null,
+        modalProductContext: null,
+        taxSelect: {},
+        workOrderCostData: {}
     }
 
     const WORK_ORDER_STATUS = {
@@ -39,7 +44,7 @@ const ServiceOrder = (function($) {
     }
 
     function initSelect($ele, opts = {}) {
-        if ($ele.hasClass("select2-hidden-accessible")) {
+        if ($ele.hasClass("select2-hidden-accessible") && $ele) {
             $ele.select2('destroy')
         }
         $ele.empty()
@@ -73,6 +78,7 @@ const ServiceOrder = (function($) {
     }
 
     function initModalContextTracking() {
+        //để biết add cho service detail hay workorder
         pageElement.serviceDetail.$btnOpenServiceProductModal.on('click', function(e) {
             pageVariable.modalContext = 'serviceDetail'
         })
@@ -111,12 +117,10 @@ const ServiceOrder = (function($) {
                 total: total
             }
         } else if (pageVariable.modalContext === 'workOrder') {
-            const unitCost = rowData.general_price || 0
-
             return {
                 ...baseData,
-                unit_cost: unitCost,
-                total: unitCost, // Will be recalculated when quantity changes
+                unit_cost: 0,
+                total: 0, // Will be recalculated when quantity changes
                 start_date: '',
                 end_date: '',
                 is_delivery_point: false,
@@ -141,6 +145,35 @@ const ServiceOrder = (function($) {
         table.clear().rows.add(newData).draw(false)
     }
 
+    function calculateWorkOrderCostTotalData(rowData){
+        const quantity = rowData?.quantity || 0
+        const unitCost =rowData?.unit_cost || 0
+        const currencyId = rowData?.currency_id
+        const taxId = rowData?.tax_id
+
+        let total = quantity * unitCost
+        let exchangedTotal = 0
+
+        if(taxId && pageVariable.taxList){
+            const taxData = pageVariable.taxList.find(tax => tax.id === taxId)
+            if(taxData && taxData.rate){
+                const taxAmount = total * (taxData.rate / 100)
+                total = total + taxAmount
+            }
+        }
+
+        if(currencyId && pageVariable.currencyList){
+            const currencyData = pageVariable.currencyList.find(currency => currency.id === currencyId)
+            if(currencyData && currencyData.rate){
+                exchangedTotal = total * currencyData.rate
+            }
+        }
+
+        return {
+            total: total,
+            exchanged_total: exchangedTotal
+        }
+    }
 
 // --------------------LOAD DATA---------------------
     function loadCurrencyRateData() {
@@ -168,6 +201,24 @@ const ServiceOrder = (function($) {
         }).then(data => {
             initCurrencyRateModalDataTable(pageVariable.currencyList)
         })
+    }
+
+    function loadTaxData(){
+        const taxListUrl = pageElement.$urlScript.attr('data-tax-list-url')
+        $.fn.callAjax2({
+            url: taxListUrl,
+            type: 'GET',
+            dataType: 'json',
+            success: function (resp) {
+                let data = $.fn.switcherResp(resp)
+                if (data && resp.data['tax_list']) {
+                    pageVariable.taxList = resp.data['tax_list']
+                }
+            },
+            error: function (error) {
+                console.error('Failed to load currency:', error)
+            }
+        }).then(data => {})
     }
 
 
@@ -510,7 +561,7 @@ const ServiceOrder = (function($) {
                                     <div>
                                         <span class="mask-money" data-init-money="${unitCost}">
                                     </div>
-                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover ml-2"
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover ml-2 btn-open-work-order-cost"
                                             data-bs-toggle="modal" data-bs-target="#modal-work-order-cost">
                                         <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
                                     </button>
@@ -575,207 +626,220 @@ const ServiceOrder = (function($) {
         })
     }
 
-    // function initWorkOrderCostModalDataTable(data=[]){
-    //     if ($.fn.DataTable.isDataTable(pageElement.modalData.$tableWorkOrderCost)) {
-    //         pageElement.modalData.$tableWorkOrderCost.DataTable().destroy()
-    //     }
-    //
-    //     pageElement.modalData.$tableWorkOrderCost.DataTableDefault({
-    //         data: data,
-    //         reloadCurrency: true,
-    //         rowIdx: true,
-    //         autoWidth: false,
-    //         scrollX: true,
-    //         scrollY: '35vh',
-    //         scrollCollapse: true,
-    //         columns: [
-    //             {
-    //                 width: '3%',
-    //                 title: $.fn.gettext(''),
-    //                 className: 'text-center',
-    //                 render: (data, type, row, meta) => {
-    //                     return `<button
-    //                                 type="button"
-    //                                 class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover add-cost-row"
-    //                                 data-bs-toggle="tooltip"
-    //                                 data-bs-placement="bottom"
-    //                                 title="Add new row"
-    //                             >
-    //                                 <span class="icon"><i class="fas fa-plus"></i></span>
-    //                             </button>`
-    //                 }
-    //             },
-    //             {
-    //                 width: '5%',
-    //                 title: $.fn.gettext('Order'),
-    //                 className: 'text-center',
-    //                 render: (data, type, row, meta) => {
-    //                     return meta.row + 1
-    //                 }
-    //             },
-    //             {
-    //                 width: '15%',
-    //                 title: $.fn.gettext('Title'),
-    //                 render: (data, type, row) => {
-    //                     const title = row.title || ''
-    //                     return `<div class="input-group">
-    //                                 <input
-    //                                     type="text"
-    //                                     class="form-control cost-title"
-    //                                     value="${title}"
-    //                                     placeholder="Enter title"
-    //                                 />
-    //                             </div>`
-    //                 }
-    //             },
-    //             {
-    //                 width: '20%',
-    //                 title: $.fn.gettext('Description'),
-    //                 render: (data, type, row) => {
-    //                     const description = row.description || ''
-    //                     return `<div class="input-group">
-    //                                 <textarea
-    //                                     class="form-control cost-description"
-    //                                     rows="1"
-    //                                     placeholder="Enter description"
-    //                                 >${description}</textarea>
-    //                             </div>`
-    //                 }
-    //             },
-    //             {
-    //                 width: '8%',
-    //                 title: $.fn.gettext('Quantity'),
-    //                 render: (data, type, row) => {
-    //                     const quantity = row.quantity || 1
-    //                     return `<div class="input-group">
-    //                                 <input
-    //                                     type="number"
-    //                                     class="form-control cost-quantity"
-    //                                     value="${quantity}"
-    //                                     min="0"
-    //                                     step="0.01"
-    //                                 />
-    //                             </div>`
-    //                 }
-    //             },
-    //             {
-    //                 width: '10%',
-    //                 title: $.fn.gettext('Unit Cost'),
-    //                 render: (data, type, row) => {
-    //                     const unitCost = row.unit_cost || 0
-    //                     return `<div class="input-group">
-    //                                 <input
-    //                                     type="number"
-    //                                     class="form-control cost-unit-price"
-    //                                     value="${unitCost}"
-    //                                     min="0"
-    //                                     step="0.01"
-    //                                 />
-    //                             </div>`
-    //                 }
-    //             },
-    //             {
-    //                 width: '10%',
-    //                 title: $.fn.gettext('Currency'),
-    //                 render: (data, type, row) => {
-    //                     const selectedCurrency = row.currency_id || ''
-    //                     let options = '<option value="">Select</option>'
-    //
-    //                     if (pageVariable.currencyList) {
-    //                         pageVariable.currencyList.forEach(currency => {
-    //                             const selected = currency.id == selectedCurrency ? 'selected' : ''
-    //                             options += `<option value="${currency.id}" data-rate="${currency.rate}" ${selected}>
-    //                                             ${currency.abbreviation}
-    //                                         </option>`
-    //                         })
-    //                     }
-    //
-    //                     return `<div class="input-group">
-    //                                 <select class="form-select cost-currency">
-    //                                     ${options}
-    //                                 </select>
-    //                             </div>`
-    //                 }
-    //             },
-    //             {
-    //                 width: '10%',
-    //                 title: $.fn.gettext('Tax'),
-    //                 render: (data, type, row) => {
-    //                     const selectedTax = row.tax_id || ''
-    //                     // This would typically be populated from tax data
-    //                     return `<div class="input-group">
-    //                                 <select class="form-select cost-tax">
-    //                                     <option value="">No Tax</option>
-    //                                     <option value="vat10" ${selectedTax === 'vat10' ? 'selected' : ''}>VAT 10%</option>
-    //                                     <option value="vat8" ${selectedTax === 'vat8' ? 'selected' : ''}>VAT 8%</option>
-    //                                     <option value="vat5" ${selectedTax === 'vat5' ? 'selected' : ''}>VAT 5%</option>
-    //                                 </select>
-    //                             </div>`
-    //                 }
-    //             },
-    //             {
-    //                 width: '10%',
-    //                 title: $.fn.gettext('Total Amount'),
-    //                 render: (data, type, row) => {
-    //                     const quantity = parseFloat(row.quantity) || 1
-    //                     const unitCost = parseFloat(row.unit_cost) || 0
-    //                     const taxRate = getTaxRate(row.tax_id)
-    //                     const subtotal = quantity * unitCost
-    //                     const taxAmount = subtotal * taxRate
-    //                     const total = subtotal + taxAmount
-    //
-    //                     return `<div class="text-end">
-    //                                 <span class="cost-total mask-money" data-init-money="${total}"></span>
-    //                             </div>`
-    //                 }
-    //             },
-    //             {
-    //                 width: '12%',
-    //                 title: $.fn.gettext('Total (VND)'),
-    //                 render: (data, type, row) => {
-    //                     const quantity = parseFloat(row.quantity) || 1
-    //                     const unitCost = parseFloat(row.unit_cost) || 0
-    //                     const taxRate = getTaxRate(row.tax_id)
-    //                     const subtotal = quantity * unitCost
-    //                     const taxAmount = subtotal * taxRate
-    //                     const total = subtotal + taxAmount
-    //
-    //                     // Convert to VND using currency rate
-    //                     let totalVND = total
-    //                     if (row.currency_id && pageVariable.currencyList) {
-    //                         const currency = pageVariable.currencyList.find(c => c.id == row.currency_id)
-    //                         if (currency && currency.rate) {
-    //                             totalVND = total * currency.rate
-    //                         }
-    //                     }
-    //
-    //                     return `<div class="text-end">
-    //                                 <span class="cost-total-vnd mask-money" data-init-money="${totalVND}"></span>
-    //                             </div>`
-    //                 }
-    //             },
-    //             {
-    //                 width: '5%',
-    //                 title: $.fn.gettext('Action'),
-    //                 className: 'text-center',
-    //                 render: (data, type, row) => {
-    //                     return `<button
-    //                                 type="button"
-    //                                 class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover delete-cost-row"
-    //                                 data-bs-toggle="tooltip"
-    //                                 data-bs-placement="bottom"
-    //                                 title="Delete"
-    //                             >
-    //                                 <span class="icon"><i class="far fa-trash-alt"></i></span>
-    //                             </button>`
-    //                 }
-    //             }
-    //         ],
-    //         drawCallback: function(settings) {
-    //             $('[data-bs-toggle="tooltip"]').tooltip()
-    //         }
-    //     })
-    // }
+    function initWorkOrderCostModalDataTable(data=[{}]){
+        if ($.fn.DataTable.isDataTable(pageElement.modalData.$tableWorkOrderCost)) {
+            pageElement.modalData.$tableWorkOrderCost.DataTable().destroy()
+        }
+
+        pageElement.modalData.$tableWorkOrderCost.DataTableDefault({
+            data: data,
+            reloadCurrency: true,
+            rowIdx: false,
+            autoWidth: false,
+            scrollX: true,
+            scrollY: '35vh',
+            scrollCollapse: true,
+            columns: [
+                {
+                    width: '5%',
+                    title: $.fn.gettext(''),
+                    className: 'text-center',
+                    render: (data, type, row, meta) => {
+                        return `<div class="btn-add-cost-area"></div>`
+                    }
+                },
+                {
+                    width: '4%',
+                    title: $.fn.gettext('Order'),
+                    className: 'text-center',
+                    render: (data, type, row, meta) => {
+                        return Number(meta.row) + 1
+                    }
+                },
+                {
+                    width: '15%',
+                    title: $.fn.gettext('Title'),
+                    render: (data, type, row) => {
+                        const title = row.title || ''
+                        return `<div class="input-group">
+                                    <input
+                                        type="text"
+                                        class="form-control cost-title"
+                                        value="${title}"
+                                    />
+                                </div>`
+                    }
+                },
+                {
+                    width: '15%',
+                    title: $.fn.gettext('Description'),
+                    render: (data, type, row) => {
+                        const description = row.description || ''
+                        return `<div class="input-group">
+                                    <textarea
+                                        class="form-control"
+                                        rows="1"
+                                    >${description}</textarea>
+                                </div>`
+                    }
+                },
+                {
+                    width: '6%',
+                    title: $.fn.gettext('Quantity'),
+                    render: (data, type, row) => {
+                        const quantity = row.quantity || 0
+                        return `<div class="input-group">
+                                    <input
+                                        type="number"
+                                        class="form-control work-order-cost-quantity"
+                                        value="${quantity}"
+                                        min="0"
+                                    />
+                                </div>`
+                    }
+                },
+                {
+                    width: '10%',
+                    title: $.fn.gettext('Unit Cost'),
+                    render: (data, type, row) => {
+                        const unitCost = row.unit_cost || 0
+                        const selectedCurrency = row.currency_id || ''
+                        const currencyData = pageVariable.currencyList.find(currency => currency.id === selectedCurrency)
+
+                        const currencyAbbr = currencyData?.abbreviation || ' '
+
+                        return `<div class="input-group">
+                                    <input
+                                        type="text"
+                                        class="form-control mask-money work-order-cost-unit-cost"
+                                        value="${unitCost}"
+                                        data-other-abbreviation="${currencyAbbr}"
+                                    />
+                                </div>`
+                    }
+                },
+                {
+                    width: '8%',
+                    title: $.fn.gettext('Currency'),
+                    render: (data, type, row) => {
+                        const selectedCurrency = row.currency_id || ''
+                        let options = '<option value="">Select</option>'
+
+                        if (pageVariable.currencyList) {
+                            pageVariable.currencyList.forEach(currency => {
+                                const selected = currency.id === selectedCurrency ? 'selected' : ''
+                                options += `<option value="${currency.id}" data-rate="${currency.rate}" ${selected}>
+                                                ${currency.abbreviation}
+                                            </option>`
+                            })
+                        }
+
+                        return `<div class="input-group">
+                                    <select class="form-select currency-select">
+                                        ${options}
+                                    </select>
+                                </div>`
+                    }
+                },
+                {
+                    width: '8%',
+                    title: $.fn.gettext('Tax'),
+                    render: (data, type, row) => {
+                        const taxListUrl = pageElement.$urlScript.attr('data-tax-list-url')
+                        const selectedTax = row.tax_id || ''
+                        return `<div class="input-group">
+                                    <select class="select2 form-select tax-select" data-url="${taxListUrl}" data-keyResp="tax_list">
+                                    </select>
+                                </div>`
+                    }
+                },
+                {
+                    width: '12%',
+                    title: $.fn.gettext('Total Amount'),
+                    render: (data, type, row) => {
+                        const total = row.total || 0
+                        const selectedCurrency = row.currency_id || ''
+                        const currencyData = pageVariable.currencyList.find(currency => currency.id === selectedCurrency)
+
+                        const currencyAbbr = currencyData?.abbreviation || ' '
+                        return `<div>
+                                    <span data-other-abbreviation="${currencyAbbr}" class="order-cost-total mask-money" data-init-money="${total}"></span>
+                                </div>`
+                    }
+                },
+                {
+                    width: '12%',
+                    title: $.fn.gettext('Total (VND)'),
+                    render: (data, type, row) => {
+                        const exchangedTotal = row.exchanged_total || 0
+                        return `<div>
+                                    <span class="order-cost-exchanged-total mask-money" data-init-money="${exchangedTotal}"></span>
+                                </div>`
+                    }
+                },
+                {
+                    width: '5%',
+                    title: $.fn.gettext('Action'),
+                    className: 'text-center',
+                    render: (data, type, row) => {
+                        return `<button
+                                    type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover delete-cost-row"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="bottom"
+                                    title="Delete"
+                                >
+                                    <span class="icon"><i class="far fa-trash-alt"></i></span>
+                                </button>`
+                    }
+                }
+            ],
+            rowCallback: function (row, data){
+                const $row = $(row)
+                const taxId = data.tax_id
+                $row.find('.tax-select').attr('data-tax-id', taxId)
+            },
+            drawCallback: function(settings) {
+                const $table = $(this)
+                const api = $table.DataTable()
+                $table.find('.btn-add-cost-area').empty()
+
+                // Add plus button to the last row only
+                const $rows = $table.find('tbody tr')
+                if ($rows.length > 0) {
+                    const $lastRow = $rows.last()
+                    $lastRow.find('.btn-add-cost-area').html(`
+                        <button
+                            type="button"
+                            class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover add-work-order-cost-row"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="bottom"
+                            title="Add new row"
+                        >
+                            <span class="icon"><i class="fas fa-plus"></i></span>
+                        </button>
+                    `)
+                }
+
+                const $taxSelects = $(this).find('.tax-select')
+                $taxSelects.each(function () {
+                    const taxId = $(this).attr('data-tax-id')
+                    const taxData = pageVariable.taxList.find(tax => tax.id === taxId)
+
+                    if(taxData) {
+                        initSelect($(this),{
+                            data:{
+                                id: taxId,
+                                title: taxData.title,
+                            }
+                        })
+                    } else {
+                        initSelect($(this))
+                    }
+                })
+            }
+        })
+    }
 
 // --------------------HANDLE EVENTS---------------------
     function handleSaveProduct() {
@@ -795,11 +859,31 @@ const ServiceOrder = (function($) {
             if (checkedProducts.length > 0) {
                 if (pageVariable.modalContext === 'serviceDetail') {
                     addProductsToServiceDetail(checkedProducts)
+                    const table = pageElement.serviceDetail.$table.DataTable()
+                    const currentData = table.data().toArray()
+                    const newData = [...currentData, ...checkedProducts]
+                    table.clear().rows.add(newData).draw(false)
                 } else if (pageVariable.modalContext === 'workOrder') {
-                    addProductsToWorkOrder(checkedProducts)
+                    const table = pageElement.workOrder.$table.DataTable()
+                    const currentData = table.data().toArray()
+                    const newData = [...currentData, ...checkedProducts]
+                    table.clear().rows.add(newData).draw(false)
                 }
                 // Clear selections
                 pageElement.modalData.$tableProduct.find('input[name="select-product"]').prop('checked', false)
+            }
+        })
+    }
+
+    function handleChangeServiceDescription() {
+        pageElement.serviceDetail.$table.on('change', 'textarea', function (e) {
+            const $textArea = $(this)
+            const $row = $textArea.closest('tr')
+            const table = pageElement.serviceDetail.$table.DataTable()
+            const rowData = table.row($row).data()
+            const newDescription = $textArea.val()
+            if (rowData) {
+                rowData.description = newDescription
             }
         })
     }
@@ -830,18 +914,7 @@ const ServiceOrder = (function($) {
         })
     }
 
-    function handleChangeDescription() {
-        pageElement.serviceDetail.$table.on('change', 'textarea', function (e) {
-            const $textArea = $(this)
-            const $row = $textArea.closest('tr')
-            const table = pageElement.serviceDetail.$table.DataTable()
-            const rowData = table.row($row).data()
-            const newDescription = $textArea.val()
-            if (rowData) {
-                rowData.description = newDescription
-            }
-        })
-    }
+
 
     function handleChangeWorkOrderDate() {
         function validateDates(rowData) {
@@ -883,38 +956,211 @@ const ServiceOrder = (function($) {
         })
     }
 
-    // function handleAddNonItem() {
-    //     pageElement.buttons.$btnAddNonItem.on('click', function(e) {
-    //         e.preventDefault()
-    //
-    //         // Add empty row to work order for manual entry
-    //         const emptyWorkOrderItem = {
-    //             code: '',
-    //             description: '',
-    //             quantity: 1,
-    //             unit_cost: 0,
-    //             total: 0,
-    //             start_date: '',
-    //             end_date: '',
-    //             is_delivery_point: false,
-    //             status: 'pending'
-    //         }
-    //
-    //         addProductsToWorkOrder([emptyWorkOrderItem])
-    //     })
-    // }
+    function handleChangeWorkOrderQuantity(){
+        pageElement.workOrder.$table.on('change', '.work-order-quantity', function (e){
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+            const table = pageElement.workOrder.$table.DataTable()
+            const rowData = table.row($row).data()
+            rowData.quantity = Number($ele.val() || 0)
 
-    return  {
+            const totalData = calculateWorkOrderCostTotalData(rowData)
+            rowData.total = totalData.total
+            rowData.exchanged_total = totalData.exchanged_total
+            table.row($row).data(rowData).draw(false)
+        })
+    }
+
+    function handleClickOpenWorkOrderCost() {
+        pageElement.workOrder.$table.on('click', '.btn-open-work-order-cost', function(e){
+            const $row = $(e.currentTarget).closest('tr')
+            const table = pageElement.workOrder.$table.DataTable()
+            const rowIndex = table.row($row).index()
+            const rowWorkOrderCost = pageVariable.workOrderCostData[rowIndex]
+            pageElement.modalData.$tableWorkOrderCost.attr('data-row-index', rowIndex)
+            initWorkOrderCostModalDataTable(rowWorkOrderCost)
+        })
+    }
+
+    function handleSelectWorkOrderCostTax() {
+        pageElement.modalData.$tableWorkOrderCost.on('change', 'select.tax-select', function (e) {
+            const $select = $(e.currentTarget)
+            const $row = $select.closest('tr')
+            const taxId = $select.val()
+
+            const tableWorkOrderCost = pageElement.modalData.$tableWorkOrderCost.DataTable()
+            const rowData = tableWorkOrderCost.row($row).data()
+
+            // Update the data
+            rowData.tax_id = taxId
+
+            // Find the tax object
+            const tax = pageVariable.taxList ? pageVariable.taxList.find(item => item.id === taxId) : null
+            const taxRate = tax ? (tax.rate || 0) / 100 : 0
+
+            // Recalculate totals
+            const quantity = rowData.quantity || 0
+            const unitCost = rowData.unit_cost || 0
+            const subtotal = quantity * unitCost
+            const taxAmount = subtotal * taxRate
+            const total = subtotal + taxAmount
+
+            // Calculate exchanged total
+            let exchangedTotal = total
+            if (rowData.currency_id && pageVariable.currencyList) {
+                const currency = pageVariable.currencyList.find(c => c.id === rowData.currency_id)
+                if (currency && currency.rate) {
+                    exchangedTotal = total * currency.rate
+                }
+            }
+            $row.find('.order-cost-total').attr('data-init-money', total)
+            $row.find('.order-cost-exchanged-total').attr('data-init-money', exchangedTotal)
+            rowData.total = total
+            rowData.exchanged_total = exchangedTotal
+            $.fn.initMaskMoney2()
+            // tableWorkOrderCost.row($row).data(rowData).draw(false)
+        })
+    }
+
+    function handleSelectWorkOrderCurrency(){
+        pageElement.modalData.$tableWorkOrderCost.on('change', '.currency-select', function (e) {
+            const $select = $(e.currentTarget)
+            const $row = $select.closest('tr')
+            const currencyId = $select.val()
+
+            const tableWorkOrderCost = pageElement.modalData.$tableWorkOrderCost.DataTable()
+            const rowData = tableWorkOrderCost.row($row).data()
+
+            rowData.currency_id = currencyId
+
+            const totalData = calculateWorkOrderCostTotalData(rowData)
+            rowData.total = totalData.total
+            rowData.exchanged_total = totalData.exchanged_total
+            tableWorkOrderCost.row($row).data(rowData).draw(false)
+        })
+    }
+
+    function handleAddWorkOrderNonItem() {
+        pageElement.workOrder.$btnAddNonItem.on('click', function(e) {
+            e.preventDefault()
+
+            // Add empty row to work order for manual entry
+            const emptyWorkOrderItem = {
+                code: '',
+                description: '',
+                quantity: 1,
+                unit_cost: 0,
+                total: 0,
+                start_date: '',
+                end_date: '',
+                is_delivery_point: false,
+                status: 0
+            }
+
+            addProductsToWorkOrder([emptyWorkOrderItem])
+        })
+    }
+
+    function handleAddWorkOrderCostRow(){
+        pageElement.modalData.$tableWorkOrderCost.on('click', '.add-work-order-cost-row', function(e) {
+            const table = pageElement.modalData.$tableWorkOrderCost.DataTable()
+            const currentData = table.data().toArray()
+
+            const newRow = {
+                title: '',
+                description: '',
+                quantity: 0,
+                unit_cost: 0,
+                currency_id: '',
+                tax_id: '',
+                total: 0,
+                exchanged_total: 0
+            }
+
+            currentData.push(newRow)
+            table.clear().rows.add(currentData).draw(false)
+        })
+    }
+
+    function handleChangeQuantityAndUnitCost() {
+        pageElement.modalData.$tableWorkOrderCost.on('change', '.work-order-cost-quantity', function (e) {
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+            const table = pageElement.modalData.$tableWorkOrderCost.DataTable()
+
+            const rowData = table.row($row).data()
+            const currVal = Number($ele.val()) || 0
+            rowData.quantity = currVal
+
+            const totalData = calculateWorkOrderCostTotalData(rowData)
+            rowData.total = totalData.total
+            rowData.exchanged_total = totalData.exchanged_total
+            table.row($row).data(rowData).draw(false)
+        })
+        pageElement.modalData.$tableWorkOrderCost.on('change', '.work-order-cost-unit-cost', function (e) {
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+            const table = pageElement.modalData.$tableWorkOrderCost.DataTable()
+            const rowData = table.row($row).data()
+
+            const currVal = Number($ele.attr('value')) || 0
+            rowData.unit_cost = currVal
+
+            const totalData = calculateWorkOrderCostTotalData(rowData)
+            rowData.total = totalData.total
+            rowData.exchanged_total = totalData.exchanged_total
+            table.row($row).data(rowData).draw(false)
+        })
+    }
+
+    function handleSaveWorkOrderCost(){
+        pageElement.modalData.$btnSaveWorkOrderCost.on('click', function(e) {
+            const rowIndex = pageElement.modalData.$tableWorkOrderCost.attr('data-row-index')
+
+            const table = pageElement.modalData.$tableWorkOrderCost.DataTable()
+
+            const workOrderCostList = table.data().toArray()
+
+            let totalAmount = 0
+
+            workOrderCostList.forEach((item, index) => {
+                totalAmount += item.exchanged_total
+
+                item.order = index
+                    return item
+            })
+            pageVariable.workOrderCostData[rowIndex] = workOrderCostList
+
+            const workOrderRow = pageElement.workOrder.$table.DataTable().row(rowIndex)
+            const workOrderRowData = workOrderRow.data()
+            workOrderRowData.unit_cost = totalAmount
+            workOrderRowData.total = totalAmount * workOrderRowData.quantity
+            pageElement.workOrder.$table.DataTable().row(workOrderRow).data(workOrderRowData).draw(false)
+        })
+    }
+
+    return {
+        pageVariable,
         initDateTime,
         initPageSelect,
         loadCurrencyRateData,
+        loadTaxData,
         initProductModalDataTable,
         initServiceDetailDataTable,
         initWorkOrderDataTable,
         initModalContextTracking,
+        initWorkOrderCostModalDataTable,
         handleSaveProduct,
         handleChangeServiceQuantity,
-        handleChangeDescription,
-        handleChangeWorkOrderDate
+        handleChangeServiceDescription,
+        handleChangeWorkOrderDate,
+        handleChangeWorkOrderQuantity,
+        handleClickOpenWorkOrderCost,
+        handleSelectWorkOrderCostTax,
+        handleSelectWorkOrderCurrency,
+        handleAddWorkOrderNonItem,
+        handleAddWorkOrderCostRow,
+        handleChangeQuantityAndUnitCost,
+        handleSaveWorkOrderCost
     }
 })(jQuery)

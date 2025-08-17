@@ -27,25 +27,27 @@ class BalanceInitList(View):
                         'import_db_form_cfg': {
                             'list_import_db': [
                                 {
-                                    "id": "table-balance-item-import-db",
-                                    "map_with": "table-balance-item",
+                                    "id": "table-balance-product-import-db",
+                                    "map_with": "table-balance-product",
                                     "name": _("Balance init datatable"),
                                     "option": [0],
                                     "col_type": [
                                         'input-text',
                                         'input-text',
                                         'input-text',
-                                        'input-money'
+                                        'input-money',
+                                        'list',
+                                        'list',
                                     ],
                                     "data_format": {
-                                        "key": "balance_data",
+                                        "key": "balance_init_data",
                                         "value_list": [
                                             {"col_key": "product_code", "col_index": 0},
                                             {"col_key": "warehouse_code", "col_index": 1},
                                             {"col_key": "quantity", "col_index": 2},
                                             {"col_key": "value", "col_index": 3},
-                                            {"col_key": "data_sn", "col_index": -1, "data_default": []},
-                                            {"col_key": "data_lot", "col_index": -1, "data_default": []},
+                                            {"col_key": "data_lot", "col_index": 4, "data_default": [], "data_fixed_key": ["lot_number", "quantity_import", "expire_date", "manufacture_date"]},
+                                            {"col_key": "data_sn", "col_index": 5, "data_default": [], "data_fixed_key": ["vendor_serial_number", "serial_number", "expire_date", "manufacture_date", "warranty_start", "warranty_end"]},
                                         ]
                                     }
                                 }

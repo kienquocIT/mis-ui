@@ -284,8 +284,8 @@ class GetQRCodeSerialInfoAPI(APIView):
         qr.add_data(
             f"- Product: [{data.get('product_code', '-')}] - {data.get('product_title', '-')}\n"
             f"- Description: {data.get('product_des', '-')}\n"
-            f"- Serial number: {data.get('serial_number', '-')}\n"
-            f"- Vendor serial number: {data.get('vendor_serial_number', '-')}\n"
+            f"- Serial no.: {data.get('serial_number', '-')}\n"
+            f"- Vendor serial no.: {data.get('vendor_serial_number', '-')}\n"
             f"- Goods receipt date: {goods_receipt_date.strftime('%d/%m/%Y') if goods_receipt_date != '-' else '-'}\n"
             f"- Days in stock: {day_in_stock}\n\n"
             f"* Latest updated: {now_day.strftime('%d/%m/%Y')}"
@@ -295,25 +295,6 @@ class GetQRCodeSerialInfoAPI(APIView):
         path = f"apps/sales/report/static/assets/sales/inventory_report/QR_sn_info/{data.get('product_id')}_{data.get('serial_number')}.png"
         img.save(path)
         return {'qr_path_sn': [{'path': path.replace('apps/sales/report', '')}]}, status.HTTP_200_OK
-
-
-class ReportInventoryAskAPI(APIView):
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        params = request.query_params.dict()
-        contexts = params.get('contexts')
-        question = params.get('question')
-        vectorizer = TfidfVectorizer()
-        context_sentences = [sentence.strip() for sentence in contexts.split('.') if sentence]
-        context_vectors = vectorizer.fit_transform(context_sentences)
-        question_vector = vectorizer.transform([question])
-        similarities = cosine_similarity(question_vector, context_vectors).flatten()
-        best_context = context_sentences[similarities.argmax()]
-        return {'response': best_context}, status.HTTP_200_OK
 
 
 # REPORT PIPELINE

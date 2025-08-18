@@ -1082,7 +1082,7 @@ const ServiceOrder = (function($) {
         })
     }
 
-    function handleChangeQuantityAndUnitCost() {
+    function handleChangeWorkOrderCostQuantityAndUnitCost() {
         pageElement.modalData.$tableWorkOrderCost.on('change', '.work-order-cost-quantity', function (e) {
             const $ele = $(e.currentTarget)
             const $row = $ele.closest('tr')
@@ -1125,7 +1125,6 @@ const ServiceOrder = (function($) {
 
             workOrderCostList.forEach((item, index) => {
                 totalAmount += item.exchanged_total
-
                 item.order = index
                     return item
             })
@@ -1149,7 +1148,6 @@ const ServiceOrder = (function($) {
         initServiceDetailDataTable,
         initWorkOrderDataTable,
         initModalContextTracking,
-        initWorkOrderCostModalDataTable,
         handleSaveProduct,
         handleChangeServiceQuantity,
         handleChangeServiceDescription,
@@ -1160,7 +1158,7 @@ const ServiceOrder = (function($) {
         handleSelectWorkOrderCurrency,
         handleAddWorkOrderNonItem,
         handleAddWorkOrderCostRow,
-        handleChangeQuantityAndUnitCost,
+        handleChangeWorkOrderCostQuantityAndUnitCost,
         handleSaveWorkOrderCost
     }
 })(jQuery)

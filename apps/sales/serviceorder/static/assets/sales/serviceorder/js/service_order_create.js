@@ -8,18 +8,30 @@ $(document).ready(function () {
     ServiceOrder.initServiceDetailDataTable()
     ServiceOrder.initWorkOrderDataTable()
     ServiceOrder.initModalContextTracking()
-    // ServiceOrder.initWorkOrderCostModalDataTable()
 
     ServiceOrder.handleSaveProduct()
-    ServiceOrder.handleChangeServiceDescription()
-    ServiceOrder.handleChangeServiceQuantity()
-    ServiceOrder.handleChangeWorkOrderDate()
-    ServiceOrder.handleChangeWorkOrderQuantity()
-    ServiceOrder.handleClickOpenWorkOrderCost()
-    ServiceOrder.handleSelectWorkOrderCostTax()
-    ServiceOrder.handleSelectWorkOrderCurrency()
-    ServiceOrder.handleAddWorkOrderNonItem()
-    ServiceOrder.handleAddWorkOrderCostRow()
-    ServiceOrder.handleChangeQuantityAndUnitCost()
-    ServiceOrder.handleSaveWorkOrderCost()
+
+    function handleServiceDetailTabEvent(){
+        ServiceOrder.handleChangeServiceDescription()
+        ServiceOrder.handleChangeServiceQuantity()
+    }
+
+    function handleWorkOrderDetailTabEvent(){
+        ServiceOrder.handleChangeWorkOrderDate()
+        ServiceOrder.handleChangeWorkOrderQuantity()
+        ServiceOrder.handleClickOpenWorkOrderCost()
+        ServiceOrder.handleSelectWorkOrderCostTax()
+        ServiceOrder.handleSelectWorkOrderCurrency()
+        ServiceOrder.handleAddWorkOrderNonItem()
+    }
+
+    function handleModalWorkOrderCostEvent(){
+        ServiceOrder.handleAddWorkOrderCostRow()
+        ServiceOrder.handleChangeWorkOrderCostQuantityAndUnitCost()
+        ServiceOrder.handleSaveWorkOrderCost()
+    }
+
+    handleServiceDetailTabEvent()
+    handleWorkOrderDetailTabEvent()
+    handleModalWorkOrderCostEvent()
 })

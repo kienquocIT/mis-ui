@@ -22,8 +22,8 @@ $(document).ready(function () {
     let space_month_Setting = current_period?.['space_month']
 
     moneyDisplayEle.on('change', function () {
-        COMPANY_CURRENT_REVENUE = null
-        COMPANY_CURRENT_PROFIT = null
+        COMPANY_CURRENT_REVENUE = 0
+        COMPANY_CURRENT_PROFIT = 0
         DrawRevenueProfitChart(false)
         DrawTopSaleCustomerChart(false)
     })
@@ -129,8 +129,8 @@ $(document).ready(function () {
     let profit_chart = null
     let profit_expected_DF = []
     let profit_expected_type = null
-    let COMPANY_CURRENT_REVENUE = null
-    let COMPANY_CURRENT_PROFIT = null
+    let COMPANY_CURRENT_REVENUE = 0
+    let COMPANY_CURRENT_PROFIT = 0
 
     function RevenueProfitChartCfg(labelX, data_list, chart_title='', titleX='', titleY='') {
         return {
@@ -171,13 +171,6 @@ $(document).ready(function () {
                 right: '2%',
                 top: '2%',
                 feature: {
-                    dataZoom: {
-                        yAxisIndex: 'none',
-                        title: {
-                            zoom: 'Phóng to',
-                            back: 'Thu nhỏ'
-                        }
-                    },
                     dataView: {
                         readOnly: false,
                         title: 'Xem dữ liệu',
@@ -323,7 +316,9 @@ $(document).ready(function () {
                 profit_expected_type = results[1].length ? results[1][0]?.['profit_target_type'] : null
 
                 // auto change profit type
-                profitTypeEle.val(profit_expected_type)
+                if (is_init) {
+                    profitTypeEle.val(profit_expected_type)
+                }
 
                 if (parseInt(profit_expected_type) === parseInt(profitTypeEle.val())) {
                     for (let i = 0; i < results[1].length; i++) {
@@ -384,30 +379,27 @@ $(document).ready(function () {
         for (const item of revenueprofit_DF) {
             let index = GetSub(item?.['date_approved'], period_selected_Setting) - 1
 
-            revenue_chart_data[index] += Number((
-                (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion
-            ).toFixed(parseInt(moneyRoundEle.val())))
+            revenue_chart_data[index] += Number(item?.['revenue'] || 0)
 
             if (profitTypeEle.val() === '0') {
-                profit_chart_data[index] += Number((
-                    (item?.['gross_profit'] ? item?.['gross_profit'] : 0) / cast_billion
-                ).toFixed(parseInt(moneyRoundEle.val())))
+                profit_chart_data[index] += Number(item?.['gross_profit'] || 0)
             }
             else {
-                profit_chart_data[index] += Number((
-                    (item?.['net_income'] ? item?.['net_income'] : 0) / cast_billion
-                ).toFixed(parseInt(moneyRoundEle.val())))
+                profit_chart_data[index] += Number(item?.['net_income'] || 0)
             }
         }
+
+        revenue_chart_data = revenue_chart_data.map(value => Number((value / cast_billion).toFixed(parseInt(moneyRoundEle.val()))));
+        profit_chart_data = profit_chart_data.map(value => Number((value / cast_billion).toFixed(parseInt(moneyRoundEle.val()))));
 
         let revenue_expected_data = revenue_expected_DF.map(value => Number((value / cast_billion).toFixed(parseInt(moneyRoundEle.val()))));
         let profit_expected_data = profit_expected_DF.map(value => Number((value / cast_billion).toFixed(parseInt(moneyRoundEle.val()))));
 
         if (type === 'Period') {
-            COMPANY_CURRENT_REVENUE = COMPANY_CURRENT_REVENUE === null ? (revenue_chart_data[GetSub(new Date().toString(), period_selected_Setting) - 1] * cast_billion) : COMPANY_CURRENT_REVENUE
+            COMPANY_CURRENT_REVENUE = revenue_chart_data[GetSub(new Date().toString(), period_selected_Setting) - 1] * cast_billion || 0
             $('#current-revenue').attr('data-init-money', COMPANY_CURRENT_REVENUE)
 
-            COMPANY_CURRENT_PROFIT = COMPANY_CURRENT_PROFIT === null ? (profit_chart_data[GetSub(new Date().toString(), period_selected_Setting) - 1] * cast_billion) : COMPANY_CURRENT_PROFIT
+            COMPANY_CURRENT_PROFIT = profit_chart_data[GetSub(new Date().toString(), period_selected_Setting) - 1] * cast_billion || 0
             $('#current-profit').attr('data-init-money', COMPANY_CURRENT_PROFIT)
 
             $.fn.initMaskMoney2()

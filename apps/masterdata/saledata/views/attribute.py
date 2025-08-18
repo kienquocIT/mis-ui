@@ -12,7 +12,7 @@ class AttributeList(View):
     @mask_view(
         auth_require=True,
         template='masterdata/saledata/attribute/attribute_list.html',
-        menu_active='menu_attendance_device_list',
+        menu_active='id_menu_master_data_attribute',
         breadcrumb='ATTENDANCE_DEVICE_LIST_PAGE',
         icon_cls='fa-solid fa-gears',
         icon_bg='bg-smoke',

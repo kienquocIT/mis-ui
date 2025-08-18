@@ -15,7 +15,7 @@
         </div>
         <div class="offcanvas-body">
             <div class="row d-flex justify-content-center align-items-center">
-                <ul class="nav nav-justified nav-light nav-tabs nav-segmented-tabs w-90">
+                <ul class="nav nav-justified nav-light nav-pills w-90">
                     <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
                             <span class="nav-link-text">{% trans 'Attribute' %}</span>
@@ -77,17 +77,16 @@
                         </li>
                     </ul>
 
-                    <div class="row mt-5">
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <div class="form-check form-check-lg d-flex align-items-center">
-                                <input type="checkbox" name="is_inventory" id="is_inventory" class="form-check-input">
-                                <label class="form-check-label" for="is_inventory">{% trans 'Inventory' %}</label>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="tab_numeric">
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-check form-check-lg d-flex align-items-center">
+                                        <input type="checkbox" name="is_inventory_numeric" id="is_inventory_numeric" class="form-check-input">
+                                        <label class="form-check-label" for="is_inventory_numeric">{% trans 'Inventory' %}</label>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-12 col-md-6 col-lg-6">
                                     <div class="form-group">
@@ -147,7 +146,7 @@
                                     <div class="form-group">
                                         <label class="form-label" for="numeric_cost_increase">{% trans 'Cost per increment' %}</label>
                                         <input
-                                                type="text" class="form-control"
+                                                type="text" class="form-control mask-money valid-num"
                                                 name="numeric_cost_increase"
                                                 id="numeric_cost_increase"
                                         >
@@ -156,6 +155,14 @@
                             </div>
                         </div>
                         <div class="tab-pane fade show" id="tab_list">
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-check form-check-lg d-flex align-items-center">
+                                        <input type="checkbox" name="is_inventory_list" id="is_inventory_list" class="form-check-input">
+                                        <label class="form-check-label" for="is_inventory_list">{% trans 'Inventory' %}</label>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-12 col-md-6 col-lg-6">
                                     <div class="form-group">
@@ -181,13 +188,21 @@
                             </table>
                         </div>
                         <div class="tab-pane fade show" id="tab_warranty">
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-lg-6">
+                                    <div class="form-check form-check-lg d-flex align-items-center">
+                                        <input type="checkbox" name="is_inventory_warranty" id="is_inventory_warranty" class="form-check-input" checked disabled>
+                                        <label class="form-check-label" for="is_inventory_warranty">{% trans 'Inventory' %}</label>
+                                    </div>
+                                </div>
+                            </div>
                             <table id="table_warranty" class="table nowrap w-100 mb-5">
                                 <thead>
                                 <tr>
-                                    <th class="w-40">{% trans 'Value name' %}</th>
-                                    <th class="w-10">{% trans 'Quantity' %}</th>
+                                    <th class="w-30">{% trans 'Value name' %}</th>
+                                    <th class="w-15">{% trans 'Quantity' %}</th>
                                     <th class="w-20">{% trans 'Duration unit' %}</th>
-                                    <th class="w-20">{% trans 'Additional cost' %}</th>
+                                    <th class="w-25">{% trans 'Additional cost' %}</th>
                                     <th class="w-10"></th>
                                 </tr>
                                 </thead>

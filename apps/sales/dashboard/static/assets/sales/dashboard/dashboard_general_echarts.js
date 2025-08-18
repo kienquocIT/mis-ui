@@ -13,7 +13,6 @@ $(document).ready(function () {
     const scriptUrlEle = $('#script-url')
     const trans_script = $('#trans-script')
     const moneyDisplayEle = $('#money-display')
-    const moneyRoundEle = $('#money-round')
     const periodFiscalYearFilterEle = $('#period-filter')
     const current_period_Ele = $('#current_period')
     const current_period = current_period_Ele.text() ? JSON.parse(current_period_Ele.text()) : {}
@@ -24,12 +23,6 @@ $(document).ready(function () {
     moneyDisplayEle.on('change', function () {
         COMPANY_CURRENT_REVENUE = 0
         COMPANY_CURRENT_PROFIT = 0
-        DrawRevenueProfitChart(false)
-        DrawTopSaleCustomerChart(false)
-    })
-
-    moneyRoundEle.on('change', function () {
-        $(this).val($(this).val() || 1);
         DrawRevenueProfitChart(false)
         DrawTopSaleCustomerChart(false)
     })
@@ -155,7 +148,7 @@ $(document).ready(function () {
                 formatter: function(params) {
                     let result = params[0].name + '<br/>';
                     params.forEach(function(item) {
-                        result += `${item.marker} ${item.seriesName}: ${item.value ? item.value.toFixed(moneyRoundEle.val()) : '--'}<br/>`;
+                        result += `${item.marker} ${item.seriesName}: ${item.value ? item.value : '--'}<br/>`;
                     });
                     return result;
                 }
@@ -389,11 +382,11 @@ $(document).ready(function () {
             }
         }
 
-        revenue_chart_data = revenue_chart_data.map(value => Number((value / cast_billion).toFixed(parseInt(moneyRoundEle.val()))));
-        profit_chart_data = profit_chart_data.map(value => Number((value / cast_billion).toFixed(parseInt(moneyRoundEle.val()))));
+        revenue_chart_data = revenue_chart_data.map(value => Number((value / cast_billion)));
+        profit_chart_data = profit_chart_data.map(value => Number((value / cast_billion)));
 
-        let revenue_expected_data = revenue_expected_DF.map(value => Number((value / cast_billion).toFixed(parseInt(moneyRoundEle.val()))));
-        let profit_expected_data = profit_expected_DF.map(value => Number((value / cast_billion).toFixed(parseInt(moneyRoundEle.val()))));
+        let revenue_expected_data = revenue_expected_DF.map(value => Number((value / cast_billion)));
+        let profit_expected_data = profit_expected_DF.map(value => Number((value / cast_billion)));
 
         if (type === 'Period') {
             COMPANY_CURRENT_REVENUE = revenue_chart_data[GetSub(new Date().toString(), period_selected_Setting) - 1] * cast_billion || 0
@@ -530,7 +523,7 @@ $(document).ready(function () {
                 confine: true,
                 formatter: function(params) {
                     if (params.componentType === 'series') {
-                        return new Intl.NumberFormat('vi-VN').format(params.value ? params.value.toFixed(moneyRoundEle.val()) : '--');
+                        return new Intl.NumberFormat('vi-VN').format(params.value ? params.value : '--');
                     }
                     return '';
                 }
@@ -885,7 +878,7 @@ $(document).ready(function () {
                 confine: true,
                 formatter: function(params) {
                     if (params.componentType === 'series') {
-                        return new Intl.NumberFormat('vi-VN').format(params.value ? params.value.toFixed(moneyRoundEle.val()) : '--');
+                        return new Intl.NumberFormat('vi-VN').format(params.value ? params.value : '--');
                     }
                     return '';
                 }

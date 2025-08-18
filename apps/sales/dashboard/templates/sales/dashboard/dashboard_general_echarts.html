@@ -270,10 +270,10 @@
         <!-- Filter Section and KPI Cards -->
         <div class="row">
             <!-- Filter Section -->
-            <div class="col-12 col-lg-8">
+            <div class="col-12 col-lg-6">
                 <div class="custom-panel">
                     <div class="row">
-                        <div class="col-12 col-md-3">
+                        <div class="col-12 col-md-4">
                             <div class="form-group">
                                 <label for="money-display" class="form-label">
                                     {% trans 'Money display' %}
@@ -284,15 +284,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-12 col-md-3">
-                            <div class="form-group">
-                                <label for="money-round" class="form-label">
-                                    {% trans 'Money round' %}
-                                </label>
-                                <input id="money-round" type="number" class="form-control" value="2" min="0">
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-8">
                             <div class="form-group">
                                 <label for="period-filter" class="form-label">
                                     {% trans 'Fiscal year' %} <small class="text-muted">({% trans 'for revenue chart & profit chart' %})</small>
@@ -309,7 +301,7 @@
             </div>
             
             <!-- KPI Cards -->
-            <div class="col-6 col-lg-2">
+            <div class="col-6 col-lg-3">
                 <div class="custom-panel">
                     <div class="d-flex align-items-center">
                         <div class="kpi-icon primary me-3">
@@ -322,7 +314,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-2">
+            <div class="col-6 col-lg-3">
                 <div class="custom-panel">
                     <div class="d-flex align-items-center">
                         <div class="kpi-icon success me-3">

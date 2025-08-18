@@ -46,8 +46,30 @@ class BalanceInitList(View):
                                             {"col_key": "warehouse_code", "col_index": 1},
                                             {"col_key": "quantity", "col_index": 2},
                                             {"col_key": "value", "col_index": 3},
-                                            {"col_key": "data_lot", "col_index": 4, "data_default": [], "data_fixed_key": ["lot_number", "quantity_import", "expire_date", "manufacture_date"]},
-                                            {"col_key": "data_sn", "col_index": 5, "data_default": [], "data_fixed_key": ["vendor_serial_number", "serial_number", "expire_date", "manufacture_date", "warranty_start", "warranty_end"]},
+                                            {
+                                                "col_key": "data_lot",
+                                                "col_index": 4,
+                                                "data_default": [],
+                                                "data_fixed_key": [
+                                                    "lot_number",
+                                                    "quantity_import",
+                                                    "expire_date",
+                                                    "manufacture_date"
+                                                ]
+                                            },
+                                            {
+                                                "col_key": "data_sn",
+                                                "col_index": 5,
+                                                "data_default": [],
+                                                "data_fixed_key": [
+                                                    "vendor_serial_number",
+                                                    "serial_number",
+                                                    "expire_date",
+                                                    "manufacture_date",
+                                                    "warranty_start",
+                                                    "warranty_end"
+                                                ]
+                                            },
                                         ]
                                     }
                                 }

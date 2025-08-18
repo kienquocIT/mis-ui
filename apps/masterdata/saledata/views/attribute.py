@@ -29,8 +29,8 @@ class AttributeListAPI(APIView):
     def get(self, request, *args, **kwargs):
         return BaseView.run_list(
             request=request,
-            url=ApiURL.ATTENDANCE_DEVICE_LIST,
-            key_success='attendance_device_list'
+            url=ApiURL.ATTRIBUTE_LIST,
+            key_success='attribute_list'
         )
 
     @mask_view(
@@ -40,7 +40,7 @@ class AttributeListAPI(APIView):
     def post(self, request, *args, **kwargs):
         return BaseView.run_create(
             request=request,
-            url=ApiURL.ATTENDANCE_DEVICE_LIST,
+            url=ApiURL.ATTRIBUTE_LIST,
         )
 
 
@@ -53,6 +53,6 @@ class AttributeDetailAPI(APIView):
     def put(self, request, *args, pk, **kwargs):
         return BaseView.run_update(
             request=request,
-            url=ApiURL.ATTENDANCE_DEVICE_DETAIL,
+            url=ApiURL.ATTRIBUTE_DETAIL,
             pk=pk,
         )

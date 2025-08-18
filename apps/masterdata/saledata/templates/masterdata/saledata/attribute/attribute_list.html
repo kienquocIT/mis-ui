@@ -35,12 +35,13 @@
         id="app-trans-factory"
         data-attribute="{% trans 'Attribute' %}"
         data-add-new="{% trans 'Add new' %}"
+        data-canvas-add="{% trans 'Add attribute' %}"
+        data-canvas-update="{% trans 'Update attribute' %}"
     >
     <input
         type="text"
         id="app-url-factory"
-        data-api-attendance-device-list="{% url 'AttendanceDeviceListAPI' %}"
-        data-api-detail-attendance-device="{% url 'AttendanceDeviceDetailAPI' 1 %}"
+        data-api-uom-list="{% url 'UnitOfMeasureListAPI' %}"
     >
 {% endblock %}
 {% block jsFooter %}

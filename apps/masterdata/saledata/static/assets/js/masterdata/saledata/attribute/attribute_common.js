@@ -19,6 +19,8 @@ class AttributeHandle {
         AttributeHandle.loadDtbList();
         AttributeHandle.loadDtbWarranty();
         FormElementControl.loadInitS2(AttributeHandle.$boxParent);
+        FormElementControl.loadInitS2($('#numeric_duration_unit'));
+        FormElementControl.loadInitS2($('#list_duration_unit'));
         // init date picker
         $('.flat-picker').each(function () {
             DateTimeControl.initFlatPickrDate(this);
@@ -27,52 +29,82 @@ class AttributeHandle {
     };
 
     static setupDataSubmit() {
+        let _form = new SetupFormSubmit(AttributeHandle.$form);
         let isCategory = false;
-        for (let navEle of AttributeHandle.$tabBlock1[0].querySelectorAll('.nav-link')) {
-            if ($(navEle).hasClass('active') && $(navEle).attr('#tab_block_2')) {
+        let activeNavEle = AttributeHandle.$navAttributeCategory[0].querySelector('.nav-link.active');
+        if (activeNavEle) {
+            let href = $(activeNavEle).attr('href');
+            if (href === "#tab_block_2") {
                 isCategory = true;
             }
         }
-        return {
-            "title": AttributeHandle.$form.dataForm?.['title'],
-            "parent_n": AttributeHandle.$form.dataForm?.['parent_n'],
+        let data = {
+            "title": _form.dataForm?.['title'],
+            "parent_n": _form.dataForm?.['parent_n'],
             "is_category": isCategory,
-            "price_config": AttributeHandle.setupDataPriceConfig(),
         }
-    };
-
-    static setupDataPriceConfig() {
-        for (let navEle of AttributeHandle.$tabBlock1[0].querySelectorAll('.nav-link')) {
-            if ($(navEle).hasClass('active')) {
-                let type = $(navEle).attr('href');
-                if (type === "#tab_numeric") {
-                    return {
-                        "attribute_type": 0,
-                        "is_inventory": AttributeHandle.$form.dataForm?.['is_inventory_numeric'],
-                        "attribute_unit": AttributeHandle.$form.dataForm?.['numeric_attribute_unit'],
-                        "duration_unit": AttributeHandle.$form.dataForm?.['numeric_duration_unit'],
-                        "min_value": AttributeHandle.$form.dataForm?.['numeric_min'],
-                        "max_value": AttributeHandle.$form.dataForm?.['numeric_max'],
-                        "increment": AttributeHandle.$form.dataForm?.['numeric_increment'],
-                        "price_per_unit": AttributeHandle.$form.dataForm?.['numeric_price_per_unit'],
-                    };
+        if (isCategory === false) {
+            let activeNavChildEle = AttributeHandle.$tabBlock1[0].querySelector('.nav-link.active');
+            if (activeNavChildEle) {
+                let href = $(activeNavChildEle).attr('href');
+                if (href === "#tab_numeric") {
+                    data['price_config_type'] = 0;
+                    data['price_config_data'] = AttributeHandle.setupDataPriceConfig(0);
                 }
-                if (type === "#tab_list") {
-                    return {
-                        "attribute_type": 1,
-                        "is_inventory": AttributeHandle.$form.dataForm?.['is_inventory_list'],
-                        "duration_unit": AttributeHandle.$form.dataForm?.['list_duration_unit'],
-                        "list_item": AttributeHandle.setupDataListItem(),
-                    };
+                if (href === "#tab_list") {
+                    data['price_config_type'] = 1;
+                    data['price_config_data'] = AttributeHandle.setupDataPriceConfig(1);
                 }
-                if (type === "#tab_warranty") {
-                    return {
-                        "attribute_type": 2,
-                        "is_inventory": AttributeHandle.$form.dataForm?.['is_inventory_warranty'],
-                        "warranty_item": AttributeHandle.setupDataWarrantyItem(),
-                    };
+                if (href === "#tab_warranty") {
+                    data['price_config_type'] = 2;
+                    data['price_config_data'] = AttributeHandle.setupDataPriceConfig(2);
                 }
             }
+        }
+        return data;
+    };
+
+    static setupDataPriceConfig(priceConfigType) {
+        let _form = new SetupFormSubmit(AttributeHandle.$form);
+        if (priceConfigType === 0) {
+            let data = {
+                "attribute_unit": _form.dataForm?.['numeric_attribute_unit'],
+            };
+            if (_form.dataForm?.['numeric_min']) {
+                data['min_value'] = parseFloat(_form.dataForm?.['numeric_min']);
+            }
+            if (_form.dataForm?.['numeric_max']) {
+                data['max_value'] = parseFloat(_form.dataForm?.['numeric_max']);
+            }
+            if (_form.dataForm?.['numeric_increment']) {
+                data['increment'] = parseFloat(_form.dataForm?.['numeric_increment']);
+            }
+            let $pricePer = $('#numeric_price_per_unit');
+            if ($pricePer.valCurrency()) {
+                data['price_per_unit'] = $pricePer.valCurrency();
+            }
+            let $durationUnitEle = $('#numeric_duration_unit');
+            if ($durationUnitEle.val()) {
+                data['duration_unit_id'] = $durationUnitEle.val();
+                data['duration_unit_data'] = SelectDDControl.get_data_from_idx($durationUnitEle, $durationUnitEle.val());
+            }
+            return data;
+        }
+        if (priceConfigType === 1) {
+            let data = {
+                "list_item": AttributeHandle.setupDataListItem(),
+            };
+            let $durationUnitEle = $('#list_duration_unit');
+            if ($durationUnitEle.val()) {
+                data['duration_unit_id'] = $durationUnitEle.val();
+                data['duration_unit_data'] = SelectDDControl.get_data_from_idx($durationUnitEle, $durationUnitEle.val());
+            }
+            return data;
+        }
+        if (priceConfigType === 2) {
+            return {
+                "warranty_item": AttributeHandle.setupDataWarrantyItem(),
+            };
         }
         return {};
     };
@@ -102,12 +134,16 @@ class AttributeHandle {
             let durationUnitEle = row.querySelector('.table-row-duration-unit');
             let additionalCostEle = row.querySelector('.table-row-additional-cost');
             if (titleEle && quantityEle && durationUnitEle && additionalCostEle) {
-                result.push({
+                let dataPush = {
                     "title": $(titleEle).val(),
                     "quantity": $(quantityEle).val(),
-                    "duration_unit": $(durationUnitEle).val(),
                     "additional_cost": $(additionalCostEle).valCurrency(),
-                })
+                }
+                if ($(durationUnitEle).val()) {
+                    dataPush['duration_unit_id'] = $(durationUnitEle).val();
+                    dataPush['duration_unit_data'] = SelectDDControl.get_data_from_idx($(durationUnitEle), $(durationUnitEle).val());
+                }
+                result.push(dataPush);
             }
         });
         return result;
@@ -137,19 +173,17 @@ class AttributeHandle {
             AttributeHandle.$table.DataTable().destroy();
         }
         AttributeHandle.$table.DataTableDefault({
-            data: [
-                {'id': 1, 'title': 'CPU (Category)',},
-                {'id': 3, 'title': 'Storage (Category)',},
-            ],
-        // ajax: {
-        //     url: AttributeHandle.$form.attr('data-url'),
-        //     type: "GET",
-        //     dataSrc: function (resp){
-        //       let data = $.fn.switcherResp(resp);
-        //       if (data && data.hasOwnProperty('attribute_list')) return data['attribute_list'];
-        //       return [];
-        //     },
-        // },
+            useDataServer: true,
+            ajax: {
+            url: AttributeHandle.$form.attr('data-url-post'),
+            type: "GET",
+            data: {'parent_n_id__isnull': true},
+            dataSrc: function (resp){
+              let data = $.fn.switcherResp(resp);
+              if (data && data.hasOwnProperty('attribute_list')) return data['attribute_list'];
+              return [];
+            },
+        },
         pageLength:10,
         scrollY: '70vh',
         info: false,
@@ -206,6 +240,14 @@ class AttributeHandle {
                     $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
                 );
                 // Select the appended button from the DOM and attach the event listener
+                $('#btn-add-new').on('click', function () {
+                    let cusTitle = AttributeHandle.$offCanvas[0].querySelector('.canvas-title-custom');
+                    if (cusTitle) {
+                        $(cusTitle).html(`${AttributeHandle.$transEle.attr('data-canvas-add')}`);
+                    }
+                    AttributeHandle.$form.attr('data-method', 'post');
+                    AttributeHandle.$form.attr('data-id', '');
+                });
             }
         }
     };
@@ -216,33 +258,35 @@ class AttributeHandle {
             $tableChild.DataTable().destroy();
         }
         $tableChild.not('.dataTable').DataTableDefault({
-            // useDataServer: true,
-            data: [
-                {'id': 2, 'title': 'Intel (List)', 'parent_n': 1},
-                {'id': 4, 'title': 'SSD (Numeric)', 'parent_n': 3},
-            ],
-            // ajax: {
-            //     url: AttributeHandle.$form.attr('data-url'),
-            //     type: 'GET',
-            //     data: {'parent_n_id': parentID},
-            //     dataSrc: function (resp) {
-            //         let data = $.fn.switcherResp(resp);
-            //         if (data) return resp.data['attribute_list'] ? resp.data['attribute_list'] : [];
-            //         return [];
-            //     },
-            // },
+            useDataServer: true,
+            ajax: {
+                url: AttributeHandle.$form.attr('data-url-post'),
+                type: 'GET',
+                data: {'parent_n_id': parentID},
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) return resp.data['attribute_list'] ? resp.data['attribute_list'] : [];
+                    return [];
+                },
+            },
             pageLength: 5,
             info: false,
             columns: [
                 {
                     title: AttributeHandle.$transEle.attr('data-attribute'),
-                    width: '70%',
+                    width: '90%',
                     render: (data, type, row) => {
                         return `<div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <button class="btn-collapse-parent btn btn-icon btn-rounded mr-1" data-parent-id="${row?.['id']}" hidden><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']}</b>
+                                    <button class="btn-collapse-parent btn btn-icon btn-rounded mr-1" data-parent-id="${row?.['id']}"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']}</b>
                                 </div>
                             </div>`;
+                    }
+                },
+                {
+                    width: '10%',
+                    render: (data, type, row) => {
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover btn-lg btn-edit" data-tbl-id="${idTbl}" data-bs-toggle="offcanvas" data-bs-target="#mainCanvas"><span class="icon"><i class="fa-solid fa-pen-to-square"></i></span></button>`;
                     }
                 },
             ],
@@ -250,7 +294,7 @@ class AttributeHandle {
             },
             drawCallback: function () {
                 // add css to Dtb
-                // ShiftAssignHandle.loadDtbHideHeader(idTbl);
+                AttributeHandle.loadDtbHideHeader(idTbl);
             },
         });
     };
@@ -360,7 +404,12 @@ class AttributeHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-duration-unit">`;
+                        return `<select
+                                        class="form-select table-row-duration-unit"
+                                        data-url="${AttributeHandle.$urlEle.attr('data-api-uom-list')}"
+                                        data-method="GET"
+                                        data-keyResp="unit_of_measure"
+                                ></select>`;
                     }
                 },
                 {
@@ -377,7 +426,11 @@ class AttributeHandle {
                 },
             ],
             rowCallback: function (row, data, index) {
+                let durationUnitEle = row.querySelector('.table-row-duration-unit');
                 let delEle = row.querySelector('.del-row');
+                if (durationUnitEle) {
+                    FormElementControl.loadInitS2($(durationUnitEle));
+                }
                 if (delEle) {
                     $(delEle).on('click', function () {
                         AttributeHandle.deleteDtbRow(row, AttributeHandle.$tableWarranty);
@@ -434,6 +487,22 @@ class AttributeHandle {
         return true;
     };
 
+    static loadDtbHideHeader(tableID) {
+        let tableIDWrapper = tableID + '_wrapper';
+        let tableWrapper = document.getElementById(tableIDWrapper);
+        if (tableWrapper) {
+            let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
+            if (headerToolbar) {
+                headerToolbar.classList.add('hidden');
+            }
+        }
+        let tableIDLength = tableID + '_length';
+        let tableLength = document.getElementById(tableIDLength);
+        if (tableLength) {
+            tableLength.classList.add('hidden');
+        }
+    };
+
 }
 
 $(document).ready(function () {
@@ -479,18 +548,50 @@ $(document).ready(function () {
     });
 
     AttributeHandle.$table.on('click', '.btn-edit', function () {
+        let $table = AttributeHandle.$table;
+        if ($(this).attr('data-tbl-id')) {
+            $table = $('#' + $(this).attr('data-tbl-id'));
+        }
         let row = this.closest('tr');
         if (row) {
-            let rowIndex = AttributeHandle.$table.DataTable().row(row).index();
-            let $row = AttributeHandle.$table.DataTable().row(rowIndex);
+            let rowIndex = $table.DataTable().row(row).index();
+            let $row = $table.DataTable().row(rowIndex);
             let dataRow = $row.data();
             let cusTitle = AttributeHandle.$offCanvas[0].querySelector('.canvas-title-custom');
             if (cusTitle) {
-                $(cusTitle).html(`${AttributeHandle.$transEle.attr('data-canvas-title-update')}`);
+                $(cusTitle).html(`${AttributeHandle.$transEle.attr('data-canvas-update')}`);
             }
             AttributeHandle.$form.attr('data-id', dataRow?.['id']);
             AttributeHandle.$form.attr('data-method', "put");
+            if (dataRow?.['is_category'] === true) {
+                for (let navEle of AttributeHandle.$navAttributeCategory[0].querySelectorAll('.nav-link')) {
+                    $(navEle).removeClass('active');
+                    $($(navEle).attr('href')).removeClass('active');
+                    if ($(navEle).attr('href') === "#tab_block_2") {
+                        $(navEle).addClass('active');
+                        $($(navEle).attr('href')).addClass('active');
+                    }
+                }
+            }
             $('#title').val(dataRow?.['title']);
+            FormElementControl.loadInitS2(AttributeHandle.$boxParent, [dataRow?.['parent_n']]);
+            if (dataRow?.['is_category'] === false) {
+                for (let navEle of AttributeHandle.$tabBlock1[0].querySelectorAll('.nav-link')) {
+                    $(navEle).removeClass('active');
+                    $($(navEle).attr('href')).removeClass('active');
+                    if ($(navEle).attr('data-price-config-type') === String(dataRow?.['price_config_type'])) {
+                        $(navEle).addClass('active');
+                        $($(navEle).attr('href')).addClass('active');
+                    }
+                }
+                if (dataRow?.['price_config_type'] === 0) {
+                    $('#numeric_attribute_unit').val(dataRow?.['price_config_data']?.['attribute_unit']);
+                    FormElementControl.loadInitS2($('#numeric_duration_unit'), [dataRow?.['price_config_data']?.['duration_unit_data']]);
+                    $('#numeric_min').val(dataRow?.['price_config_data']?.['min_value']);
+                    $('#numeric_max').val(dataRow?.['price_config_data']?.['max_value']);
+                    $('#numeric_increment').val(dataRow?.['price_config_data']?.['increment']);
+                }
+            }
         }
         return true;
     });
@@ -521,7 +622,7 @@ $(document).ready(function () {
             {
                 'url': url,
                 'method': method,
-                'data': AttendanceDeviceHandle.setupDataSubmit(),
+                'data': AttributeHandle.setupDataSubmit(),
             }
         ).then(
             (resp) => {
@@ -529,7 +630,7 @@ $(document).ready(function () {
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
                     setTimeout(() => {
-                        AttendanceDeviceHandle.loadDtbTable();
+                        AttributeHandle.loadDtb();
                         WindowControl.hideLoading();
                     }, 2000);
                 }

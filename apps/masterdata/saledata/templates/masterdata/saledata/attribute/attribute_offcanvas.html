@@ -41,7 +41,7 @@
                     >
                 </div>
                 <div class="form-group">
-                    <label class="form-label required" for="box_parent">{% trans 'Parent' %}</label>
+                    <label class="form-label" for="box_parent">{% trans 'Parent' %}</label>
                     <select
                             class="form-select"
                             id="box_parent"
@@ -49,7 +49,6 @@
                             data-url="{% url "AttributeListAPI" %}"
                             data-method="GET"
                             data-keyResp="attribute_list"
-                            required
                     ></select>
                 </div>
             </div>
@@ -61,32 +60,33 @@
                     <label class="form-label">{% trans 'Price config' %}</label>
                     <ul class="nav nav-justified nav-light nav-tabs nav-segmented-tabs w-60">
                         <li class="nav-item">
-                            <a class="nav-link active" data-bs-toggle="tab" href="#tab_numeric">
+                            <a class="nav-link active" data-price-config-type="0" data-bs-toggle="tab" href="#tab_numeric">
                                 <span class="nav-link-text">{% trans 'Numeric' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#tab_list">
+                            <a class="nav-link" data-price-config-type="1" data-bs-toggle="tab" href="#tab_list">
                                 <span class="nav-link-text">{% trans 'List' %}</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#tab_warranty">
+                            <a class="nav-link" data-price-config-type="2" data-bs-toggle="tab" href="#tab_warranty">
                                 <span class="nav-link-text">{% trans 'Warranty' %}</span>
                             </a>
                         </li>
                     </ul>
 
+                    <div class="row mt-3">
+                        <div class="col-12 col-md-6 col-lg-6">
+                            <div class="form-check form-check-lg d-flex align-items-center">
+                                <input type="checkbox" name="is_inventory" id="is_inventory" class="form-check-input">
+                                <label class="form-check-label" for="is_inventory">{% trans 'Inventory' %}</label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="tab_numeric">
-                            <div class="row">
-                                <div class="col-12 col-md-6 col-lg-6">
-                                    <div class="form-check form-check-lg d-flex align-items-center">
-                                        <input type="checkbox" name="is_inventory_numeric" id="is_inventory_numeric" class="form-check-input">
-                                        <label class="form-check-label" for="is_inventory_numeric">{% trans 'Inventory' %}</label>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="row">
                                 <div class="col-12 col-md-6 col-lg-6">
                                     <div class="form-group">
@@ -101,11 +101,14 @@
                                 <div class="col-12 col-md-6 col-lg-6">
                                     <div class="form-group">
                                         <label class="form-label" for="numeric_duration_unit">{% trans 'Duration unit' %}</label>
-                                        <input
-                                                type="text" class="form-control"
-                                                name="numeric_duration_unit"
+                                        <select
+                                                class="form-select"
                                                 id="numeric_duration_unit"
-                                        >
+                                                name="numeric_duration_unit_id"
+                                                data-url="{% url "UnitOfMeasureListAPI" %}"
+                                                data-method="GET"
+                                                data-keyResp="unit_of_measure"
+                                        ></select>
                                     </div>
                                 </div>
                             </div>
@@ -149,6 +152,7 @@
                                                 type="text" class="form-control mask-money valid-num"
                                                 name="numeric_price_per_unit"
                                                 id="numeric_price_per_unit"
+                                                value="0"
                                         >
                                     </div>
                                 </div>
@@ -157,21 +161,16 @@
                         <div class="tab-pane fade show" id="tab_list">
                             <div class="row">
                                 <div class="col-12 col-md-6 col-lg-6">
-                                    <div class="form-check form-check-lg d-flex align-items-center">
-                                        <input type="checkbox" name="is_inventory_list" id="is_inventory_list" class="form-check-input">
-                                        <label class="form-check-label" for="is_inventory_list">{% trans 'Inventory' %}</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 col-md-6 col-lg-6">
                                     <div class="form-group">
                                         <label class="form-label" for="list_duration_unit">{% trans 'Duration unit' %}</label>
-                                        <input
-                                                type="text" class="form-control"
-                                                name="list_duration_unit"
+                                        <select
+                                                class="form-select"
                                                 id="list_duration_unit"
-                                        >
+                                                name="list_duration_unit_id"
+                                                data-url="{% url "UnitOfMeasureListAPI" %}"
+                                                data-method="GET"
+                                                data-keyResp="unit_of_measure"
+                                        ></select>
                                     </div>
                                 </div>
                             </div>
@@ -188,14 +187,6 @@
                             </table>
                         </div>
                         <div class="tab-pane fade show" id="tab_warranty">
-                            <div class="row">
-                                <div class="col-12 col-md-6 col-lg-6">
-                                    <div class="form-check form-check-lg d-flex align-items-center">
-                                        <input type="checkbox" name="is_inventory_warranty" id="is_inventory_warranty" class="form-check-input" checked disabled>
-                                        <label class="form-check-label" for="is_inventory_warranty">{% trans 'Inventory' %}</label>
-                                    </div>
-                                </div>
-                            </div>
                             <table id="table_warranty" class="table nowrap w-100 mb-5">
                                 <thead>
                                 <tr>
@@ -219,7 +210,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
-            <button type="button" class="btn btn-primary" id="btn-apply-filter" data-bs-dismiss="offcanvas">{% trans 'Save' %}</button>
+            <button type="submit" class="btn btn-primary" form="frm_attribute" data-bs-dismiss="offcanvas">{% trans 'Save' %}</button>
         </div>
     </div>
 </form>

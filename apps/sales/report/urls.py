@@ -8,8 +8,7 @@ from apps.sales.report.views import (
     ReportInventoryList, ReportInventoryListAPI, ReportGeneralList, ReportGeneralListAPI,
     PurchaseOrderReportList, PurchaseOrderReportListAPI, WarehouseAvailableProductListAPI, BudgetReportList,
     BudgetReportCompanyListAPI, PaymentListForBudgetReportAPI, BudgetReportGroupListAPI, GetQRCodeSerialInfoAPI,
-    GetQRCodeLotInfoAPI,
-    ReportInventoryAskAPI, ReportProductListAPIRDashBoard, AdvanceFilterListAPI, AdvanceFilterDetailAPI,
+    GetQRCodeLotInfoAPI, ReportProductListAPIRDashBoard, AdvanceFilterListAPI, AdvanceFilterDetailAPI,
     WarehouseAvailableProductDetailAPI, ReportLeaseList, ReportLeaseListAPI
 )
 
@@ -40,7 +39,6 @@ urlpatterns = [
     path('api/warehouse-available-product-detail', WarehouseAvailableProductDetailAPI.as_view(), name='WarehouseAvailableProductDetailAPI'),
     path('get-qr-code-sn-info', GetQRCodeSerialInfoAPI.as_view(), name='GetQRCodeSerialInfoAPI'),
     path('get-qr-code-lot-info', GetQRCodeLotInfoAPI.as_view(), name='GetQRCodeLotInfoAPI'),
-    path('report-inventory-ask', ReportInventoryAskAPI.as_view(), name='ReportInventoryAskAPI'),
 
     # report purchasing
     path('po-report', PurchaseOrderReportList.as_view(), name='PurchaseOrderReportList'),

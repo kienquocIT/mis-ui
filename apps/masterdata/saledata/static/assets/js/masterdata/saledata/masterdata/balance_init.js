@@ -280,7 +280,7 @@ $(document).ready(function () {
             reverseButtons: true
         }).then((result) => {
             if (result.value) {
-                let data = combinesDataDelete(
+                let data = CombinesDataDelete(
                     form_balance_Ele,
                     this_row.find('.balance-product').attr('data-item-id'),
                     this_row.find('.balance-wh').attr('data-wh-id')
@@ -315,7 +315,7 @@ $(document).ready(function () {
         })
     });
 
-    function combinesDataDelete(frmEle, prd_id, wh_id) {
+    function CombinesDataDelete(frmEle, prd_id, wh_id) {
         let frm = new SetupFormSubmit($(frmEle));
 
         frm.dataForm['clear_balance_init_data'] = true
@@ -457,7 +457,8 @@ $(document).ready(function () {
                 'data_lot': data_lot,
             }
         }
-        console.log(dataForm)
+
+        // console.log(dataForm)
 
         let frm = new SetupFormSubmit($(frmEle));
         return {

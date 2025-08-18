@@ -5,8 +5,10 @@ $(document).ready(function () {
 
     ServiceOrder.initProductModalDataTable()
     ServiceOrder.initServiceDetailDataTable()
+    ServiceOrder.initShipmentDataTable()
 
     ServiceOrder.handleSaveProductAndService()
     ServiceOrder.handleChangeServiceQuantity()
     ServiceOrder.handleChangeDescription()
+    ServiceOrder.handleSaveContainer()
 })

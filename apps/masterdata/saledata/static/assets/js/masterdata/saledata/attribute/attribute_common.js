@@ -1,7 +1,10 @@
 class AttributeHandle {
     static $form = $('#frm_attribute');
     static $table = $('#table_category');
+    static $offCanvas = $('#mainCanvas');
 
+    static $navAttributeCategory = $('#nav_attribute_category');
+    static $tabBlock1 = $('#tab_block_1');
     static $tableList = $('#table_list');
     static $tableWarranty = $('#table_warranty');
 
@@ -24,39 +27,90 @@ class AttributeHandle {
     };
 
     static setupDataSubmit() {
-        let groupList = [];
-        let groupEmployeeExcludeList = [];
-        let employeeList = [];
-        let dateList = [];
-        if (ShiftAssignHandle.$groupsCheckedEle.val()) {
-            let storeID = JSON.parse(ShiftAssignHandle.$groupsCheckedEle.val());
-            for (let key in storeID) {
-                groupList.push(key);
-                if (storeID[key]?.['employee_exclude_list']) {
-                    for (let excludeID of storeID[key]?.['employee_exclude_list']) {
-                        groupEmployeeExcludeList.push(excludeID);
-                    }
+        let isCategory = false;
+        for (let navEle of AttributeHandle.$tabBlock1[0].querySelectorAll('.nav-link')) {
+            if ($(navEle).hasClass('active') && $(navEle).attr('#tab_block_2')) {
+                isCategory = true;
+            }
+        }
+        return {
+            "title": AttributeHandle.$form.dataForm?.['title'],
+            "parent_n": AttributeHandle.$form.dataForm?.['parent_n'],
+            "is_category": isCategory,
+            "price_config": AttributeHandle.setupDataPriceConfig(),
+        }
+    };
+
+    static setupDataPriceConfig() {
+        for (let navEle of AttributeHandle.$tabBlock1[0].querySelectorAll('.nav-link')) {
+            if ($(navEle).hasClass('active')) {
+                let type = $(navEle).attr('href');
+                if (type === "#tab_numeric") {
+                    return {
+                        "attribute_type": 0,
+                        "is_inventory": AttributeHandle.$form.dataForm?.['is_inventory_numeric'],
+                        "attribute_unit": AttributeHandle.$form.dataForm?.['numeric_attribute_unit'],
+                        "duration_unit": AttributeHandle.$form.dataForm?.['numeric_duration_unit'],
+                        "min_value": AttributeHandle.$form.dataForm?.['numeric_min'],
+                        "max_value": AttributeHandle.$form.dataForm?.['numeric_max'],
+                        "increment": AttributeHandle.$form.dataForm?.['numeric_increment'],
+                        "price_per_unit": AttributeHandle.$form.dataForm?.['numeric_price_per_unit'],
+                    };
+                }
+                if (type === "#tab_list") {
+                    return {
+                        "attribute_type": 1,
+                        "is_inventory": AttributeHandle.$form.dataForm?.['is_inventory_list'],
+                        "duration_unit": AttributeHandle.$form.dataForm?.['list_duration_unit'],
+                        "list_item": AttributeHandle.setupDataListItem(),
+                    };
+                }
+                if (type === "#tab_warranty") {
+                    return {
+                        "attribute_type": 2,
+                        "is_inventory": AttributeHandle.$form.dataForm?.['is_inventory_warranty'],
+                        "warranty_item": AttributeHandle.setupDataWarrantyItem(),
+                    };
                 }
             }
         }
-        if (ShiftAssignHandle.$employeesCheckedEle.val()) {
-            let storeID = JSON.parse(ShiftAssignHandle.$employeesCheckedEle.val());
-            for (let key in storeID) {
-                employeeList.push(key);
+        return {};
+    };
+
+    static setupDataListItem() {
+        let result = [];
+        AttributeHandle.$tableList.DataTable().rows().every(function () {
+            let row = this.node();
+            let titleEle = row.querySelector('.table-row-title');
+            let additionalCostEle = row.querySelector('.table-row-additional-cost');
+            if (titleEle && additionalCostEle) {
+                result.push({
+                    "title": $(titleEle).val(),
+                    "additional_cost": $(additionalCostEle).valCurrency(),
+                })
             }
-        }
-        let parseDateList = ShiftAssignHandle.parseDateList(ShiftAssignHandle.$fromEle.val(), ShiftAssignHandle.$toEle.val());
-        for (let parseDate of parseDateList) {
-            dateList.push(DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', parseDate));
-        }
-        return {
-            'all_company': ShiftAssignHandle.$allCompanyEle[0].checked,
-            'group_list': groupList,
-            'group_employee_exclude_list': groupEmployeeExcludeList,
-            'employee_list': employeeList,
-            'shift': ShiftAssignHandle.$shiftApplyEle.val(),
-            'date_list': dateList,
-        };
+        });
+        return result;
+    };
+
+    static setupDataWarrantyItem() {
+        let result = [];
+        AttributeHandle.$tableWarranty.DataTable().rows().every(function () {
+            let row = this.node();
+            let titleEle = row.querySelector('.table-row-title');
+            let quantityEle = row.querySelector('.table-row-quantity');
+            let durationUnitEle = row.querySelector('.table-row-duration-unit');
+            let additionalCostEle = row.querySelector('.table-row-additional-cost');
+            if (titleEle && quantityEle && durationUnitEle && additionalCostEle) {
+                result.push({
+                    "title": $(titleEle).val(),
+                    "quantity": $(quantityEle).val(),
+                    "duration_unit": $(durationUnitEle).val(),
+                    "additional_cost": $(additionalCostEle).valCurrency(),
+                })
+            }
+        });
+        return result;
     };
 
     // DataTable
@@ -102,13 +156,20 @@ class AttributeHandle {
         columns: [
             {
                 targets: 0,
-                width: "20%",
+                width: "90%",
                 render: (data, type, row) => {
                     return `<div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <button class="btn-collapse-parent btn btn-icon btn-rounded mr-1" data-parent-id="${row?.['id']}"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']}</b>
                                 </div>
                             </div>`;
+                }
+            },
+            {
+                targets: 1,
+                width: '10%',
+                render: (data, type, row) => {
+                    return `<button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover btn-lg btn-edit" data-bs-toggle="offcanvas" data-bs-target="#mainCanvas"><span class="icon"><i class="fa-solid fa-pen-to-square"></i></span></button>`;
                 }
             },
         ],
@@ -138,7 +199,7 @@ class AttributeHandle {
             textFilter$.css('display', 'flex');
             // Check if the button already exists before appending
             if (!$('#btn-add-new').length) {
-                let $group = $(`<button type="button" class="btn btn-primary" id="btn-add-new" data-bs-toggle="offcanvas" data-bs-target="#addCanvas">
+                let $group = $(`<button type="button" class="btn btn-primary" id="btn-add-new" data-bs-toggle="offcanvas" data-bs-target="#mainCanvas">
                                     <span><span class="icon"><i class="fa-solid fa-plus"></i></span><span>${AttributeHandle.$transEle.attr('data-add-new')}</span></span>
                                 </button>`);
                 textFilter$.append(
@@ -208,13 +269,13 @@ class AttributeHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-name">`;
+                        return `<input type="text" class="form-control table-row-title">`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control mask-money valid-num table-row-cost">`;
+                        return `<input type="text" class="form-control mask-money valid-num table-row-additional-cost">`;
                     }
                 },
                 {
@@ -225,6 +286,12 @@ class AttributeHandle {
                 },
             ],
             rowCallback: function (row, data, index) {
+                let delEle = row.querySelector('.del-row');
+                if (delEle) {
+                    $(delEle).on('click', function () {
+                        AttributeHandle.deleteDtbRow(row, AttributeHandle.$tableList);
+                    });
+                }
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
@@ -281,7 +348,7 @@ class AttributeHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-name">`;
+                        return `<input type="text" class="form-control table-row-title">`;
                     }
                 },
                 {
@@ -299,7 +366,7 @@ class AttributeHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control mask-money valid-num table-row-cost">`;
+                        return `<input type="text" class="form-control mask-money valid-num table-row-additional-cost">`;
                     }
                 },
                 {
@@ -310,6 +377,12 @@ class AttributeHandle {
                 },
             ],
             rowCallback: function (row, data, index) {
+                let delEle = row.querySelector('.del-row');
+                if (delEle) {
+                    $(delEle).on('click', function () {
+                        AttributeHandle.deleteDtbRow(row, AttributeHandle.$tableWarranty);
+                    });
+                }
             },
             drawCallback: function () {
                 $.fn.initMaskMoney2();
@@ -352,20 +425,13 @@ class AttributeHandle {
         }
     };
 
-    static loadDtbHideHeader(tableID) {
-        let tableIDWrapper = tableID + '_wrapper';
-        let tableWrapper = document.getElementById(tableIDWrapper);
-        if (tableWrapper) {
-            let headerToolbar = tableWrapper.querySelector('.dtb-header-toolbar');
-            if (headerToolbar) {
-                headerToolbar.classList.add('hidden');
-            }
+    static deleteDtbRow(currentRow, $table) {
+        let rowIndex = $table.DataTable().row(currentRow).index();
+        if (rowIndex || rowIndex === 0) {
+            let row = $table.DataTable().row(rowIndex);
+            row.remove().draw();
         }
-        let tableIDLength = tableID + '_length';
-        let tableLength = document.getElementById(tableIDLength);
-        if (tableLength) {
-            tableLength.classList.add('hidden');
-        }
+        return true;
     };
 
 }
@@ -412,16 +478,28 @@ $(document).ready(function () {
         }
     });
 
+    AttributeHandle.$table.on('click', '.btn-edit', function () {
+        let row = this.closest('tr');
+        if (row) {
+            let rowIndex = AttributeHandle.$table.DataTable().row(row).index();
+            let $row = AttributeHandle.$table.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+            let cusTitle = AttributeHandle.$offCanvas[0].querySelector('.canvas-title-custom');
+            if (cusTitle) {
+                $(cusTitle).html(`${AttributeHandle.$transEle.attr('data-canvas-title-update')}`);
+            }
+            AttributeHandle.$form.attr('data-id', dataRow?.['id']);
+            AttributeHandle.$form.attr('data-method', "put");
+            $('#title').val(dataRow?.['title']);
+        }
+        return true;
+    });
+
     SetupFormSubmit.validate(AttributeHandle.$form, {
             rules: {
-                apply_from: {
+                title: {
                     required: true,
-                },
-                apply_to: {
-                    required: true,
-                },
-                shift: {
-                    required: true,
+                    maxlength: 100,
                 },
             },
             errorClass: 'is-invalid cl-red',
@@ -429,12 +507,21 @@ $(document).ready(function () {
         });
 
     function submitHandlerFunc() {
-        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
+        let url = AttributeHandle.$form.attr('data-url-post');
+        let method = AttributeHandle.$form.attr('data-method').toLowerCase();
+        let id = AttributeHandle.$form.attr('data-id');
+        let type = 'CREATE';
+        if (method === "put" && id) {
+            url = AttributeHandle.$form.attr('data-url-put').format_url_with_uuid(id);
+            type = 'UPDATE';
+        }
+
+        WindowControl.showLoading({'loadingTitleAction': type});
         $.fn.callAjax2(
             {
-                'url': ShiftAssignHandle.$urlEle.attr('data-api-shift-assignment'),
-                'method': "POST",
-                'data': ShiftAssignHandle.setupDataSubmit(),
+                'url': url,
+                'method': method,
+                'data': AttendanceDeviceHandle.setupDataSubmit(),
             }
         ).then(
             (resp) => {
@@ -442,7 +529,7 @@ $(document).ready(function () {
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
                     setTimeout(() => {
-                        ShiftAssignHandle.loadShiftEmployee(calendar, ShiftAssignHandle.calendarInfo);
+                        AttendanceDeviceHandle.loadDtbTable();
                         WindowControl.hideLoading();
                     }, 2000);
                 }

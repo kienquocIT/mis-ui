@@ -1,21 +1,21 @@
 {% load i18n %}
 
 <form
-            data-url="{% url 'AttributeListAPI' %}"
+            data-url-post="{% url 'AttributeListAPI' %}"
+            data-url-put="{% url 'AttributeListAPI' %}"
             data-url-redirect="{% url 'AttributeList' %}"
-            data-method="POST"
+            data-id=""
             id="frm_attribute"
-            method="post"
     >
         {% csrf_token %}
-    <div class="offcanvas offcanvas-end w-45" tabindex="-1" id="addCanvas" aria-labelledby="offcanvasTopLabel">
+    <div class="offcanvas offcanvas-end w-45" tabindex="-1" id="mainCanvas" aria-labelledby="offcanvasTopLabel">
         <div class="modal-header">
-            <h5><b>{% trans 'Create attribute' %}</b></h5>
+            <h5><b class="canvas-title-custom">{% trans 'Create attribute' %}</b></h5>
             <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
         </div>
         <div class="offcanvas-body">
             <div class="row d-flex justify-content-center align-items-center">
-                <ul class="nav nav-justified nav-light nav-pills w-90">
+                <ul class="nav nav-justified nav-light nav-pills w-90" id="nav_attribute_category">
                     <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
                             <span class="nav-link-text">{% trans 'Attribute' %}</span>
@@ -144,11 +144,11 @@
                                 </div>
                                 <div class="col-12 col-md-6 col-lg-6">
                                     <div class="form-group">
-                                        <label class="form-label" for="numeric_cost_increase">{% trans 'Cost per increment' %}</label>
+                                        <label class="form-label" for="numeric_price_per_unit">{% trans 'Cost per increment' %}</label>
                                         <input
                                                 type="text" class="form-control mask-money valid-num"
-                                                name="numeric_cost_increase"
-                                                id="numeric_cost_increase"
+                                                name="numeric_price_per_unit"
+                                                id="numeric_price_per_unit"
                                         >
                                     </div>
                                 </div>

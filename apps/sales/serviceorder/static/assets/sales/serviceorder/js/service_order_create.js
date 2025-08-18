@@ -34,6 +34,7 @@ $(document).ready(function () {
 
     function handleShipmentEvent(){
         ServiceOrder.handleSaveContainer()
+        ServiceOrder.handleSavePackage()
     }
 
     handleServiceDetailTabEvent()

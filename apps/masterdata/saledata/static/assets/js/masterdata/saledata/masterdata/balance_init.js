@@ -98,7 +98,7 @@ $(document).ready(function () {
             reloadCurrency: true,
             paging: false,
             scrollCollapse: true,
-            scrollY: '35vh',
+            scrollY: '38vh',
             scrollX: true,
             data: data_list,
             columns: [
@@ -151,7 +151,7 @@ $(document).ready(function () {
             reloadCurrency: true,
             paging: false,
             scrollCollapse: true,
-            scrollY: '35vh',
+            scrollY: '38vh',
             scrollX: true,
             data: data_list,
             columns: [

@@ -24,12 +24,14 @@ $(document).ready(function () {
         ServiceOrder.handleSelectWorkOrderCostTax()
         ServiceOrder.handleSelectWorkOrderCurrency()
         ServiceOrder.handleAddWorkOrderNonItem()
+        ServiceOrder.handleClickOpenServiceDelivery()
     }
 
     function handleModalWorkOrderCostEvent(){
         ServiceOrder.handleAddWorkOrderCostRow()
         ServiceOrder.handleChangeWorkOrderCostQuantityAndUnitCost()
         ServiceOrder.handleSaveWorkOrderCost()
+        ServiceOrder.handleChangeWorkOrderCostTitleAndDescription()
     }
 
     function handleShipmentEvent(){
@@ -40,5 +42,4 @@ $(document).ready(function () {
     handleWorkOrderDetailTabEvent()
     handleModalWorkOrderCostEvent()
     handleShipmentEvent()
-
 })

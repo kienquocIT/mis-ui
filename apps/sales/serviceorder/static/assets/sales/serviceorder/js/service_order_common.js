@@ -32,6 +32,10 @@ const ServiceOrder = (function($) {
 
             $tableWorkOrderCost: $('#modal-table-work-order-cost'),
             $btnSaveWorkOrderCost: $('#btn-save-work-order-cost'),
+
+            $modalProductContribution: $('#modal-product-contribution'),
+            $tableProductContribution: $('#modal-table-product-contribution'),
+            $btnSaveProductContribution: $('#btn-save-product-contribution'),
         },
         serviceDetail: {
             $table: $('#table-service-detail'),
@@ -539,7 +543,7 @@ const ServiceOrder = (function($) {
                     title: $.fn.gettext('Is Service Delivery'),
                     render: (data, type, row) => {
                         const isServiceDelivery = row.is_delivery_point || false
-                        const rowId = row.id || Math.random().toString(36).substr(2, 9)
+                        const uniqueStr = row.id || Math.random().toString(36).substr(2, 9)
                         return `<div class="d-flex align-items-center">
                                 <div class="form-check me-2">
                                     <input 
@@ -550,10 +554,10 @@ const ServiceOrder = (function($) {
                                 </div>
                                 <button 
                                     type="button" 
-                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover work-order-delivery-modal"
-                                    data-row-id="${rowId}"
-                                    data-bs-toggle="tooltip" 
-                                    data-bs-placement="bottom"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-service-delivery"
+                                    data-unique-str="${uniqueStr}"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modal-product-contribution"
                                     title="Open service delivery details"
                                 >
                                     <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
@@ -683,7 +687,7 @@ const ServiceOrder = (function($) {
                         return `<div class="input-group">
                                     <input
                                         type="text"
-                                        class="form-control cost-title"
+                                        class="form-control wo-cost-title"
                                         value="${title}"
                                     />
                                 </div>`
@@ -696,7 +700,7 @@ const ServiceOrder = (function($) {
                         const description = row.description || ''
                         return `<div class="input-group">
                                     <textarea
-                                        class="form-control"
+                                        class="form-control wo-cost-description"
                                         rows="1"
                                     >${description}</textarea>
                                 </div>`
@@ -860,6 +864,104 @@ const ServiceOrder = (function($) {
         })
     }
 
+    function initProductContributionModalDataTable(data=[]){
+        if ($.fn.DataTable.isDataTable(pageElement.modalData.$tableProductContribution)) {
+            pageElement.modalData.$tableProductContribution.DataTable().destroy()
+        }
+
+        const isDelivery = pageElement.modalData.$modalProductContribution.data('is-delivery')
+
+        pageElement.modalData.$tableProductContribution.DataTableDefault({
+            data: data,
+            reloadCurrency: true,
+            rowIdx: false,
+            autoWidth: false,
+            scrollX: true,
+            scrollY: '35vh',
+            scrollCollapse: true,
+            columns: [
+                {
+                    width: '5%',
+                    title: $.fn.gettext(''),
+                    className: 'text-center',
+                    render: (data, type, row, meta) => {
+                        return `<div class="form-check">
+                                    <input
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        name="select-pc"
+                                    />
+                                </div>`
+                    }
+                },
+                {
+                    width: '5%',
+                    title: $.fn.gettext('Order'),
+                    className: 'text-center',
+                    render: (data, type, row, meta) => {
+                        return Number(meta.row) + 1
+                    }
+                },
+                {
+                    width: '30%',
+                    title: $.fn.gettext('Title'),
+                    render: (data, type, row) => {
+                        return row?.name
+                    }
+                },
+                {
+                    width: '20%',
+                    title: $.fn.gettext('Contribution'),
+                    render: (data, type, row) => {
+                        const contribution = row.contribution || 0
+                        return `<div class="input-group">
+                                    <input
+                                        type="number"
+                                        class="form-control pc-contribution"
+                                        value="${contribution}"
+                                    />
+                                    <span class="input-group-text">%</span>
+                                </div>`
+                    }
+                },
+                {
+                    width: '20%',
+                    title: $.fn.gettext('Total Balance'),
+                    render: (data, type, row) => {
+                        const serviceQuantity = row.quantity || 0
+                        const deliveredQuantity = row.delivered_quantity || 0
+                        const balance = serviceQuantity - deliveredQuantity
+                        return `<div class="input-group">
+                                    <input
+                                        type="number"
+                                        class="form-control pc-balance"
+                                        value="${balance}"
+                                        max="${serviceQuantity}"
+                                        min="0"
+                                    />
+                                </div>`
+                    }
+                },
+                {
+                    width: '20%',
+                    title: $.fn.gettext('No of Service Delivered'),
+                    render: (data, type, row) => {
+                        const quantity = row.delivered_quantity || 0
+                        return `<div class="input-group">
+                                    <input
+                                        ${!isDelivery ? 'disabled' : ''}
+                                        type="number"
+                                        class="form-control pc-delivered-quantity"
+                                        value="${quantity}"
+                                        min="0"
+                                    />
+                                </div>`
+                    }
+                },
+            ],
+        })
+    }
+
     function initShipmentDataTable(data = []) {
         const $tb = pageElement.shipment.$table;
         if ($.fn.DataTable.isDataTable($tb)) {
@@ -955,7 +1057,6 @@ const ServiceOrder = (function($) {
             // Add checked products to service detail table
             if (checkedProducts.length > 0) {
                 if (pageVariable.modalContext === 'serviceDetail') {
-                    addProductsToServiceDetail(checkedProducts)
                     const table = pageElement.serviceDetail.$table.DataTable()
                     const currentData = table.data().toArray()
                     const newData = [...currentData, ...checkedProducts]
@@ -1235,6 +1336,34 @@ const ServiceOrder = (function($) {
         })
     }
 
+    function handleChangeWorkOrderCostTitleAndDescription() {
+        pageElement.modalData.$tableWorkOrderCost.on('change', '.wo-cost-title, .wo-cost-description', function (e) {
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+            const table = pageElement.modalData.$tableWorkOrderCost.DataTable()
+            const rowData = table.row($row).data()
+
+            if($ele.hasClass('wo-cost-title')) {
+                rowData.title = $ele.val()
+            } else if ($ele.hasClass('wo-cost-description')) {
+                rowData.description = $ele.val()
+            }
+        })
+    }
+
+    function handleClickOpenServiceDelivery() {
+        pageElement.workOrder.$table.on('click', '.btn-open-service-delivery', function(e) {
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+            const serviceDeliveryCheckbox = $row.find('.work-order-service-delivery')
+            const isDeliveryPoint = serviceDeliveryCheckbox.is(':checked')
+            pageElement.modalData.$modalProductContribution.data('is-delivery', isDeliveryPoint)
+            const serviceDetailTable = pageElement.serviceDetail.$table.DataTable()
+            const serviceDetailData = serviceDetailTable.data().toArray()
+            initProductContributionModalDataTable(serviceDetailData)
+        })
+    }
+
     // process for shipment events
     function handleSaveContainer() {
         pageElement.modalData.$btnSaveContainer.on('click', function () {
@@ -1292,6 +1421,7 @@ const ServiceOrder = (function($) {
         initWorkOrderDataTable,
         initShipmentDataTable,
         initModalContextTracking,
+        initProductContributionModalDataTable,
         handleSaveProduct,
         handleChangeServiceQuantity,
         handleChangeServiceDescription,
@@ -1304,6 +1434,8 @@ const ServiceOrder = (function($) {
         handleAddWorkOrderCostRow,
         handleChangeWorkOrderCostQuantityAndUnitCost,
         handleSaveWorkOrderCost,
+        handleChangeWorkOrderCostTitleAndDescription,
+        handleClickOpenServiceDelivery,
         handleSaveContainer
     }
 })(jQuery)

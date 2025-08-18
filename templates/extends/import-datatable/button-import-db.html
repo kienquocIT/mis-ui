@@ -25,16 +25,25 @@
 <div class="text-left space-import-btn">
     <div class="btn-group">
         <div class="dropdown">
-            <button type="button" class="btn-group-import-datatable btn btn-sm btn-gradient-info" aria-expanded="false" data-bs-toggle="dropdown"><i class="far fa-file-excel"></i></button>
-            <div role="menu" class="dropdown-menu">
-                <a hidden class="dropdown-item btn-import-datatable-from-excel" href="#" data-bs-toggle="modal" data-bs-target="#modal-import-datatable-from-excel-warning">
-                    {% trans 'Import data from excel' %}
+            <button class="btn btn-gradient-dark btn-xs btn-custom btn-excel btn-rounded btn-group-import-datatable" data-bs-toggle="dropdown">
+                <span>
+                    <span>{% trans 'Use excel' %}</span>
+                    <span class="icon">
+                        <span class="feather-icon">
+                            <i class="bi bi-file-earmark-excel"></i>
+                        </span>
+                    </span>
+                </span>
+            </button>
+            <div role="menu" class="dropdown-menu dropdown-menu-dark">
+                <a hidden class="dropdown-item btn-import-datatable-from-excel small" href="#" data-bs-toggle="modal" data-bs-target="#modal-import-datatable-from-excel-warning">
+                    <i class="dropdown-icon bi bi-box-arrow-in-right"></i><span>{% trans 'Import data from excel' %}</span>
                 </a>
-                <a hidden class="dropdown-item btn-load-datatable-from-excel" href="#" data-bs-toggle="modal" data-bs-target="#modal-load-datatable-from-excel">
-                    {% trans 'Load data from excel to datatable' %}
+                <a hidden class="dropdown-item btn-load-datatable-from-excel small" href="#" data-bs-toggle="modal" data-bs-target="#modal-load-datatable-from-excel">
+                    <i class="dropdown-icon bi bi-arrow-repeat"></i><span>{% trans 'Load data from excel to datatable' %}</span>
                 </a>
-                <a hidden class="dropdown-item btn-export-datatable-to-excel" href="#">
-                    {% trans 'Export datatable to excel' %}
+                <a hidden class="dropdown-item btn-export-datatable-to-excel small" href="#">
+                    <i class="dropdown-icon bi bi-box-arrow-right"></i><span>{% trans 'Export datatable to excel' %}</span>
                 </a>
             </div>
         </div>

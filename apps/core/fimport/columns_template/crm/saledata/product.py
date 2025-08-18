@@ -391,7 +391,6 @@ COLUMNS_SALEDATA_PRODUCT.add_column(
             'args': [],
             'kwargs': {
                 'type': 'text',
-                'maxlength': 200,
             },
         },
     }

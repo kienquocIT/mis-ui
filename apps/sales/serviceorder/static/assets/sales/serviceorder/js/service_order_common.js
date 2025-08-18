@@ -261,7 +261,7 @@ const ServiceOrder = (function($) {
                     <td>${PACKAGE_TYPE?.[pkg.packageType] || ''}</td>
                     <td>${pkg.packageRefNumber || ''}</td>
                     <td>${pkg.packageWeight || ''}</td>
-                    <td>${pkg.packageDimension}</td>
+                    <td>${pkg.packageDimension || ''}</td>
                     <td>${pkg.packageNote || ''}</td>
                     <td class="text-center">
                         <div class="d-flex justify-content-center">
@@ -1339,14 +1339,12 @@ const ServiceOrder = (function($) {
                 packages: []
             };
 
+            // update global variable
+            pageVariable.shipmentVariable.push(newContainer);
+
+            // update Datatable
             const shipmentTable = pageElement.shipment.$table.DataTable();
-            const currentData = shipmentTable.data().toArray();
-
-            // merge old data and new data
-            const updatedData = [...currentData, newContainer];
-
-            // update table
-            shipmentTable.clear().rows.add(updatedData).draw(false);
+            shipmentTable.clear().rows.add(pageVariable.shipmentVariable).draw(false);
 
             // remove data after saving
             pageElement.modalData.$containerName.val('');
@@ -1381,23 +1379,22 @@ const ServiceOrder = (function($) {
                 packageDimension: pageElement.modalData.$packageDimension.val() || '',
                 packageNote: pageElement.modalData.$packageNote.val() || ''
             };
-            const shipmentTable = pageElement.shipment.$table.DataTable();
-            const currentData = shipmentTable.data().toArray();
 
             const selectedContainerRef = CONTAINER_REF?.[pageElement.modalData.$packageContainer.val()] || '';
-            // find container of package
-            const updatedData = currentData.map(container => {
+
+            // update global variable shipment
+            pageVariable.shipmentVariable = pageVariable.shipmentVariable.map(container => {
                 if (container.containerRefNumber === selectedContainerRef) {
-                    container.packages = container.packages || [];
                     container.packages.push(newPackage);
                 }
                 return container;
             });
 
-            // update table
-            shipmentTable.clear().rows.add(updatedData).draw(false);
+            // update DataTable
+            const shipmentTable = pageElement.shipment.$table.DataTable();
+            shipmentTable.clear().rows.add(pageVariable.shipmentVariable).draw(false);
 
-            // clear input
+            // reset
             pageElement.modalData.$packageName.val('');
             pageElement.modalData.$packageType.val('');
             pageElement.modalData.$packageRef.val('');

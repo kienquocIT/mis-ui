@@ -120,7 +120,7 @@
 {% endblock %}
 {% block modalData %}
     <div class="modal fade" id="modal-add-balance" tabindex="-1" role="dialog" aria-labelledby="modal-add-balance" aria-hidden="true">
-        <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
+        <div class="modal-dialog modal-lg" style="min-width: 90%" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">{% trans 'Add balance' %}</h5>
@@ -136,15 +136,13 @@
                           data-url-redirect="{% url 'BalanceInitList' %}">
                         {% csrf_token %}
                         <div class="row">
-                            <div class="col-12 col-md-6 col-lg-6">
+                            <div class="col-12 col-md-3 col-lg-3">
                                 <div class="form-group">
                                     <label for="select-wh" class="form-label required">{% trans 'Select warehouse' %}</label>
                                     <select id="select-wh" class="form-select select2" data-method="GET" data-url="{% url 'WareHouseListAPI' %}"></select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 col-md-6 col-lg-6">
+                            <div class="col-12 col-md-4 col-lg-4">
                                 <div class="form-group">
                                     <label class="form-label" for="select-prd">{% trans "Product" %}</label>
                                     <select class="form-select select2"
@@ -163,17 +161,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-4 col-lg-4">
+                            <div class="col-12 col-md-3 col-lg-3">
                                 <div class="form-group">
                                     <label class="form-label" for="prd-value">{% trans "Pretax value" %}</label>
                                     <input class="form-control mask-money" id="prd-value" value="0">
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-3">
+                        <div class="row">
                             <div class="col-12" id="table-load-lot-space" hidden>
                                 <table class="table nowrap w-100" id="table-load-lot">
-                                    <thead>
+                                    <thead class="bg-secondary-light-5">
                                         <th></th>
                                         <th>{% trans 'Lot number' %}</th>
                                         <th>{% trans 'Lot quantity' %}</th>
@@ -181,13 +179,13 @@
                                         <th>{% trans 'Manufacture date' %}</th>
                                         <th></th>
                                     </thead>
-                                    <tbody style="overflow: auto; max-height: 50vh;"></tbody>
+                                    <tbody></tbody>
                                 </table>
                                 <button type="button" class="btn btn-primary btn-xs" id="add-row-lot">{% trans 'Add new row' %}</button>
                             </div>
                             <div class="col-12" id="table-load-sn-space" hidden>
                                 <table class="table nowrap w-100" id="table-load-sn">
-                                    <thead>
+                                    <thead class="bg-secondary-light-5">
                                         <th></th>
                                         <th>{% trans 'Vendor serial no.' %}</th>
                                         <th>{% trans 'Serial no.' %}</th>
@@ -197,7 +195,7 @@
                                         <th>{% trans 'Warranty end' %}</th>
                                         <th></th>
                                     </thead>
-                                    <tbody style="overflow: auto; max-height: 50vh;"></tbody>
+                                    <tbody></tbody>
                                 </table>
                                 <button type="button" class="btn btn-primary btn-xs" id="add-row-sn">{% trans 'Add new row' %}</button>
                             </div>

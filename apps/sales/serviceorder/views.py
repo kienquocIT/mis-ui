@@ -17,6 +17,7 @@ class ServiceOrderList(View):
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
 
+
 class ServiceOrderCreate(View):
     @mask_view(
         auth_require=True,
@@ -30,3 +31,4 @@ class ServiceOrderCreate(View):
             'app_id': ''
         }
         return ctx, status.HTTP_200_OK
+

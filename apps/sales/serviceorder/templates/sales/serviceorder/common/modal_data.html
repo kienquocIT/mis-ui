@@ -77,3 +77,169 @@
         </div>
     </div>
 </div>
+
+<!-- Add Container Modal -->
+<div class="modal fade" id="modal_container" tabindex="-1" role="dialog" aria-labelledby="modal_container" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Add container " %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="overflow: auto; max-height: 80vh">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label required" for="container_name">{% trans 'Container name' %}</label>
+                            <input type="text" class="form-control" name="container_name" id="container_name" required>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-1">
+                        <label for="container_type" class="form-label">{% trans 'Container type' %}</label>
+                        <select name="container_type" class="form-select" id="container_type">
+                            <option value=""></option>
+                            <option value="1">{% trans "10 ft" %}</option>
+                            <option value="2">{% trans "15 ft" %}</option>
+                            <option value="3">{% trans "20 ft" %}</option>
+                            <option value="4">{% trans "40 ft" %}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <div class="form-group">
+                            <label class="form-label" for="txt_title">{% trans 'Reference number' %}</label>
+                            <input type="text" class="form-control" name="container_ref_number" id="container_ref_number">
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="flex-grow-1">
+                                <label class="form-label" for="weight_input">{% trans 'Weight' %}</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control text-end" id="container_weight"
+                                           name="weight" placeholder="0">
+                                    <span class="input-group-text">Kg</span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <label class="form-label" for="dimension_input">{% trans 'Dimension' %}</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control text-end" id="container_dimension"
+                                           name="dimension" placeholder="0">
+                                    <span class="input-group-text">M³</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-3">
+                        <label for="container_note" class="form-label">{% trans 'Note' %}</label>
+                        <textarea name="container_note" class="form-control" id="container_note" rows="2"></textarea>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                </button>
+                <button type="button" id="btn_apply_container" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Save' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Package Modal -->
+<div class="modal fade" id="modal_package" tabindex="-1" role="dialog" aria-labelledby="modal_package" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Add package " %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="overflow: auto; max-height: 80vh">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label required" for="package_name">{% trans 'Package name' %}</label>
+                            <input type="text" class="form-control" name="package_name" id="package_name" required>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-1">
+                        <label for="package_type" class="form-label">{% trans 'Package type' %}</label>
+                        <select name="package_type" class="form-select" id="package_type">
+                            <option value=""></option>
+                            <option value="1">{% trans "Carton" %}</option>
+                            <option value="2">{% trans "Pallet" %}</option>
+                            <option value="3">{% trans "Box" %}</option>
+                            <option value="4">{% trans "Tank" %}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <label for="package_container" class="form-label">{% trans 'Container' %}</label>
+                        <select name="package_container" class="form-select" id="package_container">
+                            <option value=""></option>
+                            <option value="1">{% trans "CONT1" %}</option>
+                            <option value="2">{% trans "CONT2" %}</option>
+                            <option value="3">{% trans "CONT3" %}</option>
+                            <option value="4">{% trans "CONT4" %}</option>
+                            <option value="5">{% trans "CONT5" %}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <div class="form-group">
+                            <label class="form-label" for="package_ref_number">{% trans 'Reference number' %}</label>
+                            <input type="text" class="form-control" name="package_ref_number" id="package_ref_number">
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="flex-grow-1">
+                                <label class="form-label" for="package_weight">{% trans 'Weight' %}</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control text-end" id="package_weight"
+                                           name="package_weight" placeholder="0">
+                                    <span class="input-group-text">Kg</span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <label class="form-label" for="package_dimension">{% trans 'Dimension' %}</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control text-end" id="package_dimension"
+                                           name="package_dimension" placeholder="0">
+                                    <span class="input-group-text">M³</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-3">
+                        <label for="package_note" class="form-label">{% trans 'Note' %}</label>
+                        <textarea name="package_note" class="form-control" id="package_note" rows="2"></textarea>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                </button>
+                <button type="button" id="btn_apply_package" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Save' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

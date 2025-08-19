@@ -98,9 +98,7 @@ $(function () {
                         width: '12%',
                         data: "date_created",
                         render: (data) => {
-                            return $x.fn.displayRelativeTime(data, {
-                                'outputFormat': 'DD-MM-YYYY',
-                            });
+                            return DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', data);
                         }
                     },
                     {

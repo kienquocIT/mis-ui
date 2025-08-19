@@ -18,7 +18,7 @@ class AttributeHandle {
         AttributeHandle.loadDtb();
         AttributeHandle.loadDtbList();
         AttributeHandle.loadDtbWarranty();
-        FormElementControl.loadInitS2(AttributeHandle.$boxParent);
+        FormElementControl.loadInitS2(AttributeHandle.$boxParent, [], {'parent_n_id__isnull': true}, null, true);
         FormElementControl.loadInitS2($('#numeric_duration_unit'));
         FormElementControl.loadInitS2($('#list_duration_unit'));
         // init date picker
@@ -42,6 +42,7 @@ class AttributeHandle {
             "title": _form.dataForm?.['title'],
             "parent_n": _form.dataForm?.['parent_n'],
             "is_category": isCategory,
+            "is_inventory": $('#is_inventory')[0].checked,
         }
         if (isCategory === false) {
             let activeNavChildEle = AttributeHandle.$tabBlock1[0].querySelector('.nav-link.active');
@@ -118,7 +119,7 @@ class AttributeHandle {
             if (titleEle && additionalCostEle) {
                 result.push({
                     "title": $(titleEle).val(),
-                    "additional_cost": $(additionalCostEle).valCurrency(),
+                    "additional_cost": parseFloat($(additionalCostEle).valCurrency()),
                 })
             }
         });
@@ -273,7 +274,6 @@ class AttributeHandle {
             info: false,
             columns: [
                 {
-                    title: AttributeHandle.$transEle.attr('data-attribute'),
                     width: '90%',
                     render: (data, type, row) => {
                         return `<div class="d-flex justify-content-between align-items-center">
@@ -300,6 +300,9 @@ class AttributeHandle {
     };
 
     static loadDtbList(data) {
+        if ($.fn.dataTable.isDataTable(AttributeHandle.$tableList)) {
+            AttributeHandle.$tableList.DataTable().destroy();
+        }
         AttributeHandle.$tableList.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
@@ -313,13 +316,13 @@ class AttributeHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-title">`;
+                        return `<input type="text" class="form-control table-row-title" value="${row?.['title']}">`;
                     }
                 },
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control mask-money valid-num table-row-additional-cost">`;
+                        return `<input type="text" class="form-control mask-money valid-num table-row-additional-cost" value="${row?.['additional_cost']}">`;
                     }
                 },
                 {
@@ -542,7 +545,25 @@ $(document).ready(function () {
             trEle.addClass('bg-grey-light-5');
             iconEle.removeClass('text-secondary').addClass('text-dark');
 
-            AttributeHandle.loadPushDtbChild(trEle, $(this).attr('data-parent-id'));
+
+            let row = this.closest('tr');
+            if (row) {
+                let table = row.closest('table');
+                if (table) {
+                    let rowIndex = $(table).DataTable().row(row).index();
+                    let $row = $(table).DataTable().row(rowIndex);
+                    let dataRow = $row.data();
+
+                    if (dataRow?.['is_category'] === true) {
+                        AttributeHandle.loadPushDtbChild(trEle, dataRow?.['id']);
+                    }
+                    if (dataRow?.['is_category'] === false) {
+
+                    }
+                }
+            }
+
+            // AttributeHandle.loadPushDtbChild(trEle, $(this).attr('data-parent-id'));
             trEle.next().removeClass('hidden').find('.child-workflow-group').slideToggle();
         }
     });
@@ -574,7 +595,7 @@ $(document).ready(function () {
                 }
             }
             $('#title').val(dataRow?.['title']);
-            FormElementControl.loadInitS2(AttributeHandle.$boxParent, [dataRow?.['parent_n']]);
+            FormElementControl.loadInitS2(AttributeHandle.$boxParent, [dataRow?.['parent_n']], {'parent_n_id__isnull': true}, null, true);
             if (dataRow?.['is_category'] === false) {
                 for (let navEle of AttributeHandle.$tabBlock1[0].querySelectorAll('.nav-link')) {
                     $(navEle).removeClass('active');
@@ -590,6 +611,12 @@ $(document).ready(function () {
                     $('#numeric_min').val(dataRow?.['price_config_data']?.['min_value']);
                     $('#numeric_max').val(dataRow?.['price_config_data']?.['max_value']);
                     $('#numeric_increment').val(dataRow?.['price_config_data']?.['increment']);
+                    $('#numeric_price_per_unit').attr('value', String(dataRow?.['price_config_data']?.['price_per_unit']));
+                    $.fn.initMaskMoney2();
+                }
+                if (dataRow?.['price_config_type'] === 1) {
+                    FormElementControl.loadInitS2($('#list_duration_unit'), [dataRow?.['price_config_data']?.['duration_unit_data']]);
+                    AttributeHandle.loadDtbList(dataRow?.['price_config_data']?.['list_item']);
                 }
             }
         }

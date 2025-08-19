@@ -15,22 +15,6 @@ const ServiceOrder = (function($) {
             $tableExchangeRate: $('#modal-table-exchange-rate'),
             $btnSaveExchangeRate: $('#btn-save-exchange-rate'),
 
-            $containerName: $('#container_name'),
-            $containerType: $('#container_type'),
-            $containerRef: $('#container_ref_number'),
-            $containerWeight: $('#container_weight'),
-            $containerDimension: $('#container_dimension'),
-            $containerNote: $('#container_note'),
-            $packageName: $('#package_name'),
-            $packageType: $('#package_type'),
-            $packageRef: $('#package_ref_number'),
-            $packageContainer: $('#package_container'),
-            $packageWeight: $('#package_weight'),
-            $packageDimension: $('#package_dimension'),
-            $packageNote: $('#package_note'),
-            $btnSaveContainer: $('#btn_apply_container'),
-            $btnSavePackage: $('#btn_apply_package'),
-
             $tableWorkOrderCost: $('#modal-table-work-order-cost'),
             $btnSaveWorkOrderCost: $('#btn-save-work-order-cost'),
         },
@@ -43,11 +27,6 @@ const ServiceOrder = (function($) {
             $btnAddNonItem: $('#btn-add-non-item'),
 
         },
-        shipment: {
-            $table: $('#table_shipment'),
-            $toggleButton: $('#btn_toggle_shipment'),
-            $tableWrapper: $('#shipment_table_wrapper'),
-        }
     }
 
     const pageVariable = {
@@ -56,7 +35,6 @@ const ServiceOrder = (function($) {
         modalProductContext: null,
         taxSelect: {},
         workOrderCostData: {},
-        shipmentVariable: []
     }
 
     const WORK_ORDER_STATUS = {
@@ -64,29 +42,6 @@ const ServiceOrder = (function($) {
         in_progress: 1,
         completed: 2,
         cancelled: 3,
-    }
-
-    // (temp) - remove after building model
-    const CONTAINER_TYPE = {
-        1: "10ft",
-        2: "15ft",
-        3: "20ft",
-        4: "40ft"
-    }
-
-    const PACKAGE_TYPE = {
-        1: "Carton",
-        2: "Pallet",
-        3: "Box",
-        4: "Tank"
-    }
-
-    const CONTAINER_REF = {
-        1: "CONT1",
-        2: "CONT2",
-        3: "CONT3",
-        4: "CONT4",
-        5: "CONT5"
     }
 
     function initSelect($ele, opts = {}) {
@@ -220,64 +175,6 @@ const ServiceOrder = (function($) {
             exchanged_total: exchangedTotal
         }
     }
-
-    function formatChild(container) {
-        if (!container.packages || container.packages.length === 0) {
-            return '<div class="ps-4 text-muted">No packages</div>';
-        }
-
-        let html = `
-            <table class="table nowrap w-100 mb-0">
-                <colgroup>
-                    <col>
-                    <col style="width:20%">
-                    <col style="width:15%">
-                    <col style="width:15%">
-                    <col style="width:15%">
-                    <col style="width:15%">
-                    <col style="width:14%">
-                    <col style="width:3%">
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th class="text-center"></th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        container.packages.forEach(pkg => {
-            html += `
-                <tr>
-                    <td></td>
-                    <td>${pkg.packageName || ''}</td>
-                    <td>${PACKAGE_TYPE?.[pkg.packageType] || ''}</td>
-                    <td>${pkg.packageRefNumber || ''}</td>
-                    <td>${pkg.packageWeight || ''}</td>
-                    <td>${pkg.packageDimension || ''}</td>
-                    <td>${pkg.packageNote || ''}</td>
-                    <td class="text-center">
-                        <div class="d-flex justify-content-center">
-                            <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover shipment-del-row" data-bs-toggle="tooltip" data-bs-placement="bottom">
-                                <span class="icon"><i class="far fa-trash-alt"></i></span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        });
-
-        html += '</tbody></table>';
-        return html;
-    }
-
 
 // --------------------LOAD DATA---------------------
     function loadCurrencyRateData() {
@@ -945,92 +842,6 @@ const ServiceOrder = (function($) {
         })
     }
 
-    function initShipmentDataTable(data = []) {
-        const $tb = pageElement.shipment.$table;
-        if ($.fn.DataTable.isDataTable($tb)) {
-            $tb.DataTable().destroy();
-        }
-
-        $tb.DataTableDefault({
-            data: data,
-            rowIdx: true,
-            scrollX: true,
-            scrollY: '70vh',
-            scrollCollapse: true,
-            reloadCurrency: true,
-            columns: [
-                {
-                    targets: 0,
-                    className: 'dt-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                },
-                {
-                    targets: 1,
-                    width: '20%',
-                    render: (data, type, row) => {
-                        return row.containerName || '';
-                    }
-                },
-                {
-                    targets: 2,
-                    width: '15%',
-                    render: (data, type, row) => {
-                        return CONTAINER_TYPE?.[row.containerType] || '';
-                    }
-                },
-                {
-                    targets: 3,
-                    width: '15%',
-                    render: (data, type, row) => {
-                        return row.containerRefNumber || '';
-                    }
-                },
-                {
-                    targets: 4,
-                    width: '15%',
-                    render: (data, type, row) => {
-                        return row.containerWeight || '';
-                    }
-                },
-                {
-                    targets: 5,
-                    width: '15%',
-                    render: (data, type, row) => {
-                        return row.containerDimension || '';
-                    }
-                },
-                {
-                    targets: 6,
-                    width: '14%',
-                    render: (data, type, row) => {
-                        return row.containerNote || '';
-                    }
-                },
-                {
-                    targets: 7,
-                    width: '3%',
-                    render: () => {
-                        return `
-                            <div class="d-flex justify-content-center">
-                                <button 
-                                    type="button" 
-                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover shipment-del-row"
-                                    data-bs-toggle="tooltip" 
-                                    data-bs-placement="bottom"
-                                >
-                                    <span class="icon"><i class="far fa-trash-alt"></i></span>
-                                </button>
-                            </div>
-                        `
-                    }
-                },
-            ]
-        });
-    }
-
-
 // --------------------HANDLE EVENTS---------------------
     function handleSaveProduct() {
         pageElement.modalData.$btnSaveProduct.on('click', function (e) {
@@ -1326,85 +1137,6 @@ const ServiceOrder = (function($) {
         })
     }
 
-    // process for shipment events
-    function handleSaveContainer() {
-        pageElement.modalData.$btnSaveContainer.on('click', function () {
-            const newContainer = {
-                containerName: pageElement.modalData.$containerName.val() || '',
-                containerType: pageElement.modalData.$containerType.val() || '',
-                containerRefNumber: pageElement.modalData.$containerRef.val() || '',
-                containerWeight: pageElement.modalData.$containerWeight.val() || '',
-                containerDimension: pageElement.modalData.$containerDimension.val() || '',
-                containerNote: pageElement.modalData.$containerNote.val() || '',
-                packages: []
-            };
-
-            // update global variable
-            pageVariable.shipmentVariable.push(newContainer);
-
-            // update Datatable
-            const shipmentTable = pageElement.shipment.$table.DataTable();
-            shipmentTable.clear().rows.add(pageVariable.shipmentVariable).draw(false);
-
-            // remove data after saving
-            pageElement.modalData.$containerName.val('');
-            pageElement.modalData.$containerType.val('');
-            pageElement.modalData.$containerRef.val('');
-            pageElement.modalData.$containerWeight.val('');
-            pageElement.modalData.$containerDimension.val('');
-            pageElement.modalData.$containerNote.val('');
-        });
-
-        pageElement.shipment.$table.on('click', 'td.dt-control', function () {
-            const tr = $(this).closest('tr');
-            const row = pageElement.shipment.$table.DataTable().row(tr);
-
-            if (row.child.isShown()) {
-                row.child.hide();
-                tr.removeClass('shown');
-            } else {
-                row.child(formatChild(row.data())).show();
-                tr.addClass('shown');
-            }
-        });
-    }
-
-    function handleSavePackage() {
-        pageElement.modalData.$btnSavePackage.on('click', function () {
-            const newPackage = {
-                packageName: pageElement.modalData.$packageName.val() || '',
-                packageType: pageElement.modalData.$packageType.val() || '',
-                packageRefNumber: pageElement.modalData.$packageRef.val() || '',
-                packageWeight: pageElement.modalData.$packageWeight.val() || '',
-                packageDimension: pageElement.modalData.$packageDimension.val() || '',
-                packageNote: pageElement.modalData.$packageNote.val() || ''
-            };
-
-            const selectedContainerRef = CONTAINER_REF?.[pageElement.modalData.$packageContainer.val()] || '';
-
-            // update global variable shipment
-            pageVariable.shipmentVariable = pageVariable.shipmentVariable.map(container => {
-                if (container.containerRefNumber === selectedContainerRef) {
-                    container.packages.push(newPackage);
-                }
-                return container;
-            });
-
-            // update DataTable
-            const shipmentTable = pageElement.shipment.$table.DataTable();
-            shipmentTable.clear().rows.add(pageVariable.shipmentVariable).draw(false);
-
-            // reset
-            pageElement.modalData.$packageName.val('');
-            pageElement.modalData.$packageType.val('');
-            pageElement.modalData.$packageRef.val('');
-            pageElement.modalData.$packageContainer.val('');
-            pageElement.modalData.$packageWeight.val('');
-            pageElement.modalData.$packageDimension.val('');
-            pageElement.modalData.$packageNote.val('');
-        })
-    }
-
     return {
         initDateTime,
         initPageSelect,
@@ -1413,7 +1145,6 @@ const ServiceOrder = (function($) {
         initProductModalDataTable,
         initServiceDetailDataTable,
         initWorkOrderDataTable,
-        initShipmentDataTable,
         initModalContextTracking,
         handleSaveProduct,
         handleChangeServiceQuantity,
@@ -1427,7 +1158,5 @@ const ServiceOrder = (function($) {
         handleAddWorkOrderCostRow,
         handleChangeWorkOrderCostQuantityAndUnitCost,
         handleSaveWorkOrderCost,
-        handleSaveContainer,
-        handleSavePackage
     }
 })(jQuery)

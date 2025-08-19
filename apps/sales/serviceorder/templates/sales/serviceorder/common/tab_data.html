@@ -121,11 +121,15 @@
                         {% trans 'Add' %}
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="btn_add_container">
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                               data-bs-target="#modal_container">{% trans 'Container' %}</a>
+                        <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal_container">
+                               <i class="fa-solid fa-truck" style="margin-right: 5px;"></i>{% trans 'Container' %}
+                            </a>
                         </li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                               data-bs-target="#modal_package">{% trans 'Package' %}</a>
+                        <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal_package">
+                                <i class="fa-solid fa-box-open" style="margin-right: 5px;"></i> {% trans 'Package' %}
+                            </a>
                         </li>
                     </ul>
                 </div>

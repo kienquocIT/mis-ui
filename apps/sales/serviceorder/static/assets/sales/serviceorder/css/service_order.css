@@ -9,26 +9,3 @@
 .min-w-1350p{
     min-width: 1350px !important;
 }
-
-td.dt-control {
-    cursor: pointer;
-}
-tr td.dt-control:before {
-    content: "▶";
-    margin-right: 5px;
-}
-tr.shown td.dt-control:before {
-    content: "▼";
-}
-
-.table th, .table td {
-    vertical-align: middle;
-    padding: 8px;
-}
-.text-left {
-    text-align: left;
-}
-.text-center {
-    text-align: center;
-}
-

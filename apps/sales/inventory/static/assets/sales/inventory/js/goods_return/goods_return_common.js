@@ -440,7 +440,7 @@ function loadTableLineDetail(data_source=[], detail='create') {
             {
                 data: '',
                 render: (data, type, row) => {
-                    return `<select class="form-select select2 return-to-wh" data-delivery-item-id="${row?.['data_delivery_item_id']}" data-url="${scriptUrlEle.attr('data-url-warehouse') + '?interact=1'}" data-method="GET"></select>`
+                    return `<select class="form-select select2 return-to-wh" data-delivery-item-id="${row?.['data_delivery_item_id']}" data-url="${scriptUrlEle.attr('data-url-warehouse')}" data-method="GET"></select>`
                 }
             },
         ],

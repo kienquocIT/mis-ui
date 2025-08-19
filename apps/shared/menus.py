@@ -1103,7 +1103,7 @@ class SpaceItem:
             menus=[
                 MenusHRM.HOME,
                 MenusHRM.HUMAN_RESOURCES,
-                MenusHRM.ATTENDANCE,
+                # MenusHRM.ATTENDANCE,
             ],
         ),
         'inventory': SpaceCommon(

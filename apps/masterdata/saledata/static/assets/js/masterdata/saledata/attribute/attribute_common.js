@@ -545,7 +545,6 @@ $(document).ready(function () {
             trEle.addClass('bg-grey-light-5');
             iconEle.removeClass('text-secondary').addClass('text-dark');
 
-
             let row = this.closest('tr');
             if (row) {
                 let table = row.closest('table');

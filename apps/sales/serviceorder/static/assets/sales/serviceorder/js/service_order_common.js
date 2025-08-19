@@ -34,7 +34,7 @@ const ServiceOrder = (function($) {
         taxList: null,
         modalProductContext: null,
         taxSelect: {},
-        workOrderCostData: {},
+        workOrderCostData: {}
     }
 
     const WORK_ORDER_STATUS = {

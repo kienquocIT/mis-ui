@@ -15,7 +15,7 @@ class AttributeList(View):
         menu_active='id_menu_master_data_attribute',
         breadcrumb='ATTRIBUTE_LIST_PAGE',
         icon_cls='fa-solid fa-cubes',
-        icon_bg='bg-gold',
+        icon_bg='bg-indigo',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK

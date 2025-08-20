@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Product/ service attribute' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block pageAction %}{% endblock %}
+
+{% block pageContent %}
+
+        <table
+                id="table_category"
+                class="table nowrap min-w-1366p w-100"
+        >
+            <thead>
+            <tr class="bg-light">
+                <th>{% trans 'Category' %} / {% trans 'Attribute' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+{% endblock %}
+
+{% block modalData %}
+    {% include 'masterdata/saledata/attribute/attribute_offcanvas.html' %}
+{% endblock %}
+
+{% block dataHiddenGroup %}
+    <input
+        type="text"
+        id="app-trans-factory"
+        data-attribute="{% trans 'Attribute' %}"
+        data-add-new="{% trans 'Add new' %}"
+        data-canvas-add="{% trans 'Add attribute' %}"
+        data-canvas-update="{% trans 'Update attribute' %}"
+    >
+    <input
+        type="text"
+        id="app-url-factory"
+        data-api-uom-list="{% url 'UnitOfMeasureListAPI' %}"
+    >
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+
+    <script src="{% static 'assets/js/masterdata/saledata/attribute/attribute_common.js' %}"></script>
+
+{% endblock %}

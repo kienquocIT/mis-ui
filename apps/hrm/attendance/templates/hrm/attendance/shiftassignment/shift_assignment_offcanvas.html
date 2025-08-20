@@ -1,0 +1,38 @@
+{% load i18n %}
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="shiftCanvas" aria-labelledby="shiftCanvas">
+    <div class="modal-header">
+        <h5><b>{% trans 'Shift detail' %}</b></h5>
+        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
+    </div>
+    <div class="offcanvas-body" id="canvas_body_shift">
+        <div data-simplebar class="nicescroll-bar">
+            <div class="drawer-content-wrap">
+                <div class="event-head mb-4">
+                    <div>
+                        <h5 class="event-name text-primary shift-name"></h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row mb-5">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-clock text-gold"></i>
+                            <span>{% trans 'Working hours' %}: </span>
+                        </div>
+                        <div class="shift-working-hours ml-4"></div>
+                    </div>
+                    <div class="row">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-utensils text-smoke"></i>
+                            <span>{% trans 'Break time' %}: </span>
+                        </div>
+                        <div class="shift-break-time ml-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="offcanvas">{% trans 'Close' %}</button>
+    </div>
+</div>

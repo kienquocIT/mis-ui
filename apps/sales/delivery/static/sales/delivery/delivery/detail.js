@@ -1675,12 +1675,17 @@ $(async function () {
                     $conID.prev().find('.dropdown-menu').html(conContent)
                 }
                 if (res.state !== undefined && Number.isInteger(res.state)) {
+                    const stateMapBg = {
+                        0: 'yellow-light-4',
+                        1: 'blue-light-4',
+                        2: 'green-light-4',
+                    }
                     const stateMap = {
                         0: 'warning',
                         1: 'info',
                         2: 'success',
                     }
-                    let templateEle = `<span class="badge badge-${stateMap[res.state]} badge-outline">`
+                    let templateEle = `<span class="badge text-dark-10 fs-8 bg-${stateMapBg[res.state]}">`
                         + `${$trans.attr('data-state-' + stateMap[res.state])}</span>`;
                     $('#state').html(templateEle);
                     if (res.state === 2) {

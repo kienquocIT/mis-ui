@@ -542,6 +542,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Absence explanation
     ABSENCE_EXPLANATION_LIST = BreadcrumbChildren(_('Absence Explanation'), 'AbsenceExplanationList')
 
+    # master data - attribute
+    ATTRIBUTE_LIST_PAGE = BreadcrumbChildren(_('Product/ service attribute'), 'AttributeList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1465,7 +1468,6 @@ class BreadcrumbView:
         BreadcrumbItem.ATTENDANCE_DEVICE_LIST_PAGE
     ]
 
-
     # Absence explanation
     ABSENCE_EXPLANATION_LIST_PAGE = [
         BreadcrumbItem.ABSENCE_EXPLANATION_LIST
@@ -1473,3 +1475,8 @@ class BreadcrumbView:
     ABSENCE_EXPLANATION_CREATE_PAGE = [BreadcrumbItem.ABSENCE_EXPLANATION_LIST] + [BreadcrumbItem.BASTION_CREATE]
     ABSENCE_EXPLANATION_DETAIL_PAGE = [BreadcrumbItem.ABSENCE_EXPLANATION_LIST] + [BreadcrumbItem.BASTION_DETAIL]
     ABSENCE_EXPLANATION_UPDATE_PAGE = [BreadcrumbItem.ABSENCE_EXPLANATION_LIST] + [BreadcrumbItem.BASTION_UPDATE]
+
+    # master data - attribute
+    ATTRIBUTE_LIST_PAGE = [
+        BreadcrumbItem.ATTRIBUTE_LIST_PAGE
+    ]

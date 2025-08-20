@@ -173,6 +173,10 @@ class MenusCoreConfigurations:
                 icon='<i class="fas bi bi-currency-exchange"></i>',
             ),
             MenuCommon(
+                name='Attribute', code='id_menu_master_data_attribute', view_name='AttributeList',
+                icon='<i class="fas fa-cubes"></i>',
+            ),
+            MenuCommon(
                 name='Document', code='id_menu_master_data_document', view_name='DocumentTypeMasterDataList',
                 icon='<i class="fas fa-file"></i>',
             ),

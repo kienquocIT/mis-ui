@@ -99,12 +99,10 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '8%',
+                        width: '6%',
                         data: "date_created",
                         render: (data) => {
-                            return $x.fn.displayRelativeTime(data, {
-                                'outputFormat': 'DD-MM-YYYY',
-                            });
+                            return DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', data);
                         }
                     },
                     {
@@ -116,7 +114,7 @@ $(function () {
                     },
                     {
                         targets: 7,
-                        width: '6%',
+                        width: '8%',
                         render: (data, type, row) => {
                             if (row?.['quotation']?.['id']) {
                                 const link = urlsEle.data('link-detail-quotation').format_url_with_uuid(row?.['quotation']?.['id'])

@@ -15,21 +15,6 @@ const ServiceOrder = (function($) {
             $tableExchangeRate: $('#modal-table-exchange-rate'),
             $btnSaveExchangeRate: $('#btn-save-exchange-rate'),
 
-            $containerName: $('#container_name'),
-            $containerType: $('#container_type'),
-            $containerRef: $('#container_ref_number'),
-            $containerWeight: $('#container_weight'),
-            $containerDimension: $('#container_dimension'),
-            $containerNote: $('#container_note'),
-            $packageName: $('#package_name'),
-            $packageType: $('#package_type'),
-            $packageRef: $('#package_ref_number'),
-            $packageWeight: $('#package_weight'),
-            $packageDimension: $('#package_dimension'),
-            $packageNote: $('#package_note'),
-            $btnSaveContainer: $('#btn_apply_container'),
-            $btnSavePackage: $('#btn_apply_package'),
-
             $tableWorkOrderCost: $('#modal-table-work-order-cost'),
             $btnSaveWorkOrderCost: $('#btn-save-work-order-cost'),
 
@@ -46,9 +31,6 @@ const ServiceOrder = (function($) {
             $btnAddNonItem: $('#btn-add-non-item'),
 
         },
-        shipment: {
-            $table: $('#table_shipment'),
-        }
     }
 
     const pageVariable = {
@@ -1601,8 +1583,6 @@ const ServiceOrder = (function($) {
     // }
 
     return {
-        pageElement,
-        pageVariable,
         initDateTime,
         initPageSelect,
         loadCurrencyRateData,
@@ -1610,7 +1590,6 @@ const ServiceOrder = (function($) {
         initProductModalDataTable,
         initServiceDetailDataTable,
         initWorkOrderDataTable,
-        initShipmentDataTable,
         initModalContextTracking,
         initProductContributionModalDataTable,
         handleSaveProduct,

@@ -8,7 +8,10 @@ $(document).ready(function () {
     ServiceOrder.initServiceDetailDataTable()
     ServiceOrder.initWorkOrderDataTable()
     ServiceOrder.initModalContextTracking()
-    ServiceOrder.initShipmentDataTable()
+    // ============ tab shipment =============
+    TabShipmentFunction.initShipmentDataTable()
+    TabShipmentEventHandler.InitPageEvent()
+    // ========== end tab shipment ===========
 
     ServiceOrder.handleSaveProduct()
 
@@ -40,13 +43,8 @@ $(document).ready(function () {
         ServiceOrder.handleUncheckContribution()
     }
 
-    function handleShipmentEvent(){
-        ServiceOrder.handleSaveContainer()
-    }
-
     handleServiceDetailTabEvent()
     handleWorkOrderDetailTabEvent()
     handleModalWorkOrderCostEvent()
     handleModalWorkOrderContributionEvent()
-    handleShipmentEvent()
 })

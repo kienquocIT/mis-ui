@@ -17,6 +17,10 @@ const ServiceOrder = (function($) {
 
             $tableWorkOrderCost: $('#modal-table-work-order-cost'),
             $btnSaveWorkOrderCost: $('#btn-save-work-order-cost'),
+
+            $modalProductContribution: $('#modal-product-contribution'),
+            $tableProductContribution: $('#modal-table-product-contribution'),
+            $btnSaveProductContribution: $('#btn-save-product-contribution'),
         },
         serviceDetail: {
             $table: $('#table-service-detail'),
@@ -34,7 +38,9 @@ const ServiceOrder = (function($) {
         taxList: null,
         modalProductContext: null,
         taxSelect: {},
-        workOrderCostData: {}
+        workOrderCostData: {},
+        productContributionData: {},
+        serviceDetailContributionData: {}
     }
 
     const WORK_ORDER_STATUS = {
@@ -95,6 +101,7 @@ const ServiceOrder = (function($) {
     }
 
     function transformProductData(rowData, productId) {
+        const uniqueStr = Math.random().toString(36).slice(2)
         const baseData = {
             product_id: productId,
             code: rowData.code,
@@ -102,6 +109,7 @@ const ServiceOrder = (function($) {
             description: rowData.description || '',
             quantity: 1,
             uom: rowData?.sale_default_uom?.title || '',
+            id: uniqueStr
         }
 
         if (pageVariable.modalContext === 'serviceDetail') {
@@ -521,7 +529,7 @@ const ServiceOrder = (function($) {
                     title: $.fn.gettext('Is Service Delivery'),
                     render: (data, type, row) => {
                         const isServiceDelivery = row.is_delivery_point || false
-                        const rowId = row.id || Math.random().toString(36).substr(2, 9)
+                        const rowId = row.id
                         return `<div class="d-flex align-items-center">
                                 <div class="form-check me-2">
                                     <input 
@@ -532,10 +540,10 @@ const ServiceOrder = (function($) {
                                 </div>
                                 <button 
                                     type="button" 
-                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover work-order-delivery-modal"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-service-delivery"
                                     data-row-id="${rowId}"
-                                    data-bs-toggle="tooltip" 
-                                    data-bs-placement="bottom"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modal-product-contribution"
                                     title="Open service delivery details"
                                 >
                                     <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
@@ -665,7 +673,7 @@ const ServiceOrder = (function($) {
                         return `<div class="input-group">
                                     <input
                                         type="text"
-                                        class="form-control cost-title"
+                                        class="form-control wo-cost-title"
                                         value="${title}"
                                     />
                                 </div>`
@@ -678,7 +686,7 @@ const ServiceOrder = (function($) {
                         const description = row.description || ''
                         return `<div class="input-group">
                                     <textarea
-                                        class="form-control"
+                                        class="form-control wo-cost-description"
                                         rows="1"
                                     >${description}</textarea>
                                 </div>`
@@ -770,7 +778,7 @@ const ServiceOrder = (function($) {
                 },
                 {
                     width: '12%',
-                    title: $.fn.gettext('Total (VND)'),
+                    title: $.fn.gettext('Total'),
                     render: (data, type, row) => {
                         const exchangedTotal = row.exchanged_total || 0
                         return `<div>
@@ -842,6 +850,183 @@ const ServiceOrder = (function($) {
         })
     }
 
+    function initProductContributionModalDataTable(data=[]){
+        if ($.fn.DataTable.isDataTable(pageElement.modalData.$tableProductContribution)) {
+            pageElement.modalData.$tableProductContribution.DataTable().destroy()
+        }
+
+        const isDelivery = pageElement.modalData.$modalProductContribution.data('is-delivery')
+
+        pageElement.modalData.$tableProductContribution.DataTableDefault({
+            data: data,
+            reloadCurrency: true,
+            rowIdx: false,
+            autoWidth: false,
+            scrollX: true,
+            scrollY: '35vh',
+            scrollCollapse: true,
+            columns: [
+                {
+                    width: '5%',
+                    title: $.fn.gettext(''),
+                    className: 'text-center',
+                    render: (data, type, row, meta) => {
+                        const isChecked = row.is_selected
+                        const serviceRowId = row.service_id
+                        return `<div class="form-check">
+                                    <input
+                                        ${isChecked ? 'checked ' : ' '} 
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        name="select-pc"
+                                        data-service-row-id="${serviceRowId}"
+                                    />
+                                </div>`
+                    }
+                },
+                {
+                    width: '5%',
+                    title: $.fn.gettext('Order'),
+                    className: 'text-center',
+                    render: (data, type, row, meta) => {
+                        return Number(meta.row) + 1
+                    }
+                },
+                {
+                    width: '30%',
+                    title: $.fn.gettext('Title'),
+                    render: (data, type, row) => {
+                        return row?.name
+                    }
+                },
+                {
+                    width: '20%',
+                    title: $.fn.gettext('Contribution'),
+                    render: (data, type, row) => {
+                        const contribution = row.contribution || 0
+                        return `<div class="input-group">
+                                    <input
+                                        type="number"
+                                        class="form-control pc-contribution"
+                                        value="${contribution}"
+                                        min="0"
+                                        max="100"
+                                    />
+                                    <span class="input-group-text">%</span>
+                                </div>`
+                    }
+                },
+                {
+                    width: '20%',
+                    title: $.fn.gettext('Total Balance'),
+                    render: (data, type, row) => {
+                        let balance = row.balance || 0
+                        const isSelected = row.is_selected
+                        const deliveredQuantity = row.delivered_quantity || 0
+                        balance += isSelected ? deliveredQuantity : 0
+                        return `${balance}`
+                    }
+                },
+                {
+                    width: '20%',
+                    title: $.fn.gettext('No of Service Delivered'),
+                    render: (data, type, row) => {
+                        const quantity = row.delivered_quantity || 0
+                        const balance = row.balance || 0
+                        return `<div class="input-group">
+                                    <input
+                                        ${!isDelivery ? 'disabled' : ''}
+                                        type="number"
+                                        class="form-control pc-delivered-quantity"
+                                        value="${quantity}"
+                                        min="0"
+                                        max="${balance}"
+                                    />
+                                </div>`
+                    }
+                },
+            ],
+        })
+    }
+
+    function initShipmentDataTable(data = []) {
+        const $tb = pageElement.shipment.$table;
+        if ($.fn.DataTable.isDataTable($tb)) {
+            $tb.DataTable().destroy();
+        }
+
+        $tb.DataTableDefault({
+            data: data,
+            rowIdx: true,
+            scrollX: true,
+            scrollY: '70vh',
+            scrollCollapse: true,
+            reloadCurrency: true,
+            columns: [
+                {
+                    className: "w-3",
+                    render: () => {
+                        return "";
+                    }
+                },
+                {
+                    className: 'w-20',
+                    render: (data, type, row) => {
+                        return row.containerName || '';
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return row.containerType || '';
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return row.containerRefNumber || '';
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return row.containerWeight || '';
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return row.containerDimension || '';
+                    }
+                },
+                {
+                    className: 'w-14',
+                    render: (data, type, row) => {
+                        return row.containerNote || '';
+                    }
+                },
+                {
+                    className: 'w-3',
+                    render: () => {
+                        return `
+                            <div class="d-flex justify-content-center">
+                                <button 
+                                    type="button" 
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover shipment-del-row"
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="bottom"
+                                >
+                                    <span class="icon"><i class="far fa-trash-alt"></i></span>
+                                </button>
+                            </div>
+                        `;
+                    }
+                }
+            ]
+        })
+    }
+
+
 // --------------------HANDLE EVENTS---------------------
     function handleSaveProduct() {
         pageElement.modalData.$btnSaveProduct.on('click', function (e) {
@@ -859,7 +1044,6 @@ const ServiceOrder = (function($) {
             // Add checked products to service detail table
             if (checkedProducts.length > 0) {
                 if (pageVariable.modalContext === 'serviceDetail') {
-                    addProductsToServiceDetail(checkedProducts)
                     const table = pageElement.serviceDetail.$table.DataTable()
                     const currentData = table.data().toArray()
                     const newData = [...currentData, ...checkedProducts]
@@ -1137,6 +1321,267 @@ const ServiceOrder = (function($) {
         })
     }
 
+    function handleChangeWorkOrderCostTitleAndDescription() {
+        pageElement.modalData.$tableWorkOrderCost.on('change', '.wo-cost-title, .wo-cost-description', function (e) {
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+            const table = pageElement.modalData.$tableWorkOrderCost.DataTable()
+            const rowData = table.row($row).data()
+
+            if($ele.hasClass('wo-cost-title')) {
+                rowData.title = $ele.val()
+            } else if ($ele.hasClass('wo-cost-description')) {
+                rowData.description = $ele.val()
+            }
+        })
+    }
+
+    function handleClickOpenServiceDelivery() {
+        pageElement.workOrder.$table.on('click', '.btn-open-service-delivery', function(e) {
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+            const rowId = $ele.attr('data-row-id')
+            const serviceDeliveryCheckbox = $row.find('.work-order-service-delivery')
+            const isDeliveryPoint = serviceDeliveryCheckbox.is(':checked')
+            //add isDelivery field to modal
+            pageElement.modalData.$modalProductContribution.data('is-delivery', isDeliveryPoint)
+
+            const serviceDetailTable = pageElement.serviceDetail.$table.DataTable()
+            const serviceDetailData = serviceDetailTable.data().toArray()
+
+            pageElement.modalData.$modalProductContribution.data('row-id', rowId)
+
+            //get new product contribution data from serviceDetail
+            let productContributionData = serviceDetailData.map((sdItem, index) => {
+                const serviceDetailId = sdItem.id
+                const contributionData = pageVariable.serviceDetailContributionData?.[serviceDetailId]
+                const totalContribution = contributionData?.total_contribution || 0
+                //if .balance = null or undefined, get .quantity, else get .balance
+                const balance = contributionData?.balance ?? sdItem.quantity
+
+                return {
+                    service_id: serviceDetailId,
+                    code: sdItem.code,
+                    name: sdItem.name,
+                    quantity: sdItem.quantity,
+                    total_contribution: totalContribution,
+                    balance: balance,
+                    contribution: 0,
+                    delivered_quantity: 0,
+                    is_selected: false,
+                }
+            })
+
+            //join with current productcontribution
+            const currProductContributionData = pageVariable.productContributionData?.[rowId]
+
+            if(currProductContributionData) {
+                productContributionData = productContributionData.map((pcItem, index) => {
+                    const currProductContribution = currProductContributionData.find(cpcItem =>
+                        cpcItem.service_id === pcItem.service_id
+                    )
+                    if(currProductContribution){
+                        return {
+                            ...pcItem,
+                            is_selected: Boolean(currProductContribution.is_selected),
+                            contribution: currProductContribution.contribution || 0,
+                            delivered_quantity: currProductContribution.delivered_quantity || 0
+                        }
+                    }
+                    return pcItem
+                })
+            }
+            pageVariable.productContributionData[rowId] = productContributionData
+            initProductContributionModalDataTable(productContributionData)
+        })
+    }
+
+    function handleSaveProductContribution(){
+        pageElement.modalData.$btnSaveProductContribution.on('click', function(e) {
+            e.preventDefault()
+            const productContributionTable = pageElement.modalData.$tableProductContribution.DataTable()
+            const serviceDetailTable = pageElement.serviceDetail.$table.DataTable()
+            const workOrderRowId = pageElement.modalData.$modalProductContribution.data('row-id')
+
+            let productContributionData = pageVariable.productContributionData[workOrderRowId]
+            const productContributionTableRows = productContributionTable.rows()
+
+            let isValid = true
+            productContributionTableRows.every(function (rowIdx) {
+                const $row = $(this.node())
+                const $checkbox = $row.find('input[name="select-pc"]')
+                const $contributionInput = $row.find('.pc-contribution')
+                const $deliveredQuantityInput = $row.find('.pc-delivered-quantity')
+
+                const isSelected = $checkbox.is(':checked')
+                const rowId = $checkbox.data('service-row-id')
+                let contribution = parseFloat($contributionInput.val()) || 0
+                let deliveredQuantity = parseFloat($deliveredQuantityInput.val()) || 0
+                const serviceRowContributionData = productContributionData.find(item => item.service_id === rowId)
+                const serviceRowContribution = serviceRowContributionData.contribution
+                const serviceRowDeliveredQuantity = serviceRowContributionData.delivered_quantity
+                const serviceRowQuantity = serviceRowContributionData.quantity
+
+                if(contribution > 100) {
+                    $.fn.notifyB({description: $.fn.gettext(`Contribution must not exceed 100`)}, 'failure')
+                    isValid = false
+                    return false
+                }
+
+                if(deliveredQuantity > serviceRowQuantity) {
+                    $.fn.notifyB({description: $.fn.gettext(`Delivered quantity must not exceed total quantity`)}, 'failure')
+                    isValid = false
+                    return false
+                }
+
+                const serviceDetailRowContributionData = pageVariable.serviceDetailContributionData?.[rowId]
+                if(serviceDetailRowContributionData){
+                    const currTotalContribution = serviceDetailRowContributionData.total_contribution
+                    const currBalance = serviceDetailRowContributionData.balance
+
+                    if(isSelected){
+                        const newTotalContribution = currTotalContribution - serviceRowContribution + contribution
+                        const newBalance = currBalance + serviceRowDeliveredQuantity - deliveredQuantity
+
+                        if(newTotalContribution > 100) {
+                            $.fn.notifyB({description: $.fn.gettext(`Contribution must not exceed 100`)}, 'failure')
+                            isValid = false
+                            return false
+                        }
+
+                        if(newBalance < 0) {
+                            $.fn.notifyB({description: $.fn.gettext(`Delivered quantity must not exceed total quantity`)}, 'failure')
+                            isValid = false
+                            return false
+                        }
+
+                        pageVariable.serviceDetailContributionData[rowId] = {
+                            total_contribution: newTotalContribution,
+                            balance: newBalance,
+                        }
+                    }
+                    else {
+                        const newTotalContribution = currTotalContribution - serviceRowContribution
+                        const newBalance = currBalance + serviceRowDeliveredQuantity
+
+                        if(newTotalContribution > 100) {
+                            $.fn.notifyB({description: $.fn.gettext(`Contribution must not exceed 100`)}, 'failure')
+                            isValid = false
+                            return false
+                        }
+
+                        if(newBalance < 0) {
+                            $.fn.notifyB({description: $.fn.gettext(`Delivered quantity must not exceed total quantity`)}, 'failure')
+                            isValid = false
+                            return false
+                        }
+
+                        pageVariable.serviceDetailContributionData[rowId] = {
+                            total_contribution: newTotalContribution,
+                            balance: newBalance,
+                        }
+                    }
+                }
+                else {
+                    if(isSelected){
+                        pageVariable.serviceDetailContributionData[rowId] = {
+                            total_contribution: contribution,
+                            balance: serviceRowQuantity - deliveredQuantity,
+                        }
+                    }
+                }
+
+                productContributionData  = productContributionData.map((item)=>{
+                    if(item.service_id === rowId){
+                        return{
+                            ...item,
+                            is_selected: isSelected,
+                            contribution: isSelected ? contribution : 0,
+                            delivered_quantity: isSelected ? deliveredQuantity : 0,
+                            total_contribution: pageVariable.serviceDetailContributionData[rowId]?.total_contribution,
+                            balance: pageVariable.serviceDetailContributionData[rowId]?.balance,
+                        }
+                    }
+                    return item
+                })
+            })
+            if(!isValid){
+                return
+            }
+            pageVariable.productContributionData[workOrderRowId] = productContributionData
+        })
+    }
+
+    function handleCheckDelivery(){
+        pageElement.workOrder.$table.on('change', '.work-order-service-delivery', function(e) {
+            const $ele = $(e.currentTarget)
+            const isCheck = $ele.is(':checked')
+            const $row = $ele.closest('tr')
+            const table = pageElement.workOrder.$table.DataTable()
+            const rowData = table.row($row).data()
+            rowData.is_delivery_point = isCheck
+        })
+    }
+
+    function handleUncheckContribution(){
+        pageElement.modalData.$modalProductContribution.on('change', 'input[name="select-pc"]', function(e) {
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+            const isChecked = $ele.is(':checked')
+            if(!isChecked){
+                $row.find('.pc-contribution').val(0)
+                $row.find('.pc-delivered-quantity').val(0)
+            }
+        })
+    }
+
+    // process for shipment events
+    function handleSaveContainer() {
+        pageElement.modalData.$btnSaveContainer.on('click', function () {
+            const newContainer = {
+                containerName: pageElement.modalData.$containerName.val() || '',
+                containerType: pageElement.modalData.$containerType.val() || '',
+                containerRefNumber: pageElement.modalData.$containerRef.val() || '',
+                containerWeight: pageElement.modalData.$containerWeight.val() || '',
+                containerDimension: pageElement.modalData.$containerDimension.val() || '',
+                containerNote: pageElement.modalData.$containerNote.val() || ''
+            };
+
+            const shipmentTable = pageElement.shipment.$table.DataTable();
+            const currentData = shipmentTable.data().toArray();
+
+            // merge old data and new data
+            const updatedData = [...currentData, newContainer];
+
+            // update table
+            shipmentTable.clear().rows.add(updatedData).draw(false);
+
+            // remove data after saving
+            pageElement.modalData.$containerName.val('');
+            pageElement.modalData.$containerType.val('');
+            pageElement.modalData.$containerRef.val('');
+            pageElement.modalData.$containerWeight.val('');
+            pageElement.modalData.$containerDimension.val('');
+            pageElement.modalData.$containerNote.val('');
+
+            // close modal if needed
+        });
+    }
+    // function handleSaveContainer () {
+    //     pageElement.modalData.$btnSaveContainer.on('click', function() {
+    //         const containerEle = [];
+    //         containerEle.push({
+    //             containerName: pageElement.modalData.$containerName.val() || '',
+    //             containerType: pageElement.modalData.$containerType.val() || '',
+    //             containerRefNumber: pageElement.modalData.$containerRef.val() || '',
+    //             containerWeight: pageElement.modalData.$containerWeight.val() || '',
+    //             containerDimension: pageElement.modalData.$containerDimension.val() || '',
+    //             containerNote: pageElement.modalData.$containerNote.val() || ''
+    //         });
+    //         // pageElement.shipment.$table.clear().rows.add(containerEle).draw();
+    //     })
+    // }
+
     return {
         initDateTime,
         initPageSelect,
@@ -1146,6 +1591,7 @@ const ServiceOrder = (function($) {
         initServiceDetailDataTable,
         initWorkOrderDataTable,
         initModalContextTracking,
+        initProductContributionModalDataTable,
         handleSaveProduct,
         handleChangeServiceQuantity,
         handleChangeServiceDescription,
@@ -1158,5 +1604,11 @@ const ServiceOrder = (function($) {
         handleAddWorkOrderCostRow,
         handleChangeWorkOrderCostQuantityAndUnitCost,
         handleSaveWorkOrderCost,
+        handleChangeWorkOrderCostTitleAndDescription,
+        handleClickOpenServiceDelivery,
+        handleSaveProductContribution,
+        handleCheckDelivery,
+        handleUncheckContribution,
+        handleSaveContainer
     }
 })(jQuery)

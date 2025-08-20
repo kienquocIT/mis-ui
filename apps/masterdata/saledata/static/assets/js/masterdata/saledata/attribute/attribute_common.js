@@ -13,6 +13,12 @@ class AttributeHandle {
     static $transEle = $('#app-trans-factory');
     static $urlEle = $('#app-url-factory');
 
+    static priceConfigTypeParseText = {
+        0: 'Numeric',
+        1: 'List',
+        2: 'Warranty',
+    }
+
 
     static init() {
         AttributeHandle.loadDtb();
@@ -137,8 +143,8 @@ class AttributeHandle {
             if (titleEle && quantityEle && durationUnitEle && additionalCostEle) {
                 let dataPush = {
                     "title": $(titleEle).val(),
-                    "quantity": $(quantityEle).val(),
-                    "additional_cost": $(additionalCostEle).valCurrency(),
+                    "quantity": parseFloat($(quantityEle).val()),
+                    "additional_cost": parseFloat($(additionalCostEle).valCurrency()),
                 }
                 if ($(durationUnitEle).val()) {
                     dataPush['duration_unit_id'] = $(durationUnitEle).val();
@@ -151,10 +157,10 @@ class AttributeHandle {
     };
 
     // DataTable
-    static loadPushDtbChild(trEle, parentID) {
+    static loadPushDtbChild(trEle) {
         let idTbl = UtilControl.generateRandomString(12);
         if (!trEle.next().hasClass('child-list')) {
-            let dtlSub = `<table id="${idTbl}" class="table table-child nowrap w-100"><thead></thead><tbody></tbody></table>`
+            let dtlSub = `<table id="${idTbl}" class="table table-child nowrap w-100"><thead hidden></thead><tbody></tbody></table>`
             trEle.after(
                 `<tr class="child-list"><td colspan="4"><div class="child-workflow-group hidden-simple">${dtlSub}</div></td></tr>`
             );
@@ -165,7 +171,29 @@ class AttributeHandle {
                 idTbl = $tableChildEle[0].id;
             }
         }
-        AttributeHandle.loadDtbChild(idTbl, parentID);
+
+        let table = trEle[0].closest('table');
+        if (table) {
+            let rowIndex = $(table).DataTable().row(trEle[0]).index();
+            let $row = $(table).DataTable().row(rowIndex);
+            let dataRow = $row.data();
+
+            if (dataRow?.['is_category'] === true) {
+                AttributeHandle.loadDtbChild(idTbl, dataRow?.['id']);
+            }
+            if (dataRow?.['is_category'] === false) {
+                if (dataRow?.['price_config_type'] === 0) {
+                    AttributeHandle.loadDtbNumericDetail(idTbl, [dataRow?.['price_config_data']]);
+                }
+                if (dataRow?.['price_config_type'] === 1) {
+                    AttributeHandle.loadDtbListDetail(idTbl, dataRow?.['price_config_data']);
+                }
+                if (dataRow?.['price_config_type'] === 2) {
+                    AttributeHandle.loadDtbWarrantyDetail(idTbl, dataRow?.['price_config_data']);
+                }
+            }
+        }
+
         return true;
     };
 
@@ -191,20 +219,20 @@ class AttributeHandle {
         columns: [
             {
                 targets: 0,
-                width: "90%",
                 render: (data, type, row) => {
+                    let attr_type = '';
+                    if (row?.['is_category'] === true) {
+                        attr_type = "Category";
+                    }
+                    if (row?.['is_category'] === false) {
+                        attr_type = AttributeHandle.priceConfigTypeParseText[row?.['price_config_type']];
+                    }
                     return `<div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <button class="btn-collapse-parent btn btn-icon btn-rounded mr-1" data-parent-id="${row?.['id']}"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']}</b>
+                                    <button class="btn-collapse-parent btn btn-icon btn-rounded mr-1" data-parent-id="${row?.['id']}"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']} (${attr_type})</b>
                                 </div>
+                                <button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover btn-lg btn-edit" data-bs-toggle="offcanvas" data-bs-target="#mainCanvas"><span class="icon"><i class="fa-solid fa-pen-to-square"></i></span></button>
                             </div>`;
-                }
-            },
-            {
-                targets: 1,
-                width: '10%',
-                render: (data, type, row) => {
-                    return `<button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover btn-lg btn-edit" data-bs-toggle="offcanvas" data-bs-target="#mainCanvas"><span class="icon"><i class="fa-solid fa-pen-to-square"></i></span></button>`;
                 }
             },
         ],
@@ -274,25 +302,78 @@ class AttributeHandle {
             info: false,
             columns: [
                 {
-                    width: '90%',
                     render: (data, type, row) => {
+                        let attr_type = '';
+                        if (row?.['is_category'] === true) {
+                            attr_type = "Category";
+                        }
+                        if (row?.['is_category'] === false) {
+                            attr_type = AttributeHandle.priceConfigTypeParseText[row?.['price_config_type']];
+                        }
                         return `<div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <button class="btn-collapse-parent btn btn-icon btn-rounded mr-1" data-parent-id="${row?.['id']}"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']}</b>
+                                    <button class="btn-collapse-parent btn btn-icon btn-rounded mr-1" data-parent-id="${row?.['id']}"><span class="icon"><i class="icon-collapse-app-wf fas fa-caret-right text-secondary"></i></span></button> <b>${row?.['title']} (${attr_type})</b>
                                 </div>
+                                <button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover btn-lg btn-edit" data-tbl-id="${idTbl}" data-bs-toggle="offcanvas" data-bs-target="#mainCanvas"><span class="icon"><i class="fa-solid fa-pen-to-square"></i></span></button>
                             </div>`;
-                    }
-                },
-                {
-                    width: '10%',
-                    render: (data, type, row) => {
-                        return `<button type="button" class="btn btn-icon btn-rounded btn-rounded btn-flush-light flush-soft-hover btn-lg btn-edit" data-tbl-id="${idTbl}" data-bs-toggle="offcanvas" data-bs-target="#mainCanvas"><span class="icon"><i class="fa-solid fa-pen-to-square"></i></span></button>`;
                     }
                 },
             ],
             rowCallback: function (row, data, index) {
             },
             drawCallback: function () {
+                // add css to Dtb
+                AttributeHandle.loadDtbHideHeader(idTbl);
+            },
+        });
+    };
+
+    static loadDtbNumericDetail(idTbl, data) {
+        let $tableChild = $('#' + idTbl);
+        if ($.fn.dataTable.isDataTable($tableChild)) {
+            $tableChild.DataTable().destroy();
+        }
+        $tableChild.not('.dataTable').DataTableDefault({
+            styleDom: 'hide-foot',
+            data: data ? data : [],
+            pageLength: 5,
+            info: false,
+            columns: [
+                {
+                    width: '40%',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['min_value']}</span><span>${row?.['attribute_unit']}</span>`;
+                    }
+                },
+                {
+                    width: '40%',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['max_value']}</span><span>${row?.['attribute_unit']}</span>`;
+                    }
+                },
+                {
+                    width: '40%',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['increment']}</span><span>${row?.['attribute_unit']}</span>`;
+                    }
+                },
+                {
+                    width: '30%',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${parseFloat(row?.['additional_cost'] ? row?.['additional_cost'] : '0')}"></span>`;
+                    }
+                },
+                {
+                    width: '30%',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['duration_unit_data']?.['title']}</span>`;
+                    }
+                },
+            ],
+            rowCallback: function (row, data, index) {
+            },
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
                 // add css to Dtb
                 AttributeHandle.loadDtbHideHeader(idTbl);
             },
@@ -347,6 +428,46 @@ class AttributeHandle {
         });
     };
 
+    static loadDtbListDetail(idTbl, dataRaw) {
+        let $tableChild = $('#' + idTbl);
+        if ($.fn.dataTable.isDataTable($tableChild)) {
+            $tableChild.DataTable().destroy();
+        }
+        $tableChild.not('.dataTable').DataTableDefault({
+            styleDom: 'hide-foot',
+            data: dataRaw?.['list_item'] ? dataRaw?.['list_item'] : [],
+            pageLength: 5,
+            info: false,
+            columns: [
+                {
+                    width: '40%',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['title']}</span>`;
+                    }
+                },
+                {
+                    width: '30%',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${parseFloat(row?.['additional_cost'] ? row?.['additional_cost'] : '0')}"></span>`;
+                    }
+                },
+                {
+                    width: '30%',
+                    render: (data, type, row) => {
+                        return `<span>${dataRaw?.['duration_unit_data']?.['title']}</span>`;
+                    }
+                },
+            ],
+            rowCallback: function (row, data, index) {
+            },
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                // add css to Dtb
+                AttributeHandle.loadDtbHideHeader(idTbl);
+            },
+        });
+    };
+
     static dtbListHDCustom() {
         let $table = AttributeHandle.$tableList;
         let wrapper$ = $table.closest('.dataTables_wrapper');
@@ -382,6 +503,9 @@ class AttributeHandle {
     };
 
     static loadDtbWarranty(data) {
+        if ($.fn.dataTable.isDataTable(AttributeHandle.$tableWarranty)) {
+            AttributeHandle.$tableWarranty.DataTable().destroy();
+        }
         AttributeHandle.$tableWarranty.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
@@ -395,7 +519,7 @@ class AttributeHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-title">`;
+                        return `<input type="text" class="form-control table-row-title" value="${row?.['title']}">`;
                     }
                 },
                 {
@@ -418,7 +542,7 @@ class AttributeHandle {
                 {
                     targets: 3,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control mask-money valid-num table-row-additional-cost">`;
+                        return `<input type="text" class="form-control mask-money valid-num table-row-additional-cost" value="${row?.['additional_cost'] ? row?.['additional_cost'] : '0'}">`;
                     }
                 },
                 {
@@ -433,6 +557,9 @@ class AttributeHandle {
                 let delEle = row.querySelector('.del-row');
                 if (durationUnitEle) {
                     FormElementControl.loadInitS2($(durationUnitEle));
+                    if (data?.['duration_unit_data']) {
+                        FormElementControl.loadInitS2($(durationUnitEle), [data?.['duration_unit_data']]);
+                    }
                 }
                 if (delEle) {
                     $(delEle).on('click', function () {
@@ -443,6 +570,52 @@ class AttributeHandle {
             drawCallback: function () {
                 $.fn.initMaskMoney2();
                 AttributeHandle.dtbWarrantyHDCustom();
+            },
+        });
+    };
+
+    static loadDtbWarrantyDetail(idTbl, dataRaw) {
+        let $tableChild = $('#' + idTbl);
+        if ($.fn.dataTable.isDataTable($tableChild)) {
+            $tableChild.DataTable().destroy();
+        }
+        $tableChild.not('.dataTable').DataTableDefault({
+            styleDom: 'hide-foot',
+            data: dataRaw?.['warranty_item'] ? dataRaw?.['warranty_item'] : [],
+            pageLength: 5,
+            info: false,
+            columns: [
+                {
+                    width: '40%',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['title']}</span>`;
+                    }
+                },
+                {
+                    width: '20%',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['quantity']}</span>`;
+                    }
+                },
+                {
+                    width: '20%',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['duration_unit_data']?.['title']}</span>`;
+                    }
+                },
+                {
+                    width: '20%',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${parseFloat(row?.['additional_cost'] ? row?.['additional_cost'] : '0')}"></span>`;
+                    }
+                },
+            ],
+            rowCallback: function (row, data, index) {
+            },
+            drawCallback: function () {
+                $.fn.initMaskMoney2();
+                // add css to Dtb
+                AttributeHandle.loadDtbHideHeader(idTbl);
             },
         });
     };
@@ -545,24 +718,7 @@ $(document).ready(function () {
             trEle.addClass('bg-grey-light-5');
             iconEle.removeClass('text-secondary').addClass('text-dark');
 
-            let row = this.closest('tr');
-            if (row) {
-                let table = row.closest('table');
-                if (table) {
-                    let rowIndex = $(table).DataTable().row(row).index();
-                    let $row = $(table).DataTable().row(rowIndex);
-                    let dataRow = $row.data();
-
-                    if (dataRow?.['is_category'] === true) {
-                        AttributeHandle.loadPushDtbChild(trEle, dataRow?.['id']);
-                    }
-                    if (dataRow?.['is_category'] === false) {
-
-                    }
-                }
-            }
-
-            // AttributeHandle.loadPushDtbChild(trEle, $(this).attr('data-parent-id'));
+            AttributeHandle.loadPushDtbChild(trEle);
             trEle.next().removeClass('hidden').find('.child-workflow-group').slideToggle();
         }
     });
@@ -616,6 +772,9 @@ $(document).ready(function () {
                 if (dataRow?.['price_config_type'] === 1) {
                     FormElementControl.loadInitS2($('#list_duration_unit'), [dataRow?.['price_config_data']?.['duration_unit_data']]);
                     AttributeHandle.loadDtbList(dataRow?.['price_config_data']?.['list_item']);
+                }
+                if (dataRow?.['price_config_type'] === 2) {
+                    AttributeHandle.loadDtbWarranty(dataRow?.['price_config_data']?.['warranty_item']);
                 }
             }
         }

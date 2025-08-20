@@ -25,6 +25,7 @@ $(document).ready(function () {
         ServiceOrder.handleSelectWorkOrderCurrency()
         ServiceOrder.handleAddWorkOrderNonItem()
         ServiceOrder.handleClickOpenServiceDelivery()
+        ServiceOrder.handleCheckDelivery()
     }
 
     function handleModalWorkOrderCostEvent(){
@@ -34,6 +35,11 @@ $(document).ready(function () {
         ServiceOrder.handleChangeWorkOrderCostTitleAndDescription()
     }
 
+    function handleModalWorkOrderContributionEvent(){
+        ServiceOrder.handleSaveProductContribution()
+        ServiceOrder.handleUncheckContribution()
+    }
+
     function handleShipmentEvent(){
         ServiceOrder.handleSaveContainer()
     }
@@ -41,5 +47,6 @@ $(document).ready(function () {
     handleServiceDetailTabEvent()
     handleWorkOrderDetailTabEvent()
     handleModalWorkOrderCostEvent()
+    handleModalWorkOrderContributionEvent()
     handleShipmentEvent()
 })

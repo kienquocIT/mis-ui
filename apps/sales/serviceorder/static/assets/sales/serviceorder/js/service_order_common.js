@@ -56,7 +56,9 @@ const ServiceOrder = (function($) {
         taxList: null,
         modalProductContext: null,
         taxSelect: {},
-        workOrderCostData: {}
+        workOrderCostData: {},
+        productContributionData: {},
+        serviceDetailContributionData: {}
     }
 
     const WORK_ORDER_STATUS = {
@@ -117,6 +119,7 @@ const ServiceOrder = (function($) {
     }
 
     function transformProductData(rowData, productId) {
+        const uniqueStr = Math.random().toString(36).slice(2)
         const baseData = {
             product_id: productId,
             code: rowData.code,
@@ -124,6 +127,7 @@ const ServiceOrder = (function($) {
             description: rowData.description || '',
             quantity: 1,
             uom: rowData?.sale_default_uom?.title || '',
+            id: uniqueStr
         }
 
         if (pageVariable.modalContext === 'serviceDetail') {
@@ -543,7 +547,7 @@ const ServiceOrder = (function($) {
                     title: $.fn.gettext('Is Service Delivery'),
                     render: (data, type, row) => {
                         const isServiceDelivery = row.is_delivery_point || false
-                        const uniqueStr = row.id || Math.random().toString(36).substr(2, 9)
+                        const rowId = row.id
                         return `<div class="d-flex align-items-center">
                                 <div class="form-check me-2">
                                     <input 
@@ -555,7 +559,7 @@ const ServiceOrder = (function($) {
                                 <button 
                                     type="button" 
                                     class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-service-delivery"
-                                    data-unique-str="${uniqueStr}"
+                                    data-row-id="${rowId}"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modal-product-contribution"
                                     title="Open service delivery details"
@@ -792,7 +796,7 @@ const ServiceOrder = (function($) {
                 },
                 {
                     width: '12%',
-                    title: $.fn.gettext('Total (VND)'),
+                    title: $.fn.gettext('Total'),
                     render: (data, type, row) => {
                         const exchangedTotal = row.exchanged_total || 0
                         return `<div>
@@ -885,11 +889,15 @@ const ServiceOrder = (function($) {
                     title: $.fn.gettext(''),
                     className: 'text-center',
                     render: (data, type, row, meta) => {
+                        const isChecked = row.is_selected
+                        const serviceRowId = row.service_id
                         return `<div class="form-check">
                                     <input
+                                        ${isChecked ? 'checked ' : ' '} 
                                         type="checkbox"
                                         class="form-check-input"
                                         name="select-pc"
+                                        data-service-row-id="${serviceRowId}"
                                     />
                                 </div>`
                     }
@@ -919,6 +927,8 @@ const ServiceOrder = (function($) {
                                         type="number"
                                         class="form-control pc-contribution"
                                         value="${contribution}"
+                                        min="0"
+                                        max="100"
                                     />
                                     <span class="input-group-text">%</span>
                                 </div>`
@@ -928,18 +938,11 @@ const ServiceOrder = (function($) {
                     width: '20%',
                     title: $.fn.gettext('Total Balance'),
                     render: (data, type, row) => {
-                        const serviceQuantity = row.quantity || 0
+                        let balance = row.balance || 0
+                        const isSelected = row.is_selected
                         const deliveredQuantity = row.delivered_quantity || 0
-                        const balance = serviceQuantity - deliveredQuantity
-                        return `<div class="input-group">
-                                    <input
-                                        type="number"
-                                        class="form-control pc-balance"
-                                        value="${balance}"
-                                        max="${serviceQuantity}"
-                                        min="0"
-                                    />
-                                </div>`
+                        balance += isSelected ? deliveredQuantity : 0
+                        return `${balance}`
                     }
                 },
                 {
@@ -947,6 +950,7 @@ const ServiceOrder = (function($) {
                     title: $.fn.gettext('No of Service Delivered'),
                     render: (data, type, row) => {
                         const quantity = row.delivered_quantity || 0
+                        const balance = row.balance || 0
                         return `<div class="input-group">
                                     <input
                                         ${!isDelivery ? 'disabled' : ''}
@@ -954,6 +958,7 @@ const ServiceOrder = (function($) {
                                         class="form-control pc-delivered-quantity"
                                         value="${quantity}"
                                         min="0"
+                                        max="${balance}"
                                     />
                                 </div>`
                     }
@@ -1111,8 +1116,6 @@ const ServiceOrder = (function($) {
             }
         })
     }
-
-
 
     function handleChangeWorkOrderDate() {
         function validateDates(rowData) {
@@ -1355,12 +1358,198 @@ const ServiceOrder = (function($) {
         pageElement.workOrder.$table.on('click', '.btn-open-service-delivery', function(e) {
             const $ele = $(e.currentTarget)
             const $row = $ele.closest('tr')
+            const rowId = $ele.attr('data-row-id')
             const serviceDeliveryCheckbox = $row.find('.work-order-service-delivery')
             const isDeliveryPoint = serviceDeliveryCheckbox.is(':checked')
+            //add isDelivery field to modal
             pageElement.modalData.$modalProductContribution.data('is-delivery', isDeliveryPoint)
+
             const serviceDetailTable = pageElement.serviceDetail.$table.DataTable()
             const serviceDetailData = serviceDetailTable.data().toArray()
-            initProductContributionModalDataTable(serviceDetailData)
+
+            pageElement.modalData.$modalProductContribution.data('row-id', rowId)
+
+            //get new product contribution data from serviceDetail
+            let productContributionData = serviceDetailData.map((sdItem, index) => {
+                const serviceDetailId = sdItem.id
+                const contributionData = pageVariable.serviceDetailContributionData?.[serviceDetailId]
+                const totalContribution = contributionData?.total_contribution || 0
+                //if .balance = null or undefined, get .quantity, else get .balance
+                const balance = contributionData?.balance ?? sdItem.quantity
+
+                return {
+                    service_id: serviceDetailId,
+                    code: sdItem.code,
+                    name: sdItem.name,
+                    quantity: sdItem.quantity,
+                    total_contribution: totalContribution,
+                    balance: balance,
+                    contribution: 0,
+                    delivered_quantity: 0,
+                    is_selected: false,
+                }
+            })
+
+            //join with current productcontribution
+            const currProductContributionData = pageVariable.productContributionData?.[rowId]
+
+            if(currProductContributionData) {
+                productContributionData = productContributionData.map((pcItem, index) => {
+                    const currProductContribution = currProductContributionData.find(cpcItem =>
+                        cpcItem.service_id === pcItem.service_id
+                    )
+                    if(currProductContribution){
+                        return {
+                            ...pcItem,
+                            is_selected: Boolean(currProductContribution.is_selected),
+                            contribution: currProductContribution.contribution || 0,
+                            delivered_quantity: currProductContribution.delivered_quantity || 0
+                        }
+                    }
+                    return pcItem
+                })
+            }
+            pageVariable.productContributionData[rowId] = productContributionData
+            initProductContributionModalDataTable(productContributionData)
+        })
+    }
+
+    function handleSaveProductContribution(){
+        pageElement.modalData.$btnSaveProductContribution.on('click', function(e) {
+            e.preventDefault()
+            const productContributionTable = pageElement.modalData.$tableProductContribution.DataTable()
+            const serviceDetailTable = pageElement.serviceDetail.$table.DataTable()
+            const workOrderRowId = pageElement.modalData.$modalProductContribution.data('row-id')
+
+            let productContributionData = pageVariable.productContributionData[workOrderRowId]
+            const productContributionTableRows = productContributionTable.rows()
+
+            let isValid = true
+            productContributionTableRows.every(function (rowIdx) {
+                const $row = $(this.node())
+                const $checkbox = $row.find('input[name="select-pc"]')
+                const $contributionInput = $row.find('.pc-contribution')
+                const $deliveredQuantityInput = $row.find('.pc-delivered-quantity')
+
+                const isSelected = $checkbox.is(':checked')
+                const rowId = $checkbox.data('service-row-id')
+                let contribution = parseFloat($contributionInput.val()) || 0
+                let deliveredQuantity = parseFloat($deliveredQuantityInput.val()) || 0
+                const serviceRowContributionData = productContributionData.find(item => item.service_id === rowId)
+                const serviceRowContribution = serviceRowContributionData.contribution
+                const serviceRowDeliveredQuantity = serviceRowContributionData.delivered_quantity
+                const serviceRowQuantity = serviceRowContributionData.quantity
+
+                if(contribution > 100) {
+                    $.fn.notifyB({description: $.fn.gettext(`Contribution must not exceed 100`)}, 'failure')
+                    isValid = false
+                    return false
+                }
+
+                if(deliveredQuantity > serviceRowQuantity) {
+                    $.fn.notifyB({description: $.fn.gettext(`Delivered quantity must not exceed total quantity`)}, 'failure')
+                    isValid = false
+                    return false
+                }
+
+                const serviceDetailRowContributionData = pageVariable.serviceDetailContributionData?.[rowId]
+                if(serviceDetailRowContributionData){
+                    const currTotalContribution = serviceDetailRowContributionData.total_contribution
+                    const currBalance = serviceDetailRowContributionData.balance
+
+                    if(isSelected){
+                        const newTotalContribution = currTotalContribution - serviceRowContribution + contribution
+                        const newBalance = currBalance + serviceRowDeliveredQuantity - deliveredQuantity
+
+                        if(newTotalContribution > 100) {
+                            $.fn.notifyB({description: $.fn.gettext(`Contribution must not exceed 100`)}, 'failure')
+                            isValid = false
+                            return false
+                        }
+
+                        if(newBalance < 0) {
+                            $.fn.notifyB({description: $.fn.gettext(`Delivered quantity must not exceed total quantity`)}, 'failure')
+                            isValid = false
+                            return false
+                        }
+
+                        pageVariable.serviceDetailContributionData[rowId] = {
+                            total_contribution: newTotalContribution,
+                            balance: newBalance,
+                        }
+                    }
+                    else {
+                        const newTotalContribution = currTotalContribution - serviceRowContribution
+                        const newBalance = currBalance + serviceRowDeliveredQuantity
+
+                        if(newTotalContribution > 100) {
+                            $.fn.notifyB({description: $.fn.gettext(`Contribution must not exceed 100`)}, 'failure')
+                            isValid = false
+                            return false
+                        }
+
+                        if(newBalance < 0) {
+                            $.fn.notifyB({description: $.fn.gettext(`Delivered quantity must not exceed total quantity`)}, 'failure')
+                            isValid = false
+                            return false
+                        }
+
+                        pageVariable.serviceDetailContributionData[rowId] = {
+                            total_contribution: newTotalContribution,
+                            balance: newBalance,
+                        }
+                    }
+                }
+                else {
+                    if(isSelected){
+                        pageVariable.serviceDetailContributionData[rowId] = {
+                            total_contribution: contribution,
+                            balance: serviceRowQuantity - deliveredQuantity,
+                        }
+                    }
+                }
+
+                productContributionData  = productContributionData.map((item)=>{
+                    if(item.service_id === rowId){
+                        return{
+                            ...item,
+                            is_selected: isSelected,
+                            contribution: isSelected ? contribution : 0,
+                            delivered_quantity: isSelected ? deliveredQuantity : 0,
+                            total_contribution: pageVariable.serviceDetailContributionData[rowId]?.total_contribution,
+                            balance: pageVariable.serviceDetailContributionData[rowId]?.balance,
+                        }
+                    }
+                    return item
+                })
+            })
+            if(!isValid){
+                return
+            }
+            pageVariable.productContributionData[workOrderRowId] = productContributionData
+        })
+    }
+
+    function handleCheckDelivery(){
+        pageElement.workOrder.$table.on('change', '.work-order-service-delivery', function(e) {
+            const $ele = $(e.currentTarget)
+            const isCheck = $ele.is(':checked')
+            const $row = $ele.closest('tr')
+            const table = pageElement.workOrder.$table.DataTable()
+            const rowData = table.row($row).data()
+            rowData.is_delivery_point = isCheck
+        })
+    }
+
+    function handleUncheckContribution(){
+        pageElement.modalData.$modalProductContribution.on('change', 'input[name="select-pc"]', function(e) {
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+            const isChecked = $ele.is(':checked')
+            if(!isChecked){
+                $row.find('.pc-contribution').val(0)
+                $row.find('.pc-delivered-quantity').val(0)
+            }
         })
     }
 
@@ -1412,6 +1601,8 @@ const ServiceOrder = (function($) {
     // }
 
     return {
+        pageElement,
+        pageVariable,
         initDateTime,
         initPageSelect,
         loadCurrencyRateData,
@@ -1436,6 +1627,9 @@ const ServiceOrder = (function($) {
         handleSaveWorkOrderCost,
         handleChangeWorkOrderCostTitleAndDescription,
         handleClickOpenServiceDelivery,
+        handleSaveProductContribution,
+        handleCheckDelivery,
+        handleUncheckContribution,
         handleSaveContainer
     }
 })(jQuery)

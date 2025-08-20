@@ -13,9 +13,9 @@ class AttributeList(View):
         auth_require=True,
         template='masterdata/saledata/attribute/attribute_list.html',
         menu_active='id_menu_master_data_attribute',
-        breadcrumb='ATTENDANCE_DEVICE_LIST_PAGE',
-        icon_cls='fa-solid fa-gears',
-        icon_bg='bg-smoke',
+        breadcrumb='ATTRIBUTE_LIST_PAGE',
+        icon_cls='fa-solid fa-cubes',
+        icon_bg='bg-gold',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK

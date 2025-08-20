@@ -397,7 +397,7 @@ class AttributeHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-title" value="${row?.['title']}">`;
+                        return `<input type="text" class="form-control table-row-title" value="${row?.['title'] ? row?.['title'] : ''}">`;
                     }
                 },
                 {
@@ -519,7 +519,7 @@ class AttributeHandle {
                 {
                     targets: 0,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control table-row-title" value="${row?.['title']}">`;
+                        return `<input type="text" class="form-control table-row-title" value="${row?.['title'] ? row?.['title'] : ''}">`;
                     }
                 },
                 {
@@ -760,6 +760,8 @@ $(document).ready(function () {
                         $($(navEle).attr('href')).addClass('active');
                     }
                 }
+                let $isInventory = $('#is_inventory');
+                $isInventory[0].checked = dataRow?.['is_inventory'];
                 if (dataRow?.['price_config_type'] === 0) {
                     $('#numeric_attribute_unit').val(dataRow?.['price_config_data']?.['attribute_unit']);
                     FormElementControl.loadInitS2($('#numeric_duration_unit'), [dataRow?.['price_config_data']?.['duration_unit_data']]);
@@ -774,6 +776,8 @@ $(document).ready(function () {
                     AttributeHandle.loadDtbList(dataRow?.['price_config_data']?.['list_item']);
                 }
                 if (dataRow?.['price_config_type'] === 2) {
+                    $isInventory[0].checked = true;
+                    $isInventory.attr('disabled', 'true');
                     AttributeHandle.loadDtbWarranty(dataRow?.['price_config_data']?.['warranty_item']);
                 }
             }

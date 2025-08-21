@@ -135,10 +135,60 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab_expense">
+                <!-- main expense table -->
+                <table class="table nowrap w-100" id="table_expense">
+                    <thead class="bg-secondary-light-5">
+                        <tr>
+                            <th></th>
+                            <th>{% trans 'Expense name' %}</th>
+                            <th>{% trans 'Expense items' %}</th>
+                            <th>{% trans 'UoM' %}</th>
+                            <th>{% trans 'Quantity' %}</th>
+                            <th>{% trans 'Expense Price' %}</th>
+                            <th>{% trans 'Tax' %}</th>
+                            <th>{% trans 'Subtotal Price' %}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="row">
+                    <div class="col-12 col-lg-7 mt-3">
+                        <button class="btn btn-primary mt-4" type="button" id="add_expense" aria-expanded="false">
+                            <i class="fas fa-plus-circle me-2"></i>{% trans 'Add' %}
+                        </button>
+                    </div>
+                    <div class="col-12 col-lg-5 mt-3 text-right">
+                        <div class="row">
+                            <label for="pretax-value" class="col-4 col-form-label text-primary">{% trans 'Pretax Amount' %}</label>
+                            <div class="col-8">
+                                <input disabled id="pretax-value" value="0"
+                                       class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="taxes-value" class="col-4 col-form-label text-primary">{% trans 'Taxes' %}</label>
+                            <div class="col-8">
+                                <input disabled id="taxes-value" value="0"
+                                       class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="total-value" class="col-4 col-form-label text-primary">{% trans 'TOTAL' %}</label>
+                            <div class="col-8">
+                                <input disabled id="total-value" value="0"
+                                       class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="tab-pane fade" id="tab_payment">
             </div>
             <div class="tab-pane fade" id="tab_attachment">
+                <div class="form-group content_attached">
+                    <div id="attachment" class="{{ addClass }}">{% include 'extends/files/all.html' %}</div>
+                </div>
             </div>
             <div class="tab-pane fade" id="tab_task">
             </div>

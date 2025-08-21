@@ -26,23 +26,23 @@ const CONTAINER_REF = {
 class TabShipmentElements {
     constructor() {
         // modal
-        this.$containerName = $('#container_name')
-        this.$containerType = $('#container_type')
-        this.$containerRef = $('#container_ref_number')
-        this.$containerWeight = $('#container_weight')
-        this.$containerDimension = $('#container_dimension')
-        this.$containerNote = $('#container_note')
-        this.$packageName = $('#package_name')
-        this.$packageType = $('#package_type')
-        this.$packageRef = $('#package_ref_number')
-        this.$packageContainer = $('#package_container')
-        this.$packageWeight = $('#package_weight')
-        this.$packageDimension = $('#package_dimension')
-        this.$packageNote = $('#package_note')
-        this.$btnSaveContainer = $('#btn_apply_container')
-        this.$btnSavePackage = $('#btn_apply_package')
+        this.$containerName = $('#container_name');
+        this.$containerType = $('#container_type');
+        this.$containerRef = $('#container_ref_number');
+        this.$containerWeight = $('#container_weight');
+        this.$containerDimension = $('#container_dimension');
+        this.$containerNote = $('#container_note');
+        this.$packageName = $('#package_name');
+        this.$packageType = $('#package_type');
+        this.$packageRef = $('#package_ref_number');
+        this.$packageContainer = $('#package_container');
+        this.$packageWeight = $('#package_weight');
+        this.$packageDimension = $('#package_dimension');
+        this.$packageNote = $('#package_note');
+        this.$btnSaveContainer = $('#btn_apply_container');
+        this.$btnSavePackage = $('#btn_apply_package');
         // shipment
-        this.$tableShipment = $('#table_shipment')
+        this.$tableShipment = $('#table_shipment');
     }
 }
 const pageElements = new TabShipmentElements();

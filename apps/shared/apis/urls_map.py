@@ -1006,3 +1006,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     ABSENCE_EXPLANATION_LIST = StringUrl('hrm/absenceexplanation/list')
     ABSENCE_EXPLANATION_DETAIL = StringUrl('hrm/absenceexplanation/detail/{pk}')
 
+    # master data - attribute
+    ATTRIBUTE_LIST = StringUrl('saledata/attribute/list')
+    ATTRIBUTE_DETAIL = StringUrl('saledata/attribute/{pk}')

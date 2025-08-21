@@ -492,6 +492,7 @@ class FilesHandle {
                 url: url,
                 type: 'GET',
                 data: function (d) {
+                    const space = $('#folder-tree .btn-active').attr('data-space')
                     if (space === 'workspace') {
                         d.is_system = true
                     }
@@ -500,6 +501,7 @@ class FilesHandle {
                     return d
                 },
                 dataSrc: function (resp) {
+                    const space = $('#folder-tree .btn-active').attr('data-space')
                     let data = $.fn.switcherResp(resp);
                     const res = data[space === 'workspace' ? 'folder_list' : space === 'my'
                         ? 'folder_mf_list' : 'folder_stm_list']

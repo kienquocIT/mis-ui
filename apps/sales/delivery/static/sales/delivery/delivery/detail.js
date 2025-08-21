@@ -654,7 +654,7 @@ $(async function () {
             });
 
             let dataParam = {'product_warehouse_id': productWHID};
-            if ($form.attr('data-method').toLowerCase() === 'get') {
+            if ($form.attr('data-method').toLowerCase() === 'get' && dataCheckID.length > 0) {
                 dataParam = {'id__in': dataCheckID.join(',')}
             }
             let keyResp = 'warehouse_lot_list';
@@ -667,7 +667,7 @@ $(async function () {
                         'gre_item_prd_wh__gre_item__product_id': data?.['product']?.['id'],
                         'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
                     };
-                    if ($form.attr('data-method').toLowerCase() === 'get') {
+                    if ($form.attr('data-method').toLowerCase() === 'get' && dataCheckID.length > 0) {
                         dataParam = {'lot_registered_id__in': dataCheckID.join(',')}
                     }
                     keyResp = 'gre_item_prd_wh_lot_list';
@@ -759,7 +759,7 @@ $(async function () {
                 'serial_status': 0,
                 'gre_sn_registered__isnull': true,
             };
-            if ($form.attr('data-method').toLowerCase() === 'get') {
+            if ($form.attr('data-method').toLowerCase() === 'get' && dataCheck.length > 0) {
                 dataParam = {'id__in': dataCheck.join(',')}
             }
             let keyResp = 'warehouse_serial_list';
@@ -773,7 +773,7 @@ $(async function () {
                         'gre_item_prd_wh__warehouse_id': data?.['warehouse']?.['id'],
                         'sn_registered__serial_status': 0,
                     };
-                    if ($form.attr('data-method').toLowerCase() === 'get') {
+                    if ($form.attr('data-method').toLowerCase() === 'get' && dataCheck.length > 0) {
                         dataParam = {'sn_registered_id__in': dataCheck.join(',')}
                     }
                     keyResp = 'good_registration_serial';
@@ -1675,12 +1675,17 @@ $(async function () {
                     $conID.prev().find('.dropdown-menu').html(conContent)
                 }
                 if (res.state !== undefined && Number.isInteger(res.state)) {
+                    const stateMapBg = {
+                        0: 'yellow-light-4',
+                        1: 'blue-light-4',
+                        2: 'green-light-4',
+                    }
                     const stateMap = {
                         0: 'warning',
                         1: 'info',
                         2: 'success',
                     }
-                    let templateEle = `<span class="badge badge-${stateMap[res.state]} badge-outline">`
+                    let templateEle = `<span class="badge text-dark-10 fs-8 bg-${stateMapBg[res.state]}">`
                         + `${$trans.attr('data-state-' + stateMap[res.state])}</span>`;
                     $('#state').html(templateEle);
                     if (res.state === 2) {

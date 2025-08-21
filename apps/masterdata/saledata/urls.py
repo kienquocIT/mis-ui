@@ -12,6 +12,7 @@ from apps.masterdata.saledata.views.accounts import (
     AccountDetail, AccountGroupListAPI, AccountGroupCreateAPI, AccountGroupDetailAPI, AccountForSaleListAPI,
     CustomerListAPI, SupplierListAPI, AccountDDListAPI
 )
+from apps.masterdata.saledata.views.attribute import AttributeListAPI, AttributeList, AttributeDetailAPI
 from apps.masterdata.saledata.views.balance_init import BalanceInitList, BalanceInitListAPI, \
     ImportBalanceInitDBAPIViews, BalanceInitializationListImportDBAPI
 from apps.masterdata.saledata.views.bank import BankMasterDataListAPI, BankMasterDataDetailAPI, \
@@ -411,4 +412,10 @@ urlpatterns += [
     path('masterdata/bank/detail/api/<str:pk>', BankMasterDataDetailAPI.as_view(), name='BankMasterDataDetailAPI'),
     path('masterdata/bank-account/list', BankAccountMasterDataListAPI.as_view(), name='BankAccountMasterDataListAPI'),
     path('masterdata/bank-account/detail/api/<str:pk>', BankAccountMasterDataDetailAPI.as_view(), name='BankAccountMasterDataDetailAPI'),
+]
+
+urlpatterns += [
+    path('attribute/list', AttributeList.as_view(), name='AttributeList'),
+    path('attribute/list/api', AttributeListAPI.as_view(), name='AttributeListAPI'),
+    path('attribute/detail/api/<str:pk>', AttributeDetailAPI.as_view(), name='AttributeDetailAPI'),
 ]

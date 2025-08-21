@@ -8301,6 +8301,10 @@ msgid "Bank Account Information"
 msgstr "Thông tin tài khoản ngân hàng"
 
 #
+msgid "or enter other banking information here"
+msgstr "hoặc nhập thông tin chuyển khoản khác tại đây"
+
+#
 msgid "Credit Card Account Information"
 msgstr "Thông tin thẻ tín dụng"
 

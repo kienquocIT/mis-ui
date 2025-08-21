@@ -40,7 +40,8 @@ class COFPageElements {
         this.$payment_method_modal = $('#payment-method-modal')
         this.$cash_value = $('#cash_value')
         this.$bank_value = $('#bank_value')
-        this.$company_bank_account = $('#company_bank_account')
+        this.$account_bank_account = $('#account_bank_account')
+        this.$banking_information = $('#banking_information')
     }
 }
 const pageElements = new COFPageElements()
@@ -510,22 +511,15 @@ class COFPageFunction {
             columns: pageVariables.payment_on_account_table_cfg
         });
     }
-    static LoadCompanyBankAccount(data) {
-        pageElements.$company_bank_account.initSelect2({
-            allowClear: true,
-            ajax: {
-                url: pageElements.$company_bank_account.attr('data-url'),
-                method: 'GET',
-            },
-            templateResult: function formatbankview(data) {
-                if (data?.['data']?.['id']) return $(`<span>${data?.['data']?.['bank_mapped_data']?.['bank_name']} (${data?.['data']?.['bank_mapped_data']?.['bank_abbreviation']})</span><br><span>${data?.['data']?.['bank_account_owner']} (${data?.['data']?.['bank_account_number']})</span>`);
-                return data?.['data']?.['bank_account_number'];
-            },
-            data: (data ? data : null),
-            keyResp: 'bank_account_list',
-            keyId: 'id',
-            keyText: 'bank_account_number'
-        })
+    static LoadAccountBankAccount(bank_accounts_mapped=[], selected_id=null) {
+        let options = ''
+        for (let i=0; i < bank_accounts_mapped.length; i++) {
+            let item = bank_accounts_mapped[i]
+            options += `<option value="${item?.['id']}" ${item?.['id'] === selected_id ? 'selected' : ''} ${(item?.['is_default'] && selected_id === null) ? 'selected' : ''}>
+                            ${item?.['bank_account_number']} (${item?.['bank_account_name']}) - ${item?.['bank_name']} (${item?.['bank_code']})
+                        </option>`
+        }
+        pageElements.$account_bank_account.html(options)
     }
     // function
     static RecalculateTotalPayment() {
@@ -673,6 +667,7 @@ class COFHandler {
                         let supplier_data = data?.['supplier_data'] || {}
                         pageElements.$supplier_name.val(supplier_data?.['name'] || '')
                         pageElements.$supplier_name.attr('data-id', supplier_data?.['id'] || '')
+                        COFPageFunction.LoadAccountBankAccount(supplier_data?.['bank_accounts_mapped'], data?.['account_bank_account_data']?.['id'])
                         pageElements.$advance_for_supplier_value.attr('value', data?.['advance_for_supplier_value'] ? data?.['advance_for_supplier_value'] : 0)
                         let param1 = {}
                         let param2 = {}
@@ -705,19 +700,21 @@ class COFHandler {
                             data?.['system_status'] === 3
                         )
                     }
-                    if (pageElements.$cof_type.val() === '1') {
+                    else if (pageElements.$cof_type.val() === '1') {
                         let customer_data = data?.['customer_data'] || {}
                         pageElements.$customer_name.val(customer_data?.['name'] || '')
                         pageElements.$customer_name.attr('data-id', customer_data?.['id'] || '')
+                        COFPageFunction.LoadAccountBankAccount(customer_data?.['bank_accounts_mapped'], data?.['account_bank_account_data']?.['id'])
                         pageElements.$payment_to_customer.attr('value', data?.['payment_to_customer_value'] ? data?.['payment_to_customer_value'] : 0)
                     }
-                    if (pageElements.$cof_type.val() === '2') {
+                    else if (pageElements.$cof_type.val() === '2') {
                         let employee_data = data?.['employee_data'] || {}
                         pageElements.$employee_name.val(`${employee_data?.['full_name']} - ${employee_data?.['group']?.['title'] || ''}`)
                         pageElements.$employee_name.attr('data-id', employee_data?.['id'] || '')
                         pageElements.$advance_for_employee_value.attr('value', data?.['advance_for_employee_value'] ? data?.['advance_for_employee_value'] : 0)
+                        COFPageFunction.LoadAccountBankAccount()
                     }
-                    if (pageElements.$cof_type.val() === '3') {
+                    else if (pageElements.$cof_type.val() === '3') {
                     }
 
                     pageElements.$total_payment.attr('value', data?.['total_value'])
@@ -725,7 +722,7 @@ class COFHandler {
                     let payment_method_data = {
                         'cash_value': data?.['cash_value'],
                         'bank_value': data?.['bank_value'],
-                        'company_bank_account_id': data?.['company_bank_account_data']?.['id'],
+                        'account_bank_account_id': data?.['account_bank_account_data']?.['id'],
                     }
                     pageElements.$btn_modal_payment_method.prop('disabled', false)
                     pageElements.$btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
@@ -733,7 +730,7 @@ class COFHandler {
                     pageElements.$total_payment_modal.attr('value', data?.['total_value'])
                     pageElements.$cash_value.attr('value', data?.['cash_value'])
                     pageElements.$bank_value.attr('value', data?.['bank_value'])
-                    COFPageFunction.LoadCompanyBankAccount(pageElements.$company_bank_account, data?.['company_bank_account_data'])
+                    pageElements.$banking_information.val(data?.['banking_information'])
 
                     $.fn.initMaskMoney2()
                     UsualLoadPageFunction.DisablePage(
@@ -798,6 +795,8 @@ class COFEventHandler {
             if (!selected) {
                 $.fn.notifyB({description: 'Nothing selected'}, 'warning');
             }
+
+            COFPageFunction.LoadAccountBankAccount(selected?.['bank_accounts_mapped'] || [])
         })
         pageElements.$accept_select_customer_btn.on('click', function () {
             let selected = null
@@ -812,6 +811,8 @@ class COFEventHandler {
             if (!selected) {
                 $.fn.notifyB({description: 'Nothing selected'}, 'warning');
             }
+
+            COFPageFunction.LoadAccountBankAccount(selected?.['bank_accounts_mapped'] || [])
         })
         pageElements.$accept_select_employee_btn.on('click', function () {
             let selected = null
@@ -826,6 +827,8 @@ class COFEventHandler {
             if (!selected) {
                 $.fn.notifyB({description: 'Nothing selected'}, 'warning');
             }
+
+            COFPageFunction.LoadAccountBankAccount()
         })
         // thay đổi giá trị tạm ứng không theo hđ
         pageElements.$advance_for_supplier_value.on('change', function () {
@@ -861,14 +864,17 @@ class COFEventHandler {
                 parseFloat(pageElements.$cash_value.attr('value')) + parseFloat(pageElements.$bank_value.attr('value')) === parseFloat(pageElements.$total_payment_modal.attr('value'))
                 && parseFloat(pageElements.$total_payment_modal.attr('value')) !== 0
             ) {
-                if (parseFloat(pageElements.$bank_value.attr('value')) > 0 && !pageElements.$company_bank_account.val()) {
-                    $.fn.notifyB({description: `Company bank account is required if Bank value > 0`}, 'failure');
+                if (parseFloat(pageElements.$bank_value.attr('value')) > 0 && !pageElements.$account_bank_account.val()) {
+                    if (!pageElements.$banking_information.val()) {
+                        $.fn.notifyB({description: `Bank account or Banking information is required if Bank value > 0`}, 'failure');
+                    }
                 }
                 else {
                     let payment_method_data = {
                         'cash_value': pageElements.$cash_value.attr('value'),
                         'bank_value': pageElements.$bank_value.attr('value'),
-                        'company_bank_account_id': pageElements.$company_bank_account.val(),
+                        'account_bank_account_id': pageElements.$account_bank_account.val(),
+                        'banking_information': pageElements.$banking_information.val(),
                     }
                     pageElements.$btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
                     pageElements.$btn_modal_payment_method.removeClass('btn-danger').addClass('btn-success')
@@ -934,7 +940,7 @@ class COFEventHandler {
             // calculate total payment value modal
             COFPageFunction.CalculateModalDetailPaymentSum()
         })
-         // thay đổi giá trị tạm ứng cho KH
+        // thay đổi giá trị tạm ứng cho KH
         pageElements.$payment_to_customer.on('change', function () {
             COFPageFunction.RecalculateTotalPayment()
         })

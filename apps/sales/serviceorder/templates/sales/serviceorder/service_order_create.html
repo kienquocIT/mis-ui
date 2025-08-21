@@ -37,6 +37,10 @@
             data-currency-list-url = '{% url 'CurrencyListAPI' %}'
             data-uom-list-url = '{% url 'UnitOfMeasureListAPI' %}'
             data-opp-detail-url= '{% url 'OpportunityDetailAPI' pk=0 %}'
+            data-labor-url="{% url "ExpenseListAPI" %}"
+            data-expense-item-url='{% url 'ExpenseItemListAPI' %}'
+            data-uom-url="{% url "UnitOfMeasureListAPI" %}"
+            data-tax-url='{% url 'TaxListAPI' %}'
     ></script>
 {% endblock %}
 
@@ -48,5 +52,6 @@
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/service_order_common.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_shipment.js' %}"></script>
+    <script src="{% static 'assets/sales/serviceorder/js/tab_expense.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/service_order_create.js' %}"></script>
 {% endblock %}

@@ -29,8 +29,11 @@ const ServiceOrder = (function($) {
         workOrder:{
             $table: $('#table-work-order'),
             $btnAddNonItem: $('#btn-add-non-item'),
-
         },
+        payment: {
+            $table: $('#table-payment'),
+            $btnAddInstallment: $('#btn-add-installment'),
+        }
     }
 
     const pageVariable = {
@@ -48,6 +51,11 @@ const ServiceOrder = (function($) {
         in_progress: 1,
         completed: 2,
         cancelled: 3,
+    }
+
+    const PAYMENT_TYPE = {
+        advance: 0,
+        payment: 1
     }
 
     function initSelect($ele, opts = {}) {
@@ -319,7 +327,7 @@ const ServiceOrder = (function($) {
                 },
                 {
                     targets: 1,
-                    width: '0%',
+                    width: '20%',
                     className: 'min-w-150p',
                     render: (data, type, row) => {
                         const abbreviation = row?.['abbreviation']
@@ -531,24 +539,24 @@ const ServiceOrder = (function($) {
                         const isServiceDelivery = row.is_delivery_point || false
                         const rowId = row.id
                         return `<div class="d-flex align-items-center">
-                                <div class="form-check me-2">
-                                    <input 
-                                        type="checkbox"  
-                                        class="form-check-input work-order-service-delivery"
-                                        ${isServiceDelivery ? 'checked' : ''}
-                                    />
-                                </div>
-                                <button 
-                                    type="button" 
-                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-service-delivery"
-                                    data-row-id="${rowId}"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modal-product-contribution"
-                                    title="Open service delivery details"
-                                >
-                                    <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
-                                </button>
-                            </div>`
+                                    <div class="form-check me-2">
+                                        <input 
+                                            type="checkbox"  
+                                            class="form-check-input work-order-service-delivery"
+                                            ${isServiceDelivery ? 'checked' : ''}
+                                        />
+                                    </div>
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-service-delivery"
+                                        data-row-id="${rowId}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal-product-contribution"
+                                        title="Open service delivery details"
+                                    >
+                                        <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                                    </button>
+                                </div>`
                     }
                 },
                 {
@@ -1026,6 +1034,102 @@ const ServiceOrder = (function($) {
         })
     }
 
+    function initPaymentDataTable(data = [{}]) {
+        if ($.fn.DataTable.isDataTable(pageElement.payment.$table)) {
+            pageElement.payment.$table.DataTable().destroy()
+        }
+
+        pageElement.payment.$table.DataTableDefault({
+            data: data,
+            reloadCurrency: true,
+            rowIdx: true,
+            autoWidth: false,
+            scrollX: true,
+            scrollY: '50vh',
+            scrollCollapse: true,
+            columns: [
+                {
+                    width: '5%',
+                    title: $.fn.gettext('Installment'),
+                    className: 'text-center',
+                    render: (data, type, row, meta) => {
+                        return Number(meta.row) + 1
+                    }
+                },
+                {
+                    width: '15%',
+                    title: $.fn.gettext('Description'),
+                    render: (data, type, row, meta) => {
+                        return `<input type="text" class="form-control">`
+                    }
+                },
+                {
+                    width: '10%',
+                    title: $.fn.gettext('Payment Type'),
+                    render: (data, type, row, meta) => {
+                        const paymentType = row.payment_type ?? 0
+                        return `<div class="input-group">
+                                    <select class="form-select payment-type-select">
+                                        <option value="0" ${paymentType === 0 && 'selected'}>
+                                            ${$.fn.gettext('Advance')}
+                                        </option>
+                                        <option value="1" ${paymentType === 1 && 'selected'}>
+                                            ${$.fn.gettext('Payment')}
+                                        </option>
+                                    </select>
+                                </div>`
+                    }
+                },
+                {
+                    width: '10%',
+                    title: $.fn.gettext('Is Invoiced'),
+                    className: 'text-center',
+                    render: (data, type, row, meta) => {
+                        const isInvoiceRequired = row.is_invoice_required ?? false
+                        return `<div class="form-check">
+                                    <input type="checkbox" ${isInvoiceRequired && 'checked'} class="form-check-input">
+                                </div>`
+                    }
+                },
+                {
+                    width: '10%',
+                    title: $.fn.gettext('Payment Value'),
+                    render: (data, type, row, meta) => {
+                        const paymentValue = row.payment_value ?? 0
+                        return `<div class="d-flex align-items-center">
+                                    <div>
+                                        <span class="mask-money" data-init-money="${paymentValue}">
+                                    </div>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover ml-2 btn-open-payment-detail"
+                                            data-bs-toggle="modal" data-bs-target="#modal-payment-detail">
+                                        <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                                    </button>
+                                </div>`
+                    }
+                },
+                {
+                    width: '10%',
+                    title: $.fn.gettext('Tax'),
+                    render: (data, type, row, meta) => {
+                        const taxValue = row.tax_value ?? 0
+                        return `<div class="input-group">
+                                    <span class="mask-money" data-init-money="${taxValue}">
+                                </div>`
+                    }
+                },
+                {
+                    width: '10%',
+                    title: $.fn.gettext('Tax'),
+                    render: (data, type, row, meta) => {
+                        const taxValue = row.tax_value ?? 0
+                        return `<div class="input-group">
+                                    <span class="mask-money" data-init-money="${taxValue}">
+                                </div>`
+                    }
+                },
+            ]
+        })
+    }
 
 // --------------------HANDLE EVENTS---------------------
     function handleSaveProduct() {
@@ -1093,8 +1197,11 @@ const ServiceOrder = (function($) {
                 const taxAmount = subtotal * taxRate
                 rowData.total = subtotal + taxAmount
 
-                // Update the row data in DataTable
-                table.row($row).data(rowData).draw(false)
+                const $totalCell = $row.find('td').eq(8)
+                const $totalMoneySpan = $totalCell.find('.mask-money')
+                $totalMoneySpan.attr('data-init-money', subtotal + taxAmount)
+
+                $.fn.initMaskMoney2()
             }
         })
     }
@@ -1583,6 +1690,8 @@ const ServiceOrder = (function($) {
     // }
 
     return {
+        pageElement,
+        pageVariable,
         initDateTime,
         initPageSelect,
         loadCurrencyRateData,
@@ -1591,7 +1700,7 @@ const ServiceOrder = (function($) {
         initServiceDetailDataTable,
         initWorkOrderDataTable,
         initModalContextTracking,
-        initProductContributionModalDataTable,
+        initPaymentDataTable,
         handleSaveProduct,
         handleChangeServiceQuantity,
         handleChangeServiceDescription,
@@ -1608,7 +1717,6 @@ const ServiceOrder = (function($) {
         handleClickOpenServiceDelivery,
         handleSaveProductContribution,
         handleCheckDelivery,
-        handleUncheckContribution,
-        handleSaveContainer
+        handleUncheckContribution
     }
 })(jQuery)

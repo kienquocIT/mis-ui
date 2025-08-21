@@ -7,6 +7,7 @@ $(document).ready(function () {
     ServiceOrder.initProductModalDataTable()
     ServiceOrder.initServiceDetailDataTable()
     ServiceOrder.initWorkOrderDataTable()
+    ServiceOrder.initPaymentDataTable()
     ServiceOrder.initModalContextTracking()
     // ============ tab shipment =============
     TabShipmentFunction.initShipmentDataTable()

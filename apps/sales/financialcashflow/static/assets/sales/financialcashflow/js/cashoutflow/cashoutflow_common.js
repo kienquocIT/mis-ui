@@ -36,7 +36,6 @@ class COFPageElements {
         this.$total_payment = $('#total_payment')
         this.$total_payment_modal = $('#total_payment_modal')
         this.$btn_modal_payment_method = $('#btn-modal-payment-method')
-        this.$icon_done_payment_method = $('#icon-done-payment-method')
         this.$save_changes_payment_method = $('#save-changes-payment-method')
         this.$payment_method_modal = $('#payment-method-modal')
         this.$cash_value = $('#cash_value')
@@ -543,7 +542,7 @@ class COFPageFunction {
             })
         }
         else if (pageElements.$cof_type.val() === '1') {
-
+            total_payment += pageElements.$payment_to_customer.attr('value') ? parseFloat(pageElements.$payment_to_customer.attr('value')) : 0
         }
         else if (pageElements.$cof_type.val() === '2') {
             total_payment += pageElements.$advance_for_employee_value.attr('value') ? parseFloat(pageElements.$advance_for_employee_value.attr('value')) : 0
@@ -555,7 +554,6 @@ class COFPageFunction {
         pageElements.$total_payment_modal.attr('value', pageElements.$total_payment.attr('value'))
         pageElements.$btn_modal_payment_method.prop('disabled', total_payment === 0)
         pageElements.$btn_modal_payment_method.removeClass('btn-success').addClass('btn-danger')
-        pageElements.$icon_done_payment_method.prop('hidden', true)
         $.fn.initMaskMoney2()
     }
     static CalculateAPInvoiceRow() {
@@ -642,7 +640,6 @@ class COFHandler {
             frm.dataForm['advance_for_employee_value'] = pageElements.$advance_for_employee_value.attr('value')
         }
         else if (pageElements.$cof_type.val() === '3') {
-
         }
 
         frm.dataForm['payment_method_data'] = pageElements.$btn_modal_payment_method.attr('data-payment-method') ? JSON.parse(pageElements.$btn_modal_payment_method.attr('data-payment-method')) : {}
@@ -665,6 +662,7 @@ class COFHandler {
 
                     pageElements.$title.val(data?.['title'])
                     pageElements.$cof_type.val(data?.['cof_type'])
+                    pageElements.$cof_type.trigger('change')
                     pageElements.$posting_date.val(moment(data?.['posting_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     pageElements.$document_date.val(moment(data?.['document_date'].split(' ')[0], 'YYYY/MM/DD').format('DD/MM/YYYY'))
                     pageElements.$description.val(data?.['description'])
@@ -717,7 +715,8 @@ class COFHandler {
                         pageElements.$employee_name.attr('data-id', employee_data?.['id'] || '')
                         pageElements.$advance_for_employee_value.attr('value', data?.['advance_for_employee_value'] ? data?.['advance_for_employee_value'] : 0)
                     }
-                    if (pageElements.$cof_type.val() === '3') {}
+                    if (pageElements.$cof_type.val() === '3') {
+                    }
 
                     pageElements.$total_payment.attr('value', data?.['total_value'])
 
@@ -729,7 +728,6 @@ class COFHandler {
                     pageElements.$btn_modal_payment_method.prop('disabled', false)
                     pageElements.$btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
                     pageElements.$btn_modal_payment_method.removeClass('btn-danger').addClass('btn-success')
-                    pageElements.$icon_done_payment_method.prop('hidden', false)
                     pageElements.$total_payment_modal.attr('value', data?.['total_value'])
                     pageElements.$cash_value.attr('value', data?.['cash_value'])
                     pageElements.$bank_value.attr('value', data?.['bank_value'])
@@ -752,25 +750,25 @@ class COFHandler {
 class COFEventHandler {
     static InitPageEven() {
         pageElements.$cof_type.on('change', function () {
-            if ($(this).val() === '0') {
+            if (Number($(this).val()) === 0) {
                 pageElements.$supplier_space.prop('hidden', false)
                 pageElements.$customer_space.prop('hidden', true)
                 pageElements.$employee_space.prop('hidden', true)
                 pageElements.$account_space.prop('hidden', true)
             }
-            else if ($(this).val() === '1') {
+            else if (Number($(this).val()) === 1) {
                 pageElements.$supplier_space.prop('hidden', true)
                 pageElements.$customer_space.prop('hidden', false)
                 pageElements.$employee_space.prop('hidden', true)
                 pageElements.$account_space.prop('hidden', true)
             }
-            else if ($(this).val() === '2') {
+            else if (Number($(this).val()) === 2) {
                 pageElements.$supplier_space.prop('hidden', true)
                 pageElements.$customer_space.prop('hidden', true)
                 pageElements.$employee_space.prop('hidden', false)
                 pageElements.$account_space.prop('hidden', true)
             }
-            else if ($(this).val() === '3') {
+            else if (Number($(this).val()) === 3) {
                 pageElements.$supplier_space.prop('hidden', true)
                 pageElements.$customer_space.prop('hidden', true)
                 pageElements.$employee_space.prop('hidden', true)
@@ -872,13 +870,11 @@ class COFEventHandler {
                     }
                     pageElements.$btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
                     pageElements.$btn_modal_payment_method.removeClass('btn-danger').addClass('btn-success')
-                    pageElements.$icon_done_payment_method.prop('hidden', false)
                     pageElements.$payment_method_modal.modal('hide')
                 }
             }
             else {
                 pageElements.$btn_modal_payment_method.removeClass('btn-success').addClass('btn-danger')
-                pageElements.$icon_done_payment_method.prop('hidden', true)
                 $.fn.notifyB({description: `Error value or missing information`}, 'failure');
             }
         })

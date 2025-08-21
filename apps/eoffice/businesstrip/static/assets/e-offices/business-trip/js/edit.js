@@ -12,7 +12,8 @@ $(document).ready(function(){
             $x.fn.renderCodeBreadcrumb(data);
             $.fn.compareStatusShowPageAction(data);
             $('#titleInput').val(data.title)
-            $('#dateCreatedInput').val($x.fn.reformatData(data.date_created, 'YYYY-MM-DD', 'DD/MM/YYYY'))
+            $('#dateCreatedInput')[0]._flatpickr.setDate(data.date_created)
+            // .val($x.fn.reformatData(data.date_created, 'YYYY-MM-DD', 'DD/MM/YYYY'))
             $('#remarkInput').val(data.remark)
             $('#SystemStatusInput').val(JSON.parse($('#sys_stt').text())[data.system_status][1])
             $('#selectDeparture').attr('data-onload', JSON.stringify({...data['departure'], 'selected': true})).initSelect2()
@@ -26,8 +27,9 @@ $(document).ready(function(){
             })
             $('#selectEmployeeOnTrip').initSelect2({data:data.employee_on_trip})
             $(`[name="morning_f"][value="${data.morning_f}"], [name="morning_t"][value="${data.morning_t}"]`).prop('checked', true)
-            $('#dateFInput').val($x.fn.reformatData(data.date_f, 'YYYY-MM-DD', 'DD/MM/YYYY'))
-            $('#dateTInput').val($x.fn.reformatData(data.date_t, 'YYYY-MM-DD', 'DD/MM/YYYY'))
+            let dateFormat = [data.date_f.split(' ')[0], data.date_t.split(' ')[0]]
+            $('#dateFInput')[0]._flatpickr.set('minDate', data.date_f.split(' ')[0])
+            $('#dateFInput')[0]._flatpickr.setDate(dateFormat)
             $('#totalDayInput').val(data.total_day)
             expenseItemTable.init(data.expense_items)
             $('[name="employee_inherit_id"]').val(data.employee_inherit.id)

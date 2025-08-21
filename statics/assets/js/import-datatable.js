@@ -94,7 +94,8 @@ $(document).ready(function () {
                     rows,
                     $import_from_index_ele.val(),
                     $import_to_index_ele.val(),
-                    $import_db_form_select_table.attr('data-col-type').split(',')
+                    $import_db_form_select_table.attr('data-col-type').split(','),
+                    $import_db_form_select_table.attr('data-format') ? JSON.parse($import_db_form_select_table.attr('data-format'))?.['value_list'] : [],
                 );
 
                 // Sau khi load xong, thanh progress đạt 100%
@@ -161,7 +162,7 @@ $(document).ready(function () {
         }
     })
 
-    function displayExcelData(data, from_index_value, to_index_value, col_type) {
+    function displayExcelData(data, from_index_value, to_index_value, col_type, data_format) {
         if (data.length > 1) {
             const limit_request_per_min = 150
             let from_index = from_index_value ? parseInt(from_index_value) : null
@@ -176,30 +177,35 @@ $(document).ready(function () {
                 for (let i = from_index; i <= to_index; i++) {
                     let tds = ``
                     for (let j = 0; j < col_type.length; j++) {
+                        console.log(data_format[j]?.['data_fixed_key'])
                         if (col_type[j] === 'input-text') {
-                            tds += `<td style="min-width: 250px"><input class="form-control" value="${data[i][j] ? data[i][j] : ''}"></td>`
+                            tds += `<td style="min-width: 250px"><input class="form-control" value="${data[i][j] || ''}"></td>`
                         } else if (col_type[j] === 'input-date') {
                             tds += `<td style="min-width: 250px"><input class="form-control date-field" value="${data[i][j] ? excelDateToJSDate(data[i][j]) : ''}" placeholder="YYYY-MM-DD"></td>`
                         } else if (col_type[j] === 'input-money') {
-                            tds += `<td style="min-width: 250px"><input class="form-control mask-money text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
+                            tds += `<td style="min-width: 250px"><input class="form-control mask-money text-right" value="${data[i][j] || 0}"></td>`
                         } else if (col_type[j] === 'input-money(disabled)') {
-                            tds += `<td style="min-width: 250px"><input disabled readonly class="form-control mask-money text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
+                            tds += `<td style="min-width: 250px"><input disabled readonly class="form-control mask-money text-right" value="${data[i][j] || 0}"></td>`
                         } else if (col_type[j] === 'input-number') {
-                            tds += `<td style="min-width: 200px"><input type="number" class="form-control text-right" value="${data[i][j] ? data[i][j] : 0}"></td>`
+                            tds += `<td style="min-width: 200px"><input type="number" class="form-control text-right" value="${data[i][j] || 0}"></td>`
                         } else if (col_type[j] === 'select') {
                             tds += `<td style="min-width: 250px">
                                 <select class="form-select select2">
-                                    <option selected>${data[i][j] ? data[i][j] : ''}</option>
+                                    <option selected>${data[i][j] || ''}</option>
                                 </select>
                             </td>`
                         } else if (col_type[j] === 'span') {
-                            tds += `<td style="min-width: 250px"><span>${data[i][j] ? data[i][j] : ''}</span></td>`
+                            tds += `<td style="min-width: 250px"><span>${data[i][j] || ''}</span></td>`
                         } else if (col_type[j] === 'span-money') {
-                            tds += `<td class="text-right" style="min-width: 250px"><span class="mask-money" data-init-money="${data[i][j] ? data[i][j] : 0}"></span></td>`
+                            tds += `<td class="text-right" style="min-width: 250px"><span class="mask-money" data-init-money="${data[i][j] || 0}"></span></td>`
                         } else if (col_type[j] === 'textarea') {
-                            tds += `<td style="min-width: 300px"><textarea class="form-control small">${data[i][j] ? data[i][j] : ''}</textarea></td>`
+                            tds += `<td style="min-width: 300px"><textarea class="form-control small">${data[i][j] || ''}</textarea></td>`
                         } else if (col_type[j] === 'checkbox') {
                             tds += `<td style="min-width: 100px"><input type="checkbox" class="form-check" ${data[i][j] ? 'checked' : ''}></td>`
+                        } else if (col_type[j] === 'list') {
+                            tds += `<td style="min-width: 250px"><textarea class="form-control json-input" data-fixed-key='${JSON.stringify(data_format[j]?.['data_fixed_key'] || "[]")}'>${data[i][j] || "[]"}</textarea></td>`
+                        } else if (col_type[j] === 'json') {
+                            tds += `<td style="min-width: 250px"><textarea class="form-control json-input" data-fixed-key='${JSON.stringify(data_format[j]?.['data_fixed_key'] || "[]")}'>${data[i][j] || "{}"}</textarea></td>`
                         } else {
                             tds += `<td>-</td>`
                         }
@@ -247,36 +253,42 @@ $(document).ready(function () {
             let col_index = parseInt(value_list[i]['col_index'])
             if (col_index >= 0) {
                 if (col_type[col_index] === 'input-text') {
-                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).val() ? row.find(`td:eq(${col_index + 2}) input`).val() : null
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).val() || null
                 } else if (col_type[col_index] === 'input-date') {
-                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).val() ? row.find(`td:eq(${col_index + 2}) input`).val() : null
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).val() || null
                 } else if (col_type[col_index] === 'input-money') {
-                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).attr('value') ? row.find(`td:eq(${col_index + 2}) input`).attr('value') : null
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).attr('value') || null
                 } else if (col_type[col_index] === 'input-money(disabled)') {
-                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).attr('value') ? row.find(`td:eq(${col_index + 2}) input`).attr('value') : null
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).attr('value') || null
                 } else if (col_type[col_index] === 'input-number') {
-                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).val() ? row.find(`td:eq(${col_index + 2}) input`).val() : null
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).val() || null
                 } else if (col_type[col_index] === 'select') {
-                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) select option:eq(0)`).val() ? row.find(`td:eq(${col_index + 2}) select option:eq(0)`).val() : null
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) select option:eq(0)`).val() || null
                 } else if (col_type[col_index] === 'span') {
-                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) span`).text() ? row.find(`td:eq(${col_index + 2}) span`).text() : null
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) span`).text() || null
                 } else if (col_type[col_index] === 'span-money') {
-                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) span`).attr('data-init-money') ? row.find(`td:eq(${col_index + 2}) span`).attr('data-init-money') : null
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) span`).attr('data-init-money') || null
                 } else if (col_type[col_index] === 'textarea') {
-                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) textarea`).val() ? row.find(`td:eq(${col_index + 2}) textarea`).val() : null
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) textarea`).val() || null
                 } else if (col_type[col_index] === 'checkbox') {
                     data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) input`).prop('checked')
+                } else if (col_type[col_index] === 'list') {
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) textarea`).val() ? JSON.parse(row.find(`td:eq(${col_index + 2}) textarea`).val()) : []
+                } else if (col_type[col_index] === 'json') {
+                    data_combined[key][value_list[i]['col_key']] = row.find(`td:eq(${col_index + 2}) textarea`).val() ? JSON.parse(row.find(`td:eq(${col_index + 2}) textarea`).val()) : {}
                 }
             } else {
                 if (col_index === -1) {
-                    data_combined[key][value_list[i]['col_key']] = value_list[i]['data_default'] ? value_list[i]['data_default'] : null
+                    data_combined[key][value_list[i]['col_key']] = value_list[i]['data_default'] || null
                 } else if (col_index === -2) {
                     if (value_list[i]['get_value'] && !value_list[i]['get_text'] && value_list[i]['get_attr'] === '') {
-                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).val() ? $(value_list[i]['ele_id']).val() : null
-                    } else if (!value_list[i]['get_value'] && value_list[i]['get_text'] && value_list[i]['get_attr'] === '') {
-                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).text() ? $(value_list[i]['ele_id']).text() : null
-                    } else if (!value_list[i]['get_value'] && !value_list[i]['get_text'] && value_list[i]['get_attr'] !== '') {
-                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).attr(value_list[i]['get_attr']) ? $(value_list[i]['ele_id']).attr(value_list[i]['get_attr']) : null
+                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).val() || null
+                    }
+                    else if (!value_list[i]['get_value'] && value_list[i]['get_text'] && value_list[i]['get_attr'] === '') {
+                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).text() || null
+                    }
+                    else if (!value_list[i]['get_value'] && !value_list[i]['get_text'] && value_list[i]['get_attr'] !== '') {
+                        data_combined[key][value_list[i]['col_key']] = $(value_list[i]['ele_id']).attr(value_list[i]['get_attr']) || null
                     }
                 }
             }
@@ -496,7 +508,8 @@ $(document).ready(function () {
                     rows,
                     $load_from_index_ele.val(),
                     $load_to_index_ele.val(),
-                    $load_db_form_select_table.attr('data-col-type').split(',')
+                    $load_db_form_select_table.attr('data-col-type').split(','),
+                    $load_db_form_select_table.attr('data-format') ? JSON.parse($load_db_form_select_table.attr('data-format'))?.['value_list'] : [],
                 );
 
                 // Sau khi load xong, thanh progress đạt 100%

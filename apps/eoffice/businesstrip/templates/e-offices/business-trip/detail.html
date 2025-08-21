@@ -31,6 +31,13 @@
         <input type="hidden" name="taxes">
         <input type="hidden" name="total_amount">
         <div class="row">
+            <!-- Print html -->
+            <div class="col-xs-12 mb-2 text-right">
+                <button type="button" class="btn btn-outline-secondary" id="print-document" data-bs-toggle="tooltip"
+                        data-bs-placement="bottom" title="{% trans 'Print' %}" hidden>
+                    <i class="fas fa-print"></i></button>
+            </div>
+            <!-- END Print html -->
             <div class="col-xs-12 col-md-6 form-group">
                 <label for="titleInput" class="form-label required">{% trans 'Title' %}</label>
                 <input type="text" name="title" id="titleInput" class="form-control" readonly>
@@ -203,6 +210,9 @@
         </div>
     </form>
 {% endblock %}
+{% block modalData %}
+    {% include 'printer/print.html' %}
+{% endblock %}
 {% block dataHiddenGroup %}
     {{ data.system_status|json_script:'sys_stt' }}
     <div class="delete_btn">
@@ -214,6 +224,15 @@
     </div>
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'printer/print.js' %}"></script>
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+
     <script src="{% static 'assets/e-offices/business-trip/js/detail.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print-document').on('click', function () {
+                PrintTinymceControl.open_modal();
+            });
+        });
+    </script>
 {% endblock %}

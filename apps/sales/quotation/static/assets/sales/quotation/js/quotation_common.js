@@ -7957,6 +7957,12 @@ class QuotationSubmitHandle {
             _form.dataForm['is_recurring'] = true;
             _form.dataForm['recurrence_task_id'] = urlParams?.['recurrence_task_id'];
         }
+
+        // date created
+        let $dateCreatedEle = $('#quotation-create-date-created');
+        if ($dateCreatedEle.val()) {
+            _form.dataForm['date_created'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD hh:mm:ss', $dateCreatedEle.val());
+        }
         return _form.dataForm;
     };
 }

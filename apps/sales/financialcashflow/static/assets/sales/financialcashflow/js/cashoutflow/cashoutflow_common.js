@@ -634,9 +634,11 @@ class COFHandler {
             frm.dataForm['cash_out_ap_invoice_data'] = cash_out_ap_invoice_data
         }
         else if (pageElements.$cof_type.val() === '1') {
+            frm.dataForm['customer_id'] = pageElements.$customer_name.attr('data-id') || null
             frm.dataForm['payment_to_customer_value'] = pageElements.$payment_to_customer.attr('value')
         }
         else if (pageElements.$cof_type.val() === '2') {
+            frm.dataForm['employee_id'] = pageElements.$employee_name.attr('data-id') || null
             frm.dataForm['advance_for_employee_value'] = pageElements.$advance_for_employee_value.attr('value')
         }
         else if (pageElements.$cof_type.val() === '3') {

@@ -713,7 +713,7 @@ class COFHandler {
                     }
                     if (pageElements.$cof_type.val() === '2') {
                         let employee_data = data?.['employee_data'] || {}
-                        pageElements.$employee_name.val(employee_data?.['full_name'] || '' + '(' + employee_data?.['group']?.['title'] || '' + ')')
+                        pageElements.$employee_name.val(`${employee_data?.['full_name']} - ${employee_data?.['group']?.['title'] || ''}`)
                         pageElements.$employee_name.attr('data-id', employee_data?.['id'] || '')
                         pageElements.$advance_for_employee_value.attr('value', data?.['advance_for_employee_value'] ? data?.['advance_for_employee_value'] : 0)
                     }
@@ -819,7 +819,7 @@ class COFEventHandler {
                 if ($(this).prop('checked')) {
                     selected = $(this).attr('data-employee') ? JSON.parse($(this).attr('data-employee')) : null
                     pageElements.$employee_name.attr('data-id', selected?.['id'] || '')
-                    pageElements.$employee_name.val(`${(selected?.['full_name'] || '')} (${((selected?.['group'] || {})?.['title'] || '')})`)
+                    pageElements.$employee_name.val(`${(selected?.['full_name'] || '')} - ${((selected?.['group'] || {})?.['title'] || '')})`)
                     pageElements.$employee_select_modal.modal('hide')
                 }
             })

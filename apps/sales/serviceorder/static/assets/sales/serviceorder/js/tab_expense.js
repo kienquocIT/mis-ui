@@ -105,6 +105,7 @@ class TabExpenseFunction {
                 {
                     targets: 8,
                     width: "3%",
+                    className: 'text-right',
                     render: () => {
                         return `
                           <button type="button" 

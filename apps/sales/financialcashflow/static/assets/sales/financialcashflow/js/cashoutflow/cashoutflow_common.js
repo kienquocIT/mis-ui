@@ -934,6 +934,10 @@ class COFEventHandler {
             // calculate total payment value modal
             COFPageFunction.CalculateModalDetailPaymentSum()
         })
+         // thay đổi giá trị tạm ứng cho KH
+        pageElements.$payment_to_customer.on('change', function () {
+            COFPageFunction.RecalculateTotalPayment()
+        })
         // thay đổi giá trị tạm ứng cho nhân viên
         pageElements.$advance_for_employee_value.on('change', function () {
             COFPageFunction.RecalculateTotalPayment()

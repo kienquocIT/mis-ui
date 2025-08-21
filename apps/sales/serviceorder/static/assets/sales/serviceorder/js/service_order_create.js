@@ -9,10 +9,14 @@ $(document).ready(function () {
     ServiceOrder.initWorkOrderDataTable()
     ServiceOrder.initPaymentDataTable()
     ServiceOrder.initModalContextTracking()
+    ServiceOrder.initAttachment()
     // ============ tab shipment =============
     TabShipmentFunction.initShipmentDataTable()
     TabShipmentEventHandler.InitPageEvent()
-    // ========== end tab shipment ===========
+
+    // ========== tab expense ===========
+    TabExpenseFunction.initExpenseTable()
+    TabExpenseEventHandler.InitPageEvent()
 
     ServiceOrder.handleSaveProduct()
 

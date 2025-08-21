@@ -108,6 +108,13 @@ const ServiceOrder = (function($) {
         })
     }
 
+    function initAttachment() {
+        new $x.cls.file($('#attachment')).init({
+            name: 'attachment',
+            enable_edit: true,
+        });
+    }
+
     function transformProductData(rowData, productId) {
         const uniqueStr = Math.random().toString(36).slice(2)
         const baseData = {
@@ -957,83 +964,6 @@ const ServiceOrder = (function($) {
         })
     }
 
-    function initShipmentDataTable(data = []) {
-        const $tb = pageElement.shipment.$table;
-        if ($.fn.DataTable.isDataTable($tb)) {
-            $tb.DataTable().destroy();
-        }
-
-        $tb.DataTableDefault({
-            data: data,
-            rowIdx: true,
-            scrollX: true,
-            scrollY: '70vh',
-            scrollCollapse: true,
-            reloadCurrency: true,
-            columns: [
-                {
-                    className: "w-3",
-                    render: () => {
-                        return "";
-                    }
-                },
-                {
-                    className: 'w-20',
-                    render: (data, type, row) => {
-                        return row.containerName || '';
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return row.containerType || '';
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return row.containerRefNumber || '';
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return row.containerWeight || '';
-                    }
-                },
-                {
-                    className: 'w-15',
-                    render: (data, type, row) => {
-                        return row.containerDimension || '';
-                    }
-                },
-                {
-                    className: 'w-14',
-                    render: (data, type, row) => {
-                        return row.containerNote || '';
-                    }
-                },
-                {
-                    className: 'w-3',
-                    render: () => {
-                        return `
-                            <div class="d-flex justify-content-center">
-                                <button 
-                                    type="button" 
-                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover shipment-del-row"
-                                    data-bs-toggle="tooltip" 
-                                    data-bs-placement="bottom"
-                                >
-                                    <span class="icon"><i class="far fa-trash-alt"></i></span>
-                                </button>
-                            </div>
-                        `;
-                    }
-                }
-            ]
-        })
-    }
-
     function initPaymentDataTable(data = [{}]) {
         if ($.fn.DataTable.isDataTable(pageElement.payment.$table)) {
             pageElement.payment.$table.DataTable().destroy()
@@ -1642,56 +1572,8 @@ const ServiceOrder = (function($) {
         })
     }
 
-    // process for shipment events
-    function handleSaveContainer() {
-        pageElement.modalData.$btnSaveContainer.on('click', function () {
-            const newContainer = {
-                containerName: pageElement.modalData.$containerName.val() || '',
-                containerType: pageElement.modalData.$containerType.val() || '',
-                containerRefNumber: pageElement.modalData.$containerRef.val() || '',
-                containerWeight: pageElement.modalData.$containerWeight.val() || '',
-                containerDimension: pageElement.modalData.$containerDimension.val() || '',
-                containerNote: pageElement.modalData.$containerNote.val() || ''
-            };
-
-            const shipmentTable = pageElement.shipment.$table.DataTable();
-            const currentData = shipmentTable.data().toArray();
-
-            // merge old data and new data
-            const updatedData = [...currentData, newContainer];
-
-            // update table
-            shipmentTable.clear().rows.add(updatedData).draw(false);
-
-            // remove data after saving
-            pageElement.modalData.$containerName.val('');
-            pageElement.modalData.$containerType.val('');
-            pageElement.modalData.$containerRef.val('');
-            pageElement.modalData.$containerWeight.val('');
-            pageElement.modalData.$containerDimension.val('');
-            pageElement.modalData.$containerNote.val('');
-
-            // close modal if needed
-        });
-    }
-    // function handleSaveContainer () {
-    //     pageElement.modalData.$btnSaveContainer.on('click', function() {
-    //         const containerEle = [];
-    //         containerEle.push({
-    //             containerName: pageElement.modalData.$containerName.val() || '',
-    //             containerType: pageElement.modalData.$containerType.val() || '',
-    //             containerRefNumber: pageElement.modalData.$containerRef.val() || '',
-    //             containerWeight: pageElement.modalData.$containerWeight.val() || '',
-    //             containerDimension: pageElement.modalData.$containerDimension.val() || '',
-    //             containerNote: pageElement.modalData.$containerNote.val() || ''
-    //         });
-    //         // pageElement.shipment.$table.clear().rows.add(containerEle).draw();
-    //     })
-    // }
 
     return {
-        pageElement,
-        pageVariable,
         initDateTime,
         initPageSelect,
         loadCurrencyRateData,
@@ -1701,6 +1583,7 @@ const ServiceOrder = (function($) {
         initWorkOrderDataTable,
         initModalContextTracking,
         initPaymentDataTable,
+        initAttachment,
         handleSaveProduct,
         handleChangeServiceQuantity,
         handleChangeServiceDescription,
@@ -1717,6 +1600,6 @@ const ServiceOrder = (function($) {
         handleClickOpenServiceDelivery,
         handleSaveProductContribution,
         handleCheckDelivery,
-        handleUncheckContribution
+        handleUncheckContribution,
     }
 })(jQuery)

@@ -117,8 +117,8 @@ class AttendanceDeviceHandle {
                     if (cusTitle) {
                         $(cusTitle).html(`${AttendanceDeviceHandle.$transEle.attr('data-modal-add')}`);
                     }
-                    AttendanceDeviceHandle.$modal.attr('data-method', 'post');
-                    AttendanceDeviceHandle.$modal.attr('data-id', '');
+                    AttendanceDeviceHandle.$form.attr('data-method', 'post');
+                    AttendanceDeviceHandle.$form.attr('data-id', '');
                 });
             }
         }
@@ -151,8 +151,8 @@ $(document).ready(function () {
             if (cusTitle) {
                 $(cusTitle).html(`${AttendanceDeviceHandle.$transEle.attr('data-modal-update')}`);
             }
-            AttendanceDeviceHandle.$modal.attr('data-method', 'put');
-            AttendanceDeviceHandle.$modal.attr('data-id', dataRow?.['id']);
+            AttendanceDeviceHandle.$form.attr('data-method', 'put');
+            AttendanceDeviceHandle.$form.attr('data-id', dataRow?.['id']);
             $('#title').val(dataRow?.['title']);
             $('#device_ip').val(dataRow?.['device_ip']);
             $('#username').val(dataRow?.['username']);
@@ -186,12 +186,13 @@ $(document).ready(function () {
         });
 
     function submitHandlerFunc() {
-        let url = AttendanceDeviceHandle.$urlEle.attr('data-api-attendance-device-list');
-        let method = AttendanceDeviceHandle.$modal.attr('data-method').toLowerCase();
-        let id = AttendanceDeviceHandle.$modal.attr('data-id');
+        let url = AttendanceDeviceHandle.$form.attr('data-url-post');
+        let method = AttendanceDeviceHandle.$form.attr('data-method').toLowerCase();
+        let id = AttendanceDeviceHandle.$form.attr('data-id');
         let type = 'CREATE';
         if (method === "put" && id) {
-            url = AttendanceDeviceHandle.$urlEle.attr('data-api-detail-attendance-device').format_url_with_uuid(id);
+            url = AttendanceDeviceHandle.$form.attr('data-url-put').format_url_with_uuid(id);
+            type = 'UPDATE';
         }
 
         WindowControl.showLoading({'loadingTitleAction': type});

@@ -8,36 +8,6 @@
         .detail-row {
             background-color: #f6f6f6 !important;
         }
-        .chat-popup {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            max-width: 50vw;
-            border-radius: 0.375rem;
-            overflow: hidden;
-        }
-        .chat-header {
-            padding: 10px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-        .chat-content {
-            display: none; /* Ẩn nội dung chat ban đầu */
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            max-height: 400px;
-            overflow: hidden;
-        }
-        .close-chat {
-            font-size: 20px;
-            cursor: pointer;
-        }
-        .chat-popup.active .chat-content {
-            display: block;
-        }
     </style>
 {% endblock %}
 {% block pageAction %}{% endblock %}
@@ -83,10 +53,11 @@
             data-url-qr-code-sn-info="{% url 'GetQRCodeSerialInfoAPI' %}"
             data-url-qr-code-lot-info="{% url 'GetQRCodeLotInfoAPI' %}"
             data-url-company-config-detail="{% url 'CompanyConfigDetailAPI' %}"
-            data-url-ask="{% url 'ReportInventoryAskAPI' %}"
     ></script>
 
-    {% include 'sales/inventory_report/common_inventory_report/filter.html' %}
+    <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilter">
+        <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
+    </button>
 
     <div class="row">
         <div class="col-12">
@@ -172,10 +143,61 @@
             </table>
         </div>
     </div>
-
-{#    {% include 'sales/inventory_report/common_inventory_report/chat.html' %}#}
 {% endblock %}
 {% block modalData %}
+    <div class="offcanvas offcanvas-end w-40" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasFilter">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">{% trans 'Filter' %}</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            {% include 'extends/periods_group.html' with period_req=True month_req=True date_req=True %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label" for="warehouses_select">{% trans 'Warehouse' %}</label>
+                        <select class="form-select select2 select-multiple" id="warehouses_select" multiple
+                                data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-label" for="items_select">{% trans 'Product' %}</label>
+                        <select class="form-select select2 select-multiple" id="items_select" multiple
+                                data-url="{% url 'ProductListAPI' %}" data-method="GET"></select>
+                    </div>
+                </div>
+                <div class="project-filter col-12">
+                    <div class="form-group">
+                        <label for="project-select" class="form-label">{% trans 'Project' %}</label>
+                        <select class="form-select select2" id="project-select"
+                                data-url="{% url 'SaleOrderListAPI' %}"
+                                data-method="GET"
+                        ></select>
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <div class="btn-group dropup w-100" role="group">
+                        <button type="button" class="btn btn-social btn-social-facebook btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% trans 'Apply' %}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btn-action">
+                            <a class="dropdown-item" id="btn-view" href="#"><i class="far fa-window-maximize"></i> <span>{% trans 'General' %}</span></a>
+                            <a class="dropdown-item" id="btn-view-detail" href="#"><i class="fas fa-list-ul"></i> <span>{% trans 'Detail' %}</span></a>
+                        </div>
+                    </div>
+                    <div hidden class="btn-group dropend w-100" role="group">
+                        <button id="btn-action" type="button" class="btn btn-gradient-dark btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% trans 'Action' %}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btn-action">
+                            <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="offcanvas offcanvas-end w-40" data-bs-scroll="true" tabindex="-1" id="offcanvas-available-product-list">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="view-warehouse-title"></h5>
@@ -228,7 +250,7 @@
                                 <thead>
                                 <tr>
                                     <th></th>
-                                    <th>{% trans 'Vendor serial number' %}</th>
+                                    <th>{% trans 'Vendor serial no.' %}</th>
                                     <th>{% trans 'Serial number' %}</th>
                                     <th></th>
                                 </tr>

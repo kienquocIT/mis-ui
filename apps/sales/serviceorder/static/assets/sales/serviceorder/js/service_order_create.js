@@ -30,15 +30,24 @@ $(document).ready(function () {
         ServiceOrder.handleSelectWorkOrderCostTax()
         ServiceOrder.handleSelectWorkOrderCurrency()
         ServiceOrder.handleAddWorkOrderNonItem()
+        ServiceOrder.handleClickOpenServiceDelivery()
+        ServiceOrder.handleCheckDelivery()
     }
 
     function handleModalWorkOrderCostEvent(){
         ServiceOrder.handleAddWorkOrderCostRow()
         ServiceOrder.handleChangeWorkOrderCostQuantityAndUnitCost()
         ServiceOrder.handleSaveWorkOrderCost()
+        ServiceOrder.handleChangeWorkOrderCostTitleAndDescription()
+    }
+
+    function handleModalWorkOrderContributionEvent(){
+        ServiceOrder.handleSaveProductContribution()
+        ServiceOrder.handleUncheckContribution()
     }
 
     handleServiceDetailTabEvent()
     handleWorkOrderDetailTabEvent()
     handleModalWorkOrderCostEvent()
+    handleModalWorkOrderContributionEvent()
 })

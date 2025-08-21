@@ -10,11 +10,11 @@
 {% block pageContent %}
 
     <form
-            data-url="{% url 'AttendanceDeviceListAPI' %}"
+            data-url-post="{% url 'AttendanceDeviceListAPI' %}"
+            data-url-put="{% url 'AttendanceDeviceDetailAPI' 1 %}"
             data-url-redirect="{% url 'AttendanceDeviceList' %}"
-            data-method="POST"
+            data-id=""
             id="frm_attendance_device"
-            method="post"
     >
         {% csrf_token %}
 
@@ -43,7 +43,6 @@
                     class="modal fade" id="mainModal" tabindex="-1"
                     role="dialog" aria-labelledby="mainModal"
                     aria-hidden="true"
-                    data-method="post" data-id=""
             >
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">

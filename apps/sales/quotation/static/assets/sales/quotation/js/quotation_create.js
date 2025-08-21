@@ -13,6 +13,10 @@ $(function () {
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
         FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, [], {'account_name_id': QuotationLoadDataHandle.customerSelectEle.val()});
         FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
+        // init date picker
+        $('.date-picker').each(function () {
+            DateTimeControl.initFlatPickrDate(this);
+        });
         $('#quotation-create-date-created').val(DateTimeControl.getCurrentDate("DMY", "/"));
         // init dataTable
         QuotationDataTableHandle.dataTableSelectProduct();
@@ -31,10 +35,6 @@ $(function () {
         }
         // init config
         QuotationLoadDataHandle.loadInitQuotationConfig(QuotationLoadDataHandle.$form.attr('data-method'));
-        // date picker
-        $('.date-picker').each(function () {
-            DateTimeControl.initDatePicker(this);
-        });
         // attachment
         if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'post') {
             new $x.cls.file($('#attachment')).init({
@@ -960,6 +960,7 @@ $(function () {
                 'currency_exchange_id',
                 'currency_exchange_data',
                 'currency_exchange_rate',
+                'date_created',
             ]
             if (is_sale_order === true) {
                 submitFields = [
@@ -1019,6 +1020,7 @@ $(function () {
                     'is_recurring',
                     'recurrence_task_id',
                     'attachment',
+                    'date_created',
                 ]
             }
             if (_form.dataForm) {

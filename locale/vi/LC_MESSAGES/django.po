@@ -7218,7 +7218,7 @@ msgstr "Serial của NCC"
 
 #
 msgid "Serial no."
-msgstr "Serial"
+msgstr "Số serial"
 
 #
 msgid "Mfr date"
@@ -7479,14 +7479,6 @@ msgstr "SL của lô"
 #
 msgid "Manufacture date"
 msgstr "Ngày sản xuất"
-
-#
-msgid "Input serial number"
-msgstr "Nhập serial"
-
-#
-msgid "Input LOT"
-msgstr "Nhập LOT"
 
 #
 msgid "Purchase Request Config"
@@ -12194,3 +12186,7 @@ msgstr "Sử dụng thiết bị này"
 #
 msgid "Sync attendance"
 msgstr "Đồng bộ dữ liệu chấm công"
+
+#
+msgid "Use excel"
+msgstr "Dùng file excel"

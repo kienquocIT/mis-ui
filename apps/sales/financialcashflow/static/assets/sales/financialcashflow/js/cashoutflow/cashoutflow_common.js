@@ -753,25 +753,25 @@ class COFEventHandler {
                 pageElements.$supplier_space.prop('hidden', false)
                 pageElements.$customer_space.prop('hidden', true)
                 pageElements.$employee_space.prop('hidden', true)
-                pageElements.$account_space.prop('hidden', true)
+                // pageElements.$account_space.prop('hidden', true)
             }
             else if (Number($(this).val()) === 1) {
                 pageElements.$supplier_space.prop('hidden', true)
                 pageElements.$customer_space.prop('hidden', false)
                 pageElements.$employee_space.prop('hidden', true)
-                pageElements.$account_space.prop('hidden', true)
+                // pageElements.$account_space.prop('hidden', true)
             }
             else if (Number($(this).val()) === 2) {
                 pageElements.$supplier_space.prop('hidden', true)
                 pageElements.$customer_space.prop('hidden', true)
                 pageElements.$employee_space.prop('hidden', false)
-                pageElements.$account_space.prop('hidden', true)
+                // pageElements.$account_space.prop('hidden', true)
             }
             else if (Number($(this).val()) === 3) {
                 pageElements.$supplier_space.prop('hidden', true)
                 pageElements.$customer_space.prop('hidden', true)
                 pageElements.$employee_space.prop('hidden', true)
-                pageElements.$account_space.prop('hidden', false)
+                // pageElements.$account_space.prop('hidden', false)
             }
         })
         pageElements.$accept_select_supplier_btn.on('click', function () {

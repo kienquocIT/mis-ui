@@ -121,7 +121,7 @@
                                 <label class="form-label" for="weight_input">{% trans 'Weight' %}</label>
                                 <div class="input-group">
                                     <input type="number" class="form-control text-end" id="container_weight"
-                                           name="weight" placeholder="0" step="0.1">
+                                           name="weight" placeholder="0" step="0.1" min="0">
                                     <span class="input-group-text">Kg</span>
                                 </div>
                             </div>
@@ -129,7 +129,7 @@
                                 <label class="form-label" for="dimension_input">{% trans 'Dimension' %}</label>
                                 <div class="input-group">
                                     <input type="number" class="form-control text-end" id="container_dimension"
-                                           name="dimension" placeholder="0" step="0.5">
+                                           name="dimension" placeholder="0" step="0.5" min="0">
                                     <span class="input-group-text">M³</span>
                                 </div>
                             </div>
@@ -210,7 +210,7 @@
                                 <label class="form-label" for="package_weight">{% trans 'Weight' %}</label>
                                 <div class="input-group">
                                     <input type="number" class="form-control text-end" id="package_weight"
-                                           name="package_weight" placeholder="0">
+                                           name="package_weight" placeholder="0" step="0.1" min="0">
                                     <span class="input-group-text">Kg</span>
                                 </div>
                             </div>
@@ -218,7 +218,7 @@
                                 <label class="form-label" for="package_dimension">{% trans 'Dimension' %}</label>
                                 <div class="input-group">
                                     <input type="number" class="form-control text-end" id="package_dimension"
-                                           name="package_dimension" placeholder="0">
+                                           name="package_dimension" placeholder="0" step="1" min="0">
                                     <span class="input-group-text">M³</span>
                                 </div>
                             </div>

@@ -132,11 +132,14 @@ class TabShipmentFunction {
                 {
                     targets: 7,
                     width: '3%',
-                    render: () => {
-                        return `<button type="button" class="btn btn-light btn-sm rounded-circle" 
-                                data-bs-toggle="tooltip" title="Delete">
-                                    <i class="far fa-trash-alt"></i>
-                                </button>`
+                    render: (data, type, row) => {
+                        return row.isContainer ? `<button type="button" 
+                                                class="btn btn-light btn-sm rounded-circle btn-delete-container">
+                                                <i class="far fa-trash-alt"></i>
+                                         </button>` : `<button type="button" 
+                                                class="btn btn-light btn-sm rounded-circle btn-delete-package">
+                                                <i class="far fa-trash-alt"></i>
+                                        </button>`;
                     }
                 },
             ]
@@ -153,6 +156,7 @@ class TabShipmentEventHandler {
         // save container event
         pageElements.$btnSaveContainer.on('click', function () {
             const newContainer = {
+                isContainer: true,
                 containerName: pageElements.$containerName.val() || '',
                 containerType: pageElements.$containerType.val() || '',
                 containerRefNumber: pageElements.$containerRef.val() || '',
@@ -204,6 +208,7 @@ class TabShipmentEventHandler {
             const selectedContainerRef = CONTAINER_REF?.[pageElements.$packageContainer.val()] || '';
 
             const newPackage = {
+                isContainer: false,
                 packageName: pageElements.$packageName.val() || '',
                 packageType: pageElements.$packageType.val() || '',
                 packageRefNumber: pageElements.$packageRef.val() || '',
@@ -222,7 +227,9 @@ class TabShipmentEventHandler {
             });
 
             // update DataTable
-            let ctnRowEle = pageElements.$tableShipment.find(`tbody tr a[id="ctn-idx-${selectedContainerRef}"]`).closest('tr')  // find root row
+            let ctnRowEle = pageElements.$tableShipment
+                .find(`tbody tr a[id="ctn-idx-${selectedContainerRef}"]`)
+                .closest('tr')  // find root row
             let index = pageElements.$tableShipment.DataTable().row(ctnRowEle).index() + 1;
             UsualLoadPageFunction.AddTableRowAtIndex(
                 pageElements.$tableShipment,
@@ -240,6 +247,88 @@ class TabShipmentEventHandler {
             pageElements.$packageNote.val('');
         });
 
+        // delete package row event
+        pageElements.$tableShipment.on('click', '.btn-delete-package', function () {
+            Swal.fire({
+                html: `
+                    <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
+                    <h5 class="text-danger">Delete Package ?</h5>
+                    <p>Deleting package row</p>`,
+                customClass: {
+                    confirmButton: 'btn btn-outline-secondary text-danger',
+                    cancelButton: 'btn btn-outline-secondary text-gray',
+                    container: 'swal2-has-bg',
+                    actions: 'w-100'
+                },
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: $.fn.gettext('Yes'),
+                cancelButtonText: $.fn.gettext('Cancel'),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    UsualLoadPageFunction.DeleteTableRow(
+                        pageElements.$tableShipment,
+                        parseInt($(this).closest('tr').find('td:first-child').text())
+                    );
+                }
+            })
+        });
+
+        // delete container row event
+        pageElements.$tableShipment.on('click', '.btn-delete-container', function () {
+            let currentRow = $(this).closest('tr');   // Get container reference number from current row
+            let containerRefNumber = currentRow.find('td:nth-child(4)').text().trim(); // Column contains ref number
+
+            Swal.fire({
+                html: `
+                    <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
+                    <h5 class="text-danger">Delete Container ?</h5>
+                    <p>Deleting container and all its packages</p>`,
+                customClass: {
+                    confirmButton: 'btn btn-outline-secondary text-danger',
+                    cancelButton: 'btn btn-outline-secondary text-gray',
+                    container: 'swal2-has-bg',
+                    actions: 'w-100'
+                },
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: $.fn.gettext('Yes'),
+                cancelButtonText: $.fn.gettext('Cancel'),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    // Find and delete all package rows of this container in DataTable
+                    let packageRows = [];
+                    pageElements.$tableShipment.find(`tbody span[class="ctn-idx-${containerRefNumber}"]`).each(function () {
+                        let packageRow = $(this).closest('tr');
+                        let rowIndex = parseInt(packageRow.find('td:first-child').text());
+                        packageRows.push(rowIndex);
+                    });
+
+                    // Delete all package rows
+                    packageRows.sort((a, b) => b - a).forEach(rowIndex => {
+                        UsualLoadPageFunction.DeleteTableRow(
+                            pageElements.$tableShipment,
+                            rowIndex
+                        );
+                    });
+
+                    // Delete container row
+                    UsualLoadPageFunction.DeleteTableRow(
+                        pageElements.$tableShipment,
+                        parseInt(currentRow.find('td:first-child').text())
+                    );
+
+                    // Update data in Shipment table
+                    pageVariables.shipmentData = pageVariables.shipmentData.filter(
+                        container => container.containerRefNumber !== containerRefNumber
+                    );
+                }
+            });
+        });
+
+        // show or hidden all packages
         $(document).on("click", '.show-child', function () {
             let containerID = $(this).attr('id');
             pageElements.$tableShipment.find(`tbody span[class="${containerID}"]`).each(function (index, ele) {
@@ -247,7 +336,7 @@ class TabShipmentEventHandler {
                 let is_show = parent_row.prop("hidden");
                 parent_row.prop("hidden", !is_show);
             })
-        })
+        });
     }
 }
 

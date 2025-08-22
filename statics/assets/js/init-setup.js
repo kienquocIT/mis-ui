@@ -5496,7 +5496,7 @@ class DTBControl {
     static customExportExel() {
         return [{
             extend: 'excelHtml5',
-            text: 'Export Excel',
+            text: `<i class="fa-solid fa-file-excel mr-1"></i> ${$.fn.transEle.attr('data-export-exel')}`,
             className: 'btn btn-outline-primary',
             exportOptions: {
                 columns: ':visible',   // cột nào (all, visible, index)

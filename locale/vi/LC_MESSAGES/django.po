@@ -12194,3 +12194,7 @@ msgstr "Sử dụng thiết bị này"
 #
 msgid "Sync attendance"
 msgstr "Đồng bộ dữ liệu chấm công"
+
+#
+msgid "Export exel"
+msgstr "Xuất exel"

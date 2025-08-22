@@ -2823,7 +2823,6 @@ class QuotationDataTableHandle {
         QuotationDataTableHandle.$tableProduct.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
-            // dom: 'Bfrtip',
             buttons: DTBControl.customExportExel(),
             ordering: false,
             paging: false,

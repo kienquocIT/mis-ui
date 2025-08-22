@@ -528,6 +528,38 @@ class UsualLoadPageFunction {
     }
 
     /**
+     * Load ô ExpenseItem (expected-data-url = ExpenseItemListAPI)
+     * @param {HTMLElement|jQuery} element - element
+     * @param {Object} data - data json
+     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Object} data_params - data_params
+     * @param {string} data_url - data_url
+     * @returns {void}
+     */
+    static LoadExpenseItem({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+        if (!element) {
+            console.error("element is required.");
+            return;
+        }
+        data_url = data_url || element.attr('data-url')
+        let queryString = '';
+        if (typeof data_params === 'object' && data_params !== null && Object.keys(data_params).length > 0) {
+            queryString = '?' + new URLSearchParams(data_params).toString();
+        }
+        element.initSelect2({
+            allow_clear: allow_clear,
+            ajax: {
+                url: data_url + queryString,
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'expense_item_list',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+
+    /**
      * Load ô ProductType (expected-data-url = ProductTypeListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
@@ -784,7 +816,7 @@ class UsualLoadPageFunction {
      */
     static AddTableRowAtIndex(table, data={}, index) {
         const dt = $(table).DataTable();
-        if (index && index < dt.rows().count()) {
+        if (index && index <= dt.rows().count()) {
             const currentData = dt.rows().data().toArray();
             currentData.splice(index, 0, data);
             dt.clear().rows.add(currentData).draw(false);

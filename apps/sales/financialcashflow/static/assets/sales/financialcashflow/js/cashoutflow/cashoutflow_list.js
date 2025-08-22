@@ -36,16 +36,10 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-25',
+                        className: 'ellipsis-cell-lg w-45',
                         render: (data, type, row) => {
                             const link = dtb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
-                        }
-                    },
-                    {
-                        className: 'ellipsis-cell-lg w-20',
-                        render: (data, type, row) => {
-                            return `<span>${row?.['supplier_data']?.['name']}</span>`
                         }
                     },
                     {

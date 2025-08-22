@@ -15,7 +15,6 @@ class CIFPageElements {
         this.$detail_payment_value_modal = $('#detail-payment-value-modal')
         this.$detail_payment_table = $('#detail-payment-table')
         this.$btn_modal_payment_method = $('#btn-modal-payment-method')
-        this.$icon_done_payment_method = $('#icon-done-payment-method')
         this.$payment_method_modal = $('#payment-method-modal')
         this.$total_payment_modal = $('#total_payment_modal')
         this.$save_changes_payment_method = $('#save-changes-payment-method')
@@ -481,7 +480,6 @@ class CIFPageFunction {
         pageElements.$total_payment_modal.attr('value', pageElements.$total_payment.attr('value'))
         pageElements.$btn_modal_payment_method.prop('disabled', total_payment === 0)
         pageElements.$btn_modal_payment_method.removeClass('btn-success').addClass('btn-danger')
-        pageElements.$icon_done_payment_method.prop('hidden', true)
         $.fn.initMaskMoney2()
     }
     static CalculateARInvoiceRow() {
@@ -624,7 +622,6 @@ class CIFHandler {
                     pageElements.$btn_modal_payment_method.prop('disabled', false)
                     pageElements.$btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
                     pageElements.$btn_modal_payment_method.removeClass('btn-danger').addClass('btn-success')
-                    pageElements.$icon_done_payment_method.prop('hidden', false)
                     pageElements.$total_payment_modal.attr('value', data?.['total_value'])
                     pageElements.$cash_value.attr('value', data?.['cash_value'])
                     pageElements.$bank_value.attr('value', data?.['bank_value'])
@@ -690,13 +687,11 @@ class CIFEventHandler {
                     }
                     pageElements.$btn_modal_payment_method.attr('data-payment-method', JSON.stringify(payment_method_data))
                     pageElements.$btn_modal_payment_method.removeClass('btn-danger').addClass('btn-success')
-                    pageElements.$icon_done_payment_method.prop('hidden', false)
                     pageElements.$payment_method_modal.modal('hide')
                 }
             }
             else {
                 pageElements.$btn_modal_payment_method.removeClass('btn-success').addClass('btn-danger')
-                pageElements.$icon_done_payment_method.prop('hidden', true)
                 $.fn.notifyB({description: `Error value or missing information`}, 'failure');
             }
         })

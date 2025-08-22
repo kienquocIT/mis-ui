@@ -7218,7 +7218,7 @@ msgstr "Serial của NCC"
 
 #
 msgid "Serial no."
-msgstr "Serial"
+msgstr "Số serial"
 
 #
 msgid "Mfr date"
@@ -7479,14 +7479,6 @@ msgstr "SL của lô"
 #
 msgid "Manufacture date"
 msgstr "Ngày sản xuất"
-
-#
-msgid "Input serial number"
-msgstr "Nhập serial"
-
-#
-msgid "Input LOT"
-msgstr "Nhập LOT"
 
 #
 msgid "Purchase Request Config"
@@ -8307,6 +8299,10 @@ msgstr "Vai trò Nhà cung cấp"
 #
 msgid "Bank Account Information"
 msgstr "Thông tin tài khoản ngân hàng"
+
+#
+msgid "or enter other banking information here"
+msgstr "hoặc nhập thông tin chuyển khoản khác tại đây"
 
 #
 msgid "Credit Card Account Information"
@@ -11677,7 +11673,7 @@ msgstr "Nếu đã phát sinh giao dịch (ví dụ: nhập kho, giao hàng, v.v
 
 #
 msgid "Cash outflow type"
-msgstr "Loại phiếu thu"
+msgstr "Loại phiếu chi"
 
 #
 msgid "Lease asset list"
@@ -12194,6 +12190,10 @@ msgstr "Sử dụng thiết bị này"
 #
 msgid "Sync attendance"
 msgstr "Đồng bộ dữ liệu chấm công"
+
+#
+msgid "Use excel"
+msgstr "Dùng file excel"
 
 #
 msgid "Export exel"

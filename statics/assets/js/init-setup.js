@@ -6517,7 +6517,7 @@ class DocumentControl {
 
     static async getCompanyCurrencyConfig() {
         let data = await DocumentControl.getCompanyConfig();
-        return data['config']?.['currency_rule'];
+        return data?.['config']?.['currency_rule'] ? data?.['config']?.['currency_rule'] : {};
     }
 
     static async getCompanyCurrencyFull() {

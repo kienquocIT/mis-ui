@@ -55,6 +55,28 @@
     <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilter">
         <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
     </button>
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table nowrap w-100" id="items_detail_report_table">
+                <thead class="bg-primary">
+                    <tr>
+                        <th style="min-width: 120px; border-top-left-radius: calc(0.5rem - 1px);">{% trans 'System date' %}</th>
+                        <th style="min-width: 200px">{% trans 'Trans information' %}</th>
+                        <th style="min-width: 100px">{% trans 'I/O quantity' %}</th>
+                        <th style="min-width: 150px">{% trans 'I/O cost' %}</th>
+                        <th style="min-width: 150px">{% trans 'I/O value' %}</th>
+                        <th style="min-width: 100px">{% trans 'Cumulative quantity' %}</th>
+                        <th style="min-width: 150px">{% trans 'Cumulative cost' %}</th>
+                        <th style="min-width: 150px; border-top-right-radius: calc(0.5rem - 1px);">{% trans 'Cumulative value' %}</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
     <div class="offcanvas offcanvas-end w-40" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasFilter">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasScrollingLabel">{% trans 'Filter' %}</h5>
@@ -92,26 +114,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12">
-            <table class="table nowrap w-100" id="items_detail_report_table">
-                <thead class="bg-primary">
-                    <tr>
-                        <th style="min-width: 120px; border-top-left-radius: calc(0.5rem - 1px);">{% trans 'System date' %}</th>
-                        <th style="min-width: 200px">{% trans 'Trans information' %}</th>
-                        <th style="min-width: 100px">{% trans 'I/O quantity' %}</th>
-                        <th style="min-width: 150px">{% trans 'I/O cost' %}</th>
-                        <th style="min-width: 150px">{% trans 'I/O value' %}</th>
-                        <th style="min-width: 100px">{% trans 'Cumulative quantity' %}</th>
-                        <th style="min-width: 150px">{% trans 'Cumulative cost' %}</th>
-                        <th style="min-width: 150px; border-top-right-radius: calc(0.5rem - 1px);">{% trans 'Cumulative value' %}</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
         </div>
     </div>
 {% endblock %}

@@ -107,7 +107,6 @@ $(document).ready(function () {
         })
     }
     LoadVirtualWarehouse(virtual_warehouse_list.filter((item) => {return item?.['use_for'] === 1}))
-    console.log(virtual_warehouse_list)
 
     function LoadWarehouseTable() {
         wh_list_table.DataTable().clear().destroy()
@@ -161,7 +160,10 @@ $(document).ready(function () {
     $(document).on("click", '.delete-btn', function (event) {
         Swal.fire({
             html:
-            '<div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div><h5 class="text-danger">Delete Config ?</h5>',
+            `<div>
+                <h4 class="text-danger">${$.fn.gettext("Delete")}</h4>
+                <p>${$.fn.gettext("This action can not be undo!")}</p>
+            </div>`,
             customClass: {
                 confirmButton: 'btn btn-outline-secondary text-danger',
                 cancelButton: 'btn btn-outline-secondary text-gray',
@@ -170,8 +172,8 @@ $(document).ready(function () {
             },
             showCancelButton: true,
             buttonsStyling: false,
-            confirmButtonText: 'Confirm',
-            cancelButtonText: 'Cancel',
+            confirmButtonText: $.fn.gettext("Confirm"),
+            cancelButtonText: $.fn.gettext("Cancel"),
             reverseButtons: true
         }).then((result) => {
             if (result.value) {

@@ -95,15 +95,14 @@
     </div>
 </div>
 <div class="row mt-5">
-    <div class="col-12 col-md-5 col-lg-5">
+    <div class="col-12 col-md-3 col-lg-3">
         <div class="form-group">
             <label for="total_payment" class="form-label text-muted fw-bold">{% trans "Total payment" %}</label>
-            <div style="display: flex;">
-                <input disabled readonly class="form-control form-control-line mask-money" value="0" id="total_payment">
-                <button id="btn-modal-payment-method" data-payment-method='' disabled type="button" class="btn btn-sm btn-danger ml-1" data-bs-toggle="modal" data-bs-target="#payment-method-modal">
+            <div class="input-group">
+                <input disabled readonly class="form-control fw-bold mask-money fs-5" value="0" id="total_payment">
+                <button title="{% trans 'Payment method' %}" id="btn-modal-payment-method" data-payment-method='' disabled type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#payment-method-modal">
                     <span>
                         <span class="icon"><span class="feather-icon"><i class="fas fa-bars"></i></span></span>
-                        <span>{% trans 'Payment method' %} <i hidden id="icon-done-payment-method" class="bi bi-check2-all"></i></span>
                     </span>
                 </button>
             </div>

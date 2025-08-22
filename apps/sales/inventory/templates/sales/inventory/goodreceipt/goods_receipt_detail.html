@@ -413,7 +413,7 @@
                                 <table
                                     id="datable-good-receipt-warehouse"
                                     class="table nowrap w-100"
-                                    data-url="{% url 'WareHouseListAPI' %}?interact=1"
+                                    data-url="{% url 'WareHouseListAPI' %}"
                                     data-method="GET"
                                 >
                                     <thead>
@@ -629,7 +629,7 @@
     <input
             type="text"
             id="data-init-warehouse"
-            data-url="{% url "WareHouseListAPI" %}?interact=1"
+            data-url="{% url "WareHouseListAPI" %}"
             data-method="GET"
     >
     <input
@@ -646,7 +646,7 @@
             data-product-warehouse-serial="{% url 'WarehouseSerialListAPI' %}"
             data-md-bom="{% url 'BOMOrderListAPI' %}"
             data-md-product="{% url 'ProductForSaleListAPI' %}"
-            data-md-warehouse="{% url 'WareHouseListAPI' %}?interact=1"
+            data-md-warehouse="{% url 'WareHouseListAPI' %}"
             data-pm-product="{% url 'ProductModificationProductGRListAPI' %}"
     >
 {% endblock %}

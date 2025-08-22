@@ -5473,6 +5473,66 @@ class DTBControl {
                 </div>`;
     }
 
+    static pushButtonsToDtb(tableID) {
+        if (window.location.href.includes('/detail/')) {
+            let $table = $(`#${tableID}`);
+            let wrapper$ = $table.closest('.dataTables_wrapper');
+            let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+            let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+            headerToolbar$.prepend(textFilter$);
+
+            if (textFilter$.length > 0) {
+                textFilter$.css('display', 'flex');
+                if (!headerToolbar$.find('.dt-buttons').length) {
+                    // DataTables Buttons container
+                    $($table.DataTable().buttons().container())
+                        .addClass('ml-2') // thêm margin nếu cần
+                        .appendTo(textFilter$);
+                }
+            }
+        }
+    }
+
+    static customExportExel() {
+        return [{
+            extend: 'excelHtml5',
+            text: 'Export Excel',
+            className: 'btn btn-outline-primary',
+            exportOptions: {
+                columns: ':visible',   // cột nào (all, visible, index)
+                rows: ':visible',      // hàng nào (all, visible, selected)
+                modifier: {
+                    search: 'applied', // có lọc search/pagination không
+                },
+                format: {
+                    body: function (data, row, column, node) {
+                        let s2Ele = node.querySelector('.select2-hidden-accessible:not([hidden]):not(.hidden)');
+                        if (s2Ele) {
+                            let s2Data = SelectDDControl.get_data_from_idx($(s2Ele), $(s2Ele).val());
+                            return s2Data?.['title'];
+                        }
+                        let inputEle = node.querySelector('.form-control[type="text"]:not([hidden]):not(.hidden)');
+                        if (inputEle) {
+                            return inputEle.value.trim();
+                        }
+                        // custom cell value
+                        return $(node).text().trim();
+                    }
+                }
+            },
+            customize: function (xlsx) {
+                // Truy cập sheet1
+                var sheet = xlsx.xl.worksheets['sheet1.xml'];
+
+                // Ví dụ: thêm style cho header
+                $('row:first c', sheet).attr('s', '2');
+
+                // Ví dụ: sửa dữ liệu cell A2
+                $('row c[r^="A2"] is t', sheet).text('Custom Name');
+            }
+        }]
+    }
+
     get reloadCurrency() {
         let reloadCurrency = this.opts?.['reloadCurrency'];
         return $.fn.isBoolean(reloadCurrency) ? reloadCurrency : false;

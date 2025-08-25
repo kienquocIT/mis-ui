@@ -2823,6 +2823,7 @@ class QuotationDataTableHandle {
         QuotationDataTableHandle.$tableProduct.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
+            buttons: DTBControl.customExportExel(),
             ordering: false,
             paging: false,
             info: false,
@@ -3198,6 +3199,11 @@ class QuotationDataTableHandle {
                 }
                 // set cls of group to products
                 QuotationLoadDataHandle.loadClsGroupToProducts();
+
+            },
+            initComplete: function () {
+                // add buttons
+                DTBControl.pushButtonsToDtb("datable-quotation-create-product");
             },
         });
     };

@@ -131,10 +131,16 @@
                             <input class="form-control mask-money" value="0" id="bank_value">
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-12">
+                    <div class="col-12">
                         <div class="form-group">
-                            <label class="form-label" for="company_bank_account">{% trans "Select company bank account" %}</label>
-                            <select class="form-select" id="company_bank_account" data-method=GET data-url="{% url 'BankAccountMasterDataListAPI' %}"></select>
+                            <label class="form-label" for="account_bank_account">{% trans "Select bank account" %}</label>
+                            <select class="form-select" id="account_bank_account"></select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label" for="banking_information">({% trans "or enter other banking information here" %})</label>
+                            <textarea class="form-control" id="banking_information"></textarea>
                         </div>
                     </div>
                 </div>

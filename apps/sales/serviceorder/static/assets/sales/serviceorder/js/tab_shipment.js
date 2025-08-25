@@ -11,13 +11,6 @@ const PACKAGE_TYPE = {
     3: "Box",
     4: "Tank"
 }
-const CONTAINER_REF = {
-    1: "CONT1",
-    2: "CONT2",
-    3: "CONT3",
-    4: "CONT4",
-    5: "CONT5"
-}
 
 
 /**
@@ -77,26 +70,37 @@ class TabShipmentFunction {
             columns: [
                 {
                     targets: 0,
-                    width: "3%",
+                    width: "1%",
                     render: () => {
                         return '';
                     }
                 },
                 {
                     targets: 1,
-                    width: '20%',
+                    width: '27%',
                     render: (data, type, row) => {
-                        return row.containerName ? `
+                        if (row.containerName) {
+                            return `
                                 <a href="#" class="text-primary show-child" id="ctn-idx-${row.containerRefNumber}">
                                     <i class="fa-solid fa-sort-down"></i>
                                 </a> 
                                 <span>${row.containerName}</span>
-                              ` : `<span class="ctn-idx-${row.packageContainerRef}">${row.packageName}</span>`;
+                                <button type="button" class="btn btn-outline-primary btn-sm ms-2 btn-add-package" 
+                                        id="add-package-${row.containerRefNumber}"
+                                        data-container-ref="${row.containerRefNumber}" 
+                                        title="Add Package">
+                                    <i class="fas fa-plus-circle"></i>
+                                </button>
+                            `;
+                        } else {
+                            // No add button and dropdown if package name field
+                            return `<span class="ctn-idx-${row.packageContainerRef}">${row.packageName}</span>`;
+                        }
                     }
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '10%',
                     render: (data, type, row) => {
                         return CONTAINER_TYPE?.[row.containerType] || PACKAGE_TYPE?.[row.packageType] || '';
                     }
@@ -142,8 +146,23 @@ class TabShipmentFunction {
                                         </button>`;
                     }
                 },
-            ]
+            ],
         });
+    }
+
+    static loadContainersToDropDown() {
+        pageElements.$packageContainer.empty().append('<option value=""></option>');
+        if (pageVariables.shipmentData && pageVariables.shipmentData.length > 0) {
+            pageVariables.shipmentData.forEach(function (item) {
+                if (item.isContainer) {
+                        pageElements.$packageContainer.append(`
+                        <option value="${item.containerRefNumber}">
+                            ${item.containerRefNumber}
+                        </option>
+                    `);
+                }
+            });
+        }
     }
 }
 
@@ -205,7 +224,7 @@ class TabShipmentEventHandler {
 
         // save package event
         pageElements.$btnSavePackage.on('click', function () {
-            const selectedContainerRef = CONTAINER_REF?.[pageElements.$packageContainer.val()] || '';
+            const selectedContainerRef = pageElements.$packageContainer.val() || '';
 
             const newPackage = {
                 isContainer: false,
@@ -336,6 +355,27 @@ class TabShipmentEventHandler {
                 let is_show = parent_row.prop("hidden");
                 parent_row.prop("hidden", !is_show);
             })
+        });
+
+        // event for add package in add button in container row
+        $(document).on("click", '.btn-add-package', function () {
+            $('#modal_package').modal('show');
+            TabShipmentFunction.loadContainersToDropDown();
+
+            const containerRef = $(this).data('container-ref');
+            pageElements.$packageContainer.val(containerRef);
+            pageElements.$packageContainer.prop('disabled', true); // disable dropdown package_container
+        })
+
+        // event when click Package from dropdown Add
+        $('a[data-bs-target="#modal_package"]').on('click', function () {
+            // Load containers to dropdown
+            TabShipmentFunction.loadContainersToDropDown();
+
+            // reset
+            pageElements.$packageContainer.prop('disabled', false);
+            pageElements.$packageContainer.removeClass('bg-light');
+            pageElements.$packageContainer.val('');
         });
     }
 }

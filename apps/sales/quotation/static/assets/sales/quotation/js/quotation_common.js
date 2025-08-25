@@ -2466,6 +2466,28 @@ class QuotationLoadDataHandle {
                 data['customer_data']['is_copy'] = true;
             }
             QuotationLoadDataHandle.loadBoxQuotationCustomer(data?.['customer_data']);
+            // load shipping/ billing
+            QuotationLoadDataHandle.loadShippingBillingCustomer();
+            WindowControl.showLoading();
+            $.fn.callAjax2({
+                    'url': QuotationLoadDataHandle.customerSelectEle.attr('data-url'),
+                    'method': "GET",
+                    'data': {'id': oppData?.['customer']?.['id']},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
+                            if (data?.['account_sale_list'].length > 0) {
+                                QuotationLoadDataHandle.loadShippingBillingCustomer(data?.['account_sale_list'][0]);
+                            }
+                            WindowControl.hideLoading();
+                        }
+                    }
+                }
+            )
         }
         if (data?.['contact_data']) {
             FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, [data?.['contact_data']], {'account_name_id': QuotationLoadDataHandle.customerSelectEle.val()});

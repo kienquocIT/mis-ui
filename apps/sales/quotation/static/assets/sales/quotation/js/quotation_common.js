@@ -18,6 +18,8 @@ class QuotationLoadDataHandle {
     static $btnSaveTerm = $('#btn-save-select-term');
     static $btnSaveInvoice = $('#btn-save-select-invoice');
     static $btnSaveReconcile = $('#btn-save-select-reconcile');
+    static $modalShipping = $('#shippingFeeModalCenter');
+
     static dataSuppliedBy = [{'id': 0, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-purchase')}, {'id': 1, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-make')}];
 
     static $productsCheckedEle = $('#products-checked');
@@ -265,7 +267,6 @@ class QuotationLoadDataHandle {
                     QuotationLoadDataHandle.loadChangePaymentTerm();
                 }
                 // load Shipping & Billing by Customer
-                QuotationLoadDataHandle.loadShippingBillingCustomer();
                 QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
                 // clear shipping + billing text area
                 $('#quotation-create-shipping-address')[0].value = '';
@@ -455,40 +456,41 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadShippingBillingCustomer(item = null) {
+    static loadShippingBillingCustomer(data = {}) {
         let dataZone = "quotation_logistic_data";
         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
             dataZone = "sale_order_logistic_data";
         }
+        let item = data ? data : {};
         let modalShippingContent = $('#quotation-create-modal-shipping-body')[0].querySelector('.modal-body');
-        if (modalShippingContent) {
+        let modalBillingContent = $('#quotation-create-modal-billing-body')[0].querySelector('.modal-body');
+        if (modalShippingContent && modalBillingContent) {
             $(modalShippingContent).empty();
+            $(modalBillingContent).empty();
             if (item) {
-                for (let i = 0; i < item.shipping_address.length; i++) {
-                    let shipping = item.shipping_address[i];
-                    $(modalShippingContent).append(`<div class="ml-1 shipping-group">
+                if (item?.['shipping_address']) {
+                    for (let i = 0; i < item.shipping_address.length; i++) {
+                        let shipping = item.shipping_address[i];
+                        $(modalShippingContent).append(`<div class="ml-1 shipping-group">
                                                         <textarea class="form-control show-not-edit shipping-content disabled-custom-show mb-2" rows="3" cols="50" id="${shipping.id}" disabled>${shipping.full_address}</textarea>
                                                         <div class="d-flex justify-content-end">
                                                             <button type="button" class="btn btn-outline-primary choose-shipping" data-bs-dismiss="modal" id="${shipping.id}" data-address="${shipping.full_address}" data-zone="${dataZone}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                     <br>`)
+                    }
                 }
-            }
-        }
-        let modalBillingContent = $('#quotation-create-modal-billing-body')[0].querySelector('.modal-body');
-        if (modalBillingContent) {
-            $(modalBillingContent).empty();
-            if (item) {
-                for (let i = 0; i < item.billing_address.length; i++) {
-                    let billing = item.billing_address[i];
-                    $(modalBillingContent).append(`<div class="ml-1 billing-group">
+                if (item?.['billing_address']) {
+                    for (let i = 0; i < item.billing_address.length; i++) {
+                        let billing = item.billing_address[i];
+                        $(modalBillingContent).append(`<div class="ml-1 billing-group">
                                                         <textarea class="form-control show-not-edit billing-content disabled-custom-show mb-2" rows="3" cols="50" id="${billing.id}" disabled>${billing.full_address}</textarea>
                                                         <div class="d-flex justify-content-end">
                                                             <button type="button" class="btn btn-outline-primary choose-billing" data-bs-dismiss="modal" id="${billing.id}" data-address="${billing.full_address}" data-zone="${dataZone}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                     <br>`)
+                    }
                 }
             }
         }
@@ -1404,7 +1406,7 @@ class QuotationLoadDataHandle {
                         }
                     }
                 }
-                dueDateEle.setAttribute('disabled', 'true');
+                // dueDateEle.setAttribute('disabled', 'true');
                 let date = $(eleDate).val();
                 if (date && dataSelected?.['no_of_days']) {
                     let dueDate = calculateDate(date, {'number_day_after': parseInt(dataSelected?.['no_of_days'])});
@@ -2467,7 +2469,6 @@ class QuotationLoadDataHandle {
             }
             QuotationLoadDataHandle.loadBoxQuotationCustomer(data?.['customer_data']);
             // load shipping/ billing
-            QuotationLoadDataHandle.loadShippingBillingCustomer();
             WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': QuotationLoadDataHandle.customerSelectEle.attr('data-url'),
@@ -3912,6 +3913,12 @@ class QuotationDataTableHandle {
         let passList = [];
         let failList = [];
         let checkList = [];
+        let noMapArea = QuotationLoadDataHandle.$modalShipping[0].querySelector('.no-map-area');
+        let noLogistic = QuotationLoadDataHandle.$modalShipping[0].querySelector('.no-logistic');
+        if (noMapArea && noLogistic) {
+            $(noMapArea).attr('hidden', 'true');
+            $(noLogistic).attr('hidden', 'true');
+        }
         QuotationDataTableHandle.dataTableShipping();
         $.fn.callAjax2({
                 'url': url,
@@ -3938,9 +3945,13 @@ class QuotationDataTableHandle {
                             })
                             passList = passList.concat(failList);
                             QuotationDataTableHandle.dataTableShipping(passList);
+                            if (passList.length === failList.length) {
+                                $(noMapArea).removeAttr('hidden');
+                            }
                         } else {
                             QuotationDataTableHandle.dataTableShipping(passList);
-                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-check-if-shipping-address')}, 'info');
+                            $(noLogistic).removeAttr('hidden');
+                            // $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-check-if-shipping-address')}, 'info');
                         }
                     }
                 }
@@ -6874,7 +6885,9 @@ class shippingHandle {
             for (let condition of formula_condition) {
                 let location_condition = condition?.['location_condition'];
                 for (let location of location_condition) {
-                    if (shippingAddress.includes(location?.['title'])) { // check location
+                    let address = shippingAddress.toLowerCase().replace(/\s+/g, "");
+                    let shipment = location?.['title'].toLowerCase().replace(/\s+/g, "");
+                    if (address.includes(shipment)) { // check location
                         let $table = $('#datable-quotation-create-product');
                         let formula_list = condition?.['formula'];
                         for (let formula of formula_list) {

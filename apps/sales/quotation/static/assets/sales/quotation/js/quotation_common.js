@@ -18,6 +18,8 @@ class QuotationLoadDataHandle {
     static $btnSaveTerm = $('#btn-save-select-term');
     static $btnSaveInvoice = $('#btn-save-select-invoice');
     static $btnSaveReconcile = $('#btn-save-select-reconcile');
+    static $modalShipping = $('#shippingFeeModalCenter');
+
     static dataSuppliedBy = [{'id': 0, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-purchase')}, {'id': 1, 'title': QuotationLoadDataHandle.transEle.attr('data-supplied-make')}];
 
     static $productsCheckedEle = $('#products-checked');
@@ -265,7 +267,6 @@ class QuotationLoadDataHandle {
                     QuotationLoadDataHandle.loadChangePaymentTerm();
                 }
                 // load Shipping & Billing by Customer
-                QuotationLoadDataHandle.loadShippingBillingCustomer();
                 QuotationLoadDataHandle.loadShippingBillingCustomer(dataSelected);
                 // clear shipping + billing text area
                 $('#quotation-create-shipping-address')[0].value = '';
@@ -1404,7 +1405,7 @@ class QuotationLoadDataHandle {
                         }
                     }
                 }
-                dueDateEle.setAttribute('disabled', 'true');
+                // dueDateEle.setAttribute('disabled', 'true');
                 let date = $(eleDate).val();
                 if (date && dataSelected?.['no_of_days']) {
                     let dueDate = calculateDate(date, {'number_day_after': parseInt(dataSelected?.['no_of_days'])});
@@ -2467,7 +2468,6 @@ class QuotationLoadDataHandle {
             }
             QuotationLoadDataHandle.loadBoxQuotationCustomer(data?.['customer_data']);
             // load shipping/ billing
-            QuotationLoadDataHandle.loadShippingBillingCustomer();
             WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': QuotationLoadDataHandle.customerSelectEle.attr('data-url'),
@@ -3906,6 +3906,12 @@ class QuotationDataTableHandle {
         let passList = [];
         let failList = [];
         let checkList = [];
+        let noMapArea = QuotationLoadDataHandle.$modalShipping[0].querySelector('.no-map-area');
+        let noLogistic = QuotationLoadDataHandle.$modalShipping[0].querySelector('.no-logistic');
+        if (noMapArea && noLogistic) {
+            $(noMapArea).attr('hidden', 'true');
+            $(noLogistic).attr('hidden', 'true');
+        }
         QuotationDataTableHandle.dataTableShipping();
         $.fn.callAjax2({
                 'url': url,
@@ -3932,9 +3938,13 @@ class QuotationDataTableHandle {
                             })
                             passList = passList.concat(failList);
                             QuotationDataTableHandle.dataTableShipping(passList);
+                            if (passList.length === failList.length) {
+                                $(noMapArea).removeAttr('hidden');
+                            }
                         } else {
                             QuotationDataTableHandle.dataTableShipping(passList);
-                            $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-check-if-shipping-address')}, 'info');
+                            $(noLogistic).removeAttr('hidden');
+                            // $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-check-if-shipping-address')}, 'info');
                         }
                     }
                 }
@@ -6868,7 +6878,9 @@ class shippingHandle {
             for (let condition of formula_condition) {
                 let location_condition = condition?.['location_condition'];
                 for (let location of location_condition) {
-                    if (shippingAddress.includes(location?.['title'])) { // check location
+                    let address = shippingAddress.toLowerCase().replace(/\s+/g, "");
+                    let shipment = location?.['title'].toLowerCase().replace(/\s+/g, "");
+                    if (address.includes(shipment)) { // check location
                         let $table = $('#datable-quotation-create-product');
                         let formula_list = condition?.['formula'];
                         for (let formula of formula_list) {

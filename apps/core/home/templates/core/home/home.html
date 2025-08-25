@@ -48,20 +48,6 @@
         .summary-value::after {
             content: counter(num);
         }
-
-        #task-report-high-group {
-            padding: 7px 10px;
-            background-color: #007d88;
-            border-radius: 5px 5px 0 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        #task-report-high-group.collapsed {
-            border-radius: 5px !important;
-        }
-
     </style>
     <style>
         #my-task-summary-report > p {
@@ -75,72 +61,6 @@
 
         #my-task-summary-report.collecting > p {
             display: block;
-        }
-
-        #my-task-by-status {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 10px;
-            border: 1px solid #f1f1f1;
-            padding: 5px;
-        }
-
-        #my-task-by-status canvas {
-            display: block;
-        }
-
-        #my-task-by-status p {
-            display: none;
-            color: #ff9100;
-        }
-
-        #my-task-by-status.collecting canvas {
-            display: none;
-        }
-
-        #my-task-by-status.collecting p {
-            display: block;
-        }
-    </style>
-    <style>
-        #group-range-day-report-task-status {
-            width: 100%;
-            display: flex;
-            max-width: 600px;
-            height: 32px;
-        }
-
-        #group-range-day-report-task-status > div {
-            padding: 5px;
-            text-align: center;
-            height: 100%;
-            vertical-align: middle;
-            background-color: #FFFFFF;
-            color: #007d88;
-            margin: 1px;
-            transition: background-color 0.2s, color 0.2s;
-            cursor: pointer;
-            flex: 1 1 auto;
-            border: 1px solid #007d88;
-        }
-
-        #group-range-day-report-task-status > div.active {
-            background-color: #007d88;
-            color: #FFFFFF;
-        }
-
-        #group-range-day-report-task-status > div:not(.active):hover {
-            background-color: #007d88;
-            color: #FFFFFF;
-        }
-
-        #group-range-day-report-task-status > div:first-child {
-            border-radius: 5px 0 0 5px;
-        }
-
-        #group-range-day-report-task-status > div:last-child {
-            border-radius: 0 5px 5px 0;
         }
     </style>
     <style>
@@ -243,7 +163,6 @@
 
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/themes/themes.light.min.css' %}">
-
 
     <style>
         #idxPageContent {
@@ -713,7 +632,7 @@
                             </div>
                             <div class="col-sm-12 col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">{% trans 'Preview' %}</label>
+                                    <p class="form-label" >{% trans 'Preview' %}</p>
                                     <div
                                             class="d-17 bg-light text-dark rounded-5 m-1 d-17 d-flex flex-column justify-content-center align-items-center overflow-hidden"
                                             id="newBMBlockPreview"
@@ -826,307 +745,7 @@
                         inpRangeReportByDay$.val($(this).attr('data-value')).trigger('change');
                     })
                 })
-
-                const taskReportHighGroup$ = $('#task-report-high-group');
-                const taskReportGroup$ = $("#task-report-group");
-                const taskReportCollapse$ = $("#task-report-collapse");
-                const taskReportExpand$ = $("#task-report-expand");
-                const keyTaskReportShow = 'home__task__show';
-                const stateShow = localStorage.getItem(keyTaskReportShow);
-
                 function activeReportShow() {
-                    Chart.register(ChartDataLabels);
-
-                    function getRandomColor() {
-                        let letters = '0123456789ABCDEF';
-                        let color = '#';
-                        for (let i = 0; i < 6; i++) {
-                            color += letters[Math.floor(Math.random() * 16)];
-                        }
-                        return color;
-                    }
-
-                    function random_rgba(opacities = [100]) {
-                        let o = Math.round, r = Math.random, s = 255;
-                        const rData = o(r() * s);
-                        const gData = o(r() * s);
-                        const bData = o(r() * s);
-                        if (Array.isArray(opacities)) {
-                            if (opacities.length > 1) {
-                                return opacities.map(
-                                    opacity => `rgba(${rData}, ${gData}, ${bData}, ${opacity / 100})`
-                                )
-                            }
-                            return `rgba(${rData}, ${gData}, ${bData}, ${opacities[0] / 100})`
-                        }
-                        return `rgba(${rData}, ${gData}, ${bData}, ${opacities / 100})`
-                    }
-
-                    function colorHex2Rgb(hexColor, opacity = 100) {
-                        if (hexColor.startsWith('#')) {
-                            hexColor = hexColor.slice(1);
-                        }
-                        const rData = parseInt(hexColor.substring(0, 2), 16)
-                        const gData = parseInt(hexColor.substring(2, 4), 16)
-                        const bData = parseInt(hexColor.substring(4, 6), 16);
-                        return `rgba(${rData}, ${gData}, ${bData}, ${opacity / 100})`;
-                    }
-
-                    let chartObjRatio;
-                    const canvasTaskReportRatio$ = $('#my-task-report');
-
-                    function initChartMyTaskReportRatio(data) {
-                        const ratioColorMap = data.map(row => {
-                            if (row.task_color) return [colorHex2Rgb(row.task_color, 30), colorHex2Rgb(row.task_color, 100)];
-                            switch (row.task_status) {
-                                case 'ASSIGN_TASK':
-                                    return ['rgba(129,226,48,0.2)', 'rgba(129,226,48,1)'];
-                                case 'FINISH_TASK':
-                                    return ['rgba(0,125,136,0.2)', 'rgba(0,125,136,1)'];
-                                default:
-                                    return random_rgba([20, 100]);
-                            }
-                        })
-
-                        const config = {
-                            type: 'polarArea',
-                            data: {
-                                labels: data.map(row => {
-                                    switch (row.task_status) {
-                                        case 'ASSIGN_TASK':
-                                            return $.fn.gettext('Assign task');
-                                        case 'FINISH_TASK':
-                                            return $.fn.gettext('Finish task');
-                                        default:
-                                            return row?.['task_status_translate'] ? row['task_status_translate'] : row.task_status;
-                                    }
-                                }),
-                                datasets: [
-                                    {
-                                        "data": data.map(row => row.count),
-                                        "backgroundColor": ratioColorMap.map(row => row[0]),
-                                        "borderWidth": 0,
-                                        "borderColor": ratioColorMap.map(row => row[1]),
-                                    }
-                                ],
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'right',
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: $.fn.gettext('Task status in 7 days'),
-                                        color: '#00585f',
-                                    },
-                                    datalabels: {
-                                        formatter: (value, ctx) => {
-                                            return value;
-                                        },
-                                        color: '#ff9100',
-                                    }
-                                }
-                            },
-                        }
-                        if (chartObjRatio) chartObjRatio.destroy();
-                        chartObjRatio = new Chart(
-                            canvasTaskReportRatio$[0],
-                            config
-                        );
-                    }
-
-                    let chartObjCount;
-                    const canvasTaskReportCountByDay$ = $('#my-task-report-by-date');
-
-                    function initChartMyTaskReportCountByDay(data) {
-                        const config = {
-                            type: 'line',
-                            data: {
-                                labels: data.map(row => $x.fn.parseDate(row.date)),
-                                datasets: [
-                                    {
-                                        "label": $.fn.gettext('Finished'),
-                                        "data": data.map(
-                                            row => row.details
-                                                .filter(detail => detail.task_status === 'FINISH_TASK')
-                                                .reduce((acc, detail) => acc + detail.count, 0)
-                                        ),
-                                        "borderWidth": 1,
-                                        "borderColor": 'rgb(184, 187, 255)',
-                                        "backgroundColor": 'rgb(184, 187, 255, 0.3)',
-                                        "borderRadius": 5,
-                                    },
-                                    {
-                                        "label": $.fn.gettext('Assigned'),
-                                        "data": data.map(
-                                            row => row.details
-                                                .filter(detail => detail.task_status === 'ASSIGN_TASK')
-                                                .reduce((acc, detail) => acc + detail.count, 0)
-                                        ),
-                                        "borderWidth": 1,
-                                        "borderColor": 'rgb(254, 182, 222)',
-                                        "backgroundColor": 'rgb(254, 182, 222, 0.3)',
-                                        "borderRadius": 5,
-                                    },
-                                ],
-                            },
-                            options: {
-                                responsive: true,
-                                scales: {
-                                    y: {
-                                        ticks: {
-                                            stepSize: 1,
-                                        },
-                                        beginAtZero: true,
-                                        max: (ctx) => Math.max(
-                                            ...ctx.chart.data.datasets.reduce((acc, currentValue) => acc.concat(currentValue.data), [])
-                                        ) + 1,
-                                    },
-                                    x: {
-                                        ticks: {
-                                            autoSkip: true,  // Bỏ bớt nhãn khi quá nhiều
-                                            maxRotation: 0,
-                                            minRotation: 0
-                                        }
-                                    }
-                                },
-                                plugins: {
-                                    legend: {
-                                        position: 'top',
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: $.fn.gettext('Assigned and Completed task by day'),
-                                        color: '#00585f',
-                                        position: 'top',
-                                    },
-                                    datalabels: {
-                                        formatter: (value, ctx) => {
-                                            // return value > 0 ? value : null;
-                                            return null;
-                                        },
-                                        color: '#ff9100',
-                                    },
-                                }
-                            },
-                        }
-                        if (chartObjCount) chartObjCount.destroy();
-                        chartObjCount = new Chart(
-                            canvasTaskReportCountByDay$[0],
-                            config
-                        );
-                    }
-
-                    let mixedChartTaskStatusByDay;
-
-                    function initMixedChartSumBy7Day(data) {
-                        if (mixedChartTaskStatusByDay) mixedChartTaskStatusByDay.destroy();
-
-                        let arrTaskStatus = new Set([]);
-                        let statusMap = {};
-                        data.map(row => {
-                            row.details.map(detail => {
-                                arrTaskStatus.add(detail.task_status);
-                                statusMap[detail.task_status] = detail;
-                            })
-                        });
-                        const config = {
-                            data: {
-                                labels: data.map(row => $x.fn.parseDate(row.date)),
-                                datasets: [
-                                    {
-                                        "type": "line",
-                                        "label": $.fn.gettext('Assigned'),
-                                        "data": data.map(
-                                            row => row.details
-                                                .filter(detail => detail.task_status === 'ASSIGN_TASK')
-                                                .reduce((acc, detail) => acc + detail.count, 0)
-                                        ),
-                                    },
-                                    {
-                                        "type": "line",
-                                        "label": $.fn.gettext('Finished'),
-                                        "data": data.map(
-                                            row => row.details
-                                                .filter(detail => detail.task_status === 'FINISH_TASK')
-                                                .reduce((acc, detail) => acc + detail.count, 0)
-                                        ),
-                                    },
-                                    ...Array.from(arrTaskStatus).filter((taskStatus) => taskStatus !== 'ASSIGN_TASK' && taskStatus !== 'FINISH_TASK').map((task_status) => {
-                                        return {
-                                            "type": "bar",
-                                            "label": statusMap[task_status].task_status_translate ? statusMap[task_status].task_status_translate : statusMap[task_status].task_status,
-                                            "data": data.map(
-                                                row => row.details
-                                                    .filter(detail => detail.task_status === task_status)
-                                                    .reduce((acc, detail) => acc + detail.count, 0)
-                                            )
-                                        }
-                                    }),
-                                ],
-                            },
-                            options: {
-                                responsive: true,
-                                scales: {
-                                    y: {
-                                        ticks: {
-                                            stepSize: 1,
-                                        },
-                                        beginAtZero: true,
-                                        max: (ctx) => Math.max(
-                                            ...ctx.chart.data.datasets.reduce((acc, currentValue) => acc.concat(currentValue.data), [])
-                                        ) + 1,
-                                    }
-                                },
-                                plugins: {
-                                    legend: {
-                                        position: 'top',
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: $.fn.gettext('Task status log by day'),
-                                        color: '#00585f',
-                                    },
-                                    datalabels: {
-                                        formatter: (value, ctx) => {
-                                            if (ctx.dataset.type === 'line') return null;
-                                            return value > 0 ? value : null;
-                                        },
-                                        color: '#ff9100',
-                                    },
-                                }
-                            },
-                        }
-                        mixedChartTaskStatusByDay = new Chart($('#task-status-log-by-day')[0], config);
-                    }
-
-                    inpRangeReportByDay$.on('change', () => {
-                            $.fn.callAjax2({
-                                url: canvasTaskReportCountByDay$.attr('data-url') + '?' + $.param({
-                                    'range': inpRangeReportByDay$.val(),
-                                }),
-                                method: 'GET',
-                                isLoading: true,
-                            }).then(
-                                resp => {
-                                    const data = $.fn.switcherResp(resp);
-                                    if (data && data.hasOwnProperty('my_task_report')) {
-                                        const my_task_report = data['my_task_report'];
-                                        if (my_task_report) {
-                                            // initMixedChartSumBy7Day(my_task_report?.['by_day'] || []);
-                                            // initChartMyTaskReportRatio(my_task_report?.['ratio'] || []);
-                                            initChartMyTaskReportCountByDay(my_task_report?.['by_day'] || []);
-                                        }
-                                    }
-                                },
-                                errs => $.fn.switcherResp(errs)
-                            )
-                        }
-                    ).trigger('change');
-
-                    const canvasTaskByStatus$ = $('#my-task-by-status');
                     const canvasTaskSummaryReport$ = $('#my-task-summary-report');
                     const eleNewToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="new_today"] .summary-value');
                     const eleStartToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="start_today"] .summary-value');
@@ -1134,126 +753,33 @@
                     const eleUpcomingToday$ = canvasTaskSummaryReport$.find('.summary-item[data-item="upcoming_today"] .summary-value');
                     const eleUpcomingSoon$ = canvasTaskSummaryReport$.find('.summary-item[data-item="upcoming_soon"] .summary-value');
                     const eleActives$ = canvasTaskSummaryReport$.find('.summary-item[data-item="actives"] .summary-value');
+
                     $.fn.callAjax2({
                         url: canvasTaskSummaryReport$.attr('data-url'),
                         method: 'GET'
-                    }).then(
-                        resp => {
-                            const respData = $.fn.switcherResp(resp);
-                            if (respData && respData.hasOwnProperty('my_task_summary_report')) {
-                                const summaryDatas = respData?.['my_task_summary_report'] || {};
-                                if (summaryDatas?.['state'] === 'READY') {
-                                    const data = summaryDatas?.['data'] || {};
-                                    eleNewToday$.css('--num', data?.['today_created'] || 0);
-                                    eleStartToday$.css('--num', data?.['start_today'] || 0)
-                                    eleOverdue$.css('--num', data?.['overdue'] || 0);
-                                    eleUpcomingToday$.css('--num', data?.['upcoming_today'] || 0);
-                                    eleUpcomingSoon$.css('--num', data?.['upcoming_soon'] || 0);
-                                    eleActives$.css('--num', data?.['actives'] || 0);
-
-                                    const byStatus = data?.['by_status'] || [];
-                                    const colorMap = byStatus.map(
-                                        row => {
-                                            const pieColor = row.task_color ? row.task_color : getRandomColor();
-                                            return [
-                                                colorHex2Rgb(pieColor, 30),
-                                                colorHex2Rgb(pieColor, 100),
-                                            ]
-                                        }
-                                    );
-                                    new Chart(
-                                        canvasTaskByStatus$.find('canvas')[0],
-                                        {
-                                            type: 'pie',
-                                            data: {
-                                                labels: byStatus.map(row => row?.['translate_name'] ? row['translate_name'] : row.title),
-                                                datasets: [
-                                                    {
-                                                        "data": byStatus.map(row => row.count),
-                                                        "backgroundColor": colorMap.map(row => row[0]),
-                                                        "borderColor": colorMap.map(row => row[0]),
-                                                        "borderWidth": 0,
-                                                    }
-                                                ],
-                                            },
-                                            options: {
-                                                responsive: true,
-                                                plugins: {
-                                                    legend: {
-                                                        position: 'right',
-                                                    },
-                                                    title: {
-                                                        display: true,
-                                                        text: $.fn.gettext('Task by status'),
-                                                        color: '#00585f',
-                                                    },
-                                                    datalabels: {
-                                                        formatter: (value, ctx) => {
-                                                            return value > 0 ? value : null;
-                                                        },
-                                                        color: '#ff9100',
-                                                    },
-                                                }
-                                            },
-                                        }
-                                    )
-                                } else {
-                                    canvasTaskByStatus$.addClass('collecting');
-                                    canvasTaskSummaryReport$.addClass('collecting');
+                    })
+                        .then(
+                            resp => {
+                                const respData = $.fn.switcherResp(resp);
+                                if (respData && respData.hasOwnProperty('my_task_summary_report')) {
+                                    const summaryDatas = respData?.['my_task_summary_report'] || {};
+                                    if (summaryDatas?.['state'] === 'READY') {
+                                        const data = summaryDatas?.['data'] || {};
+                                        eleNewToday$.css('--num', data?.['today_created'] || 0);
+                                        eleStartToday$.css('--num', data?.['start_today'] || 0)
+                                        eleOverdue$.css('--num', data?.['overdue'] || 0);
+                                        eleUpcomingToday$.css('--num', data?.['upcoming_today'] || 0);
+                                        eleUpcomingSoon$.css('--num', data?.['upcoming_soon'] || 0);
+                                        eleActives$.css('--num', data?.['actives'] || 0);
+                                    } else {
+                                        canvasTaskSummaryReport$.addClass('collecting');
+                                    }
                                 }
-                            }
-                        },
-                        errs => {
-                        },
-                    )
+                            },
+                        )
                 }
 
-                taskReportCollapse$.on('click', async function () {
-                    const {value: accept} = await Swal.fire({
-                        title: $.fn.gettext('Task report'),
-                        input: "checkbox",
-                        inputValue: 1,
-                        inputPlaceholder: $.fn.gettext('Hide this data for the future'),
-                        confirmButtonText: `${$.fn.gettext('Confirm')}&nbsp;<i class="fa fa-arrow-right"></i>`,
-                    }).then(
-                        (result) => {
-                            if (result.isConfirmed) {
-                                if (result.value) {
-                                    localStorage.setItem(keyTaskReportShow, 'false');
-                                }
-                                taskReportGroup$.slideUp(0);
-                                taskReportExpand$.show(0);
-                                $(taskReportCollapse$).hide(0);
-                                taskReportHighGroup$.addClass('collapsed');
-                            }
-                        }
-                    );
-                })
-                taskReportExpand$.on('click', function () {
-                    localStorage.setItem(keyTaskReportShow, 'true');
-                    taskReportCollapse$.show(0);
-                    $(taskReportExpand$).hide(0);
-                    $x.fn.showLoadingPage({
-                        didOpenEnd: function () {
-                            setTimeout(
-                                () => window.location.reload(),
-                                200
-                            )
-                        }
-                    });
-
-                })
-
-                if (stateShow && stateShow !== 'false') {
-                    taskReportGroup$.slideDown(0);
-                    taskReportCollapse$.show(0);
-
-                    activeReportShow();
-                } else {
-                    taskReportGroup$.slideUp(0);
-                    taskReportExpand$.show(0);
-                    taskReportHighGroup$.addClass('collapsed')
-                }
+                activeReportShow();
             }
         )
     </script>
@@ -1543,38 +1069,32 @@
                 const calendar$ = $('.calendar-group');
                 const bookmark$ = $('#boxBookmarkDisplay');
                 const taskList$ = $('#task-list-group');
-
-                if (stateShow.show_report_task === false && stateShow.show_summary_task === false){
-                    taskReport$.closest('.col').hide(0).siblings('div').addClass('w-100');
+                if (stateShow['show_report_task'] === false) {
+                    taskReport$.hide(0);
                 } else {
-                    taskReport$.closest('.col').show(0).siblings('div').removeClass('w-100')
-                    if (stateShow.show_report_task === false) {
-                        taskReport$.hide(0);
-                    } else {
-                        taskReport$.show(0);
-                    }
-                    if (stateShow.show_summary_task === false){
-                        taskSummary$.hide(0);
-                    } else {
-                        taskSummary$.show(0);
-                    }
+                    taskReport$.show(0);
                 }
-                if (stateShow.show_calendar === false && stateShow.show_bookmark === false){
+                if (stateShow['show_summary_task'] === false) {
+                    taskSummary$.hide(0);
+                } else {
+                    taskSummary$.show(0);
+                }
+                if (stateShow['show_calendar'] === false && stateShow['show_bookmark'] === false){
                     calendar$.closest('.col').hide(0).siblings('div').addClass('w-100');
                 } else {
                     calendar$.closest('.col').show(0).siblings('div').removeClass('w-100');
-                    if (stateShow.show_calendar === false) {
+                    if (stateShow['show_calendar'] === false) {
                         calendar$.hide(0);
                     } else {
                         calendar$.show(0);
                     }
-                    if (stateShow.show_bookmark === false) {
+                    if (stateShow['show_bookmark'] === false) {
                         bookmark$.closest('.bookmark-group').hide(0);
                     } else {
                         bookmark$.closest('.bookmark-group').show(0);
                     }
                 }
-                if (stateShow.show_task_list === false){
+                if (stateShow['show_task_list'] === false){
                     taskList$.hide(0);
                 } else {
                     taskList$.show(0);

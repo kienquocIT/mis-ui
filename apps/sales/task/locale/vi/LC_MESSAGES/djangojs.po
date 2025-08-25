@@ -52,3 +52,7 @@ msgstr "Phóng to"
 #
 msgid "Zoom out"
 msgstr "Thu nhỏ"
+
+#
+msgid "of task"
+msgstr "của giao việc"

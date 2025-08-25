@@ -456,40 +456,41 @@ class QuotationLoadDataHandle {
         return true;
     };
 
-    static loadShippingBillingCustomer(item = null) {
+    static loadShippingBillingCustomer(data = {}) {
         let dataZone = "quotation_logistic_data";
         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
             dataZone = "sale_order_logistic_data";
         }
+        let item = data ? data : {};
         let modalShippingContent = $('#quotation-create-modal-shipping-body')[0].querySelector('.modal-body');
-        if (modalShippingContent) {
+        let modalBillingContent = $('#quotation-create-modal-billing-body')[0].querySelector('.modal-body');
+        if (modalShippingContent && modalBillingContent) {
             $(modalShippingContent).empty();
+            $(modalBillingContent).empty();
             if (item) {
-                for (let i = 0; i < item.shipping_address.length; i++) {
-                    let shipping = item.shipping_address[i];
-                    $(modalShippingContent).append(`<div class="ml-1 shipping-group">
+                if (item?.['shipping_address']) {
+                    for (let i = 0; i < item.shipping_address.length; i++) {
+                        let shipping = item.shipping_address[i];
+                        $(modalShippingContent).append(`<div class="ml-1 shipping-group">
                                                         <textarea class="form-control show-not-edit shipping-content disabled-custom-show mb-2" rows="3" cols="50" id="${shipping.id}" disabled>${shipping.full_address}</textarea>
                                                         <div class="d-flex justify-content-end">
                                                             <button type="button" class="btn btn-outline-primary choose-shipping" data-bs-dismiss="modal" id="${shipping.id}" data-address="${shipping.full_address}" data-zone="${dataZone}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                     <br>`)
+                    }
                 }
-            }
-        }
-        let modalBillingContent = $('#quotation-create-modal-billing-body')[0].querySelector('.modal-body');
-        if (modalBillingContent) {
-            $(modalBillingContent).empty();
-            if (item) {
-                for (let i = 0; i < item.billing_address.length; i++) {
-                    let billing = item.billing_address[i];
-                    $(modalBillingContent).append(`<div class="ml-1 billing-group">
+                if (item?.['billing_address']) {
+                    for (let i = 0; i < item.billing_address.length; i++) {
+                        let billing = item.billing_address[i];
+                        $(modalBillingContent).append(`<div class="ml-1 billing-group">
                                                         <textarea class="form-control show-not-edit billing-content disabled-custom-show mb-2" rows="3" cols="50" id="${billing.id}" disabled>${billing.full_address}</textarea>
                                                         <div class="d-flex justify-content-end">
                                                             <button type="button" class="btn btn-outline-primary choose-billing" data-bs-dismiss="modal" id="${billing.id}" data-address="${billing.full_address}" data-zone="${dataZone}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                     <br>`)
+                    }
                 }
             }
         }

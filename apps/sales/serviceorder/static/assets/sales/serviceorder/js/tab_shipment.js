@@ -81,20 +81,20 @@ class TabShipmentFunction {
                     render: (data, type, row) => {
                         if (row.containerName) {
                             return `
-                                <a href="#" class="text-primary show-child" id="ctn-idx-${row.containerRefNumber}">
+                                <a href="#" class="text-primary show-child" id="ctn-idx-${row?.containerRefNumber}">
                                     <i class="fa-solid fa-sort-down"></i>
                                 </a> 
                                 <span>${row.containerName}</span>
                                 <button type="button" class="btn btn-outline-primary btn-sm ms-2 btn-add-package" 
-                                        id="add-package-${row.containerRefNumber}"
-                                        data-container-ref="${row.containerRefNumber}" 
+                                        id="add-package-${row?.containerRefNumber}"
+                                        data-container-ref="${row?.containerRefNumber}" 
                                         title="Add Package">
                                     <i class="fas fa-plus-circle"></i>
                                 </button>
                             `;
                         } else {
                             // No add button and dropdown if package name field
-                            return `<span class="ctn-idx-${row.packageContainerRef}">${row.packageName}</span>`;
+                            return `<span class="ctn-idx-${row.packageContainerRef}">${row?.packageName}</span>`;
                         }
                     }
                 },
@@ -102,47 +102,48 @@ class TabShipmentFunction {
                     targets: 2,
                     width: '10%',
                     render: (data, type, row) => {
-                        return CONTAINER_TYPE?.[row.containerType] || PACKAGE_TYPE?.[row.packageType] || '';
+                        return CONTAINER_TYPE?.[row?.containerType] || PACKAGE_TYPE?.[row?.packageType] || '';
                     }
                 },
                 {
                     targets: 3,
                     width: '15%',
                     render: (data, type, row) => {
-                        return row.containerRefNumber || row.packageRefNumber || '';
+                        return row?.containerRefNumber || row?.packageRefNumber || '';
                     }
                 },
                 {
                     targets: 4,
                     width: '15%',
                     render: (data, type, row) => {
-                        return row.containerWeight || row.packageWeight || '';
+                        return row?.containerWeight || row?.packageWeight || '';
                     }
                 },
                 {
                     targets: 5,
                     width: '15%',
                     render: (data, type, row) => {
-                        return row.containerDimension || row.packageDimension || '';
+                        return row?.containerDimension || row?.packageDimension || '';
                     }
                 },
                 {
                     targets: 6,
                     width: '14%',
                     render: (data, type, row) => {
-                        return row.containerNote || row.packageNote || '';
+                        return row?.containerNote || row?.packageNote || '';
                     }
                 },
                 {
                     targets: 7,
                     width: '3%',
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return row.isContainer ? `<button type="button" 
-                                                class="btn btn-light btn-sm rounded-circle btn-delete-container">
-                                                <i class="far fa-trash-alt"></i>
+                                                class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-delete-container">
+                                                <span class="icon"><i class="far fa-trash-alt"></i></span>
                                          </button>` : `<button type="button" 
-                                                class="btn btn-light btn-sm rounded-circle btn-delete-package">
-                                                <i class="far fa-trash-alt"></i>
+                                                class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-delete-package">
+                                                <span class="icon"><i class="far fa-trash-alt"></i></span>
                                         </button>`;
                     }
                 },

@@ -875,9 +875,9 @@ $(document).ready(function () {
                 });
                 let data = api.rows({page: 'current'}).data().toArray();
 
+                let PercentCount = 0;
                 if (data && data.length) {
-                    term_type_list = []
-                    PercentCount = 0;
+                    let term_type_list = []
                     for (let val of data) {
                         let isValue = val['unit_type'].hasOwnProperty('value') ? val['unit_type'].value : val['unit_type']
                         if (parseInt(isValue) === 0)
@@ -991,7 +991,6 @@ $(document).ready(function () {
                                 </a>
                             </div>`;
                     },
-                    width: '10%',
                 }
             ],
         });
@@ -1011,8 +1010,7 @@ $(document).ready(function () {
                     $('[name="apply_for"]').val(data.apply_for).trigger('change')
                     $('[name="remark"]').val(data.remark)
                     $('[name="payment_terms_id"]').val(data.id)
-                    $('#table_terms').DataTable().clear().draw();
-                    $('#table_terms').DataTable().rows.add(data.term).draw();
+                    $('#table_terms').DataTable().clear().rows.add(data.term).draw();
                     let temp = []
                     let total_type_0 = 0
                     for (let item of data.term) {
@@ -1020,7 +1018,8 @@ $(document).ready(function () {
                         if (item.unit_type === 0)
                             total_type_0 += item.value
                     }
-                    term_type_list = [...new Set(temp)]
+                    let term_type_list = []
+                    if (temp.length) term_type_list = [...new Set(temp)]
                     // nếu type = balance thì khoá btn
                     // nếu type = 0 thì total value = 100 => khoá
                     if (total_type_0 >= 100 || term_type_list.indexOf(2) !== -1)
@@ -1041,7 +1040,7 @@ $(document).ready(function () {
         $('.tab-content .tab-pane').removeClass('show active')
         $('#section-create-payment-terms').addClass('show active')
         $('.payment-terms-tabs').removeClass('hidden')
-        $('.btn_add_terms').prop('disabled', false)
+        // $('.btn_add_terms').prop('disabled', false)
         $termForm[0].reset();
         $('#table_terms').DataTable().clear().draw();
     });

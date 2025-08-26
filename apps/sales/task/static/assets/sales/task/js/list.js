@@ -49,11 +49,16 @@ $(function () {
             cloneHTML.find('.wrap-child').attr('id', `sub-taskID-${item.id}`)
             $('#sub-tasklist_wrap').append(cloneHTML)
 
-            if (item.name.toLowerCase() === 'to do' && item['is_edit'] === false && item.is_finish === false){
+            if (item.name.toLowerCase() === 'to do' && item['is_edit'] === false && item.is_finish === false) {
                 item.selected = true
                 item.title = item.name
-                $('#selectStatus').attr('data-onload', JSON.stringify(item)).initSelect2()
-                    .data('default-stt', item)
+                $('#selectStatus').attr('data-onload', JSON.stringify(item)).data('default-stt', item)
+                // .initSelect2()
+                let createFormTask1 = setInterval(function () {
+                    clearInterval(createFormTask1)
+                    const $sttElm = $('#selectStatus')
+                    $sttElm.initSelect2()
+                }, 1000)
             }
         }
     }
@@ -1571,7 +1576,8 @@ $(function () {
         })
     });
     // handle show/hide btn load more when scroll down
-    let contentElm = $('#idxPageContent .simplebar-content-wrapper');
+    // let contentElm = $('#idxPageContent .simplebar-content-wrapper');
+    let contentElm = $('#idxPageContent');
     const loadMoreBtn = $('.btn-task-bar')
     $(contentElm).scroll(function () {
         $(this).scrollTop() > 100 && !$('.tab-gantt').hasClass('active') ? loadMoreBtn.fadeIn() : loadMoreBtn.fadeOut();

@@ -185,6 +185,14 @@ $(document).ready(function () {
     // reset form create task khi click huỷ bỏ hoặc tạo mới task con
     $('#offCanvasRightTask').on('hidden.bs.offcanvas', () => resetFormTask())
 
+    $('#offCanvasRightTask').on('shown.bs.offcanvas', function () {
+        // init S2 custom assignee
+        let $customAssignee = $('#custom_assignee');
+        if ($customAssignee.length > 0) {
+            FormElementControl.loadInitS2($customAssignee, [], {}, $('#offCanvasRightTask'), true);
+        }
+    });
+
     const {
         opp_id,
         opp_title,

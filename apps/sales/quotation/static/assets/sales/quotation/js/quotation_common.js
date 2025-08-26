@@ -1391,7 +1391,13 @@ class QuotationLoadDataHandle {
         if ($(ele).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
             if (remarkELe && ratioEle && eleDate && valBeforeEle && valTotalEle && dueDateEle && dataSelected && dataDateType) {
+                let rowIndex = QuotationDataTableHandle.$tablePayment.DataTable().row(row).index();
+                let $row = QuotationDataTableHandle.$tablePayment.DataTable().row(rowIndex);
+                let dataRow = $row.data();
                 $(remarkELe).val(dataDateType[dataSelected?.['after']][1]);
+                if (dataRow?.['remark']) {
+                    $(remarkELe).val(dataRow?.['remark']);
+                }
                 ratioEle.setAttribute('readonly', 'true');
                 $(ratioEle).val('');
                 if (dataSelected?.['value']) {
@@ -1412,6 +1418,9 @@ class QuotationLoadDataHandle {
                     let dueDate = calculateDate(date, {'number_day_after': parseInt(dataSelected?.['no_of_days'])});
                     if (dueDate) {
                         $(dueDateEle).val(dueDate);
+                    }
+                    if (dataRow?.['due_date']) {
+                        $(dueDateEle).val(DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', dataRow?.['due_date']));
                     }
                 }
             }

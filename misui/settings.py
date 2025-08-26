@@ -132,6 +132,7 @@ INSTALLED_APPS = \
         'apps.hrm.employee',
         'apps.hrm.attendance',
         'apps.hrm.absenceexplanation',
+        'apps.hrm.overtimerequest',
     ] + [
         'apps.sales.financialcashflow',
         'apps.sales.reconciliation',

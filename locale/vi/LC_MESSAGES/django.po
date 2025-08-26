@@ -12198,3 +12198,7 @@ msgstr "Dùng file excel"
 #
 msgid "Export exel"
 msgstr "Xuất exel"
+
+#
+msgid "Overtime request"
+msgstr "Đăng ký làm ngoài giờ"

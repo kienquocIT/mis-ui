@@ -229,7 +229,7 @@ class AppsCodeToList:
                 'is_active': True,
             },
         },
-        'bidding' :{
+        'bidding': {
             'bidding': {
                 'title': _('Bidding'),
                 'is_active': True,
@@ -240,6 +240,12 @@ class AppsCodeToList:
                 'title': _('Consulting'),
                 'is_active': True,
             },
+        },
+        'hrm': {
+            'overtimerequest': {
+                'title': _('Overtime request'),
+                'is_active': True,
+            }
         }
     }
 

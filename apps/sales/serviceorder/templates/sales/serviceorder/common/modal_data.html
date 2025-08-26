@@ -305,3 +305,65 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-payment-detail" tabindex="-1" role="dialog" aria-labelledby="modal-payment-detail" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 95%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Payment Detail" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow: auto">
+                <div class="nicescroll-bar">
+                    <table class="table nowrap w-100 min-w-1200p" id="modal-table-payment-detail">
+                        <thead class="bg-secondary-light-5">
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                </button>
+                <button type="button" id="btn-save-payment" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Save' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-payment-detail-no-invoice" tabindex="-1" role="dialog" aria-labelledby="modal-payment-detail-no-invoice" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Payment Detail Without Invoice" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow: auto">
+                <div class="nicescroll-bar">
+                    <table class="table nowrap w-100" id="modal-table-payment-detail-no-invoice">
+                        <thead class="bg-secondary-light-5">
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans 'Close' %}
+                </button>
+                <button type="button" id="btn-save-payment-no-invoice" class="btn btn-primary" data-bs-dismiss="modal">
+                    {% trans 'Save' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

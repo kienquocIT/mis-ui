@@ -1677,7 +1677,13 @@ class LeaseOrderLoadDataHandle {
         if ($(ele).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
             if (remarkELe && ratioEle && eleDate && valBeforeEle && valTotalEle && dueDateEle && dataSelected && dataDateType) {
+                let rowIndex = LeaseOrderDataTableHandle.$tablePayment.DataTable().row(row).index();
+                let $row = LeaseOrderDataTableHandle.$tablePayment.DataTable().row(rowIndex);
+                let dataRow = $row.data();
                 $(remarkELe).val(dataDateType[dataSelected?.['after']][1]);
+                if (dataRow?.['remark']) {
+                    $(remarkELe).val(dataRow?.['remark']);
+                }
                 ratioEle.setAttribute('readonly', 'true');
                 $(ratioEle).val('');
                 if (dataSelected?.['value']) {
@@ -1692,12 +1698,15 @@ class LeaseOrderLoadDataHandle {
                         }
                     }
                 }
-                dueDateEle.setAttribute('disabled', 'true');
+                // dueDateEle.setAttribute('disabled', 'true');
                 let date = $(eleDate).val();
                 if (date && dataSelected?.['no_of_days']) {
                     let dueDate = calculateDate(date, {'number_day_after': parseInt(dataSelected?.['no_of_days'])});
                     if (dueDate) {
                         $(dueDateEle).val(dueDate);
+                    }
+                    if (dataRow?.['due_date']) {
+                        $(dueDateEle).val(DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', dataRow?.['due_date']));
                     }
                 }
             }

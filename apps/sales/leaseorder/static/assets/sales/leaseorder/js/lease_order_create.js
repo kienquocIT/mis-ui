@@ -846,7 +846,7 @@ $(function () {
                 FormElementControl.loadInitS2($(newRow.querySelector('.table-row-uom')));
                 FormElementControl.loadInitS2($(newRow.querySelector('.table-row-tax')));
                 // Re Calculate after add shipping (pretax, discount, total)
-                shippingHandle.calculateShipping(shippingPrice);
+                LeaseOrderShippingHandle.calculateShipping(shippingPrice);
                 // Load disabled
                 LeaseOrderLoadDataHandle.loadRowDisabled(newRow);
                 // ReOrder STT

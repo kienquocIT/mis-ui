@@ -1576,4 +1576,31 @@ $(function () {
     $(contentElm).scroll(function () {
         $(this).scrollTop() > 100 && !$('.tab-gantt').hasClass('active') ? loadMoreBtn.fadeIn() : loadMoreBtn.fadeOut();
     });
+
+    let urlParams = $x.fn.getManyUrlParameters(['task_id', 'comment_id']);
+    if (urlParams?.['comment_id'] && urlParams?.['task_id']){
+        const modalEle = $('#CommentModal');
+        const taskElm = $(`.card-title[data-task-id="${urlParams?.['task_id']}"]`, modalEle)
+        if (taskElm.length){
+            const titleTask = taskElm.attr('title')
+            modalEle.find('.modal-title').append(`<span>${$.fn.gettext('of task')} "${titleTask}"</span>`)
+        }
+        modalEle.modal('show');
+        new $x.cls.cmt(modalEle.find('.comment-group')).init(
+            urlParams?.['task_id'],
+            "e66cfb5a-b3ce-4694-a4da-47618f53de4c",
+            {"comment_id": urlParams?.['comment_id']}
+        )
+        modalEle.on('hidden.bs.modal', function(){
+            delete modalEle.find('.modal-title span')
+        })
+    }
+    if (urlParams?.['task_id'] && !urlParams?.['comment_id']){
+        let tempHTML = document.createElement("p");
+        tempHTML['style'] = 'display:none';
+        tempHTML.innerHTML = `<span class="card-title" data-task-id="${urlParams?.['task_id']}"></span>`
+        document.body.appendChild(tempHTML)
+        kanbanTask.editTask($(tempHTML))
+        $('.card-title', tempHTML).trigger('click')
+    }
 }, jQuery);

@@ -64,17 +64,19 @@ class TabShipmentFunction {
                     targets: 1,
                     width: '27%',
                     render: (data, type, row) => {
-                        if (row.containerName) {
+                        if (row?.containerName) {
                             return `
-                                <a href="#" class="text-primary show-child" id="ctn-idx-${row?.containerRefNumber}">
-                                    <i class="fa-solid fa-sort-down"></i>
-                                </a> 
-                                <span>${row.containerName}</span>
-                                <button type="button" class="btn btn-primary btn-sm ms-2 btn-add-package" 
+                                <button type="button" 
+                                        class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs show-child" 
+                                        id="ctn-idx-${row?.containerRefNumber}">
+                                    <span class="icon"><i class="fa-solid fa-sort-down"></i></span>
+                                </button>
+                                <span>${row?.containerName}</span>
+                                <button type="button" 
+                                        class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs btn-add-package"
                                         id="add-package-${row?.containerRefNumber}"
-                                        data-container-ref="${row?.containerRefNumber}" 
-                                        title="Add Package">
-                                    <i class="far fa-plus-square"></i>
+                                        data-container-ref="${row?.containerRefNumber}" title="Add Package">
+                                    <span class="icon"><i class="far fa-plus-square"></i></span>
                                 </button>
                             `;
                         } else {
@@ -87,7 +89,7 @@ class TabShipmentFunction {
                     targets: 2,
                     width: '10%',
                     render: (data, type, row) => {
-                        return row?.containerType || row?.packageType || '';
+                        return row?.containerType?.title || row?.packageType?.title || '';
                     }
                 },
                 {
@@ -191,7 +193,7 @@ class TabShipmentEventHandler {
             const newContainer = {
                 isContainer: true,
                 containerName: pageElements.$containerName.val() || '',
-                containerType: pageElements.$containerType.val() || '',
+                containerType: SelectDDControl.get_data_from_idx(pageElements.$containerType, pageElements.$containerType.val()),
                 containerRefNumber: pageElements.$containerRef.val() || '',
                 containerWeight: pageElements.$containerWeight.val() || '',
                 containerDimension: pageElements.$containerDimension.val() || '',
@@ -243,7 +245,7 @@ class TabShipmentEventHandler {
             const newPackage = {
                 isContainer: false,
                 packageName: pageElements.$packageName.val() || '',
-                packageType: pageElements.$packageType.val() || '',
+                packageType: SelectDDControl.get_data_from_idx(pageElements.$packageType, pageElements.$packageType.val()),
                 packageRefNumber: pageElements.$packageRef.val() || '',
                 packageWeight: pageElements.$packageWeight.val() || '',
                 packageDimension: pageElements.$packageDimension.val() || '',
@@ -261,7 +263,7 @@ class TabShipmentEventHandler {
 
             // update DataTable
             let ctnRowEle = pageElements.$tableShipment
-                .find(`tbody tr a[id="ctn-idx-${selectedContainerRef}"]`)
+                .find(`tbody tr button[id="ctn-idx-${selectedContainerRef}"]`)
                 .closest('tr')  // find root row
             let index = pageElements.$tableShipment.DataTable().row(ctnRowEle).index() + 1;
             UsualLoadPageFunction.AddTableRowAtIndex(

@@ -85,11 +85,11 @@ class TabShipmentFunction {
                                     <i class="fa-solid fa-sort-down"></i>
                                 </a> 
                                 <span>${row.containerName}</span>
-                                <button type="button" class="btn btn-outline-primary btn-sm ms-2 btn-add-package" 
+                                <button type="button" class="btn btn-primary btn-sm ms-2 btn-add-package" 
                                         id="add-package-${row?.containerRefNumber}"
                                         data-container-ref="${row?.containerRefNumber}" 
                                         title="Add Package">
-                                    <i class="fas fa-plus-circle"></i>
+                                    <i class="far fa-plus-square"></i>
                                 </button>
                             `;
                         } else {
@@ -164,6 +164,34 @@ class TabShipmentFunction {
                 }
             });
         }
+    }
+
+     static LoadContainerType(data) {
+        pageElements.$containerType.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: pageElements.$containerType.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'container_list',
+            keyId: 'id',
+            keyText: 'title',
+        });
+    }
+
+    static LoadPackageType(data) {
+        pageElements.$packageType.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: pageElements.$packageType.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'package_list',
+            keyId: 'id',
+            keyText: 'title',
+        });
     }
 }
 

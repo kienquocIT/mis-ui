@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Master data Item' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageContent %}
+    <div class="row">
+        <div class="col-12 col-md-2 col-lg-2">
+            <ul class="nav flex-column nav-light nav-pills">
+                <li class="nav-item">
+                    <a  href="#section_container"
+                        class="nav-link active"
+                        data-bs-toggle="tab"
+                        data-collapse="section_container">
+                        <span class="nav-link-text">{% trans 'Container Type' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a  href="#section_package"
+                        class="nav-link"
+                        data-bs-toggle="tab"
+                        data-collapse="section_package">
+                        <span class="nav-link-text">{% trans 'Package Type' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-12 col-md-10 col-lg-10">
+            <div class="tab-content">
+                <!-- container part -->
+                <div class="tab-pane fade show active lookup-data" id="section_container">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal_container"
+                       class="mb-3 d-inline-block" id="create_container_type">
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-modal">
+                            <span>
+                                <span>{% trans 'Add' %}</span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                            </span>
+                        </button>
+                    </a>
+                    <table id="datatable-container" class="table nowrap w-100"
+                           data-url="{% url "ContainerMasterDataListAPI" %}"
+                           data-method="GET">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>{% trans "Code" %}</th>
+                                <th>{% trans "Title" %}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!-- package part -->
+                <div class="tab-pane fade lookup-data" id="section_package">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal_package"
+                       class="mb-3 d-inline-block" id="create_package_type">
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-modal">
+                            <span>
+                                <span>{% trans 'Add' %}</span>
+                                <span class="icon">
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                            </span>
+                        </button>
+                    </a>
+                    <table id="datatable-package" class="table nowrap w-100"
+                           data-url="{% url "PackageMasterDataListAPI" %}"
+                           data-method="GET">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>{% trans "Code" %}</th>
+                                <th>{% trans "Title" %}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
+    <div class="modal fade" id="modal_container" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="container-modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="icon">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-container"
+                          data-url="{% url "ContainerMasterDataListAPI" %}"
+                          data-url-detail="{% url "ContainerMasterDataDetailAPI" "0" %}"
+                          data-url-redirect="{% url "ShipmentMasterDataList" %}"
+                          data-method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <!-- Title -->
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="txt_title">{% trans 'Container' %}</label>
+                                    <input type="text" class="form-control" name="title" id="container_masterdata_name" required>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {% trans 'Close' %}
+                    </button>
+                    <button type="submit" class="btn btn-primary" form="form-container">
+                        {% trans 'Save' %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_package" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="package-modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="icon">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-package"
+                          data-url="{% url "PackageMasterDataListAPI" %}"
+                          data-url-detail="{% url "PackageMasterDataDetailAPI" "0" %}"
+                          data-url-redirect="{% url "ShipmentMasterDataList" %}"
+                          data-method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <!-- Title -->
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label required" for="txt_title">{% trans 'Package' %}</label>
+                                    <input type="text" class="form-control" name="title" id="package_masterdata_name" required>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {% trans 'Close' %}
+                    </button>
+                    <button type="submit" class="btn btn-primary" form="form-package">
+                        {% trans 'Save' %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block dataHiddenGroup %}
+{% endblock %}
+
+{% block jsFooter %}
+    <script src="{% static 'assets/js/masterdata/saledata/masterdata/shipment.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
+{% endblock %}

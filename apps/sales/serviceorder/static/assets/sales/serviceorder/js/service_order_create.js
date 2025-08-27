@@ -10,7 +10,10 @@ $(document).ready(function () {
     ServiceOrder.initModalContextTracking()
     ServiceOrder.initAttachment()
     // ============ tab shipment =============
+
     TabShipmentFunction.initShipmentDataTable()
+    TabShipmentFunction.LoadContainerType()
+    TabShipmentFunction.LoadPackageType()
     TabShipmentEventHandler.InitPageEvent()
 
     // ========== tab expense ===========

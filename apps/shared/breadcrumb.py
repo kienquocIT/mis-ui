@@ -547,6 +547,9 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     # Service order
     SERVICE_ORDER_PAGE = BreadcrumbChildren(_('Service order'), 'ServiceOrderList')
 
+    # shipment
+    SHIPMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master data shipment'), 'ShipmentMasterDataList')
+
 
 class BreadcrumbView:
     """menu vertical item view"""
@@ -1492,3 +1495,5 @@ class BreadcrumbView:
     ATTRIBUTE_LIST_PAGE = [
         BreadcrumbItem.ATTRIBUTE_LIST_PAGE
     ]
+
+    SHIPMENT_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.SHIPMENT_MASTER_DATA_LIST_PAGE]

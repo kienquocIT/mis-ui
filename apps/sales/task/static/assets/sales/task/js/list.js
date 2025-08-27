@@ -400,7 +400,7 @@ $(function () {
                                 .attr('data-name', data.employee_created.full_name)
                                 .attr('value', data.employee_created.id)
                                 .attr('data-value-id', data.employee_created.id)
-
+                            if ($('#employee_inherit_id')[0].closest('#formOpportunityTask')) {
                             const runComponent = (elm, data) => {
                                 data.selected = true;
                                 elm.attr('data-onload', JSON.stringify(data))
@@ -426,6 +426,11 @@ $(function () {
                                 $empElm.html(`<option value="${data.employee_inherit.id}">${data.employee_inherit.full_name}</option>`)
                                     .attr('data-onload', JSON.stringify(data.employee_inherit))
                                 $empElm.trigger("change", BastionFieldControl.skipBastionChange)
+                            }
+                            }
+                            let $customAssignee = $('#custom_assignee');
+                            if ($customAssignee.length > 0) {
+                                FormElementControl.loadInitS2($customAssignee, [data.employee_inherit]);
                             }
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
@@ -724,9 +729,10 @@ $(function () {
             })
 
             $('#idxPageContent').on('scroll', function(e){
+                let baseCheck = 68;
                 const top = $(this).scrollTop()
                 if ($('#tab_kanban').hasClass('active')){
-                    if (top >= 68) $('#tasklist_wrap').addClass('scroll_active')
+                    if (top >= baseCheck) $('#tasklist_wrap').addClass('scroll_active')
                     else $('#tasklist_wrap').removeClass('scroll_active')
                 }
             })

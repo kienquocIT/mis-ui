@@ -122,6 +122,7 @@ $(document).ready(function () {
     $('#inputTextEstimate').on('blur', function(){
         if (!isValidString(this.value))
             $.fn.notifyB({description: $('#form_valid').attr('data-estimate-error')}, 'failure')
+        this.value = this.value.toLowerCase()
     })
 
 

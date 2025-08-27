@@ -148,7 +148,11 @@
 							<a href="#" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover  d-xl-none"><span class="icon"><span class="feather-icon"><i data-feather="search"></i></span></span></a>
 							<div class="input-group d-xl-flex d-none">
 								<span class="input-affix-wrapper input-search">
-									<input type="text" class="form-control bg-transparent form-control-search"  data-navbar-search-close="false" placeholder="{% trans 'Menu finder' %}" aria-label="Search">
+									<input type="text" class="form-control bg-transparent form-control-search"
+                                           data-navbar-search-close="false"
+                                           placeholder="{% trans 'Menu finder' %}" aria-label="Search"
+                                           id="allPageSearch"
+                                    >
 									<span class="input-suffix"><i class="fa-solid fa-magnifying-glass"></i>
 									</span>
 								</span>
@@ -193,7 +197,9 @@
                     </div>
                     <div class="modal-body p-0">
                         <div class="p-3">
-                            <input type="text" class="form-control" placeholder="{% trans 'Enter your search text' %}"/>
+                            <input type="text" class="form-control" placeholder="{% trans 'Enter your search text' %}"
+                                   id="inputModalSearchMenu" aria-label="Search menu"
+                            />
                         </div>
                         <div class="w-100 d-flex min-h-200p" style="max-height: 500px;">
                             <div class="data-favorite p-3" style="flex: 1;overflow-y: auto;border-right: 1px solid #f1f1f1;"></div>
@@ -433,6 +439,7 @@
     <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.v1.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-select/js/dataTables.select.min.js' %}"></script>
+    <script src="{% static 'vendors/jszip/dist/jszip.min.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js' %}"></script>
     <script src="{% static 'vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>

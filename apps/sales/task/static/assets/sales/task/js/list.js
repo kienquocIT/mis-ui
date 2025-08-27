@@ -729,11 +729,14 @@ $(function () {
             })
 
             $('#idxPageContent').on('scroll', function(e){
-                let baseCheck = 68;
-                const top = $(this).scrollTop()
-                if ($('#tab_kanban').hasClass('active')){
-                    if (top >= baseCheck) $('#tasklist_wrap').addClass('scroll_active')
-                    else $('#tasklist_wrap').removeClass('scroll_active')
+                let $kanbanEle = $('#tab_kanban');
+                let kanbanTop = $kanbanEle.offset().top;
+                if (kanbanTop > 0) {
+                    let distanceToHeader = $kanbanEle.offset().top - 115;
+                    if ($kanbanEle.hasClass('active')) {
+                        if (distanceToHeader <= 0) $('#tasklist_wrap').addClass('scroll_active')
+                        else $('#tasklist_wrap').removeClass('scroll_active')
+                    }
                 }
             })
         }

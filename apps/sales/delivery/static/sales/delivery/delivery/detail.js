@@ -1842,16 +1842,8 @@ $(async function () {
     }
 
     // run datetimepicker
-    $('input[type=text].date-picker').daterangepicker({
-        singleDatePicker: true,
-        timepicker: false,
-        showDropdowns: false,
-        minYear: 2023,
-        locale: {
-            format: 'DD/MM/YYYY'
-        },
-        maxYear: parseInt(moment().format('YYYY'), 10),
-        autoApply: true,
+    $('.date-picker').each(function () {
+        DateTimeControl.initFlatPickrDate(this);
     });
     $('#inputDeliveryDate').val(null).trigger('change')
     $('#inputActualDate').val(null).trigger('change')

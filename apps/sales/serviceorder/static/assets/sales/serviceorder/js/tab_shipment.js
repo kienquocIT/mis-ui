@@ -1,18 +1,3 @@
-// (temp) - remove after building model
-const CONTAINER_TYPE = {
-    1: "10ft",
-    2: "15ft",
-    3: "20ft",
-    4: "40ft"
-}
-const PACKAGE_TYPE = {
-    1: "Carton",
-    2: "Pallet",
-    3: "Box",
-    4: "Tank"
-}
-
-
 /**
  * Khai báo các element trong page
  */
@@ -102,7 +87,7 @@ class TabShipmentFunction {
                     targets: 2,
                     width: '10%',
                     render: (data, type, row) => {
-                        return CONTAINER_TYPE?.[row?.containerType] || PACKAGE_TYPE?.[row?.packageType] || '';
+                        return row?.containerType || row?.packageType || '';
                     }
                 },
                 {

@@ -4,10 +4,12 @@ function resetFormTask() {
     $form[0].reset()
     $form.removeClass('task_edit')
     $('#employee_inherit_id-error, [name="id"], [name="parent_n"]').remove()
-    $('#employee_inherit_id, #opportunity_id, #project_id').val(null)
+    if ($('#employee_inherit_id')[0].closest('#formOpportunityTask')) {
+        $('#employee_inherit_id, #opportunity_id, #project_id').val(null)
         .trigger('change', BastionFieldControl.skipBastionChange)
         .prop('disabled', false)
         .removeClass('is-invalid');
+    }
 
     $('.label-mark, .wrap-checklist, .wrap-subtask').html('');
     $('#inputLabel').val(null);
@@ -52,6 +54,8 @@ $(document).ready(function () {
     const $oppElm = $('#opportunity_id')
     const $prjElm = $('#project_id')
     const $btnCanvasLoad = $('#formOpportunityTask + .task_loading')
+
+    let $customAssignee = $('#custom_assignee');
 
     new $x.cls.file($('#assigner_attachment')).init({'name': 'attach'});
     new $x.cls.file($('#assignee_attachment')).init({'name': 'attach_assignee'});
@@ -104,7 +108,12 @@ $(document).ready(function () {
 
     //--DROPDOWN ASSIGN TO-- assign to me btn
     const $assignBtnElm = $(`<a href="#" class="form-text text-muted link-info btn-assign">${$('#form_valid').attr('data-assign-txt')}</a>`)
-    $empElm.parents('.form-group').append($assignBtnElm)
+    // $empElm.parents('.form-group').append($assignBtnElm)
+
+    if ($empElm[0].closest('#formOpportunityTask')) {
+        $empElm.parents('.form-group').append($assignBtnElm)
+    }
+
     $assignBtnElm.off().on('click', function () {
         if ($(this).hasClass('disabled')) return false
         const employee = JSON.parse($('#employee_info').text())
@@ -186,59 +195,70 @@ $(document).ready(function () {
     // reset form create task khi click huỷ bỏ hoặc tạo mới task con
     $('#offCanvasRightTask').on('hidden.bs.offcanvas', () => resetFormTask())
 
-    const {
-        opp_id,
-        opp_title,
-        opp_code,
-        process_id,
-        process_title,
-        process_stage_app_id,
-        process_stage_app_title,
-        inherit_id,
-        inherit_title,
-    } = $x.fn.getManyUrlParameters([
-        'opp_id', 'opp_title', 'opp_code',
-        'process_id', 'process_title',
-        'process_stage_app_id', 'process_stage_app_title',
-        'inherit_id', 'inherit_title',
-    ])
+    $('#offCanvasRightTask').on('shown.bs.offcanvas', function () {
+        // init S2 custom assignee
+        if ($customAssignee.length > 0) {
+            if (!$customAssignee.val()) {
+                FormElementControl.loadInitS2($customAssignee, [], {}, $('#offCanvasRightTask'), true);
+            }
+        }
+    });
 
-    new $x.cls.bastionField({
-        has_opp: true,
-        has_inherit: true,
-        has_process: true,
-        has_prj: true,
-        data_opp: $x.fn.checkUUID4(opp_id) ? [
-            {
-                "id": opp_id,
-                "title": $x.fn.decodeURI(opp_title),
-                "code": $x.fn.decodeURI(opp_code),
-                "selected": true,
-            }
-        ] : [],
-        data_process: $x.fn.checkUUID4(process_id) ? [
-            {
-                "id": process_id,
-                "title": process_title,
-                "selected": true,
-            }
-        ] : [],
-        data_process_stage_app: $x.fn.checkUUID4(process_stage_app_id) ? [
-            {
-                "id": process_stage_app_id,
-                "title": process_stage_app_title,
-                "selected": true,
-            }
-        ] : [],
-        data_inherit: $x.fn.checkUUID4(inherit_id) ? [
-            {
-                "id": inherit_id,
-                "full_name": inherit_title,
-                "selected": true,
-            }
-        ] : [],
-        "inheritFlagData": {"disabled": false, "readonly": false},
-    }).init();
+    if ($empElm[0].closest('#formOpportunityTask')) {
+        const {
+            opp_id,
+            opp_title,
+            opp_code,
+            process_id,
+            process_title,
+            process_stage_app_id,
+            process_stage_app_title,
+            inherit_id,
+            inherit_title,
+        } = $x.fn.getManyUrlParameters([
+            'opp_id', 'opp_title', 'opp_code',
+            'process_id', 'process_title',
+            'process_stage_app_id', 'process_stage_app_title',
+            'inherit_id', 'inherit_title',
+        ])
+
+        new $x.cls.bastionField({
+            has_opp: true,
+            has_inherit: true,
+            has_process: true,
+            has_prj: true,
+            data_opp: $x.fn.checkUUID4(opp_id) ? [
+                {
+                    "id": opp_id,
+                    "title": $x.fn.decodeURI(opp_title),
+                    "code": $x.fn.decodeURI(opp_code),
+                    "selected": true,
+                }
+            ] : [],
+            data_process: $x.fn.checkUUID4(process_id) ? [
+                {
+                    "id": process_id,
+                    "title": process_title,
+                    "selected": true,
+                }
+            ] : [],
+            data_process_stage_app: $x.fn.checkUUID4(process_stage_app_id) ? [
+                {
+                    "id": process_stage_app_id,
+                    "title": process_stage_app_title,
+                    "selected": true,
+                }
+            ] : [],
+            data_inherit: $x.fn.checkUUID4(inherit_id) ? [
+                {
+                    "id": inherit_id,
+                    "full_name": inherit_title,
+                    "selected": true,
+                }
+            ] : [],
+            "inheritFlagData": {"disabled": false, "readonly": false},
+        }).init();
+    }
 
     SetupFormSubmit.validate(
         $form,
@@ -288,6 +308,16 @@ $(document).ready(function () {
                         'full_name': assign_to.text,
                         'first_name': assign_to.first_name,
                         'last_name': assign_to.last_name,
+                    }
+                }
+
+                if ($customAssignee.length > 0) {
+                    let dataAssign = SelectDDControl.get_data_from_idx($customAssignee, $customAssignee.val());
+                    assign_toData = {
+                        'id': dataAssign?.['id'],
+                        'full_name': dataAssign?.['full_name'],
+                        'first_name': dataAssign?.['first_name'],
+                        'last_name': dataAssign?.['last_name'],
                     }
                 }
 

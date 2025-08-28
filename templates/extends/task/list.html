@@ -1,6 +1,4 @@
-{% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Task list page' %}{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/dragula/dragula.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/perfect-scrollbar.css' %}" rel="stylesheet" type="text/css"/>
@@ -123,7 +121,7 @@
                 <span class="nav-link-text">{% trans 'List' %}</span>
             </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item hidden">
             <a class="nav-link tab-gantt" data-bs-toggle="tab" href="#tab_gantt">
                 <i class="fa-solid fa-chart-gantt"></i>
                 <span class="nav-link-text">Gantt</span>
@@ -251,7 +249,7 @@
         >
         {{ data.task_config|json_script:'task_config' }}
     </div>
-    {% include 'sales/task/extend/task-form.html' with has_prj=True %}
+{#    {% include 'sales/task/extend/task-form.html' with has_prj=True %}#}
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/ckeditor/ckeditor.js' %}"></script>

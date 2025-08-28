@@ -474,7 +474,7 @@ class QuotationLoadDataHandle {
                         $(modalShippingContent).append(`<div class="ml-1 shipping-group">
                                                         <textarea class="form-control show-not-edit shipping-content disabled-custom-show mb-2" rows="3" cols="50" id="${shipping.id}" disabled>${shipping.full_address}</textarea>
                                                         <div class="d-flex justify-content-end">
-                                                            <button type="button" class="btn btn-outline-primary choose-shipping" data-bs-dismiss="modal" id="${shipping.id}" data-address="${shipping.full_address}" data-zone="${dataZone}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
+                                                            <button type="button" class="btn btn-primary choose-shipping" data-bs-dismiss="modal" id="${shipping.id}" data-address="${shipping.full_address}" data-zone="${dataZone}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                     <br>`)
@@ -486,7 +486,7 @@ class QuotationLoadDataHandle {
                         $(modalBillingContent).append(`<div class="ml-1 billing-group">
                                                         <textarea class="form-control show-not-edit billing-content disabled-custom-show mb-2" rows="3" cols="50" id="${billing.id}" disabled>${billing.full_address}</textarea>
                                                         <div class="d-flex justify-content-end">
-                                                            <button type="button" class="btn btn-outline-primary choose-billing" data-bs-dismiss="modal" id="${billing.id}" data-address="${billing.full_address}" data-zone="${dataZone}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
+                                                            <button type="button" class="btn btn-primary choose-billing" data-bs-dismiss="modal" id="${billing.id}" data-address="${billing.full_address}" data-zone="${dataZone}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                     <br>`)

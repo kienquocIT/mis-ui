@@ -189,6 +189,15 @@ class ShiftAssignHandle {
 
     };
 
+    static getRandomColor() {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    };
+
     static generateEvents(startDate, endDate, employeeID, calendar) {
         let events = [];
         let mStart = moment(startDate);
@@ -206,7 +215,6 @@ class ShiftAssignHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('shift_assignment_list') && Array.isArray(data.shift_assignment_list)) {
-                        let listBg = ['#e92990', '#c02ff3'];
                         let shiftBg = {};
                         for (let m = mStart.clone(); m.isBefore(mEnd); m.add(1, 'days')) {
                             for (let shiftAssignmentData of data.shift_assignment_list) {
@@ -220,7 +228,7 @@ class ShiftAssignHandle {
                                             bg = shiftBg?.[shiftAssignmentData?.['shift']?.['id']];
                                         }
                                         if (!shiftBg?.[shiftAssignmentData?.['shift']?.['id']]) {
-                                            bg = listBg[Math.floor(Math.random() * listBg.length)];
+                                            bg = ShiftAssignHandle.getRandomColor();
                                             shiftBg[shiftAssignmentData?.['shift']?.['id']] = bg;
                                         }
                                     }

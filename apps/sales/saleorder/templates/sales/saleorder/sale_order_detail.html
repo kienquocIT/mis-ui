@@ -25,14 +25,16 @@
 
     <div class="row">
         <div class="col-12 col-md-6 col-lg-6">
-            <ul class="nav nav-line nav-tabs nav-light justify-content-start quotation-tabs">
+            <ul class="nav nav-pills-custom quotation-tabs">
                 <li class="nav-item quotation-tab-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                        <span class="nav-icon-wrap mr-1"><i class="fa-solid fa-tag"></i></span>
                         <span class="nav-link-text">{% trans 'Sale Order' %}</span>
                     </a>
                 </li>
                 <li class="nav-item quotation-tab-item" id="tab-indicator" data-zone="sale_order_indicators_data">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                        <span class="nav-icon-wrap mr-1"><i class="fa-solid fa-square-poll-horizontal"></i></span>
                         <span class="nav-link-text">{% trans 'Indicator' %}</span>
                     </a>
                 </li>
@@ -79,7 +81,7 @@
                                 <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" name="date_created" id="quotation-create-date-created"
-                                           class="form-control date-picker" autocomplete="off" readonly>
+                                           class="form-control flat-picker" autocomplete="off" disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -147,7 +149,7 @@
 
                     <div class="row">
                         <div class="row">
-                            <ul class="nav nav-line nav-tabs nav-light border-bottom" id="quotation-tabs">
+                            <ul class="nav nav-pills-custom" id="quotation-tabs">
                                 <li class="nav-item tab-detail" data-zone="sale_order_products_data">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                                         <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>

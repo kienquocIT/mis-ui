@@ -60,6 +60,8 @@ $(document).ready(function () {
     function handleModalPaymentDetailEvent(){
         ServiceOrder.handleSavePaymentDetail()
         ServiceOrder.handleChangePaymentDetail()
+        ServiceOrder.handleOpenModalReconcile()
+        ServiceOrder.handleSavePaymentReconcile()
     }
 
     handleServiceDetailTabEvent()

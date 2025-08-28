@@ -189,6 +189,15 @@ class ShiftAssignHandle {
 
     };
 
+    static getRandomColor() {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    };
+
     static generateEvents(startDate, endDate, employeeID, calendar) {
         let events = [];
         let mStart = moment(startDate);
@@ -220,7 +229,7 @@ class ShiftAssignHandle {
                                             bg = shiftBg?.[shiftAssignmentData?.['shift']?.['id']];
                                         }
                                         if (!shiftBg?.[shiftAssignmentData?.['shift']?.['id']]) {
-                                            bg = listBg[Math.floor(Math.random() * listBg.length)];
+                                            bg = ShiftAssignHandle.getRandomColor();
                                             shiftBg[shiftAssignmentData?.['shift']?.['id']] = bg;
                                         }
                                     }

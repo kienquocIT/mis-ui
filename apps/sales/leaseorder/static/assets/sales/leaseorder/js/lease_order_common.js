@@ -27,6 +27,8 @@ class LeaseOrderLoadDataHandle {
     static $btnSaveTerm = $('#btn-save-select-term');
     static $btnSaveInvoice = $('#btn-save-select-invoice');
     static $btnSaveReconcile = $('#btn-save-select-reconcile');
+    static $modalShipping = $('#shippingFeeModalCenter');
+
     static dataAssetType = [
         {'id': '', 'title': 'Select...',},
         {'id': 1, 'title': LeaseOrderLoadDataHandle.transEle.attr('data-asset-type-1')},
@@ -291,7 +293,6 @@ class LeaseOrderLoadDataHandle {
                     LeaseOrderLoadDataHandle.loadChangePaymentTerm();
                 }
                 // load Shipping & Billing by Customer
-                LeaseOrderLoadDataHandle.loadShippingBillingCustomer();
                 LeaseOrderLoadDataHandle.loadShippingBillingCustomer(dataSelected);
                 // clear shipping + billing text area
                 $('#quotation-create-shipping-address')[0].value = '';
@@ -719,36 +720,37 @@ class LeaseOrderLoadDataHandle {
         return true;
     };
 
-    static loadShippingBillingCustomer(item = null) {
+    static loadShippingBillingCustomer(data = {}) {
+        let item = data ? data : {};
         let modalShippingContent = $('#quotation-create-modal-shipping-body')[0].querySelector('.modal-body');
-        if (modalShippingContent) {
+        let modalBillingContent = $('#quotation-create-modal-billing-body')[0].querySelector('.modal-body');
+        if (modalShippingContent && modalBillingContent) {
             $(modalShippingContent).empty();
+            $(modalBillingContent).empty();
             if (item) {
-                for (let i = 0; i < item.shipping_address.length; i++) {
-                    let shipping = item.shipping_address[i];
-                    $(modalShippingContent).append(`<div class="ml-1 shipping-group">
+                if (item?.['shipping_address']) {
+                    for (let i = 0; i < item.shipping_address.length; i++) {
+                        let shipping = item.shipping_address[i];
+                        $(modalShippingContent).append(`<div class="ml-1 shipping-group">
                                                         <textarea class="form-control show-not-edit shipping-content disabled-custom-show mb-2" rows="3" cols="50" id="${shipping.id}" disabled>${shipping.full_address}</textarea>
                                                         <div class="d-flex justify-content-end">
                                                             <button type="button" class="btn btn-primary choose-shipping" data-bs-dismiss="modal" id="${shipping.id}" data-address="${shipping.full_address}">${LeaseOrderLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                     <br>`)
+                    }
                 }
-            }
-        }
-        let modalBillingContent = $('#quotation-create-modal-billing-body')[0].querySelector('.modal-body');
-        if (modalBillingContent) {
-            $(modalBillingContent).empty();
-            if (item) {
-                for (let i = 0; i < item.billing_address.length; i++) {
-                    let billing = item.billing_address[i];
-                    $(modalBillingContent).append(`<div class="ml-1 billing-group">
+                if (item?.['billing_address']) {
+                    for (let i = 0; i < item.billing_address.length; i++) {
+                        let billing = item.billing_address[i];
+                        $(modalBillingContent).append(`<div class="ml-1 billing-group">
                                                         <textarea class="form-control show-not-edit billing-content disabled-custom-show mb-2" rows="3" cols="50" id="${billing.id}" disabled>${billing.full_address}</textarea>
                                                         <div class="d-flex justify-content-end">
                                                             <button type="button" class="btn btn-primary choose-billing" data-bs-dismiss="modal" id="${billing.id}" data-address="${billing.full_address}">${LeaseOrderLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                     <br>`)
+                    }
                 }
             }
         }
@@ -1675,7 +1677,13 @@ class LeaseOrderLoadDataHandle {
         if ($(ele).val()) {
             let dataSelected = SelectDDControl.get_data_from_idx($(ele), $(ele).val());
             if (remarkELe && ratioEle && eleDate && valBeforeEle && valTotalEle && dueDateEle && dataSelected && dataDateType) {
+                let rowIndex = LeaseOrderDataTableHandle.$tablePayment.DataTable().row(row).index();
+                let $row = LeaseOrderDataTableHandle.$tablePayment.DataTable().row(rowIndex);
+                let dataRow = $row.data();
                 $(remarkELe).val(dataDateType[dataSelected?.['after']][1]);
+                if (dataRow?.['remark']) {
+                    $(remarkELe).val(dataRow?.['remark']);
+                }
                 ratioEle.setAttribute('readonly', 'true');
                 $(ratioEle).val('');
                 if (dataSelected?.['value']) {
@@ -1690,12 +1698,15 @@ class LeaseOrderLoadDataHandle {
                         }
                     }
                 }
-                dueDateEle.setAttribute('disabled', 'true');
+                // dueDateEle.setAttribute('disabled', 'true');
                 let date = $(eleDate).val();
                 if (date && dataSelected?.['no_of_days']) {
                     let dueDate = calculateDate(date, {'number_day_after': parseInt(dataSelected?.['no_of_days'])});
                     if (dueDate) {
                         $(dueDateEle).val(dueDate);
+                    }
+                    if (dataRow?.['due_date']) {
+                        $(dueDateEle).val(DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', dataRow?.['due_date']));
                     }
                 }
             }
@@ -3434,6 +3445,27 @@ class LeaseOrderLoadDataHandle {
                 data['customer_data']['is_copy'] = true;
             }
             LeaseOrderLoadDataHandle.loadBoxQuotationCustomer(data?.['customer_data']);
+            // load shipping/ billing
+            WindowControl.showLoading();
+            $.fn.callAjax2({
+                    'url': LeaseOrderLoadDataHandle.customerSelectEle.attr('data-url'),
+                    'method': "GET",
+                    'data': {'id': oppData?.['customer']?.['id']},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('account_sale_list') && Array.isArray(data.account_sale_list)) {
+                            if (data?.['account_sale_list'].length > 0) {
+                                LeaseOrderLoadDataHandle.loadShippingBillingCustomer(data?.['account_sale_list'][0]);
+                            }
+                            WindowControl.hideLoading();
+                        }
+                    }
+                }
+            )
         }
         if (data?.['contact_data']) {
             LeaseOrderLoadDataHandle.loadBoxQuotationContact(data?.['contact_data']);
@@ -4935,6 +4967,12 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
+                        return `<span class="mask-money table-row-price" data-init-money="${parseFloat(row?.['shipping_price'] ? row?.['shipping_price'] : '0')}"></span>`
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
                         let disabled = '';
                         if (row?.['is_pass'] === false) {
                             disabled = 'disabled';
@@ -4957,6 +4995,12 @@ class LeaseOrderDataTableHandle {
         let passList = [];
         let failList = [];
         let checkList = [];
+        let noMapArea = LeaseOrderLoadDataHandle.$modalShipping[0].querySelector('.no-map-area');
+        let noLogistic = LeaseOrderLoadDataHandle.$modalShipping[0].querySelector('.no-logistic');
+        if (noMapArea && noLogistic) {
+            $(noMapArea).attr('hidden', 'true');
+            $(noLogistic).attr('hidden', 'true');
+        }
         LeaseOrderDataTableHandle.dataTableShipping();
         $.fn.callAjax2({
                 'url': url,
@@ -4972,7 +5016,7 @@ class LeaseOrderDataTableHandle {
                         if (shippingAddress) {
                             data.shipping_check_list.map(function (item) {
                                 if (!checkList.includes(item?.['id'])) {
-                                    let checkData = shippingHandle.checkShippingValid(item, shippingAddress);
+                                    let checkData = LeaseOrderShippingHandle.checkShippingValid(item, shippingAddress);
                                     if (checkData?.['is_pass'] === true) {
                                         passList.push(checkData);
                                     } else {
@@ -4983,9 +5027,13 @@ class LeaseOrderDataTableHandle {
                             })
                             passList = passList.concat(failList);
                             LeaseOrderDataTableHandle.dataTableShipping(passList);
+                            if (passList.length === failList.length) {
+                                $(noMapArea).removeAttr('hidden');
+                            }
                         } else {
                             LeaseOrderDataTableHandle.dataTableShipping(passList);
-                            $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-check-if-shipping-address')}, 'info');
+                            $(noLogistic).removeAttr('hidden');
+                            // $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-check-if-shipping-address')}, 'info');
                         }
                     }
                 }
@@ -8249,6 +8297,127 @@ class LeaseOrderPromotionHandle {
         }
     };
 
+}
+
+// Shipping
+class LeaseOrderShippingHandle {
+    static checkShippingValid(data_shipping, shippingAddress) {
+        let final_shipping_price = 0;
+        let margin_shipping_price = 0;
+        let formula_condition = data_shipping?.['formula_condition'];
+        let margin = parseFloat(data_shipping?.['margin']);
+        data_shipping['is_pass'] = false;
+        if (data_shipping?.['cost_method'] === 0) {  // fixed price for all
+            data_shipping['is_pass'] = true;
+            data_shipping['shipping_price'] = data_shipping?.['fixed_price'];
+            data_shipping['shipping_margin'] = data_shipping?.['margin'];
+            return data_shipping;
+        }
+        if (data_shipping?.['cost_method'] === 1) {  // check price by formula
+            for (let condition of formula_condition) {
+                let location_condition = condition?.['location_condition'];
+                for (let location of location_condition) {
+                    let address = shippingAddress.toLowerCase().replace(/\s+/g, "");
+                    let shipment = location?.['title'].toLowerCase().replace(/\s+/g, "");
+                    if (address.includes(shipment)) { // check location
+                        let $table = $('#datable-quotation-create-product');
+                        let formula_list = condition?.['formula'];
+                        for (let formula of formula_list) {
+                            let unit = formula?.['unit'];
+                            let amount_condition = parseFloat(formula?.['threshold']);
+                            let operator = formula?.['comparison_operators'];
+                            let extra_amount = parseFloat(formula?.['extra_amount']);
+                            let shipping_price = parseFloat(formula?.['amount_condition']);
+                            let result_to_check = 0;
+                            $table.DataTable().rows().every(function () {
+                                let row = this.node();
+                                if (row.querySelector('.table-row-item')) {
+                                    let quantity = row.querySelector('.table-row-quantity');
+                                    let elePrice = row.querySelector('.table-row-price');
+                                    if (unit?.['title'] === "price") { // if condition is price
+                                        if (quantity && elePrice) {
+                                            result_to_check += (parseFloat(quantity.value) * $(elePrice).valCurrency());
+                                        }
+                                    } else if (unit?.['title'] === "quantity") { // if condition is quantity
+                                        if (quantity) {
+                                            result_to_check += parseFloat(quantity.value);
+                                        }
+                                    } else if (unit?.['title'] === "volume") { // if condition is volume
+                                        data_shipping['is_pass'] = true;
+                                        data_shipping['shipping_price'] = final_shipping_price;
+                                        return data_shipping;
+                                    } else if (unit?.['title'] === "weight") { // if condition is weight
+                                        data_shipping['is_pass'] = true;
+                                        data_shipping['shipping_price'] = final_shipping_price;
+                                        return data_shipping;
+                                    }
+                                }
+                            });
+                            if (operator === 1) {
+                                if (result_to_check < amount_condition) {
+                                    data_shipping['is_pass'] = true;
+                                }
+                            } else if (operator === 2) {
+                                if (result_to_check > amount_condition) {
+                                    data_shipping['is_pass'] = true;
+                                }
+                            } else if (operator === 3) {
+                                if (result_to_check <= amount_condition) {
+                                    data_shipping['is_pass'] = true;
+                                }
+                            } else if (operator === 4) {
+                                if (result_to_check >= amount_condition) {
+                                    data_shipping['is_pass'] = true;
+                                }
+                            }
+                            if (data_shipping['is_pass'] === true) {
+                                if (data_shipping?.['cost_method'] === 0) {
+                                    final_shipping_price = parseFloat(data_shipping?.['fixed_price']);
+                                } else if (data_shipping?.['cost_method'] === 1) {
+                                    final_shipping_price = (shipping_price + (extra_amount * result_to_check));
+                                }
+                                if (margin > 0) {
+                                    margin_shipping_price = ((final_shipping_price * margin) / 100);
+                                    final_shipping_price = (final_shipping_price + margin_shipping_price)
+                                }
+                                data_shipping['shipping_price'] = final_shipping_price;
+                                data_shipping['shipping_margin'] = margin_shipping_price;
+                                return data_shipping;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return data_shipping;
+    };
+
+    static calculateShipping(shipping_price) {
+        let tableProductWrapper = document.getElementById('datable-quotation-create-product_wrapper');
+        if (tableProductWrapper) {
+            let tableProductFt = tableProductWrapper.querySelector('.dataTables_scrollFoot');
+            if (tableProductFt) {
+                let elePretaxAmount = tableProductFt?.querySelector('.quotation-create-product-pretax-amount');
+                let eleTotalAmount = tableProductFt?.querySelector('.quotation-create-product-total');
+                let elePretaxAmountRaw = tableProductFt?.querySelector('.quotation-create-product-pretax-amount-raw');
+                let eleDiscountAmountRaw = tableProductFt?.querySelector('.quotation-create-product-discount-amount-raw');
+                let eleTaxAmountRaw = tableProductFt?.querySelector('.quotation-create-product-taxes-raw');
+                let eleTotalAmountRaw = tableProductFt?.querySelector('.quotation-create-product-total-raw');
+                let eleRevenueBT = tableProductFt?.querySelector('.quotation-final-revenue-before-tax');
+                // Re calculate pretax, discount, total
+                let pretaxNew = parseFloat(elePretaxAmountRaw.value) + parseFloat(shipping_price);
+                let totalNew = (pretaxNew - parseFloat(eleDiscountAmountRaw.value) + parseFloat(eleTaxAmountRaw.value));
+                eleRevenueBT.value = (pretaxNew - parseFloat(eleDiscountAmountRaw.value));
+                // Apply new pretax, total
+                $(elePretaxAmount).attr('data-init-money', String(pretaxNew));
+                elePretaxAmountRaw.value = pretaxNew;
+                $(eleTotalAmount).attr('data-init-money', String(totalNew));
+                eleTotalAmountRaw.value = totalNew;
+                $.fn.initMaskMoney2();
+            }
+        }
+        return true;
+    };
 }
 
 // Store data

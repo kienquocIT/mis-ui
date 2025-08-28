@@ -215,7 +215,6 @@ class ShiftAssignHandle {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('shift_assignment_list') && Array.isArray(data.shift_assignment_list)) {
-                        let listBg = ['#e92990', '#c02ff3'];
                         let shiftBg = {};
                         for (let m = mStart.clone(); m.isBefore(mEnd); m.add(1, 'days')) {
                             for (let shiftAssignmentData of data.shift_assignment_list) {

@@ -1471,12 +1471,21 @@ table.dataTable tr.dtrg-group th {
 
 /* Hiệu ứng nền cho nav */
 .nav-pills-custom {
-    border-bottom: 1px solid #eaeaea; /* đổi màu tuỳ ý */
+    display: flex;
+    width: fit-content;  /* tự động vừa nội dung */
+    border: 1px solid #eaeaea;
+    border-radius: 20px;
+    padding: 3px;
+
+    /* Hiệu ứng kính trong suốt */
+    background: rgba(0, 0, 0, 0.01);
+    backdrop-filter: blur(15px);      /* làm mờ nền phía sau */
+    -webkit-backdrop-filter: blur(12px); /* hỗ trợ Safari */
 }
 
 .nav-pills-custom .nav-link {
     position: relative;
-    border-radius: 15px;
+    border-radius: 20px;
     margin: 4px;
     padding: 8px 16px;
     color: #5f5f5f;
@@ -1489,7 +1498,7 @@ table.dataTable tr.dtrg-group th {
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: 15px;
+    border-radius: 20px;
     background: linear-gradient(135deg,
         rgba(0, 0, 0, 0.08) 0%,
         rgba(0, 0, 0, 0.05) 50%,

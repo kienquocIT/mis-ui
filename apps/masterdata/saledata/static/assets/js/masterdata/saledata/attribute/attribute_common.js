@@ -24,7 +24,7 @@ class AttributeHandle {
         AttributeHandle.loadDtb();
         AttributeHandle.loadDtbList();
         AttributeHandle.loadDtbWarranty();
-        FormElementControl.loadInitS2(AttributeHandle.$boxParent, [], {'parent_n_id__isnull': true}, null, true);
+        FormElementControl.loadInitS2(AttributeHandle.$boxParent, [], {'is_category': true}, null, true);
         FormElementControl.loadInitS2($('#numeric_duration_unit'));
         FormElementControl.loadInitS2($('#list_duration_unit'));
         // init date picker

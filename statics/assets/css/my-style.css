@@ -1466,3 +1466,30 @@ table.dataTable tr.dtrg-group th {
 .hk-wrapper[data-layout="navbar"] .hk-menu .menu-content-wrap .menu-group .navbar-nav .nav-item.active > .nav-link[data-bs-toggle="collapse"]::after{
     color:#fff!important;
 }
+
+.btn-blue, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-nav-button.next {
+  color: #fff;
+  background-color: #298DFF;
+  border-color: #298DFF;
+}
+.btn-blue:hover, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-nav-button.next:hover, .btn-blue:focus, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-nav-button.next:focus {
+  color: #fff;
+  background-color: #298DFF;
+  border-color: #298DFF;
+}
+.btn-blue:not(:disabled):not(.disabled).active, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-nav-button.next:not(:disabled):not(.disabled).active, .btn-blue:not(:disabled):not(.disabled):active, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-nav-button.next:not(:disabled):not(.disabled):active {
+  color: #fff;
+  background-color: #298DFF;
+  border-color: #298DFF;
+}
+.btn-blue.disabled, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .disabled.hopscotch-nav-button.next, .btn-blue:disabled, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-nav-button.next:disabled {
+  color: #fff;
+  background-color: #95bfed;
+  border-color: #95bfed;
+}
+.btn-blue.btn-animated:focus, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .btn-animated.hopscotch-nav-button.next:focus, .btn-blue.btn-animated:active, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .btn-animated.hopscotch-nav-button.next:active, .btn-blue.btn-animated:hover, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .btn-animated.hopscotch-nav-button.next:hover, .btn-blue.btn-animated:not(:disabled):not(.disabled).active, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .btn-animated.hopscotch-nav-button.next:not(:disabled):not(.disabled).active, .btn-blue.btn-animated:not(:disabled):not(.disabled):active, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .btn-animated.hopscotch-nav-button.next:not(:disabled):not(.disabled):active {
+  color: #fff;
+  background-color: #298DFF;
+  border-color: #298DFF;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1) !important;
+}

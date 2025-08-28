@@ -42,10 +42,6 @@ msgid "Task report"
 msgstr "Báo cáo công việc"
 
 #
-msgid "Hide this data for the future"
-msgstr "Ẩn dữ liệu này trong tương lai"
-
-#
 msgid "Confirm"
 msgstr "Xác nhận"
 

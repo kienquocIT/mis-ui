@@ -1009,3 +1009,9 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # master data - attribute
     ATTRIBUTE_LIST = StringUrl('saledata/attribute/list')
     ATTRIBUTE_DETAIL = StringUrl('saledata/attribute/{pk}')
+
+    # master data - shipment
+    CONTAINER_LIST = StringUrl('saledata/shipment/container/list')
+    CONTAINER_DETAIL = StringUrl('saledata/shipment/container/detail/{pk}')
+    PACKAGE_LIST = StringUrl('saledata/shipment/package/list')
+    PACKAGE_DETAIL = StringUrl('saledata/shipment/package/detail/{pk}')

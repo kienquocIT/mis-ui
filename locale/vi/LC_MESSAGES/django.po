@@ -8301,6 +8301,10 @@ msgid "Bank Account Information"
 msgstr "Thông tin tài khoản ngân hàng"
 
 #
+msgid "or enter other banking information here"
+msgstr "hoặc nhập thông tin chuyển khoản khác tại đây"
+
+#
 msgid "Credit Card Account Information"
 msgstr "Thông tin thẻ tín dụng"
 
@@ -11669,7 +11673,7 @@ msgstr "Nếu đã phát sinh giao dịch (ví dụ: nhập kho, giao hàng, v.v
 
 #
 msgid "Cash outflow type"
-msgstr "Loại phiếu thu"
+msgstr "Loại phiếu chi"
 
 #
 msgid "Lease asset list"
@@ -12190,3 +12194,19 @@ msgstr "Đồng bộ dữ liệu chấm công"
 #
 msgid "Use excel"
 msgstr "Dùng file excel"
+
+#
+msgid "There is no shipment for this area"
+msgstr "Không có cấu hình chi phí vận chuyển cho khu vực này"
+
+#
+msgid "Missing data in tab logistic"
+msgstr "Thiếu thông tin trong tab logistic"
+
+#
+msgid "Create shipment"
+msgstr "Tạo chi phí vận chuyển"
+
+#
+msgid "Export exel"
+msgstr "Xuất exel"

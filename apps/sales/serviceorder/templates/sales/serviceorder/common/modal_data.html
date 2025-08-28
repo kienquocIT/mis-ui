@@ -96,18 +96,15 @@
                             <input type="text" class="form-control" name="container_name" id="container_name" required>
                         </div>
                     </div>
-
                     <div class="col-12 mt-1">
-                        <label for="container_type" class="form-label">{% trans 'Container type' %}</label>
-                        <select name="container_type" class="form-select" id="container_type">
-                            <option value=""></option>
-                            <option value="1">{% trans "10 ft" %}</option>
-                            <option value="2">{% trans "15 ft" %}</option>
-                            <option value="3">{% trans "20 ft" %}</option>
-                            <option value="4">{% trans "40 ft" %}</option>
-                        </select>
+                        <div class="form-group">
+                            <label class="form-label" for="container_type">{% trans 'Container type' %}</label>
+                            <select class="form-select select2" id="container_type"
+                                    data-url="{% url 'ContainerMasterDataListAPI' %}"
+                                    name="container_type">
+                            </select>
+                        </div>
                     </div>
-
                     <div class="col-12 mt-2">
                         <div class="form-group">
                             <label class="form-label required" for="txt_title">{% trans 'Reference number' %}</label>
@@ -121,7 +118,7 @@
                                 <label class="form-label" for="weight_input">{% trans 'Weight' %}</label>
                                 <div class="input-group">
                                     <input type="number" class="form-control text-end" id="container_weight"
-                                           name="weight" placeholder="0" step="0.1">
+                                           name="weight" placeholder="0" step="0.1" min="0">
                                     <span class="input-group-text">Kg</span>
                                 </div>
                             </div>
@@ -129,7 +126,7 @@
                                 <label class="form-label" for="dimension_input">{% trans 'Dimension' %}</label>
                                 <div class="input-group">
                                     <input type="number" class="form-control text-end" id="container_dimension"
-                                           name="dimension" placeholder="0" step="0.5">
+                                           name="dimension" placeholder="0" step="0.5" min="0">
                                     <span class="input-group-text">M³</span>
                                 </div>
                             </div>
@@ -175,26 +172,18 @@
                     </div>
 
                     <div class="col-12 mt-1">
-                        <label for="package_type" class="form-label">{% trans 'Package type' %}</label>
-                        <select name="package_type" class="form-select" id="package_type">
-                            <option value=""></option>
-                            <option value="1">{% trans "Carton" %}</option>
-                            <option value="2">{% trans "Pallet" %}</option>
-                            <option value="3">{% trans "Box" %}</option>
-                            <option value="4">{% trans "Tank" %}</option>
-                        </select>
+                        <div class="form-group">
+                            <label class="form-label" for="package_type">{% trans 'Package type' %}</label>
+                            <select class="form-select select2" id="package_type"
+                                    data-url="{% url 'PackageMasterDataListAPI' %}"
+                                    name="package_type">
+                            </select>
+                        </div>
                     </div>
 
                     <div class="col-12 mt-2">
                         <label for="package_container" class="form-label">{% trans 'Container' %}</label>
-                        <select name="package_container" class="form-select" id="package_container">
-                            <option value=""></option>
-                            <option value="1">{% trans "CONT1" %}</option>
-                            <option value="2">{% trans "CONT2" %}</option>
-                            <option value="3">{% trans "CONT3" %}</option>
-                            <option value="4">{% trans "CONT4" %}</option>
-                            <option value="5">{% trans "CONT5" %}</option>
-                        </select>
+                        <select name="package_container" class="form-select" id="package_container"></select>
                     </div>
 
                     <div class="col-12 mt-2">
@@ -210,7 +199,7 @@
                                 <label class="form-label" for="package_weight">{% trans 'Weight' %}</label>
                                 <div class="input-group">
                                     <input type="number" class="form-control text-end" id="package_weight"
-                                           name="package_weight" placeholder="0">
+                                           name="package_weight" placeholder="0" step="0.1" min="0">
                                     <span class="input-group-text">Kg</span>
                                 </div>
                             </div>
@@ -218,7 +207,7 @@
                                 <label class="form-label" for="package_dimension">{% trans 'Dimension' %}</label>
                                 <div class="input-group">
                                     <input type="number" class="form-control text-end" id="package_dimension"
-                                           name="package_dimension" placeholder="0">
+                                           name="package_dimension" placeholder="0" step="1" min="0">
                                     <span class="input-group-text">M³</span>
                                 </div>
                             </div>

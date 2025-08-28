@@ -1,25 +1,3 @@
-// (temp) - remove after building model
-const CONTAINER_TYPE = {
-    1: "10ft",
-    2: "15ft",
-    3: "20ft",
-    4: "40ft"
-}
-const PACKAGE_TYPE = {
-    1: "Carton",
-    2: "Pallet",
-    3: "Box",
-    4: "Tank"
-}
-const CONTAINER_REF = {
-    1: "CONT1",
-    2: "CONT2",
-    3: "CONT3",
-    4: "CONT4",
-    5: "CONT5"
-}
-
-
 /**
  * Khai báo các element trong page
  */
@@ -77,69 +55,129 @@ class TabShipmentFunction {
             columns: [
                 {
                     targets: 0,
-                    width: "3%",
+                    width: "1%",
                     render: () => {
                         return '';
                     }
                 },
                 {
                     targets: 1,
-                    width: '20%',
+                    width: '27%',
                     render: (data, type, row) => {
-                        return row.containerName ? `
-                                <a href="#" class="text-primary show-child" id="ctn-idx-${row.containerRefNumber}">
-                                    <i class="fa-solid fa-sort-down"></i>
-                                </a> 
-                                <span>${row.containerName}</span>
-                              ` : `<span class="ctn-idx-${row.packageContainerRef}">${row.packageName}</span>`;
+                        if (row?.containerName) {
+                            return `
+                                <button type="button" 
+                                        class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs show-child" 
+                                        id="ctn-idx-${row?.containerRefNumber}">
+                                    <span class="icon"><i class="fa-solid fa-sort-down"></i></span>
+                                </button>
+                                <span>${row?.containerName}</span>
+                                <button type="button" 
+                                        class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs btn-add-package"
+                                        id="add-package-${row?.containerRefNumber}"
+                                        data-container-ref="${row?.containerRefNumber}" title="Add Package">
+                                    <span class="icon"><i class="far fa-plus-square"></i></span>
+                                </button>
+                            `;
+                        } else {
+                            // No add button and dropdown if package name field
+                            return `<span class="ctn-idx-${row.packageContainerRef}">${row?.packageName}</span>`;
+                        }
                     }
                 },
                 {
                     targets: 2,
-                    width: '15%',
+                    width: '10%',
                     render: (data, type, row) => {
-                        return CONTAINER_TYPE?.[row.containerType] || PACKAGE_TYPE?.[row.packageType] || '';
+                        return row?.containerType?.title || row?.packageType?.title || '';
                     }
                 },
                 {
                     targets: 3,
                     width: '15%',
                     render: (data, type, row) => {
-                        return row.containerRefNumber || row.packageRefNumber || '';
+                        return row?.containerRefNumber || row?.packageRefNumber || '';
                     }
                 },
                 {
                     targets: 4,
                     width: '15%',
                     render: (data, type, row) => {
-                        return row.containerWeight || row.packageWeight || '';
+                        return row?.containerWeight || row?.packageWeight || '';
                     }
                 },
                 {
                     targets: 5,
                     width: '15%',
                     render: (data, type, row) => {
-                        return row.containerDimension || row.packageDimension || '';
+                        return row?.containerDimension || row?.packageDimension || '';
                     }
                 },
                 {
                     targets: 6,
                     width: '14%',
                     render: (data, type, row) => {
-                        return row.containerNote || row.packageNote || '';
+                        return row?.containerNote || row?.packageNote || '';
                     }
                 },
                 {
                     targets: 7,
                     width: '3%',
-                    render: () => {
-                        return `<button type="button" class="btn btn-light btn-sm rounded-circle" 
-                                data-bs-toggle="tooltip" title="Delete">
-                                    <i class="far fa-trash-alt"></i>
-                                </button>`
+                    className: 'text-right',
+                    render: (data, type, row) => {
+                        return row.isContainer ? `<button type="button" 
+                                                class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-delete-container">
+                                                <span class="icon"><i class="far fa-trash-alt"></i></span>
+                                         </button>` : `<button type="button" 
+                                                class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-delete-package">
+                                                <span class="icon"><i class="far fa-trash-alt"></i></span>
+                                        </button>`;
                     }
                 },
-            ]
+            ],
+        });
+    }
+
+    static loadContainersToDropDown() {
+        pageElements.$packageContainer.empty().append('<option value=""></option>');
+        if (pageVariables.shipmentData && pageVariables.shipmentData.length > 0) {
+            pageVariables.shipmentData.forEach(function (item) {
+                if (item.isContainer) {
+                        pageElements.$packageContainer.append(`
+                        <option value="${item.containerRefNumber}">
+                            ${item.containerRefNumber}
+                        </option>
+                    `);
+                }
+            });
+        }
+    }
+
+     static LoadContainerType(data) {
+        pageElements.$containerType.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: pageElements.$containerType.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'container_list',
+            keyId: 'id',
+            keyText: 'title',
+        });
+    }
+
+    static LoadPackageType(data) {
+        pageElements.$packageType.initSelect2({
+            allowClear: true,
+            ajax: {
+                url: pageElements.$packageType.attr('data-url'),
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'package_list',
+            keyId: 'id',
+            keyText: 'title',
         });
     }
 }
@@ -153,8 +191,9 @@ class TabShipmentEventHandler {
         // save container event
         pageElements.$btnSaveContainer.on('click', function () {
             const newContainer = {
+                isContainer: true,
                 containerName: pageElements.$containerName.val() || '',
-                containerType: pageElements.$containerType.val() || '',
+                containerType: SelectDDControl.get_data_from_idx(pageElements.$containerType, pageElements.$containerType.val()),
                 containerRefNumber: pageElements.$containerRef.val() || '',
                 containerWeight: pageElements.$containerWeight.val() || '',
                 containerDimension: pageElements.$containerDimension.val() || '',
@@ -201,11 +240,12 @@ class TabShipmentEventHandler {
 
         // save package event
         pageElements.$btnSavePackage.on('click', function () {
-            const selectedContainerRef = CONTAINER_REF?.[pageElements.$packageContainer.val()] || '';
+            const selectedContainerRef = pageElements.$packageContainer.val() || '';
 
             const newPackage = {
+                isContainer: false,
                 packageName: pageElements.$packageName.val() || '',
-                packageType: pageElements.$packageType.val() || '',
+                packageType: SelectDDControl.get_data_from_idx(pageElements.$packageType, pageElements.$packageType.val()),
                 packageRefNumber: pageElements.$packageRef.val() || '',
                 packageWeight: pageElements.$packageWeight.val() || '',
                 packageDimension: pageElements.$packageDimension.val() || '',
@@ -222,7 +262,9 @@ class TabShipmentEventHandler {
             });
 
             // update DataTable
-            let ctnRowEle = pageElements.$tableShipment.find(`tbody tr a[id="ctn-idx-${selectedContainerRef}"]`).closest('tr')  // find root row
+            let ctnRowEle = pageElements.$tableShipment
+                .find(`tbody tr button[id="ctn-idx-${selectedContainerRef}"]`)
+                .closest('tr')  // find root row
             let index = pageElements.$tableShipment.DataTable().row(ctnRowEle).index() + 1;
             UsualLoadPageFunction.AddTableRowAtIndex(
                 pageElements.$tableShipment,
@@ -240,6 +282,88 @@ class TabShipmentEventHandler {
             pageElements.$packageNote.val('');
         });
 
+        // delete package row event
+        pageElements.$tableShipment.on('click', '.btn-delete-package', function () {
+            Swal.fire({
+                html: `
+                    <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
+                    <h5 class="text-danger">Delete Package ?</h5>
+                    <p>Deleting package row</p>`,
+                customClass: {
+                    confirmButton: 'btn btn-outline-secondary text-danger',
+                    cancelButton: 'btn btn-outline-secondary text-gray',
+                    container: 'swal2-has-bg',
+                    actions: 'w-100'
+                },
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: $.fn.gettext('Yes'),
+                cancelButtonText: $.fn.gettext('Cancel'),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    UsualLoadPageFunction.DeleteTableRow(
+                        pageElements.$tableShipment,
+                        parseInt($(this).closest('tr').find('td:first-child').text())
+                    );
+                }
+            })
+        });
+
+        // delete container row event
+        pageElements.$tableShipment.on('click', '.btn-delete-container', function () {
+            let currentRow = $(this).closest('tr');   // Get container reference number from current row
+            let containerRefNumber = currentRow.find('td:nth-child(4)').text().trim(); // Column contains ref number
+
+            Swal.fire({
+                html: `
+                    <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
+                    <h5 class="text-danger">Delete Container ?</h5>
+                    <p>Deleting container and all its packages</p>`,
+                customClass: {
+                    confirmButton: 'btn btn-outline-secondary text-danger',
+                    cancelButton: 'btn btn-outline-secondary text-gray',
+                    container: 'swal2-has-bg',
+                    actions: 'w-100'
+                },
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: $.fn.gettext('Yes'),
+                cancelButtonText: $.fn.gettext('Cancel'),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    // Find and delete all package rows of this container in DataTable
+                    let packageRows = [];
+                    pageElements.$tableShipment.find(`tbody span[class="ctn-idx-${containerRefNumber}"]`).each(function () {
+                        let packageRow = $(this).closest('tr');
+                        let rowIndex = parseInt(packageRow.find('td:first-child').text());
+                        packageRows.push(rowIndex);
+                    });
+
+                    // Delete all package rows
+                    packageRows.sort((a, b) => b - a).forEach(rowIndex => {
+                        UsualLoadPageFunction.DeleteTableRow(
+                            pageElements.$tableShipment,
+                            rowIndex
+                        );
+                    });
+
+                    // Delete container row
+                    UsualLoadPageFunction.DeleteTableRow(
+                        pageElements.$tableShipment,
+                        parseInt(currentRow.find('td:first-child').text())
+                    );
+
+                    // Update data in Shipment table
+                    pageVariables.shipmentData = pageVariables.shipmentData.filter(
+                        container => container.containerRefNumber !== containerRefNumber
+                    );
+                }
+            });
+        });
+
+        // show or hidden all packages
         $(document).on("click", '.show-child', function () {
             let containerID = $(this).attr('id');
             pageElements.$tableShipment.find(`tbody span[class="${containerID}"]`).each(function (index, ele) {
@@ -247,7 +371,28 @@ class TabShipmentEventHandler {
                 let is_show = parent_row.prop("hidden");
                 parent_row.prop("hidden", !is_show);
             })
+        });
+
+        // event for add package in add button in container row
+        $(document).on("click", '.btn-add-package', function () {
+            $('#modal_package').modal('show');
+            TabShipmentFunction.loadContainersToDropDown();
+
+            const containerRef = $(this).data('container-ref');
+            pageElements.$packageContainer.val(containerRef);
+            pageElements.$packageContainer.prop('disabled', true); // disable dropdown package_container
         })
+
+        // event when click Package from dropdown Add
+        $('a[data-bs-target="#modal_package"]').on('click', function () {
+            // Load containers to dropdown
+            TabShipmentFunction.loadContainersToDropDown();
+
+            // reset
+            pageElements.$packageContainer.prop('disabled', false);
+            pageElements.$packageContainer.removeClass('bg-light');
+            pageElements.$packageContainer.val('');
+        });
     }
 }
 

@@ -2972,7 +2972,7 @@ class QuotationDataTableHandle {
                             itemType = 2  // shipping
                         }
                         let des = "--";
-                        if (itemType === 0) {  // PRODUCT
+                        if ([0, 2].includes(itemType)) {  // PRODUCT
                             des = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '';
                             if (row?.['product_description']) {
                                 if (row?.['product_description'] !== "") {

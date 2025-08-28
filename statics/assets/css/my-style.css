@@ -1354,10 +1354,9 @@ table.dataTable tr.dtrg-group th {
 }
 
 .glow-gradient {
-  background: linear-gradient(270deg, #6a5acd, #00bcd4, #6a5acd);
-  /*background: linear-gradient(270deg, #8e2de2, #4a00e0, #00ffe7, #8e2de2);*/
+  background: linear-gradient(270deg, #9a8fe0, #66ddee, #9a8fe0);
   background-size: 600% 600%;
-  animation: glowing 3s ease infinite;
+  animation: glowing 5s ease infinite;
   color: white;
   border: none;
   transition: all 0.3s ease-in-out;

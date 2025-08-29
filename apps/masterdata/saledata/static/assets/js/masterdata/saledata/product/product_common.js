@@ -56,6 +56,12 @@ class ProductPageElements {
         this.$table_variant_items = $('#table-variant-items')
         this.$add_attribute_display_item = $('#add-attribute-display-item')
         this.$add_variant_des = $('#add-variant-des')
+        // attribute tab
+        this.$duration_unit = $('#duration-unit')
+        this.$btn_select_attribute = $('#btn-select-attribute')
+        this.$btn_add_product_attribute = $('#btn-add-product-attribute')
+        this.$table_select_attribute = $('#table-select-attribute')
+        this.$table_selected_attribute = $('#table-selected-attribute')
         // account determination tab
         this.$product_account_determination_table = $('#product-account-determination-table')
         this.$account_deter_referenced_by = $('#account-deter-referenced-by')
@@ -71,6 +77,8 @@ class ProductPageVariables {
         this.data_detail = null
         this.current_row_variant_attribute = null
         this.current_row_variant_item = null
+        // attribute tab
+        this.raw_attribute_list = []
         // account determination tab
         this.account_deter_columns_cfg = [
             {
@@ -295,7 +303,7 @@ class ProductPageFunction {
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollY: '65vh',
+            scrollY: '59vh',
             scrollX: true,
             scrollCollapse: true,
             ajax: {
@@ -522,7 +530,7 @@ class ProductPageFunction {
             dom: 't',
             paging: false,
             scrollX: true,
-            scrollY: '65vh',
+            scrollY: '59vh',
             scrollCollapse: true,
             data: data_list,
             columns: [
@@ -605,13 +613,13 @@ class ProductPageFunction {
         })
     }
     // component tab
-    static LoadComponentTable(option, data_list=[]) {
+    static LoadComponentTable(option='create', data_list=[]) {
         pageElements.$component_table.DataTableDefault({
             dom: 't',
             rowIdx: true,
             reloadCurrency: true,
             paging: false,
-            scrollY: '68vh',
+            scrollY: '62vh',
             scrollX: true,
             scrollCollapse: true,
             data: data_list,
@@ -651,7 +659,7 @@ class ProductPageFunction {
         });
     }
     // variant tab
-    static ReloadModalConfig(option, color_data) {
+    static ReloadModalConfig(option='create', color_data) {
         if (color_data !== '') {
             color_data = JSON.parse(color_data);
         }
@@ -982,8 +990,209 @@ class ProductPageFunction {
             }
         }
     }
+    // attribute tab
+    static LoadDurationUnit(data) {
+        pageElements.$duration_unit.empty()
+        pageElements.$duration_unit.initSelect2({
+            ajax: {
+                url: pageElements.$duration_unit.attr('data-url'),
+                method: 'GET',
+            },
+            callbackDataResp: function (resp, keyResp) {
+                let result = [];
+                for (let i = 0; i < resp.data[keyResp].length; i++) {
+                    if (resp.data[keyResp][i].group.id === pageElements.$general_uom_group.val()) {
+                        result.push(resp.data[keyResp][i])
+                    }
+                }
+                return result;
+            },
+            data: (data ? data : null),
+            keyResp: 'unit_of_measure',
+            keyId: 'id',
+            keyText: 'title',
+        })
+    }
+    static RemoveChildRow($table, parentId) {
+        $table.find(`tr[data-parent-id="${parentId}"]`).each(function (index, ele) {
+            let childId = $(ele).find('.btn-child-collapse').attr('data-id');
+            if (childId) {
+                ProductPageFunction.RemoveChildRow($table, childId);
+            }
+            $(ele).remove();
+        });
+    }
+    static LoadSelectAttributeTable() {
+        pageVariables.raw_attribute_list = []
+        pageElements.$table_select_attribute.DataTable().clear().destroy()
+        pageElements.$table_select_attribute.DataTableDefault({
+            dom: 't',
+            useDataServer: true,
+            rowIdx: true,
+            reloadCurrency: true,
+            paging: false,
+            scrollY: '62vh',
+            scrollX: true,
+            scrollCollapse: true,
+            ajax: {
+                url: pageElements.$table_select_attribute.attr('data-url'),
+                type: pageElements.$table_select_attribute.attr('data-method'),
+                dataSrc: function (resp) {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('attribute_list')) {
+                        pageVariables.raw_attribute_list = data?.['attribute_list'].filter(item => item?.['is_inventory'] === pageElements.$check_tab_inventory.is(':checked'))
+                        console.log(pageVariables.raw_attribute_list)
+                        return pageVariables.raw_attribute_list.filter(item => item?.['is_category'] === true && Object.keys(item?.['parent_n']).length === 0);
+                    }
+                    return [];
+                }
+            },
+            columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-5',
+                    'render': (data, type, row) => {
+                        return `<div class="form-check">
+                                    <input type="checkbox" data-id="${row?.['id']}" class="form-check-input selected-attribute-category">
+                                </div>`;
+                    }
+                },
+                {
+                    className: 'w-85',
+                    'render': (data, type, row) => {
+                        return `<span><i class="bi bi-box-seam"></i> ${row?.['title']}</span>`;
+                    }
+                },
+                {
+                    className: 'w-5 text-right',
+                    'render': (data, type, row) => {
+                        let list_item = JSON.stringify(row?.['price_config_data']?.['list_item'] || [])
+                        return `<button type="button"
+                                        class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs btn-child-collapse btn-show-child-attribute"
+                                        data-level="0"
+                                        data-id="${row?.['id']}"
+                                        data-list-item='${list_item}'
+                                        data-is-show="0"
+                                        >
+                                    <span class="icon">
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </span>
+                                </button>`;
+                    }
+                },
+            ]
+        });
+    }
+    static LoadSelectedAttributeTable(data_list=[], selected_id_list=[]) {
+        pageElements.$table_selected_attribute.DataTable().clear().destroy()
+        if (selected_id_list.length !== 0) {
+            pageElements.$table_selected_attribute.DataTableDefault({
+                dom: 't',
+                useDataServer: true,
+                rowIdx: true,
+                reloadCurrency: true,
+                paging: false,
+                scrollY: '52vh',
+                scrollX: true,
+                scrollCollapse: true,
+                ajax: {
+                    url: pageElements.$table_select_attribute.attr('data-url'),
+                    type: pageElements.$table_select_attribute.attr('data-method'),
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && typeof data === 'object' && data.hasOwnProperty('attribute_list')) {
+                            // vẫn gán pageVariables.raw_attribute_list để collapse
+                            pageVariables.raw_attribute_list = data?.['attribute_list'].filter(item => item?.['is_inventory'] === pageElements.$check_tab_inventory.is(':checked'))
+                            // nhưng hiển thị theo data detail nên sử dụng data?.['attribute_list']
+                            return data?.['attribute_list'].filter(item => selected_id_list.includes(item?.['id']))
+                        }
+                        return [];
+                    }
+                },
+                columns: [
+                    {
+                        className: 'w-5',
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
+                        className: 'w-90',
+                        'render': (data, type, row) => {
+                            return `<span class="selected-attribute" data-id="${row?.['id']}">${row?.['title']}</span>`;
+                        }
+                    },
+                    {
+                        className: 'w-5 text-right',
+                        'render': (data, type, row) => {
+                            let list_item = JSON.stringify(row?.['price_config_data']?.['list_item'] || [])
+                            return `<button type="button"
+                                            class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs btn-child-collapse btn-show-child-selected-attribute"
+                                            data-level="0" 
+                                            data-id="${row?.['id']}"
+                                            data-list-item='${list_item}'
+                                            data-is-show="0"
+                                            >
+                                        <span class="icon">
+                                            <i class="bi bi-caret-down-fill"></i>
+                                        </span>
+                                    </button>`;
+                        }
+                    },
+                ]
+            });
+        }
+        else {
+            pageElements.$table_selected_attribute.DataTableDefault({
+                dom: 't',
+                rowIdx: true,
+                reloadCurrency: true,
+                paging: false,
+                scrollY: '52vh',
+                scrollX: true,
+                scrollCollapse: true,
+                data: data_list,
+                columns: [
+                    {
+                        className: 'w-5',
+                        'render': () => {
+                            return ``;
+                        }
+                    },
+                    {
+                        className: 'w-90',
+                        'render': (data, type, row) => {
+                            return `<span class="selected-attribute" data-id="${row?.['id']}">${row?.['title']}</span>`;
+                        }
+                    },
+                    {
+                        className: 'w-5 text-right',
+                        'render': (data, type, row) => {
+                            let list_item = JSON.stringify(row?.['price_config_data']?.['list_item'] || [])
+                            return `<button type="button"
+                                            class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs btn-child-collapse btn-show-child-selected-attribute"
+                                            data-level="0" 
+                                            data-id="${row?.['id']}"
+                                            data-list-item='${list_item}'
+                                            data-is-show="0"
+                                            >
+                                        <span class="icon">
+                                            <i class="bi bi-caret-down-fill"></i>
+                                        </span>
+                                    </button>`;
+                        }
+                    },
+                ]
+            });
+        }
+    }
     // account determination tab
-    static LoadAccountDeterminationTable(option) {
+    static LoadAccountDeterminationTable(option='create') {
         if (!$.fn.DataTable.isDataTable('#product-account-determination-table')) {
             let frm = new SetupFormSubmit(pageElements.$product_account_determination_table);
             pageElements.$product_account_determination_table.DataTableDefault({
@@ -992,7 +1201,7 @@ class ProductPageFunction {
                 reloadCurrency: true,
                 paging: false,
                 scrollX: true,
-                scrollY: '65vh',
+                scrollY: '62vh',
                 scrollCollapse: true,
                 ajax: {
                     url: frm.dataUrl,
@@ -1128,6 +1337,14 @@ class ProductHandler {
             return false;
         }
         data['component_list_data'] = component_list_data
+
+        data['duration_unit'] = pageElements.$check_tab_inventory.is(':checked') ? null : pageElements.$duration_unit.val()
+
+        let attribute_list_data = []
+        pageElements.$table_selected_attribute.find('tbody tr .selected-attribute').each(function (index, ele) {
+            attribute_list_data.push($(ele).attr('data-id'))
+        })
+        data['attribute_list_data'] = attribute_list_data
 
         let variant_attribute_create_valid = true;
         let variant_item_create_valid = true;
@@ -1340,7 +1557,7 @@ class ProductHandler {
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(product_detail);
 
-                    // console.log(product_detail)
+                    console.log(product_detail)
 
                     pageElements.$code.val(product_detail?.['code']).prop('disabled', true).prop('readonly', true).addClass('form-control-line fw-bold text-primary')
                     pageElements.$title.val(product_detail?.['title'])
@@ -1357,6 +1574,7 @@ class ProductHandler {
                         $('#check-tab-inventory').attr('checked', true);
                         $('#link-tab-inventory').removeClass('disabled');
                         $('#tab_inventory').find('.row').prop('hidden', false)
+                        pageElements.$duration_unit.prop('disabled', true)
                     }
 
                     if (product_detail?.['product_choice'].includes(2)) {
@@ -1449,6 +1667,10 @@ class ProductHandler {
 
                     ProductPageFunction.LoadComponentTable(option, product_detail?.['component_list_data'] || [])
 
+                    ProductPageFunction.LoadDurationUnit(product_detail?.['duration_unit_data'] || {})
+
+                    ProductPageFunction.LoadSelectedAttributeTable([], product_detail?.['attribute_list_data'] || [])
+
                     let readonly = '';
                     let disabled = '';
                     if (option === 'detail') {
@@ -1536,7 +1758,7 @@ class ProductHandler {
                         reloadCurrency: true,
                         paging: false,
                         scrollX: true,
-                        scrollY: '65vh',
+                        scrollY: '62vh',
                         scrollCollapse: true,
                         data: data_list ? data_list : [],
                         columns: [
@@ -1681,6 +1903,8 @@ class ProductEventHandler {
         })
         // inventory tab
         pageElements.$check_tab_inventory.change(function () {
+            pageElements.$duration_unit.empty()
+            pageElements.$duration_unit.prop('disabled', pageElements.$check_tab_inventory.is(':checked'))
             $('#tab_inventory').find('.row').prop('hidden', !pageElements.$check_tab_inventory.is(':checked'))
             $.fn.initMaskMoney2()
         })
@@ -2002,6 +2226,152 @@ class ProductEventHandler {
             }
             $(this).addClass('bg-primary-light-5');
         })
+        // attribute tab
+        pageElements.$btn_select_attribute.on('click', function () {
+            ProductPageFunction.LoadSelectAttributeTable()
+        })
+        pageElements.$btn_add_product_attribute.on('click', function () {
+            Swal.fire({
+                html:
+                `<div class="d-flex align-items-center">
+                    <div class="avatar avatar-icon avatar-soft-blue me-3"><span class="initial-wrap"><i class="fa-solid fa-repeat"></i></span></div>
+                    <div>
+                        <h4 class="text-blue">${pageElements.$table_selected_attribute.attr('data-trans-change-confirm')}</h4>
+                        <p>${pageElements.$table_selected_attribute.attr('data-trans-change-noti')}</p>
+                    </div>
+                </div>`,
+                customClass: {
+                    confirmButton: 'btn btn-outline-secondary text-blue',
+                    cancelButton: 'btn btn-outline-secondary text-gray',
+                    container: 'swal2-has-bg',
+                    htmlContainer: 'bg-transparent text-start',
+                    actions:'w-100'
+                },
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: $.fn.gettext('Confirm'),
+                cancelButtonText: $.fn.gettext('Cancel'),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    let selected_id = []
+                    pageElements.$table_select_attribute.find('tbody tr .selected-attribute-category').each(function (index, ele) {
+                        if ($(ele).prop('checked')) {
+                            selected_id.push($(ele).attr('data-id'))
+                        }
+                    })
+                    ProductPageFunction.LoadSelectedAttributeTable(pageVariables.raw_attribute_list.filter(item => selected_id.includes(item?.['id'])))
+                    $('#modal-product-attribute').modal('hide')
+                }
+            })
+        })
+        $(document).on("click", '.btn-show-child-attribute', function () {
+            let parentLevel = parseInt($(this).attr('data-level') || 0);
+            let childLevel = parentLevel + 1;
+
+            if ($(this).attr('data-is-show') === '0') {
+                let this_row = $(this).closest('tr');
+                let this_child = pageVariables.raw_attribute_list.filter(item => item?.['parent_n']?.['id'] === $(this).attr('data-id'));
+                if (this_child.length > 0) {
+                    let child_row_html = '';
+                    for (let i = 0; i < this_child.length; i++) {
+                        let list_item = JSON.stringify(this_child[i]?.['price_config_data']?.['list_item'] || []);
+                        let duration_unit = JSON.stringify(this_child[i]?.['price_config_data']?.['duration_unit_data'] || {});
+                        child_row_html += `<tr data-parent-id="${$(this).attr('data-id')}" data-level="${childLevel}">
+                                                <td></td>
+                                                <td></td>
+                                                <td><span style="padding-left:${childLevel * 20}px"><i class="bi bi-box-seam"></i> ${this_child[i]?.['title']}</span></td>
+                                                <td>
+                                                    <button class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs btn-show-child-attribute" 
+                                                            data-id="${this_child[i]?.['id']}" 
+                                                            data-level="${childLevel}" 
+                                                            data-list-item='${list_item}' 
+                                                            data-duration-unit='${duration_unit}' 
+                                                            data-is-show="0"
+                                                            >
+                                                        <span class="icon">
+                                                            <i class="bi bi-caret-down-fill"></i>
+                                                        </span>
+                                                    </button>
+                                                </td>
+                                            </tr>`;
+                    }
+                    this_row.after(child_row_html);
+                }
+                else {
+                    let child_row_html = '';
+                    let data_list_item = JSON.parse($(this).attr('data-list-item'));
+                    let data_duration_unit = JSON.parse($(this).attr('data-duration-unit'));
+                    for (let i = 0; i < data_list_item.length; i++) {
+                        child_row_html += `<tr data-parent-id="${$(this).attr('data-id')}" data-level="${childLevel}">
+                                                <td></td>
+                                                <td></td>
+                                                <td class="text-primary"><span style="padding-left:${childLevel * 20}px">${data_list_item[i]?.['title']}</span>, +<span class="mask-money" data-init-money="${data_list_item[i]?.['additional_cost'] || 0}"></span>, <span>${data_duration_unit?.['title'] || ''}</span></td>
+                                                <td></td>
+                                            </tr>`;
+                    }
+                    this_row.after(child_row_html);
+                }
+                $(this).attr('data-is-show', '1');
+                $.fn.initMaskMoney2()
+            } else {
+                ProductPageFunction.RemoveChildRow(pageElements.$table_select_attribute, $(this).attr('data-id'));
+                $(this).attr('data-is-show', '0');
+            }
+        });
+        $(document).on("click", '.btn-show-child-selected-attribute', function () {
+            let parentLevel = parseInt($(this).attr('data-level') || 0);
+            let childLevel = parentLevel + 1;
+
+            if ($(this).attr('data-is-show') === '0') {
+                let this_row = $(this).closest('tr');
+                let this_child = pageVariables.raw_attribute_list.filter(item => item?.['parent_n']?.['id'] === $(this).attr('data-id'));
+                if (this_child.length > 0) {
+                    let child_row_html = '';
+                    for (let i = 0; i < this_child.length; i++) {
+                        let list_item = JSON.stringify(this_child[i]?.['price_config_data']?.['list_item'] || []);
+                        let duration_unit = JSON.stringify(this_child[i]?.['price_config_data']?.['duration_unit_data'] || {});
+                        child_row_html += `<tr data-parent-id="${$(this).attr('data-id')}" data-level="${childLevel}">
+                                                <td></td>
+                                                <td><span style="padding-left:${childLevel * 20}px"><i class="bi bi-box-seam"></i> ${this_child[i]?.['title']}</span></td>
+                                                <td class="text-right">
+                                                    <button type="button"
+                                                            class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs btn-child-collapse btn-show-child-selected-attribute" 
+                                                            data-id="${this_child[i]?.['id']}" 
+                                                            data-level="${childLevel}" 
+                                                            data-list-item='${list_item}' 
+                                                            data-duration-unit='${duration_unit}' 
+                                                            data-is-show="0"
+                                                            >
+                                                        <span class="icon">
+                                                            <i class="bi bi-caret-down-fill"></i>
+                                                        </span>
+                                                    </button>
+                                                </td>
+                                            </tr>`;
+                    }
+                    this_row.after(child_row_html);
+                }
+                else {
+                    let child_row_html = '';
+                    let data_list_item = JSON.parse($(this).attr('data-list-item'));
+                    let data_duration_unit = JSON.parse($(this).attr('data-duration-unit'));
+                    for (let i = 0; i < data_list_item.length; i++) {
+                        child_row_html += `<tr data-parent-id="${$(this).attr('data-id')}" data-level="${childLevel}">
+                                                <td></td>
+                                                <td class="text-primary"><span style="padding-left:${childLevel * 20}px">${data_list_item[i]?.['title']}</span>, +<span class="mask-money" data-init-money="${data_list_item[i]?.['additional_cost'] || 0}"></span>, <span>${data_duration_unit?.['title'] || ''}</span></td>
+                                                <td></td>
+                                            </tr>`;
+                    }
+                    this_row.after(child_row_html);
+                }
+                $(this).attr('data-is-show', '1');
+                $.fn.initMaskMoney2()
+            } else {
+                ProductPageFunction.RemoveChildRow(pageElements.$table_selected_attribute, $(this).attr('data-id'));
+                $(this).attr('data-is-show', '0');
+            }
+        });
         // for account determination
         pageElements.$account_deter_referenced_by.on('change', function () {
             $('#account-deter-create-noti').prop('hidden', $(this).val() !== '2')

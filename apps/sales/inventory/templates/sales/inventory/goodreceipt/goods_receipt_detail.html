@@ -2,7 +2,6 @@
 {% load static i18n %}
 {% block cssHeader %}
     <link href="{% static 'assets/sales/inventory/css/goodreceipt/goods_receipt_create.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
@@ -219,7 +218,7 @@
 
             <div class="row">
                 <div class="row">
-                    <ul class="nav nav-line nav-tabs nav-light border-bottom" id="quotation-tabs">
+                    <ul class="nav nav-pills-bfl" id="quotation-tabs">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                                 <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
@@ -653,7 +652,6 @@
 
 {% block jsFooter %}
 
-    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>

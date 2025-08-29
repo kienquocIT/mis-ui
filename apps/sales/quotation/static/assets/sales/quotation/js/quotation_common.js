@@ -474,7 +474,7 @@ class QuotationLoadDataHandle {
                         $(modalShippingContent).append(`<div class="ml-1 shipping-group">
                                                         <textarea class="form-control show-not-edit shipping-content disabled-custom-show mb-2" rows="3" cols="50" id="${shipping.id}" disabled>${shipping.full_address}</textarea>
                                                         <div class="d-flex justify-content-end">
-                                                            <button type="button" class="btn btn-outline-primary choose-shipping" data-bs-dismiss="modal" id="${shipping.id}" data-address="${shipping.full_address}" data-zone="${dataZone}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
+                                                            <button type="button" class="btn btn-primary choose-shipping" data-bs-dismiss="modal" id="${shipping.id}" data-address="${shipping.full_address}" data-zone="${dataZone}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                     <br>`)
@@ -486,7 +486,7 @@ class QuotationLoadDataHandle {
                         $(modalBillingContent).append(`<div class="ml-1 billing-group">
                                                         <textarea class="form-control show-not-edit billing-content disabled-custom-show mb-2" rows="3" cols="50" id="${billing.id}" disabled>${billing.full_address}</textarea>
                                                         <div class="d-flex justify-content-end">
-                                                            <button type="button" class="btn btn-outline-primary choose-billing" data-bs-dismiss="modal" id="${billing.id}" data-address="${billing.full_address}" data-zone="${dataZone}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
+                                                            <button type="button" class="btn btn-primary choose-billing" data-bs-dismiss="modal" id="${billing.id}" data-address="${billing.full_address}" data-zone="${dataZone}">${QuotationLoadDataHandle.transEle.attr('data-select-address')}</button>
                                                         </div>
                                                     </div>
                                                     <br>`)
@@ -2972,7 +2972,7 @@ class QuotationDataTableHandle {
                             itemType = 2  // shipping
                         }
                         let des = "--";
-                        if (itemType === 0) {  // PRODUCT
+                        if ([0, 2].includes(itemType)) {  // PRODUCT
                             des = row?.['product_data']?.['description'] ? row?.['product_data']?.['description'] : '';
                             if (row?.['product_description']) {
                                 if (row?.['product_description'] !== "") {
@@ -3899,6 +3899,12 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
+                    render: (data, type, row) => {
+                        return `<span class="mask-money table-row-price" data-init-money="${parseFloat(row?.['shipping_price'] ? row?.['shipping_price'] : '0')}"></span>`
+                    }
+                },
+                {
+                    targets: 3,
                     render: (data, type, row) => {
                         let disabled = '';
                         if (row?.['is_pass'] === false) {
@@ -6885,7 +6891,6 @@ class shippingHandle {
         data_shipping['is_pass'] = false;
         if (data_shipping?.['cost_method'] === 0) {  // fixed price for all
             data_shipping['is_pass'] = true;
-            data_shipping['title'] = data_shipping?.['fixed_price'];
             data_shipping['shipping_price'] = data_shipping?.['fixed_price'];
             data_shipping['shipping_margin'] = data_shipping?.['margin'];
             return data_shipping;
@@ -6921,12 +6926,10 @@ class shippingHandle {
                                         }
                                     } else if (unit?.['title'] === "volume") { // if condition is volume
                                         data_shipping['is_pass'] = true;
-                                        data_shipping['title'] = final_shipping_price;
                                         data_shipping['shipping_price'] = final_shipping_price;
                                         return data_shipping;
                                     } else if (unit?.['title'] === "weight") { // if condition is weight
                                         data_shipping['is_pass'] = true;
-                                        data_shipping['title'] = final_shipping_price;
                                         data_shipping['shipping_price'] = final_shipping_price;
                                         return data_shipping;
                                     }
@@ -6959,7 +6962,6 @@ class shippingHandle {
                                     margin_shipping_price = ((final_shipping_price * margin) / 100);
                                     final_shipping_price = (final_shipping_price + margin_shipping_price)
                                 }
-                                data_shipping['title'] = final_shipping_price;
                                 data_shipping['shipping_price'] = final_shipping_price;
                                 data_shipping['shipping_margin'] = margin_shipping_price;
                                 return data_shipping;

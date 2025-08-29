@@ -125,11 +125,18 @@ class QuotationDetail(View):
         employee_current = {}
         if request.user and not isinstance(request.user, AnonymousUser):
             employee_current = getattr(request.user, 'employee_current_data', {})
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_CONFIG).get()
+        task_config = {}
+        if resp.state:
+            task_config = resp.result
         return {
                    'data': {'doc_id': pk},
                    'employee_current': employee_current,
                    'input_mapping_properties': InputMappingProperties.QUOTATION_QUOTATION,
                    'form_id': 'frm_quotation_create',
+
+                   'task_config': task_config,
+                   'employee_info': request.user.employee_current_data,
                }, status.HTTP_200_OK
 
 

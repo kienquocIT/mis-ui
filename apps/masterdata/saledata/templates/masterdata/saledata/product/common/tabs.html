@@ -34,6 +34,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" id="link-tab-variants" href="#tab_attribute">
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-boxes"></i></span></span>
+                    <span class="nav-link-text">{% trans 'Attribute' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" id="link-tab-variants" href="#tab_variants">
                     <span class="nav-icon-wrap"><span class="feather-icon"><i class="fa-solid fa-palette"></i></span></span>
                     <span class="nav-link-text">{% trans 'Variants' %}</span>
@@ -375,6 +381,43 @@
                         <span>{% trans "Add new component" %}</span>
                         <span class="icon">
                             <i class="fas fa-plus-circle"></i>
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="tab_attribute">
+        <div class="row">
+            <div class="col-12 col-md-3 col-lg-2">
+                <div class="form-group">
+                    <label for="duration-unit" class="form-label">{% trans "Duration unit" %}</label>
+                    <select id="duration-unit" class="form-select" data-method="GET" data-url="{% url "UnitOfMeasureListAPI" %}"></select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <span class="small">{% trans "If the product has 'Inventory' enabled, only select attributes with 'inventory tracking' and vice versa" %}</span>
+                <table class="table nowrap w-100"
+                       id="table-selected-attribute"
+                       data-trans-change-confirm="{% trans 'Change attributes for this product?' %}"
+                       data-trans-change-noti="{% trans 'This action can not be undo!' %}"
+                >
+                    <thead class="bg-secondary-light-5">
+                        <tr>
+                            <th></th>
+                            <th>{% trans 'Attribute' %}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <button id="btn-select-attribute" class="btn btn-sm btn-blue mt-2" type="button" data-bs-toggle="modal" data-bs-target="#modal-product-attribute">
+                    <span>
+                        <span>{% trans "Change attribute" %}</span>
+                        <span class="icon">
+                            <i class="bi bi-check2-square"></i>
                         </span>
                     </span>
                 </button>

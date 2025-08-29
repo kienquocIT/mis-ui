@@ -232,7 +232,7 @@
     }
     .scroll_active > div > .card-header.card-header-action{
         position: fixed;
-        top: 56px;
+        top: 115px;
         z-index: 11;
         background: #f7f7f7;
         width: 348px;

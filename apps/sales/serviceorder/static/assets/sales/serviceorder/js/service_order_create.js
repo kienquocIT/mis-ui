@@ -7,6 +7,8 @@ $(document).ready(function () {
     ServiceOrder.initProductModalDataTable()
     ServiceOrder.initServiceDetailDataTable()
     ServiceOrder.initWorkOrderDataTable()
+    ServiceOrder.initPaymentDataTable()
+    // ServiceOrder.initPaymentDetailModalDataTable()
     ServiceOrder.initModalContextTracking()
     ServiceOrder.initAttachment()
     // ============ tab shipment =============
@@ -50,8 +52,25 @@ $(document).ready(function () {
         ServiceOrder.handleUncheckContribution()
     }
 
+    function handlePaymentTabEvent(){
+        ServiceOrder.handleAddPaymentRow()
+        ServiceOrder.handleChangePaymentDate()
+        ServiceOrder.handleChangePaymentType()
+        ServiceOrder.handleCheckInvoice()
+        ServiceOrder.handleOpenPaymentDetail()
+    }
+
+    function handleModalPaymentDetailEvent(){
+        ServiceOrder.handleSavePaymentDetail()
+        ServiceOrder.handleChangePaymentDetail()
+        ServiceOrder.handleOpenModalReconcile()
+        ServiceOrder.handleSavePaymentReconcile()
+    }
+
     handleServiceDetailTabEvent()
     handleWorkOrderDetailTabEvent()
     handleModalWorkOrderCostEvent()
     handleModalWorkOrderContributionEvent()
+    handlePaymentTabEvent()
+    handleModalPaymentDetailEvent()
 })

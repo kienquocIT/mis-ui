@@ -13,7 +13,7 @@
     {% get_or_default idx "bastionFieldTheDocument" as idx %}
 
     <div
-            class=""
+            class="accordion accordion-simple accordion-icon my-3"
             id="{{idx}}"
 
             data-current-feature="{{ data.list_from_app }}"
@@ -51,9 +51,9 @@
             data-process_hidden="{{ process_hidden|parse_0_or_1 }}"
             data-process_title="{{ process_title }}"
     >
-        <div class="mb-2">
+        <div class="accordion-item mb-0">
             {% priority_app priority_app as list_priority_app %}
-            <h2 class="accordion-header hidden" id="bastion-field-heading">
+            <h2 class="accordion-header" id="bastion-field-heading">
                 <button
                         class="accordion-button {% if is_open != True %} collapsed {% endif %}"
                         type="button"
@@ -107,7 +107,7 @@
                     class="accordion-collapse collapse {% if is_open == True %}show {% endif %}"
                     aria-labelledby="bastion-field-heading" data-bs-parent="#bastionFieldTheDocument"
             >
-                <div class="row">
+                <div class="accordion-body">
                     <div class="container-fluid">
                         {% if show_warning == True %}
                             <div class="row mt-2">

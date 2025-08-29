@@ -1496,12 +1496,12 @@ table.dataTable tr.dtrg-group th {
 /* Custom nav-pills */
 
 /* Hiệu ứng nền cho nav */
-.nav-pills-custom {
+.nav-pills-bfl {
     display: flex;
     width: fit-content;  /* tự động vừa nội dung */
     border: 1px solid #eaeaea;
     border-radius: 20px;
-    padding: 3px;
+    padding: 1px;
 
     /* Hiệu ứng kính trong suốt */
     background: rgba(0, 0, 0, 0.01);
@@ -1509,7 +1509,7 @@ table.dataTable tr.dtrg-group th {
     -webkit-backdrop-filter: blur(12px); /* hỗ trợ Safari */
 }
 
-.nav-pills-custom .nav-link {
+.nav-pills-bfl .nav-link {
     position: relative;
     border-radius: 20px;
     margin: 4px;
@@ -1520,7 +1520,7 @@ table.dataTable tr.dtrg-group th {
 }
 
 /* lớp background mờ mặc định */
-.nav-pills-custom .nav-link::before {
+.nav-pills-bfl .nav-link::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -1539,19 +1539,19 @@ table.dataTable tr.dtrg-group th {
 }
 
 /* khi hover tab */
-.nav-pills-custom .nav-link:hover::before {
+.nav-pills-bfl .nav-link:hover::before {
     opacity: 1;
     transform: scale(1);
 }
 
-.nav-pills-custom .nav-link.active {
+.nav-pills-bfl .nav-link.active {
     color: black;
     font-weight: 500;
     position: relative;
     z-index: 1;    /* để chữ nằm trên background */
 }
 
-.nav-pills-custom .nav-link.active::before {
+.nav-pills-bfl .nav-link.active::before {
     background-color: #eaeaea;
     box-shadow:
         0 6px 20px rgba(74, 144, 226, 0.3),

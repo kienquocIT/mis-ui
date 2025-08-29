@@ -1,0 +1,420 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'Service Order Dashboard' %} v2{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'assets/core/workflow/css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
+    <style>
+        /* Modern Dashboard v2 with Enhanced Design */
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #06b6d4;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --border-radius: 12px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --gradient-info: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        #idxPageContent {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: cover;
+            padding: 1rem 0;
+        }
+
+        .container-fluid {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Enhanced Cards */
+        .transparent-card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(255, 255, 255, 0.2)
+        }
+
+        .stat-card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .progress-card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            background: #c9d3e3;
+            padding: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .advance-list-item-detail {
+            padding: 20px;
+            border: 1px solid #d8d8d8;
+            border-radius: 0.5rem;
+            list-style: none;
+            background: #fff;
+            position: relative;
+            -webkit-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            -moz-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Chart Container Enhancements */
+        .chart-container {
+            position: relative;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* Ensure proper spacing for chart containers */
+        .chart-container > div {
+            position: relative;
+            overflow: visible !important;
+        }
+
+        .chart-title {
+            font-size: 1.125rem !important;
+            font-weight: 700 !important;
+            color: #1e293b !important;
+            margin: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+        }
+
+        .chart-title i {
+            color: var(--primary-color) !important;
+        }
+
+        /* Filter Panel */
+        .custom-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Responsive Enhancements */
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1rem;
+            }
+
+            .kpi-value {
+                font-size: 1.5rem;
+            }
+
+            .kpi-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+
+            .chart-container {
+                padding: 1rem;
+            }
+
+            .section-header {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            #idxPageContent {
+                padding: 1rem 0;
+            }
+
+            .container-fluid {
+                padding: 0 0.5rem;
+            }
+
+            .kpi-value {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Dark mode support preparation */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --light-color: #1e293b;
+                --dark-color: #f1f5f9;
+            }
+        }
+    </style>
+{% endblock %}
+{% block jsHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+    ></script>
+    <script id="trans-script"
+    ></script>
+    
+    <div class="container-fluid mb-10">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="fw-bold text-white">{% trans 'SERVICE ORDER PROGRESS DASHBOARD' %}</h2>
+                <h5 class="fst-italic text-white" id="service-order-title">Vận chuyển hàng từ Việt Nam sang Nhật Bản</h5>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="card transparent-card">
+                    <div class="card-body p-2">
+                        <span class="text-white">{% trans 'SERVICE ORDER CODE' %}</span>
+                        <h4 class="fw-bold text-white" id="service-order-code">SO0001</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="card transparent-card">
+                    <div class="card-body p-2">
+                        <span class="text-white">{% trans 'CUSTOMER' %}</span>
+                        <h4 class="fw-bold text-white" id="service-order-customer">Công ty cổ phần ABC</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="card transparent-card">
+                    <div class="card-body p-2">
+                        <span class="text-white">{% trans 'TIME' %}</span>
+                        <h4 class="fw-bold text-white" id="service-order-time">28/08/2025 - 05/09/2025</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card transparent-card">
+                    <div class="card-body p-2">
+                        <span class="text-white">{% trans 'OVERALL PROGRESS' %}</span>
+                        <div class="progress progress-bar-rounded progress-width-animated my-3" style="min-height: 30px">
+                            <div class="progress-bar bg-gradient-success" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="progress-tooltip">75</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="card stat-card" style="background: linear-gradient(135deg, #b5b32a 0%, #ff5e5e 100%);">
+                    <div class="card-body p-2">
+                        <span class="text-white">{% trans 'TOTAL SERVICES' %}</span>
+                        <h1 class="fw-bold text-white" id="total-services">2</h1>
+                        <span class="fst-italic text-white" id="total-services-des">0 hoàn thành - 2 đang thực hiện</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="card stat-card" style="background: linear-gradient(135deg, #3dc3ff 0%, #005880 100%);">
+                    <div class="card-body p-2">
+                        <span class="text-white">{% trans 'TOTAL WORK ORDERS' %}</span>
+                        <h1 class="fw-bold text-white" id="total-work-orders">5</h1>
+                        <span class="fst-italic text-white" id="total-work-orders-des">1 hoàn thành - 2 đang thực hiện - 2 đang chờ</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="card stat-card" style="background: linear-gradient(135deg, #d85897 0%, #aa0046 100%);">
+                    <div class="card-body p-2">
+                        <span class="text-white">{% trans 'TOTAL TASKS' %}</span>
+                        <h1 class="fw-bold text-white" id="total-tasks">14</h1>
+                        <span class="fst-italic text-white" id="total-tasks-des">6 hoàn thành - 8 đang thực hiện</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="card stat-card" style="background: linear-gradient(135deg, #c7a9fc 0%, #3a157c 100%)">
+                    <div class="card-body p-2">
+                        <span class="text-white">{% trans 'CONTRACT VALUE' %}</span>
+                        <h1 class="fw-bold text-white"><span class="mask-money" id="contract-value" data-init-money="2500000000"></span></h1>
+                        <span class="fst-italic text-white" id="contract-value-des"><span class="mask-money" id="contract-value-delivered" data-init-money="500000000"></span> đã giao (20%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card progress-card">
+                    <div class="card-title p-2">
+                        <h3 class="fw-bold">{% trans 'SERVICE PROGRESS' %}</h3>
+                    </div>
+                    <div class="card-body p-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card service-card">
+                                    <div class="card-body p-2">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <h5 class="fw-bold"><span class="badge badge-dark badge-pill service-code">SV001</span> <span class="service-name">Dịch vụ Bốc xếp hàng từ cảng lên tàu vận chuyển</span></h5>
+                                                <span class="fst-italic fw-bold text-muted">
+                                                    <span>{% trans 'Service value' %}:</span> <span class="service-value mask-money" data-init-money="500000000"></span>
+                                                    <span class="badge badge-light badge-indicator mx-2"></span>
+                                                    <span>{% trans 'Service weight' %}:</span> <span class="service-weight">20%</span>
+                                                </span>
+                                                <div class="progress progress-bar-rounded my-3" style="min-height: 20px">
+                                                    <div class="progress-bar bg-gradient-primary service-progress-bar" role="progressbar" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">30%</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="separator"></div>
+                                            </div>
+                                            <div class="col-12">
+                                                <h6 class="fw-bold text-muted">{% trans 'Work order list' %}:</h6>
+                                                <ul class="advance-list wo-list mt-3">
+                                                    <li class="advance-list-item">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="text-success me-2"><i class="bi bi-check-circle-fill"></i></span>
+                                                                <span class="badge badge-pill badge-soft-primary me-2 wo-code">WO001</span>
+                                                                <span class="me-2 wo-name">Work order 1</span>
+                                                            </div>
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="text-danger me-2">High</span>
+                                                                <span class="badge badge-light badge-indicator me-2"></span>
+                                                                <span class="text-muted me-2 wo-inherit">Nguyễn Dương Hải</span>
+                                                                <span class="badge badge-light badge-indicator me-2"></span>
+                                                                <span class="text-muted me-2 wo-date">29/08/2025</span>
+                                                                <span class="badge badge-light badge-indicator me-2"></span>
+                                                                <span class="badge badge-soft-blue badge-outline me-2 d-md-inline-block d-none wo-contribution">30% contribution</span>
+                                                                <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover">
+                                                                    <span class="icon">
+                                                                        <span class="feather-icon"><i class="far fa-eye"></i></span>
+                                                                    </span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="advance-list-item-detail mt-3">
+                                                            <div class="d-flex align-items-center justify-content-between">
+                                                                <div class="d-flex align-items-center">
+                                                                    <span class="badge badge-primary badge-pill h3 fw-bold me-2 wo-detail-code">WO001</span>
+                                                                    <span class="text-primary h3 me-2 wo-detail-name">Work order 1</span>
+                                                                </div>
+                                                                <div class="d-flex align-items-center">
+                                                                    <span class="badge badge-success">
+                                                                        <i class="bi bi-check-circle-fill"></i> DONE
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="advance-list-item">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="text-blue me-2"><i class="fas fa-spinner"></i></span>
+                                                                <span class="badge badge-pill badge-soft-primary me-2 wo-code">WO002</span>
+                                                                <span class="me-2 wo-name">Work order 2</span>
+                                                            </div>
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="text-blue me-2">Medium</span>
+                                                                <span class="badge badge-light badge-indicator me-2"></span>
+                                                                <span class="text-muted me-2 wo-inherit">Nguyễn Văn Nam</span>
+                                                                <span class="badge badge-light badge-indicator me-2"></span>
+                                                                <span class="text-muted me-2 wo-date">30/08/2025</span>
+                                                                <span class="badge badge-light badge-indicator me-2"></span>
+                                                                <span class="badge badge-soft-blue badge-outline me-2 d-md-inline-block d-none wo-contribution">40% contribution</span>
+                                                                <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover">
+                                                                    <span class="icon">
+                                                                        <span class="feather-icon"><i class="far fa-eye"></i></span>
+                                                                    </span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="advance-list-item">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="text-orange me-2"><i class="far fa-clock"></i></span>
+                                                                <span class="badge badge-pill badge-soft-primary me-2 wo-code">WO003</span>
+                                                                <span class="me-2 wo-name">Work order 3</span>
+                                                            </div>
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="text-orange me-2">Low</span>
+                                                                <span class="badge badge-light badge-indicator me-2"></span>
+                                                                <span class="text-muted me-2 wo-inherit">Nguyễn Thị Thu Thảo</span>
+                                                                <span class="badge badge-light badge-indicator me-2"></span>
+                                                                <span class="text-muted me-2 wo-date">05/09/2025</span>
+                                                                <span class="badge badge-light badge-indicator me-2"></span>
+                                                                <span class="badge badge-soft-blue badge-outline me-2 d-md-inline-block d-none wo-contribution">30% contribution</span>
+                                                                <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover">
+                                                                    <span class="icon">
+                                                                        <span class="feather-icon"><i class="far fa-eye"></i></span>
+                                                                    </span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsFooterUnCompress %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/echartjs/echart.js' %}"></script>
+    <script src="{% static 'assets/sales/dashboard/dashboard_service_order_echarts.js' %}"></script>
+    <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
+{% endblock %}

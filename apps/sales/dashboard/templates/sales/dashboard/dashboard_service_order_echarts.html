@@ -321,49 +321,85 @@
                                                             <div class="d-flex align-items-center">
                                                                 <span class="text-success me-2"><i class="bi bi-check-circle-fill"></i></span>
                                                                 <span class="badge badge-pill badge-soft-primary me-2 wo-code">WO001</span>
-                                                                <span class="me-2 wo-name">Work order 1</span>
+                                                                <span class="fw-bold text-muted me-2 wo-name">Work order 1</span>
                                                             </div>
                                                             <div class="d-flex align-items-center">
                                                                 <span class="text-danger me-2">High</span>
                                                                 <span class="badge badge-light badge-indicator me-2"></span>
                                                                 <span class="badge badge-soft-blue badge-outline me-2 d-md-inline-block d-none wo-contribution">30% contribution</span>
-                                                                <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover">
+                                                                <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" data-bs-toggle="collapse" href="#collapseWO001">
                                                                     <span class="icon">
                                                                         <span class="feather-icon"><i class="far fa-eye"></i></span>
                                                                     </span>
                                                                 </button>
                                                             </div>
                                                         </div>
-                                                        <div class="advance-list-item-detail mt-3">
+                                                        <div class="advance-list-item-detail mt-3 collapse" id="collapseWO001">
                                                             <div class="d-flex align-items-center justify-content-between">
                                                                 <div class="d-flex align-items-center">
-                                                                    <span class="badge badge-primary badge-pill h3 fw-bold me-2 wo-detail-code">WO001</span>
-                                                                    <span class="text-primary h3 me-2 wo-detail-name">Work order 1</span>
+                                                                    <span class="text-muted h3 me-2 wo-detail-name">Work order 1</span>
+                                                                    <span class="badge badge-success h3">DONE</span>
                                                                 </div>
                                                                 <div class="d-flex align-items-center">
-                                                                    <span class="badge badge-soft-success">
-                                                                        <i class="bi bi-check-circle-fill"></i> DONE
-                                                                    </span>
+                                                                    <span class="text-muted me-2 wo-detail-inherit"><i class="fas fa-user"></i> Nguyễn Văn Nam</span>
+                                                                    <span class="badge badge-light badge-indicator me-2"></span>
+                                                                    <span class="text-muted me-2 wo-detail-date"><i class="fas fa-calendar-minus"></i> 28/08/2025 - 30/09/2025</span>
                                                                 </div>
                                                             </div>
-                                                            <span class="text-muted me-2 wo-detail-inherit"><i class="fas fa-user"></i> Nguyễn Văn Nam</span>
-                                                            <span class="badge badge-light badge-indicator me-2"></span>
-                                                            <span class="text-muted me-2 wo-detail-date"><i class="fas fa-calendar-minus"></i> 28/08/2025 - 30/09/2025</span>
+                                                            <div class="d-flex align-items-center justify-content-between mt-5">
+                                                                <div class="d-flex align-items-center">
+                                                                    <h6 class="text-muted me-2"><i class="bi bi-list-task"></i> {% trans 'Task list' %}:</h6>
+                                                                    <h6 class="fst-italic text-muted me-2">1/3</h6>
+                                                                    <h6 class="fst-italic text-muted me-2">{% trans 'completed' %}</h6>
+                                                                </div>
+                                                            </div>
                                                             <ul class="advance-list task-list mt-3">
                                                                 <li class="advance-list-item">
                                                                     <div class="d-flex align-items-center justify-content-between">
                                                                         <div class="d-flex align-items-center">
-                                                                            <span class="text-orange me-2"><i class="far fa-clock"></i></span>
-                                                                            <span class="badge badge-pill badge-soft-primary me-2 wo-code">WO003</span>
-                                                                            <span class="me-2 wo-name">Work order 3</span>
+                                                                            <span class="text-success me-2"><i class="bi bi-check-circle-fill"></i></span>
+                                                                            <span class="badge badge-pill badge-light me-2 task-code">T001</span>
+                                                                            <span class="me-2 task-name"><s>Chuẩn bị hồ sơ</s></span>
                                                                         </div>
                                                                         <div class="d-flex align-items-center">
-                                                                            <span class="text-orange me-2">Low</span>
-                                                                            <span class="badge badge-light badge-indicator me-2"></span>
-                                                                            <span class="badge badge-soft-blue badge-outline me-2 d-md-inline-block d-none wo-contribution">30% contribution</span>
+                                                                            <span class="text-muted me-2 d-md-inline-block d-none task-inherit">Lê Văn Bình</span>
                                                                             <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover">
                                                                                 <span class="icon">
-                                                                                    <span class="feather-icon"><i class="far fa-eye"></i></span>
+                                                                                    <span class="feather-icon"><i class="bi bi-three-dots-vertical"></i></span>
+                                                                                </span>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                                <li class="advance-list-item">
+                                                                    <div class="d-flex align-items-center justify-content-between">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <span class="text-blue me-2"><i class="fas fa-spinner"></i></span>
+                                                                            <span class="badge badge-pill badge-light me-2 task-code">T002</span>
+                                                                            <span class="me-2 task-name">Nộp hồ sơ hải quan</span>
+                                                                        </div>
+                                                                        <div class="d-flex align-items-center">
+                                                                            <span class="text-muted me-2 d-md-inline-block d-none task-inherit">Lê Văn Bình</span>
+                                                                            <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover">
+                                                                                <span class="icon">
+                                                                                    <span class="feather-icon"><i class="bi bi-three-dots-vertical"></i></span>
+                                                                                </span>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                                <li class="advance-list-item">
+                                                                    <div class="d-flex align-items-center justify-content-between">
+                                                                        <div class="d-flex align-items-center">
+                                                                            <span class="text-orange me-2"><i class="far fa-clock"></i></span>
+                                                                            <span class="badge badge-pill badge-light me-2 task-code">T003</span>
+                                                                            <span class="me-2 task-name">Nhận phê duyệt</span>
+                                                                        </div>
+                                                                        <div class="d-flex align-items-center">
+                                                                            <span class="text-muted me-2 d-md-inline-block d-none task-inherit">Nguyễn Văn Nam</span>
+                                                                            <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover">
+                                                                                <span class="icon">
+                                                                                    <span class="feather-icon"><i class="bi bi-three-dots-vertical"></i></span>
                                                                                 </span>
                                                                             </button>
                                                                         </div>
@@ -377,13 +413,13 @@
                                                             <div class="d-flex align-items-center">
                                                                 <span class="text-blue me-2"><i class="fas fa-spinner"></i></span>
                                                                 <span class="badge badge-pill badge-soft-primary me-2 wo-code">WO002</span>
-                                                                <span class="me-2 wo-name">Work order 2</span>
+                                                                <span class="fw-bold text-muted me-2 wo-name">Work order 2</span>
                                                             </div>
                                                             <div class="d-flex align-items-center">
                                                                 <span class="text-blue me-2">Medium</span>
                                                                 <span class="badge badge-light badge-indicator me-2"></span>
                                                                 <span class="badge badge-soft-blue badge-outline me-2 d-md-inline-block d-none wo-contribution">40% contribution</span>
-                                                                <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover">
+                                                                <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" data-bs-toggle="collapse" href="#collapseWO002">
                                                                     <span class="icon">
                                                                         <span class="feather-icon"><i class="far fa-eye"></i></span>
                                                                     </span>
@@ -396,13 +432,13 @@
                                                             <div class="d-flex align-items-center">
                                                                 <span class="text-orange me-2"><i class="far fa-clock"></i></span>
                                                                 <span class="badge badge-pill badge-soft-primary me-2 wo-code">WO003</span>
-                                                                <span class="me-2 wo-name">Work order 3</span>
+                                                                <span class="fw-bold text-muted me-2 wo-name">Work order 3</span>
                                                             </div>
                                                             <div class="d-flex align-items-center">
                                                                 <span class="text-orange me-2">Low</span>
                                                                 <span class="badge badge-light badge-indicator me-2"></span>
                                                                 <span class="badge badge-soft-blue badge-outline me-2 d-md-inline-block d-none wo-contribution">30% contribution</span>
-                                                                <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover">
+                                                                <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" data-bs-toggle="collapse" href="#collapseWO003">
                                                                     <span class="icon">
                                                                         <span class="feather-icon"><i class="far fa-eye"></i></span>
                                                                     </span>

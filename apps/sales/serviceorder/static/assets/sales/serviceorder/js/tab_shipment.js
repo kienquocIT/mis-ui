@@ -180,6 +180,10 @@ class TabShipmentFunction {
             keyText: 'title',
         });
     }
+
+    static combineShipmentData() {
+        console.log('Hello world');
+    }
 }
 
 

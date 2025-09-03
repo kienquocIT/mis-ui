@@ -11,8 +11,8 @@ $(document).ready(function () {
     // ServiceOrder.initPaymentDetailModalDataTable()
     ServiceOrder.initModalContextTracking()
     ServiceOrder.initAttachment()
-    // ============ tab shipment =============
 
+    // ============ tab shipment =============
     TabShipmentFunction.initShipmentDataTable()
     TabShipmentFunction.LoadContainerType()
     TabShipmentFunction.LoadPackageType()

@@ -111,6 +111,15 @@
             <p class="card-description">{% trans 'Sales pipeline analysis, conversion rates and deal tracking' %}</p>
         </a>
     </div>
+    <div class="dashboard-cards">
+        <a href="{% url 'DashboardServiceOrderList' %}" class="dashboard-card pipeline-card">
+            <div class="card-icon">
+                <i class="bi bi-flag"></i>
+            </div>
+            <h3 class="card-title">{% trans 'Service order' %}</h3>
+            <p class="card-description">{% trans 'Track progress and manage all task assignments within the Service Order' %}</p>
+        </a>
+    </div>
 {% endblock %}
 {% block jsFooter %}
 {% endblock %}

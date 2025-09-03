@@ -1,4 +1,66 @@
+function handleServiceDetailTabEvent(){
+    ServiceOrder.handleChangeServiceDescription()
+    ServiceOrder.handleChangeServiceQuantity()
+}
+
+function handleWorkOrderDetailTabEvent(){
+    ServiceOrder.handleChangeWorkOrderDetail()
+    ServiceOrder.handleClickOpenWorkOrderCost()
+    ServiceOrder.handleSelectWorkOrderCostTax()
+    ServiceOrder.handleSelectWorkOrderCurrency()
+    ServiceOrder.handleAddWorkOrderNonItem()
+    ServiceOrder.handleClickOpenServiceDelivery()
+    ServiceOrder.handleCheckDelivery()
+}
+
+function handleModalWorkOrderCostEvent(){
+    ServiceOrder.handleAddWorkOrderCostRow()
+    ServiceOrder.handleChangeWorkOrderCostQuantityAndUnitCost()
+    ServiceOrder.handleSaveWorkOrderCost()
+    ServiceOrder.handleChangeWorkOrderCostTitleAndDescription()
+}
+
+function handleModalWorkOrderContributionEvent(){
+    ServiceOrder.handleSaveProductContribution()
+    ServiceOrder.handleUncheckContribution()
+}
+
+function handlePaymentTabEvent(){
+    ServiceOrder.handleAddPaymentRow()
+    ServiceOrder.handleChangePaymentDate()
+    ServiceOrder.handleChangePaymentType()
+    ServiceOrder.handleCheckInvoice()
+    ServiceOrder.handleOpenPaymentDetail()
+}
+
+function handleModalPaymentDetailEvent(){
+    ServiceOrder.handleSavePaymentDetail()
+    ServiceOrder.handleChangePaymentDetail()
+    ServiceOrder.handleOpenModalReconcile()
+    ServiceOrder.handleSavePaymentReconcile()
+}
+
+function setUpFormData(formInstance){
+    formInstance.dataForm['service_detail_data'] = ServiceOrder.getServiceDetailData()
+    formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData()
+    formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
+
+}
+
+function setUpFormSubmit($form){
+    SetupFormSubmit.call_validate($form, {
+        onsubmit: true,
+        submitHandler:  ()=> {
+            let formInstance = new SetupFormSubmit($form)
+            setUpFormData(formInstance)
+            WFRTControl.callWFSubmitForm(formInstance)
+        },
+    })
+}
+
 $(document).ready(function () {
+    WFRTControl.setWFInitialData('')
+
     ServiceOrder.initDateTime()
     ServiceOrder.initPageSelect()
     ServiceOrder.loadCurrencyRateData()
@@ -24,53 +86,12 @@ $(document).ready(function () {
 
     ServiceOrder.handleSaveProduct()
 
-    function handleServiceDetailTabEvent(){
-        ServiceOrder.handleChangeServiceDescription()
-        ServiceOrder.handleChangeServiceQuantity()
-    }
-
-    function handleWorkOrderDetailTabEvent(){
-        ServiceOrder.handleChangeWorkOrderDate()
-        ServiceOrder.handleChangeWorkOrderQuantity()
-        ServiceOrder.handleClickOpenWorkOrderCost()
-        ServiceOrder.handleSelectWorkOrderCostTax()
-        ServiceOrder.handleSelectWorkOrderCurrency()
-        ServiceOrder.handleAddWorkOrderNonItem()
-        ServiceOrder.handleClickOpenServiceDelivery()
-        ServiceOrder.handleCheckDelivery()
-    }
-
-    function handleModalWorkOrderCostEvent(){
-        ServiceOrder.handleAddWorkOrderCostRow()
-        ServiceOrder.handleChangeWorkOrderCostQuantityAndUnitCost()
-        ServiceOrder.handleSaveWorkOrderCost()
-        ServiceOrder.handleChangeWorkOrderCostTitleAndDescription()
-    }
-
-    function handleModalWorkOrderContributionEvent(){
-        ServiceOrder.handleSaveProductContribution()
-        ServiceOrder.handleUncheckContribution()
-    }
-
-    function handlePaymentTabEvent(){
-        ServiceOrder.handleAddPaymentRow()
-        ServiceOrder.handleChangePaymentDate()
-        ServiceOrder.handleChangePaymentType()
-        ServiceOrder.handleCheckInvoice()
-        ServiceOrder.handleOpenPaymentDetail()
-    }
-
-    function handleModalPaymentDetailEvent(){
-        ServiceOrder.handleSavePaymentDetail()
-        ServiceOrder.handleChangePaymentDetail()
-        ServiceOrder.handleOpenModalReconcile()
-        ServiceOrder.handleSavePaymentReconcile()
-    }
-
     handleServiceDetailTabEvent()
     handleWorkOrderDetailTabEvent()
     handleModalWorkOrderCostEvent()
     handleModalWorkOrderContributionEvent()
     handlePaymentTabEvent()
     handleModalPaymentDetailEvent()
+
+    setUpFormSubmit($('#form-service-order'))
 })

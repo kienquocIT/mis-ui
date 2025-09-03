@@ -32,3 +32,25 @@ class ServiceOrderCreate(View):
         }
         return ctx, status.HTTP_200_OK
 
+
+class ServiceOrderListAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.SERVICE_ORDER_LIST).get(params)
+        return resp.auto_return(key_success='service_order_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SERVICE_ORDER_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.SERVICE_ORDER_CREATE
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()

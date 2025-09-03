@@ -270,7 +270,6 @@ const ServiceOrder = (function($) {
         }).then(data => {})
     }
 
-
 // --------------------HANDLE INIT DATATABLES---------------------
     function initProductModalDataTable() {
         pageElement.modalData.$tableProduct.DataTableDefault({

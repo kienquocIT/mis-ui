@@ -182,7 +182,19 @@ class TabShipmentFunction {
     }
 
     static combineShipmentData() {
-        console.log('Hello world');
+        const table = pageElements.$tableShipment.DataTable();
+        const tableData = table.data().toArray();
+        const serviceOrderShipmentData = [];
+
+        // combine data
+        tableData.forEach(row => {
+            if (row.isContainer) {
+                const containerData = {
+                    containerName: row?.containerName || '',
+                }
+            }
+        })
+        return serviceOrderShipmentData;
     }
 }
 

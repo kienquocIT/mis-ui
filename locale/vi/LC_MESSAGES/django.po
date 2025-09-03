@@ -7254,7 +7254,7 @@ msgstr "TT nhập Serial"
 
 #
 msgid "Inventory"
-msgstr "Hàng tồn kho"
+msgstr "Tồn kho"
 
 #
 msgid "Unit cost"
@@ -12210,3 +12210,23 @@ msgstr "Tạo chi phí vận chuyển"
 #
 msgid "Export exel"
 msgstr "Xuất exel"
+
+#
+msgid "Attribute"
+msgstr "Thuộc tính"
+
+#
+msgid "If the product has 'Inventory' enabled, only select attributes with 'inventory tracking' and vice versa"
+msgstr "Nếu sản phẩm có kích hoạt 'Tồn kho', chỉ chọn các thuộc tính có 'theo dõi tồn kho' và ngược lại"
+
+#
+msgid "Change attribute"
+msgstr "Thay đổi thuộc tính"
+
+#
+msgid "Product attribute"
+msgstr "Thuộc tính sản phẩm"
+
+#
+msgid "Change attributes for this product?"
+msgstr "Thay đổi thuộc tính của sản phẩm này?"

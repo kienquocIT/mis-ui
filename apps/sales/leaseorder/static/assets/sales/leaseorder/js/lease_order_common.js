@@ -4967,6 +4967,12 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 2,
                     render: (data, type, row) => {
+                        return `<span class="mask-money table-row-price" data-init-money="${parseFloat(row?.['shipping_price'] ? row?.['shipping_price'] : '0')}"></span>`
+                    }
+                },
+                {
+                    targets: 3,
+                    render: (data, type, row) => {
                         let disabled = '';
                         if (row?.['is_pass'] === false) {
                             disabled = 'disabled';
@@ -8303,7 +8309,6 @@ class LeaseOrderShippingHandle {
         data_shipping['is_pass'] = false;
         if (data_shipping?.['cost_method'] === 0) {  // fixed price for all
             data_shipping['is_pass'] = true;
-            data_shipping['title'] = data_shipping?.['fixed_price'];
             data_shipping['shipping_price'] = data_shipping?.['fixed_price'];
             data_shipping['shipping_margin'] = data_shipping?.['margin'];
             return data_shipping;
@@ -8339,12 +8344,10 @@ class LeaseOrderShippingHandle {
                                         }
                                     } else if (unit?.['title'] === "volume") { // if condition is volume
                                         data_shipping['is_pass'] = true;
-                                        data_shipping['title'] = final_shipping_price;
                                         data_shipping['shipping_price'] = final_shipping_price;
                                         return data_shipping;
                                     } else if (unit?.['title'] === "weight") { // if condition is weight
                                         data_shipping['is_pass'] = true;
-                                        data_shipping['title'] = final_shipping_price;
                                         data_shipping['shipping_price'] = final_shipping_price;
                                         return data_shipping;
                                     }
@@ -8377,7 +8380,6 @@ class LeaseOrderShippingHandle {
                                     margin_shipping_price = ((final_shipping_price * margin) / 100);
                                     final_shipping_price = (final_shipping_price + margin_shipping_price)
                                 }
-                                data_shipping['title'] = final_shipping_price;
                                 data_shipping['shipping_price'] = final_shipping_price;
                                 data_shipping['shipping_margin'] = margin_shipping_price;
                                 return data_shipping;

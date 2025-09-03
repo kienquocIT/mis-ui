@@ -49,11 +49,16 @@ $(function () {
             cloneHTML.find('.wrap-child').attr('id', `sub-taskID-${item.id}`)
             $('#sub-tasklist_wrap').append(cloneHTML)
 
-            if (item.name.toLowerCase() === 'to do' && item['is_edit'] === false && item.is_finish === false){
+            if (item.name.toLowerCase() === 'to do' && item['is_edit'] === false && item.is_finish === false) {
                 item.selected = true
                 item.title = item.name
-                $('#selectStatus').attr('data-onload', JSON.stringify(item)).initSelect2()
-                    .data('default-stt', item)
+                $('#selectStatus').attr('data-onload', JSON.stringify(item)).data('default-stt', item)
+                // .initSelect2()
+                let createFormTask1 = setInterval(function () {
+                    clearInterval(createFormTask1)
+                    const $sttElm = $('#selectStatus')
+                    $sttElm.initSelect2()
+                }, 1000)
             }
         }
     }
@@ -395,7 +400,7 @@ $(function () {
                                 .attr('data-name', data.employee_created.full_name)
                                 .attr('value', data.employee_created.id)
                                 .attr('data-value-id', data.employee_created.id)
-
+                            if ($('#employee_inherit_id')[0].closest('#formOpportunityTask')) {
                             const runComponent = (elm, data) => {
                                 data.selected = true;
                                 elm.attr('data-onload', JSON.stringify(data))
@@ -421,6 +426,11 @@ $(function () {
                                 $empElm.html(`<option value="${data.employee_inherit.id}">${data.employee_inherit.full_name}</option>`)
                                     .attr('data-onload', JSON.stringify(data.employee_inherit))
                                 $empElm.trigger("change", BastionFieldControl.skipBastionChange)
+                            }
+                            }
+                            let $customAssignee = $('#custom_assignee');
+                            if ($customAssignee.length > 0) {
+                                FormElementControl.loadInitS2($customAssignee, [data.employee_inherit]);
                             }
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
@@ -719,10 +729,14 @@ $(function () {
             })
 
             $('#idxPageContent').on('scroll', function(e){
-                const top = $(this).scrollTop()
-                if ($('#tab_kanban').hasClass('active')){
-                    if (top >= 68) $('#tasklist_wrap').addClass('scroll_active')
-                    else $('#tasklist_wrap').removeClass('scroll_active')
+                let $kanbanEle = $('#tab_kanban');
+                let kanbanTop = $kanbanEle.offset().top;
+                if (kanbanTop > 0) {
+                    let distanceToHeader = $kanbanEle.offset().top - 115;
+                    if ($kanbanEle.hasClass('active')) {
+                        if (distanceToHeader <= 0) $('#tasklist_wrap').addClass('scroll_active')
+                        else $('#tasklist_wrap').removeClass('scroll_active')
+                    }
                 }
             })
         }
@@ -1571,7 +1585,8 @@ $(function () {
         })
     });
     // handle show/hide btn load more when scroll down
-    let contentElm = $('#idxPageContent .simplebar-content-wrapper');
+    // let contentElm = $('#idxPageContent .simplebar-content-wrapper');
+    let contentElm = $('#idxPageContent');
     const loadMoreBtn = $('.btn-task-bar')
     $(contentElm).scroll(function () {
         $(this).scrollTop() > 100 && !$('.tab-gantt').hasClass('active') ? loadMoreBtn.fadeIn() : loadMoreBtn.fadeOut();

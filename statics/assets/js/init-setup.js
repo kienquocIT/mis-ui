@@ -9402,7 +9402,7 @@ class DiagramControl {
                                 <div class="card-header bg-primary">
                                     <h6 class="text-white">${diaTxt[data_diagram?.['app_code']]}</h6>
                                 </div>
-                                <div class="card-body bg-soft-success">
+                                <div class="card-body bg-green-light-4">
                                     <div class="card border-green clone" data-drag="1" title="card-1" id="control-1">
                                         <div class="card-header card-header-wth-text">
                                             <div>
@@ -9469,7 +9469,7 @@ class DiagramControl {
                                     <div class="card-header bg-primary">
                                         <h6 class="text-white">${diaTxt[key]}</h6>
                                     </div>
-                                    <div class="card-body">
+                                    <div class="card-body bg-grey-light-5">
                                         ${htmlChild}
                                     </div>
                                 </div>`;

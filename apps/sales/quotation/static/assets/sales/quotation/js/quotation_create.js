@@ -14,7 +14,7 @@ $(function () {
         FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, [], {'account_name_id': QuotationLoadDataHandle.customerSelectEle.val()});
         FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
         // init date picker
-        $('.date-picker').each(function () {
+        $('.flat-picker').each(function () {
             DateTimeControl.initFlatPickrDate(this);
         });
         $('#quotation-create-date-created').val(DateTimeControl.getCurrentDate("DMY", "/"));

@@ -1015,3 +1015,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     CONTAINER_DETAIL = StringUrl('saledata/shipment/container/detail/{pk}')
     PACKAGE_LIST = StringUrl('saledata/shipment/package/list')
     PACKAGE_DETAIL = StringUrl('saledata/shipment/package/detail/{pk}')
+
+    # service-order
+    SERVICE_ORDER_LIST = StringUrl('serviceorder/list')

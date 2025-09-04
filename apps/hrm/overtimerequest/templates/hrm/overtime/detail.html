@@ -1,42 +1,108 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Employee info list' %}{% endblock %}
-{% block cssHeader %}
-    <link rel="stylesheet" href="{% static 'assets/css/core/hr/employee/employee_list.css' %}">
+{% block title %}
+    {% trans 'Overtime request' %} {% trans 'detail' %}
 {% endblock %}
-
+{% block cssHeader %}
+    <link href="{% static 'vendors/datatables.net-rowgroup/css/dataTables.rowGroup.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/fullcalendar/main.min.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/overtime/css/ot.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
 {% block pageAction %}
-    <a href="{% url 'HRMEmployeeCreate' %}">
+    <a href="{% url 'OvertimeUpdate' data.pk %}">
         <button class="btn btn-outline-primary">
-            <span>
-                <span>{% trans 'Add' %}</span>
-                <span class="icon">
-                    <i class="fa-solid fa-plus"></i>
-                </span>
+        <span>
+            <span>{% trans 'Edit' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-pen-to-square"></i>
             </span>
+        </span>
         </button>
     </a>
 {% endblock %}
 
 {% block pageContent %}
-    <table id="datable_employee_info_list" class="table nowrap w-100 mb-5"
-           data-url="{% url 'HRMEmployeeListAPI' %}"
-           data-method="GET"
-           data-url-detail="{% url 'HRMEmployeeDetail' pk='0' %}"
-    >
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>{% trans 'Employee Code' %}</th>
-            <th>{% trans 'Full Name' %}</th>
-            <th>{% trans 'User ID' %}</th>
-            <th>{% trans 'Date Joined' %}</th>
-        </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-{% endblock %}
+    <form class="container-fluid mt-4" id="overtime_request_form" method="post" data-method="POST" autocomplete="off"
+          data-url-detail="{% url 'OvertimeDetailAPI' data.pk%}">
+        <div class="row">
+            <div class="col-12 col-md-3 col-lg-3 border-right">
+                <ul class="nav nav-line nav-tabs nav-light">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                            <span class="nav-icon-wrap mr-1"><i class="fas fa-user-tie"></i></span>
+                            <span class="nav-link-text">{% trans 'View by employee' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                            <span class="nav-icon-wrap mr-1"><i class="fas fa-users"></i></span>
+                            <span class="nav-link-text">{% trans 'View by group' %}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab_block_1">
+                        <table id="table_employee" class="table nowrap w-100 mb-5"
+                               data-url="{% url "EmployeeListAPI" %}">
+                            <thead>
+                            <tr>
+                                <th class="w-70">{% trans 'Employee' %}</th>
+                                <th class="w-30">{% trans 'Code' %}</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade show" id="tab_block_2">
+                        <table id="table_group" class="table nowrap w-100 mb-5" data-url="{% url "GroupListAPI" %}">
+                            <thead>
+                            <tr>
+                                <th>{% trans 'Group' %}</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-7 col-lg-7 border-right">
+                <div class="calendarapp-wrap" id="calendarapp-wrapper">
+                    <div class="calendarapp-content pl-0">
+                        <div id="calendar" class="w-100"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label class="form-label required" for="title">{% trans 'title' %}</label>
+                    <input type="text" id="ipt_title" class="form-control" name="title" required readonly>
+                </div>
+                <div class="form-group w-70">
+                    <label class="form-label required" for="start_time">{% trans 'Start time' %}</label>
+                    <input type="time" class="form-control" id="start_time" name="start_time" required readonly>
 
+                </div>
+                <div class="form-group w-70">
+                    <label class="form-label required" for="end_time">{% trans 'End time' %}</label>
+                    <input type="time" class="form-control" id="end_time" name="end_time" required readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reason">{% trans 'Reason' %}</label>
+                    <input type="text" class="form-control" id="reason" name="reason" readonly>
+                </div>
+            </div>
+        </div>
+
+    </form>
+{% endblock %}
+{% block dataHiddenGroup %}
+    <input type="text" id="url-factory" aria-label="url factory"
+           data-shift-assignment="{% url 'ShiftAssignmentListAPI' %}"
+    >
+    <input type="text" id="trans-factory" aria-label="translate"
+    >
+{% endblock %}
 {% block jsFooter %}
-    <script src="{% static 'assets/hrm/js/list.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
+    <script src="{% static 'vendors/fullcalendar/main.js' %}"></script>
+    <script src="{% static 'assets/overtime/js/detail.js' %}"></script>
 {% endblock %}

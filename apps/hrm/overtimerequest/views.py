@@ -77,7 +77,7 @@ class OvertimeDetailAPI(APIView):
 class OvertimeUpdate(View):
     @mask_view(
         auth_require=True,
-        template='hrm/overtime/update.html',
+        template='hrm/overtime/edit.html',
         breadcrumb='HRM_OVERTIME_UPDATE_PAGE',
         menu_active='menu_overtime_request',
     )

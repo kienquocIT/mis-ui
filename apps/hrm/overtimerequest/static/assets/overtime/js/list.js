@@ -32,7 +32,7 @@ $(document).ready(function(){
                 }
             },
             {
-                data: 'employee_created',
+                data: 'employee_created_data',
                 render: (row) =>{
                     let name = '--';
                     if (Object.keys(row).length > 0) name = `${row.full_name}`
@@ -40,16 +40,17 @@ $(document).ready(function(){
                 }
             },
             {
-                data: 'employee_inherit',
+                data: 'employee_list_data',
                 render: (row, type, data) =>{
-                    let name = '--';
-                    if (Object.keys(row).length > 0) name = row['full_name']
-                    else
-                        for (let item of data['employee_list_data']) {
-                            name += String.format(`<span class="badge badge-soft-indigo w-100 mr-2">{0}</span>`,
+                    let name = `${data['employee_inherit_data']['full_name']}`;
+                    if (Object.keys(row).length > 0){
+                        name = '';
+                        for (let item of row) {
+                            name += String.format(`<span class="badge badge-soft-indigo mr-2">{0}</span>`,
                                 item['full_name']
                             )
                         }
+                    }
                     return name
                 }
             },
@@ -62,7 +63,7 @@ $(document).ready(function(){
             {
                 data: 'system_status',
                 render: (row) => {
-                    return ProcessStages.matchStatusCode(row);
+                    return WFRTControl.displayRuntimeStatus(row);
                 }
             },
         ]

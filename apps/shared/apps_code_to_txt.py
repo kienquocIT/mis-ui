@@ -241,7 +241,7 @@ class AppsCodeToList:
                 'is_active': True,
             },
         },
-        'hrm': {
+        'overtimerequest': {
             'overtimerequest': {
                 'title': _('Overtime request'),
                 'is_active': True,

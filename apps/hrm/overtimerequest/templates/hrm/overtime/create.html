@@ -4,8 +4,11 @@
     {% trans 'Overtime request' %} {% trans 'create' %}
 {% endblock %}
 {% block cssHeader %}
+    <link href="{% static 'vendors/fullcalendar/main.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/themes/airbnb.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css"/>
+
+    <link href="{% static 'assets/overtime/css/ot.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 {% block pageAction %}
     <button class="btn btn-outline-primary" type="submit" form="overtime_request_form">
@@ -24,60 +27,91 @@
         {% csrf_token %}
         <input type="hidden" id="group-checked">
         <input type="hidden" id="employee-checked">
-        <div class="col-12 col-md-3 col-lg-3 border-right">
-            <ul class="nav nav-line nav-tabs nav-light">
-                <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
-                        <span class="nav-icon-wrap mr-1"><i class="fas fa-user-tie"></i></span>
-                        <span class="nav-link-text">{% trans 'View by employee' %}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
-                        <span class="nav-icon-wrap mr-1"><i class="fas fa-users"></i></span>
-                        <span class="nav-link-text">{% trans 'View by group' %}</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="tab_block_1">
-                    <table id="table_employee" class="table nowrap w-100 mb-5" data-url="{% url "EmployeeListAPI" %}">
-                        <thead>
-                        <tr>
-                            <th class="w-70">{% trans 'Employee' %}</th>
-                            <th class="w-30">{% trans 'Code' %}</th>
-                        </tr>
-                        </thead>
-                    </table>
-                </div>
-                <div class="tab-pane fade show" id="tab_block_2">
-                        <table id="table_group" class="table nowrap w-100 mb-5">
+        <input type="hidden" id="date_selected">
+        <div class="row">
+            <div class="col-12 col-md-3 col-lg-3 border-right">
+                <ul class="nav nav-line nav-tabs nav-light">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                            <span class="nav-icon-wrap mr-1"><i class="fas fa-user-tie"></i></span>
+                            <span class="nav-link-text">{% trans 'View by employee' %}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                            <span class="nav-icon-wrap mr-1"><i class="fas fa-users"></i></span>
+                            <span class="nav-link-text">{% trans 'View by group' %}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab_block_1">
+                        <table id="table_employee" class="table nowrap w-100 mb-5"
+                               data-url="{% url "EmployeeListAPI" %}">
                             <thead>
-                                <tr>
-                                    <th>{% trans 'Group' %}</th>
-                                </tr>
+                            <tr>
+                                <th class="w-70">{% trans 'Employee' %}</th>
+                                <th class="w-30">{% trans 'Code' %}</th>
+                            </tr>
                             </thead>
                         </table>
                     </div>
+                    <div class="tab-pane fade show" id="tab_block_2">
+                        <table id="table_group" class="table nowrap w-100 mb-5" data-url="{% url "GroupListAPI" %}">
+                            <thead>
+                            <tr>
+                                <th>{% trans 'Group' %}</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-7 col-lg-7 border-right">
+                <div class="calendarapp-wrap" id="calendarapp-wrapper">
+                    <div class="calendarapp-content pl-0">
+                        <div id="calendar" class="w-100"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-2 col-lg-2">
+                <div class="form-group">
+                    <label class="form-label required" for="title">{% trans 'title' %}</label>
+                    <input type="text" id="ipt_title" class="form-control" name="title" required>
+                </div>
+                <div class="form-group w-70">
+                    <label class="form-label required" for="start_time">{% trans 'Start time' %}</label>
+                    <input type="time" class="form-control" id="start_time" name="start_time" required>
+
+                </div>
+                <div class="form-group w-70">
+                    <label class="form-label required" for="end_time">{% trans 'End time' %}</label>
+                    <input type="time" class="form-control" id="end_time" name="end_time" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reason">{% trans 'Reason' %}</label>
+                    <input type="text" class="form-control" id="reason" name="reason">
+                </div>
             </div>
         </div>
+
     </form>
 {% endblock %}
 {% block dataHiddenGroup %}
-
     <input type="text" id="url-factory" aria-label="url factory"
-           data-expense-url="{% url 'ExpenseItemListAPI' %}"
-           data-tax-url="{% url 'TaxListAPI' %}"
+           data-shift-assignment="{% url 'ShiftAssignmentListAPI' %}"
     >
     <input type="text" id="trans-factory" aria-label="translate"
-           data-error-time="{% trans 'Date time range is required' %}"
     >
 {% endblock %}
 {% block jsFooter %}
+    <script src="{% static 'vendors/fullcalendar/main.js' %}"></script>
     <script src="{% static 'vendors/flatpickr/flatpickr.min.js' %}"></script>
     {% if base.language %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
 
     <script src="{% static 'assets/overtime/js/common.js' %}"></script>
+    <script src="{% static 'assets/overtime/js/create.js' %}"></script>
 {% endblock %}

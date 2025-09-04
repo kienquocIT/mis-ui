@@ -1,0 +1,9 @@
+
+.pulse-warning > div {
+    background: #fee0e0;
+}
+
+table.dataTable tr.dtrg-group th{
+    font-size: inherit!important;
+    color: inherit!important;
+}

@@ -6,6 +6,9 @@ class TabExpenseElements {
         this.$tblExpense = $('#table_expense');     // table
         this.$btnAddExpense = $('#add_expense');    // button
         this.$urlEle = $('#script-url');            // url
+        this.$preTaxAmount = $('#pretax-value');
+        this.$taxEle = $('#taxes-value');
+        this.$totalValueEle = $('#total-value');
     }
 }
 const tabExpenseElements = new TabExpenseElements();
@@ -29,9 +32,9 @@ class TabExpenseFunction {
             let row_taxValue = row_subTotal * row_taxRate / 100;
             taxValue += row_taxValue;
         });
-        $('#pretax-value').attr('value', preTaxValue);
-        $('#taxes-value').attr('value', taxValue);
-        $('#total-value').attr('value', preTaxValue + taxValue);
+        tabExpenseElements.$preTaxAmount.attr('value', preTaxValue);
+        tabExpenseElements.$taxEle.attr('value', taxValue);
+        tabExpenseElements.$totalValueEle.attr('value', preTaxValue + taxValue);
         $.fn.initMaskMoney2()
     }
 
@@ -119,6 +122,24 @@ class TabExpenseFunction {
                 },
             ]
         })
+    }
+
+    static combineExpenseData() {
+        const serviceOrderExpenseData = [];
+        tabExpenseElements.$tblExpense.find('tbody tr').each(function () {
+            let $tr = $(this);
+            let item = {
+                expense_name: $tr.find(".row-expense-title").val() || "",
+                expense_item: $tr.find(".row-expense-item").val() || null,
+                uom: $tr.find(".row-uom").val() || null,
+                quantity: parseFloat($tr.find(".row-quantity").val() || 0),
+                expense_price: parseFloat(($tr.find(".row-expense-price").val() || "0").replace(/[^\d]/g, "")),
+                tax: $tr.find(".row-tax").val() || null,
+                subtotal: parseFloat(($tr.find(".row-subtotal").val() || "0").replace(/[^\d]/g, "")),
+            };
+            serviceOrderExpenseData.push(item);
+        });
+        return serviceOrderExpenseData;
     }
 }
 

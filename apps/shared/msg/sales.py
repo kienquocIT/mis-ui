@@ -101,3 +101,6 @@ class SaleMsg:  # pylint: disable=too-few-public-methods
     EQUIPMENT_LOAN_UPDATE = _('Equipment loan update successfully')
     EQUIPMENT_RETURN_CREATE = _('Equipment return create successfully')
     EQUIPMENT_RETURN_UPDATE = _('Equipment return update successfully')
+    SERVICE_ORDER_CREATE = _('Service order create successfully')
+    SERVICE_ORDER_UPDATE = _('Service order update successfully')
+

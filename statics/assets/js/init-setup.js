@@ -2961,9 +2961,16 @@ class WFRTControl {
                             if (docData?.['system_status'] === 3) {
                                 // Bật nút CR & Cancel
                                 if (docData?.['employee_inherit']?.['id'] === $x.fn.getEmployeeCurrentID()) {
-                                    let appAllowCR = ["quotation.quotation", "saleorder.saleorder"];
-                                    if (appAllowCR.includes(runtimeData?.['app_code'])) {
-                                        WFRTControl.setBtnWFAfterFinishDetail();
+                                    let appAllowChange = ["quotation.quotation", "saleorder.saleorder",];
+                                    let appAllowCancel = ["quotation.quotation", "saleorder.saleorder", "purchasing.purchaserequest"];
+                                    if (appAllowChange.includes(runtimeData?.['app_code']) && appAllowCancel.includes(runtimeData?.['app_code'])) {
+                                        WFRTControl.setBtnWFAfterFinishDetail('all');
+                                    }
+                                    if (appAllowChange.includes(runtimeData?.['app_code']) && !appAllowCancel.includes(runtimeData?.['app_code'])) {
+                                        WFRTControl.setBtnWFAfterFinishDetail('change');
+                                    }
+                                    if (appAllowCancel.includes(runtimeData?.['app_code']) && !appAllowChange.includes(runtimeData?.['app_code'])) {
+                                        WFRTControl.setBtnWFAfterFinishDetail('cancel');
                                     }
                                 }
                                 // Bật nút in
@@ -3610,17 +3617,26 @@ class WFRTControl {
         }
     }
 
-    static setBtnWFAfterFinishDetail() {
+    static setBtnWFAfterFinishDetail(type) {
         let $pageAction = $('#idxPageAction');
         let $realAction = $('#idxRealAction');
         let btnCancel = $('#btnCancel');
         let btnEnableCR = $('#btnEnableCR');
         if ($pageAction && $pageAction.length > 0 && $realAction && $realAction.length > 0) {
             if (btnCancel.length <= 0 && btnEnableCR.length <= 0) {
-                $($realAction).after(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">
-                                            <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
-                                            <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>
-                                        </div>`);
+                let buttons = ``;
+                if (type === 'all') {
+                    buttons = `<button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
+                                <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>`;
+                }
+                if (type === 'change') {
+                    buttons = `<button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>`;
+                }
+                if (type === 'cancel') {
+                    buttons = `<button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>`;
+                }
+
+                $($realAction).after(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">${buttons}</div>`);
                 // add event
                 $pageAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
@@ -9402,7 +9418,7 @@ class DiagramControl {
                                 <div class="card-header bg-primary">
                                     <h6 class="text-white">${diaTxt[data_diagram?.['app_code']]}</h6>
                                 </div>
-                                <div class="card-body bg-soft-success">
+                                <div class="card-body bg-green-light-4">
                                     <div class="card border-green clone" data-drag="1" title="card-1" id="control-1">
                                         <div class="card-header card-header-wth-text">
                                             <div>
@@ -9469,7 +9485,7 @@ class DiagramControl {
                                     <div class="card-header bg-primary">
                                         <h6 class="text-white">${diaTxt[key]}</h6>
                                     </div>
-                                    <div class="card-body">
+                                    <div class="card-body bg-grey-light-5">
                                         ${htmlChild}
                                     </div>
                                 </div>`;

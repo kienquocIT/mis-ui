@@ -354,6 +354,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DASHBOARD_COMMON_PAGE = BreadcrumbChildren(_('Dashboard'), 'DashboardCommonPage')
     DASHBOARD_GENERAL_LIST_PAGE = BreadcrumbChildren(_('General dashboard'), 'DashboardGeneralList')
     DASHBOARD_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pipeline dashboard'), 'DashboardPipelineList')
+    DASHBOARD_SERVICE_ORDER_LIST_PAGE = BreadcrumbChildren(_('service order dashboard'), 'DashboardServiceOrderList')
 
     PERIODS_CONFIG_PAGE = BreadcrumbChildren(_('Periods config'), 'PeriodsConfigList')
     ACCOUNTING_POLICIES_PAGE = BreadcrumbChildren(_('Accounting policies'), 'AccountingPoliciesList')
@@ -1114,6 +1115,7 @@ class BreadcrumbView:
     DASHBOARD_COMMON_PAGE = [BreadcrumbItem.DASHBOARD_COMMON_PAGE]
     DASHBOARD_GENERAL_LIST_PAGE = [BreadcrumbItem.DASHBOARD_GENERAL_LIST_PAGE]
     DASHBOARD_PIPELINE_LIST_PAGE = [BreadcrumbItem.DASHBOARD_PIPELINE_LIST_PAGE]
+    DASHBOARD_SERVICE_ORDER_LIST_PAGE = [BreadcrumbItem.DASHBOARD_SERVICE_ORDER_LIST_PAGE]
 
     PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
     ACCOUNTING_POLICIES_PAGE = [BreadcrumbItem.ACCOUNTING_POLICIES_PAGE]

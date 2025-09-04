@@ -65,7 +65,7 @@
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
                     {% trans 'Select Sale Person' as inherit_title %}
-                    {% include 'extends/the-documents/bastion.html' with has_opp=True has_process=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True process_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
+                    {% include 'extends/the-documents/bastion.html' with has_opp=True has_inherit=True opp_disabled=True inherit_disabled=True opp_readonly=True process_readonly=True inherit_readonly=True is_open=True inherit_title=inherit_title inherit_required=True %}
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
@@ -165,7 +165,7 @@
 
                     <div class="row">
                         <div class="row">
-                            <ul class="nav nav-line nav-tabs nav-light border-bottom" id="quotation-tabs">
+                            <ul class="nav nav-pills-bfl" id="quotation-tabs">
                                 <li class="nav-item tab-detail" data-zone="lease_products_data">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                                         <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
@@ -308,13 +308,21 @@
                                                             <thead>
                                                             <tr class="bg-light">
                                                                 <th class="w-10"></th>
-                                                                <th class="w-60">{% trans 'Title' %}</th>
-                                                                <th class="w-30">{% trans 'Actions' %}</th>
+                                                                <th class="w-40">{% trans 'Title' %}</th>
+                                                                <th class="w-40">{% trans 'Price' %}</th>
+                                                                <th class="w-10">{% trans 'Actions' %}</th>
                                                             </tr>
                                                             </thead>
                                                             <tbody>
                                                             </tbody>
                                                         </table>
+                                                        <div class="d-flex justify-content-center align-items-center">
+                                                            <p class="no-map-area" hidden>* {% trans 'There is no shipment for this area' %}</p>
+                                                            <p class="no-logistic" hidden>* {% trans 'Missing data in tab logistic' %}</p>
+                                                        </div>
+                                                        <div class="d-flex justify-content-start">
+                                                            <a href="{% url "ShippingList" %}" target="_blank" class="link-primary underline_hover">{% trans 'Create shipment' %}</a>
+                                                        </div>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button
@@ -689,8 +697,8 @@
                             >
                                 <thead>
                                 <tr class="bg-light">
-                                    <th class="w-30">{% trans 'Quotation name' %}</th>
-                                    <th class="w-20">{% trans 'Quotation code' %}</th>
+                                    <th class="w-30">{% trans 'Title' %}</th>
+                                    <th class="w-20">{% trans 'Code' %}</th>
                                     <th class="w-25">{% trans 'Opportunity' %}</th>
                                     <th class="w-25">{% trans 'Customer' %}</th>
                                 </tr>

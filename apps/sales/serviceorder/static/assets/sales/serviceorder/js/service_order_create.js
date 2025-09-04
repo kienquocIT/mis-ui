@@ -43,16 +43,22 @@ function handleModalPaymentDetailEvent(){
 function setUpFormData(formInstance){
     let startDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('#so-start-date').val())
     let endDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('#so-end-date').val())
+    let pretaxValue = tabExpenseElements.$preTaxAmount.val() || "0"
+    let taxValue = tabExpenseElements.$taxEle.val() || "0"
+    let totalValue = tabExpenseElements.$totalValueEle.val() || "0"
+
     formInstance.dataForm['title'] = $('#so-title').val()
     formInstance.dataForm['customer'] = $('#so-customer').val()
     formInstance.dataForm['start_date'] = startDate
     formInstance.dataForm['end_date'] = endDate
-
     // formInstance.dataForm['service_detail_data'] = ServiceOrder.getServiceDetailData()
     // formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData()
     // formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
     formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData()
-    formInstance.dataForm['expense'] = 0
+    formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData()
+    formInstance.dataForm['pretax_amount'] = parseFloat(pretaxValue.replace(/[^\d]/g, "")) || 0
+    formInstance.dataForm['tax_value'] = parseFloat(taxValue.replace(/[^\d]/g, "")) || 0
+    formInstance.dataForm['total_value'] = parseFloat(totalValue.replace(/[^\d]/g, "")) || 0
 }
 
 function setUpFormSubmit($form){

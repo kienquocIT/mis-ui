@@ -191,7 +191,26 @@ class TabShipmentFunction {
             if (row.isContainer) {
                 const containerData = {
                     containerName: row?.containerName || '',
-                }
+                    containerType: row?.containerType || '',
+                    containerRefNumber: row?.containerRefNumber || '',
+                    containerWeight: row?.containerWeight || 0,
+                    containerDimension: row?.packageDimension || 0,
+                    containerNote: row?.containerNote || '',
+                    is_container: true
+                };
+                serviceOrderShipmentData.push(containerData);
+            } else {
+                const packageData = {
+                    packageName: row?.packageName || '',
+                    packageType: row?.packageType || '',
+                    packageRefNumber: row?.packageRefNumber || '',
+                    packageWeight: row?.packageWeight || 0,
+                    packageDimension: row?.packageDimension || 0,
+                    packageNote: row?.packageNote || '',
+                    packageContainerRef: row?.packageContainerRef || '',
+                    is_container: false
+                };
+                serviceOrderShipmentData.push(packageData);
             }
         })
         return serviceOrderShipmentData;

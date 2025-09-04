@@ -53,6 +53,7 @@ function setUpFormSubmit($form){
         submitHandler:  ()=> {
             let formInstance = new SetupFormSubmit($form)
             setUpFormData(formInstance)
+            console.log(formInstance.dataForm)
             WFRTControl.callWFSubmitForm(formInstance)
         },
     })

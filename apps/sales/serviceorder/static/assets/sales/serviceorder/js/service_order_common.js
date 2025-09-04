@@ -55,25 +55,25 @@ const ServiceOrder = (function($) {
         workOrderCostData: {},
 
         /**
-         * @type {{ [work_order_id: string]: [{ service_id: string, contribution: number, delivered_quantity: number}] }}
+         * @type {{ [work_order_id: string]: [{ service_id: string, contribution_percent: number, delivered_quantity: number}] }}
          * @description Biến lưu dữ liệu đóng góp của 1 hàng work order (còn gồm nhiều field khác)
          */
         productContributionData: {},
 
         /**
-         * @type {{ [service_id: string]: { total_contribution_percentage: number, balance: number} }}
+         * @type {{ [service_id: string]: { total_contribution_percent: number, delivery_balance_value: number} }}
          * @description Biến lưu dữ liệu tổng đóng góp và còn lại của 1 dòng service detail
          */
         serviceDetailTotalContributionData: {},
 
         /**
-         * @type {{ [payment_id: string]: [{ service_id: string, payment_percentage: number, payment_value: number, total_reconciled_value: number}] }}
+         * @type {{ [payment_id: string]: [{ service_id: string, payment_percent: number, payment_value: number, total_reconciled_value: number}] }}
          * @description Biến lưu dữ liệu thanh toán của 1 hàng payment (tuỳ theo loại payment có hoá đơn hay ko có hoá đơn mà field khác nhau)
          */
         paymentDetailData: {},
 
         /**
-         * @type {{ [service_id: string]: { total_payment_percentage: number, total_payment_value: number} }}
+         * @type {{ [service_id: string]: { total_payment_percent: number, total_payment_value: number} }}
          * @description Biến lưu dữ liệu tổng thanh toán của 1 service detail
          */
         serviceDetailTotalPaymentData: {},
@@ -159,10 +159,11 @@ const ServiceOrder = (function($) {
         const baseData = {
             product_id: productId,
             code: rowData.code,
-            name: rowData.title,
+            title: rowData.title,
             description: rowData.description || '',
             quantity: 1,
-            uom: rowData?.sale_default_uom?.title || '',
+            uom_title: rowData?.sale_default_uom?.title || '',
+            uom_data: rowData?.sale_default_uom ?? {},
             id: uniqueStr
         }
 
@@ -175,15 +176,16 @@ const ServiceOrder = (function($) {
             return {
                 ...baseData,
                 price: price,
-                tax: rowData?.sale_tax?.code || '',
+                tax_code: rowData?.sale_tax?.code || '',
                 tax_data: rowData?.sale_tax || {},
-                total: total
+                sub_total_value: price,
+                total_value: total
             }
         } else if (pageVariable.modalContext === 'workOrder') {
             return {
                 ...baseData,
                 unit_cost: 0,
-                total: 0, // Will be recalculated when quantity changes
+                total_value: 0, // Will be recalculated when quantity changes
                 start_date: '',
                 end_date: '',
                 is_delivery_point: false,
@@ -219,8 +221,8 @@ const ServiceOrder = (function($) {
         }
 
         return {
-            total: total,
-            exchanged_total: exchangedTotal
+            total_value: total,
+            exchanged_total_value: exchangedTotal
         }
     }
 
@@ -430,7 +432,7 @@ const ServiceOrder = (function($) {
                     width: '20%',
                     title: $.fn.gettext('Name'),
                     render: (data, type, row) => {
-                        return row.name || ''
+                        return row.title || ''
                     }
                 },
                 {
@@ -457,7 +459,7 @@ const ServiceOrder = (function($) {
                     width: '7%',
                     title: $.fn.gettext('Unit'),
                     render: (data, type, row) => {
-                        return row.uom || ''
+                        return row.uom_title || ''
                     }
                 },
                 {
@@ -474,14 +476,14 @@ const ServiceOrder = (function($) {
                     width: '10%',
                     title: $.fn.gettext('Tax'),
                     render: (data, type, row) => {
-                        return row.tax || ''
+                        return row.tax_code || ''
                     }
                 },
                 {
                     width: '15%',
                     title: $.fn.gettext('Total amount'),
                     render: (data, type, row) => {
-                        const total = row.total || 0
+                        const total = row.total_value || 0
                         return `<div class="input-group">
                                 <span class="mask-money" data-init-money="${total}"></span>
                             </div>`
@@ -540,7 +542,7 @@ const ServiceOrder = (function($) {
                     width: '12%',
                     title: $.fn.gettext('Description'),
                     render: (data, type, row) => {
-                        const name = row.name || ''
+                        const name = row.title || ''
                         const isItemRow = row?.product_id
                         if (isItemRow){
                             return `<div class="" title="${name}">${name}</div>`
@@ -635,6 +637,7 @@ const ServiceOrder = (function($) {
                     title: $.fn.gettext('Unit Cost'),
                     render: (data, type, row) => {
                         const unitCost = row.unit_cost || 0
+                        const workOrderId = row.id || null
                         return `<div class="d-flex align-items-center">
                                     <div>
                                         <span class="mask-money" data-init-money="${unitCost}"></span>
@@ -650,7 +653,7 @@ const ServiceOrder = (function($) {
                     width: '11%',
                     title: $.fn.gettext('Total Amount'),
                     render: (data, type, row) => {
-                        const totalAmount = row.total || 0
+                        const totalAmount = row.total_value || 0
                         return `<div class="input-group">
                                     <span class="mask-money" data-init-money="${totalAmount}"></span>
                                 </div>`
@@ -835,7 +838,7 @@ const ServiceOrder = (function($) {
                     width: '12%',
                     title: $.fn.gettext('Total Amount'),
                     render: (data, type, row) => {
-                        const total = row.total || 0
+                        const total = row.total_value || 0
                         const selectedCurrency = row.currency_id || ''
                         const currencyData = pageVariable.currencyList.find(currency => currency.id === selectedCurrency)
 
@@ -849,7 +852,7 @@ const ServiceOrder = (function($) {
                     width: '12%',
                     title: $.fn.gettext('Total'),
                     render: (data, type, row) => {
-                        const exchangedTotal = row.exchanged_total || 0
+                        const exchangedTotal = row.exchanged_total_value || 0
                         return `<div>
                                     <span class="order-cost-exchanged-total mask-money" data-init-money="${exchangedTotal}"></span>
                                 </div>`
@@ -965,14 +968,14 @@ const ServiceOrder = (function($) {
                     width: '30%',
                     title: $.fn.gettext('Title'),
                     render: (data, type, row) => {
-                        return row?.name
+                        return row?.title
                     }
                 },
                 {
                     width: '20%',
                     title: $.fn.gettext('Contribution'),
                     render: (data, type, row) => {
-                        const contribution = row.contribution || 0
+                        const contribution = row.contribution_percent || 0
                         return `<div class="input-group">
                                     <input
                                         type="number"
@@ -989,7 +992,7 @@ const ServiceOrder = (function($) {
                     width: '20%',
                     title: $.fn.gettext('Total Balance'),
                     render: (data, type, row) => {
-                        let balance = row.balance || 0
+                        let balance = row.balance_quantity || 0
                         const isSelected = row.is_selected
                         const deliveredQuantity = row.delivered_quantity || 0
                         balance += isSelected ? deliveredQuantity : 0
@@ -1001,7 +1004,7 @@ const ServiceOrder = (function($) {
                     title: $.fn.gettext('No of Service Delivered'),
                     render: (data, type, row) => {
                         const quantity = row.delivered_quantity || 0
-                        const balance = row.balance || 0
+                        const balance = row.balance_quantity || 0
                         return `<div class="input-group">
                                     <input
                                         ${!isDelivery ? 'disabled' : ''}
@@ -1214,7 +1217,7 @@ const ServiceOrder = (function($) {
                     width: '15%',
                     title: $.fn.gettext('Name'),
                     render: (data, type, row, meta) => {
-                        const name = row.name
+                        const name = row.title
                         return `${name}`
                     }
                 },
@@ -1222,7 +1225,7 @@ const ServiceOrder = (function($) {
                     width: '15%',
                     title: $.fn.gettext('Total Before Tax'),
                     render: (data, type, row, meta) => {
-                        const subTotal = row.sub_total
+                        const subTotal = row.sub_total_value
                         return `<div class="input-group">
                                     <span class="mask-money" data-init-money="${subTotal}"></span>
                                 </div>`
@@ -1232,7 +1235,7 @@ const ServiceOrder = (function($) {
                     width: '15%',
                     title: $.fn.gettext('Value') + ' %',
                     render: (data, type, row, meta) => {
-                        const paymentPercentage = row.payment_percentage
+                        const paymentPercentage = row.payment_percent
                         return `<div class="input-group">
                                     <input
                                         type="number"
@@ -1298,7 +1301,7 @@ const ServiceOrder = (function($) {
                     width: '10%',
                     title: $.fn.gettext('Name'),
                     render: (data, type, row, meta) => {
-                        const name = row.name
+                        const name = row.title
                         return `${name}`
                     }
                 },
@@ -1306,7 +1309,7 @@ const ServiceOrder = (function($) {
                     width: '10%',
                     title: $.fn.gettext('Total Before Tax'),
                     render: (data, type, row, meta) => {
-                        const subTotal = row.sub_total || 0
+                        const subTotal = row.sub_total_value || 0
                         return `<div class="input-group">
                                     <span class="mask-money" data-init-money="${subTotal}"></span>
                                 </div>`
@@ -1326,7 +1329,7 @@ const ServiceOrder = (function($) {
                     width: '10%',
                     title: $.fn.gettext('Balance'),
                     render: (data, type, row, meta) => {
-                        const balance = row.balance || 0
+                        const balance = row.balance_value || 0
                         return `<div class="input-group">
                                     <span class="mask-money" data-init-money="${balance}"></span>
                                 </div>`
@@ -1336,7 +1339,7 @@ const ServiceOrder = (function($) {
                     width: '10%',
                     title: $.fn.gettext('Invoice value') + ' %',
                     render: (data, type, row, meta) => {
-                        const paymentPer = row.payment_percentage || 0
+                        const paymentPer = row.payment_percent || 0
                         return `<div class="input-group">
                                     <input
                                         type="number"
@@ -1449,7 +1452,7 @@ const ServiceOrder = (function($) {
                     width: '10%',
                     title: $.fn.gettext('Service Name'),
                     render: (data, type, row, meta) => {
-                        const name = row.name
+                        const name = row.title
                         return `${name}`
                     }
                 },
@@ -1457,7 +1460,7 @@ const ServiceOrder = (function($) {
                     width: '15%',
                     title: $.fn.gettext('Total'),
                     render: (data, type, row, meta) => {
-                        const total = row.total
+                        const total = row.total_value
                         return `<div class="input-group">
                                     <span class="mask-money" data-init-money="${total}"></span>
                                 </div>`
@@ -1561,8 +1564,10 @@ const ServiceOrder = (function($) {
                 const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
                 const subtotal = newQuantity * price
                 const taxAmount = subtotal * taxRate
-                rowData.total = subtotal + taxAmount
+                rowData.sub_total_value = subtotal
+                rowData.total_value = subtotal + taxAmount
 
+                //col 8
                 const $totalCell = $row.find('td').eq(8)
                 const $totalMoneySpan = $totalCell.find('.mask-money')
                 $totalMoneySpan.attr('data-init-money', subtotal + taxAmount)
@@ -1618,8 +1623,8 @@ const ServiceOrder = (function($) {
             rowData.quantity = Number($ele.val() || 0)
 
             const totalData = calculateWorkOrderCostTotalData(rowData)
-            rowData.total = totalData.total
-            rowData.exchanged_total = totalData.exchanged_total
+            rowData.total_value = totalData.total_value
+            rowData.exchanged_total_value = totalData.exchanged_total_value
             table.row($row).data(rowData).draw(false)
         })
         pageElement.workOrder.$table.on('change', '.work-order-description', function (e) {
@@ -1627,7 +1632,7 @@ const ServiceOrder = (function($) {
             const $row = $ele.closest('tr')
             const table = pageElement.workOrder.$table.DataTable()
             const rowData = table.row($row).data()
-            rowData.name = $ele.val()
+            rowData.title = $ele.val()
         })
     }
 
@@ -1635,9 +1640,12 @@ const ServiceOrder = (function($) {
         pageElement.workOrder.$table.on('click', '.btn-open-work-order-cost', function(e){
             const $row = $(e.currentTarget).closest('tr')
             const table = pageElement.workOrder.$table.DataTable()
-            const rowIndex = table.row($row).index()
-            const rowWorkOrderCost = pageVariable.workOrderCostData[rowIndex]
-            pageElement.modalData.$tableWorkOrderCost.attr('data-row-index', rowIndex)
+            const rowData = table.row($row).data()
+            const rowId = rowData.id
+            // const rowIndex = table.row($row).index()
+            const rowWorkOrderCost = pageVariable.workOrderCostData[rowId]
+
+            pageElement.modalData.$tableWorkOrderCost.attr('data-work-order-id', rowId)
             initWorkOrderCostModalDataTable(rowWorkOrderCost)
         })
     }
@@ -1675,8 +1683,8 @@ const ServiceOrder = (function($) {
             }
             $row.find('.order-cost-total').attr('data-init-money', total)
             $row.find('.order-cost-exchanged-total').attr('data-init-money', exchangedTotal)
-            rowData.total = total
-            rowData.exchanged_total = exchangedTotal
+            rowData.total_value = total
+            rowData.exchanged_total_value = exchangedTotal
             $.fn.initMaskMoney2()
             // tableWorkOrderCost.row($row).data(rowData).draw(false)
         })
@@ -1694,8 +1702,8 @@ const ServiceOrder = (function($) {
             rowData.currency_id = currencyId
 
             const totalData = calculateWorkOrderCostTotalData(rowData)
-            rowData.total = totalData.total
-            rowData.exchanged_total = totalData.exchanged_total
+            rowData.total_value = totalData.total_value
+            rowData.exchanged_total_value = totalData.exchanged_total_value
             tableWorkOrderCost.row($row).data(rowData).draw(false)
         })
     }
@@ -1708,10 +1716,10 @@ const ServiceOrder = (function($) {
             const emptyWorkOrderItem = {
                 id: uniqueStr,
                 code: '',
-                description: '',
+                title: '',
                 quantity: 1,
                 unit_cost: 0,
-                total: 0,
+                total_value: 0,
                 start_date: '',
                 end_date: '',
                 is_delivery_point: false,
@@ -1736,8 +1744,8 @@ const ServiceOrder = (function($) {
                 unit_cost: 0,
                 currency_id: '',
                 tax_id: '',
-                total: 0,
-                exchanged_total: 0
+                total_value: 0,
+                exchanged_total_value: 0
             }
 
             currentData.push(newRow)
@@ -1756,8 +1764,8 @@ const ServiceOrder = (function($) {
             rowData.quantity = currVal
 
             const totalData = calculateWorkOrderCostTotalData(rowData)
-            rowData.total = totalData.total
-            rowData.exchanged_total = totalData.exchanged_total
+            rowData.total_value = totalData.total_value
+            rowData.exchanged_total_value = totalData.exchanged_total_value
             table.row($row).data(rowData).draw(false)
         })
         pageElement.modalData.$tableWorkOrderCost.on('change', '.work-order-cost-unit-cost', function (e) {
@@ -1770,15 +1778,15 @@ const ServiceOrder = (function($) {
             rowData.unit_cost = currVal
 
             const totalData = calculateWorkOrderCostTotalData(rowData)
-            rowData.total = totalData.total
-            rowData.exchanged_total = totalData.exchanged_total
+            rowData.total_value = totalData.total_value
+            rowData.exchanged_total_value = totalData.exchanged_total_value
             table.row($row).data(rowData).draw(false)
         })
     }
 
     function handleSaveWorkOrderCost(){
         pageElement.modalData.$btnSaveWorkOrderCost.on('click', function(e) {
-            const rowIndex = pageElement.modalData.$tableWorkOrderCost.attr('data-row-index')
+            const workOrderRowId = pageElement.modalData.$tableWorkOrderCost.attr('data-work-order-id')
 
             const table = pageElement.modalData.$tableWorkOrderCost.DataTable()
 
@@ -1787,16 +1795,16 @@ const ServiceOrder = (function($) {
             let totalAmount = 0
 
             workOrderCostList.forEach((item, index) => {
-                totalAmount += item.exchanged_total
+                totalAmount += item.exchanged_total_value
                 item.order = index
                     return item
             })
-            pageVariable.workOrderCostData[rowIndex] = workOrderCostList
+            pageVariable.workOrderCostData[workOrderRowId] = workOrderCostList
 
-            const workOrderRow = pageElement.workOrder.$table.DataTable().row(rowIndex)
+            const workOrderRow = pageElement.workOrder.$table.DataTable().row(workOrderRowId)
             const workOrderRowData = workOrderRow.data()
             workOrderRowData.unit_cost = totalAmount
-            workOrderRowData.total = totalAmount * workOrderRowData.quantity
+            workOrderRowData.total_value = totalAmount * workOrderRowData.quantity
             pageElement.workOrder.$table.DataTable().row(workOrderRow).data(workOrderRowData).draw(false)
         })
     }
@@ -1835,18 +1843,18 @@ const ServiceOrder = (function($) {
             let productContributionData = serviceDetailData.map((sdItem, index) => {
                 const serviceDetailId = sdItem.id
                 const contributionData = pageVariable.serviceDetailTotalContributionData?.[serviceDetailId]
-                const totalContribution = contributionData?.total_contribution_percentage || 0
+                const totalContribution = contributionData?.total_contribution_percent || 0
                 //if .balance = null or undefined, get .quantity, else get .balance
-                const balance = contributionData?.balance ?? sdItem.quantity
+                const balance = contributionData?.delivery_balance_value ?? sdItem.quantity
 
                 return {
                     service_id: serviceDetailId,
                     code: sdItem.code,
-                    name: sdItem.name,
+                    title: sdItem.title,
                     quantity: sdItem.quantity,
-                    total_contribution_percentage: totalContribution,
-                    balance: balance,
-                    contribution: 0,
+                    total_contribution_percent: totalContribution,
+                    balance_quantity: balance,
+                    contribution_percent: 0,
                     delivered_quantity: 0,
                     is_selected: false,
                 }
@@ -1864,7 +1872,7 @@ const ServiceOrder = (function($) {
                         return {
                             ...pcItem,
                             is_selected: Boolean(currProductContribution.is_selected),
-                            contribution: currProductContribution.contribution || 0,
+                            contribution_percent: currProductContribution.contribution_percent || 0,
                             delivered_quantity: currProductContribution.delivered_quantity || 0
                         }
                     }
@@ -1896,7 +1904,7 @@ const ServiceOrder = (function($) {
                 let contribution = parseFloat($contributionInput.val()) || 0
                 let deliveredQuantity = parseFloat($deliveredQuantityInput.val()) || 0
                 const serviceRowContributionData = productContributionData.find(item => item.service_id === rowId)
-                const serviceRowContribution = serviceRowContributionData.contribution
+                const serviceRowContribution = serviceRowContributionData.contribution_percent
                 const serviceRowDeliveredQuantity = serviceRowContributionData.delivered_quantity
                 const serviceRowQuantity = serviceRowContributionData.quantity
 
@@ -1914,8 +1922,8 @@ const ServiceOrder = (function($) {
 
                 const serviceDetailRowContributionData = pageVariable.serviceDetailTotalContributionData?.[rowId]
                 if(serviceDetailRowContributionData){
-                    const currTotalContribution = serviceDetailRowContributionData.total_contribution_percentage
-                    const currBalance = serviceDetailRowContributionData.balance
+                    const currTotalContribution = serviceDetailRowContributionData.total_contribution_percent
+                    const currBalance = serviceDetailRowContributionData.delivery_balance_value
 
                     if(isSelected){
                         const newTotalContribution = currTotalContribution - serviceRowContribution + contribution
@@ -1934,8 +1942,8 @@ const ServiceOrder = (function($) {
                         }
 
                         pageVariable.serviceDetailTotalContributionData[rowId] = {
-                            total_contribution_percentage: newTotalContribution,
-                            balance: newBalance,
+                            total_contribution_percent: newTotalContribution,
+                            delivery_balance_value: newBalance,
                         }
                     }
                     else {
@@ -1955,16 +1963,16 @@ const ServiceOrder = (function($) {
                         }
 
                         pageVariable.serviceDetailTotalContributionData[rowId] = {
-                            total_contribution_percentage: newTotalContribution,
-                            balance: newBalance,
+                            total_contribution_percent: newTotalContribution,
+                            delivery_balance_value: newBalance,
                         }
                     }
                 }
                 else {
                     if(isSelected){
                         pageVariable.serviceDetailTotalContributionData[rowId] = {
-                            total_contribution_percentage: contribution,
-                            balance: serviceRowQuantity - deliveredQuantity,
+                            total_contribution_percent: contribution,
+                            delivery_balance_value: serviceRowQuantity - deliveredQuantity,
                         }
                     }
                 }
@@ -1974,10 +1982,10 @@ const ServiceOrder = (function($) {
                         return{
                             ...item,
                             is_selected: isSelected,
-                            contribution: isSelected ? contribution : 0,
+                            contribution_percent: isSelected ? contribution : 0,
                             delivered_quantity: isSelected ? deliveredQuantity : 0,
-                            total_contribution_percentage: pageVariable.serviceDetailTotalContributionData[rowId]?.total_contribution_percentage,
-                            balance: pageVariable.serviceDetailTotalContributionData[rowId]?.balance,
+                            total_contribution_percent: pageVariable.serviceDetailTotalContributionData[rowId]?.total_contribution_percent,
+                            balance_quantity: pageVariable.serviceDetailTotalContributionData[rowId]?.delivery_balance_value,
                         }
                     }
                     return item
@@ -2008,7 +2016,7 @@ const ServiceOrder = (function($) {
                             const serviceId = item.service_id
 
                             if (pageVariable.serviceDetailTotalContributionData[serviceId]) {
-                                pageVariable.serviceDetailTotalContributionData[serviceId].balance += item.delivered_quantity
+                                pageVariable.serviceDetailTotalContributionData[serviceId].delivery_balance_value += item.delivered_quantity
                             }
 
                             item.delivered_quantity = 0
@@ -2092,14 +2100,14 @@ const ServiceOrder = (function($) {
                         const serviceId = nipdItem.service_id
                         const totalPaymentData = pageVariable.serviceDetailTotalPaymentData[serviceId]
                         if(totalPaymentData){
-                            let totalPercentage = totalPaymentData?.total_payment_percentage
+                            let totalPercentage = totalPaymentData?.total_payment_percent
                             let totalValue = totalPaymentData?.total_payment_value
 
-                            totalPercentage -= nipdItem.payment_percentage
+                            totalPercentage -= nipdItem.payment_percent
                             totalValue -= nipdItem.payment_value
 
                             pageVariable.serviceDetailTotalPaymentData[serviceId] = {
-                                total_payment_percentage: totalPercentage,
+                                total_payment_percent: totalPercentage,
                                 total_payment_value: totalValue
                             }
                         }
@@ -2120,14 +2128,14 @@ const ServiceOrder = (function($) {
                         const serviceId = pdItem.service_id
                         const totalPaymentData = pageVariable.serviceDetailTotalPaymentData[serviceId]
                         if(totalPaymentData){
-                            let totalPercentage = totalPaymentData.total_payment_percentage
+                            let totalPercentage = totalPaymentData.total_payment_percent
                             let totalValue = totalPaymentData.total_payment_value
 
-                            totalPercentage -= pdItem.payment_percentage
+                            totalPercentage -= pdItem.payment_percent
                             totalValue -= pdItem.payment_value
 
                             pageVariable.serviceDetailTotalPaymentData[serviceId] = {
-                                total_payment_percentage: totalPercentage,
+                                total_payment_percent: totalPercentage,
                                 total_payment_value: totalValue
                             }
                         }
@@ -2167,9 +2175,9 @@ const ServiceOrder = (function($) {
                     return {
                         id: paymentDetailId, //generate a random id for payment detail row
                         service_id: serviceDetailId,
-                        name: sdItem.name,
-                        sub_total: sdItem.total,
-                        payment_percentage: 0,
+                        title: sdItem.title,
+                        sub_total_value: sdItem.sub_total_value,
+                        payment_percent: 0,
                         payment_value: 0
                     }
                 })
@@ -2186,7 +2194,7 @@ const ServiceOrder = (function($) {
                                 ...pdniItem,
                                 id: currPayment.id, //if old id exists, assign it to current id
                                 is_selected: currPayment.is_selected,
-                                payment_percentage: currPayment.payment_percentage,
+                                payment_percent: currPayment.payment_percent,
                                 payment_value: currPayment.payment_value
                             }
                         }
@@ -2209,11 +2217,11 @@ const ServiceOrder = (function($) {
                     return {
                         id: paymentDetailId, //generate a random id for payment detail row
                         service_id: serviceDetailId,
-                        name: sdItem.name,
-                        sub_total: sdItem.total,
+                        title: sdItem.title,
+                        sub_total_value: sdItem.sub_total_value,
                         issued_value: issuedValue,
-                        balance: sdItem.total - issuedValue,
-                        payment_percentage: 0,
+                        balance_value: sdItem.sub_total_value - issuedValue,
+                        payment_percent: 0,
                         payment_value: 0,
                         tax_value: 0,
                         tax_data: sdItem.tax_data,
@@ -2230,12 +2238,11 @@ const ServiceOrder = (function($) {
                             cpdItem.service_id === pdItem.service_id
                         )
                         if(currPayment){
-
                             return {
                                 ...pdItem,
                                 id: currPayment.id, //if old id exists, assign it to current id
                                 is_selected: currPayment.is_selected,
-                                payment_percentage: currPayment.payment_percentage,
+                                payment_percent: currPayment.payment_percent,
                                 payment_value: currPayment.payment_value,
                                 tax_value: currPayment.tax_value,
                                 reconcile_value: currPayment.reconcile_value,
@@ -2272,19 +2279,19 @@ const ServiceOrder = (function($) {
                 const isSelected = $checkbox.is(':checked')
 
                 const rowId = $checkbox.data('service-row-id')
-                let paymentPercentage = rowData.payment_percentage
+                let paymentPercentage = rowData.payment_percent
                 let paymentValue = rowData.payment_value
 
                 //data saved
                 const serviceRowPaymentData = paymentData.find(item => item.service_id === rowId)
-                const serviceRowPaymentPercentage = serviceRowPaymentData?.payment_percentage || 0
+                const serviceRowPaymentPercentage = serviceRowPaymentData?.payment_percent || 0
                 const serviceRowPaymentValue = serviceRowPaymentData?.payment_value || 0
                 const serviceRowPaymentTotalData = pageVariable.serviceDetailTotalPaymentData[rowId]
 
                 //if exist serviceDetailTotalDAta
                 if (serviceRowPaymentTotalData){
                     const currTotalPaymentVal = serviceRowPaymentTotalData.total_payment_value
-                    const currTotalPaymentPer = serviceRowPaymentTotalData.total_payment_percentage
+                    const currTotalPaymentPer = serviceRowPaymentTotalData.total_payment_percent
 
                     //if is selected add data to total value
                     if(isSelected){
@@ -2339,7 +2346,7 @@ const ServiceOrder = (function($) {
                             ...item,
                             is_selected: isSelected,
                             payment_value: isSelected ? paymentValue : 0,
-                            payment_percentage: isSelected ? paymentPercentage : 0,
+                            payment_percent: isSelected ? paymentPercentage : 0,
                             receivable_value: receivableValue,
                         }
                     }
@@ -2385,21 +2392,21 @@ const ServiceOrder = (function($) {
                 const isSelected = $checkbox.is(':checked')
                 const rowId = $checkbox.data('service-row-id')
 
-                let paymentPercentage = rowData?.payment_percentage || 0
+                let paymentPercentage = rowData?.payment_percent || 0
                 let paymentValue = rowData?.payment_value || 0
                 const taxValue = rowData?.tax_value || 0
                 const reconcileValue = rowData?.reconcile_value || 0
                 const receivableValue = rowData?.receivable_value || 0
 
                 const serviceRowPaymentData = paymentData.find(item => item.service_id === rowId)
-                const serviceRowPaymentPercentage = serviceRowPaymentData?.payment_percentage || 0
+                const serviceRowPaymentPercentage = serviceRowPaymentData?.payment_percent || 0
                 const serviceRowPaymentValue = serviceRowPaymentData?.payment_value || 0
 
                 const serviceRowPaymentTotalData = pageVariable.serviceDetailTotalPaymentData[rowId]
                 let issuedValue = 0
                 if (serviceRowPaymentTotalData){
                     const currTotalPaymentVal = serviceRowPaymentTotalData.total_payment_value
-                    const currTotalPaymentPer = serviceRowPaymentTotalData.total_payment_percentage
+                    const currTotalPaymentPer = serviceRowPaymentTotalData.total_payment_percent
 
                     if(isSelected){
                         const newTotalPaymentVal = currTotalPaymentVal - serviceRowPaymentValue + paymentValue
@@ -2413,7 +2420,7 @@ const ServiceOrder = (function($) {
 
                         pageVariable.serviceDetailTotalPaymentData[rowId] = {
                             total_payment_value: newTotalPaymentVal,
-                            total_payment_percentage: newTotalPaymentPer
+                            total_payment_percent: newTotalPaymentPer
                         }
                     }
                     else {
@@ -2428,7 +2435,7 @@ const ServiceOrder = (function($) {
 
                         pageVariable.serviceDetailTotalPaymentData[rowId] = {
                             total_payment_value: newTotalPaymentVal,
-                            total_payment_percentage: newTotalPaymentPer
+                            total_payment_percent: newTotalPaymentPer
                         }
                     }
                 }
@@ -2437,7 +2444,7 @@ const ServiceOrder = (function($) {
                         issuedValue = paymentValue
                         pageVariable.serviceDetailTotalPaymentData[rowId] = {
                             total_payment_value: paymentValue,
-                            total_payment_percentage: paymentPercentage,
+                            total_payment_percent: paymentPercentage,
                         }
                     }
                 }
@@ -2450,14 +2457,14 @@ const ServiceOrder = (function($) {
                             totalReconcile += reconcileValue
                             totalReceivable += receivableValue
                         }
-                        const balance = item.sub_total - issuedValue
+                        const balance = item.sub_total_value - issuedValue
                         return{
                             ...item,
                             issued_value: issuedValue,
-                            balance: balance,
+                            balance_value: balance,
                             is_selected: isSelected,
                             payment_value: paymentValue,
-                            payment_percentage: paymentPercentage,
+                            payment_percent: paymentPercentage,
                             reconcile_value: reconcileValue,
                             tax_value: taxValue,
                             receivable_value: receivableValue
@@ -2493,7 +2500,7 @@ const ServiceOrder = (function($) {
             const $row = $ele.closest('tr')
             const table = pageElement.modalData.$tablePaymentDetail.DataTable()
             const rowData = table.row($row).data()
-            const subTotal = rowData.sub_total
+            const subTotal = rowData.sub_total_value
             if($ele.hasClass('payment-detail-percentage')){
                 let paymentPercentage = Number($ele.val()) || 0
                 if(paymentPercentage>100){
@@ -2506,7 +2513,7 @@ const ServiceOrder = (function($) {
                     const taxValue = paymentValue * taxRate
                     const receivableValue = paymentValue + taxValue - reconcileValue
 
-                    rowData.payment_percentage = paymentPercentage
+                    rowData.payment_percent = paymentPercentage
                     rowData.payment_value = paymentValue
                     rowData.tax_value = taxValue
                     rowData.receivable_value = receivableValue
@@ -2530,7 +2537,7 @@ const ServiceOrder = (function($) {
                     const taxValue = paymentValue * taxRate
                     const receivableValue = paymentValue + taxValue - reconcileValue
 
-                    rowData.payment_percentage = paymentPercentage
+                    rowData.payment_percent = paymentPercentage
                     rowData.payment_value = paymentValue
                     rowData.tax_value = taxValue
                     rowData.receivable_value = receivableValue
@@ -2545,7 +2552,7 @@ const ServiceOrder = (function($) {
             const $row = $ele.closest('tr')
             const table = pageElement.modalData.$tablePaymentDetailNoInvoice.DataTable()
             const rowData = table.row($row).data()
-            const subTotal = rowData.sub_total
+            const subTotal = rowData.sub_total_value
 
             if($ele.hasClass('no-invoice-payment-detail-percentage')){
                 let paymentPercentage = Number($ele.val()) || 0
@@ -2553,7 +2560,7 @@ const ServiceOrder = (function($) {
                     $.fn.notifyB({description: $.fn.gettext(`Value must not exceed 100`)}, 'failure')
                     $ele.attr('value', 0)
                 } else {
-                    rowData.payment_percentage = paymentPercentage
+                    rowData.payment_percent = paymentPercentage
                     paymentPercentage = paymentPercentage /100
                     rowData.payment_value = subTotal * paymentPercentage
                     table.row($row).data(rowData).draw(false)
@@ -2567,7 +2574,7 @@ const ServiceOrder = (function($) {
                     rowData.payment_value = paymentValue
                     let paymentPercentage = (paymentValue/ subTotal) * 100
                     paymentPercentage = parseFloat(paymentPercentage.toFixed(6))
-                    rowData.payment_percentage = paymentPercentage
+                    rowData.payment_percent = paymentPercentage
                     table.row($row).data(rowData).draw(false)
                 }
             }
@@ -2583,7 +2590,7 @@ const ServiceOrder = (function($) {
             rowData.is_selected = isChecked
             if (!isChecked) {
                 rowData.payment_value = 0
-                rowData.payment_percentage = 0
+                rowData.payment_percent = 0
 
                 $row.find('.payment-detail-percentage').attr('value', 0)
                 $row.find('.payment-detail-value').attr('data-init-money', 0)
@@ -2602,7 +2609,7 @@ const ServiceOrder = (function($) {
             rowData.is_selected = isChecked
             if (!isChecked) {
                 rowData.payment_value = 0
-                rowData.payment_percentage = 0
+                rowData.payment_percent = 0
 
                 $row.find('.no-invoice-payment-detail-percentage').attr('value', 0)
                 $row.find('.no-invoice-payment-detail-value').attr('value', 0)
@@ -2652,8 +2659,8 @@ const ServiceOrder = (function($) {
                                 advance_payment_id: rowId, //id of payment table row
                                 payment_detail_id: paymentDetailItem.id, //id of payment detail table row
                                 installment: installment,
-                                name: paymentDetailItem.name,
-                                total: paymentDetailItem.payment_value,
+                                title: paymentDetailItem.title,
+                                total_value: paymentDetailItem.payment_value,
                                 total_reconciled_value: paymentDetailItem?.total_reconciled_value || 0,
                                 reconcile_value: 0,
                                 service_id: paymentDetailItem.service_id
@@ -2813,19 +2820,21 @@ const ServiceOrder = (function($) {
 
             const serviceDetail = {
                 id: rowData.id,
-                product_id: rowData.product_id,
+                order: rowIdx + 1,
+                product: rowData.product_id,
                 code: rowData.code,
-                name: rowData.name,
+                title: rowData.title,
                 description: currentDescription,
                 quantity: currentQuantity,
-                uom: rowData.uom,
+                uom: rowData.uom_data?.id || null,
+                uom_data: rowData.uom_data,
                 price: price,
-                tax: rowData.tax,
+                tax: rowData.tax_data?.id || null,
                 tax_data: rowData.tax_data || {},
-                total: currentTotal,
-                total_contribution_percentage: pageVariable.serviceDetailTotalContributionData?.[rowData.id]?.total_contribution_percentage || 0,
-                balance: pageVariable.serviceDetailTotalContributionData?.[rowData.id]?.balance || currentQuantity,
-                total_payment_percentage: pageVariable.serviceDetailTotalPaymentData?.[rowData.id]?.total_payment_percentage || 0,
+                total_value: currentTotal,
+                total_contribution_percent: pageVariable.serviceDetailTotalContributionData?.[rowData.id]?.total_contribution_percent || 0,
+                delivery_balance_value: pageVariable.serviceDetailTotalContributionData?.[rowData.id]?.delivery_balance_value || currentQuantity,
+                total_payment_percent: pageVariable.serviceDetailTotalPaymentData?.[rowData.id]?.total_payment_percent || 0,
                 total_payment_value: pageVariable.serviceDetailTotalPaymentData?.[rowData.id]?.total_payment_value || 0
             }
 
@@ -2844,7 +2853,7 @@ const ServiceOrder = (function($) {
             const $row = $(this.node());
 
             // Get current values from the DOM elements
-            const currentDescription = $row.find('.work-order-description').val() || rowData.name || '';
+            const currentDescription = $row.find('.work-order-description').val() || rowData.title || '';
             const currentQuantity = parseFloat($row.find('.work-order-quantity').val()) || rowData.quantity || 0;
             const currentStartDate = $row.find('.work-order-start-date').val() || rowData.start_date || '';
             const currentEndDate = $row.find('.work-order-end-date').val() || rowData.end_date || '';
@@ -2859,22 +2868,19 @@ const ServiceOrder = (function($) {
                 id: rowData.id,
                 product_id: rowData.product_id || null, // Null for non-item rows
                 code: rowData.code || '',
-                name: currentDescription,
-                description: currentDescription, // Using name as description based on the structure
+                title: currentDescription,
                 assignee: rowData.assignee || null,
                 start_date: currentStartDate,
                 end_date: currentEndDate,
                 is_delivery_point: isDeliveryPoint,
                 quantity: currentQuantity,
                 unit_cost: unitCost,
-                total: currentTotal,
+                total_value: currentTotal,
                 status: rowData.status || 0,
                 // Include work order cost breakdown if exists
-                cost_breakdown: pageVariable.workOrderCostData?.[rowIdx] || [],
+                cost_data: pageVariable.workOrderCostData?.[rowData.id] || [],
                 // Include product contribution data if exists and is delivery point
-                product_contribution: isDeliveryPoint && pageVariable.productContributionData?.[rowData.id]
-                    ? pageVariable.productContributionData[rowData.id].filter(item => item.is_selected)
-                    : []
+                product_contribution: pageVariable.productContributionData?.[rowData.id]
             };
 
             workOrderData.push(workOrder);
@@ -2917,9 +2923,7 @@ const ServiceOrder = (function($) {
                 receivable_value: receivableValue,
                 due_date: currentDueDate,
                 // Include payment detail data if exists
-                payment_details: pageVariable.paymentDetailData?.[rowData.id]
-                    ? pageVariable.paymentDetailData[rowData.id].filter(item => item.is_selected)
-                    : [],
+                payment_details: pageVariable.paymentDetailData?.[rowData.id],
                 // Include reconcile data for each payment detail
                 reconcile_details: (() => {
                     const reconcileDetails = [];
@@ -2933,19 +2937,19 @@ const ServiceOrder = (function($) {
                                         payment_detail_id: paymentDetail.id,
                                         service_id: paymentDetail.service_id,
                                         reconcile_items: reconcileItems
-                                    });
+                                    })
                                 }
                             }
-                        });
+                        })
                     }
-                    return reconcileDetails;
+                    return reconcileDetails
                 })()
-            };
+            }
 
-            paymentData.push(payment);
-        });
+            paymentData.push(payment)
+        })
 
-        return paymentData;
+        return paymentData
     }
 
     return {

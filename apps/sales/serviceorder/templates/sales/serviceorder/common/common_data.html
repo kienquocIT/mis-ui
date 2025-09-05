@@ -7,15 +7,13 @@
             <input type="text" name="title" class="form-control" id="so-title" required>
         </div>
     </div>
-    <div class="col-12 col-lg-6 col-md-6">
+    <div class="col-12 col-lg-3 col-md-3">
         <div class="form-group">
             <label class="form-label required" for="so-created-date">{% trans 'Created Date' %}</label>
             <div class="input-affix-wrapper">
                 <input required type="text" name="created_date"
-                       class="form-control" autocomplete="off" id="so-created-date">
-                <div class="input-suffix">
-                    <i class="fas fa-calendar-alt"></i>
-                </div>
+                       class="form-control" autocomplete="off" id="so-created-date" disabled>
+                <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
             </div>
         </div>
     </div>
@@ -25,47 +23,25 @@
     <div class="col-12 col-lg-6 col-md-6">
         <div class="form-group">
             <label class="form-label required" for="so-customer">{% trans 'Customer' %}</label>
-            <select
-                class="form-select"
-                id="so-customer"
+            <select class="form-select" id="so-customer"
                 data-url="{% url 'AccountDDListAPI' %}"
                 data-method="GET"
                 data-keyResp="account_dd_list"
                 data-keytext="name"
-                required
-            >
+                required>
             </select>
         </div>
     </div>
-    <div class="col-12 col-lg-6 col-md-6">
-        <div class="form-group">
-            <label class="form-label required" for="so-status">{% trans 'Status' %}</label>
-            <select
-                class="form-select"
-                id="so-status"
-                required
-            >
-                <option value="0">{% trans 'Close' %}</option>
-                <option value="1">{% trans 'Open' %}</option>
-            </select>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-12 col-lg-6 col-md-6">
+    <div class="col-12 col-lg-3 col-md-3">
         <div class="form-group">
             <label class="form-label required" for="so-start-date">{% trans 'Start Date' %}</label>
             <div class="input-affix-wrapper">
-                <input required type="text" name="start_date"
-                       class="form-control" autocomplete="off" id="so-start-date">
-                <div class="input-suffix">
-                    <i class="fas fa-calendar-alt"></i>
-                </div>
+                <input required type="text" name="start_date" class="form-control" autocomplete="off" id="so-start-date">
+                <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
             </div>
         </div>
     </div>
-    <div class="col-12 col-lg-6 col-md-6">
+    <div class="col-12 col-lg-3 col-md-3">
         <div class="form-group">
             <label class="form-label required" for="so-end-date">{% trans 'End Date' %}</label>
             <div class="input-affix-wrapper">

@@ -10,3 +10,6 @@
     min-width: 1350px !important;
 }
 
+table.dataTable tbody th, table.dataTable tbody td, table.dataTable thead th, table.dataTable thead td {
+  padding: 0.5rem 1rem
+}

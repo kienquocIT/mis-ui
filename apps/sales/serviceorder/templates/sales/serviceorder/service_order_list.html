@@ -6,13 +6,9 @@
     {% include 'extends/systems/page_actions.html' with is_create=True create_link=create_link create_idx="create_service_order_button" %}
 {% endblock %}
 {% block pageContent %}
-    <table
-            id="table-service-order"
-            class="table nowrap w-100 mb-5"
-            data-url="{% url 'ConsultingListAPI' %}"
-            data-method="get"
-            data-url-detail="{% url 'ConsultingDetail' pk='0'%}"
-    >
+    <table class="table nowrap w-100 mb-5" data-method="get" id="table-service-order"
+           data-url="{% url 'ServiceOrderListAPI' %}"
+           data-url-detail="{% url 'ServiceOrderDetail' pk='0'%}">
         <thead>
             <tr>
                 <th></th>

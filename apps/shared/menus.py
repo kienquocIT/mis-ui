@@ -203,6 +203,11 @@ class MenusCoreConfigurations:
                 name='Shift', code='id_menu_master_data_shift',
                 view_name='ShiftMasterDataList',
                 icon='<i class="fas fa-history"></i>'
+            ),
+            MenuCommon(
+                name='Shipment', code='menu_master_data_shipment',
+                view_name='ShipmentMasterDataList',
+                icon='<i class="fa-solid fa-truck-arrow-right"></i>'
             )
         ]
     )

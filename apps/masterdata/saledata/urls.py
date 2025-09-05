@@ -46,6 +46,8 @@ from apps.masterdata.saledata.views.price import (
     PriceDeleteAPI, PriceListUpdate, PriceListItemListImportDBAPI
 )
 from apps.masterdata.saledata.views.revenue_plan_config import RevenuePlanConfigList, RevenuePlanConfigListAPI
+from apps.masterdata.saledata.views.shipment import ShipmentMasterDataList, ContainerMasterDataListAPI, \
+    ContainerMasterDataDetailAPI, PackageMasterDataListAPI, PackageMasterDataDetailAPI
 from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate, ShippingListAPI, ShippingDetail, \
     ShippingDetailAPI, ShippingCheckListAPI, ShippingUpdate
 from apps.masterdata.saledata.views.warehouse import (
@@ -418,4 +420,12 @@ urlpatterns += [
     path('attribute/list', AttributeList.as_view(), name='AttributeList'),
     path('attribute/list/api', AttributeListAPI.as_view(), name='AttributeListAPI'),
     path('attribute/detail/api/<str:pk>', AttributeDetailAPI.as_view(), name='AttributeDetailAPI'),
+]
+
+urlpatterns += [
+    path('masterdata/shipment/list', ShipmentMasterDataList.as_view(), name='ShipmentMasterDataList'),
+    path('masterdata/container/list/api', ContainerMasterDataListAPI.as_view(), name='ContainerMasterDataListAPI'),
+    path('masterdata/container/detail/api/<str:pk>', ContainerMasterDataDetailAPI.as_view(), name='ContainerMasterDataDetailAPI'),
+    path('masterdata/package/list/api', PackageMasterDataListAPI.as_view(), name='PackageMasterDataListAPI'),
+    path('masterdata/package/detail/api/<str:pk>', PackageMasterDataDetailAPI.as_view(), name='PackageMasterDataDetailAPI'),
 ]

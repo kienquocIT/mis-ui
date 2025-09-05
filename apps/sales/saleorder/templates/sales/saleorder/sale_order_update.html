@@ -21,14 +21,16 @@
     ></script>
     <div class="row">
         <div class="col-12 col-md-6 col-lg-6">
-            <ul class="nav nav-line nav-tabs nav-light justify-content-start quotation-tabs">
+            <ul class="nav nav-pills-bfl quotation-tabs">
                 <li class="nav-item quotation-tab-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                        <span class="nav-icon-wrap mr-1"><i class="fa-solid fa-tag"></i></span>
                         <span class="nav-link-text">{% trans 'Sale Order' %}</span>
                     </a>
                 </li>
                 <li class="nav-item quotation-tab-item" id="tab-indicator" data-zone="sale_order_indicators_data">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                        <span class="nav-icon-wrap mr-1"><i class="fa-solid fa-square-poll-horizontal"></i></span>
                         <span class="nav-link-text">{% trans 'Indicator' %}</span>
                     </a>
                 </li>
@@ -36,8 +38,8 @@
         </div>
         <div class="col-12 col-md-6 col-lg-6">
             <div class="d-flex justify-content-end">
-                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                    <button type="button" class="btn btn-outline-secondary" id="btn-copy-quotation" data-bs-toggle="modal" data-bs-target="#quotationModalCenter" data-copy-type="copy-from" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Copy Quotation' %}"><i class="far fa-copy"></i></button>
+                <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
+                    <button type="button" class="btn nav-link" id="btn-copy-quotation" data-bs-toggle="modal" data-bs-target="#quotationModalCenter" data-copy-type="copy-from" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Copy Quotation' %}"><span class="icon"><i class="far fa-copy"></i></span></button>
                 </div>
             </div>
         </div>
@@ -57,7 +59,7 @@
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
                     {% trans 'Select Sale Person' as inherit_title %}
-                    {% include 'extends/the-documents/bastion.html' with opp_title=opp_title has_process=True has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True inherit_readonly=True %}
+                    {% include 'extends/the-documents/bastion.html' with opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True inherit_readonly=True %}
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
@@ -75,7 +77,7 @@
                                 <label class="form-label" for="quotation-create-date-created">{% trans 'Date Created' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" name="date_created" id="quotation-create-date-created"
-                                           class="form-control date-picker" autocomplete="off">
+                                           class="form-control flat-picker" autocomplete="off">
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -140,7 +142,7 @@
 
                     <div class="row">
                         <div class="row">
-                            <ul class="nav nav-line nav-tabs nav-light border-bottom" id="quotation-tabs">
+                            <ul class="nav nav-pills-bfl" id="quotation-tabs">
                                 <li class="nav-item tab-detail" data-zone="sale_order_products_data">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                                         <span class="nav-icon-wrap mr-1"><i class="fas fa-cube"></i></span>
@@ -282,8 +284,9 @@
                                                             <thead>
                                                             <tr class="bg-light">
                                                                 <th class="w-10"></th>
-                                                                <th class="w-60">{% trans 'Title' %}</th>
-                                                                <th class="w-30">{% trans 'Actions' %}</th>
+                                                                <th class="w-40">{% trans 'Title' %}</th>
+                                                                <th class="w-40">{% trans 'Price' %}</th>
+                                                                <th class="w-10">{% trans 'Actions' %}</th>
                                                             </tr>
                                                             </thead>
                                                             <tbody>
@@ -647,8 +650,8 @@
                             >
                                 <thead>
                                 <tr class="bg-light">
-                                    <th class="w-30">{% trans 'Quotation name' %}</th>
-                                    <th class="w-20">{% trans 'Quotation code' %}</th>
+                                    <th class="w-30">{% trans 'Title' %}</th>
+                                    <th class="w-20">{% trans 'Code' %}</th>
                                     <th class="w-25">{% trans 'Opportunity' %}</th>
                                     <th class="w-25">{% trans 'Customer' %}</th>
                                 </tr>

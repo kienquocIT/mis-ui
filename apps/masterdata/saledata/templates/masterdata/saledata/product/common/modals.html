@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="modal fade" id="modal-variant-attributes" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+<div class="modal fade" id="modal-variant-attributes" tabindex="-1" role="dialog" aria-labelledby="modal-variant-attributes" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -30,7 +30,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal-attribute-display" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+<div class="modal fade" id="modal-attribute-display" tabindex="-1" role="dialog" aria-labelledby="modal-attribute-display" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -87,7 +87,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal-variant-item-des" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+<div class="modal fade" id="modal-variant-item-des" tabindex="-1" role="dialog" aria-labelledby="modal-variant-item-des" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -114,6 +114,39 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="add-variant-des" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">{% trans 'Save' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-product-attribute" tabindex="-1" role="dialog" aria-labelledby="modal-product-attribute" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Product attribute' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table nowrap w-100" id="table-select-attribute" data-method="GET" data-url="{% url 'AttributeListAPI' %}">
+                            <thead class="bg-secondary-light-5">
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th>{% trans 'Attribute' %}</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn-add-product-attribute" class="btn btn-primary">{% trans 'Select' %}</button>
             </div>
         </div>
     </div>

@@ -20,6 +20,8 @@ $(document).ready(async function () {
     ProductPageFunction.LoadPurchaseUom()
     ProductPageFunction.LoadPurchaseTax()
     ProductPageFunction.LoadComponentTable()
+    ProductPageFunction.LoadDurationUnit()
+    ProductPageFunction.LoadSelectedAttributeTable()
 
     $('#form-create-product').submit(function (event) {
         event.preventDefault();

@@ -1354,10 +1354,9 @@ table.dataTable tr.dtrg-group th {
 }
 
 .glow-gradient {
-  background: linear-gradient(270deg, #6a5acd, #00bcd4, #6a5acd);
-  /*background: linear-gradient(270deg, #8e2de2, #4a00e0, #00ffe7, #8e2de2);*/
+  background: linear-gradient(270deg, #9a8fe0, #66ddee, #9a8fe0);
   background-size: 600% 600%;
-  animation: glowing 3s ease infinite;
+  animation: glowing 5s ease infinite;
   color: white;
   border: none;
   transition: all 0.3s ease-in-out;
@@ -1465,4 +1464,98 @@ table.dataTable tr.dtrg-group th {
 
 .hk-wrapper[data-layout="navbar"] .hk-menu .menu-content-wrap .menu-group .navbar-nav .nav-item.active > .nav-link[data-bs-toggle="collapse"]::after{
     color:#fff!important;
+}
+
+.btn-blue, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-nav-button.next {
+  color: #fff;
+  background-color: #298DFF;
+  border-color: #298DFF;
+}
+.btn-blue:hover, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-nav-button.next:hover, .btn-blue:focus, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-nav-button.next:focus {
+  color: #fff;
+  background-color: #298DFF;
+  border-color: #298DFF;
+}
+.btn-blue:not(:disabled):not(.disabled).active, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-nav-button.next:not(:disabled):not(.disabled).active, .btn-blue:not(:disabled):not(.disabled):active, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-nav-button.next:not(:disabled):not(.disabled):active {
+  color: #fff;
+  background-color: #298DFF;
+  border-color: #298DFF;
+}
+.btn-blue.disabled, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .disabled.hopscotch-nav-button.next, .btn-blue:disabled, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .hopscotch-nav-button.next:disabled {
+  color: #fff;
+  background-color: #95bfed;
+  border-color: #95bfed;
+}
+.btn-blue.btn-animated:focus, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .btn-animated.hopscotch-nav-button.next:focus, .btn-blue.btn-animated:active, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .btn-animated.hopscotch-nav-button.next:active, .btn-blue.btn-animated:hover, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .btn-animated.hopscotch-nav-button.next:hover, .btn-blue.btn-animated:not(:disabled):not(.disabled).active, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .btn-animated.hopscotch-nav-button.next:not(:disabled):not(.disabled).active, .btn-blue.btn-animated:not(:disabled):not(.disabled):active, div.hopscotch-bubble .hopscotch-bubble-container .hopscotch-actions .btn-animated.hopscotch-nav-button.next:not(:disabled):not(.disabled):active {
+  color: #fff;
+  background-color: #298DFF;
+  border-color: #298DFF;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Custom nav-pills */
+
+/* Hiệu ứng nền cho nav */
+.nav-pills-bfl {
+    display: flex;
+    width: fit-content;  /* tự động vừa nội dung */
+    border: 1px solid #eaeaea;
+    border-radius: 20px;
+    padding: 1px;
+
+    /* Hiệu ứng kính trong suốt */
+    background: rgba(0, 0, 0, 0.01);
+    backdrop-filter: blur(15px);      /* làm mờ nền phía sau */
+    -webkit-backdrop-filter: blur(12px); /* hỗ trợ Safari */
+}
+
+.nav-pills-bfl .nav-link {
+    position: relative;
+    border-radius: 20px;
+    margin: 4px;
+    padding: 8px 16px;
+    color: #5f5f5f;
+    transition: color 0.3s ease;
+    overflow: hidden;
+}
+
+/* lớp background mờ mặc định */
+.nav-pills-bfl .nav-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    background: linear-gradient(135deg,
+        rgba(0, 0, 0, 0.08) 0%,
+        rgba(0, 0, 0, 0.05) 50%,
+        rgba(0, 0, 0, 0.03) 100%);
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: -1;
+}
+
+/* khi hover tab */
+.nav-pills-bfl .nav-link:hover::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.nav-pills-bfl .nav-link.active {
+    color: black;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;    /* để chữ nằm trên background */
+}
+
+.nav-pills-bfl .nav-link.active::before {
+    background-color: #eaeaea;
+    box-shadow:
+        0 6px 20px rgba(74, 144, 226, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    opacity: 1;
+    transform: scale(1);
 }

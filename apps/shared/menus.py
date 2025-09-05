@@ -902,6 +902,10 @@ class MenusHRM:
             ),
         ]
     )
+    OVERTIME_REQUEST = MenuCommon(
+        name='Overtime request', code='menu_overtime_request', view_name='OvertimeList',
+        icon='<i class="fa-solid fa-stopwatch-20"></i>',
+    )
 
 
 class MenusPartnerCenter:
@@ -1107,7 +1111,8 @@ class SpaceItem:
             menus=[
                 MenusHRM.HOME,
                 MenusHRM.HUMAN_RESOURCES,
-                # MenusHRM.ATTENDANCE,
+                MenusHRM.ATTENDANCE,
+                MenusHRM.OVERTIME_REQUEST,
             ],
         ),
         'inventory': SpaceCommon(

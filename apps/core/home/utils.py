@@ -275,6 +275,11 @@ PLAN_APP_OF_HRM = {
             list_view_name='AbsenceExplanationList', detail_view_name='AbsenceExplanationDetail'
         ).data,
     },
+    'overtimerequest': {
+        'overtimerequest': ReverseUrlCommon(
+            list_view_name='OvertimeList', detail_view_name='OvertimeDetail'
+        ).data,
+    },
 }
 
 PLAN_APP_OF_KMS = {

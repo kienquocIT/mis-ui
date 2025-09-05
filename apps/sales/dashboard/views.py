@@ -54,3 +54,15 @@ class DashboardPipelineList(View):
                 'data': {'current_period': resp1.result[0]},
             }, status.HTTP_200_OK
         return {}, status.HTTP_200_OK
+
+
+class DashboardServiceOrderList(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/dashboard/dashboard_service_order_echarts.html',
+        breadcrumb='DASHBOARD_SERVICE_ORDER_LIST_PAGE',
+        icon_cls='fas fa-filter',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK

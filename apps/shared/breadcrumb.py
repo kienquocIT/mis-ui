@@ -354,6 +354,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DASHBOARD_COMMON_PAGE = BreadcrumbChildren(_('Dashboard'), 'DashboardCommonPage')
     DASHBOARD_GENERAL_LIST_PAGE = BreadcrumbChildren(_('General dashboard'), 'DashboardGeneralList')
     DASHBOARD_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pipeline dashboard'), 'DashboardPipelineList')
+    DASHBOARD_SERVICE_ORDER_LIST_PAGE = BreadcrumbChildren(_('service order dashboard'), 'DashboardServiceOrderList')
 
     PERIODS_CONFIG_PAGE = BreadcrumbChildren(_('Periods config'), 'PeriodsConfigList')
     ACCOUNTING_POLICIES_PAGE = BreadcrumbChildren(_('Accounting policies'), 'AccountingPoliciesList')
@@ -466,6 +467,12 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     HRM_EMPLOYEE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'HRMEmployeeCreate')
     HRM_EMPLOYEE_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
     HRM_EMPLOYEE_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+    # HRM OVERTIME REQUEST
+    HRM_OVERTIME_LIST_PAGE = BreadcrumbChildren(_('Overtime request'), 'OvertimeList')
+    HRM_OVERTIME_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'OvertimeCreate')
+    HRM_OVERTIME_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
+    HRM_OVERTIME_UPDATE_PAGE = BreadcrumbChildren(_('Update'))
+
     # CONTRACT TEMPLATE
     CONTRACT_TEMPLATE_LIST_PAGE = BreadcrumbChildren(_('Contract template list'), 'ContractTemplateList')
     CONTRACT_TEMPLATE_CREATE_PAGE = BreadcrumbChildren(_('Create'), 'ContractTemplateCreate')
@@ -1113,6 +1120,7 @@ class BreadcrumbView:
     DASHBOARD_COMMON_PAGE = [BreadcrumbItem.DASHBOARD_COMMON_PAGE]
     DASHBOARD_GENERAL_LIST_PAGE = [BreadcrumbItem.DASHBOARD_GENERAL_LIST_PAGE]
     DASHBOARD_PIPELINE_LIST_PAGE = [BreadcrumbItem.DASHBOARD_PIPELINE_LIST_PAGE]
+    DASHBOARD_SERVICE_ORDER_LIST_PAGE = [BreadcrumbItem.DASHBOARD_SERVICE_ORDER_LIST_PAGE]
 
     PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
     ACCOUNTING_POLICIES_PAGE = [BreadcrumbItem.ACCOUNTING_POLICIES_PAGE]
@@ -1296,6 +1304,15 @@ class BreadcrumbView:
     HRM_EMPLOYEE_CREATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
     HRM_EMPLOYEE_DETAIL_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     HRM_EMPLOYEE_UPDATE_PAGE = HRM_EMPLOYEE_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
+
+    # OVERTIME REQUEST
+    HRM_OVERTIME_LIST_PAGE = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.HRM_OVERTIME_LIST_PAGE
+    ]
+    HRM_OVERTIME_CREATE_PAGE = HRM_OVERTIME_LIST_PAGE + [BreadcrumbItem.BASTION_CREATE]
+    HRM_OVERTIME_DETAIL_PAGE = HRM_OVERTIME_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
+    HRM_OVERTIME_UPDATE_PAGE = HRM_OVERTIME_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
 
     # Consulting
     CONSULTING_LIST_PAGE = [

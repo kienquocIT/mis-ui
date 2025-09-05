@@ -66,3 +66,49 @@ class ServiceOrderDetail(View):
     )
     def get(self, request, pk, *args, **kwargs):
         return {'pk': pk}, status.HTTP_200_OK
+
+
+class ServiceOrderDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(
+            user=request.user,
+            url=ApiURL.SERVICE_ORDER_DETAIL.fill_key(pk=pk)
+        ).get()
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(
+            user=request.user,
+            url=ApiURL.SERVICE_ORDER_DETAIL.fill_key(pk=pk)
+        ).put(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.SERVICE_ORDER_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+class ServiceOrderUpdate(View):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        template='sales/serviceorder/service_order_update.html',
+        menu_active='menu_service_order_list',
+        breadcrumb='SERVICE_ORDER_UPDATE_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        ctx = {
+            'pk': pk,
+            'data': {'doc_id': pk},
+            'form_id': 'form-detail-service-order'
+        }
+        return ctx, status.HTTP_200_OK

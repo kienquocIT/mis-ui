@@ -2520,6 +2520,9 @@ class QuotationLoadDataHandle {
                             if (data?.['payment_terms_list'].length > 0) {
                                 FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
                             }
+                            if (data?.['payment_terms_list'].length === 0) {
+                                FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
+                            }
                             WindowControl.hideLoading();
                         }
                     }

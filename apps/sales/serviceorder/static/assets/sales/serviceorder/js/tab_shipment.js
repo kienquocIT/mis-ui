@@ -188,7 +188,7 @@ class TabShipmentFunction {
 
         // combine data
         tableData.forEach(row => {
-            if (row.isContainer) {
+            if (row?.isContainer) {
                 const containerData = {
                     containerName: row?.containerName || '',
                     containerType: row?.containerType || '',

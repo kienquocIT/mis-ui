@@ -2542,8 +2542,8 @@ class QuotationLoadDataHandle {
             $('#is_customer_confirm')[0].checked = data?.['is_customer_confirm'];
         }
         if (is_copy === false) {
-            // check if finish then remove hidden btnDelivery (SO)
-            if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get' && form.classList.contains('sale-order')) {
+            // check remove hidden btnDelivery (SO)
+            if (data?.['delivery_call'] === false && data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get' && form.classList.contains('sale-order')) {
                 if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
                     if (data?.['opportunity']?.['is_deal_close'] === false) {
                         QuotationDeliveryHandle.$btnDeliveryInfo[0].removeAttribute('hidden');
@@ -2552,7 +2552,7 @@ class QuotationLoadDataHandle {
                     QuotationDeliveryHandle.$btnDeliveryInfo[0].removeAttribute('hidden');
                 }
             }
-            // check if finish then remove hidden btnCopy
+            // check remove hidden btnCopy
             if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get') {
                 let btnCopy = $('#btn-copy-quotation');
                 if (btnCopy && btnCopy.length > 0) {

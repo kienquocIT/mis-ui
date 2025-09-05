@@ -2503,7 +2503,28 @@ class QuotationLoadDataHandle {
             FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, [data?.['contact_data']], {'account_name_id': QuotationLoadDataHandle.customerSelectEle.val()});
         }
         if (data?.['payment_term_data']) {
-            FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);
+            // FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);
+            // load realtime payment data
+            WindowControl.showLoading();
+            $.fn.callAjax2({
+                    'url': QuotationLoadDataHandle.paymentSelectEle.attr('data-url'),
+                    'method': "GET",
+                    'data': {'id': data?.['payment_term_data']?.['id']},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
+                            if (data?.['payment_terms_list'].length > 0) {
+                                FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                            }
+                            WindowControl.hideLoading();
+                        }
+                    }
+                }
+            )
         }
         if (data?.['quotation_data']) {
             if (data?.['quotation_data']?.['title']) {

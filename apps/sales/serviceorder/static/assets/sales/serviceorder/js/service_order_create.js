@@ -51,9 +51,9 @@ function setUpFormData(formInstance){
     formInstance.dataForm['customer'] = $('#so-customer').val()
     formInstance.dataForm['start_date'] = startDate
     formInstance.dataForm['end_date'] = endDate
-    // formInstance.dataForm['service_detail_data'] = ServiceOrder.getServiceDetailData()
-    // formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData()
-    // formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
+    formInstance.dataForm['service_detail_data'] = ServiceOrder.getServiceDetailData()
+    formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData()
+    formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
     formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData()
     formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData()
     formInstance.dataForm['pretax_amount'] = parseFloat(pretaxValue.replace(/[^\d]/g, "")) || 0

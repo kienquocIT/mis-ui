@@ -642,7 +642,7 @@ const ServiceOrder = (function($) {
                                         <span class="mask-money" data-init-money="${unitCost}"></span>
                                     </div>
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover ml-2 btn-open-work-order-cost"
-                                            data-bs-toggle="modal" data-bs-target="#modal-work-order-cost">
+                                            data-bs-toggle="modal" data-bs-target="#modal-work-order-cost" data-work-order-id="${workOrderId}">
                                         <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
                                     </button>
                                 </div>`
@@ -1157,25 +1157,41 @@ const ServiceOrder = (function($) {
                     }
                 }
             ],
-            drawCallback: function (data, type, row) {
-                pageElement.payment.$table.find('input.date-input').each(function(){
-                    const $input = $(this)
-                    const value = $input.val()
+            drawCallback: function (settings) {
+                // Initialize date inputs AFTER all DOM manipulations
+                const api = this.api();
 
-                    UsualLoadPageFunction.LoadDate({ element: $input })
-
-                    if (value && $input.data('daterangepicker')) {
-                        $input.data('daterangepicker').setStartDate(value)
-                    }
-                })
-
-                pageElement.payment.$table.DataTable().rows().every(function (rowIdx) {
+                // First, do the row indexing
+                api.rows().every(function (rowIdx) {
                     const $row = $(this.node())
                     let data = this.data()
 
                     data.installment = rowIdx + 1
                     this.data(data)
                     $row.attr('data-payment-row-id', data.id)
+                })
+
+                // Then initialize date pickers after DOM is stable
+                pageElement.payment.$table.find('input.date-input').each(function(){
+                    const $input = $(this)
+
+                    // Check if already initialized and destroy if needed
+                    if ($input.data('daterangepicker')) {
+                        $input.data('daterangepicker').remove();
+                    }
+
+                    const value = $input.val()
+
+                    // Initialize with empty: true to allow clearing
+                    UsualLoadPageFunction.LoadDate({
+                        element: $input,
+                        empty: true
+                    })
+
+                    // Set value if exists
+                    if (value && $input.data('daterangepicker')) {
+                        $input.data('daterangepicker').setStartDate(value)
+                    }
                 })
             }
         })
@@ -1318,7 +1334,7 @@ const ServiceOrder = (function($) {
                     width: '10%',
                     title: $.fn.gettext('Issued Invoice'),
                     render: (data, type, row, meta) => {
-                        const issuedInvoiceValue = row.issued_value || 0
+                        let issuedInvoiceValue = row.issued_value || 0
                         return `<div class="input-group">
                                     <span class="mask-money" data-init-money="${issuedInvoiceValue}"></span>
                                 </div>`
@@ -1328,7 +1344,7 @@ const ServiceOrder = (function($) {
                     width: '10%',
                     title: $.fn.gettext('Balance'),
                     render: (data, type, row, meta) => {
-                        const balance = row.balance_value || 0
+                        let balance = row.balance_value || 0
                         return `<div class="input-group">
                                     <span class="mask-money" data-init-money="${balance}"></span>
                                 </div>`
@@ -1786,6 +1802,7 @@ const ServiceOrder = (function($) {
     function handleSaveWorkOrderCost(){
         pageElement.modalData.$btnSaveWorkOrderCost.on('click', function(e) {
             const workOrderRowId = pageElement.modalData.$tableWorkOrderCost.attr('data-work-order-id')
+            const $workOrderRow = pageElement.workOrder.$table.find(`.btn-open-work-order-cost[data-work-order-id=${workOrderRowId}]`).closest('tr')
 
             const table = pageElement.modalData.$tableWorkOrderCost.DataTable()
 
@@ -1800,7 +1817,7 @@ const ServiceOrder = (function($) {
             })
             pageVariable.workOrderCostData[workOrderRowId] = workOrderCostList
 
-            const workOrderRow = pageElement.workOrder.$table.DataTable().row(workOrderRowId)
+            const workOrderRow = pageElement.workOrder.$table.DataTable().row($workOrderRow)
             const workOrderRowData = workOrderRow.data()
             workOrderRowData.unit_cost = totalAmount
             workOrderRowData.total_value = totalAmount * workOrderRowData.quantity
@@ -1994,6 +2011,23 @@ const ServiceOrder = (function($) {
                 return
             }
             pageVariable.productContributionData[workOrderRowId] = productContributionData
+
+            // Sync balance to other contribution
+            Object.keys(pageVariable.productContributionData).forEach(rowKey => {
+                let productContribution = pageVariable.productContributionData[rowKey]
+                productContribution = productContribution.map(item => {
+                    const sdData = pageVariable.serviceDetailTotalContributionData[item.service_id]
+                        if (sdData) {
+                            return {
+                                ...item,
+                                total_contribution_percent: sdData.total_contribution_percent,
+                                balance_quantity: sdData.delivery_balance_value,
+                            }
+                        }
+                        return item
+                })
+                pageVariable.productContributionData[rowKey] = JSON.parse(JSON.stringify(productContribution))
+            })
         })
     }
 
@@ -2019,6 +2053,8 @@ const ServiceOrder = (function($) {
                             }
 
                             item.delivered_quantity = 0
+                            item.is_selected = false
+                            item.balance_quantity = pageVariable.serviceDetailTotalContributionData[serviceId]?.delivery_balance_value || item.quantity
                         }
                     })
                 }
@@ -2045,7 +2081,7 @@ const ServiceOrder = (function($) {
             const $row = $input.closest('tr')
             const table = pageElement.payment.$table.DataTable()
             const rowData = table.row($row).data()
-            rowData.start_date = moment(picker.startDate).format('DD/MM/YYYY')
+            rowData.due_date = moment(picker.startDate).format('DD/MM/YYYY')
         })
     }
 
@@ -2095,22 +2131,23 @@ const ServiceOrder = (function($) {
             if(isChecked){
                 let noInvoicePaymentData = pageVariable.paymentDetailData[rowId]
                 if (noInvoicePaymentData){
-                    noInvoicePaymentData.forEach((nipdItem)=>{
-                        const serviceId = nipdItem.service_id
-                        const totalPaymentData = pageVariable.serviceDetailTotalPaymentData[serviceId]
-                        if(totalPaymentData){
-                            let totalPercentage = totalPaymentData?.total_payment_percent
-                            let totalValue = totalPaymentData?.total_payment_value
-
-                            totalPercentage -= nipdItem.payment_percent
-                            totalValue -= nipdItem.payment_value
-
-                            pageVariable.serviceDetailTotalPaymentData[serviceId] = {
-                                total_payment_percent: totalPercentage,
-                                total_payment_value: totalValue
-                            }
-                        }
-                    })
+                    //no invoice payment does not add to total payment
+                    // noInvoicePaymentData.forEach((nipdItem)=>{
+                    //     const serviceId = nipdItem.service_id
+                    //     const totalPaymentData = pageVariable.serviceDetailTotalPaymentData[serviceId]
+                    //     if(totalPaymentData){
+                    //         let totalPercentage = totalPaymentData?.total_payment_percent
+                    //         let totalValue = totalPaymentData?.total_payment_value
+                    //
+                    //         totalPercentage -= nipdItem.payment_percent
+                    //         totalValue -= nipdItem.payment_value
+                    //
+                    //         pageVariable.serviceDetailTotalPaymentData[serviceId] = {
+                    //             total_payment_percent: totalPercentage,
+                    //             total_payment_value: totalValue
+                    //         }
+                    //     }
+                    // })
                 }
                 delete pageVariable.paymentDetailData[rowId]
 
@@ -2297,11 +2334,11 @@ const ServiceOrder = (function($) {
                         const newTotalPaymentVal = currTotalPaymentVal - serviceRowPaymentValue + paymentValue
                         const newTotalPaymentPer = currTotalPaymentPer - serviceRowPaymentPercentage + paymentPercentage
 
-                        if(newTotalPaymentPer > 100) {
-                            $.fn.notifyB({description: $.fn.gettext(`Value must not exceed 100`)}, 'failure')
-                            isValid = false
-                            return false
-                        }
+                        // if(newTotalPaymentPer > 100) {
+                        //     $.fn.notifyB({description: $.fn.gettext(`Value must not exceed 100`)}, 'failure')
+                        //     isValid = false
+                        //     return false
+                        // }
 
 
                         // pageVariable.serviceDetailTotalPaymentData[rowId] = {
@@ -2314,11 +2351,11 @@ const ServiceOrder = (function($) {
                         const newTotalPaymentVal = currTotalPaymentVal - serviceRowPaymentValue
                         const newTotalPaymentPer = currTotalPaymentPer - serviceRowPaymentPercentage
 
-                        if(newTotalPaymentPer > 100) {
-                            $.fn.notifyB({description: $.fn.gettext(`Value must not exceed 100`)}, 'failure')
-                            isValid = false
-                            return false
-                        }
+                        // if(newTotalPaymentPer > 100) {
+                        //     $.fn.notifyB({description: $.fn.gettext(`Value must not exceed 100`)}, 'failure')
+                        //     isValid = false
+                        //     return false
+                        // }
 
                         // pageVariable.serviceDetailTotalPaymentData[rowId] = {
                         //     total_payment_value: newTotalPaymentVal,
@@ -2476,6 +2513,24 @@ const ServiceOrder = (function($) {
                 return
             }
             pageVariable.paymentDetailData[paymentRowId] = JSON.parse(JSON.stringify(paymentData))
+
+            // 🔄 Sync all paymentDetailData with latest serviceDetailTotalPaymentData
+            Object.keys(pageVariable.paymentDetailData).forEach(paymentRowKey => {
+                let payment = pageVariable.paymentDetailData[paymentRowKey]
+                payment = payment.map(item => {
+                    const sdData = pageVariable.serviceDetailTotalPaymentData[item.service_id]
+                        if (sdData) {
+                            return {
+                                ...item,
+                                issued_value: sdData.total_payment_value,
+                                balance_value: item.sub_total_value - sdData.total_payment_value
+                            }
+                        }
+                        return item
+                })
+                pageVariable.paymentDetailData[paymentRowKey] = JSON.parse(JSON.stringify(payment))
+            })
+
 
             //update data payment row
             const $paymentRow = $paymentTable.find(`[data-payment-row-id="${paymentRowId}"]`)
@@ -2656,7 +2711,7 @@ const ServiceOrder = (function($) {
                             reconcileTableData.push({
                                 id: reconcileId,
                                 advance_payment_id: rowId, //id of payment table row
-                                payment_detail_id: paymentDetailItem.id, //id of payment detail table row
+                                advance_payment_detail_id: paymentDetailItem.id, //id of payment detail table row
                                 installment: installment,
                                 title: paymentDetailItem.title,
                                 total_value: paymentDetailItem.payment_value,
@@ -2676,7 +2731,7 @@ const ServiceOrder = (function($) {
                     const currReconcile = currentPaymentReconcileData.find(cprItem =>
                         cprItem.advance_payment_id === rItem.advance_payment_id
                         && cprItem.service_id === rItem.service_id
-                        && cprItem.payment_detail_id === rItem.payment_detail_id
+                        && cprItem.advance_payment_detail_id === rItem.advance_payment_detail_id
                     )
                     if(currReconcile){
                         return {
@@ -2726,7 +2781,7 @@ const ServiceOrder = (function($) {
 
                 if (advancePaymentData){
                     //lấy data của 1 dòng payment detail
-                    paymentDetailRowData = advancePaymentData.find(item => item.id === rowData.payment_detail_id)
+                    paymentDetailRowData = advancePaymentData.find(item => item.id === rowData.advance_payment_detail_id)
                     totalReconciledValue = paymentDetailRowData?.total_reconciled_value || 0
                 }
 
@@ -2756,7 +2811,7 @@ const ServiceOrder = (function($) {
                 //lưu tổng cấn trừ vô lại payment detail data
                 if (pageVariable.paymentDetailData[rowData.advance_payment_id]) {
                     const detailRow = pageVariable.paymentDetailData[rowData.advance_payment_id]
-                        .find(item => item.id === rowData.payment_detail_id)
+                        .find(item => item.id === rowData.advance_payment_detail_id)
                     if (detailRow) {
                         detailRow.total_reconciled_value = totalReconciledValue
                     }
@@ -2830,6 +2885,7 @@ const ServiceOrder = (function($) {
                 price: price,
                 tax: rowData.tax_data?.id || null,
                 tax_data: rowData.tax_data || {},
+                sub_total_value: subtotal,
                 total_value: currentTotal,
                 total_contribution_percent: pageVariable.serviceDetailTotalContributionData?.[rowData.id]?.total_contribution_percent || 0,
                 delivery_balance_value: pageVariable.serviceDetailTotalContributionData?.[rowData.id]?.delivery_balance_value || currentQuantity,
@@ -2854,18 +2910,33 @@ const ServiceOrder = (function($) {
             // Get current values from the DOM elements
             const currentDescription = $row.find('.work-order-description').val() || rowData.title || '';
             const currentQuantity = parseFloat($row.find('.work-order-quantity').val()) || rowData.quantity || 0;
-            const currentStartDate = $row.find('.work-order-start-date').val() || rowData.start_date || '';
-            const currentEndDate = $row.find('.work-order-end-date').val() || rowData.end_date || '';
+            let currentStartDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('.work-order-start-date').val())
+            let currentEndDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('.work-order-end-date').val())
             const isDeliveryPoint = $row.find('.work-order-service-delivery').is(':checked') || false;
 
             // Calculate current total
             const unitCost = parseFloat(rowData.unit_cost) || 0;
             const currentTotal = currentQuantity * unitCost;
 
+            //get cost data
+            let costData = pageVariable.workOrderCostData?.[rowData.id] || []
+            costData = costData.map((item, index) => ({
+                ...item,
+                order: index + 1,
+            }))
+
+            //get contribution
+            let contributionData = pageVariable.productContributionData?.[rowData.id] || []
+            contributionData = contributionData.map((item, index) => ({
+                ...item,
+                order: index + 1
+            }))
+
             // Collect the work order data
             const workOrder = {
                 id: rowData.id,
-                product_id: rowData.product_id || null, // Null for non-item rows
+                order: rowIdx + 1,
+                product: rowData.product_id || null, // Null for non-item rows
                 code: rowData.code || '',
                 title: currentDescription,
                 assignee: rowData.assignee || null,
@@ -2875,11 +2946,11 @@ const ServiceOrder = (function($) {
                 quantity: currentQuantity,
                 unit_cost: unitCost,
                 total_value: currentTotal,
-                status: rowData.status || 0,
+                work_status: rowData.status || 0,
                 // Include work order cost breakdown if exists
-                cost_data: pageVariable.workOrderCostData?.[rowData.id] || [],
+                cost_data: costData,
                 // Include product contribution data if exists and is delivery point
-                product_contribution: pageVariable.productContributionData?.[rowData.id]
+                product_contribution: contributionData
             };
 
             workOrderData.push(workOrder);
@@ -2901,13 +2972,13 @@ const ServiceOrder = (function($) {
             const currentDescription = $row.find('.payment-description').val() || rowData.description || '';
             const currentPaymentType = parseInt($row.find('.payment-type-select').val()) || rowData.payment_type || 0;
             const isInvoiceRequired = $row.find('.invoice-require').is(':checked') || false;
-            const currentDueDate = $row.find('.payment-due-date').val() || rowData.due_date || '';
+            let currentDueDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('.payment-due-date').val())
 
             // Get payment values from data (these are updated via other functions)
-            const paymentValue = parseFloat(rowData.payment_value) || 0;
-            const taxValue = parseFloat(rowData.tax_value) || 0;
-            const reconcileValue = parseFloat(rowData.reconcile_value) || 0;
-            const receivableValue = parseFloat(rowData.receivable_value) || 0;
+            const paymentValue = parseFloat(rowData.payment_value) || 0
+            const taxValue = parseFloat(rowData.tax_value) || 0
+            const reconcileValue = parseFloat(rowData.reconcile_value) || 0
+            const receivableValue = parseFloat(rowData.receivable_value) || 0
 
             // Collect the payment data
             const payment = {
@@ -2922,20 +2993,26 @@ const ServiceOrder = (function($) {
                 receivable_value: receivableValue,
                 due_date: currentDueDate,
                 // Include payment detail data if exists
-                payment_details: pageVariable.paymentDetailData?.[rowData.id],
+                payment_detail_data: pageVariable.paymentDetailData?.[rowData.id],
                 // Include reconcile data for each payment detail
-                reconcile_details: (() => {
-                    const reconcileDetails = [];
+                reconcile_data: (() => {
+                    const reconcileDetails = []
                     if (pageVariable.paymentDetailData?.[rowData.id]) {
                         pageVariable.paymentDetailData[rowData.id].forEach(paymentDetail => {
                             if (paymentDetail.is_selected && pageVariable.reconcileData?.[paymentDetail.id]) {
                                 const reconcileItems = pageVariable.reconcileData[paymentDetail.id]
-                                    .filter(item => item.is_selected);
+                                    .filter(item => item.is_selected)
                                 if (reconcileItems.length > 0) {
-                                    reconcileDetails.push({
-                                        payment_detail_id: paymentDetail.id,
-                                        service_id: paymentDetail.service_id,
-                                        reconcile_items: reconcileItems
+                                    reconcileItems.forEach(reconcileItem => {
+                                        reconcileDetails.push({
+                                            payment_detail_id: paymentDetail.id,
+                                            service_id: paymentDetail.service_id,
+                                            advance_payment_detail_id: reconcileItem.advance_payment_detail_id,
+                                            advance_payment_id: reconcileItem.advance_payment_id,
+                                            installment: reconcileItem.installment,
+                                            reconcile_value: reconcileItem.reconcile_value,
+                                            total_value: reconcileItem.total_value,
+                                        })
                                     })
                                 }
                             }
@@ -2944,10 +3021,8 @@ const ServiceOrder = (function($) {
                     return reconcileDetails
                 })()
             }
-
             paymentData.push(payment)
         })
-
         return paymentData
     }
 

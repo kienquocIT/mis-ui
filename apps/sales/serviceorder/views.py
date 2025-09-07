@@ -33,6 +33,30 @@ class ServiceOrderCreate(View):
         return ctx, status.HTTP_200_OK
 
 
+class ServiceOrderDetail(View):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        template='sales/serviceorder/service_order_detail.html',
+        menu_active='menu_service_order_list',
+        breadcrumb='SERVICE_ORDER_DETAIL_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'pk': pk}, status.HTTP_200_OK
+
+
+class ServiceOrderUpdate(View):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        template='sales/serviceorder/service_order_update.html',
+        menu_active='menu_service_order_list',
+        breadcrumb='SERVICE_ORDER_DETAIL_PAGE',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        return {'pk': pk}, status.HTTP_200_OK
+
+
 class ServiceOrderListAPI(APIView):
     @mask_view(
         login_require=True,
@@ -54,15 +78,3 @@ class ServiceOrderListAPI(APIView):
             resp.result['message'] = SaleMsg.SERVICE_ORDER_CREATE
             return resp.result, status.HTTP_201_CREATED
         return resp.auto_return()
-
-
-class ServiceOrderDetail(View):
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        template='sales/serviceorder/service_order_detail.html',
-        menu_active='menu_service_order_list',
-        breadcrumb='SERVICE_ORDER_DETAIL_PAGE',
-    )
-    def get(self, request, pk, *args, **kwargs):
-        return {'pk': pk}, status.HTTP_200_OK

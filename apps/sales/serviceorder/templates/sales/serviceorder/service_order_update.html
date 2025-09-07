@@ -8,19 +8,17 @@
 {% endblock %}
 
 {% block pageAction %}
-    <a href="{% url 'ServiceOrderUpdate' pk=pk %}">
-        <button class="btn btn-outline-primary" id="btn-enable-edit">
-            <span>
-                <span>{% trans 'Edit' %}</span>
-                <span class="icon"><i class="fa-regular fa-pen-to-square"></i></span>
-            </span>
-        </button>
-    </a>
+    <button class="btn btn-outline-primary" type="submit" form="form-update-service-order">
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
+        </span>
+    </button>
 {% endblock %}
 
 {% block pageContent %}
-    <form data-method="POST" id="form-create-service-order"
-          data-url="{% url 'ServiceOrderListAPI' %}"
+    <form data-method="POST" id="form-update-service-order"
+          data-url="{% url '' %}"
           data-url-redirect="{% url 'ServiceOrderList' %}">
         {% csrf_token %}
         {% include 'sales/serviceorder/common/common_data.html' %}
@@ -54,7 +52,7 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/service_order_common.js' %}"></script>
-    <script src="{% static 'assets/sales/serviceorder/js/service_order_detail.js' %}"></script>
+    <script src="{% static 'assets/sales/serviceorder/js/service_order_update.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_shipment.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_expense.js' %}"></script>
 {% endblock %}

@@ -40,15 +40,12 @@ function handleModalPaymentDetailEvent(){
     ServiceOrder.handleSavePaymentReconcile()
 }
 
-function setUpFormData(formInstance){
+function setUpFormData(formInstance) {
     let startDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('#so-start-date').val())
     let endDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('#so-end-date').val())
-    let pretaxValue = tabExpenseElements.$preTaxAmount.val() || "0"
-    let taxValue = tabExpenseElements.$taxEle.val() || "0"
-    let totalValue = tabExpenseElements.$totalValueEle.val() || "0"
 
     formInstance.dataForm['title'] = $('#so-title').val()
-    formInstance.dataForm['customer'] = $('#so-customer').val()
+    formInstance.dataForm['customer'] = $('#so-customer').val() || null
     formInstance.dataForm['start_date'] = startDate
     formInstance.dataForm['end_date'] = endDate
     formInstance.dataForm['service_detail_data'] = ServiceOrder.getServiceDetailData()
@@ -56,16 +53,24 @@ function setUpFormData(formInstance){
     formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
     formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData()
     formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData()
-    formInstance.dataForm['pretax_amount'] = parseFloat(pretaxValue.replace(/[^\d]/g, "")) || 0
-    formInstance.dataForm['tax_value'] = parseFloat(taxValue.replace(/[^\d]/g, "")) || 0
-    formInstance.dataForm['total_value'] = parseFloat(totalValue.replace(/[^\d]/g, "")) || 0
+    formInstance.dataForm['expense_pretax_value'] = parseFloat(tabExpenseElements.$preTaxAmount.attr('value') || 0)
+    formInstance.dataForm['expense_tax_value'] = parseFloat(tabExpenseElements.$taxEle.attr('value') || 0)
+    formInstance.dataForm['expense_total_value'] = parseFloat(tabExpenseElements.$totalValueEle.attr('value') || 0)
 }
 
-function setUpFormSubmit($form){
+function setUpFormSubmit($form) {
     SetupFormSubmit.call_validate($form, {
         onsubmit: true,
-        submitHandler:  ()=> {
+        submitHandler: () => {
             let formInstance = new SetupFormSubmit($form)
+            if (formInstance.dataForm.hasOwnProperty('attachment')) {
+                formInstance.dataForm['attachment'] = $x.cls.file.get_val(
+                    formInstance.dataForm?.['attachment'],
+                    []
+                )
+            } else {
+                formInstance.dataForm['attachment'] = []
+            }
             setUpFormData(formInstance)
             console.log(formInstance.dataForm)
             WFRTControl.callWFSubmitForm(formInstance)

@@ -3,6 +3,7 @@ const ServiceOrder = (function($) {
     const pageElement = {
         $urlScript: $('#script-url'),
         commonData: {
+            $titleEle: $('#so-title'),
             $createdDate: $('#so-created-date'),
             $startDate: $('#so-start-date'),
             $endDate: $('#so-end-date'),

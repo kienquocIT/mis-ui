@@ -500,3 +500,7 @@ msgstr "Ở mỗi dòng, ô đầu tiên là Doanh thu, ô tiếp theo là Lợi
 #
 msgid "This action can not be undo!"
 msgstr "Hành động này không thể hoàn tác!"
+
+#
+msgid "Code"
+msgstr "Mã"

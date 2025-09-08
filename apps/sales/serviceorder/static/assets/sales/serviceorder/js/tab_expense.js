@@ -130,13 +130,13 @@ class TabExpenseFunction {
             let $tr = $(this);
             if ($tr.find(".row-expense-title").length !== 0) {
                 let item = {
-                    expense_name: $tr.find(".row-expense-title").val(),
+                    title: $tr.find(".row-expense-title").val(),
                     expense_item: $tr.find(".row-expense-item").val() || null,
                     uom: $tr.find(".row-uom").val() || null,
                     quantity: parseFloat($tr.find(".row-quantity").val() || 0),
                     expense_price: parseFloat($tr.find(".row-expense-price").attr('value') || 0),
                     tax: $tr.find(".row-tax").val() || null,
-                    subtotal: parseFloat($tr.find(".row-subtotal").attr('value') || 0),
+                    subtotal_price: parseFloat($tr.find(".row-subtotal").attr('value') || 0),
                 };
                 serviceOrderExpenseData.push(item);
             }

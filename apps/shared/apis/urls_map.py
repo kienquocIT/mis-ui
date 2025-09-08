@@ -820,6 +820,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # HRM CONTRACT RUNTIME
     HRM_CONTRACT_RUNTIME = StringUrl('hrm/employee-info/contract-signing/create')
     HRM_CONTRACT_RUNTIME_DETAIL = StringUrl('hrm/employee-info/contract-signing/detail/{pk}')
+    HRM_OVERTIME_REQUEST_LIST = StringUrl('hrm/overtime/request/list')
+    HRM_OVERTIME_REQUEST_DETAIL = StringUrl('hrm/overtime/request/detail/{pk}')
 
     # Lease order
     LEASE_ORDER_CONFIG = StringUrl('leaseorder/config')
@@ -1015,3 +1017,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     CONTAINER_DETAIL = StringUrl('saledata/shipment/container/detail/{pk}')
     PACKAGE_LIST = StringUrl('saledata/shipment/package/list')
     PACKAGE_DETAIL = StringUrl('saledata/shipment/package/detail/{pk}')
+
+    # service-order
+    SERVICE_ORDER_LIST = StringUrl('serviceorder/list')
+    SERVICE_ORDER_DETAIL = StringUrl('serviceorder/detail/{pk}')

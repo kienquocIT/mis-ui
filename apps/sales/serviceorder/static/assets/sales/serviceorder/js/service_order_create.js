@@ -1,4 +1,85 @@
+function handleServiceDetailTabEvent(){
+    ServiceOrder.handleChangeServiceDescription()
+    ServiceOrder.handleChangeServiceQuantity()
+}
+
+function handleWorkOrderDetailTabEvent(){
+    ServiceOrder.handleChangeWorkOrderDetail()
+    ServiceOrder.handleClickOpenWorkOrderCost()
+    ServiceOrder.handleSelectWorkOrderCostTax()
+    ServiceOrder.handleSelectWorkOrderCurrency()
+    ServiceOrder.handleAddWorkOrderNonItem()
+    ServiceOrder.handleClickOpenServiceDelivery()
+    ServiceOrder.handleCheckDelivery()
+}
+
+function handleModalWorkOrderCostEvent(){
+    ServiceOrder.handleAddWorkOrderCostRow()
+    ServiceOrder.handleChangeWorkOrderCostQuantityAndUnitCost()
+    ServiceOrder.handleSaveWorkOrderCost()
+    ServiceOrder.handleChangeWorkOrderCostTitleAndDescription()
+}
+
+function handleModalWorkOrderContributionEvent(){
+    ServiceOrder.handleSaveProductContribution()
+    ServiceOrder.handleUncheckContribution()
+}
+
+function handlePaymentTabEvent(){
+    ServiceOrder.handleAddPaymentRow()
+    ServiceOrder.handleChangePaymentDate()
+    ServiceOrder.handleChangePaymentType()
+    ServiceOrder.handleCheckInvoice()
+    ServiceOrder.handleOpenPaymentDetail()
+}
+
+function handleModalPaymentDetailEvent(){
+    ServiceOrder.handleSavePaymentDetail()
+    ServiceOrder.handleChangePaymentDetail()
+    ServiceOrder.handleOpenModalReconcile()
+    ServiceOrder.handleSavePaymentReconcile()
+}
+
+function setUpFormData(formInstance) {
+    let startDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('#so-start-date').val())
+    let endDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('#so-end-date').val())
+
+    formInstance.dataForm['title'] = $('#so-title').val()
+    formInstance.dataForm['customer'] = $('#so-customer').val() || null
+    formInstance.dataForm['start_date'] = startDate
+    formInstance.dataForm['end_date'] = endDate
+    // formInstance.dataForm['service_detail_data'] = ServiceOrder.getServiceDetailData()
+    // formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData()
+    // formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
+    formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData()
+    formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData()
+    formInstance.dataForm['expense_pretax_value'] = parseFloat(tabExpenseElements.$preTaxAmount.attr('value') || 0)
+    formInstance.dataForm['expense_tax_value'] = parseFloat(tabExpenseElements.$taxEle.attr('value') || 0)
+    formInstance.dataForm['expense_total_value'] = parseFloat(tabExpenseElements.$totalValueEle.attr('value') || 0)
+}
+
+function setUpFormSubmit($form) {
+    SetupFormSubmit.call_validate($form, {
+        onsubmit: true,
+        submitHandler: () => {
+            let formInstance = new SetupFormSubmit($form)
+            if (formInstance.dataForm.hasOwnProperty('attachment')) {
+                formInstance.dataForm['attachment'] = $x.cls.file.get_val(
+                    formInstance.dataForm?.['attachment'],
+                    []
+                )
+            } else {
+                formInstance.dataForm['attachment'] = []
+            }
+            setUpFormData(formInstance)
+            WFRTControl.callWFSubmitForm(formInstance)
+        },
+    })
+}
+
 $(document).ready(function () {
+    WFRTControl.setWFInitialData('serviceorder')
+
     ServiceOrder.initDateTime()
     ServiceOrder.initPageSelect()
     ServiceOrder.loadCurrencyRateData()
@@ -11,8 +92,8 @@ $(document).ready(function () {
     // ServiceOrder.initPaymentDetailModalDataTable()
     ServiceOrder.initModalContextTracking()
     ServiceOrder.initAttachment()
-    // ============ tab shipment =============
 
+    // ============ tab shipment =============
     TabShipmentFunction.initShipmentDataTable()
     TabShipmentFunction.LoadContainerType()
     TabShipmentFunction.LoadPackageType()
@@ -24,53 +105,12 @@ $(document).ready(function () {
 
     ServiceOrder.handleSaveProduct()
 
-    function handleServiceDetailTabEvent(){
-        ServiceOrder.handleChangeServiceDescription()
-        ServiceOrder.handleChangeServiceQuantity()
-    }
-
-    function handleWorkOrderDetailTabEvent(){
-        ServiceOrder.handleChangeWorkOrderDate()
-        ServiceOrder.handleChangeWorkOrderQuantity()
-        ServiceOrder.handleClickOpenWorkOrderCost()
-        ServiceOrder.handleSelectWorkOrderCostTax()
-        ServiceOrder.handleSelectWorkOrderCurrency()
-        ServiceOrder.handleAddWorkOrderNonItem()
-        ServiceOrder.handleClickOpenServiceDelivery()
-        ServiceOrder.handleCheckDelivery()
-    }
-
-    function handleModalWorkOrderCostEvent(){
-        ServiceOrder.handleAddWorkOrderCostRow()
-        ServiceOrder.handleChangeWorkOrderCostQuantityAndUnitCost()
-        ServiceOrder.handleSaveWorkOrderCost()
-        ServiceOrder.handleChangeWorkOrderCostTitleAndDescription()
-    }
-
-    function handleModalWorkOrderContributionEvent(){
-        ServiceOrder.handleSaveProductContribution()
-        ServiceOrder.handleUncheckContribution()
-    }
-
-    function handlePaymentTabEvent(){
-        ServiceOrder.handleAddPaymentRow()
-        ServiceOrder.handleChangePaymentDate()
-        ServiceOrder.handleChangePaymentType()
-        ServiceOrder.handleCheckInvoice()
-        ServiceOrder.handleOpenPaymentDetail()
-    }
-
-    function handleModalPaymentDetailEvent(){
-        ServiceOrder.handleSavePaymentDetail()
-        ServiceOrder.handleChangePaymentDetail()
-        ServiceOrder.handleOpenModalReconcile()
-        ServiceOrder.handleSavePaymentReconcile()
-    }
-
     handleServiceDetailTabEvent()
     handleWorkOrderDetailTabEvent()
     handleModalWorkOrderCostEvent()
     handleModalWorkOrderContributionEvent()
     handlePaymentTabEvent()
     handleModalPaymentDetailEvent()
+
+    setUpFormSubmit($('#form-create-service-order'))
 })

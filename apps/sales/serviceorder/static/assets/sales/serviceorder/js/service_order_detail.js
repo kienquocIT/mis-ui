@@ -1,4 +1,4 @@
-class DetailDataHandle {
+class DetailDataHandler {
     static loadDetailOpp(data){
          new $x.cls.bastionField({
             data_opp: data?.['opportunity']?.['id'] ? [
@@ -35,7 +35,12 @@ class DetailDataHandle {
         })
     }
 
-    static loadDetailServiceOrder() {
+    static formatShipmentDetailData(shipmentData) {
+
+    }
+
+    static loadDetailServiceOrder(isDetail) {
+        let isDisablePage = isDetail === "detail";
         let $form = $('#form-detail-service-order');
         const data_url = $form.attr('data-url');
         $.fn.callAjax2({
@@ -74,23 +79,26 @@ class DetailDataHandle {
                 // basic information fields
                 ServiceOrder.pageElement.commonData.$titleEle.val(data?.title);
                 ServiceOrder.pageElement.commonData.$createdDate.val(createdDate);
-                DetailDataHandle.loadCustomerList(data.customer_data);
+                DetailDataHandler.loadCustomerList(data.customer_data);
                 ServiceOrder.pageElement.commonData.$startDate.val(startDate);
                 ServiceOrder.pageElement.commonData.$endDate.val(endDate);
+
                 // shipment
+                console.log(data?.shipment);
+                TabShipmentFunction.initShipmentDataTable(data?.shipment || []);
 
                 //service detail
-                ServiceOrder.initServiceDetailDataTable(data.service_detail_data)
+                ServiceOrder.initServiceDetailDataTable(data.service_detail_data);
 
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
-                UsualLoadPageFunction.DisablePage(true, ['.modal-header button']);
+                UsualLoadPageFunction.DisablePage(isDisablePage, ['.modal-header button']);
             }
         )
     }
 }
 
 $(document).ready(function () {
-    DetailDataHandle.loadDetailOpp()
-    DetailDataHandle.loadDetailServiceOrder();
-
+    DetailDataHandler.loadDetailOpp()
+    TabShipmentEventHandler.InitPageEvent();
+    DetailDataHandler.loadDetailServiceOrder("detail");
 })

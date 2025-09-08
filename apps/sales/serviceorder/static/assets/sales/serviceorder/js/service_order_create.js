@@ -78,8 +78,48 @@ function setUpFormSubmit($form) {
     })
 }
 
+function initBastionFields(){
+        const {
+            opp_id,
+            opp_title,
+            opp_code,
+            inherit_id,
+            inherit_title,
+            customer_id,
+            customer_code,
+            customer_title
+        } = $x.fn.getManyUrlParameters([
+            'opp_id', 'opp_title', 'opp_code',
+            'inherit_id', 'inherit_title',
+            'customer_id', 'customer_code', 'customer_title'
+        ])
+        if (opp_id){
+            new $x.cls.bastionField({
+                data_opp: $x.fn.checkUUID4(opp_id) ? [
+                    {
+                        "id": opp_id,
+                        "title": $x.fn.decodeURI(opp_title),
+                        "code": $x.fn.decodeURI(opp_code),
+                        "selected": true,
+                    }
+                ] : [],
+                data_inherit: $x.fn.checkUUID4(inherit_id) ? [
+                    {
+                        "id": inherit_id,
+                        "full_name": inherit_title,
+                        "selected": true,
+                    }
+                ] : [],
+            }).init()
+        } else {
+            new $x.cls.bastionField().init()
+        }
+    }
+
 $(document).ready(function () {
     WFRTControl.setWFInitialData('serviceorder')
+
+    initBastionFields()
 
     ServiceOrder.initDateTime()
     ServiceOrder.initPageSelect()

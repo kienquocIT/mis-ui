@@ -1,4 +1,27 @@
 class DetailDataHandle {
+    static loadDetailOpp(data){
+         new $x.cls.bastionField({
+            data_opp: data?.['opportunity']?.['id'] ? [
+                {
+                    "id": data?.['opportunity']?.['id'],
+                    "title": data?.['opportunity']?.['title'] || '',
+                    "code": data?.['opportunity']?.['code'] || '',
+                    "selected": true,
+                }
+            ] : [],
+            data_inherit: data?.['employee_inherit']?.['id'] ? [
+                {
+                    "id": data?.['employee_inherit']?.['id'],
+                    "full_name": data?.['employee_inherit']?.['full_name'] || '',
+                    "code": data?.['employee_inherit']?.['code'] || '',
+                    "selected": true,
+                }
+            ] : [],
+             // "oppFlagData": {"disabled": !isUpdate},
+             // "inheritFlagData": {"disabled": true},
+        }).init()
+    }
+
     static loadCustomerList(data) {
         ServiceOrder.pageElement.commonData.$customer.initSelect2({
             ajax: {
@@ -67,6 +90,7 @@ class DetailDataHandle {
 }
 
 $(document).ready(function () {
+    DetailDataHandle.loadDetailOpp()
     DetailDataHandle.loadDetailServiceOrder();
 
 })

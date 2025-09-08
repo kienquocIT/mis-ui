@@ -6,12 +6,7 @@
     <link href="{% static 'assets/sales/serviceorder/css/service_order.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="form-service-order">
-        <span>
-            <span>{% trans 'Save' %}</span>
-            <span class="icon"><i class="fa-regular fa-floppy-disk"></i></span>
-        </span>
-    </button>
+    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='form-service-order' %}
 {% endblock %}
 
 {% block pageContent %}
@@ -27,6 +22,7 @@
 
 {% block modalData %}
     {% include 'sales/serviceorder/common/modal_data.html' %}
+    {% include 'sales/task/extend/task-form.html' with not_bastion=True custom_assignee=True %}
 {% endblock %}
 
 {% block dataHiddenGroup %}

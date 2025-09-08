@@ -548,18 +548,25 @@ const ServiceOrder = (function($) {
                     width: '8%',
                     title: $.fn.gettext('Assignee'),
                     render: (data, type, row) => {
-                        const assignee = row?.assignee || 'not yet'
+                        let color = ['red', 'blue', 'yellow', 'green', 'pink', 'purple', 'violet', 'indigo', 'sky', 'cyan', 'teal', 'neon', 'lime', 'sun', 'orange'];
+                        let randomColor = color[Math.floor(Math.random() * color.length)];
                         return `<div class="d-flex align-items-center">
-                                    <div>
-                                        <span>${assignee}</span>
+                                    <div class="media align-items-center">
+                                        <div class="media-head me-2 assignee-name" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">
+                                            <div class="avatar avatar-xs avatar-${randomColor} avatar-rounded">
+                                                <span class="initial-wrap text-white assignee-char">--</span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <button 
                                         type="button" 
-                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover"
+                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-task"
                                         title=""
                                     >
                                         <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
                                     </button>
+                                    <input type="text" class="form-control table-row-task-id hidden">
+                                    <input type="text" class="form-control table-row-task-data hidden">
                                 </div>`
                     }
                 },
@@ -1601,6 +1608,12 @@ const ServiceOrder = (function($) {
                 $input.val(oldEndDate || '')
             }
         })
+        pageElement.workOrder.$table.on('click', '.btn-open-task', function () {
+            TaskExtend.openTaskFromTbl(this, pageElement.workOrder.$table);
+        })
+        // pageElement.workOrder.$table.on('click', '.work-order-del-row', function () {
+        //     TaskExtend.delTaskFromDelRow(this);
+        // })
     }
 
     function handleChangeWorkOrderQuantity(){

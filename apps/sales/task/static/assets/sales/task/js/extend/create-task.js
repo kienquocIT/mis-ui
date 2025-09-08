@@ -142,6 +142,7 @@ $(document).ready(function () {
     window.formLabel = formLabel
 
     //--DROPDOWN OPPORTUNITY-- autoload opp if in page opp
+    if ($empElm[0].closest('#formOpportunityTask')) {
     const $btnInOpp = $('.current-create-task')
     if ($btnInOpp.length) {
         const pk = $.fn.getPkDetail()
@@ -159,6 +160,7 @@ $(document).ready(function () {
             }
         }, 1000)
     } else $oppElm.initSelect2() // run init select2 in task page
+    }
 
     //--BTN LOG-TIME-- action click to log-work
     const $logWorkModal = $('#logWorkModal');

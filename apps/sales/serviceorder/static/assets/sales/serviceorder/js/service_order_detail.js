@@ -89,7 +89,28 @@ class DetailDataHandler {
 
                 //service detail
                 ServiceOrder.initServiceDetailDataTable(data.service_detail_data);
+                ServiceOrder.loadServiceDetailRelatedData(data.service_detail_data)
 
+                //work order
+                ServiceOrder.initWorkOrderDataTable(data.work_order_data)
+                ServiceOrder.loadWorkOrderRelatedData(data.work_order_data)
+
+                //payment
+                let paymentData = data.payment_data
+                paymentData.forEach(payment => {
+                    payment.due_date = DateTimeControl.formatDateType(
+                        "YYYY-MM-DD",
+                        "DD/MM/YYYY",
+                        payment.due_date
+                    )
+                })
+                ServiceOrder.initPaymentDataTable(paymentData)
+                ServiceOrder.loadPaymentRelatedData(paymentData)
+
+                ServiceOrder.disableTableFields()
+
+                WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
+                UsualLoadPageFunction.DisablePage(true, ['.modal-header button'])
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 UsualLoadPageFunction.DisablePage(isDisablePage, ['.modal-header button']);
             }
@@ -98,7 +119,15 @@ class DetailDataHandler {
 }
 
 $(document).ready(function () {
-    DetailDataHandler.loadDetailOpp()
-    TabShipmentEventHandler.InitPageEvent();
-    DetailDataHandler.loadDetailServiceOrder("detail");
+    Promise.all([
+        ServiceOrder.loadCurrencyRateData(),
+        ServiceOrder.loadTaxData(),
+    ]).then(()=>{
+        DetailDataHandler.loadDetailServiceOrder("detail");
+    })
+    ServiceOrder.adjustTableSizeWhenChangeTab()
+    ServiceOrder.handleClickOpenServiceDelivery()
+    ServiceOrder.handleClickOpenWorkOrderCost()
+    ServiceOrder.handleOpenPaymentDetail()
+    ServiceOrder.handleOpenModalReconcile()
 })

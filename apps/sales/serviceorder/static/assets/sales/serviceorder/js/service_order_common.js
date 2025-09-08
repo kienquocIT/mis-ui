@@ -227,10 +227,18 @@ const ServiceOrder = (function($) {
         }
     }
 
+    function adjustTableSizeWhenChangeTab(){
+        $('a[data-bs-toggle="tab"][href="#tab_work_order"]').on('shown.bs.tab', function () {
+            if ($.fn.DataTable.isDataTable(pageElement.workOrder.$table)) {
+                pageElement.workOrder.$table.DataTable().columns.adjust();
+            }
+        })
+    }
+
 // --------------------LOAD DATA---------------------
     function loadCurrencyRateData() {
         const currencyListUrl = pageElement.$urlScript.attr('data-currency-list-url')
-        $.fn.callAjax2({
+        return $.fn.callAjax2({
             url: currencyListUrl,
             type: 'GET',
             dataType: 'json',
@@ -257,7 +265,7 @@ const ServiceOrder = (function($) {
 
     function loadTaxData(){
         const taxListUrl = pageElement.$urlScript.attr('data-tax-list-url')
-        $.fn.callAjax2({
+        return $.fn.callAjax2({
             url: taxListUrl,
             type: 'GET',
             dataType: 'json',
@@ -506,7 +514,10 @@ const ServiceOrder = (function($) {
 
                     }
                 },
-            ]
+            ],
+            initComplete: function () {
+                pageElement.serviceDetail.$table.DataTable().columns.adjust();
+            }
         })
     }
 
@@ -1043,11 +1054,13 @@ const ServiceOrder = (function($) {
             scrollCollapse: true,
             columns: [
                 {
-                    width: '5%',
+                    width: '7%',
                     title: $.fn.gettext('Installment'),
                     className: 'text-center',
                     render: (data, type, row, meta) => {
-                        return Number(meta.row) + 1
+                        let installmentNumber = Number(meta.row) + 1;
+                        let installmentText = $.fn.gettext('Installment')
+                        return `${installmentText} ${installmentNumber}`
                     }
                 },
                 {
@@ -1129,7 +1142,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '13%',
+                    width: '12%',
                     title: $.fn.gettext('Receivable Value'),
                     render: (data, type, row, meta) => {
                         const receivableValue = row.receivable_value ?? 0
@@ -1149,7 +1162,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '5%',
+                    width: '4%',
                     title: $.fn.gettext('Action'),
                     className: 'text-center',
                     render: (data, type, row) => {
@@ -3040,6 +3053,96 @@ const ServiceOrder = (function($) {
         return paymentData
     }
 
+    // ============ detail handler ==============
+    function loadServiceDetailRelatedData(serviceDetailData=[]){
+        for (const serviceDetail of serviceDetailData){
+            ServiceOrder.pageVariable.serviceDetailTotalContributionData[serviceDetail.id] = {
+                total_contribution_percent: serviceDetail.total_contribution_percent,
+                delivery_balance_value: serviceDetail.delivery_balance_value,
+            }
+
+            ServiceOrder.pageVariable.serviceDetailTotalPaymentData[serviceDetail.id] = {
+                total_payment_value: serviceDetail.total_payment_value,
+                total_payment_percent: serviceDetail.total_payment_percent
+            }
+        }
+    }
+
+    function loadWorkOrderRelatedData(workOrderData=[]){
+        function addProductContributionData(workOrder){
+            const productContributionAPIData = workOrder.product_contribution_data
+            const productContributionData = []
+            for (const productContribution of productContributionAPIData){
+                    productContributionData.push(productContribution)
+            }
+            ServiceOrder.pageVariable.productContributionData[workOrder.id] = JSON.parse(JSON.stringify(productContributionData.reverse()))
+        }
+
+        function addUnitCostData(workOrder){
+            ServiceOrder.pageVariable.workOrderCostData[workOrder.id] = JSON.parse(JSON.stringify(workOrder.cost_data.reverse()))
+        }
+
+        for (const workOrder of workOrderData){
+            addProductContributionData(workOrder)
+            addUnitCostData(workOrder)
+        }
+    }
+
+    function loadPaymentRelatedData(paymentData=[]) {
+        function addReconcileData(paymentDetail){
+            const reconcileAPIData = paymentDetail.reconcile_data ?? []
+            if(reconcileAPIData.length === 0){
+                return
+            }
+            const reconcileData = []
+            for (const reconcile of reconcileAPIData){
+                reconcileData.push({
+                    ...reconcile,
+                    is_selected: true
+                })
+            }
+            ServiceOrder.pageVariable.reconcileData[paymentDetail.id] = JSON.parse(JSON.stringify(reconcileData.reverse()))
+        }
+
+        function addPaymentDetailData(payment){
+            const paymentDetailAPIData = payment.payment_detail_data
+            const paymentDetailData = []
+            for (const paymentDetail of paymentDetailAPIData){
+                paymentDetailData.push({
+                    ...paymentDetail,
+                    is_selected: true
+                })
+                addReconcileData(paymentDetail)
+            }
+            ServiceOrder.pageVariable.paymentDetailData[payment.id] = JSON.parse(JSON.stringify(paymentDetailData.reverse()))
+        }
+
+        for (const payment of paymentData) {
+            addPaymentDetailData(payment)
+        }
+    }
+
+    function disableTableFields(){
+        ServiceOrder.pageElement.serviceDetail.$table.on('draw.dt', function() {
+            $(this).find('button, select, input, textarea').each(function () {
+                $(this).attr('disabled', true).attr('readonly', true)
+            })
+        })
+        ServiceOrder.pageElement.workOrder.$table.on('draw.dt', function() {
+            $(this).find('button, select, input, textarea').each(function () {
+                if(!$(this).hasClass('btn-open-task') && !$(this).hasClass('btn-open-service-delivery')){
+                    $(this).attr('disabled', true).attr('readonly', true)
+                }
+            })
+        })
+        ServiceOrder.pageElement.payment.$table.on('draw.dt', function() {
+            $(this).find('button, select, input, textarea').each(function () {
+                if(!$(this).hasClass('btn-open-payment-detail')){
+                    $(this).attr('disabled', true).attr('readonly', true)
+                }
+            })
+        })
+    }
 
     return {
         pageVariable,
@@ -3048,6 +3151,7 @@ const ServiceOrder = (function($) {
         initPageSelect,
         loadCurrencyRateData,
         loadTaxData,
+        adjustTableSizeWhenChangeTab,
         initProductModalDataTable,
         initServiceDetailDataTable,
         initWorkOrderDataTable,
@@ -3081,6 +3185,11 @@ const ServiceOrder = (function($) {
         handleSavePaymentReconcile,
         getServiceDetailData,
         getWorkOrderData,
-        getPaymentData
+        getPaymentData,
+
+        loadServiceDetailRelatedData,
+        loadWorkOrderRelatedData,
+        loadPaymentRelatedData,
+        disableTableFields
     }
 })(jQuery)

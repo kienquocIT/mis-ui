@@ -48,9 +48,9 @@ function setUpFormData(formInstance) {
     formInstance.dataForm['customer'] = $('#so-customer').val() || null
     formInstance.dataForm['start_date'] = startDate
     formInstance.dataForm['end_date'] = endDate
-    // formInstance.dataForm['service_detail_data'] = ServiceOrder.getServiceDetailData()
-    // formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData()
-    // formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
+    formInstance.dataForm['service_detail_data'] = ServiceOrder.getServiceDetailData()
+    formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData()
+    formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
     formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData()
     formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData()
     formInstance.dataForm['expense_pretax_value'] = parseFloat(tabExpenseElements.$preTaxAmount.attr('value') || 0)
@@ -72,13 +72,54 @@ function setUpFormSubmit($form) {
                 formInstance.dataForm['attachment'] = []
             }
             setUpFormData(formInstance)
+            console.log(formInstance.dataForm)
             WFRTControl.callWFSubmitForm(formInstance)
         },
     })
 }
 
+function initBastionFields(){
+        const {
+            opp_id,
+            opp_title,
+            opp_code,
+            inherit_id,
+            inherit_title,
+            customer_id,
+            customer_code,
+            customer_title
+        } = $x.fn.getManyUrlParameters([
+            'opp_id', 'opp_title', 'opp_code',
+            'inherit_id', 'inherit_title',
+            'customer_id', 'customer_code', 'customer_title'
+        ])
+        if (opp_id){
+            new $x.cls.bastionField({
+                data_opp: $x.fn.checkUUID4(opp_id) ? [
+                    {
+                        "id": opp_id,
+                        "title": $x.fn.decodeURI(opp_title),
+                        "code": $x.fn.decodeURI(opp_code),
+                        "selected": true,
+                    }
+                ] : [],
+                data_inherit: $x.fn.checkUUID4(inherit_id) ? [
+                    {
+                        "id": inherit_id,
+                        "full_name": inherit_title,
+                        "selected": true,
+                    }
+                ] : [],
+            }).init()
+        } else {
+            new $x.cls.bastionField().init()
+        }
+    }
+
 $(document).ready(function () {
     WFRTControl.setWFInitialData('serviceorder')
+
+    initBastionFields()
 
     ServiceOrder.initDateTime()
     ServiceOrder.initPageSelect()

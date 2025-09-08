@@ -3027,6 +3027,7 @@ const ServiceOrder = (function($) {
         return paymentData
     }
 
+
     return {
         pageVariable,
         pageElement,

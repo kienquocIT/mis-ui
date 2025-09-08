@@ -54,8 +54,10 @@ class DetailDataHandle {
                 DetailDataHandle.loadCustomerList(data.customer_data);
                 ServiceOrder.pageElement.commonData.$startDate.val(startDate);
                 ServiceOrder.pageElement.commonData.$endDate.val(endDate);
-
                 // shipment
+
+                //service detail
+                ServiceOrder.initServiceDetailDataTable(data.service_detail_data)
 
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
                 UsualLoadPageFunction.DisablePage(true, ['.modal-header button']);
@@ -66,4 +68,5 @@ class DetailDataHandle {
 
 $(document).ready(function () {
     DetailDataHandle.loadDetailServiceOrder();
+
 })

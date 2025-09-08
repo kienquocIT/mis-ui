@@ -195,6 +195,12 @@ $(document).ready(function () {
     // reset form create task khi click huỷ bỏ hoặc tạo mới task con
     $('#offCanvasRightTask').on('hidden.bs.offcanvas', () => resetFormTask())
 
+    $('.btn-create-todo').on('click', function () {
+        let $canvasEle = $('#offCanvasRightTask');
+        $canvasEle.removeAttr('data-tbl-id');
+        $canvasEle.removeAttr('data-row-idx');
+    });
+
     $('#offCanvasRightTask').on('shown.bs.offcanvas', function () {
         // init S2 custom assignee
         if ($customAssignee.length > 0) {
@@ -300,8 +306,10 @@ $(document).ready(function () {
                     return false
                 }
 
+                let assign_toData = {};
+                if ($empElm[0].closest('#formOpportunityTask')) {
                 const assign_to = $empElm.select2('data')[0]
-                let assign_toData = {}
+                // let assign_toData = {}
                 if (assign_to) {
                     assign_toData = {
                         'id': assign_to.id,
@@ -309,6 +317,7 @@ $(document).ready(function () {
                         'first_name': assign_to.first_name,
                         'last_name': assign_to.last_name,
                     }
+                }
                 }
 
                 if ($customAssignee.length > 0) {
@@ -379,6 +388,10 @@ $(document).ready(function () {
                                 const datadump = JSON.stringify(formData)
                                 elm.removeAttr('data-task').attr('data-task', datadump)
                                 $('body').append(elm).trigger('From-Task.Submitted')
+
+                                if ($('#offCanvasRightTask').attr('data-tbl-id') && $('#offCanvasRightTask').attr('data-row-idx')) {
+                                    TaskExtend.storeData(formData);
+                                }
                             }
                             if ($('.current-create-task').length) $('.cancel-task').trigger('click')
                         }

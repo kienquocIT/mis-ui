@@ -152,3 +152,82 @@ function logworkSubmit() {
         $('#logWorkModal').modal('hide')
     });
 }
+
+// logic of task extend to other apps
+class TaskExtend {
+
+    static openTaskFromTbl(ele, $table) {
+        let $canvasEle = $('#offCanvasRightTask');
+        let row = ele.closest('tr');
+        let rowIndex = $table.DataTable().row(row).index();
+        $canvasEle.attr('data-tbl-id', $table[0].id);
+        $canvasEle.attr('data-row-idx', rowIndex);
+        let taskIDEle = row.querySelector('.table-row-task-id');
+        if (taskIDEle) {
+            if (!$(taskIDEle).val()) {
+                $canvasEle.offcanvas('show');
+            }
+            if ($(taskIDEle).val()) {
+                let $kbScrollEle = $('#kb_scroll');
+                if ($kbScrollEle.length > 0) {
+                    let titleEle = $kbScrollEle[0].querySelector(`.card-title[data-task-id="${$(taskIDEle).val()}"]`);
+                    if (titleEle) {
+                        $(titleEle).trigger('click');
+                    }
+                }
+            }
+        }
+        return true;
+    };
+
+    static storeData(formData) {
+        let $canvasEle = $('#offCanvasRightTask');
+        let $cusAssigneeEle = $('#custom_assignee');
+
+        let $table = $(`#${$canvasEle.attr('data-tbl-id')}`);
+        let rowIdx = $canvasEle.attr('data-row-idx');
+        let rowApi = $table.DataTable().row(rowIdx);
+        let row = rowApi.node();
+        let taskIDEle = row.querySelector('.table-row-task-id');
+        let taskDataEle = row.querySelector('.table-row-task-data');
+        let assigneeNameEle = row.querySelector('.assignee-name');
+        let assigneeCharEle = row.querySelector('.assignee-char');
+        if (taskIDEle) {
+            $(taskIDEle).val(formData?.['id']);
+        }
+        if (taskDataEle) {
+            $(taskDataEle).val(JSON.stringify(formData));
+        }
+        let assigneeData = SelectDDControl.get_data_from_idx($cusAssigneeEle, formData?.['employee_inherit_id']);
+        if (assigneeNameEle) {
+            $(assigneeNameEle).attr('title', assigneeData?.['full_name']);
+        }
+        if (assigneeCharEle) {
+            $(assigneeCharEle).html(assigneeData?.['first_name'].charAt(0).toUpperCase());
+        }
+        return true;
+    };
+
+    static delTaskFromDelRow(ele) {
+        let row = ele.closest('tr');
+        let taskIDEle = row.querySelector('.table-row-task-id');
+        if (taskIDEle) {
+            if ($(taskIDEle).val()) {
+                let $kbScrollEle = $('#kb_scroll');
+                if ($kbScrollEle.length > 0) {
+                    let titleEle = $kbScrollEle[0].querySelector(`.card-title[data-task-id="${$(taskIDEle).val()}"]`);
+                    if (titleEle) {
+                        let taskListEle = titleEle.closest('.tasklist');
+                        if (taskListEle) {
+                            let delEle = taskListEle.querySelector('.del-task-act');
+                            if (delEle) {
+                                $(delEle).trigger('click');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    };
+}

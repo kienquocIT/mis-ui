@@ -430,7 +430,7 @@ $(function () {
                             }
                             let $customAssignee = $('#custom_assignee');
                             if ($customAssignee.length > 0) {
-                                FormElementControl.loadInitS2($customAssignee, [data.employee_inherit]);
+                                FormElementControl.loadInitS2($customAssignee, [data?.['employee_inherit']]);
                             }
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
@@ -719,7 +719,9 @@ $(function () {
         init(data) {
             // clean when create new init
             $('.wrap-child').html('')
+            if ($('#employee_inherit_id')[0].closest('#formOpportunityTask')) {
             this.getAndRenderTask(data);
+            }
             this.createSubTask();
             countSTT()
             const $this = this

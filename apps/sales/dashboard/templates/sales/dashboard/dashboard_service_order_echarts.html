@@ -41,6 +41,17 @@
             border: none;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-md);
+            padding: 5px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(255, 255, 255, 0.2)
+        }
+
+        .transparent-main-card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
             padding: 15px;
             position: relative;
             overflow: hidden;
@@ -48,21 +59,11 @@
             background: rgba(255, 255, 255, 0.2)
         }
 
-        .stat-card {
-            border: none;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            padding: 15px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
         .progress-card {
             border: none;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-md);
-            padding: 15px;
+            padding: 5px;
             position: relative;
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -197,51 +198,31 @@
     <script id="trans-script"
     ></script>
     
-    <div class="container-fluid mb-5">
+    <div class="container-fluid mt-5 mb-10">
         <div class="row">
             <div class="col-12">
-                <h2 class="fw-bold text-white">{% trans 'SERVICE ORDER PROGRESS DASHBOARD' %}</h2>
-                <h5 class="fst-italic text-white" id="service-order-title"></h5>
+                <span class="text-white">{% trans 'TITLE' %}</span>
+                <h2 class="fw-bold text-white" id="service-order-title"></h2>
             </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="card transparent-card">
-                    <div class="card-body p-2">
-                        <span class="text-white">{% trans 'SERVICE ORDER CODE' %}</span>
-                        <h4 class="fw-bold text-white" id="service-order-code"></h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="card transparent-card">
-                    <div class="card-body p-2">
-                        <span class="text-white">{% trans 'CUSTOMER' %}</span>
-                        <h4 class="fw-bold text-white" id="service-order-customer"></h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="card transparent-card">
-                    <div class="card-body p-2">
-                        <span class="text-white">{% trans 'TIME' %}</span>
-                        <h4 class="fw-bold text-white" id="service-order-time"></h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-12">
-                <div class="card transparent-card">
-                    <div class="card-body p-2" id="service-order-progress">
-                        <span class="text-white">{% trans 'OVERALL PROGRESS' %}</span>
-                    </div>
-                </div>
+                <div class="separator"></div>
             </div>
-        </div>
-        <div class="row">
+            <div class="col-12 col-md-9 col-lg-9">
+                <span class="text-white">{% trans 'CUSTOMER' %}</span>
+                <h4 class="fw-bold text-white" id="service-order-customer"></h4>
+            </div>
             <div class="col-12 col-md-3 col-lg-3">
-                <div class="card stat-card" style="background: linear-gradient(135deg, #b5b32a 0%, #ff5e5e 100%);">
+                <span class="text-white">{% trans 'TIME' %}</span>
+                <h4 class="fw-bold text-white" id="service-order-time"></h4>
+            </div>
+            <div class="col-12">
+                <div class="separator"></div>
+            </div>
+            <div class="col-12 mb-5" id="service-order-progress">
+                <span class="text-white">{% trans 'OVERALL PROGRESS' %}</span>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="card transparent-card">
                     <div class="card-body p-2">
                         <span class="text-white">{% trans 'TOTAL SERVICES' %}</span>
                         <h1 class="fw-bold text-white" id="total-services"></h1>
@@ -250,7 +231,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-3">
-                <div class="card stat-card" style="background: linear-gradient(135deg, #3dc3ff 0%, #005880 100%);">
+                <div class="card transparent-card">
                     <div class="card-body p-2">
                         <span class="text-white">{% trans 'TOTAL WORK ORDERS' %}</span>
                         <h1 class="fw-bold text-white" id="total-work-orders"></h1>
@@ -259,7 +240,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-3">
-                <div class="card stat-card" style="background: linear-gradient(135deg, #d85897 0%, #aa0046 100%);">
+                <div class="card transparent-card">
                     <div class="card-body p-2">
                         <span class="text-white">{% trans 'TOTAL TASKS' %}</span>
                         <h1 class="fw-bold text-white" id="total-tasks"></h1>
@@ -268,7 +249,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-3">
-                <div class="card stat-card" style="background: linear-gradient(135deg, #c7a9fc 0%, #3a157c 100%)">
+                <div class="card transparent-card">
                     <div class="card-body p-2">
                         <span class="text-white">{% trans 'CONTRACT VALUE' %}</span>
                         <h1 class="fw-bold text-white"><span class="mask-money" id="contract-value" data-init-money="0"></span></h1>
@@ -279,10 +260,10 @@
         </div>
         <div class="row mt-5">
             <div class="col-12">
-                <div class="card progress-card">
-                    <div class="card-title p-2">
-                        <h3 class="fw-bold">{% trans 'SERVICE PROGRESS' %}</h3>
-                    </div>
+                <h3 class="text-white">{% trans 'SERVICE PROGRESS' %}</h3>
+            </div>
+            <div class="col-12">
+                <div class="card transparent-main-card">
                     <div class="card-body p-2">
                         <div class="row" id="service-detail-list"></div>
                     </div>

@@ -65,7 +65,7 @@ $(document).ready(function () {
                                                     <span class="me-2 task-name">${task_item?.['percent_completed'] === 100 ? `<s>${task_item?.['title']}</s>` : `${task_item?.['title']}`}</span>
                                                 </div>
                                                 <div class="d-flex align-items-center">
-                                                    <span class="text-muted small me-2 d-md-inline-block d-none task-percent-completed">${task_item?.['percent_completed']}% completed</span>
+                                                    <span class="text-muted small me-2 d-md-inline-block d-none task-percent-completed">${task_item?.['percent_completed']}% ${$.fn.gettext('completed')}</span>
                                                     <span class="badge badge-light badge-indicator me-2"></span>
                                                     <span class="text-muted small me-2 d-md-inline-block d-none task-inherit"> ${task_item?.['assignee_data']?.['full_name']}</span>
                                                     <span class="badge badge-light badge-indicator me-2"></span>
@@ -83,15 +83,15 @@ $(document).ready(function () {
                 let avg_task_percent_completed = task_percent_completed.length !== 0 ? (task_percent_completed.reduce((a, b) => a + b, 0) / task_percent_completed.length) : 0
                 avg_wo_percent_completed += avg_task_percent_completed * wo_ctb_item?.['contribution_percent'] / 100
                 if (avg_task_percent_completed === 0) {
-                    wo_status_html = `<span class="badge badge-soft-orange me-2"><i class="far fa-clock"></i> WAITING</span>`
+                    wo_status_html = `<span class="badge badge-orange me-2"><i class="far fa-clock"></i> ${$.fn.gettext('WAITING')}</span>`
                     waiting_wo += 1
                 }
                 else if (avg_task_percent_completed === 100) {
-                    wo_status_html = `<span class="badge badge-soft-success me-2"><i class="bi bi-check-circle-fill"></i> DONE</span>`
+                    wo_status_html = `<span class="badge badge-success me-2"><i class="bi bi-check-circle-fill"></i> ${$.fn.gettext('COMPLETED')}</span>`
                     completed_wo += 1
                 }
                 else {
-                    wo_status_html = `<span class="badge badge-soft-blue me-2"><i class="bi bi-hourglass-split"></i> PROCESSING</span>`
+                    wo_status_html = `<span class="badge badge-blue me-2"><i class="bi bi-hourglass-split"></i> ${$.fn.gettext('PROCESSING')}</span>`
                     progressing_wo += 1
                 }
 
@@ -101,7 +101,7 @@ $(document).ready(function () {
                                                     <span class="me-2 h5 wo-name">${wo_ctb_item?.['work_order_data']?.['title']}</span>
                                                 </div>
                                                 <div class="d-flex align-items-center">
-                                                    <span class="badge badge-light badge-outline me-2 d-md-inline-block d-none wo-contribution">${wo_ctb_item?.['contribution_percent']}% contribution</span>
+                                                    <span class="badge badge-light badge-outline me-2 d-md-inline-block d-none wo-contribution">${wo_ctb_item?.['contribution_percent']}% ${$.fn.gettext('contribution')}</span>
                                                     <span class="badge badge-light badge-indicator me-2"></span>
                                                     <span class="small text-muted wo-inherit me-2">Nguyễn Văn Nam</span>
                                                     <span class="badge badge-light badge-indicator me-2"></span>
@@ -117,7 +117,7 @@ $(document).ready(function () {
                                                 </div>
                                             </div>
                                             <div class="collapse my-3" id="collapse${wo_ctb_item?.['id']}">
-                                                <h6 class="fw-bold text-muted mt-3">Task list:</h6>
+                                                <h6 class="fw-bold text-muted mt-3"> ${$.fn.gettext('Task list')}:</h6>
                                                 <ul class="advance-list task-list">
                                                     ${task_list_html}
                                                 </ul>
@@ -136,16 +136,16 @@ $(document).ready(function () {
                 progressing_svo += 1
             }
 
-            service_detail_list_html += `<div class="col-12">
+            service_detail_list_html += `<div class="col-12 mb-2">
                                             <div class="card service-card">
                                                 <div class="card-body p-2">
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <h5 class="fw-bold"><span class="badge badge-dark badge-pill service-code">${item?.['product_data']?.['code'] || ''}</span> <span class="service-name">${item?.['product_data']?.['title'] || ''}</span></h5>
                                                             <span class="fw-bold text-muted">
-                                                                <span>Service value:</span> <span class="service-value mask-money" data-init-money="${item?.['total_value'] || 0}"></span>
+                                                                <span>${$.fn.gettext('Service value')}:</span> <span class="service-value mask-money" data-init-money="${item?.['total_value'] || 0}"></span>
                                                                 <span class="badge badge-light badge-indicator mx-2"></span>
-                                                                <span>Service weight:</span> <span class="service-weight">${item?.['total_contribution_percent'] || '--'}%</span>
+                                                                <span>${$.fn.gettext('Weight')}:</span> <span class="service-weight">${item?.['total_contribution_percent'] || '--'}%</span>
                                                             </span>
                                                             <div class="progress progress-bar-rounded my-3" style="min-height: 20px">
                                                                 <div class="progress-bar bg-gradient-primary service-progress-bar" role="progressbar" style="width: ${avg_wo_percent_completed}%;" aria-valuenow="${avg_wo_percent_completed}" aria-valuemin="0" aria-valuemax="100">${avg_wo_percent_completed}%</div>
@@ -155,7 +155,7 @@ $(document).ready(function () {
                                                             <div class="separator"></div>
                                                         </div>
                                                         <div class="col-12">
-                                                            <h6 class="fw-bold text-muted">Work order list:</h6>
+                                                            <h6 class="fw-bold text-muted">${$.fn.gettext('Work order list')}:</h6>
                                                             <ul class="advance-list wo-list mt-3">
                                                                 ${wo_contribute_html}
                                                             </ul>
@@ -167,7 +167,7 @@ $(document).ready(function () {
         }
         $('#service-detail-list').html(service_detail_list_html)
         $('#service-order-progress').append(`
-            <div class="progress progress-bar-rounded progress-width-animated my-3" style="min-height: 30px">
+            <div class="progress progress-bar-rounded progress-width-animated" style="min-height: 30px">
                 <div class="progress-bar bg-gradient-success" role="progressbar" aria-valuenow="${avg_svo_detail_percent_completed}" aria-valuemin="0" aria-valuemax="100" style="width: ${avg_svo_detail_percent_completed}%"><span class="progress-tooltip">${avg_svo_detail_percent_completed}%</span></div>
             </div>
         `)
@@ -193,11 +193,8 @@ $(document).ready(function () {
     Promise.all([ajax_detail_service_order]).then(
         (results) => {
             let svo_detail_data = results[0]
-
             // Load title
             $('#service-order-title').text(svo_detail_data?.['title'] || '--')
-            // Load code
-            $('#service-order-code').text(svo_detail_data?.['code'] || '--')
             // Load customer
             $('#service-order-customer').text(svo_detail_data?.['customer_data']?.['name'] || '--')
             // Load time

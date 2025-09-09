@@ -5490,7 +5490,7 @@ msgstr "Cuộc họp"
 
 #
 msgid "Sale activities logged"
-msgstr "Nhật ký hoạt động bán hàng"
+msgstr "Nhật ký bán hàng"
 
 #
 msgid "Current action"

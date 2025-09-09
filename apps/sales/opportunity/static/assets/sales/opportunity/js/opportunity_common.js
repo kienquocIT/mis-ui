@@ -280,7 +280,6 @@ class OpportunityPageFunction {
     static LoadDtbProduct(data_list=[]) {
         if (!$.fn.DataTable.isDataTable('#table-product')) {
             $table_product.DataTableDefault({
-                dom: 't',
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
@@ -367,7 +366,6 @@ class OpportunityPageFunction {
     static LoadDtbCompetitor(data_list=[]) {
         if (!$.fn.DataTable.isDataTable('#table-competitors')) {
             $table_competitor.DataTableDefault({
-                dom: 't',
                 rowIdx: true,
                 data: data_list,
                 paging: false,
@@ -419,7 +417,6 @@ class OpportunityPageFunction {
     static LoadDtbContactRole(data_list=[]) {
         if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
             $table_contact_role.DataTableDefault({
-                dom: 't',
                 rowIdx: true,
                 data: data_list,
                 paging: false,

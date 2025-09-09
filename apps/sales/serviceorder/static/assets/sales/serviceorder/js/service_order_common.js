@@ -1596,7 +1596,9 @@ const ServiceOrder = (function($) {
             const rowData = table.row($row).data()
 
             if (rowData) {
+                const oldQuantity = rowData.quantity || 0
                 const newQuantity = parseFloat($input.val()) || 0
+                const serviceId = rowData.id
 
                 // Update row data
                 rowData.quantity = newQuantity
@@ -1614,10 +1616,205 @@ const ServiceOrder = (function($) {
                 const $totalMoneySpan = $totalCell.find('.mask-money')
                 $totalMoneySpan.attr('data-init-money', subtotal + taxAmount)
 
+                // 1. Calculate total delivered quantity across all work orders
+                let totalDeliveredQuantity = 0
+                Object.keys(pageVariable.productContributionData).forEach(workOrderId => {
+                    const contributions = pageVariable.productContributionData[workOrderId]
+                    if (contributions) {
+                        const serviceContribution = contributions.find(c => c.service_id === serviceId)
+                        if (serviceContribution && serviceContribution.is_selected) {
+                            totalDeliveredQuantity += serviceContribution.delivered_quantity || 0
+                        }
+                    }
+                })
+
+                // Update delivery balance value (new quantity minus all delivered)
+                const newDeliveryBalance = newQuantity - totalDeliveredQuantity
+
+                // Update or create serviceDetailTotalContributionData
+                if (pageVariable.serviceDetailTotalContributionData[serviceId]) {
+                    pageVariable.serviceDetailTotalContributionData[serviceId].delivery_balance_value = newDeliveryBalance
+                } else {
+                    pageVariable.serviceDetailTotalContributionData[serviceId] = {
+                        total_contribution_percent: 0,
+                        delivery_balance_value: newDeliveryBalance
+                    }
+                }
+
+               // 2. Update all product contribution data that references this service
+                Object.keys(pageVariable.productContributionData).forEach(workOrderId => {
+                    const contributions = pageVariable.productContributionData[workOrderId]
+                    if (contributions) {
+                        contributions.forEach(contribution => {
+                            if (contribution.service_id === serviceId) {
+                                contribution.quantity = newQuantity
+                                contribution.balance_quantity = newDeliveryBalance
+
+                                // Validate delivered quantity doesn't exceed new quantity
+                                if (contribution.delivered_quantity > newQuantity) {
+                                    contribution.delivered_quantity = newQuantity
+
+                                    // Recalculate balance if we had to adjust delivered quantity
+                                    const recalculatedDelivered = contributions
+                                        .filter(c => c.service_id === serviceId && c.is_selected)
+                                        .reduce((sum, c) => sum + (c.delivered_quantity || 0), 0)
+
+                                    const recalculatedBalance = newQuantity - recalculatedDelivered
+                                    pageVariable.serviceDetailTotalContributionData[serviceId].delivery_balance_value = recalculatedBalance
+                                    contribution.balance_quantity = recalculatedBalance
+                                }
+                            }
+                        })
+                    }
+                })
+
+                // 3. Update all payment detail data that references this service
+                let newTotalPaymentValue = 0
+                let newTotalPaymentPercent = 0
+                Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
+                    const paymentDetails = pageVariable.paymentDetailData[paymentId]
+                    if (paymentDetails) {
+                        paymentDetails.forEach(detail => {
+                            if (detail.service_id === serviceId) {
+                                detail.sub_total_value = subtotal
+
+                                // For invoiced payments (have tax_data property)
+                                if (rowData.tax_data !== undefined) {
+                                    // Recalculate payment value based on percentage of new subtotal
+                                    const paymentValue = subtotal * (detail.payment_percent / 100)
+                                    detail.payment_value = paymentValue
+
+                                    // Tax should be calculated on the payment value (portion being invoiced)
+                                    const detailTaxRate = (rowData.tax_data?.rate || 0) / 100
+                                    detail.tax_value = paymentValue * detailTaxRate
+
+                                    // Receivable = payment + tax - reconcile
+                                    detail.receivable_value = paymentValue + detail.tax_value - (detail.reconcile_value || 0)
+
+                                    // Update balance
+                                    const issuedValue = detail.issued_value || 0
+                                    detail.balance_value = subtotal - issuedValue
+                                }
+                                else {
+                                    // For non-invoiced payments (no tax)
+                                    const paymentValue = subtotal * (detail.payment_percent / 100)
+                                    detail.payment_value = paymentValue
+                                    detail.receivable_value = paymentValue
+                                }
+                                // Add to total payment data if this detail is selected
+                                if (detail.is_selected) {
+                                    newTotalPaymentValue += detail.payment_value || 0
+                                    newTotalPaymentPercent += detail.payment_percent || 0
+                                }
+                            }
+                        })
+
+                        // Update payment row totals
+                        updatePaymentRowAfterServiceChange(paymentId)
+                    }
+                })
+                //Update serviceDetailTotalPaymentData with new totals
+                if (newTotalPaymentValue > 0 || newTotalPaymentPercent > 0) {
+                    pageVariable.serviceDetailTotalPaymentData[serviceId] = {
+                        total_payment_value: newTotalPaymentValue,
+                        total_payment_percent: newTotalPaymentPercent
+                    }
+                } else if (pageVariable.serviceDetailTotalPaymentData[serviceId]) {
+                    // If no payments, remove the entry
+                    delete pageVariable.serviceDetailTotalPaymentData[serviceId]
+                }
+
+                // 4. Update reconcile data for payments that reference this service
+                Object.keys(pageVariable.reconcileData).forEach(paymentDetailId => {
+                    const reconcileItems = pageVariable.reconcileData[paymentDetailId]
+                    if (reconcileItems) {
+                        reconcileItems.forEach(reconcileItem => {
+                            if (reconcileItem.service_id === serviceId) {
+                                // Find the corresponding payment detail to get the new payment value
+                                let newPaymentValue = 0
+                                Object.values(pageVariable.paymentDetailData).forEach(paymentDetails => {
+                                    const detail = paymentDetails.find(d => d.id === reconcileItem.advance_payment_detail_id)
+                                    if (detail) {
+                                        newPaymentValue = detail.payment_value || 0
+                                    }
+                                })
+
+                                // Update the total value for this reconcile item
+                                reconcileItem.total_value = newPaymentValue
+
+                                // If reconcile value exceeds new total, adjust it
+                                if (reconcileItem.reconcile_value > newPaymentValue) {
+                                    reconcileItem.reconcile_value = newPaymentValue
+
+                                    // Update the payment detail's reconcile value
+                                    Object.values(pageVariable.paymentDetailData).forEach(paymentDetails => {
+                                        const detail = paymentDetails.find(d => d.id === paymentDetailId)
+                                        if (detail) {
+                                            // Recalculate total reconcile for this payment detail
+                                            let totalReconcile = 0
+                                            const detailReconcileItems = pageVariable.reconcileData[paymentDetailId] || []
+                                            detailReconcileItems.forEach(item => {
+                                                if (item.is_selected) {
+                                                    totalReconcile += item.reconcile_value || 0
+                                                }
+                                            })
+                                            detail.reconcile_value = totalReconcile
+
+                                            // Recalculate receivable value
+                                            if (rowData.tax_data) {
+                                                detail.receivable_value = detail.payment_value + detail.tax_value - totalReconcile
+                                            }
+                                        }
+                                    })
+                                }
+                            }
+                        })
+                    }
+                })
+
                 $.fn.initMaskMoney2()
             }
         })
     }
+
+    // Helper function to update payment row totals after service changes
+    function updatePaymentRowAfterServiceChange(paymentId) {
+    const paymentTable = pageElement.payment.$table.DataTable()
+    const $paymentRow = pageElement.payment.$table.find(`[data-payment-row-id="${paymentId}"]`)
+
+    if ($paymentRow.length > 0) {
+        const paymentDetails = pageVariable.paymentDetailData[paymentId] || []
+        const rowData = paymentTable.row($paymentRow).data()
+
+        let totalPaymentValue = 0
+        let totalTaxValue = 0
+        let totalReconcileValue = 0
+        let totalReceivableValue = 0
+
+        paymentDetails.forEach(detail => {
+            if (detail.is_selected) {
+                totalPaymentValue += detail.payment_value || 0
+                totalTaxValue += detail.tax_value || 0
+                totalReconcileValue += detail.reconcile_value || 0
+                totalReceivableValue += detail.receivable_value || 0
+            }
+        })
+
+        // Update row data
+        rowData.payment_value = totalPaymentValue
+        rowData.tax_value = totalTaxValue
+        rowData.reconcile_value = totalReconcileValue
+        rowData.receivable_value = totalReceivableValue
+
+        // Update UI
+        $paymentRow.find('.payment-value').attr('data-init-money', totalPaymentValue)
+        $paymentRow.find('.payment-tax').attr('data-init-money', totalTaxValue)
+        $paymentRow.find('.payment-reconcile').attr('data-init-money', totalReconcileValue)
+        $paymentRow.find('.payment-receivable-value').attr('data-init-money', totalReceivableValue)
+
+        $.fn.initMaskMoney2()
+    }
+}
 
     // ============ work order =============
     function handleChangeWorkOrderDetail(){
@@ -2748,10 +2945,11 @@ const ServiceOrder = (function($) {
                 const rowData = this.data()
                 const rowId = rowData?.id
                 const isAdvancePayment = rowData.payment_type === PAYMENT_TYPE.advance
+                const isInvoiceRequired = rowData.is_invoice_required
                 const installment = rowData.installment
 
                 //if payment row is advance and has installment smaller than currPaymentRow
-                if(isAdvancePayment && installment < paymentRowInstallment) {
+                if(isAdvancePayment && !isInvoiceRequired && installment < paymentRowInstallment) {
                     const paymentDetailData = pageVariable.paymentDetailData[rowId]
                     if(paymentDetailData){
                         paymentDetailData.forEach(function(paymentDetailItem){
@@ -3151,7 +3349,7 @@ const ServiceOrder = (function($) {
         }
 
         function addUnitCostData(workOrder){
-            ServiceOrder.pageVariable.workOrderCostData[workOrder.id] = JSON.parse(JSON.stringify(workOrder.cost_data.reverse()))
+            ServiceOrder.pageVariable.workOrderCostData[workOrder.id] = JSON.parse(JSON.stringify(workOrder.cost_data))
         }
 
         for (const workOrder of workOrderData){
@@ -3202,7 +3400,7 @@ const ServiceOrder = (function($) {
         })
         ServiceOrder.pageElement.workOrder.$table.on('draw.dt', function() {
             $(this).find('button, select, input, textarea').each(function () {
-                if(!$(this).hasClass('btn-open-task') && !$(this).hasClass('btn-open-service-delivery')){
+                if(!$(this).hasClass('btn-open-task') && !$(this).hasClass('btn-open-service-delivery') && !$(this).hasClass('btn-open-work-order-cost')){
                     $(this).attr('disabled', true).attr('readonly', true)
                 }
             })

@@ -2694,12 +2694,11 @@ const ServiceOrder = (function($) {
             const currPaymentType = Number($ele.val())
 
             const rowData = paymentTable.row($row).data()
-            const oldPaymentType = rowData.payment_type
             const rowId = rowData.id
 
             rowData.payment_type = currPaymentType
 
-            if(oldPaymentType === PAYMENT_TYPE.advance && rowData.is_invoice_required === false){
+            if(currPaymentType === PAYMENT_TYPE.payment && rowData.is_invoice_required === false){
                 const $invoiceCheckbox = $row.find('.invoice-require')
                 $invoiceCheckbox.prop('checked', true)
                 rowData.is_invoice_required = true
@@ -2714,6 +2713,13 @@ const ServiceOrder = (function($) {
             }
         })
 
+        pageElement.payment.$table.on('change', '.payment-description', function(e) {
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+            const table = pageElement.payment.$table.DataTable()
+            const rowData = table.row($row).data()
+            rowData.description = $ele.val()
+        })
     }
 
     function handleOpenModalReconcile(){

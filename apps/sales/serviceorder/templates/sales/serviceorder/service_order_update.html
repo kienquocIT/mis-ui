@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form data-method="POST" id="form-update-service-order"
+    <form data-method="PUT" id="form-update-service-order"
           data-url="{% url 'ServiceOrderDetailAPI' data.pk %}"
           data-url-redirect="{% url 'ServiceOrderList' %}">
         {% csrf_token %}

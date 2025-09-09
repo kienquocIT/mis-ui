@@ -1,4 +1,4 @@
-class DetailDataHandle {
+class DetailDataHandler {
     static loadDetailOpp(data){
          new $x.cls.bastionField({
             data_opp: data?.['opportunity']?.['id'] ? [
@@ -35,7 +35,31 @@ class DetailDataHandle {
         })
     }
 
-    static loadDetailServiceOrder() {
+    static formatShipmentDetailData(shipmentData) {
+        const result = [];
+        if (shipmentData.length > 0) {
+            const containers = shipmentData.filter(item => item.is_container === true);
+            const packages = shipmentData.filter(item => item.is_container === false);
+
+            containers.sort((a, b) => a.order - b.order);   // sort container by order
+            containers.forEach(container => {
+                result.push(container);
+
+                const containerPackages = packages.filter(pkg =>
+                    pkg.referenceContainer === container.containerRefNumber
+                );
+
+                containerPackages.sort((a, b) => a.order - b.order);  // sort package by order
+                result.push(...containerPackages);
+            });
+            return result;
+        } else {
+            return [];
+        }
+    }
+
+    static loadDetailServiceOrder(isDetail) {
+        let isDisablePage = isDetail === "detail";
         let $form = $('#form-detail-service-order');
         const data_url = $form.attr('data-url');
         $.fn.callAjax2({
@@ -51,33 +75,36 @@ class DetailDataHandle {
                     enable_edit: false,
                     enable_download: true,
                     data: data?.['attachment'],
-                });
+                })
 
                 const createdDate = data.date_created ? DateTimeControl.formatDateType(
                     "YYYY-MM-DD",
                     "DD/MM/YYYY",
                     data.date_created
-                ) : '';
+                ) : ''
 
                 const startDate = data.start_date ? DateTimeControl.formatDateType(
                     "YYYY-MM-DD",
                     "DD/MM/YYYY",
                     data.start_date
-                ) : '';
+                ) : ''
 
                 const endDate = data.end_date ? DateTimeControl.formatDateType(
                     "YYYY-MM-DD",
                     "DD/MM/YYYY",
                     data.end_date
-                ) : '';
+                ) : ''
 
                 // basic information fields
-                ServiceOrder.pageElement.commonData.$titleEle.val(data?.title);
-                ServiceOrder.pageElement.commonData.$createdDate.val(createdDate);
-                DetailDataHandle.loadCustomerList(data.customer_data);
-                ServiceOrder.pageElement.commonData.$startDate.val(startDate);
-                ServiceOrder.pageElement.commonData.$endDate.val(endDate);
+                ServiceOrder.pageElement.commonData.$titleEle.val(data?.title)
+                ServiceOrder.pageElement.commonData.$createdDate.val(createdDate)
+                DetailDataHandler.loadCustomerList(data?.customer_data)
+                ServiceOrder.pageElement.commonData.$startDate.val(startDate)
+                ServiceOrder.pageElement.commonData.$endDate.val(endDate)
+
                 // shipment
+                let shipmentDataFormatted = DetailDataHandler.formatShipmentDetailData(data?.shipment)
+                TabShipmentFunction.initShipmentDataTable(shipmentDataFormatted)
 
                 //service detail
                 ServiceOrder.initServiceDetailDataTable(data.service_detail_data)
@@ -99,10 +126,15 @@ class DetailDataHandle {
                 ServiceOrder.initPaymentDataTable(paymentData)
                 ServiceOrder.loadPaymentRelatedData(paymentData)
 
-                ServiceOrder.disableTableFields()
+                //expense
+                tabExpenseElements.$preTaxAmount.attr('value', data?.expense_pretax_value || 0)
+                tabExpenseElements.$taxEle.attr('value', data?.expense_tax_value || 0)
+                tabExpenseElements.$totalValueEle.attr('value', data?.expense_total_value || 0)
 
+                $.fn.initMaskMoney2()
+                ServiceOrder.disableTableFields()
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
-                UsualLoadPageFunction.DisablePage(true, ['.modal-header button'])
+                UsualLoadPageFunction.DisablePage(isDisablePage)
             }
         )
     }
@@ -113,7 +145,7 @@ $(document).ready(function () {
         ServiceOrder.loadCurrencyRateData(),
         ServiceOrder.loadTaxData(),
     ]).then(()=>{
-        DetailDataHandle.loadDetailServiceOrder()
+        DetailDataHandler.loadDetailServiceOrder("detail");
     })
     ServiceOrder.adjustTableSizeWhenChangeTab()
     ServiceOrder.handleClickOpenServiceDelivery()

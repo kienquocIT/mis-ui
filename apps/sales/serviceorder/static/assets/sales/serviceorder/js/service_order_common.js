@@ -714,6 +714,28 @@ const ServiceOrder = (function($) {
                     }
                 },
             ],
+            rowCallback: function (row, data, index) {
+                let taskIDEle = row.querySelector('.table-row-task-id');
+                let taskDataEle = row.querySelector('.table-row-task-data');
+                let assigneeNameEle = row.querySelector('.assignee-name');
+                let assigneeCharEle = row.querySelector('.assignee-char');
+                if (taskIDEle) {
+                    if (data?.['task_id']) {
+                        $(taskIDEle).val(data?.['task_id']);
+                    }
+                }
+                if (taskDataEle) {
+                    if (data?.['task_data']?.['id']) {
+                        $(taskDataEle).val(JSON.stringify(data?.['task_data']));
+                    }
+                }
+                if (assigneeNameEle) {
+                    $(assigneeNameEle).attr('title', data?.['task_data']?.['employee_inherit']?.['full_name']);
+                }
+                if (assigneeCharEle) {
+                    $(assigneeCharEle).html(data?.['task_data']?.['employee_inherit']?.['first_name'].charAt(0).toUpperCase());
+                }
+            },
             drawCallback: function (data, type, row) {
                 pageElement.workOrder.$table.find('input.date-input').each(function(){
                     const $input = $(this)
@@ -2982,6 +3004,15 @@ const ServiceOrder = (function($) {
                 order: index + 1
             }))
 
+            // task_id
+            let taskID = null;
+            let taskIDEle = $row[0].querySelector('.table-row-task-id');
+            if (taskIDEle) {
+                if ($(taskIDEle).val()) {
+                    taskID = $(taskIDEle).val();
+                }
+            }
+
             // Collect the work order data
             const workOrder = {
                 id: rowData.id,
@@ -3000,7 +3031,9 @@ const ServiceOrder = (function($) {
                 // Include work order cost breakdown if exists
                 cost_data: costData,
                 // Include product contribution data if exists and is delivery point
-                product_contribution: contributionData
+                product_contribution: contributionData,
+                // task_id
+                task_id: taskID,
             };
 
             workOrderData.push(workOrder);

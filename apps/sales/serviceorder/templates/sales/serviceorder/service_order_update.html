@@ -18,7 +18,7 @@
 
 {% block pageContent %}
     <form data-method="POST" id="form-update-service-order"
-          data-url="{% url '' %}"
+          data-url="{% url 'ServiceOrderDetailAPI' data.pk %}"
           data-url-redirect="{% url 'ServiceOrderList' %}">
         {% csrf_token %}
         {% include 'sales/serviceorder/common/common_data.html' %}

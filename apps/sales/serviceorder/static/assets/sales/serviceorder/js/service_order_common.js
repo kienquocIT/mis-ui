@@ -2241,7 +2241,8 @@ const ServiceOrder = (function($) {
                         title: sdItem.title,
                         sub_total_value: sdItem.sub_total_value,
                         payment_percent: 0,
-                        payment_value: 0
+                        payment_value: 0,
+                        total_reconciled_value: 0
                     }
                 })
 
@@ -2258,7 +2259,8 @@ const ServiceOrder = (function($) {
                                 id: currPayment.id, //if old id exists, assign it to current id
                                 is_selected: currPayment.is_selected,
                                 payment_percent: currPayment.payment_percent,
-                                payment_value: currPayment.payment_value
+                                payment_value: currPayment.payment_value,
+                                total_reconciled_value: currPayment.total_reconciled_value,
                             }
                         }
                         return pdniItem
@@ -2899,6 +2901,8 @@ const ServiceOrder = (function($) {
             const taxAmount = subtotal * taxRate
             const currentTotal = subtotal + taxAmount
 
+            const deliveryBalanceValue = pageVariable.serviceDetailTotalContributionData?.[rowData.id]?.delivery_balance_value
+
             const serviceDetail = {
                 id: rowData.id,
                 order: rowIdx + 1,
@@ -2915,7 +2919,7 @@ const ServiceOrder = (function($) {
                 sub_total_value: subtotal,
                 total_value: currentTotal,
                 total_contribution_percent: pageVariable.serviceDetailTotalContributionData?.[rowData.id]?.total_contribution_percent || 0,
-                delivery_balance_value: pageVariable.serviceDetailTotalContributionData?.[rowData.id]?.delivery_balance_value || currentQuantity,
+                delivery_balance_value: deliveryBalanceValue,
                 total_payment_percent: pageVariable.serviceDetailTotalPaymentData?.[rowData.id]?.total_payment_percent || 0,
                 total_payment_value: pageVariable.serviceDetailTotalPaymentData?.[rowData.id]?.total_payment_value || 0
             }
@@ -3056,6 +3060,7 @@ const ServiceOrder = (function($) {
     // ============ detail handler ==============
     function loadServiceDetailRelatedData(serviceDetailData=[]){
         for (const serviceDetail of serviceDetailData){
+            console.log(serviceDetail.delivery_balance_value)
             ServiceOrder.pageVariable.serviceDetailTotalContributionData[serviceDetail.id] = {
                 total_contribution_percent: serviceDetail.total_contribution_percent,
                 delivery_balance_value: serviceDetail.delivery_balance_value,

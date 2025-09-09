@@ -78,6 +78,8 @@ class DetailDataHandler {
                     data: data?.['attachment'],
                 })
 
+                DetailDataHandler.loadDetailOpp(data)
+
                 const createdDate = data.date_created ? DateTimeControl.formatDateType(
                     "YYYY-MM-DD",
                     "DD/MM/YYYY",

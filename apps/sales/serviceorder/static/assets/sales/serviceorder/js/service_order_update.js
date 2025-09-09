@@ -129,13 +129,19 @@ class DetailDataHandler {
 
             containers.sort((a, b) => a?.order - b?.order);   // sort container by order
             containers.forEach(container => {
-                result.push(container);
+                result.push({
+                    isContainer: container.is_container,
+                    ...container
+                });
 
                 const containerPackages = packages.filter(pkg =>
                     pkg['packageContainerRef'] === container?.containerRefNumber
                 );
 
                 containerPackages.sort((a, b) => a?.order - b?.order);  // sort package by order
+                containerPackages.forEach(item => {
+                    item.isContainer = item.is_container
+                })
                 result.push(...containerPackages);
             });
             return result;
@@ -144,8 +150,8 @@ class DetailDataHandler {
         }
     }
 
-    static loadDetailServiceOrder($form, isDetail) {
-        let isDisablePage = isDetail === "detail";
+    static loadDetailServiceOrder(isDetail) {
+        let $form = $('#form-update-service-order');
         const data_url = $form.attr('data-url');
         $.fn.callAjax2({
             url: data_url,
@@ -157,12 +163,12 @@ class DetailDataHandler {
                 $.fn.compareStatusShowPageAction(data);
                 new $x.cls.file($('#attachment')).init({
                     name: 'attachment',
-                    enable_edit: !isDisablePage,
+                    enable_edit: true,
                     enable_download: true,
                     data: data?.['attachment'],
                 })
 
-                DetailDataHandler.loadDetailOpp(data)
+                this.loadDetailOpp(data)
 
                 const createdDate = data.date_created ? DateTimeControl.formatDateType(
                     "YYYY-MM-DD",
@@ -185,7 +191,7 @@ class DetailDataHandler {
                 // basic information fields
                 ServiceOrder.pageElement.commonData.$titleEle.val(data?.title)
                 ServiceOrder.pageElement.commonData.$createdDate.val(createdDate)
-                DetailDataHandler.loadCustomerList(data?.customer_data)
+                this.loadCustomerList(data?.customer_data)
                 ServiceOrder.pageElement.commonData.$startDate.val(startDate)
                 ServiceOrder.pageElement.commonData.$endDate.val(endDate)
 
@@ -222,7 +228,7 @@ class DetailDataHandler {
                 $.fn.initMaskMoney2()
                 ServiceOrder.disableTableFields()
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
-                UsualLoadPageFunction.DisablePage(isDisablePage, ['.btn-close'])
+                UsualLoadPageFunction.DisablePage(false, ['.btn-close'])
             }
         )
     }
@@ -233,7 +239,7 @@ $(document).ready(function () {
         ServiceOrder.loadCurrencyRateData(),
         ServiceOrder.loadTaxData(),
     ]).then(() => {
-        DetailDataHandler.loadDetailServiceOrder($('#form-update-service-order'), "update");
+        DetailDataHandler.loadDetailServiceOrder( "update");
     })
     ServiceOrder.adjustTableSizeWhenChangeTab()
 
@@ -244,7 +250,6 @@ $(document).ready(function () {
 
     ServiceOrder.initProductModalDataTable()
     ServiceOrder.initModalContextTracking()
-    ServiceOrder.initAttachment()
 
     // ============ tab shipment =============
     TabShipmentFunction.LoadContainerType()

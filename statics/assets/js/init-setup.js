@@ -7808,7 +7808,8 @@ class FileControl {
         let clsThis = this;
         return {
             url: '#',
-            maxFileSize: 3 * 1024 * 1024, // 3 Megs (MB)
+            // maxFileSize: 3 * 1024 * 1024, // 3 Megs (MB)
+            maxFileSize: 15 * 1024 * 1024, // 15 Megs (MB)
             allowedTypes: "*",
             extFilter: null,
             onDragEnter: function () {

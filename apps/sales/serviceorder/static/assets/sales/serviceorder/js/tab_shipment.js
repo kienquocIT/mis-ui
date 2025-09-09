@@ -179,7 +179,7 @@ class TabShipmentFunction {
 
         tableData.forEach(row => {
             let shipmentData = {};
-            if (row?.isContainer) {
+            if (row?.isContainer || row ?.is_container) {
                 shipmentData = {
                     title: row?.containerName || '',
                     container_type: row?.containerType || null,

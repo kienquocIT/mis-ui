@@ -20,7 +20,7 @@ $(document).ready(function () {
         }
     )
 
-    function ParseServiceOrderDetail(data_list=[]) {
+    function ParseServiceOrderDetailHTML(data_list=[]) {
         let waiting_svo = 0
         let completed_svo = 0
         let progressing_svo = 0
@@ -207,7 +207,7 @@ $(document).ready(function () {
             $('#contract-value-delivered').attr('data-init-money', svo_detail_data?.['contract_value_delivered'] || 0)
             $('#contract-value-delivered-percent').text((svo_detail_data?.['contract_value'] ? ((svo_detail_data?.['contract_value_delivered'] || 0) / svo_detail_data?.['contract_value']) : 0).toFixed(2))
             // Load service detail
-            ParseServiceOrderDetail(svo_detail_data?.['service_order_detail_list'] || [])
+            ParseServiceOrderDetailHTML(svo_detail_data?.['service_order_detail_list'] || [])
 
             $.fn.initMaskMoney2()
         }).then(function () {

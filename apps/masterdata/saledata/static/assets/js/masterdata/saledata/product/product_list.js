@@ -7,7 +7,7 @@ $(document).ready(function () {
         reloadCurrency: true,
         rowIdx: true,
         scrollX: true,
-        scrollY: '70vh',
+        scrollY: '64vh',
         scrollCollapse: true,
         fixedColumns: {
             leftColumns: 2

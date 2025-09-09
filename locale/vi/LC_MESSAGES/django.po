@@ -3480,8 +3480,8 @@ msgid "Add Competitor"
 msgstr "Thêm đối thủ"
 
 #
-msgid "Which Customer"
-msgstr "Đối tượng khách hàng"
+msgid "Customer type"
+msgstr "Loại khách hàng"
 
 #
 msgid "Strength"
@@ -5501,8 +5501,8 @@ msgid "Next action"
 msgstr "Hoạt động tiếp theo"
 
 #
-msgid "Related features"
-msgstr "Chức năng liên quan"
+msgid "Related activities"
+msgstr "Hoạt động liên quan"
 
 #
 msgid "Activity type"
@@ -12230,3 +12230,7 @@ msgstr "Thuộc tính sản phẩm"
 #
 msgid "Change attributes for this product?"
 msgstr "Thay đổi thuộc tính của sản phẩm này?"
+
+#
+msgid "Summarize contract"
+msgstr "Tổng hợp hợp đồng"

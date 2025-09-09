@@ -38,14 +38,6 @@
     }
 </style>
 <div class="row">
-    <div class="col-6 text-left mb-2">
-        <a href="#" id="btn-auto-update-stage" class="badge badge-sm badge-soft-secondary badge-outline">
-            <i class="fas fa-sync-alt"></i> {% trans "Auto Update Stage" %}
-        </a>
-    </div>
-    <div class="col-6 text-right" hidden>
-        <a href="#" class="text-blue"><i class="bi bi-bar-chart-line-fill"></i></a>
-    </div>
     <div class="col-12" style="overflow: auto;">
         <div class="d-flex" style="margin-left: 12px; !important;" id="div-stage" data-method="GET" data-url="{% url "OpportunityConfigStageListAPI" %}"></div>
         <div id="stage-hidden" class="hidden">

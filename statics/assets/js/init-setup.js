@@ -7928,6 +7928,7 @@ class FileControl {
                 if (dmUploaderEle.length > 0 && dmResults.length > 0) {
                     dmUploaderEle.dmUploader({
                         ...config,
+                        maxFileSize: opts?.['maxFileSize'] ? opts['maxFileSize'] : config['maxFileSize'],
                         extraData: async function (fileId, fileData) {
                             const result = await Swal.fire({
                                 input: "text",

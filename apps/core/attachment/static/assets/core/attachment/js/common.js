@@ -11,20 +11,39 @@ function formatBytes(bytes) {
 
 const icon_map = {
     'folder': '<i class="bi bi-folder2"></i>',
-    '.pdf': '<i class="bi bi-file-earmark-pdf"></i>',
-    'image/png': '<i class="bi bi-file-image"></i>',
-    'image/jpeg': '<i class="bi bi-file-image"></i>',
-    'image/gif': '<i class="bi bi-filetype-gif"></i>',
-    'image/webp': '<i class="bi bi-file-binary"></i>',
-    'text/plain': '<i class="bi bi-file-earmark-text"></i>',
-    '.doc': '<i class="bi bi-file-earmark-word"></i>',
-    '.docx': '<i class="bi bi-file-earmark-word"></i>',
-    '.xls': '<i class="bi bi-file-earmark-excel"></i>',
-    '.xlsx': '<i class="bi bi-file-earmark-excel"></i>',
-    '.csv': '<i class="bi bi-filetype-csv"></i>',
-    'audio/*': '<i class="bi bi-speaker"></i>',
-    'video/*': '<i class="bi bi-file-play"></i>',
-    'application/zip': '<i class="bi bi-file-earmark-zip"></i>',
+    'pdf': '<i class="bi bi-file-earmark-pdf"></i>',
+    'img': '<i class="bi bi-file-image"></i>',
+    'webp': '<i class="bi bi-file-binary"></i>',
+    'txt': '<i class="bi bi-file-earmark-text"></i>',
+    'doc': '<i class="bi bi-file-earmark-word"></i>',
+    'xls': '<i class="bi bi-file-earmark-excel"></i>',
+    'csv': '<i class="fa-solid fa-file-csv"></i>',
+    'audio': '<i class="bi bi-speaker"></i>',
+    'video': '<i class="bi bi-file-play"></i>',
+    'zip': '<i class="bi bi-file-earmark-zip"></i>',
+}
+
+function convertKeyIconMap (dataType){
+    let key = 'folder';
+    if (dataType?.['file_type']){
+        const fileType = dataType.file_type;
+        if (fileType.indexOf('.sheet') !== -1 || fileType.indexOf('.ms-excel') !== -1) key = 'xls'
+        else if (fileType.indexOf('msword') !== -1 || fileType.indexOf('.document') !== -1) key = 'doc'
+        else if (fileType === 'application/pdf') key = 'pdf'
+        else if (fileType === 'image/jpeg' || fileType === 'image/jpg' || fileType === 'image/png' || fileType === 'image/gif') key = 'img'
+        else if (fileType === 'image/webp') key = 'webp'
+        else if (fileType === 'text/plain') key = 'txt'
+        else if (fileType === 'text/csv' || fileType === 'application/csv' || fileType === 'application/x-csv'
+            || fileType === 'text/x-csv' ) key = 'csv'
+        else if (fileType.indexOf('audio/') !== -1) key = 'audio'
+        else if (fileType.indexOf('video/') !== -1) key = 'video'
+        else if (fileType === 'application/zip' || fileType === 'application/x-zip-compressed'
+            || fileType === 'application/x-rar-compressed' || fileType === 'application/octet-stream'
+            || fileType.indexOf('.rar') !== -1 || fileType === 'application/x-7z-compressed'
+            || fileType === 'application/x-tar' || fileType === 'application/gzip' || fileType === 'application/x-gzip'
+            || fileType === 'application/x-bzip2') key = 'zip'
+    }
+    return key
 }
 
 class popupPermission {
@@ -536,8 +555,8 @@ class FilesHandle {
                     data: 'title',
                     width: '38%',
                     render: (row, index, data) => {
-                        const type = data?.['file_type'] ? data?.['file_type'] : 'folder'
-                        const icon = icon_map?.[type] ? icon_map[type] : `<i class="bi bi-file-earmark"></i>`
+                        const type = convertKeyIconMap(data);
+                        const icon = icon_map[type]
                         let title = row ? row : data?.file_name
                         const clsName = type === 'folder' ? 'folder_title' : 'file_title';
                         let editBtn = ''
@@ -545,6 +564,10 @@ class FilesHandle {
                             title = data?.['title_i18n']
                         if (type === 'folder' && !data?.is_system)
                             editBtn = `<span class="edit-rename" title="${$.fn.gettext('rename')}"><i class="fa-solid fa-pencil"></i></span>`
+                        else{
+                            let url = this.$urlFact.attr('data-file-review').format_url_with_uuid(data.id)
+                            editBtn = `<a class="file-preview-link ml-2" href="${url}" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i></a>`
+                        }
                         return `<a href="#" data-id="${data.id}" class="${clsName}">` +
                             `<span class="icon text-${$x.fn.randomColor()}">${icon}</span><span class="fw-medium">${
                                 title}</span></a>${editBtn}`
@@ -1167,5 +1190,6 @@ $(document).ready(function () {
         'select_folder': true,
         'element_folder': $('#current_folder'),
         'CB_after_upload': triggerAfterUpload,
+        'maxFileSize': parseInt($('#max_upload_file').text()) || 20971520,
     });
 });

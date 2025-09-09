@@ -489,6 +489,7 @@
 {#######  FILE API ###}
         data-file-edit="{% url 'AttachmentEditAPI' %}"
         data-file-detail="{% url 'AttachmentUpdateAPI' 1 %}"
+        data-file-review="{% url 'AttachmentPreview' 1 %}"
 {#######  FOLDER API #}
         data-folder-api="{% url 'FolderMyFileListAPI' %}"
         data-folder-detail="{% url 'FolderDetailAPI' 1 %}"
@@ -527,6 +528,8 @@
             </div>
         </div>
     </template>
+
+    {{ data.file_size_config|json_script:'max_upload_file' }}
 {% endblock %}
 
 {% block jsFooter %}

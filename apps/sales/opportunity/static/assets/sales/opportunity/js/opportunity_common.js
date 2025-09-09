@@ -1430,7 +1430,7 @@ class OpportunityPageFunction {
                 reloadCurrency: true,
                 paging: false,
                 scrollX: true,
-                scrollY: '64vh',
+                scrollY: '50vh',
                 ajax: {
                     url: frm.dataUrl + '?get_all=1',
                     type: frm.dataMethod,
@@ -1489,7 +1489,6 @@ class OpportunityPageFunction {
             });
         }
     }
-
     static sortStage(list_stage) {
         let object_lost = null;
         let delivery = null;
@@ -1551,30 +1550,6 @@ class OpportunityPageFunction {
     static LoadOppSalePerson(data) {
         $salePersonSelectEle.initSelect2({
             data: data,
-        })
-    }
-    static LoadSalePerson(data, config, emp_current_id, list_account_manager) {
-        $salePersonSelectEle.initSelect2({
-            data: data,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                if (!config) {
-                    resp.data[keyResp].map(function (item) {
-                        // if (item.group.id === $('#employee_current_group').val() && list_account_manager.includes(item.id)) {
-                        if (list_account_manager.includes(item.id)) {
-                            list_result.push(item)
-                        }
-                    })
-                    return list_result
-                } else {
-                    resp.data[keyResp].map(function (item) {
-                        if (item.id === emp_current_id) {
-                            list_result.push(item)
-                        }
-                    })
-                    return list_result
-                }
-            }
         })
     }
 }
@@ -1649,13 +1624,13 @@ class OpportunityHandler {
                     list_product_data.push(data);
                 })
             }
-            data_form['total_product'] = $input_product_total.valCurrency();
-            data_form['total_product_pretax_amount'] = $input_product_pretax_amount.valCurrency();
-            data_form['total_product_tax'] = $input_product_taxes.valCurrency();
-            data_form['estimated_gross_profit_percent'] = $estimated_gross_profit_percent.val();
-            data_form['estimated_gross_profit_value'] = $estimated_gross_profit_value.valCurrency();
             data_form['opportunity_product_datas'] = list_product_data;
         }
+        data_form['total_product'] = $input_product_total.valCurrency();
+        data_form['total_product_pretax_amount'] = $input_product_pretax_amount.valCurrency();
+        data_form['total_product_tax'] = $input_product_taxes.valCurrency();
+        data_form['estimated_gross_profit_percent'] = $estimated_gross_profit_percent.val();
+        data_form['estimated_gross_profit_value'] = $estimated_gross_profit_value.valCurrency();
 
         // tab competitor
         if ($table_competitor.hasClass('tag-change')) {
@@ -1992,12 +1967,10 @@ class OpportunityEventHandler {
             $(this).toggleClass('collapsed-active');
             target$.slideToggle('slow');
         });
-
         // even in timeline table
         $('#btn-refresh-activity').on('click', function () {
             OpportunityPageFunction.LoadDtbActivityLogs();
         });
-
         // even in tab product
         $('#btn-add-select-product').on('click', function () {
             OpportunityPageFunction.addRowSelectProduct();
@@ -2040,18 +2013,17 @@ class OpportunityEventHandler {
                 );
             })
         });
-        $estimated_gross_profit_percent.on('input', function () {
+        $estimated_gross_profit_percent.on('change', function () {
             if ($(this).val()) {
-                $(this).val(parseFloat($(this).val()))
-                let value = parseFloat($input_product_pretax_amount.attr('value')) * parseFloat($estimated_gross_profit_percent.val()) / 100
+                let percent = parseFloat($(this).val() || 0)
+                let value = parseFloat($input_product_pretax_amount.attr('value')) * percent / 100
                 $estimated_gross_profit_value.attr('value', value)
-                $.fn.initMaskMoney2()
             }
             else {
                 $(this).val(0)
                 $estimated_gross_profit_value.attr('value', 0)
-                $.fn.initMaskMoney2()
             }
+            $.fn.initMaskMoney2()
         })
         $(document).on('change', '.select-box-product', function () {
             let ele_tr = $(this).closest('tr');
@@ -2110,12 +2082,10 @@ class OpportunityEventHandler {
 
             OpportunityPageFunction.getTotalPrice();
         })
-
         // event in tab competitor
         $('#btn-add-competitor').on('click', function () {
             OpportunityPageFunction.addRowCompetitor()
         })
-
         // event in tab contact role
         $('#btn-add-contact').on('click', function () {
             OpportunityPageFunction.addRowContactRole();
@@ -2154,7 +2124,6 @@ class OpportunityEventHandler {
         $(document).on('change', '.box-select-role', function () {
             OpportunityPageFunction.onChangeContactRole($(this));
         })
-
         // event general
         $(document).on('change', 'select, input', function () {
             $(this).addClass('tag-change');
@@ -2206,12 +2175,10 @@ class OpportunityEventHandler {
                 window.open(url, '_blank');
             }
         })
-
         // event on click to create relate apps from opportunity (for cancel quotation - sale order)
         $('#dropdown-menu-relate-app').on('click', '.relate-app', function () {
             OpportunityPageFunction.loadOpenRelateApp(this);
         })
-
         // tab add member for sale
         let eleFrmPermit = $('#permit-member');
         $('#btn-show-modal-add-member').on('click', async function () {
@@ -2306,7 +2273,6 @@ class OpportunityEventHandler {
             behavior: 'smooth'
         });
     });
-
         // for task
         SetupFormSubmit.validate($form_Opp_Task, {
             errorClass: 'is-invalid cl-red',
@@ -2314,7 +2280,6 @@ class OpportunityEventHandler {
                 TaskSubmitFuncOpps($form_Opp_Task, OpportunityPageFunction.LoadDtbActivityLogs)
             }
         })
-
         $('#btn-auto-update-stage').on('click', function () {
 
         })

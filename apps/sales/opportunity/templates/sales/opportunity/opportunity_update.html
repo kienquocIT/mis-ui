@@ -105,9 +105,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-
-                </div>
+                <div class="modal-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
                     <button
@@ -127,8 +125,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12" style="overflow: auto; max-height: 80vh">
+                    <div class="row" style="overflow: auto; max-height: 74vh">
+                        <div class="col-12">
                             <div id="process-runtime-detail"
                                  data-url="{% url 'ProcessRuntimeDetailAPI' pk='__pk__' %}"
                                  data-url-app="{% url 'TenantApplicationListAPI' %}"

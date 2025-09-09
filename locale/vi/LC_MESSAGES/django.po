@@ -12232,5 +12232,9 @@ msgid "Change attributes for this product?"
 msgstr "Thay đổi thuộc tính của sản phẩm này?"
 
 #
+msgid "Overtime request"
+msgstr "Đăng ký làm ngoài giờ"
+
+#
 msgid "Summarize contract"
 msgstr "Tổng hợp hợp đồng"

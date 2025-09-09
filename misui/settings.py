@@ -132,6 +132,7 @@ INSTALLED_APPS = \
         'apps.hrm.employee',
         'apps.hrm.attendance',
         'apps.hrm.absenceexplanation',
+        'apps.hrm.overtimerequest',
     ] + [
         'apps.sales.financialcashflow',
         'apps.sales.reconciliation',
@@ -507,3 +508,19 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+
+# -- FILE SIZES SETUP
+FILE_SIZE_COMPANY_LOGO = int(
+    os.getenv('FILE_SIZE_COMPANY_LOGO', 1024 * 1024 * 3)  # 3MB
+)
+FILE_SIZE_COMPANY_ICON = int(
+    os.getenv('FILE_SIZE_COMPANY_ICON', 1024 * 100)  # 100KB
+)
+FILE_SIZE_WEB_BUILDER = int(
+    os.getenv('FILE_SIZE_UPLOAD_LIMIT', 5 * 1024 * 1024)  # 5MB
+)
+FILE_AVATAR_MAX_SIZE = 3 * 1024 * 1024  # 3MiB
+FILE_SIZE_UPLOAD_LIMIT = int(
+    os.getenv('FILE_SIZE_UPLOAD_LIMIT', 20 * 1024 * 1024)  # 20MB
+)

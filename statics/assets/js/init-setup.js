@@ -2961,9 +2961,16 @@ class WFRTControl {
                             if (docData?.['system_status'] === 3) {
                                 // Bật nút CR & Cancel
                                 if (docData?.['employee_inherit']?.['id'] === $x.fn.getEmployeeCurrentID()) {
-                                    let appAllowCR = ["quotation.quotation", "saleorder.saleorder"];
-                                    if (appAllowCR.includes(runtimeData?.['app_code'])) {
-                                        WFRTControl.setBtnWFAfterFinishDetail();
+                                    let appAllowChange = ["quotation.quotation", "saleorder.saleorder",];
+                                    let appAllowCancel = ["quotation.quotation", "saleorder.saleorder", "purchasing.purchaserequest"];
+                                    if (appAllowChange.includes(runtimeData?.['app_code']) && appAllowCancel.includes(runtimeData?.['app_code'])) {
+                                        WFRTControl.setBtnWFAfterFinishDetail('all');
+                                    }
+                                    if (appAllowChange.includes(runtimeData?.['app_code']) && !appAllowCancel.includes(runtimeData?.['app_code'])) {
+                                        WFRTControl.setBtnWFAfterFinishDetail('change');
+                                    }
+                                    if (appAllowCancel.includes(runtimeData?.['app_code']) && !appAllowChange.includes(runtimeData?.['app_code'])) {
+                                        WFRTControl.setBtnWFAfterFinishDetail('cancel');
                                     }
                                 }
                                 // Bật nút in
@@ -3013,39 +3020,39 @@ class WFRTControl {
                                 }
                             }
                             if (WFconfig?.['mode'] === 0) {
-                                let url = btn.attr('data-url-app-emp-config');
-                                let currentEmployee = $x.fn.getEmployeeCurrentID();
-                                $.fn.callAjax2({
-                                    'url': url,
-                                    'method': 'GET',
-                                    'data': {
-                                        'application__model_code': app_code,
-                                        'employee_created_id': currentEmployee
-                                    },
-                                }).then((resp) => {
-                                    let data = $.fn.switcherResp(resp);
-                                    if (data) {
-                                        if (data.hasOwnProperty('app_emp_config_list') && Array.isArray(data.app_emp_config_list)) {
-                                            if (data?.['app_emp_config_list'].length > 0) {
-                                                let zonesData = [];
-                                                let zonesHiddenData = [];
-                                                for (let appEmpConfig of data?.['app_emp_config_list']) {
-                                                    for (let zone of appEmpConfig?.['zones_editing_data']) {
-                                                        for (let property of zone?.['properties_data']) {
-                                                            zonesData.push(property);
-                                                        }
-                                                    }
-                                                    for (let zone of appEmpConfig?.['zones_hidden_data']) {
-                                                        for (let property of zone?.['properties_data']) {
-                                                            zonesHiddenData.push(property);
-                                                        }
-                                                    }
-                                                }
-                                                WFRTControl.activeBtnOpenZone(zonesData, zonesHiddenData, false);
-                                            }
-                                        }
-                                    }
-                                })
+                                // let url = btn.attr('data-url-app-emp-config');
+                                // let currentEmployee = $x.fn.getEmployeeCurrentID();
+                                // $.fn.callAjax2({
+                                //     'url': url,
+                                //     'method': 'GET',
+                                //     'data': {
+                                //         'application__model_code': app_code,
+                                //         'employee_created_id': currentEmployee
+                                //     },
+                                // }).then((resp) => {
+                                //     let data = $.fn.switcherResp(resp);
+                                //     if (data) {
+                                //         if (data.hasOwnProperty('app_emp_config_list') && Array.isArray(data.app_emp_config_list)) {
+                                //             if (data?.['app_emp_config_list'].length > 0) {
+                                //                 let zonesData = [];
+                                //                 let zonesHiddenData = [];
+                                //                 for (let appEmpConfig of data?.['app_emp_config_list']) {
+                                //                     for (let zone of appEmpConfig?.['zones_editing_data']) {
+                                //                         for (let property of zone?.['properties_data']) {
+                                //                             zonesData.push(property);
+                                //                         }
+                                //                     }
+                                //                     for (let zone of appEmpConfig?.['zones_hidden_data']) {
+                                //                         for (let property of zone?.['properties_data']) {
+                                //                             zonesHiddenData.push(property);
+                                //                         }
+                                //                     }
+                                //                 }
+                                //                 WFRTControl.activeBtnOpenZone(zonesData, zonesHiddenData, false);
+                                //             }
+                                //         }
+                                //     }
+                                // })
                             }
                         }
                     }
@@ -3610,17 +3617,26 @@ class WFRTControl {
         }
     }
 
-    static setBtnWFAfterFinishDetail() {
+    static setBtnWFAfterFinishDetail(type) {
         let $pageAction = $('#idxPageAction');
         let $realAction = $('#idxRealAction');
         let btnCancel = $('#btnCancel');
         let btnEnableCR = $('#btnEnableCR');
         if ($pageAction && $pageAction.length > 0 && $realAction && $realAction.length > 0) {
             if (btnCancel.length <= 0 && btnEnableCR.length <= 0) {
-                $($realAction).after(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">
-                                            <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
-                                            <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>
-                                        </div>`);
+                let buttons = ``;
+                if (type === 'all') {
+                    buttons = `<button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>
+                                <button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>`;
+                }
+                if (type === 'change') {
+                    buttons = `<button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnEnableCR" data-value="1">${$.fn.transEle.attr('data-change-request')}</button>`;
+                }
+                if (type === 'cancel') {
+                    buttons = `<button type="button" class="btn btn-outline-primary btn-wf-after-finish" id="btnCancel" data-value="2">${$.fn.transEle.attr('data-cancel')}</button>`;
+                }
+
+                $($realAction).after(`<div class="btn-group btn-group-rounded" role="group" aria-label="Basic example">${buttons}</div>`);
                 // add event
                 $pageAction.on('click', '.btn-wf-after-finish', function () {
                     return WFRTControl.callActionWF($(this));
@@ -7792,7 +7808,8 @@ class FileControl {
         let clsThis = this;
         return {
             url: '#',
-            maxFileSize: 3 * 1024 * 1024, // 3 Megs (MB)
+            // maxFileSize: 3 * 1024 * 1024, // 3 Megs (MB)
+            maxFileSize: 15 * 1024 * 1024, // 15 Megs (MB)
             allowedTypes: "*",
             extFilter: null,
             onDragEnter: function () {
@@ -7912,6 +7929,7 @@ class FileControl {
                 if (dmUploaderEle.length > 0 && dmResults.length > 0) {
                     dmUploaderEle.dmUploader({
                         ...config,
+                        maxFileSize: opts?.['maxFileSize'] ? opts['maxFileSize'] : config['maxFileSize'],
                         extraData: async function (fileId, fileData) {
                             const result = await Swal.fire({
                                 input: "text",

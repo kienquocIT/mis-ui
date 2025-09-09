@@ -52,16 +52,14 @@ class DetailDataHandler {
                 containerPackages.sort((a, b) => a?.order - b?.order);  // sort package by order
                 result.push(...containerPackages);
             });
-            console.log(result)
             return result;
         } else {
             return [];
         }
     }
 
-    static loadDetailServiceOrder(isDetail) {
+    static loadDetailServiceOrder($form, isDetail) {
         let isDisablePage = isDetail === "detail";
-        let $form = $('#form-detail-service-order');
         const data_url = $form.attr('data-url');
         $.fn.callAjax2({
             url: data_url,
@@ -150,7 +148,7 @@ $(document).ready(function () {
         ServiceOrder.loadTaxData(),
     ]).then(() => {
         TabShipmentEventHandler.InitPageEvent();
-        DetailDataHandler.loadDetailServiceOrder("detail");
+        DetailDataHandler.loadDetailServiceOrder($('#form-detail-service-order'), "detail");
     })
     ServiceOrder.adjustTableSizeWhenChangeTab()
     ServiceOrder.handleClickOpenServiceDelivery()

@@ -130,7 +130,6 @@ $(document).ready(function () {
     ServiceOrder.initServiceDetailDataTable()
     ServiceOrder.initWorkOrderDataTable()
     ServiceOrder.initPaymentDataTable()
-    // ServiceOrder.initPaymentDetailModalDataTable()
     ServiceOrder.initModalContextTracking()
     ServiceOrder.initAttachment()
 

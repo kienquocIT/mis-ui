@@ -38,20 +38,21 @@ class DetailDataHandler {
     static formatShipmentDetailData(shipmentData) {
         const result = [];
         if (shipmentData.length > 0) {
-            const containers = shipmentData.filter(item => item.is_container === true);
-            const packages = shipmentData.filter(item => item.is_container === false);
+            const containers = shipmentData.filter(item => item?.is_container === true);
+            const packages = shipmentData.filter(item => item?.is_container === false);
 
-            containers.sort((a, b) => a.order - b.order);   // sort container by order
+            containers.sort((a, b) => a?.order - b?.order);   // sort container by order
             containers.forEach(container => {
                 result.push(container);
 
                 const containerPackages = packages.filter(pkg =>
-                    pkg.referenceContainer === container.containerRefNumber
+                    pkg['packageContainerRef'] === container?.containerRefNumber
                 );
 
-                containerPackages.sort((a, b) => a.order - b.order);  // sort package by order
+                containerPackages.sort((a, b) => a?.order - b?.order);  // sort package by order
                 result.push(...containerPackages);
             });
+            console.log(result)
             return result;
         } else {
             return [];
@@ -72,7 +73,7 @@ class DetailDataHandler {
                 $.fn.compareStatusShowPageAction(data);
                 new $x.cls.file($('#attachment')).init({
                     name: 'attachment',
-                    enable_edit: false,
+                    enable_edit: !isDisablePage,
                     enable_download: true,
                     data: data?.['attachment'],
                 })
@@ -103,8 +104,8 @@ class DetailDataHandler {
                 ServiceOrder.pageElement.commonData.$endDate.val(endDate)
 
                 // shipment
-                let shipmentDataFormatted = DetailDataHandler.formatShipmentDetailData(data?.shipment)
-                TabShipmentFunction.initShipmentDataTable(shipmentDataFormatted)
+                let shipmentDataFormatted = DetailDataHandler.formatShipmentDetailData(data?.shipment || [])
+                TabShipmentFunction.initShipmentDataTable(shipmentDataFormatted, isDetail)
 
                 //service detail
                 ServiceOrder.initServiceDetailDataTable(data.service_detail_data)
@@ -130,6 +131,7 @@ class DetailDataHandler {
                 tabExpenseElements.$preTaxAmount.attr('value', data?.expense_pretax_value || 0)
                 tabExpenseElements.$taxEle.attr('value', data?.expense_tax_value || 0)
                 tabExpenseElements.$totalValueEle.attr('value', data?.expense_total_value || 0)
+                TabExpenseFunction.initExpenseTable(data?.expense || [], isDetail)
 
                 $.fn.initMaskMoney2()
                 ServiceOrder.disableTableFields()
@@ -144,7 +146,8 @@ $(document).ready(function () {
     Promise.all([
         ServiceOrder.loadCurrencyRateData(),
         ServiceOrder.loadTaxData(),
-    ]).then(()=>{
+    ]).then(() => {
+        TabShipmentEventHandler.InitPageEvent();
         DetailDataHandler.loadDetailServiceOrder("detail");
     })
     ServiceOrder.adjustTableSizeWhenChangeTab()

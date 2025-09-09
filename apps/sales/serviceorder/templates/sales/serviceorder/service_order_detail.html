@@ -7,6 +7,14 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'assets/sales/serviceorder/css/service_order.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        .mask-money {
+            text-align: right; !important;
+        }
+        table .select2-selection__rendered {
+            max-width: 250px;
+        }
+    </style>
 {% endblock %}
 {% block pageAction %}
     {% url 'ServiceOrderUpdate' pk=data.pk as edit_link %}

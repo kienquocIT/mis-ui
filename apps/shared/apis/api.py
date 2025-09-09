@@ -584,7 +584,7 @@ class APIUtil:
                     if for_backup:
                         config['data'] = self.data_backup
                     else:
-                        self.data_backup = deepcopy(data)
+                        # self.data_backup = deepcopy(data)
                         config['data'] = data
                 elif content_type.startswith('application/json'):
                     if for_backup:

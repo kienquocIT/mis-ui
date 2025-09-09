@@ -2503,7 +2503,31 @@ class QuotationLoadDataHandle {
             FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, [data?.['contact_data']], {'account_name_id': QuotationLoadDataHandle.customerSelectEle.val()});
         }
         if (data?.['payment_term_data']) {
-            FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);
+            // FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);
+            // load realtime payment data
+            WindowControl.showLoading();
+            $.fn.callAjax2({
+                    'url': QuotationLoadDataHandle.paymentSelectEle.attr('data-url'),
+                    'method': "GET",
+                    'data': {'id': data?.['payment_term_data']?.['id']},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
+                            if (data?.['payment_terms_list'].length > 0) {
+                                FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                            }
+                            if (data?.['payment_terms_list'].length === 0) {
+                                FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
+                            }
+                            WindowControl.hideLoading();
+                        }
+                    }
+                }
+            )
         }
         if (data?.['quotation_data']) {
             if (data?.['quotation_data']?.['title']) {
@@ -2518,8 +2542,8 @@ class QuotationLoadDataHandle {
             $('#is_customer_confirm')[0].checked = data?.['is_customer_confirm'];
         }
         if (is_copy === false) {
-            // check if finish then remove hidden btnDelivery (SO)
-            if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get' && form.classList.contains('sale-order')) {
+            // check remove hidden btnDelivery (SO)
+            if (data?.['delivery_call'] === false && data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get' && form.classList.contains('sale-order')) {
                 if (QuotationLoadDataHandle.opportunitySelectEle.val()) {
                     if (data?.['opportunity']?.['is_deal_close'] === false) {
                         QuotationDeliveryHandle.$btnDeliveryInfo[0].removeAttribute('hidden');
@@ -2528,7 +2552,7 @@ class QuotationLoadDataHandle {
                     QuotationDeliveryHandle.$btnDeliveryInfo[0].removeAttribute('hidden');
                 }
             }
-            // check if finish then remove hidden btnCopy
+            // check remove hidden btnCopy
             if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get') {
                 let btnCopy = $('#btn-copy-quotation');
                 if (btnCopy && btnCopy.length > 0) {

@@ -25,427 +25,10 @@ const $input_product_total= $('#input-product-total')
 const $estimated_gross_profit_percent = $('#estimated-gross-profit-percent')
 const $estimated_gross_profit_value = $('#estimated-gross-profit-value')
 const $box_select_factor = $('#box-select-factor')
-
-class OpportunityLoadDropdown {
-    static productCategorySelectEle = $('#select-box-product-category');
-    static customerSelectEle = $('#select-box-customer');
-    static endCustomerSelectEle = $('#select-box-end-customer');
-    static salePersonSelectEle = $('#select-box-sale-person');
-
-    static LoadOppCustomer(data, sale_person_id) {
-        this.customerSelectEle.initSelect2({
-            data: data,
-            dataParams: {
-                'account_types_mapped__account_type_order': 0,
-                'employee__id': sale_person_id,
-            },
-        })
-    }
-
-    static LoadOppEndCustomer(data) {
-        this.endCustomerSelectEle.initSelect2({
-            data: data,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                resp.data[keyResp].map(function (item) {
-                    if (data?.['id'] !== item?.['id']) {
-                        list_result.push(item)
-                    }
-                })
-                return list_result
-            }
-        })
-    }
-
-    static LoadOppProductCategory(data) {
-        this.productCategorySelectEle.initSelect2({
-            data: data,
-        })
-    }
-
-    static LoadOppSalePerson(data) {
-        this.salePersonSelectEle.initSelect2({
-            data: data,
-        })
-    }
-
-    static loadSalePerson(data, config, emp_current_id, list_account_manager) {
-        this.salePersonSelectEle.initSelect2({
-            data: data,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                if (!config) {
-                    resp.data[keyResp].map(function (item) {
-                        // if (item.group.id === $('#employee_current_group').val() && list_account_manager.includes(item.id)) {
-                        if (list_account_manager.includes(item.id)) {
-                            list_result.push(item)
-                        }
-                    })
-                    return list_result
-                } else {
-                    resp.data[keyResp].map(function (item) {
-                        if (item.id === emp_current_id) {
-                            list_result.push(item)
-                        }
-                    })
-                    return list_result
-                }
-            }
-        })
-    }
-
-    static combinesData(frmEle) {
-        let frm = new SetupFormSubmit($(frmEle));
-
-        frm.dataForm['product_category'] = this.productCategorySelectEle.val();
-        return {
-            url: frm.dataUrl,
-            method: frm.dataMethod,
-            data: frm.dataForm,
-            urlRedirect: frm.dataUrlRedirect,
-        };
-    }
-}
-
-class OpportunityActivity {
-    static tabLogWork(dataList) {
-        let $table = $('#table_log-work')
-        if ($table.hasClass('datatable'))
-            $table.DataTable().clear().rows.add(dataList).draw();
-        else
-            $table.DataTable({
-                searching: false,
-                ordering: false,
-                paginate: false,
-                info: false,
-                data: dataList,
-                columns: [
-                    {
-                        data: 'employee_created',
-                        targets: 0,
-                        width: "35%",
-                        render: (data, type, row) => {
-                            let avatar = ''
-                            let avClass = 'avatar-rounded avatar-xs avatar-' + $x.fn.randomColor()
-                            avatar = $x.fn.renderAvatar(data, avClass)
-                            return avatar;
-                        }
-                    },
-                    {
-                        data: 'start_date',
-                        targets: 1,
-                        width: "35%",
-                        render: (data, type, row) => {
-                            let date = moment(data, 'YYYY-MM-DDThh:mm:ss').format('DD/MM/YYYY')
-                            if (data !== row.end_date) {
-                                date += ' ~ '
-                                date += moment(row.end_date, 'YYYY-MM-DDThh:mm:ss').format('DD/MM/YYYY')
-                            }
-                            return date;
-                        }
-                    },
-                    {
-                        data: 'time_spent',
-                        targets: 2,
-                        width: "20%",
-                        render: (data, type, row) => {
-                            return data;
-                        }
-                    },
-                    {
-                        data: 'id',
-                        targets: 3,
-                        width: "10%",
-                        render: (data, type, row) => {
-                            return ''
-                        }
-                    }
-                ]
-            })
-    };
-
-    static tabSubtask(taskID) {
-        if (!taskID) return false
-        const $wrap = $('.wrap-subtask')
-        const url = $urlEle.attr('data-task_list')
-        $.fn.callAjax(url, 'GET', {parent_n: taskID})
-            .then((resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    for (let [key, item] of data.task_list.entries()) {
-                        const template = $(`<div class="d-flex justify-content-start align-items-center subtask_item">
-                                    <p>${item.title}</p>
-                                    <button class="btn btn-flush-primary btn-icon btn-rounded ml-auto flush-soft-hover" disabled>
-                                        <span><i class="fa-regular fa-trash-can fa-sm"></i></span>
-                                    </button>
-                                 </div>`);
-                        $wrap.append(template);
-                    }
-                }
-            })
-    };
-
-    static displayTaskView(url) {
-        if (url)
-            $.fn.callAjax2({
-                url: url,
-                method: 'GET'
-            })
-                .then((resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        // enable side panel
-                        $('#offCanvasRightTask').offcanvas('show');
-                        resetFormTask()
-                        $('.title-create').addClass('hidden')
-                        $('.title-detail').removeClass('hidden')
-                        $('#inputTextTitle').val(data.title)
-                        $form_Opp_Task.find(`input[name="id"]`).remove()
-                        $form_Opp_Task.append(`<input type="hidden" name="id" value="${data.id}">`)
-                        $('#inputTextCode').val(data.code)
-                        $('#rangeValue').text(data['percent_completed'])
-                        $('#percent_completed').val(data['percent_completed'])
-                        $('#selectStatus').attr('data-onload', JSON.stringify(data.task_status)).append(
-                            `<option value="${data.task_status.id}" selected>${data.task_status.title}</option>`
-                        ).trigger('change')
-                        $('#inputTextStartDate').val(
-                            moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                        )
-                        $('#inputTextEndDate').val(
-                            moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                        )
-                        $('#inputTextEstimate').val(data.estimate)
-                        $('#selectPriority').val(data.priority).trigger('change')
-                        // render label
-                        let htmlElm = $('.label-mark')
-                        htmlElm.html('')
-                        for (let item of data.label)
-                            htmlElm.append($(`<span class="item-tag"><span>${item}</span></span>`))
-                        $('#inputAssigner').val(data.employee_created.full_name)
-                            .attr('value', data.employee_created.id)
-
-                        const runComponent = (elm, data) => {
-                            data.selected = true;
-                            elm.attr('data-onload', JSON.stringify(data))
-                                .html(`<option value="${data.id}" selected>${data.title}</option>`)
-                                .trigger('change')
-                        }
-                        if (data?.process && data?.['process']?.['id']){
-                            runComponent($('#process_id'), data.process)
-                        }
-                        else if (data?.opportunity && data?.opportunity?.id){
-                            runComponent($('#opportunity_id'), data.opportunity)
-                        }
-                        if (data?.employee_inherit.hasOwnProperty("id")){
-                            data.employee_inherit.title = data.employee_inherit.full_name
-                            runComponent($('#employee_inherit_id'), data.employee_inherit)
-                        }
-                        window.editor.setData(data.remark)
-                        window.checklist.setDataList = data.checklist
-                        window.checklist.render()
-                        if (data?.['task_log_work'].length) OpportunityActivity.tabLogWork(data['task_log_work'])
-                        if (data?.['sub_task_list']) OpportunityActivity.tabSubtask(data.id)
-                        if (data.attach) {
-                            const fileDetail = data.attach[0]?.['files']
-                            FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
-                        }
-                        const $btnSub = $('.create-subtask')
-                        if (Object.keys(data.parent_n).length > 0) $btnSub.addClass('hidden')
-                        else $btnSub.removeClass('hidden')
-                    }
-                })
-    };
-
-    static loadOpenRelateApp(ele) {
-        // check permission before redirect
-        if ($(ele).attr('data-label') && pageVariables.opp_detail_data) {
-            let label = $(ele).attr('data-label');
-            let appMapPerm = {
-                'quotation.quotation': 'quotation.quotation.create',
-                'saleorder.saleorder': 'saleorder.saleorder.create',
-                'leaseorder.leaseorder': 'leaseorder.leaseorder.create',
-            };
-            let appMapErr = {
-                'quotation.quotation': $transEle.attr('data-cancel-quo'),
-                'saleorder.saleorder': $transEle.attr('data-cancel-so'),
-                'leaseorder.leaseorder': $transEle.attr('data-cancel-lo'),
-            }
-            if (appMapPerm?.[label] && pageVariables.opp_detail_data?.['id']) {
-                let tableData = $('#table-timeline').DataTable().rows().data().toArray();
-                $.fn.callAjax2({
-                        'url': $urlEle.attr('data-url-opp-list'),
-                        'method': 'GET',
-                        'data': {'list_from_app': appMapPerm[label], 'id': pageVariables.opp_detail_data?.['id']},
-                        isLoading: true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                if (data.opportunity_list.length === 1) {
-                                    // Validate: check opp already has quotation/ sale order
-                                    let listCheck = ['quotation.quotation', 'saleorder.saleorder', 'leaseorder.leaseorder'];
-                                    if (listCheck.includes(label)) {
-                                        for (let tData of tableData) {
-                                            let tDataLabel = tData?.['app_code'];
-                                            let tDataStatus = tData?.['doc_data']?.['system_status'];
-                                            if (label === 'quotation.quotation') {
-                                                if (tDataLabel === 'saleorder.saleorder' && [1, 2, 3].includes(tDataStatus)) {
-                                                    $.fn.notifyB({description: $transEle.attr('data-cancel-quo-so')}, 'failure');
-                                                    return false;
-                                                }
-                                            }
-                                            if (tDataLabel === label && [1, 2, 3].includes(tDataStatus)) {
-                                                $.fn.notifyB({description: appMapErr?.[label]}, 'failure');
-                                                return false;
-                                            }
-                                        }
-                                    }
-                                    const paramData = $.param({
-                                        'create_open': true,
-                                        'opp_id': pageVariables.opp_detail_data?.['id'],
-                                        'opp_title': pageVariables.opp_detail_data?.['title'],
-                                        'opp_code': pageVariables.opp_detail_data?.['code'],
-                                    });
-                                    let url = $(ele).data('url') + '?' + paramData;
-                                    window.open(url, '_blank');
-                                    return true;
-                                }
-                                $.fn.notifyB({description: $transEle.attr('data-forbidden')}, 'failure');
-                                return false;
-                            }
-                        }
-                    }
-                )
-            }
-        }
-        return true;
-    };
-}
-
-class LoadConfigAndLoadStage {
-    static async loadMemberSaleTeam() {
-        if (!$.fn.DataTable.isDataTable('#dtbMember')) {
-            let dtb = $('#dtbMember');
-            let frm = new SetupFormSubmit(dtb);
-            dtb.DataTableDefault({
-                rowIdx: true,
-                reloadCurrency: true,
-                paging: false,
-                scrollX: true,
-                scrollY: '64vh',
-                ajax: {
-                    url: frm.dataUrl + '?get_all=1',
-                    type: frm.dataMethod,
-                    dataSrc: function (resp) {
-                        let data = $.fn.switcherResp(resp);
-                        if (data && resp.data.hasOwnProperty('employee_list')) {
-                            return resp.data['employee_list'] ? resp.data['employee_list'] : [];
-                        }
-                        throw Error('Call data raise errors.')
-                    },
-                },
-                columns: [
-                    {
-                        className: 'w-5',
-                        render: (data, type, row) => {
-                            return '';
-                        }
-                    },
-                    {
-                        className: 'w-5',
-                        data: 'is_checked_new',
-                        render: (data, type, row) => {
-                            if ($('.member-item .card[data-id="' + row.id + '"]').length > 0) {
-                                return `<div class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`
-                            }
-                            return `<div class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" ${data === true ? "checked" : ""}/></span>`
-                        }
-                    },
-                    {
-                        className: 'w-50',
-                        render: (data, type, row) => {
-                            return `<span class="badge badge-soft-primary mr-1">${row?.['code']}</span><span>${row?.['full_name']}</span>`
-                        }
-                    },
-                    {
-                        className: 'text-right w-40',
-                        data: 'group',
-                        render: (data) => {
-                            return `<span>${data.title || ''}</span>`
-                        }
-                    },
-                ],
-                rowCallback: function (row, data) {
-                    $(row).find('.input-select-member').on('change', function (){
-                        let is_checked = $(this).prop('checked');
-                        $x.fn.updateDataRow(this, function (clsThat, rowIdx, rowData) {
-                            rowData['is_checked_new'] = is_checked
-                            return {
-                                ...rowData,
-                                is_checked_new: is_checked,
-                                idx: rowIdx + 1,
-                            }
-                        }, true);
-                    })
-                },
-            });
-        }
-    }
-
-    static callDataConfig(url, method='GET') {
-        return $.fn.callAjax2({
-            url: url,
-            method: method,
-        }).then((resp) => {
-                return $.fn.switcherResp(resp);
-            },
-            (errs) => {
-                console.log(errs)
-            });
-    }
-
-    static loadConfigPromise() {
-        let url = $urlEle.data('url-config');
-        let method = 'GET';
-        return LoadConfigAndLoadStage.callDataConfig(url, method).then(
-            result => {
-                return result?.['opp_config_data']
-            },
-        );
-    }
-
-    static sortStage(list_stage) {
-        let object_lost = null;
-        let delivery = null;
-        let object_close = null;
-        let list_result = []
-
-        for (let i = 0; i < list_stage.length; i++) {
-            if (list_stage[i]?.['is_closed_lost']) {
-                object_lost = list_stage[i];
-            } else if (list_stage[i]?.['is_delivery']) {
-                delivery = list_stage[i];
-            } else if (list_stage[i]?.['is_deal_closed']) {
-                object_close = list_stage[i];
-            } else {
-                list_result.push(list_stage[i]);
-            }
-        }
-
-        list_result.sort(function (a, b) {
-            return a.win_rate - b.win_rate;
-        });
-        list_result.push(object_lost);
-        if (delivery) {
-            list_result.push(delivery);
-        }
-        list_result.push(object_close);
-
-        return list_result
-    }
-}
+const $productCategorySelectEle = $('#select-box-product-category')
+const $customerSelectEle = $('#select-box-customer')
+const $endCustomerSelectEle = $('#select-box-end-customer')
+const $salePersonSelectEle = $('#select-box-sale-person')
 
 /**
  * Khai báo các biến sử dụng trong page
@@ -475,7 +58,7 @@ class OpportunityPageFunction {
             pageVariables.opp_detail_data?.['is_deal_close'],
             Object.keys((pageVariables.opp_detail_data?.['sale_order'] || {})?.['delivery'] || {}).length > 0
         ]
-        let stages_list_data = LoadConfigAndLoadStage.sortStage(pageVariables.opp_stage_data);
+        let stages_list_data = OpportunityPageFunction.sortStage(pageVariables.opp_stage_data);
 
         $opp_stage_pipeline.html('')
 
@@ -689,7 +272,7 @@ class OpportunityPageFunction {
             rowCallback: (row, data, index) => {
                 $('.show-task-detail', row).on('click', function () {
                     const taskObj = data?.["doc_data"];
-                    OpportunityActivity.displayTaskView($urlEle.attr("data-task_detail").format_url_with_uuid(taskObj.id))
+                    OpportunityPageFunction.displayTaskView($urlEle.attr("data-task_detail").format_url_with_uuid(taskObj.id))
                 })
             }
         });
@@ -827,7 +410,7 @@ class OpportunityPageFunction {
                 ],
                 initComplete: function () {
                     $table_competitor.find('tbody tr').each(function (index, ele) {
-                        OpportunityPageFunction.LoadRowCompetitor($(ele).find('.box-select-competitor'), data_list[index]?.['competitor'], OpportunityLoadDropdown.customerSelectEle.val())
+                        OpportunityPageFunction.LoadRowCompetitor($(ele).find('.box-select-competitor'), data_list[index]?.['competitor'], $customerSelectEle.val())
                     })
                 }
             });
@@ -882,7 +465,7 @@ class OpportunityPageFunction {
                 ],
                 initComplete: function () {
                     $table_contact_role.find('tbody tr').each(function (index, ele) {
-                        OpportunityPageFunction.LoadRowContact($(ele).find('.box-select-contact'), data_list[index]?.['contact'], OpportunityLoadDropdown.customerSelectEle.val())
+                        OpportunityPageFunction.LoadRowContact($(ele).find('.box-select-contact'), data_list[index]?.['contact'], $customerSelectEle.val())
                         OpportunityPageFunction.AppendTypeCustomer(data_list[index]?.['type_customer'], $(ele).find('.box-select-type-customer'))
                         OpportunityPageFunction.AppendRole(data_list[index]?.['role'], $(ele).find('.box-select-role'))
                     })
@@ -1463,7 +1046,7 @@ class OpportunityPageFunction {
         }
         $table_product.DataTable().row.add(data).draw();
         let tr_current_ele = $table_product.find('tbody tr').last();
-        OpportunityPageFunction.LoadRowProduct(tr_current_ele.find('.select-box-product'), {}, OpportunityLoadDropdown.productCategorySelectEle.val());
+        OpportunityPageFunction.LoadRowProduct(tr_current_ele.find('.select-box-product'), {}, $productCategorySelectEle.val());
         OpportunityPageFunction.LoadRowTax(tr_current_ele.find('.box-select-tax'), {})
     }
     static addRowInputProduct() {
@@ -1476,7 +1059,7 @@ class OpportunityPageFunction {
         }
         $table_product.DataTable().row.add(data).draw();
         let tr_current_ele = $table_product.find('tbody tr').last();
-        OpportunityPageFunction.LoadRowProductCategory(tr_current_ele.find('.box-select-product-category'), {}, OpportunityLoadDropdown.productCategorySelectEle.val());
+        OpportunityPageFunction.LoadRowProductCategory(tr_current_ele.find('.box-select-product-category'), {}, $productCategorySelectEle.val());
         OpportunityPageFunction.LoadRowTax(tr_current_ele.find('.box-select-tax'), {})
         OpportunityPageFunction.LoadRowUOM(tr_current_ele.find('.box-select-uom'), {})
     }
@@ -1512,7 +1095,7 @@ class OpportunityPageFunction {
         }
         $table_competitor.DataTable().row.add(data).draw();
         let tr_current_ele = $table_competitor.find('tbody tr').last();
-        OpportunityPageFunction.LoadRowCompetitor(tr_current_ele.find('.box-select-competitor'), {}, OpportunityLoadDropdown.customerSelectEle.val());
+        OpportunityPageFunction.LoadRowCompetitor(tr_current_ele.find('.box-select-competitor'), {}, $customerSelectEle.val());
     }
     static addRowContactRole() {
         $table_contact_role.addClass('tag-change');
@@ -1521,7 +1104,7 @@ class OpportunityPageFunction {
         }
         $table_contact_role.DataTable().row.add(data).draw();
         let tr_current_ele = $table_contact_role.find('tbody tr').last();
-        OpportunityPageFunction.LoadRowContact(tr_current_ele.find('.box-select-contact'), {}, OpportunityLoadDropdown.customerSelectEle.val());
+        OpportunityPageFunction.LoadRowContact(tr_current_ele.find('.box-select-contact'), {}, $customerSelectEle.val());
         OpportunityPageFunction.AppendTypeCustomer(null, tr_current_ele.find('.box-select-type-customer'));
         OpportunityPageFunction.AppendRole(null, tr_current_ele.find('.box-select-role'));
         tr_current_ele.find('.box-select-role').val('');
@@ -1543,7 +1126,7 @@ class OpportunityPageFunction {
         }
     }
     static async loadMemberForDtb() {
-        await LoadConfigAndLoadStage.loadMemberSaleTeam();
+        await OpportunityPageFunction.loadMemberSaleTeam();
         let card_member = $('#card-member .card');
         let table = $('#dtbMember');
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -1593,7 +1176,6 @@ class OpportunityPageFunction {
             }
         )
     }
-    // function support event
     static onChangeContactRole(ele) {
         if (ele.val() === '0') {
             if ($table_contact_role.find('.box-select-role').not(ele).find('option[value="0"]:selected').length === 1) {
@@ -1626,6 +1208,375 @@ class OpportunityPageFunction {
             text: text,
         })
     }
+    // opp activity
+    static tabLogWork(dataList) {
+        let $table = $('#table_log-work')
+        if ($table.hasClass('datatable'))
+            $table.DataTable().clear().rows.add(dataList).draw();
+        else
+            $table.DataTable({
+                searching: false,
+                ordering: false,
+                paginate: false,
+                info: false,
+                data: dataList,
+                columns: [
+                    {
+                        data: 'employee_created',
+                        targets: 0,
+                        width: "35%",
+                        render: (data, type, row) => {
+                            let avatar = ''
+                            let avClass = 'avatar-rounded avatar-xs avatar-' + $x.fn.randomColor()
+                            avatar = $x.fn.renderAvatar(data, avClass)
+                            return avatar;
+                        }
+                    },
+                    {
+                        data: 'start_date',
+                        targets: 1,
+                        width: "35%",
+                        render: (data, type, row) => {
+                            let date = moment(data, 'YYYY-MM-DDThh:mm:ss').format('DD/MM/YYYY')
+                            if (data !== row.end_date) {
+                                date += ' ~ '
+                                date += moment(row.end_date, 'YYYY-MM-DDThh:mm:ss').format('DD/MM/YYYY')
+                            }
+                            return date;
+                        }
+                    },
+                    {
+                        data: 'time_spent',
+                        targets: 2,
+                        width: "20%",
+                        render: (data, type, row) => {
+                            return data;
+                        }
+                    },
+                    {
+                        data: 'id',
+                        targets: 3,
+                        width: "10%",
+                        render: (data, type, row) => {
+                            return ''
+                        }
+                    }
+                ]
+            })
+    }
+    static tabSubtask(taskID) {
+        if (!taskID) return false
+        const $wrap = $('.wrap-subtask')
+        const url = $urlEle.attr('data-task_list')
+        $.fn.callAjax(url, 'GET', {parent_n: taskID})
+            .then((resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    for (let [key, item] of data.task_list.entries()) {
+                        const template = $(`<div class="d-flex justify-content-start align-items-center subtask_item">
+                                    <p>${item.title}</p>
+                                    <button class="btn btn-flush-primary btn-icon btn-rounded ml-auto flush-soft-hover" disabled>
+                                        <span><i class="fa-regular fa-trash-can fa-sm"></i></span>
+                                    </button>
+                                 </div>`);
+                        $wrap.append(template);
+                    }
+                }
+            })
+    }
+    static displayTaskView(url) {
+        if (url)
+            $.fn.callAjax2({
+                url: url,
+                method: 'GET'
+            })
+                .then((resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        // enable side panel
+                        $('#offCanvasRightTask').offcanvas('show');
+                        resetFormTask()
+                        $('.title-create').addClass('hidden')
+                        $('.title-detail').removeClass('hidden')
+                        $('#inputTextTitle').val(data.title)
+                        $form_Opp_Task.find(`input[name="id"]`).remove()
+                        $form_Opp_Task.append(`<input type="hidden" name="id" value="${data.id}">`)
+                        $('#inputTextCode').val(data.code)
+                        $('#rangeValue').text(data['percent_completed'])
+                        $('#percent_completed').val(data['percent_completed'])
+                        $('#selectStatus').attr('data-onload', JSON.stringify(data.task_status)).append(
+                            `<option value="${data.task_status.id}" selected>${data.task_status.title}</option>`
+                        ).trigger('change')
+                        $('#inputTextStartDate').val(
+                            moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                        )
+                        $('#inputTextEndDate').val(
+                            moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
+                        )
+                        $('#inputTextEstimate').val(data.estimate)
+                        $('#selectPriority').val(data.priority).trigger('change')
+                        // render label
+                        let htmlElm = $('.label-mark')
+                        htmlElm.html('')
+                        for (let item of data.label)
+                            htmlElm.append($(`<span class="item-tag"><span>${item}</span></span>`))
+                        $('#inputAssigner').val(data.employee_created.full_name)
+                            .attr('value', data.employee_created.id)
+
+                        const runComponent = (elm, data) => {
+                            data.selected = true;
+                            elm.attr('data-onload', JSON.stringify(data))
+                                .html(`<option value="${data.id}" selected>${data.title}</option>`)
+                                .trigger('change')
+                        }
+                        if (data?.process && data?.['process']?.['id']){
+                            runComponent($('#process_id'), data.process)
+                        }
+                        else if (data?.opportunity && data?.opportunity?.id){
+                            runComponent($('#opportunity_id'), data.opportunity)
+                        }
+                        if (data?.employee_inherit.hasOwnProperty("id")){
+                            data.employee_inherit.title = data.employee_inherit.full_name
+                            runComponent($('#employee_inherit_id'), data.employee_inherit)
+                        }
+                        window.editor.setData(data.remark)
+                        window.checklist.setDataList = data.checklist
+                        window.checklist.render()
+                        if (data?.['task_log_work'].length) OpportunityPageFunction.tabLogWork(data['task_log_work'])
+                        if (data?.['sub_task_list']) OpportunityPageFunction.tabSubtask(data.id)
+                        if (data.attach) {
+                            const fileDetail = data.attach[0]?.['files']
+                            FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
+                        }
+                        const $btnSub = $('.create-subtask')
+                        if (Object.keys(data.parent_n).length > 0) $btnSub.addClass('hidden')
+                        else $btnSub.removeClass('hidden')
+                    }
+                })
+    }
+    static loadOpenRelateApp(ele) {
+        // check permission before redirect
+        if ($(ele).attr('data-label') && pageVariables.opp_detail_data) {
+            let label = $(ele).attr('data-label');
+            let appMapPerm = {
+                'quotation.quotation': 'quotation.quotation.create',
+                'saleorder.saleorder': 'saleorder.saleorder.create',
+                'leaseorder.leaseorder': 'leaseorder.leaseorder.create',
+            };
+            let appMapErr = {
+                'quotation.quotation': $transEle.attr('data-cancel-quo'),
+                'saleorder.saleorder': $transEle.attr('data-cancel-so'),
+                'leaseorder.leaseorder': $transEle.attr('data-cancel-lo'),
+            }
+            if (appMapPerm?.[label] && pageVariables.opp_detail_data?.['id']) {
+                let tableData = $('#table-timeline').DataTable().rows().data().toArray();
+                $.fn.callAjax2({
+                        'url': $urlEle.attr('data-url-opp-list'),
+                        'method': 'GET',
+                        'data': {'list_from_app': appMapPerm[label], 'id': pageVariables.opp_detail_data?.['id']},
+                        isLoading: true,
+                    }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                if (data.opportunity_list.length === 1) {
+                                    // Validate: check opp already has quotation/ sale order
+                                    let listCheck = ['quotation.quotation', 'saleorder.saleorder', 'leaseorder.leaseorder'];
+                                    if (listCheck.includes(label)) {
+                                        for (let tData of tableData) {
+                                            let tDataLabel = tData?.['app_code'];
+                                            let tDataStatus = tData?.['doc_data']?.['system_status'];
+                                            if (label === 'quotation.quotation') {
+                                                if (tDataLabel === 'saleorder.saleorder' && [1, 2, 3].includes(tDataStatus)) {
+                                                    $.fn.notifyB({description: $transEle.attr('data-cancel-quo-so')}, 'failure');
+                                                    return false;
+                                                }
+                                            }
+                                            if (tDataLabel === label && [1, 2, 3].includes(tDataStatus)) {
+                                                $.fn.notifyB({description: appMapErr?.[label]}, 'failure');
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                    const paramData = $.param({
+                                        'create_open': true,
+                                        'opp_id': pageVariables.opp_detail_data?.['id'],
+                                        'opp_title': pageVariables.opp_detail_data?.['title'],
+                                        'opp_code': pageVariables.opp_detail_data?.['code'],
+                                    });
+                                    let url = $(ele).data('url') + '?' + paramData;
+                                    window.open(url, '_blank');
+                                    return true;
+                                }
+                                $.fn.notifyB({description: $transEle.attr('data-forbidden')}, 'failure');
+                                return false;
+                            }
+                        }
+                    }
+                )
+            }
+        }
+        return true;
+    }
+    // load config and load stage
+    static async loadMemberSaleTeam() {
+        if (!$.fn.DataTable.isDataTable('#dtbMember')) {
+            let dtb = $('#dtbMember');
+            let frm = new SetupFormSubmit(dtb);
+            dtb.DataTableDefault({
+                rowIdx: true,
+                reloadCurrency: true,
+                paging: false,
+                scrollX: true,
+                scrollY: '64vh',
+                ajax: {
+                    url: frm.dataUrl + '?get_all=1',
+                    type: frm.dataMethod,
+                    dataSrc: function (resp) {
+                        let data = $.fn.switcherResp(resp);
+                        if (data && resp.data.hasOwnProperty('employee_list')) {
+                            return resp.data['employee_list'] ? resp.data['employee_list'] : [];
+                        }
+                        throw Error('Call data raise errors.')
+                    },
+                },
+                columns: [
+                    {
+                        className: 'w-5',
+                        render: (data, type, row) => {
+                            return '';
+                        }
+                    },
+                    {
+                        className: 'w-5',
+                        data: 'is_checked_new',
+                        render: (data, type, row) => {
+                            if ($('.member-item .card[data-id="' + row.id + '"]').length > 0) {
+                                return `<div class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" checked readonly disabled /></span>`
+                            }
+                            return `<div class="form-check"><input data-id="${row.id}" type="checkbox" class="form-check-input input-select-member" ${data === true ? "checked" : ""}/></span>`
+                        }
+                    },
+                    {
+                        className: 'w-50',
+                        render: (data, type, row) => {
+                            return `<span class="badge badge-soft-primary mr-1">${row?.['code']}</span><span>${row?.['full_name']}</span>`
+                        }
+                    },
+                    {
+                        className: 'text-right w-40',
+                        data: 'group',
+                        render: (data) => {
+                            return `<span>${data.title || ''}</span>`
+                        }
+                    },
+                ],
+                rowCallback: function (row, data) {
+                    $(row).find('.input-select-member').on('change', function (){
+                        let is_checked = $(this).prop('checked');
+                        $x.fn.updateDataRow(this, function (clsThat, rowIdx, rowData) {
+                            rowData['is_checked_new'] = is_checked
+                            return {
+                                ...rowData,
+                                is_checked_new: is_checked,
+                                idx: rowIdx + 1,
+                            }
+                        }, true);
+                    })
+                },
+            });
+        }
+    }
+
+    static sortStage(list_stage) {
+        let object_lost = null;
+        let delivery = null;
+        let object_close = null;
+        let list_result = []
+
+        for (let i = 0; i < list_stage.length; i++) {
+            if (list_stage[i]?.['is_closed_lost']) {
+                object_lost = list_stage[i];
+            } else if (list_stage[i]?.['is_delivery']) {
+                delivery = list_stage[i];
+            } else if (list_stage[i]?.['is_deal_closed']) {
+                object_close = list_stage[i];
+            } else {
+                list_result.push(list_stage[i]);
+            }
+        }
+
+        list_result.sort(function (a, b) {
+            return a.win_rate - b.win_rate;
+        });
+        list_result.push(object_lost);
+        if (delivery) {
+            list_result.push(delivery);
+        }
+        list_result.push(object_close);
+
+        return list_result
+    }
+    // load dropdown
+    static LoadOppCustomer(data, sale_person_id) {
+        $customerSelectEle.initSelect2({
+            data: data,
+            dataParams: {
+                'account_types_mapped__account_type_order': 0,
+                'employee__id': sale_person_id,
+            },
+        })
+    }
+    static LoadOppEndCustomer(data) {
+        $endCustomerSelectEle.initSelect2({
+            data: data,
+            callbackDataResp(resp, keyResp) {
+                let list_result = []
+                resp.data[keyResp].map(function (item) {
+                    if (data?.['id'] !== item?.['id']) {
+                        list_result.push(item)
+                    }
+                })
+                return list_result
+            }
+        })
+    }
+    static LoadOppProductCategory(data) {
+        $productCategorySelectEle.initSelect2({
+            data: data,
+        })
+    }
+    static LoadOppSalePerson(data) {
+        $salePersonSelectEle.initSelect2({
+            data: data,
+        })
+    }
+    static LoadSalePerson(data, config, emp_current_id, list_account_manager) {
+        $salePersonSelectEle.initSelect2({
+            data: data,
+            callbackDataResp(resp, keyResp) {
+                let list_result = []
+                if (!config) {
+                    resp.data[keyResp].map(function (item) {
+                        // if (item.group.id === $('#employee_current_group').val() && list_account_manager.includes(item.id)) {
+                        if (list_account_manager.includes(item.id)) {
+                            list_result.push(item)
+                        }
+                    })
+                    return list_result
+                } else {
+                    resp.data[keyResp].map(function (item) {
+                        if (item.id === emp_current_id) {
+                            list_result.push(item)
+                        }
+                    })
+                    return list_result
+                }
+            }
+        })
+    }
 }
 
 /**
@@ -1633,7 +1584,6 @@ class OpportunityPageFunction {
  */
 class OpportunityHandler {
     static GetDataForm(data_form) {
-
         // only add field is change to form
         let ele_customer = $('#select-box-customer.tag-change');
         let ele_end_customer = $('#select-box-end-customer.tag-change');
@@ -1841,14 +1791,14 @@ class OpportunityHandler {
             $checkInputRateEle.prop('checked', false);
         }
         // c. Load customer
-        OpportunityLoadDropdown.LoadOppCustomer(pageVariables.opp_detail_data?.['customer'], pageVariables.opp_detail_data?.['sale_person']?.['id'])
+        OpportunityPageFunction.LoadOppCustomer(pageVariables.opp_detail_data?.['customer'], pageVariables.opp_detail_data?.['sale_person']?.['id'])
         // d. Load end customer
         $check_agency_role.prop('checked', Object.keys(pageVariables.opp_detail_data?.['end_customer']).length !== 0)
-        OpportunityLoadDropdown.LoadOppEndCustomer(pageVariables.opp_detail_data?.['end_customer'])
+        OpportunityPageFunction.LoadOppEndCustomer(pageVariables.opp_detail_data?.['end_customer'])
         // e. Load product category
-        OpportunityLoadDropdown.LoadOppProductCategory(pageVariables.opp_detail_data?.['product_category'])
+        OpportunityPageFunction.LoadOppProductCategory(pageVariables.opp_detail_data?.['product_category'])
         // f. Load sale person
-        OpportunityLoadDropdown.LoadOppSalePerson(pageVariables.opp_detail_data?.['sale_person'])
+        OpportunityPageFunction.LoadOppSalePerson(pageVariables.opp_detail_data?.['sale_person'])
         // g. Load budget
         $input_budget.attr('value', pageVariables.opp_detail_data?.['budget_value'])
         // h. Load open/close date
@@ -2055,7 +2005,7 @@ class OpportunityEventHandler {
         $('#btn-add-input-product').on('click', function () {
             OpportunityPageFunction.addRowInputProduct()
         })
-        OpportunityLoadDropdown.productCategorySelectEle.on('select2:unselect', function (e) {
+        $productCategorySelectEle.on('select2:unselect', function (e) {
             let removedOption = e.params.data;
             let table = $('#table-product');
             $(`.box-select-product-category option[value="${removedOption.id}"]:selected`).closest('tr').each(function () {
@@ -2072,11 +2022,11 @@ class OpportunityEventHandler {
                         'id': optionSelected.val(),
                         'title': optionSelected.text()
                     },
-                    OpportunityLoadDropdown.productCategorySelectEle.val()
+                    $productCategorySelectEle.val()
                 );
             })
         });
-        OpportunityLoadDropdown.productCategorySelectEle.on('select2:select', function () {
+        $productCategorySelectEle.on('select2:select', function () {
             let table = $('#table-product');
             table.find('.select-box-product').each(function () {
                 let optionSelected = $(this).find('option:selected');
@@ -2086,7 +2036,7 @@ class OpportunityEventHandler {
                         'id': optionSelected.val(),
                         'title': optionSelected.text()
                     },
-                    OpportunityLoadDropdown.productCategorySelectEle.val()
+                    $productCategorySelectEle.val()
                 );
             })
         });
@@ -2116,7 +2066,7 @@ class OpportunityEventHandler {
             OpportunityPageFunction.LoadRowProductCategory(
                 product_category_ele,
                 product?.['general_information']?.['product_category'],
-                OpportunityLoadDropdown.productCategorySelectEle.val(),
+                $productCategorySelectEle.val(),
             )
 
             OpportunityPageFunction.LoadRowUOM(
@@ -2190,9 +2140,9 @@ class OpportunityEventHandler {
             let box_select_contact = $(this).closest('tr').find('.box-select-contact');
             $(this).closest('tr').find('.input-job-title').val('');
             if ($(this).val() === '0') {
-                OpportunityPageFunction.LoadRowContact(box_select_contact, {}, OpportunityLoadDropdown.customerSelectEle.val());
+                OpportunityPageFunction.LoadRowContact(box_select_contact, {}, $customerSelectEle.val());
             } else {
-                OpportunityPageFunction.LoadRowContact(box_select_contact, {}, OpportunityLoadDropdown.endCustomerSelectEle.val());
+                OpportunityPageFunction.LoadRowContact(box_select_contact, {}, $endCustomerSelectEle.val());
             }
         })
         $(document).on('change', '.box-select-contact', function () {
@@ -2259,7 +2209,7 @@ class OpportunityEventHandler {
 
         // event on click to create relate apps from opportunity (for cancel quotation - sale order)
         $('#dropdown-menu-relate-app').on('click', '.relate-app', function () {
-            OpportunityActivity.loadOpenRelateApp(this);
+            OpportunityPageFunction.loadOpenRelateApp(this);
         })
 
         // tab add member for sale

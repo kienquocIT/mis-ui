@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    function loadDtbOpportunityList() {
+    function LoadDtbOpportunityList() {
         if (!$.fn.DataTable.isDataTable('#table_opportunity_list')) {
             let $table = $('#table_opportunity_list')
             let frm = new SetupFormSubmit($table);
@@ -89,13 +89,87 @@ $(document).ready(function () {
         }
     }
 
+    function CallDataConfig(url, method='GET') {
+        return $.fn.callAjax2({
+            url: url,
+            method: method,
+        }).then((resp) => {
+                return $.fn.switcherResp(resp);
+            },
+            (errs) => {
+                console.log(errs)
+            });
+    }
 
-    LoadConfigAndLoadStage.loadConfigPromise().then(
+    function LoadConfigPromise() {
+        let url = $("#url-factory").data('url-config');
+        let method = 'GET';
+        return CallDataConfig(url, method).then(
+            result => {
+                return result?.['opp_config_data']
+            },
+        );
+    }
+
+    function LoadOppCustomer(data, sale_person_id) {
+        $('#select-box-customer').initSelect2({
+            data: data,
+            dataParams: {
+                'account_types_mapped__account_type_order': 0,
+                'employee__id': sale_person_id,
+            },
+        })
+    }
+
+    function LoadOppProductCategory(data) {
+        $('#select-box-product-category').initSelect2({
+            data: data,
+        })
+    }
+
+    function LoadSalePerson(data, config, emp_current_id, list_account_manager) {
+        $('#select-box-sale-person').initSelect2({
+            data: data,
+            callbackDataResp(resp, keyResp) {
+                let list_result = []
+                if (!config) {
+                    resp.data[keyResp].map(function (item) {
+                        // if (item.group.id === $('#employee_current_group').val() && list_account_manager.includes(item.id)) {
+                        if (list_account_manager.includes(item.id)) {
+                            list_result.push(item)
+                        }
+                    })
+                    return list_result
+                } else {
+                    resp.data[keyResp].map(function (item) {
+                        if (item.id === emp_current_id) {
+                            list_result.push(item)
+                        }
+                    })
+                    return list_result
+                }
+            }
+        })
+    }
+
+    function CombinesDataCreate(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle));
+
+        frm.dataForm['product_category'] = $('#select-box-product-category').val();
+        return {
+            url: frm.dataUrl,
+            method: frm.dataMethod,
+            data: frm.dataForm,
+            urlRedirect: frm.dataUrlRedirect,
+        };
+    }
+
+    LoadConfigPromise().then(
         config => {
             let employee_current = $('#employee_current_id').val();
             const customerSelectEle = $('#select-box-customer');
 
-            loadDtbOpportunityList();
+            LoadDtbOpportunityList();
 
             new SetupFormSubmit($('#form-create_opportunity')).validate({
                 rules: {
@@ -110,7 +184,7 @@ $(document).ready(function () {
                     }
                 },
                 submitHandler: function (form) {
-                    let combinesData = OpportunityLoadDropdown.combinesData($(form))
+                    let combinesData = CombinesDataCreate($(form))
                     $.fn.callAjax2({
                         url: combinesData.url,
                         method: combinesData.method,
@@ -131,12 +205,12 @@ $(document).ready(function () {
                 }
             });
 
-            OpportunityLoadDropdown.LoadOppCustomer({}, employee_current);
-            OpportunityLoadDropdown.LoadOppProductCategory();
+            LoadOppCustomer({}, employee_current);
+            LoadOppProductCategory();
 
             customerSelectEle.on('change', function () {
                 let customer = SelectDDControl.get_data_from_idx($(this), $(this).val());
-                OpportunityLoadDropdown.loadSalePerson({}, config.is_account_manager_create, employee_current, customer.manager.map(obj => obj.id));
+                LoadSalePerson({}, config?.['is_account_manager_create'], employee_current, customer?.['manager'].map(obj => obj?.['id']));
             })
         }
     );

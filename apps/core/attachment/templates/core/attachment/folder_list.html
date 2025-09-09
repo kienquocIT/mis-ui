@@ -457,6 +457,7 @@
 
 {% block dataHiddenGroup %}
     <input type="hidden" aria-label="url-factory" id="url-factory"
+           data-file-review="{% url 'AttachmentPreview' 1 %}"
 {#######  PERMISSION API #}
         data-file-perm-lst="{% url 'FilePermListAPI' %}"
         data-folder-perm-lst="{% url 'FolderPermListAPI' %}"

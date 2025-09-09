@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from django.http import HttpResponse, StreamingHttpResponse
+from django.conf import settings
+from django.http import HttpResponse
 from django.views import View
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
@@ -221,7 +222,11 @@ class FolderMyFileList(View):
         breadcrumb='',
     )
     def get(self, request, *args, **kwargs):
-        return {'employee_current': request.user.employee_current_data, 'folder_space': 'my_space'}, status.HTTP_200_OK
+        return {
+                   'file_size_config': settings.FILE_SIZE_UPLOAD_LIMIT,
+                   'employee_current': request.user.employee_current_data,
+                   'folder_space': 'my_space'
+               }, status.HTTP_200_OK
 
 
 class FolderMyFileListAPI(APIView):

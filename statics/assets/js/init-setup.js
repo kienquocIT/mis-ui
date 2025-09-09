@@ -3020,39 +3020,39 @@ class WFRTControl {
                                 }
                             }
                             if (WFconfig?.['mode'] === 0) {
-                                let url = btn.attr('data-url-app-emp-config');
-                                let currentEmployee = $x.fn.getEmployeeCurrentID();
-                                $.fn.callAjax2({
-                                    'url': url,
-                                    'method': 'GET',
-                                    'data': {
-                                        'application__model_code': app_code,
-                                        'employee_created_id': currentEmployee
-                                    },
-                                }).then((resp) => {
-                                    let data = $.fn.switcherResp(resp);
-                                    if (data) {
-                                        if (data.hasOwnProperty('app_emp_config_list') && Array.isArray(data.app_emp_config_list)) {
-                                            if (data?.['app_emp_config_list'].length > 0) {
-                                                let zonesData = [];
-                                                let zonesHiddenData = [];
-                                                for (let appEmpConfig of data?.['app_emp_config_list']) {
-                                                    for (let zone of appEmpConfig?.['zones_editing_data']) {
-                                                        for (let property of zone?.['properties_data']) {
-                                                            zonesData.push(property);
-                                                        }
-                                                    }
-                                                    for (let zone of appEmpConfig?.['zones_hidden_data']) {
-                                                        for (let property of zone?.['properties_data']) {
-                                                            zonesHiddenData.push(property);
-                                                        }
-                                                    }
-                                                }
-                                                WFRTControl.activeBtnOpenZone(zonesData, zonesHiddenData, false);
-                                            }
-                                        }
-                                    }
-                                })
+                                // let url = btn.attr('data-url-app-emp-config');
+                                // let currentEmployee = $x.fn.getEmployeeCurrentID();
+                                // $.fn.callAjax2({
+                                //     'url': url,
+                                //     'method': 'GET',
+                                //     'data': {
+                                //         'application__model_code': app_code,
+                                //         'employee_created_id': currentEmployee
+                                //     },
+                                // }).then((resp) => {
+                                //     let data = $.fn.switcherResp(resp);
+                                //     if (data) {
+                                //         if (data.hasOwnProperty('app_emp_config_list') && Array.isArray(data.app_emp_config_list)) {
+                                //             if (data?.['app_emp_config_list'].length > 0) {
+                                //                 let zonesData = [];
+                                //                 let zonesHiddenData = [];
+                                //                 for (let appEmpConfig of data?.['app_emp_config_list']) {
+                                //                     for (let zone of appEmpConfig?.['zones_editing_data']) {
+                                //                         for (let property of zone?.['properties_data']) {
+                                //                             zonesData.push(property);
+                                //                         }
+                                //                     }
+                                //                     for (let zone of appEmpConfig?.['zones_hidden_data']) {
+                                //                         for (let property of zone?.['properties_data']) {
+                                //                             zonesHiddenData.push(property);
+                                //                         }
+                                //                     }
+                                //                 }
+                                //                 WFRTControl.activeBtnOpenZone(zonesData, zonesHiddenData, false);
+                                //             }
+                                //         }
+                                //     }
+                                // })
                             }
                         }
                     }
@@ -7808,7 +7808,8 @@ class FileControl {
         let clsThis = this;
         return {
             url: '#',
-            maxFileSize: 3 * 1024 * 1024, // 3 Megs (MB)
+            // maxFileSize: 3 * 1024 * 1024, // 3 Megs (MB)
+            maxFileSize: 15 * 1024 * 1024, // 15 Megs (MB)
             allowedTypes: "*",
             extFilter: null,
             onDragEnter: function () {
@@ -7928,6 +7929,7 @@ class FileControl {
                 if (dmUploaderEle.length > 0 && dmResults.length > 0) {
                     dmUploaderEle.dmUploader({
                         ...config,
+                        maxFileSize: opts?.['maxFileSize'] ? opts['maxFileSize'] : config['maxFileSize'],
                         extraData: async function (fileId, fileData) {
                             const result = await Swal.fire({
                                 input: "text",

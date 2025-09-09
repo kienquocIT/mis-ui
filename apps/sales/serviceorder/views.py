@@ -148,3 +148,15 @@ class ServiceOrderUpdate(View):
             'employee_info': request.user.employee_current_data,
         }
         return ctx, status.HTTP_200_OK
+
+
+class ServiceOrderDetailForDashboardAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SERVICE_ORDER_DETAIL_FOR_DASHBOARD.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='service_order_detail_for_dashboard')

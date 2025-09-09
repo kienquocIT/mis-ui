@@ -1884,7 +1884,7 @@ class OpportunityHandler {
                 if (opp_detail_data) {
                     $('.page-content').prop('hidden', false)
 
-                    console.log(opp_detail_data)
+                    // console.log(opp_detail_data)
 
                     // store data detail
                     pageVariables.opp_detail_data = opp_detail_data

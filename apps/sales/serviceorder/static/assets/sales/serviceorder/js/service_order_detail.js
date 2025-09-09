@@ -134,7 +134,7 @@ class DetailDataHandler {
                 $.fn.initMaskMoney2()
                 ServiceOrder.disableTableFields()
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
-                UsualLoadPageFunction.DisablePage(isDisablePage)
+                UsualLoadPageFunction.DisablePage(isDisablePage, ['.btn-close'])
             }
         )
     }

@@ -62,6 +62,10 @@ function setUpFormSubmit($form) {
     SetupFormSubmit.call_validate($form, {
         onsubmit: true,
         submitHandler: () => {
+            const isValidData = ServiceOrder.validateDates()
+            if(!isValidData){
+                return false
+            }
             let formInstance = new SetupFormSubmit($form)
             if (formInstance.dataForm.hasOwnProperty('attachment')) {
                 formInstance.dataForm['attachment'] = $x.cls.file.get_val(
@@ -72,7 +76,6 @@ function setUpFormSubmit($form) {
                 formInstance.dataForm['attachment'] = []
             }
             setUpFormData(formInstance)
-            console.log(formInstance.dataForm)
             WFRTControl.callWFSubmitForm(formInstance)
         },
     })

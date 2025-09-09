@@ -2156,26 +2156,6 @@ const ServiceOrder = (function($) {
 
             //remove payment no invoice data
             if(isChecked){
-                let noInvoicePaymentData = pageVariable.paymentDetailData[rowId]
-                if (noInvoicePaymentData){
-                    //no invoice payment does not add to total payment
-                    // noInvoicePaymentData.forEach((nipdItem)=>{
-                    //     const serviceId = nipdItem.service_id
-                    //     const totalPaymentData = pageVariable.serviceDetailTotalPaymentData[serviceId]
-                    //     if(totalPaymentData){
-                    //         let totalPercentage = totalPaymentData?.total_payment_percent
-                    //         let totalValue = totalPaymentData?.total_payment_value
-                    //
-                    //         totalPercentage -= nipdItem.payment_percent
-                    //         totalValue -= nipdItem.payment_value
-                    //
-                    //         pageVariable.serviceDetailTotalPaymentData[serviceId] = {
-                    //             total_payment_percent: totalPercentage,
-                    //             total_payment_value: totalValue
-                    //         }
-                    //     }
-                    // })
-                }
                 delete pageVariable.paymentDetailData[rowId]
 
                 $row.find('.payment-value').attr('data-init-money', 0)
@@ -2901,7 +2881,7 @@ const ServiceOrder = (function($) {
             const taxAmount = subtotal * taxRate
             const currentTotal = subtotal + taxAmount
 
-            const deliveryBalanceValue = pageVariable.serviceDetailTotalContributionData?.[rowData.id]?.delivery_balance_value
+            const deliveryBalanceValue = pageVariable.serviceDetailTotalContributionData?.[rowData.id]?.delivery_balance_value ?? currentQuantity
 
             const serviceDetail = {
                 id: rowData.id,
@@ -2941,8 +2921,8 @@ const ServiceOrder = (function($) {
             // Get current values from the DOM elements
             const currentDescription = $row.find('.work-order-description').val() || rowData.title || '';
             const currentQuantity = parseFloat($row.find('.work-order-quantity').val()) || rowData.quantity || 0;
-            let currentStartDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('.work-order-start-date').val())
-            let currentEndDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('.work-order-end-date').val())
+            let currentStartDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $row.find('.work-order-start-date').val())
+            let currentEndDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $row.find('.work-order-end-date').val())
             const isDeliveryPoint = $row.find('.work-order-service-delivery').is(':checked') || false;
 
             // Calculate current total
@@ -3003,7 +2983,7 @@ const ServiceOrder = (function($) {
             const currentDescription = $row.find('.payment-description').val() || rowData.description || '';
             const currentPaymentType = parseInt($row.find('.payment-type-select').val()) || rowData.payment_type || 0;
             const isInvoiceRequired = $row.find('.invoice-require').is(':checked') || false;
-            let currentDueDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $('.payment-due-date').val())
+            let currentDueDate = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD', $row.find('.payment-due-date').val())
 
             // Get payment values from data (these are updated via other functions)
             const paymentValue = parseFloat(rowData.payment_value) || 0
@@ -3055,6 +3035,54 @@ const ServiceOrder = (function($) {
             paymentData.push(payment)
         })
         return paymentData
+    }
+
+    function validateDates() {
+        // Validate work order dates
+        const workOrderTable = ServiceOrder.pageElement.workOrder.$table.DataTable()
+        let hasError = false
+
+        workOrderTable.rows().every(function(rowIdx) {
+            const $row = $(this.node())
+            const startDate = $row.find('.work-order-start-date').val()
+            const endDate = $row.find('.work-order-end-date').val()
+
+            if (!startDate) {
+                $.fn.notifyB({
+                    description: $.fn.gettext(`Work Order row ${rowIdx + 1}: Start Date is required`)
+                }, 'failure')
+                hasError = true
+                return false // Break the loop
+            }
+
+            if (!endDate) {
+                $.fn.notifyB({
+                    description: $.fn.gettext(`Work Order row ${rowIdx + 1}: End Date is required`)
+                }, 'failure')
+                hasError = true
+                return false
+            }
+        })
+
+        if (hasError) return false
+
+        // Validate payment due dates
+        const paymentTable = ServiceOrder.pageElement.payment.$table.DataTable()
+
+        paymentTable.rows().every(function(rowIdx) {
+            const $row = $(this.node())
+            const dueDate = $row.find('.payment-due-date').val()
+
+            if (!dueDate) {
+                $.fn.notifyB({
+                    description: $.fn.gettext(`Payment Installment ${rowIdx + 1}: Due Date is required`)
+                }, 'failure')
+                hasError = true
+                return false
+            }
+        })
+
+        return !hasError
     }
 
     // ============ detail handler ==============
@@ -3191,6 +3219,7 @@ const ServiceOrder = (function($) {
         getServiceDetailData,
         getWorkOrderData,
         getPaymentData,
+        validateDates,
 
         loadServiceDetailRelatedData,
         loadWorkOrderRelatedData,

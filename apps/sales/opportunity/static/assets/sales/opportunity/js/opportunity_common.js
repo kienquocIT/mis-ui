@@ -51,12 +51,12 @@ class OpportunityPageFunction {
         let opp_stage_list = pageVariables.opp_detail_data?.['stage'] || []
         let [
             is_close_lost,
-            is_deal_close,
-            is_delivery
+            is_delivery,
+            is_deal_close
         ] = [
             pageVariables.opp_detail_data?.['is_close_lost'],
-            pageVariables.opp_detail_data?.['is_deal_close'],
-            Object.keys((pageVariables.opp_detail_data?.['sale_order'] || {})?.['delivery'] || {}).length > 0
+            Object.keys((pageVariables.opp_detail_data?.['sale_order'] || {})?.['delivery'] || {}).length > 0,
+            pageVariables.opp_detail_data?.['is_deal_close']
         ]
         let stages_list_data = OpportunityPageFunction.sortStage(pageVariables.opp_stage_data);
 
@@ -65,8 +65,18 @@ class OpportunityPageFunction {
         for (let i = 0; i < stages_list_data.length; i++) {
             let item = stages_list_data[i]
             if (item?.['is_closed_lost']) {
-                $opp_stage_pipeline.append(`<li class="stage-child stage-lost2 ${(is_close_lost && !is_delivery) ? 'lost' : ''}" data-id="${item?.['id']}">
+                $opp_stage_pipeline.append(`<li class="stage-child stage-lost2" data-id="${item?.['id']}">
                     <span title="${item?.['indicator']} (${item?.['win_rate']}%): $ {item?.['description']}">${item?.['indicator']} (${item?.['win_rate']}%)</span>
+                </li>`)
+            }
+            else if (item?.['is_delivery']) {
+                $opp_stage_pipeline.append(`<li class="stage-child stage-delivery2" data-id="${item?.['id']}">
+                    <div class="dropdown dropend">
+                        <a href="#" data-bs-toggle="dropdown"><span title="${item?.['indicator']} (${item?.['win_rate']}%): ${item?.['description']}">${item?.['indicator']} (${item?.['win_rate']}%)</span></a>
+                        <div class="dropdown-menu position-absolute" style="z-index: 999;">
+                            <a class="dropdown-item btn-go-to-stage" href="#">Go to Stage</a>
+                        </div>
+                    </div>
                 </li>`)
             }
             else if (item?.['is_deal_closed']) {
@@ -78,16 +88,6 @@ class OpportunityPageFunction {
                                 <input type="checkbox" class="form-check-input" id="input-close-deal" ${is_deal_close ? 'checked' : ''}>
                                 <label for="input-close-deal" class="form-label">Close Deal</label>
                             </div>
-                        </div>
-                    </div>
-                </li>`)
-            }
-            else if (item?.['is_delivery']) {
-                $opp_stage_pipeline.append(`<li class="stage-child stage-delivery2 ${is_delivery ? 'completed' : ''}" data-id="${item?.['id']}">
-                    <div class="dropdown dropend">
-                        <a href="#" data-bs-toggle="dropdown"><span title="${item?.['indicator']} (${item?.['win_rate']}%): ${item?.['description']}">${item?.['indicator']} (${item?.['win_rate']}%)</span></a>
-                        <div class="dropdown-menu position-absolute" style="z-index: 999;">
-                            <a class="dropdown-item btn-go-to-stage" href="#">Go to Stage</a>
                         </div>
                     </div>
                 </li>`)
@@ -109,20 +109,48 @@ class OpportunityPageFunction {
         let passed_stages = stages_list_data.filter(item =>
             item?.['win_rate'] >= min_stage?.['win_rate'] &&
             item?.['win_rate'] <= max_stage?.['win_rate'] &&
-            !item?.['is_delivery'] &&
             !item?.['is_closed_lost'] &&
+            !item?.['is_delivery'] &&
             !item?.['is_deal_closed']
         )
 
-        passed_stages.map(function (item) {
-            let ele_stage = $(`.stage-child[data-id="${item?.['id']}"]`);
-            if (ele_stage.hasClass('stage-close2')) {
-                $('.page-content input, .page-content select, .page-content .btn').not($('#input-close-deal')).prop('disabled', true);
-            }
-            ele_stage.addClass('completed stage-selected2')
-        })
+        if (is_close_lost && !is_delivery) {
+            passed_stages = passed_stages.concat(stages_list_data.filter(item =>
+                item?.['is_closed_lost']
+            ))
+        }
+        if (is_delivery) {
+            passed_stages = passed_stages.concat(stages_list_data.filter(item =>
+                item?.['is_delivery']
+            ))
+        }
+        if (is_deal_close) {
+            passed_stages = passed_stages.concat(stages_list_data.filter(item =>
+                item?.['is_deal_close']
+            ))
+        }
 
-        $opp_stage_pipeline.find('.completed').last().removeClass('completed').addClass('active');
+        passed_stages.forEach(function (item, index) {
+            setTimeout(function () {
+                let ele_stage = $(`.stage-child[data-id="${item?.['id']}"]`);
+                if (ele_stage.hasClass('stage-close2')) {
+                    $('.page-content input, .page-content select, .page-content .btn').not($('#input-close-deal')).prop('disabled', true);
+                }
+                if (ele_stage.hasClass('stage-lost2')) {
+                    ele_stage.addClass('lost stage-selected2')
+                } else if (ele_stage.hasClass('stage-delivery2')) {
+                    ele_stage.addClass('completed stage-selected2')
+                } else if (ele_stage.hasClass('stage-close2')) {
+                    ele_stage.addClass('cancel stage-selected2')
+                } else {
+                    ele_stage.addClass('completed stage-selected2')
+                }
+
+                if (index === passed_stages.length - 1) {
+                    $opp_stage_pipeline.find('.stage-selected2').last().removeClass('lost completed cancel').addClass('active');
+                }
+            }, index * 500);
+        })
     }
     // load tab functions
     static LoadDtbActivityLogs() {

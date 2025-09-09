@@ -9834,7 +9834,7 @@ msgstr "Thành viên CHKD"
 
 #
 msgid "Opportunity detail"
-msgstr "Chi tiết CHKD"
+msgstr "Chi tiết Cơ hội kinh doanh"
 
 #
 msgid "Data Import Limit"

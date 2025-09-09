@@ -41,7 +41,7 @@ const pageVariables = new TabShipmentVariables();
  * Các hàm load page và hàm hỗ trợ
  */
 class TabShipmentFunction {
-    static initShipmentDataTable(data = []) {
+    static initShipmentDataTable(data = [], option="create") {
         pageElements.$tableShipment.DataTable().destroy();
         pageElements.$tableShipment.DataTableDefault({
             styleDom: 'hide-foot',
@@ -54,15 +54,13 @@ class TabShipmentFunction {
             paging: false,
             columns: [
                 {
-                    targets: 0,
-                    width: "1%",
+                    className: "w-5",
                     render: () => {
                         return '';
                     }
                 },
                 {
-                    targets: 1,
-                    width: '27%',
+                    className: "w-20",
                     render: (data, type, row) => {
                         if (row?.containerName) {
                             return `
@@ -72,7 +70,7 @@ class TabShipmentFunction {
                                     <span class="icon"><i class="fa-solid fa-sort-down"></i></span>
                                 </button>
                                 <span>${row?.containerName}</span>
-                                <button type="button" 
+                                <button  ${option === 'detail' ? 'disabled' : ''} type="button" 
                                         class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs btn-add-package"
                                         id="add-package-${row?.containerRefNumber}"
                                         data-container-ref="${row?.containerRefNumber}" title="Add Package">
@@ -81,54 +79,47 @@ class TabShipmentFunction {
                             `;
                         } else {
                             // No add button and dropdown if package name field
-                            return `<span class="ctn-idx-${row.packageContainerRef}">${row?.packageName}</span>`;
+                            return `<span class="ctn-idx-${row?.packageContainerRef}">${row?.packageName}</span>`;
                         }
                     }
                 },
                 {
-                    targets: 2,
-                    width: '10%',
+                    className: "w-20",
                     render: (data, type, row) => {
                         return row?.containerType?.title || row?.packageType?.title || '';
                     }
                 },
                 {
-                    targets: 3,
-                    width: '15%',
+                    className: "w-10",
                     render: (data, type, row) => {
                         return row?.containerRefNumber || row?.packageRefNumber || '';
                     }
                 },
                 {
-                    targets: 4,
-                    width: '15%',
+                    className: "w-10",
                     render: (data, type, row) => {
                         return row?.containerWeight || row?.packageWeight || '';
                     }
                 },
                 {
-                    targets: 5,
-                    width: '15%',
+                    className: "w-10",
                     render: (data, type, row) => {
                         return row?.containerDimension || row?.packageDimension || '';
                     }
                 },
                 {
-                    targets: 6,
-                    width: '14%',
+                    className: "w-20",
                     render: (data, type, row) => {
                         return row?.containerNote || row?.packageNote || '';
                     }
                 },
                 {
-                    targets: 7,
-                    width: '3%',
-                    className: 'text-right',
+                    className: "w-5 text-right",
                     render: (data, type, row) => {
-                        return row.isContainer ? `<button type="button" 
+                        return row?.isContainer ? `<button ${option === 'detail' ? 'disabled' : ''} type="button"  
                                                 class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-delete-container">
                                                 <span class="icon"><i class="far fa-trash-alt"></i></span>
-                                         </button>` : `<button type="button" 
+                                         </button>` : `<button ${option === 'detail' ? 'disabled' : ''} type="button" 
                                                 class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-delete-package">
                                                 <span class="icon"><i class="far fa-trash-alt"></i></span>
                                         </button>`;

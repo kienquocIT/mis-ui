@@ -38,7 +38,7 @@ class TabExpenseFunction {
         $.fn.initMaskMoney2()
     }
 
-    static initExpenseTable(data = []) {
+    static initExpenseTable(data = [], option = "create") {
         tabExpenseElements.$tblExpense.DataTable().destroy();
         tabExpenseElements.$tblExpense.DataTableDefault({
             data: data,
@@ -50,68 +50,59 @@ class TabExpenseFunction {
             reloadCurrency: true,
             columns: [
                 {
-                    targets: 0,
-                    width: "3%",
+                    className: "w-5",
                     render: () => {
                         return '';
                     }
                 },
                 {
-                    targets: 1,
-                    width: "20%",
+                    className: "w-20",
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control row-expense-title" required>`;
+                        return `<input ${option === 'detail' ? 'disabled' : ''} type="text" class="form-control row-expense-title" required>`;
                     }
                 },
                 {
-                    targets: 2,
-                    width: "20%",
+                    className: "w-20",
                     render: (data, type, row) => {
-                        return `<select class="form-select select2 row-expense-item"></select>`;
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 row-expense-item"></select>`;
                     }
                 },
                 {
-                    targets: 3,
-                    width: "9%",
+                    className: "w-10",
                     render: (data, type, row) => {
-                        return `<select class="form-select select2 row-uom"></select>`;
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 row-uom"></select>`;
                     }
                 },
                 {
-                    targets: 4,
-                    width: "10%",
+                    className: "w-10",
                     render: (data, type, row) => {
-                        return `<input type="number" class="form-control text-end row-quantity" min='0'>`
+                        return `<input ${option === 'detail' ? 'disabled' : ''} type="number" class="form-control row-quantity" min='0'>`
                     }
                 },
                 {
-                    targets: 5,
-                    width: "16%",
+                    className: "w-10",
                     render: (data, type, row) => {
-                        return `<input class="form-control mask-money row-expense-price" value="0">`;
+                        return `<input ${option === 'detail' ? 'disabled' : ''} class="form-control mask-money row-expense-price" value="0">`;
                     }
                 },
                 {
-                    targets: 6,
-                    width: "6%",
+                    className: "w-10",
                     render: (data, type, row) => {
-                        return `<select class="form-select select2 row-tax"></select>`;
+                        return `<select ${option === 'detail' ? 'disabled' : ''} class="form-select select2 row-tax"></select>`;
                     }
                 },
                 {
-                    targets: 7,
-                    width: "13%",
+                    className: "w-10",
                     render: (data, type, row) => {
-                         return `<input class="form-control mask-money row-subtotal" value="0" readonly>`;
+                        return `<input class="form-control mask-money row-subtotal" value="0" readonly>`;
                     }
                 },
                 {
-                    targets: 8,
-                    width: "3%",
-                    className: 'text-right',
+                    className: "w-5 text-right",
                     render: () => {
                         return `
-                          <button type="button" 
+                          <button ${option === 'detail' ? 'disabled' : ''}
+                           type="button" 
                                   class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row">
                             <span class="icon">
                               <i class="far fa-trash-alt"></i>
@@ -120,7 +111,30 @@ class TabExpenseFunction {
                         `;
                     }
                 },
-            ]
+            ],
+            initComplete: function () {
+                tabExpenseElements.$tblExpense.find('tbody tr').each(function (index, ele) {
+                    $(ele).find('.row-expense-title').val(data[index]?.title || "")
+                    UsualLoadPageFunction.LoadExpenseItem({
+                        element: $(ele).find('.row-expense-item'),
+                        data: data[index]?.expense_item_data || {},
+                        data_url: tabExpenseElements.$urlEle.attr('data-expense-item-url')
+                    })
+                    UsualLoadPageFunction.LoadUOM({
+                        element: $(ele).find('.row-uom'),
+                        data: data[index]?.uom_data || {},
+                        data_url: tabExpenseElements.$urlEle.attr('data-uom-url')
+                    })
+                    $(ele).find('.row-quantity').val(data[index]?.quantity || 0)
+                    $(ele).find('.row-expense-price').attr('value', data[index]?.expense_price || 0)
+                    UsualLoadPageFunction.LoadTax({
+                        element: $(ele).find('.row-tax'),
+                        data: data[index]?.tax_data || {},
+                        data_url: tabExpenseElements.$urlEle.attr('data-tax-url')
+                    })
+                    $(ele).find('.row-subtotal').attr('value', data[index]?.subtotal_price || 0)
+                })
+            }
         })
     }
 

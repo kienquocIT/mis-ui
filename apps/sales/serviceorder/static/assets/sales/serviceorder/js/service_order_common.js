@@ -1536,6 +1536,7 @@ const ServiceOrder = (function($) {
     }
 
 // --------------------HANDLE EVENTS---------------------
+
     function handleSaveProduct() {
         pageElement.modalData.$btnSaveProduct.on('click', function (e) {
             // Get all checked products from modal table
@@ -1569,6 +1570,7 @@ const ServiceOrder = (function($) {
     }
 
     // ============ service detail =============
+
     function handleChangeServiceDescription() {
         pageElement.serviceDetail.$table.on('change', 'textarea', function (e) {
             const $textArea = $(this)
@@ -1611,151 +1613,6 @@ const ServiceOrder = (function($) {
                 $.fn.initMaskMoney2()
             }
         })
-    }
-
-    function handleDeleteServiceDetailRow() {
-        pageElement.serviceDetail.$table.on('click', '.service-del-row', function(e) {
-            e.preventDefault();
-
-            const $btn = $(this);
-            const $row = $btn.closest('tr');
-            const table = pageElement.serviceDetail.$table.DataTable();
-            const rowData = table.row($row).data();
-            const serviceDetailId = rowData.id;
-
-            const confirmTitle = $.fn.gettext('Delete service detail?')
-            Swal.fire({
-                html: `
-                    <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
-                    <h5 class="text-danger">${confirmTitle}</h5>`,
-                customClass: {
-                    confirmButton: 'btn btn-outline-secondary text-danger',
-                    cancelButton: 'btn btn-outline-secondary text-gray',
-                    container: 'swal2-has-bg',
-                    actions: 'w-100'
-                },
-                showCancelButton: true,
-                buttonsStyling: false,
-                confirmButtonText: $.fn.gettext('Yes'),
-                cancelButtonText: $.fn.gettext('Cancel'),
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    table.row($row).remove().draw(false);
-
-                    // Clean up related data structures
-                    cleanupServiceDetailRelatedData(serviceDetailId);
-                }
-            });
-        });
-    }
-
-    function cleanupServiceDetailRelatedData(serviceDetailId) {
-        // 1. Remove from serviceDetailTotalContributionData
-        if (pageVariable.serviceDetailTotalContributionData[serviceDetailId]) {
-            delete pageVariable.serviceDetailTotalContributionData[serviceDetailId];
-        }
-
-        // 2. Remove from serviceDetailTotalPaymentData
-        if (pageVariable.serviceDetailTotalPaymentData[serviceDetailId]) {
-            delete pageVariable.serviceDetailTotalPaymentData[serviceDetailId];
-        }
-
-        // 3. Clean up productContributionData
-        // Remove this service from all work order contributions
-        Object.keys(pageVariable.productContributionData).forEach(workOrderId => {
-            const contributions = pageVariable.productContributionData[workOrderId];
-            if (contributions) {
-                // Filter out the deleted service detail
-                pageVariable.productContributionData[workOrderId] = contributions.filter(
-                    item => item.service_id !== serviceDetailId
-                );
-            }
-        });
-
-        // 4. Clean up paymentDetailData
-        // Remove this service from all payment details
-        Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
-            const paymentDetails = pageVariable.paymentDetailData[paymentId];
-            if (paymentDetails) {
-                // Find and remove the payment detail for this service
-                const deletedPaymentDetail = paymentDetails.find(
-                    item => item.service_id === serviceDetailId
-                );
-
-                if (deletedPaymentDetail) {
-                    // Clean up reconcile data for this payment detail
-                    if (pageVariable.reconcileData[deletedPaymentDetail.id]) {
-                        delete pageVariable.reconcileData[deletedPaymentDetail.id];
-                    }
-
-                    // Filter out the deleted service detail from payment details
-                    pageVariable.paymentDetailData[paymentId] = paymentDetails.filter(
-                        item => item.service_id !== serviceDetailId
-                    );
-
-                    // Update payment row totals if needed
-                    updatePaymentRowTotals(paymentId);
-                }
-            }
-        });
-
-        // 5. Clean up reconcileData
-        // Remove any reconcile entries that reference this service
-        Object.keys(pageVariable.reconcileData).forEach(paymentDetailId => {
-            const reconcileItems = pageVariable.reconcileData[paymentDetailId];
-            if (reconcileItems) {
-                pageVariable.reconcileData[paymentDetailId] = reconcileItems.filter(
-                    item => item.service_id !== serviceDetailId
-                );
-
-                // If no items left, delete the entry
-                if (pageVariable.reconcileData[paymentDetailId].length === 0) {
-                    delete pageVariable.reconcileData[paymentDetailId];
-                }
-            }
-        });
-    }
-
-    function updatePaymentRowTotals(paymentId) {
-        // Recalculate totals for the payment row after removing a service detail
-        const paymentTable = pageElement.payment.$table.DataTable();
-        const $paymentRow = pageElement.payment.$table.find(`[data-payment-row-id="${paymentId}"]`);
-
-        if ($paymentRow.length > 0) {
-            const paymentRowData = paymentTable.row($paymentRow).data();
-            const paymentDetails = pageVariable.paymentDetailData[paymentId] || [];
-
-            let totalPaymentValue = 0;
-            let totalTaxValue = 0;
-            let totalReconcileValue = 0;
-            let totalReceivableValue = 0;
-
-            // Sum up values from remaining payment details
-            paymentDetails.forEach(detail => {
-                if (detail.is_selected) {
-                    totalPaymentValue += detail.payment_value || 0;
-                    totalTaxValue += detail.tax_value || 0;
-                    totalReconcileValue += detail.reconcile_value || 0;
-                    totalReceivableValue += detail.receivable_value || 0;
-                }
-            });
-
-            // Update payment row data
-            paymentRowData.payment_value = totalPaymentValue;
-            paymentRowData.tax_value = totalTaxValue;
-            paymentRowData.reconcile_value = totalReconcileValue;
-            paymentRowData.receivable_value = totalReceivableValue;
-
-            // Update DOM elements
-            $paymentRow.find('.payment-value').attr('data-init-money', totalPaymentValue);
-            $paymentRow.find('.payment-tax').attr('data-init-money', totalTaxValue);
-            $paymentRow.find('.payment-reconcile').attr('data-init-money', totalReconcileValue);
-            $paymentRow.find('.payment-receivable-value').attr('data-init-money', totalReceivableValue);
-
-            // Reinitialize money masks
-            $.fn.initMaskMoney2();
-        }
     }
 
     // ============ work order =============
@@ -2247,6 +2104,7 @@ const ServiceOrder = (function($) {
     }
 
     // ============ payment =============
+
     function handleChangePaymentDate() {
         pageElement.payment.$table.on('apply.daterangepicker', '.payment-due-date', function (ev, picker) {
             const $input = $(ev.currentTarget)
@@ -3322,6 +3180,601 @@ const ServiceOrder = (function($) {
         })
     }
 
+
+    // ============ delete handler ==============
+
+    function handleDeleteServiceDetailRow() {
+        pageElement.serviceDetail.$table.on('click', '.service-del-row', function(e) {
+            e.preventDefault();
+
+            const $btn = $(this);
+            const $row = $btn.closest('tr');
+            const table = pageElement.serviceDetail.$table.DataTable();
+            const rowData = table.row($row).data();
+            const serviceDetailId = rowData.id;
+
+            const confirmTitle = $.fn.gettext('Delete service detail?')
+            Swal.fire({
+                html: `
+                    <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
+                    <h5 class="text-danger">${confirmTitle}</h5>`,
+                customClass: {
+                    confirmButton: 'btn btn-outline-secondary text-danger',
+                    cancelButton: 'btn btn-outline-secondary text-gray',
+                    container: 'swal2-has-bg',
+                    actions: 'w-100'
+                },
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: $.fn.gettext('Yes'),
+                cancelButtonText: $.fn.gettext('Cancel'),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    table.row($row).remove().draw(false);
+
+                    // Clean up related data structures
+                    cleanupServiceDetailRelatedData(serviceDetailId);
+                }
+            });
+        });
+    }
+
+    function cleanupServiceDetailRelatedData(serviceDetailId) {
+        // 1. Remove from serviceDetailTotalContributionData
+        if (pageVariable.serviceDetailTotalContributionData[serviceDetailId]) {
+            delete pageVariable.serviceDetailTotalContributionData[serviceDetailId];
+        }
+
+        // 2. Remove from serviceDetailTotalPaymentData
+        if (pageVariable.serviceDetailTotalPaymentData[serviceDetailId]) {
+            delete pageVariable.serviceDetailTotalPaymentData[serviceDetailId];
+        }
+
+        // 3. Clean up productContributionData
+        // Remove this service from all work order contributions
+        Object.keys(pageVariable.productContributionData).forEach(workOrderId => {
+            const contributions = pageVariable.productContributionData[workOrderId];
+            if (contributions) {
+                // Filter out the deleted service detail
+                pageVariable.productContributionData[workOrderId] = contributions.filter(
+                    item => item.service_id !== serviceDetailId
+                );
+            }
+        });
+
+        // 4. Clean up paymentDetailData
+        // Remove this service from all payment details
+        Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
+            const paymentDetails = pageVariable.paymentDetailData[paymentId];
+            if (paymentDetails) {
+                // Find and remove the payment detail for this service
+                const deletedPaymentDetail = paymentDetails.find(
+                    item => item.service_id === serviceDetailId
+                );
+
+                if (deletedPaymentDetail) {
+                    // Clean up reconcile data for this payment detail
+                    if (pageVariable.reconcileData[deletedPaymentDetail.id]) {
+                        delete pageVariable.reconcileData[deletedPaymentDetail.id];
+                    }
+
+                    // Filter out the deleted service detail from payment details
+                    pageVariable.paymentDetailData[paymentId] = paymentDetails.filter(
+                        item => item.service_id !== serviceDetailId
+                    );
+
+                    // Update payment row totals if needed
+                    updatePaymentRowTotals(paymentId);
+                }
+            }
+        });
+
+        // 5. Clean up reconcileData
+        // Remove any reconcile entries that reference this service
+        Object.keys(pageVariable.reconcileData).forEach(paymentDetailId => {
+            const reconcileItems = pageVariable.reconcileData[paymentDetailId];
+            if (reconcileItems) {
+                pageVariable.reconcileData[paymentDetailId] = reconcileItems.filter(
+                    item => item.service_id !== serviceDetailId
+                );
+
+                // If no items left, delete the entry
+                if (pageVariable.reconcileData[paymentDetailId].length === 0) {
+                    delete pageVariable.reconcileData[paymentDetailId];
+                }
+            }
+        });
+    }
+
+    function updatePaymentRowTotals(paymentId) {
+        // Recalculate totals for the payment row after removing a service detail
+        const paymentTable = pageElement.payment.$table.DataTable();
+        const $paymentRow = pageElement.payment.$table.find(`[data-payment-row-id="${paymentId}"]`);
+
+        if ($paymentRow.length > 0) {
+            const paymentRowData = paymentTable.row($paymentRow).data();
+            const paymentDetails = pageVariable.paymentDetailData[paymentId] || [];
+
+            let totalPaymentValue = 0;
+            let totalTaxValue = 0;
+            let totalReconcileValue = 0;
+            let totalReceivableValue = 0;
+
+            // Sum up values from remaining payment details
+            paymentDetails.forEach(detail => {
+                if (detail.is_selected) {
+                    totalPaymentValue += detail.payment_value || 0;
+                    totalTaxValue += detail.tax_value || 0;
+                    totalReconcileValue += detail.reconcile_value || 0;
+                    totalReceivableValue += detail.receivable_value || 0;
+                }
+            });
+
+            // Update payment row data
+            paymentRowData.payment_value = totalPaymentValue;
+            paymentRowData.tax_value = totalTaxValue;
+            paymentRowData.reconcile_value = totalReconcileValue;
+            paymentRowData.receivable_value = totalReceivableValue;
+
+            // Update DOM elements
+            $paymentRow.find('.payment-value').attr('data-init-money', totalPaymentValue);
+            $paymentRow.find('.payment-tax').attr('data-init-money', totalTaxValue);
+            $paymentRow.find('.payment-reconcile').attr('data-init-money', totalReconcileValue);
+            $paymentRow.find('.payment-receivable-value').attr('data-init-money', totalReceivableValue);
+
+            // Reinitialize money masks
+            $.fn.initMaskMoney2();
+        }
+    }
+
+    function handleDeleteWorkOrderRow() {
+        pageElement.workOrder.$table.on('click', '.work-order-del-row', function(e) {
+            e.preventDefault();
+
+            const $btn = $(this);
+            const $row = $btn.closest('tr');
+            const table = pageElement.workOrder.$table.DataTable();
+            const rowData = table.row($row).data();
+            const workOrderId = rowData.id;
+
+            // Check if there's a task associated before deleting
+            const $taskIdInput = $row.find('.table-row-task-id');
+            const taskId = $taskIdInput.val();
+
+            const confirmTitle = $.fn.gettext('Delete Work Order?')
+            Swal.fire({
+                html: `
+                    <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
+                    <h5 class="text-danger">${confirmTitle}</h5>`,
+                customClass: {
+                    confirmButton: 'btn btn-outline-secondary text-danger',
+                    cancelButton: 'btn btn-outline-secondary text-gray',
+                    container: 'swal2-has-bg',
+                    actions: 'w-100'
+                },
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: $.fn.gettext('Yes'),
+                cancelButtonText: $.fn.gettext('Cancel'),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    // Remove the row from DataTable
+                    table.row($row).remove().draw(false);
+
+                    // Clean up related data structures
+                    cleanupWorkOrderRelatedData(workOrderId);
+                }
+            });
+        });
+    }
+
+    function cleanupWorkOrderRelatedData(workOrderId) {
+        // 1. Clean up work order cost data
+        if (pageVariable.workOrderCostData[workOrderId]) {
+            delete pageVariable.workOrderCostData[workOrderId];
+        }
+
+        // 2. Clean up product contribution data
+        if (pageVariable.productContributionData[workOrderId]) {
+            const contributions = pageVariable.productContributionData[workOrderId];
+
+            // Restore the contribution percentages and delivered quantities back to service details
+            contributions.forEach(contribution => {
+                if (contribution.is_selected) {
+                    const serviceId = contribution.service_id;
+                    const totalContributionData = pageVariable.serviceDetailTotalContributionData[serviceId];
+
+                    if (totalContributionData) {
+                        // Subtract this work order's contribution from totals
+                        totalContributionData.total_contribution_percent -= contribution.contribution_percent;
+                        totalContributionData.delivery_balance_value += contribution.delivered_quantity;
+
+                        // Ensure values don't go negative
+                        if (totalContributionData.total_contribution_percent < 0) {
+                            totalContributionData.total_contribution_percent = 0;
+                        }
+
+                        // If no contributions left, could optionally delete the entry
+                        if (totalContributionData.total_contribution_percent === 0) {
+                            totalContributionData.delivery_balance_value = null; // Reset to use quantity
+                        }
+                    }
+                }
+            });
+
+            // Delete the work order's contribution data
+            delete pageVariable.productContributionData[workOrderId];
+        }
+
+        // 3. Update any other work orders' contribution data to reflect the new balances
+        Object.keys(pageVariable.productContributionData).forEach(otherWorkOrderId => {
+            if (otherWorkOrderId !== workOrderId) {
+                const otherContributions = pageVariable.productContributionData[otherWorkOrderId];
+
+                otherContributions.forEach(contribution => {
+                    const serviceId = contribution.service_id;
+                    const totalContributionData = pageVariable.serviceDetailTotalContributionData[serviceId];
+
+                    if (totalContributionData) {
+                        contribution.total_contribution_percent = totalContributionData.total_contribution_percent;
+                        contribution.balance_quantity = totalContributionData.delivery_balance_value ?? contribution.quantity;
+                    }
+                });
+            }
+        });
+    }
+
+    function handleDeleteWorkOrderCostRow() {
+        pageElement.modalData.$tableWorkOrderCost.on('click', '.delete-cost-row', function(e) {
+            e.preventDefault();
+
+            const $btn = $(this);
+            const $row = $btn.closest('tr');
+            const table = pageElement.modalData.$tableWorkOrderCost.DataTable();
+            const rowIndex = table.row($row).index();
+            const totalRows = table.rows().count();
+
+            // Prevent deleting if it's the only row
+            if (totalRows === 1) {
+                $.fn.notifyB({
+                    description: $.fn.gettext('Cannot delete the last cost row. At least one row must remain.')
+                }, 'warning');
+                return;
+            }
+
+            $.fn.confirmB({
+                heading: $.fn.gettext('Delete Cost Row'),
+                question: $.fn.gettext('Are you sure you want to delete this cost item?'),
+                okButtonTxt: $.fn.gettext('Delete'),
+                cancelButtonTxt: $.fn.gettext('Cancel'),
+                callback: function(result) {
+                    if (result) {
+                        // Remove the row from DataTable
+                        table.row($row).remove();
+
+                        // Redraw the table to update row numbers and move the add button
+                        table.draw(false);
+
+                        // Recalculate total work order cost
+                        updateWorkOrderTotalCost();
+
+                        $.fn.notifyB({
+                            description: $.fn.gettext('Cost row deleted successfully')
+                        }, 'success');
+                    }
+                }
+            });
+        });
+    }
+
+    function updateWorkOrderTotalCost() {
+        // Get the work order ID from the modal
+        const workOrderId = pageElement.modalData.$tableWorkOrderCost.attr('data-work-order-id');
+
+        if (!workOrderId) {
+            return;
+        }
+
+        // Get the current data from the work order cost table
+        const costTable = pageElement.modalData.$tableWorkOrderCost.DataTable();
+        const costData = costTable.data().toArray();
+
+        // Calculate the new total
+        let totalAmount = 0;
+        costData.forEach((item, index) => {
+            totalAmount += item.exchanged_total_value || 0;
+            item.order = index; // Update order while we're iterating
+        });
+
+        // Update the stored work order cost data
+        pageVariable.workOrderCostData[workOrderId] = costData;
+
+        // Find and update the work order row in the main table
+        const $workOrderRow = pageElement.workOrder.$table
+            .find(`.btn-open-work-order-cost[data-work-order-id="${workOrderId}"]`)
+            .closest('tr');
+
+        if ($workOrderRow.length > 0) {
+            const workOrderTable = pageElement.workOrder.$table.DataTable();
+            const workOrderRowData = workOrderTable.row($workOrderRow).data();
+
+            if (workOrderRowData) {
+                // Update unit cost (which is the total of all cost items)
+                workOrderRowData.unit_cost = totalAmount;
+
+                // Recalculate total value (unit cost * quantity)
+                const quantity = workOrderRowData.quantity || 0;
+                workOrderRowData.total_value = totalAmount * quantity;
+
+                // Update the row data
+                workOrderTable.row($workOrderRow).data(workOrderRowData);
+
+                // Update the DOM elements
+                const $unitCostCell = $workOrderRow.find('td').eq(8); // Unit cost column
+                const $totalAmountCell = $workOrderRow.find('td').eq(9); // Total amount column
+
+                $unitCostCell.find('.mask-money').attr('data-init-money', totalAmount);
+                $totalAmountCell.find('.mask-money').attr('data-init-money', workOrderRowData.total_value);
+
+                // Reinitialize money masks
+                $.fn.initMaskMoney2();
+            }
+        }
+    }
+
+    function handleDeletePaymentRow() {
+        pageElement.payment.$table.on('click', '.delete-payment-row', function(e) {
+            e.preventDefault();
+
+            const $btn = $(this);
+            const $row = $btn.closest('tr');
+            const table = pageElement.payment.$table.DataTable();
+            const rowData = table.row($row).data();
+            const paymentId = rowData.id;
+            const paymentType = rowData.payment_type;
+            const installmentNumber = rowData.installment;
+
+            let warningMessage = ''
+            // Check if this payment has reconciliations
+            const hasReconciliations = checkIfPaymentHasReconciliations(paymentId);
+            if (hasReconciliations) {
+                warningMessage = $.fn.gettext('This payment has active reconciliations that will be removed.');
+            }
+
+            const confirmTitle = $.fn.gettext('Delete payment row?')
+
+            Swal.fire({
+                    html: `
+                        <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
+                        <h5 class="text-danger">${confirmTitle}</h5>
+                        <p>${warningMessage}</p>`,
+                    customClass: {
+                        confirmButton: 'btn btn-outline-secondary text-danger',
+                        cancelButton: 'btn btn-outline-secondary text-gray',
+                        container: 'swal2-has-bg',
+                        actions: 'w-100'
+                    },
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: $.fn.gettext('Yes'),
+                    cancelButtonText: $.fn.gettext('Cancel'),
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        table.row($row).remove();
+
+                        // Clean up related data structures
+                        cleanupPaymentRelatedData(paymentId, paymentType);
+
+                        // Renumber remaining installments
+                        renumberPaymentInstallments(table);
+
+                        // Redraw table with updated installment numbers
+                        table.draw(false);
+                    }
+                });
+        });
+    }
+
+    function cleanupPaymentRelatedData(paymentId, paymentType) {
+        // 1. Handle payment detail data cleanup
+        const paymentDetails = pageVariable.paymentDetailData[paymentId];
+
+        if (paymentDetails) {
+            paymentDetails.forEach(detail => {
+                if (detail.is_selected) {
+                    const serviceId = detail.service_id;
+
+                    // Update service detail total payment data
+                    if (pageVariable.serviceDetailTotalPaymentData[serviceId]) {
+                        const totalPaymentData = pageVariable.serviceDetailTotalPaymentData[serviceId];
+
+                        // Subtract this payment's contribution
+                        totalPaymentData.total_payment_value -= detail.payment_value || 0;
+                        totalPaymentData.total_payment_percent -= detail.payment_percent || 0;
+
+                        // Ensure values don't go negative
+                        if (totalPaymentData.total_payment_value < 0) {
+                            totalPaymentData.total_payment_value = 0;
+                        }
+                        if (totalPaymentData.total_payment_percent < 0) {
+                            totalPaymentData.total_payment_percent = 0;
+                        }
+
+                        // If no payments left, could optionally delete the entry
+                        if (totalPaymentData.total_payment_value === 0) {
+                            delete pageVariable.serviceDetailTotalPaymentData[serviceId];
+                        }
+                    }
+
+                    // Clean up reconcile data for this payment detail
+                    if (pageVariable.reconcileData[detail.id]) {
+                        delete pageVariable.reconcileData[detail.id];
+                    }
+                }
+            });
+
+            // Delete payment detail data
+            delete pageVariable.paymentDetailData[paymentId];
+        }
+
+        // 2. If this is an advance payment, remove it from all reconciliations
+        if (paymentType === PAYMENT_TYPE.advance) {
+            cleanupAdvancePaymentReconciliations(paymentId);
+        }
+
+        // 3. Update other payment details to reflect new balances
+        updateAllPaymentDetailsAfterDeletion();
+    }
+
+    function cleanupAdvancePaymentReconciliations(advancePaymentId) {
+        // Go through all reconcile data and remove references to this advance payment
+        Object.keys(pageVariable.reconcileData).forEach(paymentDetailId => {
+            const reconcileItems = pageVariable.reconcileData[paymentDetailId];
+
+            if (reconcileItems) {
+                // Filter out reconciliations with the deleted advance payment
+                const filteredReconcileItems = reconcileItems.filter(
+                    item => item.advance_payment_id !== advancePaymentId
+                );
+
+                if (filteredReconcileItems.length > 0) {
+                    pageVariable.reconcileData[paymentDetailId] = filteredReconcileItems;
+                } else {
+                    // If no reconcile items left, delete the entry
+                    delete pageVariable.reconcileData[paymentDetailId];
+                }
+            }
+        });
+
+        // Update payment detail totals affected by removed reconciliations
+        Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
+            const paymentDetails = pageVariable.paymentDetailData[paymentId];
+
+            if (paymentDetails) {
+                paymentDetails.forEach(detail => {
+                    // Recalculate reconcile value for this payment detail
+                    let newReconcileValue = 0;
+
+                    if (pageVariable.reconcileData[detail.id]) {
+                        pageVariable.reconcileData[detail.id].forEach(reconcileItem => {
+                            if (reconcileItem.is_selected) {
+                                newReconcileValue += reconcileItem.reconcile_value || 0;
+                            }
+                        });
+                    }
+
+                    // Update the payment detail
+                    const oldReconcileValue = detail.reconcile_value || 0;
+                    detail.reconcile_value = newReconcileValue;
+
+                    // Update receivable value
+                    if (detail.is_selected) {
+                        const paymentValue = detail.payment_value || 0;
+                        const taxValue = detail.tax_value || 0;
+                        detail.receivable_value = paymentValue + taxValue - newReconcileValue;
+                    }
+                });
+
+                // Update the payment row totals
+                updatePaymentRowTotalsAfterReconcileChange(paymentId);
+            }
+        });
+    }
+
+    function updatePaymentRowTotalsAfterReconcileChange(paymentId) {
+        const paymentTable = pageElement.payment.$table.DataTable();
+        const $paymentRow = pageElement.payment.$table.find(`[data-payment-row-id="${paymentId}"]`);
+
+        if ($paymentRow.length > 0) {
+            const paymentDetails = pageVariable.paymentDetailData[paymentId] || [];
+
+            let totalReconcileValue = 0;
+            let totalReceivableValue = 0;
+
+            paymentDetails.forEach(detail => {
+                if (detail.is_selected) {
+                    totalReconcileValue += detail.reconcile_value || 0;
+                    totalReceivableValue += detail.receivable_value || 0;
+                }
+            });
+
+            // Update DOM elements
+            $paymentRow.find('.payment-reconcile').attr('data-init-money', totalReconcileValue);
+            $paymentRow.find('.payment-receivable-value').attr('data-init-money', totalReceivableValue);
+
+            // Update row data
+            const rowData = paymentTable.row($paymentRow).data();
+            if (rowData) {
+                rowData.reconcile_value = totalReconcileValue;
+                rowData.receivable_value = totalReceivableValue;
+            }
+
+            // Reinitialize money masks
+            $.fn.initMaskMoney2();
+        }
+    }
+
+    function renumberPaymentInstallments(table) {
+        // Update installment numbers for all remaining rows
+        table.rows().every(function(rowIdx) {
+            const rowData = this.data();
+            rowData.installment = rowIdx + 1;
+            this.data(rowData);
+        });
+    }
+
+    function checkIfPaymentHasReconciliations(paymentId) {
+        // Check if this payment is referenced in any reconciliations
+        let hasReconciliations = false;
+
+        Object.values(pageVariable.reconcileData).forEach(reconcileItems => {
+            if (reconcileItems) {
+                const found = reconcileItems.some(item =>
+                    item.advance_payment_id === paymentId && item.is_selected
+                );
+                if (found) {
+                    hasReconciliations = true;
+                }
+            }
+        });
+
+        return hasReconciliations;
+    }
+
+    function updateAllPaymentDetailsAfterDeletion() {
+    // Sync all payment detail data with the updated service detail totals
+    Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
+        let paymentDetails = pageVariable.paymentDetailData[paymentId];
+
+        if (paymentDetails) {
+            paymentDetails = paymentDetails.map(detail => {
+                const serviceId = detail.service_id;
+                const totalPaymentData = pageVariable.serviceDetailTotalPaymentData[serviceId];
+
+                if (totalPaymentData) {
+                    return {
+                        ...detail,
+                        issued_value: totalPaymentData.total_payment_value,
+                        balance_value: detail.sub_total_value - totalPaymentData.total_payment_value
+                    };
+                }
+
+                // If no total payment data, reset issued value
+                return {
+                    ...detail,
+                    issued_value: 0,
+                    balance_value: detail.sub_total_value
+                };
+            });
+
+            pageVariable.paymentDetailData[paymentId] = paymentDetails;
+        }
+    });
+}
+
     return {
         pageVariable,
         pageElement,
@@ -3339,7 +3792,6 @@ const ServiceOrder = (function($) {
         handleSaveProduct,
         handleChangeServiceQuantity,
         handleChangeServiceDescription,
-        handleDeleteServiceDetailRow,
         handleChangeWorkOrderDetail,
         handleClickOpenWorkOrderCost,
         handleSelectWorkOrderCostTax,
@@ -3370,6 +3822,10 @@ const ServiceOrder = (function($) {
         loadServiceDetailRelatedData,
         loadWorkOrderRelatedData,
         loadPaymentRelatedData,
-        disableTableFields
+        disableTableFields,
+
+        handleDeleteServiceDetailRow,
+        handleDeleteWorkOrderRow,
+        handleDeletePaymentRow
     }
 })(jQuery)

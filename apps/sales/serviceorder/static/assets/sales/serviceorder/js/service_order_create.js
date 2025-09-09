@@ -12,6 +12,7 @@ function handleWorkOrderDetailTabEvent(){
     ServiceOrder.handleAddWorkOrderNonItem()
     ServiceOrder.handleClickOpenServiceDelivery()
     ServiceOrder.handleCheckDelivery()
+    ServiceOrder.handleDeleteWorkOrderRow()
 }
 
 function handleModalWorkOrderCostEvent(){
@@ -32,6 +33,7 @@ function handlePaymentTabEvent(){
     ServiceOrder.handleChangePaymentType()
     ServiceOrder.handleCheckInvoice()
     ServiceOrder.handleOpenPaymentDetail()
+    ServiceOrder.handleDeletePaymentRow()
 }
 
 function handleModalPaymentDetailEvent(){

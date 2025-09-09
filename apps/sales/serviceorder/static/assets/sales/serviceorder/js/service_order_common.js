@@ -432,8 +432,10 @@ const ServiceOrder = (function($) {
                 {
                     width: '5%',
                     title: $.fn.gettext('Code'),
+                    className: 'dt-code-wrap',
                     render: (data, type, row) => {
-                        return row.code || ''
+                        const code = row.code || ''
+                        return `<div class="dt-code-wrap">${code}</div>`
                     }
                 },
                 {
@@ -545,8 +547,10 @@ const ServiceOrder = (function($) {
                 {
                     width: '5%',
                     title: $.fn.gettext('Code'),
+                    className: 'dt-code-wrap',
                     render: (data, type, row) => {
-                        return row.code || ''
+                        const code = row.code || ''
+                        return `<div class="dt-code-wrap">${code}</div>`
                     }
                 },
                 {
@@ -641,7 +645,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '8%',
+                    width: '7%',
                     title: $.fn.gettext('Quantity'),
                     render: (data, type, row) => {
                         const quantity = row.quantity || 1
@@ -651,7 +655,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '12%',
+                    width: '13%',
                     title: $.fn.gettext('Unit Cost'),
                     render: (data, type, row) => {
                         const unitCost = row.unit_cost || 0
@@ -2678,6 +2682,33 @@ const ServiceOrder = (function($) {
 
                 $row.find('.no-invoice-payment-detail-percentage').attr('value', 0)
                 $row.find('.no-invoice-payment-detail-value').attr('value', 0)
+
+                $.fn.initMaskMoney2()
+            }
+        })
+
+        pageElement.payment.$table.on('change', '.payment-type-select', function(e){
+            const paymentTable = pageElement.payment.$table.DataTable()
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+            const currPaymentType = Number($ele.val())
+
+            const rowData = paymentTable.row($row).data()
+            const oldPaymentType = rowData.payment_type
+            const rowId = rowData.id
+
+            rowData.payment_type = currPaymentType
+
+            if(oldPaymentType === PAYMENT_TYPE.advance && rowData.is_invoice_required === false){
+                const $invoiceCheckbox = $row.find('.invoice-require')
+                $invoiceCheckbox.prop('checked', true)
+                rowData.is_invoice_required = true
+
+                delete pageVariable.paymentDetailData[rowId]
+
+                $row.find('.payment-value').attr('data-init-money', 0)
+                $row.find('.payment-receivable-value').attr('data-init-money', 0)
+                $row.find('.payment-tax').attr('data-init-money', 0)
 
                 $.fn.initMaskMoney2()
             }

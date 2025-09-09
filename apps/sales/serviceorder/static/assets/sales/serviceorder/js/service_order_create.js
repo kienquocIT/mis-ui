@@ -20,6 +20,7 @@ function handleModalWorkOrderCostEvent(){
     ServiceOrder.handleChangeWorkOrderCostQuantityAndUnitCost()
     ServiceOrder.handleSaveWorkOrderCost()
     ServiceOrder.handleChangeWorkOrderCostTitleAndDescription()
+    ServiceOrder.handleDeleteWorkOrderCostRow()
 }
 
 function handleModalWorkOrderContributionEvent(){

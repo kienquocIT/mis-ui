@@ -1842,7 +1842,6 @@ const ServiceOrder = (function($) {
             workOrderCostList.forEach((item, index) => {
                 totalAmount += item.exchanged_total_value
                 item.order = index
-                    return item
             })
             pageVariable.workOrderCostData[workOrderRowId] = workOrderCostList
 
@@ -3433,7 +3432,6 @@ const ServiceOrder = (function($) {
             const $btn = $(this);
             const $row = $btn.closest('tr');
             const table = pageElement.modalData.$tableWorkOrderCost.DataTable();
-            const rowIndex = table.row($row).index();
             const totalRows = table.rows().count();
 
             // Prevent deleting if it's the only row
@@ -3444,84 +3442,9 @@ const ServiceOrder = (function($) {
                 return;
             }
 
-            $.fn.confirmB({
-                heading: $.fn.gettext('Delete Cost Row'),
-                question: $.fn.gettext('Are you sure you want to delete this cost item?'),
-                okButtonTxt: $.fn.gettext('Delete'),
-                cancelButtonTxt: $.fn.gettext('Cancel'),
-                callback: function(result) {
-                    if (result) {
-                        // Remove the row from DataTable
-                        table.row($row).remove();
-
-                        // Redraw the table to update row numbers and move the add button
-                        table.draw(false);
-
-                        // Recalculate total work order cost
-                        updateWorkOrderTotalCost();
-
-                        $.fn.notifyB({
-                            description: $.fn.gettext('Cost row deleted successfully')
-                        }, 'success');
-                    }
-                }
-            });
+            // Simply remove the row from the table without saving
+            table.row($row).remove().draw(false)
         });
-    }
-
-    function updateWorkOrderTotalCost() {
-        // Get the work order ID from the modal
-        const workOrderId = pageElement.modalData.$tableWorkOrderCost.attr('data-work-order-id');
-
-        if (!workOrderId) {
-            return;
-        }
-
-        // Get the current data from the work order cost table
-        const costTable = pageElement.modalData.$tableWorkOrderCost.DataTable();
-        const costData = costTable.data().toArray();
-
-        // Calculate the new total
-        let totalAmount = 0;
-        costData.forEach((item, index) => {
-            totalAmount += item.exchanged_total_value || 0;
-            item.order = index; // Update order while we're iterating
-        });
-
-        // Update the stored work order cost data
-        pageVariable.workOrderCostData[workOrderId] = costData;
-
-        // Find and update the work order row in the main table
-        const $workOrderRow = pageElement.workOrder.$table
-            .find(`.btn-open-work-order-cost[data-work-order-id="${workOrderId}"]`)
-            .closest('tr');
-
-        if ($workOrderRow.length > 0) {
-            const workOrderTable = pageElement.workOrder.$table.DataTable();
-            const workOrderRowData = workOrderTable.row($workOrderRow).data();
-
-            if (workOrderRowData) {
-                // Update unit cost (which is the total of all cost items)
-                workOrderRowData.unit_cost = totalAmount;
-
-                // Recalculate total value (unit cost * quantity)
-                const quantity = workOrderRowData.quantity || 0;
-                workOrderRowData.total_value = totalAmount * quantity;
-
-                // Update the row data
-                workOrderTable.row($workOrderRow).data(workOrderRowData);
-
-                // Update the DOM elements
-                const $unitCostCell = $workOrderRow.find('td').eq(8); // Unit cost column
-                const $totalAmountCell = $workOrderRow.find('td').eq(9); // Total amount column
-
-                $unitCostCell.find('.mask-money').attr('data-init-money', totalAmount);
-                $totalAmountCell.find('.mask-money').attr('data-init-money', workOrderRowData.total_value);
-
-                // Reinitialize money masks
-                $.fn.initMaskMoney2();
-            }
-        }
     }
 
     function handleDeletePaymentRow() {
@@ -3546,35 +3469,35 @@ const ServiceOrder = (function($) {
             const confirmTitle = $.fn.gettext('Delete payment row?')
 
             Swal.fire({
-                    html: `
-                        <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
-                        <h5 class="text-danger">${confirmTitle}</h5>
-                        <p>${warningMessage}</p>`,
-                    customClass: {
-                        confirmButton: 'btn btn-outline-secondary text-danger',
-                        cancelButton: 'btn btn-outline-secondary text-gray',
-                        container: 'swal2-has-bg',
-                        actions: 'w-100'
-                    },
-                    showCancelButton: true,
-                    buttonsStyling: false,
-                    confirmButtonText: $.fn.gettext('Yes'),
-                    cancelButtonText: $.fn.gettext('Cancel'),
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.value) {
-                        table.row($row).remove();
+                html: `
+                    <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
+                    <h5 class="text-danger">${confirmTitle}</h5>
+                    <p>${warningMessage}</p>`,
+                customClass: {
+                    confirmButton: 'btn btn-outline-secondary text-danger',
+                    cancelButton: 'btn btn-outline-secondary text-gray',
+                    container: 'swal2-has-bg',
+                    actions: 'w-100'
+                },
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: $.fn.gettext('Yes'),
+                cancelButtonText: $.fn.gettext('Cancel'),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    table.row($row).remove();
 
-                        // Clean up related data structures
-                        cleanupPaymentRelatedData(paymentId, paymentType);
+                    // Clean up related data structures
+                    cleanupPaymentRelatedData(paymentId, paymentType);
 
-                        // Renumber remaining installments
-                        renumberPaymentInstallments(table);
+                    // Renumber remaining installments
+                    renumberPaymentInstallments(table);
 
-                        // Redraw table with updated installment numbers
-                        table.draw(false);
-                    }
-                });
+                    // Redraw table with updated installment numbers
+                    table.draw(false);
+                }
+            });
         });
     }
 
@@ -3826,6 +3749,7 @@ const ServiceOrder = (function($) {
 
         handleDeleteServiceDetailRow,
         handleDeleteWorkOrderRow,
+        handleDeleteWorkOrderCostRow,
         handleDeletePaymentRow
     }
 })(jQuery)

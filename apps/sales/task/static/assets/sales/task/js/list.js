@@ -719,9 +719,7 @@ $(function () {
         init(data) {
             // clean when create new init
             $('.wrap-child').html('')
-            if ($('#employee_inherit_id')[0].closest('#formOpportunityTask')) {
             this.getAndRenderTask(data);
-            }
             this.createSubTask();
             countSTT()
             const $this = this
@@ -1620,4 +1618,11 @@ $(function () {
         kanbanTask.editTask($(tempHTML))
         $('.card-title', tempHTML).trigger('click')
     }
+
+    // event on click tab task (task extend to other apps)
+    $('#tab_task_nav').on('click', function () {
+        let $table = $(`#${$('#tab_task_nav').attr('data-tbl-id')}`);
+        let taskIDs = TaskExtend.getTaskIDsFromTbl($table);
+        callDataTaskList(kanbanTask, listTask, {'id__in': taskIDs.join(',')});
+    });
 }, jQuery);

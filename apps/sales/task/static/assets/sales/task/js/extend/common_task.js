@@ -180,6 +180,20 @@ class TaskExtend {
         return true;
     };
 
+    static getTaskIDsFromTbl($table) {
+        let taskIDs = [];
+        $table.DataTable().rows().every(function () {
+            let row = this.node();
+            let taskIDEle = row.querySelector('.table-row-task-id');
+            if (taskIDEle) {
+                if ($(taskIDEle).val()) {
+                    taskIDs.push($(taskIDEle).val());
+                }
+            }
+        });
+        return taskIDs;
+    };
+
     static storeData(formData) {
         let $canvasEle = $('#offCanvasRightTask');
         let $cusAssigneeEle = $('#custom_assignee');
@@ -230,4 +244,5 @@ class TaskExtend {
         }
         return true;
     };
+
 }

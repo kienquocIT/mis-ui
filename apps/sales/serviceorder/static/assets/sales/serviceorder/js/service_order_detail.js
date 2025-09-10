@@ -149,7 +149,7 @@ class DetailDataHandler {
                 $.fn.initMaskMoney2()
                 ServiceOrder.disableTableFields()
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
-                UsualLoadPageFunction.DisablePage(isDisablePage, ['.btn-close'])
+                UsualLoadPageFunction.DisablePage(isDisablePage, ['.btn-close', '.modal-header button'])
             }
         )
     }
@@ -163,6 +163,12 @@ $(document).ready(function () {
         TabShipmentEventHandler.InitPageEvent();
         DetailDataHandler.loadDetailServiceOrder($('#form-detail-service-order'), "detail");
     })
+    ServiceOrder.pageElement.workOrder.$table.on('click', '.btn-open-task', function () {
+            TaskExtend.openAddTaskFromTblRow(this, ServiceOrder.pageElement.workOrder.$table);
+        })
+        ServiceOrder.pageElement.workOrder.$table.on('click', '.btn-list-task', function () {
+            TaskExtend.openListTaskFromTblRow(this, ServiceOrder.pageElement.workOrder.$table);
+        })
     ServiceOrder.adjustTableSizeWhenChangeTab()
     ServiceOrder.handleClickOpenServiceDelivery()
     ServiceOrder.handleClickOpenWorkOrderCost()

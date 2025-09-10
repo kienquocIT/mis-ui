@@ -213,10 +213,12 @@ class TaskExtend {
         let color = ['red', 'blue', 'yellow', 'green', 'pink', 'purple', 'violet', 'indigo', 'sky', 'cyan', 'teal', 'neon', 'lime', 'sun', 'orange'];
         let randomColor = color[Math.floor(Math.random() * color.length)];
         let avatarEle = `<div class="avatar avatar-xs avatar-${randomColor} avatar-rounded" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${formData?.['employee_inherit']?.['full_name']}">
-                                <span class="initial-wrap text-white assignee-char">${formData?.['employee_inherit']?.['first_name'].charAt(0).toUpperCase()}</span>
+                                <span class="initial-wrap text-white">${formData?.['employee_inherit']?.['first_name'].charAt(0).toUpperCase()}</span>
                             </div>`;
         if (avaGrTaskEle) {
-            $(avaGrTaskEle).append(avatarEle);
+            if (avaGrTaskEle.querySelectorAll('.avatar').length < 3) {
+                $(avaGrTaskEle).append(avatarEle);
+            }
         }
         return true;
     };

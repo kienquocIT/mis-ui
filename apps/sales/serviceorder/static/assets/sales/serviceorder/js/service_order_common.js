@@ -590,7 +590,7 @@ const ServiceOrder = (function($) {
                                     </div>
                                     <button 
                                         type="button" 
-                                        class="btn btn-icon btn-white btn-floating btn-open-task"
+                                        class="btn btn-icon btn-white btn-animated btn-open-task"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add new task"
                                     >
                                         <span class="icon"><i class="fa-solid fa-plus"></i></span>

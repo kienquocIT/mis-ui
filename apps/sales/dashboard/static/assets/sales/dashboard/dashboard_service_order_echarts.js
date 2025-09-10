@@ -1,1232 +1,213 @@
 $(document).ready(function () {
-    const CHART_COLORS = {
-        primary: '#6366f1',
-        secondary: '#8b5cf6',
-        success: '#10b981',
-        danger: '#ef4444',
-        warning: '#f59e0b',
-        info: '#3b82f6',
-        light: '#f3f4f6',
-        dark: '#1f2937'
-    }
-    
-    const scriptUrlEle = $('#script-url')
-    const trans_script = $('#trans-script')
-    const moneyDisplayEle = $('#money-display')
-    const periodFiscalYearFilterEle = $('#period-filter')
-    const current_period_Ele = $('#current_period')
-    const current_period = current_period_Ele.text() ? JSON.parse(current_period_Ele.text()) : {}
-    let period_selected_Setting = current_period
-    let fiscal_year_Setting = current_period?.['fiscal_year']
-    let space_month_Setting = current_period?.['space_month']
+    WindowControl.showLoading()
 
-    moneyDisplayEle.on('change', function () {
-        COMPANY_CURRENT_REVENUE = 0
-        COMPANY_CURRENT_PROFIT = 0
-        DrawRevenueProfitChart(false)
-        DrawTopSaleCustomerChart(false)
-    })
-
-    function GetQuarter(dateApproved, period) {
-        let sub_current = null
-        for (let i=0; i < period?.['subs'].length; i++) {
-            let sub = period?.['subs'][i]
-            let start_date = sub?.['start_date'];
-            let end_date = sub?.['end_date'];
-
-            if (!start_date || !end_date) return false;
-
-            let approvedDate = new Date(dateApproved);
-            let startDate = new Date(start_date);
-            let endDate = new Date(end_date);
-
-            if (startDate <= approvedDate && approvedDate <= endDate) {
-                sub_current = sub
+    const $script_url = $('#script-url')
+    const {service_order_id} = $x.fn.getManyUrlParameters(['service_order_id'])
+    let ajax_detail_service_order = $.fn.callAjax2({
+        url: $script_url.attr('data-url-service-order-detail-for-dashboard').replace('0', service_order_id),
+        data: {},
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && typeof data === 'object' && data.hasOwnProperty('service_order_detail_for_dashboard')) {
+                return data?.['service_order_detail_for_dashboard'];
             }
+            return {};
+        },
+        (errs) => {
+            console.log(errs);
         }
-        if (sub_current) {
-            if ([1, 2, 3].includes(sub_current?.['order'])) {
-                return 1
-            } else if ([4, 5, 6].includes(sub_current?.['order'])) {
-                return 2
-            } else if ([7, 8, 9].includes(sub_current?.['order'])) {
-                return 3
-            } else if ([10, 11, 12].includes(sub_current?.['order'])) {
-                return 4
-            }
-        }
-        return null
-    }
+    )
 
-    function getMonthOrder(space_month) {
-        let month_order = []
-        for (let i = 0; i < 12; i++) {
-            let trans_order = i + 1 + space_month
-            if (trans_order > 12) {
-                trans_order -= 12
-            }
-            month_order.push(trans_script.attr(`data-trans-m${trans_order}th`))
-        }
-        return month_order
-    }
+    function ParseServiceOrderDetailHTML(data_list=[]) {
+        let waiting_svo = 0
+        let completed_svo = 0
+        let progressing_svo = 0
 
-    function LoadPeriod(data) {
-        if (Object.keys(data).length === 0) {
-            data = current_period
-        }
-        periodFiscalYearFilterEle.initSelect2({
-            ajax: {
-                url: periodFiscalYearFilterEle.attr('data-url'),
-                method: 'GET',
-            },
-            data: (data ? data : null),
-            keyResp: 'periods_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            period_selected_Setting = SelectDDControl.get_data_from_idx(periodFiscalYearFilterEle, periodFiscalYearFilterEle.val())
-            fiscal_year_Setting = period_selected_Setting?.['fiscal_year']
-            space_month_Setting = period_selected_Setting?.['space_month']
-            DrawRevenueProfitChart(false)
-            DrawTopSaleCustomerChart(false)
-            DrawTopCategoryProductChart(false)
-        })
-    }
+        let waiting_wo = 0
+        let completed_wo = 0
+        let progressing_wo = 0
 
-    function Check_in_period(dateApproved, period) {
-        let start_date = period?.['start_date'];
-        let end_date = period?.['end_date'];
+        let waiting_task = 0
+        let completed_task = 0
+        let progressing_task = 0
 
-        if (!start_date || !end_date) return false;
-
-        let approvedDate = new Date(dateApproved);
-        let startDate = new Date(start_date);
-        let endDate = new Date(end_date);
-
-        return startDate <= approvedDate && approvedDate <= endDate;
-    }
-
-    function GetSub(date, period) {
-        let subs = period?.['subs'] ? period?.['subs'] : []
-        for (let i=subs.length - 1; i >= 0; i--) {
-            if (new Date(date) >= new Date(subs[i]?.['start_date'])) {
-                return subs[i]?.['order']
-            }
-        }
-    }
-
-
-    let revenueprofit_DF = []
-    let revenue_chart = null
-    let revenue_expected_DF = []
-    let profit_chart = null
-    let profit_expected_DF = []
-    let profit_expected_type = null
-    let COMPANY_CURRENT_REVENUE = 0
-    let COMPANY_CURRENT_PROFIT = 0
-
-    function RevenueProfitChartCfg(labelX, data_list, chart_title='', titleX='', titleY='') {
-        return {
-            textStyle: {
-                fontFamily: 'Arial, Helvetica, sans-serif'
-            },
-            title: {
-                text: chart_title,
-                left: 'center',
-                textStyle: {
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    fontFamily: 'Arial, Helvetica, sans-serif'
-                }
-            },
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                    type: 'cross',
-                    animation: true
-                },
-                formatter: function(params) {
-                    let result = params[0].name + '<br/>';
-                    params.forEach(function(item) {
-                        result += `${item.marker} ${item.seriesName}: ${item.value ? item.value : '--'}<br/>`;
-                    });
-                    return result;
-                }
-            },
-            legend: {
-                data: data_list.map(item => item.name),
-                bottom: 0,
-                selectedMode: 'multiple'
-            },
-            toolbox: {
-                show: true,
-                orient: 'horizontal',
-                right: '2%',
-                top: '2%',
-                feature: {
-                    dataView: {
-                        readOnly: false,
-                        title: 'Xem dữ liệu',
-                        lang: ['Dữ liệu', 'Đóng', 'Làm mới']
-                    },
-                    magicType: {
-                        type: ['line', 'bar'],
-                        title: {
-                            line: 'Biểu đồ đường',
-                            bar: 'Biểu đồ cột'
-                        }
-                    },
-                    restore: {
-                        title: 'Khôi phục'
-                    },
-                    saveAsImage: {
-                        title: 'Lưu hình',
-                        pixelRatio: 2
+        let service_detail_list_html = ''
+        let avg_svo_detail_percent_completed = 0
+        for (let i=0; i < data_list.length; i++) {
+            let item = data_list[i]
+            let avg_wo_percent_completed = 0
+            let wo_contribute_html = ''
+            for (let j=0; j < (item?.['work_order_contribute_list'] || []).length; j++) {
+                let wo_ctb_item = item?.['work_order_contribute_list'][j]
+                let task_percent_completed = []
+                let task_list_html = ''
+                for (let k=0; k < (wo_ctb_item['work_order_data']?.['task_data_list'] || []).length; k++) {
+                    let task_item = wo_ctb_item['work_order_data']?.['task_data_list'][k]
+                    if (task_item?.['percent_completed'] === 0) {
+                        waiting_task += 1
                     }
-                }
-            },
-            dataZoom: [{
-                type: 'inside',
-                start: 0,
-                end: 100
-            }],
-            grid: {
-                left: '1%',
-                right: '1%',
-                bottom: '15%',
-                top: '12%',
-                containLabel: true
-            },
-            xAxis: {
-                type: 'category',
-                data: labelX,
-                name: titleX,
-                nameLocation: 'middle',
-                nameGap: 35,
-                nameTextStyle: {
-                    fontWeight: 'bold',
-                    fontFamily: 'Arial, Helvetica, sans-serif'
-                },
-                axisPointer: {
-                    show: true,
-                    type: 'shadow'
-                }
-            },
-            yAxis: {
-                type: 'value',
-                name: titleY,
-                nameLocation: 'middle',
-                nameGap: 60,
-                nameTextStyle: {
-                    fontWeight: 'bold',
-                    fontFamily: 'Arial, Helvetica, sans-serif'
-                },
-                axisPointer: {
-                    show: true,
-                    type: 'line'
-                }
-            },
-            animation: true,
-            animationThreshold: 2000,
-            animationDuration: 1000,
-            animationEasing: 'cubicOut',
-            animationDelay: function (idx) {
-                return idx * 50;
-            },
-            animationDurationUpdate: 300,
-            animationEasingUpdate: 'cubicOut',
-            series: data_list.map((item, index) => ({
-                ...item,
-                type: 'line',
-                smooth: true,
-                emphasis: {
-                    focus: 'series',
-                    blurScope: 'coordinateSystem',
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowColor: 'rgba(0,0,0,0.3)'
+                    else if (task_item?.['percent_completed'] === 100) {
+                        completed_task += 1
                     }
-                },
-                lineStyle: {
-                    width: 3
-                },
-                itemStyle: {
-                    borderRadius: 0
-                },
-                animationDelay: function (idx) {
-                    return idx * 10 + index * 100;
-                }
-            }))
-        }
-    }
-
-    function DrawRevenueProfitChart(is_init=false) {
-        let report_revenue_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-report-revenue-profit'),
-            data: {},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('report_revenue_list')) {
-                    return data?.['report_revenue_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            })
-
-        let revenue_plan_by_report_perm_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-revenue-plan-by-report-perm'),
-            data: {'fiscal_year': fiscal_year_Setting},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('revenue_plan_by_report_perm_list')) {
-                    return data?.['revenue_plan_by_report_perm_list']
-                }
-                return [];
-            },
-            (errs) => {
-                console.log(errs);
-            })
-
-        Promise.all([report_revenue_ajax, revenue_plan_by_report_perm_ajax]).then(
-            (results) => {
-                revenueprofit_DF = (results[0] ? results[0] : []).filter(item => {
-                    return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
-                })
-                if (revenueprofitGroupEle.val()) {
-                    revenueprofit_DF = revenueprofit_DF.filter(item => {
-                        return item?.['group_inherit_id'] === revenueprofitGroupEle.val()
-                    })
-                }
-
-                revenue_expected_DF = Array(12).fill(0)
-                profit_expected_DF = Array(12).fill(0)
-                profit_expected_type = results[1].length ? results[1][0]?.['profit_target_type'] : null
-
-                // auto change profit type
-                if (is_init) {
-                    profitTypeEle.val(profit_expected_type)
-                }
-
-                if (parseInt(profit_expected_type) === parseInt(profitTypeEle.val())) {
-                    for (let i = 0; i < results[1].length; i++) {
-                        if (!revenueprofitGroupEle.val() || results[1][i]?.['employee_mapped']?.['group']?.['id'] === revenueprofitGroupEle.val()) {
-                            const empMonthTarget = results[1][i]?.['emp_month_target']
-                            if (Array.isArray(empMonthTarget)) {
-                                for (let j = 0; j < empMonthTarget.length; j++) {
-                                    revenue_expected_DF[j] += empMonthTarget[j] || 0
-                                }
-                            }
-                            const empMonthProfitTarget = results[1][i]?.['emp_month_profit_target']
-                            if (Array.isArray(empMonthProfitTarget)) {
-                                for (let j = 0; j < empMonthProfitTarget.length; j++) {
-                                    profit_expected_DF[j] += empMonthProfitTarget[j] || 0
-                                }
-                            }
-                        }
+                    else {
+                        progressing_task += 1
                     }
+                    task_percent_completed.push(task_item?.['percent_completed'])
+                    task_list_html += `<li class="advance-list-item">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="form-check" hidden>
+                                                        <input type="checkbox" class="form-check-input" id="${task_item?.['code']}" ${task_item?.['percent_completed'] === 100 ? 'checked' : ''} disabled>
+                                                    </div>
+                                                    <span class="badge badge-pill badge-light me-2 task-code">${task_item?.['code']}</span>
+                                                    <span class="me-2 task-name">${task_item?.['percent_completed'] === 100 ? `<s>${task_item?.['title']}</s>` : `${task_item?.['title']}`}</span>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="text-muted small me-2 d-md-inline-block d-none task-percent-completed">${task_item?.['percent_completed']}% ${$.fn.gettext('completed')}</span>
+                                                    <span class="badge badge-light badge-indicator me-2"></span>
+                                                    <span class="text-muted small me-2 d-md-inline-block d-none task-inherit"> ${task_item?.['assignee_data']?.['full_name']}</span>
+                                                    <span class="badge badge-light badge-indicator me-2"></span>
+                                                    <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" disabled>
+                                                        <span class="icon">
+                                                            <span class="feather-icon"><i class="bi bi-three-dots-vertical"></i></span>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            ${task_item?.['remark'] ? `<span class="small text-muted task-remark">${task_item?.['remark']}</span>` : ''}
+                                        </li>`
+                }
+                let wo_status_html = ''
+                let avg_task_percent_completed = task_percent_completed.length !== 0 ? (task_percent_completed.reduce((a, b) => a + b, 0) / task_percent_completed.length) : 0
+                avg_wo_percent_completed += avg_task_percent_completed * wo_ctb_item?.['contribution_percent'] / 100
+                if (avg_task_percent_completed === 0) {
+                    wo_status_html = `<span class="badge badge-orange me-2"><i class="far fa-clock"></i> ${$.fn.gettext('WAITING')}</span>`
+                    waiting_wo += 1
+                }
+                else if (avg_task_percent_completed === 100) {
+                    wo_status_html = `<span class="badge badge-success me-2"><i class="bi bi-check-circle-fill"></i> ${$.fn.gettext('COMPLETED')}</span>`
+                    completed_wo += 1
+                }
+                else {
+                    wo_status_html = `<span class="badge badge-blue me-2"><i class="bi bi-hourglass-split"></i> ${$.fn.gettext('PROCESSING')}</span>`
+                    progressing_wo += 1
                 }
 
-                if (!is_init) {
-                    revenue_chart.dispose();
-                    profit_chart.dispose();
-                }
+                wo_contribute_html += `<li class="advance-list-item">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="me-2 h5 wo-name">${wo_ctb_item?.['work_order_data']?.['title']}</span>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="badge badge-light badge-outline me-2 d-md-inline-block d-none wo-contribution">${wo_ctb_item?.['contribution_percent']}% ${$.fn.gettext('contribution')}</span>
+                                                    <span class="badge badge-light badge-indicator me-2"></span>
+                                                    <span class="small text-muted wo-inherit me-2">Nguyễn Văn Nam</span>
+                                                    <span class="badge badge-light badge-indicator me-2"></span>
+                                                    <span class="small text-muted wo-date me-2">${moment(wo_ctb_item?.['work_order_data']?.['start_date']).format('DD/MM/YYYY')} - ${moment(wo_ctb_item?.['work_order_data']?.['end_date']).format('DD/MM/YYYY')}</span>
+                                                    <span class="badge badge-light badge-indicator me-2"></span>
+                                                    ${wo_status_html}
+                                                    <span class="badge badge-light badge-indicator me-2"></span>
+                                                    <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover" data-bs-toggle="collapse" href="#collapse${wo_ctb_item?.['id']}">
+                                                        <span class="icon">
+                                                            <span class="feather-icon"><i class="far fa-eye"></i></span>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="collapse my-3" id="collapse${wo_ctb_item?.['id']}">
+                                                <h6 class="fw-bold text-muted mt-3"> ${$.fn.gettext('Task list')}:</h6>
+                                                <ul class="advance-list task-list">
+                                                    ${task_list_html}
+                                                </ul>
+                                            </div>
+                                        </li>`
+            }
 
-                const revenueContainer = document.getElementById('revenue_chart');
-                const profitContainer = document.getElementById('profit_chart');
-                
-                revenue_chart = echarts.init(revenueContainer);
-                profit_chart = echarts.init(profitContainer);
-
-                let [revenueChartDataset, profitChartDataset] = GetRevenueProfitChartDatasets()
-                
-                revenue_chart.setOption(RevenueProfitChartCfg(
-                    getMonthOrder(space_month_Setting),
-                    revenueChartDataset,
-                    trans_script.attr('data-trans-chart-revenue'),
-                    trans_script.attr('data-trans-month'),
-                    trans_script.attr('data-trans-revenue'),
-                ))
-                
-                profit_chart.setOption(RevenueProfitChartCfg(
-                    getMonthOrder(space_month_Setting),
-                    profitChartDataset,
-                    trans_script.attr('data-trans-chart-profit'),
-                    trans_script.attr('data-trans-month'),
-                    trans_script.attr('data-trans-profit'),
-                ))
-            })
-    }
-
-    function GetRevenueProfitChartDatasets() {
-        const type = revenueprofitViewTypeEle.val() === '0' ? 'Period' : 'Accumulated'
-        const cast_billion = moneyDisplayEle.val() === '1' ? 1e9 : 1e6
-
-        let revenue_chart_data = Array(12).fill(0)
-        let profit_chart_data = Array(12).fill(0)
-        for (const item of revenueprofit_DF) {
-            let index = GetSub(item?.['date_approved'], period_selected_Setting) - 1
-
-            revenue_chart_data[index] += Number(item?.['revenue'] || 0)
-
-            if (profitTypeEle.val() === '0') {
-                profit_chart_data[index] += Number(item?.['gross_profit'] || 0)
+            avg_svo_detail_percent_completed += avg_wo_percent_completed * item?.['total_contribution_percent'] / 100
+            if (avg_svo_detail_percent_completed === 0) {
+                waiting_svo += 1
+            }
+            else if (avg_svo_detail_percent_completed === 100) {
+                completed_svo += 1
             }
             else {
-                profit_chart_data[index] += Number(item?.['net_income'] || 0)
+                progressing_svo += 1
             }
+
+            service_detail_list_html += `<div class="col-12 mb-2">
+                                            <div class="card service-card">
+                                                <div class="card-body p-2">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <h5 class="fw-bold"><span class="badge badge-dark badge-pill service-code">${item?.['product_data']?.['code'] || ''}</span> <span class="service-name">${item?.['product_data']?.['title'] || ''}</span></h5>
+                                                            <span class="fw-bold text-muted">
+                                                                <span>${$.fn.gettext('Service value')}:</span> <span class="service-value mask-money" data-init-money="${item?.['total_value'] || 0}"></span>
+                                                                <span class="badge badge-light badge-indicator mx-2"></span>
+                                                                <span>${$.fn.gettext('Weight')}:</span> <span class="service-weight">${item?.['total_contribution_percent'] || '--'}%</span>
+                                                            </span>
+                                                            <div class="progress progress-bar-rounded my-3" style="min-height: 20px">
+                                                                <div class="progress-bar bg-gradient-primary service-progress-bar" role="progressbar" style="width: ${avg_wo_percent_completed}%;" aria-valuenow="${avg_wo_percent_completed}" aria-valuemin="0" aria-valuemax="100">${avg_wo_percent_completed}%</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="separator"></div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <h6 class="fw-bold text-muted">${$.fn.gettext('Work order list')}:</h6>
+                                                            <ul class="advance-list wo-list mt-3">
+                                                                ${wo_contribute_html}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>`
         }
+        $('#service-detail-list').html(service_detail_list_html)
+        $('#service-order-progress').append(`
+            <div class="progress progress-bar-rounded progress-width-animated" style="min-height: 30px">
+                <div class="progress-bar bg-gradient-success" role="progressbar" aria-valuenow="${avg_svo_detail_percent_completed}" aria-valuemin="0" aria-valuemax="100" style="width: ${avg_svo_detail_percent_completed}%"><span class="progress-tooltip">${avg_svo_detail_percent_completed}%</span></div>
+            </div>
+        `)
+        // Load summary info total task
+        $('#total-tasks').text(waiting_task + completed_task + progressing_task)
+        $('#task-waiting').text(waiting_task)
+        $('#task-completed').text(completed_task)
+        $('#task-progressing').text(progressing_task)
 
-        revenue_chart_data = revenue_chart_data.map(value => Number((value / cast_billion)));
-        profit_chart_data = profit_chart_data.map(value => Number((value / cast_billion)));
+        // Load summary info total work order
+        $('#total-work-orders').text(waiting_wo + completed_wo + progressing_wo)
+        $('#wo-waiting').text(waiting_wo)
+        $('#wo-completed').text(completed_wo)
+        $('#wo-progressing').text(progressing_wo)
 
-        let revenue_expected_data = revenue_expected_DF.map(value => Number((value / cast_billion)));
-        let profit_expected_data = profit_expected_DF.map(value => Number((value / cast_billion)));
+        // Load summary info total service
+        $('#total-services').text(waiting_svo + completed_svo + progressing_svo)
+        $('#svo-waiting').text(waiting_svo)
+        $('#svo-completed').text(completed_svo)
+        $('#svo-progressing').text(progressing_svo)
+    }
 
-        if (type === 'Period') {
-            COMPANY_CURRENT_REVENUE = revenue_chart_data[GetSub(new Date().toString(), period_selected_Setting) - 1] * cast_billion || 0
-            $('#current-revenue').attr('data-init-money', COMPANY_CURRENT_REVENUE)
-
-            COMPANY_CURRENT_PROFIT = profit_chart_data[GetSub(new Date().toString(), period_selected_Setting) - 1] * cast_billion || 0
-            $('#current-profit').attr('data-init-money', COMPANY_CURRENT_PROFIT)
+    Promise.all([ajax_detail_service_order]).then(
+        (results) => {
+            let svo_detail_data = results[0]
+            // Load title
+            $('#service-order-title').text(svo_detail_data?.['title'] || '--')
+            // Load customer
+            $('#service-order-customer').text(svo_detail_data?.['customer_data']?.['name'] || '--')
+            // Load time
+            $('#service-order-time').text(`${moment(svo_detail_data?.['start_date']).format('DD/MM/YYYY')} - ${moment(svo_detail_data?.['end_date']).format('DD/MM/YYYY')}`)
+            // Load summary info contract value
+            $('#contract-value').attr('data-init-money', svo_detail_data?.['contract_value'] || 0)
+            $('#contract-value-delivered').attr('data-init-money', svo_detail_data?.['contract_value_delivered'] || 0)
+            $('#contract-value-delivered-percent').text((svo_detail_data?.['contract_value'] ? ((svo_detail_data?.['contract_value_delivered'] || 0) / svo_detail_data?.['contract_value']) : 0).toFixed(2))
+            // Load service detail
+            ParseServiceOrderDetailHTML(svo_detail_data?.['service_order_detail_list'] || [])
 
             $.fn.initMaskMoney2()
-        }
-
-        if (type === 'Accumulated') {
-            for (let i = 0; i < revenue_chart_data.length; i++) {
-                let last_sum = 0
-                if (i > 0) {
-                    last_sum = revenue_chart_data[i - 1]
-                }
-                revenue_chart_data[i] += last_sum
-            }
-            for (let i = 0; i < revenue_expected_data.length; i++) {
-                let last_sum = 0
-                if (i > 0) {
-                    last_sum = revenue_expected_data[i - 1]
-                }
-                revenue_expected_data[i] += last_sum
-            }
-
-            for (let i = 0; i < profit_chart_data.length; i++) {
-                let last_sum = 0
-                if (i > 0) {
-                    last_sum = profit_chart_data[i - 1]
-                }
-                profit_chart_data[i] += last_sum
-            }
-            for (let i = 0; i < profit_expected_data.length; i++) {
-                let last_sum = 0
-                if (i > 0) {
-                    last_sum = profit_expected_data[i - 1]
-                }
-                profit_expected_data[i] += last_sum
-            }
-        }
-
-        let revenue_series_data = [
-            {
-                name: trans_script.attr('data-trans-expected'),
-                data: revenue_expected_data,
-                itemStyle: { color: CHART_COLORS.primary }
-            },
-            {
-                name: trans_script.attr('data-trans-reality'),
-                data: revenue_chart_data,
-                itemStyle: { color: CHART_COLORS.danger }
-            }
-        ]
-
-        let profit_series_data = [
-            {
-                name: trans_script.attr('data-trans-expected'),
-                data: profit_expected_data,
-                itemStyle: { color: CHART_COLORS.info }
-            },
-            {
-                name: trans_script.attr('data-trans-reality'),
-                data: profit_chart_data,
-                itemStyle: { color: CHART_COLORS.success }
-            }
-        ]
-
-        if (new Date().getFullYear() === fiscal_year_Setting) {
-            for (let i = new Date().getMonth() + 1 - space_month_Setting; i < 12; i++) {
-                revenue_chart_data[i] = null;
-                profit_chart_data[i] = null;
-            }
-
-            revenue_series_data[1].data = revenue_chart_data;
-            profit_series_data[1].data = profit_chart_data;
-        }
-
-        return [revenue_series_data, profit_series_data]
-    }
-
-    $('#reload-revenue-profit-data-btn').on('click', function () {
-        DrawRevenueProfitChart(false)
+        }).then(function () {
+            WindowControl.hideLoading()
     })
-
-    const revenueprofitViewTypeEle = $('#revenue-profit-view-type')
-    revenueprofitViewTypeEle.on('change', function () {
-        DrawRevenueProfitChart(false)
-    })
-
-    const revenueprofitGroupEle = $('#revenue-profit-group')
-    function LoadRevenueGroup(data) {
-        revenueprofitGroupEle.initSelect2({
-            allowClear: true,
-            placeholder: trans_script.attr('data-trans-all'),
-            ajax: {
-                url: revenueprofitGroupEle.attr('data-url'),
-                method: 'GET',
-            },
-            callbackDataResp: function (resp, keyResp) {
-                return resp.data[keyResp]
-            },
-            data: (data ? data : null),
-            keyResp: 'group_list',
-            keyId: 'id',
-            keyText: 'title',
-        }).on('change', function () {
-            DrawRevenueProfitChart(false)
-        })
-    }
-
-    const profitTypeEle = $('#profit-type')
-    profitTypeEle.on('change', function () {
-        DrawRevenueProfitChart(false)
-    })
-
-    function TopSaleCustomerChartCfg(labelX, data_list, chart_title='', titleX='', titleY='') {
-        return {
-            textStyle: {
-                fontFamily: 'Arial, Helvetica, sans-serif'
-            },
-            title: {
-                text: chart_title,
-                left: 'center',
-                textStyle: {
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    fontFamily: 'Arial, Helvetica, sans-serif'
-                }
-            },
-            tooltip: {
-                trigger: 'item',
-                confine: true,
-                formatter: function(params) {
-                    if (params.componentType === 'series') {
-                        return new Intl.NumberFormat('vi-VN').format(params.value ? params.value : '--');
-                    }
-                    return '';
-                }
-            },
-            toolbox: {
-                show: true,
-                orient: 'horizontal',
-                right: '2%',
-                top: '2%',
-                feature: {
-                    dataView: {
-                        readOnly: false,
-                        title: 'Xem dữ liệu',
-                        lang: ['Dữ liệu', 'Đóng', 'Làm mới']
-                    },
-                    restore: {
-                        title: 'Khôi phục'
-                    },
-                    saveAsImage: {
-                        title: 'Lưu hình',
-                        pixelRatio: 2
-                    }
-                }
-            },
-            grid: {
-                left: '1%',
-                right: '1%',
-                bottom: '10%',
-                top: '12%',
-                containLabel: true
-            },
-            xAxis: {
-                type: 'value',
-                name: titleX,
-                nameLocation: 'middle',
-                nameGap: 35,
-                nameTextStyle: {
-                    fontWeight: 'bold',
-                    fontFamily: 'Arial, Helvetica, sans-serif'
-                },
-                axisPointer: {
-                    show: true,
-                    type: 'line'
-                }
-            },
-            yAxis: {
-                type: 'category',
-                data: labelX,
-                name: titleY,
-                nameLocation: 'middle',
-                nameGap: 60,
-                nameTextStyle: {
-                    fontWeight: 'bold',
-                    fontFamily: 'Arial, Helvetica, sans-serif'
-                },
-                axisLabel: {
-                    formatter: function(value) {
-                        if (value.length > 15) {
-                            return value.substring(0, 15) + '...';
-                        }
-                        return value;
-                    },
-                    tooltip: {
-                        show: false
-                    },
-                    fontFamily: 'Arial, Helvetica, sans-serif'
-                },
-                axisPointer: {
-                    show: true,
-                    type: 'shadow'
-                }
-            },
-            animation: true,
-            animationThreshold: 2000,
-            animationDuration: 1000,
-            animationEasing: 'elasticOut',
-            animationDelay: function (idx) {
-                return idx * 100;
-            },
-            animationDurationUpdate: 300,
-            animationEasingUpdate: 'elasticOut',
-            series: [{
-                data: data_list[0].data,
-                type: 'bar',
-                itemStyle: {
-                    color: data_list[0].color,
-                    borderRadius: [0, 8, 8, 0]
-                },
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                    }
-                },
-                animationDelay: function (idx) {
-                    return idx * 50;
-                }
-            }]
-        }
-    }
-
-    function DrawTopSaleCustomerChart(is_init=false, chart_name=['sale', 'customer']) {
-        let report_top_sale_customer_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-top-sale-customer-list'),
-            data: {},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('report_customer_list')) {
-                    return data?.['report_customer_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        Promise.all([report_top_sale_customer_ajax]).then(
-            (results) => {
-                if (chart_name.includes('sale')) {
-                    topSale_DF = (results[0] ? results[0] : []).filter(item => {
-                        return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
-                    })
-
-                    if (!is_init) {
-                        topSale_chart.dispose();
-                    }
-                    
-                    const topSaleContainer = document.getElementById('topsale_chart');
-                    topSale_chart = echarts.init(topSaleContainer);
-                    
-                    let [topX_full_name, series_data] = GetTopSaleDatasets()
-                    topSale_chart.setOption(TopSaleCustomerChartCfg(
-                        topX_full_name,
-                        series_data,
-                        trans_script.attr('data-trans-chart-topsale'),
-                        trans_script.attr('data-trans-revenue'),
-                        ''
-                    ))
-                }
-                if (chart_name.includes('customer')) {
-                    topCustomer_DF = (results[0] ? results[0] : []).filter(item => {
-                        return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
-                    })
-
-                    if (!is_init) {
-                        topCustomer_chart.dispose();
-                    }
-                    
-                    const topCustomerContainer = document.getElementById('topcustomer_chart');
-                    topCustomer_chart = echarts.init(topCustomerContainer);
-                    
-                    let [topX_title, series_data] = GetTopCustomerDatasets()
-                    topCustomer_chart.setOption(TopSaleCustomerChartCfg(
-                        topX_title,
-                        series_data,
-                        trans_script.attr('data-trans-chart-topcustomer'),
-                        trans_script.attr('data-trans-revenue'),
-                        ''
-                    ))
-                }
-            })
-    }
-
-    $('#reload-top-sale-customer-data-btn').on('click', function () {
-        DrawTopSaleCustomerChart(false)
-    })
-
-    const topSaleCustomerTimeEle = $('#top-sale-customer-time')
-    topSaleCustomerTimeEle.on('change', function () {
-        topSaleCustomerTimeDetailEle.empty()
-        if ($(this).val() === '0') {
-            topSaleCustomerTimeDetailEle.prop('disabled', false)
-            for (let i = 0; i < period_selected_Setting?.['subs'].length; i++) {
-                let sub = period_selected_Setting?.['subs'][i]
-                let value = sub?.['order'] + space_month_Setting
-                topSaleCustomerTimeDetailEle.append(`<option value="${value <= 12 ? value : value - 12}">${moment(sub?.['start_date'], 'YYYY-MM-DD').format('MM/YYYY')}</option>`)
-            }
-        }
-        else if ($(this).val() === '1') {
-            topSaleCustomerTimeDetailEle.prop('disabled', false)
-            for (let i = 1; i <= 4; i++) {
-                topSaleCustomerTimeDetailEle.append(`<option value="${i}">${trans_script.attr(`data-trans-quarter-${i}`)}</option>`)
-            }
-        }
-        else if ($(this).val() === '2') {
-            topSaleCustomerTimeDetailEle.prop('disabled', true)
-        }
-        DrawTopSaleCustomerChart(false)
-    })
-
-    const topSaleCustomerTimeDetailEle = $('#top-sale-customer-time-detail')
-    topSaleCustomerTimeDetailEle.on('change', function () {
-        DrawTopSaleCustomerChart(false)
-    })
-
-    let topSale_chart = null
-    let topSale_DF = []
-
-    function GetTopSaleDatasets() {
-        const cast_billion = moneyDisplayEle.val() === '1' ? 1e9 : 1e6
-
-        let topSale_chart_data = []
-        for (const item of topSale_DF) {
-            const dateApproved = new Date(item?.['date_approved'])
-            const filterTimes = topSaleCustomerTimeEle.val()
-            if (filterTimes === '0') {
-                if (dateApproved.getMonth() + 1 === parseInt(topSaleCustomerTimeDetailEle.val())) {
-                    topSale_chart_data.push({
-                        'id': item?.['employee_inherit']?.['id'],
-                        'full_name': item?.['employee_inherit']?.['full_name'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            }
-            else if (filterTimes === '1') {
-                if (GetQuarter(dateApproved, period_selected_Setting) === parseInt(topSaleCustomerTimeDetailEle.val())) {
-                    topSale_chart_data.push({
-                        'id': item?.['employee_inherit']?.['id'],
-                        'full_name': item?.['employee_inherit']?.['full_name'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            }
-            else if (filterTimes === '2') {
-                topSale_chart_data.push({
-                    'id': item?.['employee_inherit']?.['id'],
-                    'full_name': item?.['employee_inherit']?.['full_name'],
-                    'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                })
-            }
-        }
-        let topSale_chart_data_sum = {}
-        for (const item of topSale_chart_data) {
-            if (topSale_chart_data_sum[item.id] !== undefined) {
-                topSale_chart_data_sum[item.id].revenue += item.revenue
-            } else {
-                topSale_chart_data_sum[item.id] = item
-            }
-        }
-        topSale_chart_data = Object.values(topSale_chart_data_sum)
-
-        topSale_chart_data.sort((a, b) => b.revenue - a.revenue);
-        let topX = topSale_chart_data.slice(0, topSaleNumberEle.val())
-        let topX_revenue = topX.map(item => item.revenue);
-        let topX_full_name = topX.map(item => item.full_name);
-        
-        // Reverse arrays to show from high to low (top to bottom)
-        topX_revenue.reverse();
-        topX_full_name.reverse();
-        
-        let series_data = [{
-            data: topX_revenue,
-            color: CHART_COLORS.warning
-        }]
-
-        return [topX_full_name, series_data]
-    }
-
-    const topSaleNumberEle = $('#top-sale-number')
-    topSaleNumberEle.on('change', function () {
-        DrawTopSaleCustomerChart(false, ['sale'])
-    })
-
-    let topCustomer_chart = null
-    let topCustomer_DF = []
-
-    function GetTopCustomerDatasets() {
-        const cast_billion = moneyDisplayEle.val() === '1' ? 1e9 : 1e6
-
-        let topCustomer_chart_data = []
-        for (const item of topCustomer_DF) {
-            const dateApproved = new Date(item?.['date_approved'])
-            const filterTimes = topSaleCustomerTimeEle.val()
-            if (filterTimes === '0') {
-                if (dateApproved.getMonth() + 1 === parseInt(topSaleCustomerTimeDetailEle.val())) {
-                    topCustomer_chart_data.push({
-                        'id': item?.['customer']?.['id'],
-                        'title': item?.['customer']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            }
-            else if (filterTimes === '1') {
-                if (GetQuarter(dateApproved, period_selected_Setting) === parseInt(topSaleCustomerTimeDetailEle.val())) {
-                    topCustomer_chart_data.push({
-                        'id': item?.['customer']?.['id'],
-                        'title': item?.['customer']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            }
-            else if (filterTimes === '2') {
-                topCustomer_chart_data.push({
-                    'id': item?.['customer']?.['id'],
-                    'title': item?.['customer']?.['title'],
-                    'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                })
-            }
-        }
-        let topCustomer_chart_data_sum = {}
-        for (const item of topCustomer_chart_data) {
-            if (topCustomer_chart_data_sum[item.id] !== undefined) {
-                topCustomer_chart_data_sum[item.id].revenue += item.revenue
-            } else {
-                topCustomer_chart_data_sum[item.id] = item
-            }
-        }
-        topCustomer_chart_data = Object.values(topCustomer_chart_data_sum)
-
-        topCustomer_chart_data.sort((a, b) => b.revenue - a.revenue);
-        let topX = topCustomer_chart_data.slice(0, topCustomerNumberEle.val())
-        let topX_revenue = topX.map(item => item.revenue);
-        let topX_title = topX.map(item => item.title);
-        
-        // Reverse arrays to show from high to low (top to bottom)
-        topX_revenue.reverse();
-        topX_title.reverse();
-        
-        let series_data = [{
-            data: topX_revenue,
-            color: CHART_COLORS.secondary
-        }]
-
-        return [topX_title, series_data]
-    }
-
-    const topCustomerNumberEle = $('#top-customer-number')
-    topCustomerNumberEle.on('change', function () {
-        DrawTopSaleCustomerChart(false, ['customer'])
-    })
-
-    function TopCategoryProductChartCfg(labelX, data_list, chart_title='', titleX='', titleY='') {
-        return {
-            textStyle: {
-                fontFamily: 'Arial, Helvetica, sans-serif'
-            },
-            title: {
-                text: chart_title,
-                left: 'center',
-                textStyle: {
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    fontFamily: 'Arial, Helvetica, sans-serif'
-                }
-            },
-            tooltip: {
-                trigger: 'item',
-                confine: true,
-                formatter: function(params) {
-                    if (params.componentType === 'series') {
-                        return new Intl.NumberFormat('vi-VN').format(params.value ? params.value : '--');
-                    }
-                    return '';
-                }
-            },
-            toolbox: {
-                show: true,
-                orient: 'horizontal',
-                right: '2%',
-                top: '2%',
-                feature: {
-                    dataView: {
-                        readOnly: false,
-                        title: 'Xem dữ liệu',
-                        lang: ['Dữ liệu', 'Đóng', 'Làm mới']
-                    },
-                    restore: {
-                        title: 'Khôi phục'
-                    },
-                    saveAsImage: {
-                        title: 'Lưu hình',
-                        pixelRatio: 2
-                    }
-                }
-            },
-            grid: {
-                left: '1%',
-                right: '1%',
-                bottom: '10%',
-                top: '12%',
-                containLabel: true
-            },
-            xAxis: {
-                type: 'value',
-                name: titleX,
-                nameLocation: 'middle',
-                nameGap: 35,
-                nameTextStyle: {
-                    fontWeight: 'bold',
-                    fontFamily: 'Arial, Helvetica, sans-serif'
-                },
-                axisPointer: {
-                    show: true,
-                    type: 'line'
-                }
-            },
-            yAxis: {
-                type: 'category',
-                data: labelX,
-                name: titleY,
-                nameLocation: 'middle',
-                nameGap: 60,
-                nameTextStyle: {
-                    fontWeight: 'bold',
-                    fontFamily: 'Arial, Helvetica, sans-serif'
-                },
-                axisLabel: {
-                    formatter: function(value) {
-                        if (value.length > 15) {
-                            return value.substring(0, 15) + '...';
-                        }
-                        return value;
-                    },
-                    tooltip: {
-                        show: false
-                    },
-                    fontFamily: 'Arial, Helvetica, sans-serif'
-                },
-                axisPointer: {
-                    show: true,
-                    type: 'shadow'
-                }
-            },
-            animation: true,
-            animationThreshold: 2000,
-            animationDuration: 1200,
-            animationEasing: 'backOut',
-            animationDelay: function (idx) {
-                return idx * 80;
-            },
-            animationDurationUpdate: 300,
-            animationEasingUpdate: 'backOut',
-            series: [{
-                data: data_list[0].data,
-                type: 'bar',
-                itemStyle: {
-                    color: data_list[0].color,
-                    borderRadius: [0, 8, 8, 0]
-                },
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                    }
-                },
-                animationDelay: function (idx) {
-                    return idx * 60;
-                }
-            }]
-        }
-    }
-
-    function DrawTopCategoryProductChart(is_init=false, chart_name=['category', 'product']) {
-        let report_top_category_product_ajax = $.fn.callAjax2({
-            url: scriptUrlEle.attr('data-url-top-category-product-list'),
-            data: {},
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('report_product_list')) {
-                    return data?.['report_product_list'];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        Promise.all([report_top_category_product_ajax]).then(
-            (results) => {
-                if (chart_name.includes('category')) {
-                    topCategory_DF = (results[0] ? results[0] : []).filter(item => {
-                        return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
-                    })
-
-                    if (!is_init) {
-                        topCategory_chart.dispose();
-                    }
-                    
-                    const topCategoryContainer = document.getElementById('topcategory_chart');
-                    topCategory_chart = echarts.init(topCategoryContainer);
-                    
-                    let [topX_title, series_data] = GetTopCategoryDatasets()
-                    topCategory_chart.setOption(TopCategoryProductChartCfg(
-                        topX_title,
-                        series_data,
-                        trans_script.attr('data-trans-chart-topcategory'),
-                        trans_script.attr('data-trans-revenue'),
-                        ''
-                    ))
-                }
-                if (chart_name.includes('product')) {
-                    topProduct_DF = (results[0] ? results[0] : []).filter(item => {
-                        return Check_in_period(new Date(item?.['date_approved']), period_selected_Setting)
-                    })
-
-                    if (!is_init) {
-                        topProduct_chart.dispose();
-                    }
-                    
-                    const topProductContainer = document.getElementById('topproduct_chart');
-                    topProduct_chart = echarts.init(topProductContainer);
-                    
-                    let [topX_title, series_data] = GetTopProductDatasets()
-                    topProduct_chart.setOption(TopCategoryProductChartCfg(
-                        topX_title,
-                        series_data,
-                        trans_script.attr('data-trans-chart-topproduct'),
-                        trans_script.attr('data-trans-revenue'),
-                        ''
-                    ))
-                }
-            })
-    }
-
-    $('#reload-top-category-product-data-btn').on('click', function () {
-        DrawTopCategoryProductChart(false)
-    })
-
-    const topCategoryProductTimeEle = $('#top-category-product-time')
-    topCategoryProductTimeEle.on('change', function () {
-        topCategoryProductTimeDetailEle.empty()
-        if ($(this).val() === '0') {
-            topCategoryProductTimeDetailEle.prop('disabled', false)
-            for (let i = 0; i < period_selected_Setting?.['subs'].length; i++) {
-                let sub = period_selected_Setting?.['subs'][i]
-                let value = sub?.['order'] + space_month_Setting
-                topCategoryProductTimeDetailEle.append(`<option value="${value <= 12 ? value : value - 12}">${moment(sub?.['start_date'], 'YYYY-MM-DD').format('MM/YYYY')}</option>`)
-            }
-        }
-        else if ($(this).val() === '1') {
-            topCategoryProductTimeDetailEle.prop('disabled', false)
-            for (let i = 1; i <= 4; i++) {
-                topCategoryProductTimeDetailEle.append(`<option value="${i}">${trans_script.attr(`data-trans-quarter-${i}`)}</option>`)
-            }
-        }
-        else if ($(this).val() === '2') {
-            topCategoryProductTimeDetailEle.prop('disabled', true)
-        }
-        DrawTopCategoryProductChart(false)
-    })
-
-    const topCategoryProductTimeDetailEle = $('#top-category-product-time-detail')
-    topCategoryProductTimeDetailEle.on('change', function () {
-        DrawTopCategoryProductChart(false)
-    })
-
-    let topCategory_chart = null
-    let topCategory_DF = []
-
-    function GetTopCategoryDatasets() {
-        const cast_billion = moneyDisplayEle.val() === '1' ? 1e9 : 1e6
-
-        let topCategory_chart_data = []
-        for (const item of topCategory_DF) {
-            const dateApproved = new Date(item?.['date_approved'])
-            const filterTimes = topCategoryProductTimeEle.val()
-            if (filterTimes === '0') {
-                if (dateApproved.getMonth() + 1 === parseInt(topCategoryProductTimeDetailEle.val())) {
-                    topCategory_chart_data.push({
-                        'id': item?.['product']?.['general_product_category']?.['id'],
-                        'title': item?.['product']?.['general_product_category']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            }
-            else if (filterTimes === '1') {
-                if (GetQuarter(dateApproved, period_selected_Setting) === parseInt(topCategoryProductTimeDetailEle.val())) {
-                    topCategory_chart_data.push({
-                        'id': item?.['product']?.['general_product_category']?.['id'],
-                        'title': item?.['product']?.['general_product_category']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            }
-            else if (filterTimes === '2') {
-                topCategory_chart_data.push({
-                    'id': item?.['product']?.['general_product_category']?.['id'],
-                    'title': item?.['product']?.['general_product_category']?.['title'],
-                    'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                })
-            }
-        }
-        let topCategory_chart_data_sum = {}
-        for (const item of topCategory_chart_data) {
-            if (topCategory_chart_data_sum[item.id] !== undefined) {
-                topCategory_chart_data_sum[item.id].revenue += item.revenue
-            } else {
-                topCategory_chart_data_sum[item.id] = item
-            }
-        }
-        topCategory_chart_data = Object.values(topCategory_chart_data_sum)
-
-        topCategory_chart_data.sort((a, b) => b.revenue - a.revenue);
-        let topX = topCategory_chart_data.slice(0, topCategoryNumberEle.val())
-        let topX_revenue = topX.map(item => item.revenue);
-        let topX_title = topX.map(item => item.title);
-        
-        // Reverse arrays to show from high to low (top to bottom)
-        topX_revenue.reverse();
-        topX_title.reverse();
-        
-        let series_data = [{
-            data: topX_revenue,
-            color: CHART_COLORS.info
-        }]
-
-        return [topX_title, series_data]
-    }
-
-    const topCategoryNumberEle = $('#top-category-number')
-    topCategoryNumberEle.on('change', function () {
-        DrawTopCategoryProductChart(false, ['category'])
-    })
-
-    let topProduct_chart = null
-    let topProduct_DF = []
-
-    function GetTopProductDatasets() {
-        const cast_billion = moneyDisplayEle.val() === '1' ? 1e9 : 1e6
-
-        let topProduct_chart_data = []
-        for (const item of topProduct_DF) {
-            const dateApproved = new Date(item?.['date_approved'])
-            const filterTimes = topCategoryProductTimeEle.val()
-            if (filterTimes === '0') {
-                if (dateApproved.getMonth() + 1 === parseInt(topCategoryProductTimeDetailEle.val())) {
-                    topProduct_chart_data.push({
-                        'id': item?.['product']?.['id'],
-                        'title': item?.['product']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            }
-            else if (filterTimes === '1') {
-                if (GetQuarter(dateApproved, period_selected_Setting) === parseInt(topCategoryProductTimeDetailEle.val())) {
-                    topProduct_chart_data.push({
-                        'id': item?.['product']?.['id'],
-                        'title': item?.['product']?.['title'],
-                        'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                    })
-                }
-            }
-            else if (filterTimes === '2') {
-                topProduct_chart_data.push({
-                    'id': item?.['product']?.['id'],
-                    'title': item?.['product']?.['title'],
-                    'revenue': (item?.['revenue'] ? item?.['revenue'] : 0) / cast_billion,
-                })
-            }
-        }
-        let topProduct_chart_data_sum = {}
-        for (const item of topProduct_chart_data) {
-            if (topProduct_chart_data_sum[item.id] !== undefined) {
-                topProduct_chart_data_sum[item.id].revenue += item.revenue
-            } else {
-                topProduct_chart_data_sum[item.id] = item
-            }
-        }
-        topProduct_chart_data = Object.values(topProduct_chart_data_sum)
-
-        topProduct_chart_data.sort((a, b) => b.revenue - a.revenue);
-        let topX = topProduct_chart_data.slice(0, topProductNumberEle.val())
-        let topX_revenue = topX.map(item => item.revenue);
-        let topX_title = topX.map(item => item.title);
-        
-        // Reverse arrays to show from high to low (top to bottom)
-        topX_revenue.reverse();
-        topX_title.reverse();
-        
-        let series_data = [{
-            data: topX_revenue,
-            color: CHART_COLORS.danger
-        }]
-
-        return [topX_title, series_data]
-    }
-
-    const topProductNumberEle = $('#top-product-number')
-    topProductNumberEle.on('change', function () {
-        DrawTopCategoryProductChart(false, ['product'])
-    })
-
-    // Handle window resize
-    window.addEventListener('resize', function() {
-        if (revenue_chart) revenue_chart.resize();
-        if (profit_chart) profit_chart.resize();
-        if (topSale_chart) topSale_chart.resize();
-        if (topCustomer_chart) topCustomer_chart.resize();
-        if (topCategory_chart) topCategory_chart.resize();
-        if (topProduct_chart) topProduct_chart.resize();
-    });
-
-    LoadPeriod(current_period)
-    LoadRevenueGroup()
-    DrawRevenueProfitChart(true)
-    DrawTopSaleCustomerChart(true)
-    DrawTopCategoryProductChart(true)
 })

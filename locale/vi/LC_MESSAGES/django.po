@@ -9921,10 +9921,6 @@ msgid "Consulting"
 msgstr "Tư vấn"
 
 #
-msgid "Due Date"
-msgstr "Thời hạn"
-
-#
 msgid "Consulting list"
 msgstr "Danh sách tư vấn"
 

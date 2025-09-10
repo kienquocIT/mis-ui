@@ -1338,7 +1338,7 @@ class ProductHandler {
         }
         data['component_list_data'] = component_list_data
 
-        data['duration_unit'] = pageElements.$check_tab_inventory.is(':checked') ? null : pageElements.$duration_unit.val()
+        data['duration_unit'] = pageElements.$check_tab_inventory.is(':checked') ? null : pageElements.$duration_unit.val() || null
 
         let attribute_list_data = []
         pageElements.$table_selected_attribute.find('tbody tr .selected-attribute').each(function (index, ele) {
@@ -1557,7 +1557,7 @@ class ProductHandler {
                     $.fn.compareStatusShowPageAction(data);
                     $x.fn.renderCodeBreadcrumb(product_detail);
 
-                    console.log(product_detail)
+                    // console.log(product_detail)
 
                     pageElements.$code.val(product_detail?.['code']).prop('disabled', true).prop('readonly', true).addClass('form-control-line fw-bold text-primary')
                     pageElements.$title.val(product_detail?.['title'])

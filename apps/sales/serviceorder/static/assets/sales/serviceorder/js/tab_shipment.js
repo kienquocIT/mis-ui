@@ -22,10 +22,6 @@ class TabShipmentElements {
 
         // shipment
         this.$tableShipment = $('#table_shipment');
-
-        // modal
-        this.$containerModal = $('#modal_container');
-        this.$packageModal = $('#modal_package');
     }
 }
 const pageElements = new TabShipmentElements();
@@ -221,17 +217,6 @@ class TabShipmentFunction {
  */
 class TabShipmentEventHandler {
     static InitPageEvent() {
-        // clear all data when show new modal
-        pageElements.$containerModal.on('show.bs.modal', function () {
-            pageElements.$containerModal.find('input, select').val('');
-            pageElements.$containerModal.find('select').trigger('change');
-        });
-
-        pageElements.$packageModal.on('show.bs.modal', function () {
-            pageElements.$packageModal.find('input, select').val('');
-            pageElements.$packageModal.find('select').trigger('change');
-        });
-
         // save container event
         pageElements.$btnSaveContainer.on('click', function () {
             const newContainer = {

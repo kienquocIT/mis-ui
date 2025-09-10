@@ -578,21 +578,23 @@ const ServiceOrder = (function($) {
                         let color = ['red', 'blue', 'yellow', 'green', 'pink', 'purple', 'violet', 'indigo', 'sky', 'cyan', 'teal', 'neon', 'lime', 'sun', 'orange'];
                         let randomColor = color[Math.floor(Math.random() * color.length)];
                         return `<div class="d-flex align-items-center">
-                                    <div class="media align-items-center">
-                                        <div class="media-head me-2 assignee-name" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">
-                                            <div class="avatar avatar-xs avatar-${randomColor} avatar-rounded">
-                                                <span class="initial-wrap text-white assignee-char">--</span>
-                                            </div>
-                                        </div>
+                                    <div class="d-flex align-items-center mr-1">
+                                        <div class="avatar-group avatar-group-overlapped avatar-group-task"></div>
+                                        <button 
+                                            type="button" 
+                                            class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-list-task"
+                                            data-bs-toggle="tooltip" data-bs-placement="bottom" title="Task assigned list"
+                                        >
+                                            <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                                        </button>
                                     </div>
                                     <button 
                                         type="button" 
-                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-task"
-                                        title=""
+                                        class="btn btn-icon btn-white btn-animated btn-open-task"
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add new task"
                                     >
-                                        <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                                        <span class="icon"><i class="fa-solid fa-plus"></i></span>
                                     </button>
-                                    <input type="text" class="form-control table-row-task-id hidden">
                                     <input type="text" class="form-control table-row-task-data hidden">
                                 </div>`
                     }
@@ -715,25 +717,10 @@ const ServiceOrder = (function($) {
                 },
             ],
             rowCallback: function (row, data, index) {
-                let taskIDEle = row.querySelector('.table-row-task-id');
-                let taskDataEle = row.querySelector('.table-row-task-data');
-                let assigneeNameEle = row.querySelector('.assignee-name');
-                let assigneeCharEle = row.querySelector('.assignee-char');
-                if (taskIDEle) {
-                    if (data?.['task_id']) {
-                        $(taskIDEle).val(data?.['task_id']);
+                if (data?.['task_data']) {
+                    for (let taskData of data?.['task_data']) {
+                        TaskExtend.storeData(taskData, row);
                     }
-                }
-                if (taskDataEle) {
-                    if (data?.['task_data']?.['id']) {
-                        $(taskDataEle).val(JSON.stringify(data?.['task_data']));
-                    }
-                }
-                if (assigneeNameEle) {
-                    $(assigneeNameEle).attr('title', data?.['task_data']?.['employee_inherit']?.['full_name']);
-                }
-                if (assigneeCharEle) {
-                    $(assigneeCharEle).html(data?.['task_data']?.['employee_inherit']?.['first_name'].charAt(0).toUpperCase());
                 }
             },
             drawCallback: function (data, type, row) {
@@ -1820,7 +1807,10 @@ const ServiceOrder = (function($) {
             }
         })
         pageElement.workOrder.$table.on('click', '.btn-open-task', function () {
-            TaskExtend.openTaskFromTbl(this, pageElement.workOrder.$table);
+            TaskExtend.openAddTaskFromTblRow(this, pageElement.workOrder.$table);
+        })
+        pageElement.workOrder.$table.on('click', '.btn-list-task', function () {
+            TaskExtend.openListTaskFromTblRow(this, pageElement.workOrder.$table);
         })
         // pageElement.workOrder.$table.on('click', '.work-order-del-row', function () {
         //     TaskExtend.delTaskFromDelRow(this);
@@ -3153,12 +3143,12 @@ const ServiceOrder = (function($) {
                 order: index + 1
             }))
 
-            // task_id
-            let taskID = null;
-            let taskIDEle = $row[0].querySelector('.table-row-task-id');
-            if (taskIDEle) {
-                if ($(taskIDEle).val()) {
-                    taskID = $(taskIDEle).val();
+            // task_id & task data
+            let taskData = [];
+            let taskDataEle = $row[0].querySelector('.table-row-task-data');
+            if (taskDataEle) {
+                if ($(taskDataEle).val()) {
+                    taskData = JSON.parse($(taskDataEle).val());
                 }
             }
 
@@ -3181,8 +3171,8 @@ const ServiceOrder = (function($) {
                 cost_data: costData,
                 // Include product contribution data if exists and is delivery point
                 product_contribution: contributionData,
-                // task_id
-                task_id: taskID,
+                // task data
+                task_data: taskData,
             };
 
             workOrderData.push(workOrder);
@@ -3545,7 +3535,6 @@ const ServiceOrder = (function($) {
             $.fn.initMaskMoney2();
         }
     }
-
     function handleDeleteWorkOrderRow() {
         pageElement.workOrder.$table.on('click', '.work-order-del-row', function(e) {
             e.preventDefault();

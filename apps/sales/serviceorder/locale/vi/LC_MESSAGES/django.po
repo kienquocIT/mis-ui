@@ -72,3 +72,87 @@ msgstr "đã giao"
 #
 msgid "SERVICE PROGRESS"
 msgstr "TIẾN ĐỘ DỊCH VỤ"
+
+#
+msgid "Start Date"
+msgstr "Ngày bắt đầu"
+
+#
+msgid "End Date"
+msgstr "Ngày kết thúc"
+
+#
+msgid "Service detail"
+msgstr "Chi tiết dịch vụ"
+
+#
+msgid "Select Product/ Service"
+msgstr "Chọn Sản Phẩm / Dịch Vụ"
+
+#
+msgid "Add Item"
+msgstr "Sản Phẩm Dịch Vụ"
+
+#
+msgid "Add Non Item"
+msgstr "Sản Phẩm Dịch Vụ Ngoài"
+
+#
+msgid "Shipment"
+msgstr "Vận chuyển hàng"
+
+#
+msgid "Package"
+msgstr "Gói hàng"
+
+#
+msgid "Reference number"
+msgstr "Tên tham chiếu"
+
+#
+msgid "Dimension"
+msgstr "Kích thước"
+
+#
+msgid "Add container"
+msgstr "Thêm Container"
+
+#
+msgid "Container name"
+msgstr "Tên container"
+
+#
+msgid "Container type"
+msgstr "Loại container"
+
+#
+msgid "Add package"
+msgstr "Thêm Gói Hàng"
+
+#
+msgid "Package name"
+msgstr "Tên gói hàng"
+
+#
+msgid "Package type"
+msgstr "Tên gói hàng"
+
+#
+msgid "Delete Package ?"
+msgstr "Xóa gói hàng ?"
+
+#
+msgid "Deleting package row"
+msgstr "Xóa dòng gói hàng"
+
+#
+msgid "Delete Container ?"
+msgstr "Xóa container ?"
+
+#
+msgid "Deleting container and all its packages"
+msgstr "Xóa container và tất cả các gói hàng liên quan"
+
+#
+msgid "Add Installment"
+msgstr "Thêm PT Thanh Toán"

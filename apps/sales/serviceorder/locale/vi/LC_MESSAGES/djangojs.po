@@ -52,3 +52,79 @@ msgstr "Danh sách giao việc"
 #
 msgid "completed"
 msgstr "đã hoàn thành"
+
+#
+msgid "Delete service detail?"
+msgstr "Xóa chi tiết dịch vụ?"
+
+#
+msgid "Assignee"
+msgstr "Người nhận việc"
+
+#
+msgid "Name"
+msgstr "Tên"
+
+#
+msgid "Unit"
+msgstr "Đơn vị"
+
+#
+msgid "Price"
+msgstr "Giá"
+
+#
+msgid "Total Amount"
+msgstr "Tổng giá trị"
+
+#
+msgid "Action"
+msgstr "Thao tác"
+
+#
+msgid "Start Date"
+msgstr "Ngày bắt đầu"
+
+#
+msgid "End Date"
+msgstr "Ngày kết thúc"
+
+#
+msgid "Is Service Delivery"
+msgstr "Trạng thái giao hàng"
+
+#
+msgid "Unit Cost"
+msgstr "Chi phí đơn vị"
+
+#
+msgid "Delete Work Order?"
+msgstr "Xóa yêu cầu dịch vụ"
+
+#
+msgid "Installment"
+msgstr "PT"
+
+#
+msgid "Payment Type"
+msgstr "Loại Hình Thanh Toán"
+
+#
+msgid "Invoice"
+msgstr "Hóa Đơn"
+
+#
+msgid "Payment Value"
+msgstr "Giá Trị Thanh Toán"
+
+#
+msgid "Reconcile"
+msgstr "Cấn Trừ"
+
+#
+msgid "Receivable Value"
+msgstr "Giá Trị Phải Thu"
+
+#
+msgid "Due Date"
+msgstr "Đến Hạn"

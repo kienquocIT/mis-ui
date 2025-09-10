@@ -112,8 +112,21 @@ class DetailDataHandler {
                 ServiceOrder.loadServiceDetailRelatedData(data.service_detail_data)
 
                 //work order
-                ServiceOrder.initWorkOrderDataTable(data.work_order_data)
-                ServiceOrder.loadWorkOrderRelatedData(data.work_order_data)
+                let workOrderData = data.work_order_data
+                workOrderData.forEach(workOrder => {
+                    workOrder.start_date = DateTimeControl.formatDateType(
+                        "YYYY-MM-DD",
+                        "DD/MM/YYYY",
+                        workOrder.start_date
+                    )
+                    workOrder.end_date = DateTimeControl.formatDateType(
+                        "YYYY-MM-DD",
+                        "DD/MM/YYYY",
+                        workOrder.end_date
+                    )
+                })
+                ServiceOrder.initWorkOrderDataTable(workOrderData)
+                ServiceOrder.loadWorkOrderRelatedData(workOrderData)
 
                 //payment
                 let paymentData = data.payment_data

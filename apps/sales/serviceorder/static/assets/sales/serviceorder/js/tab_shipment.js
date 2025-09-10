@@ -3,7 +3,7 @@
  */
 class TabShipmentElements {
     constructor() {
-        // modal
+        // modal element
         this.$containerName = $('#container_name');
         this.$containerType = $('#container_type');
         this.$containerRef = $('#container_ref_number');
@@ -19,8 +19,13 @@ class TabShipmentElements {
         this.$packageNote = $('#package_note');
         this.$btnSaveContainer = $('#btn_apply_container');
         this.$btnSavePackage = $('#btn_apply_package');
+
         // shipment
         this.$tableShipment = $('#table_shipment');
+
+        // modal
+        this.$containerModal = $('#modal_container');
+        this.$packageModal = $('#modal_package');
     }
 }
 const pageElements = new TabShipmentElements();
@@ -216,6 +221,17 @@ class TabShipmentFunction {
  */
 class TabShipmentEventHandler {
     static InitPageEvent() {
+        // clear all data when show new modal
+        pageElements.$containerModal.on('show.bs.modal', function () {
+            pageElements.$containerModal.find('input, select').val('');
+            pageElements.$containerModal.find('select').trigger('change');
+        });
+
+        pageElements.$packageModal.on('show.bs.modal', function () {
+            pageElements.$packageModal.find('input, select').val('');
+            pageElements.$packageModal.find('select').trigger('change');
+        });
+
         // save container event
         pageElements.$btnSaveContainer.on('click', function () {
             const newContainer = {

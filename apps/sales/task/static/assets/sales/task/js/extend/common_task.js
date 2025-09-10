@@ -156,27 +156,23 @@ function logworkSubmit() {
 // logic of task extend to other apps
 class TaskExtend {
 
-    static openTaskFromTbl(ele, $table) {
+    static openAddTaskFromTblRow(ele, $table) {
         let $canvasEle = $('#offCanvasRightTask');
         let row = ele.closest('tr');
         let rowIndex = $table.DataTable().row(row).index();
         $canvasEle.attr('data-tbl-id', $table[0].id);
         $canvasEle.attr('data-row-idx', rowIndex);
-        let taskIDEle = row.querySelector('.table-row-task-id');
-        if (taskIDEle) {
-            if (!$(taskIDEle).val()) {
-                $canvasEle.offcanvas('show');
-            }
-            if ($(taskIDEle).val()) {
-                let $kbScrollEle = $('#kb_scroll');
-                if ($kbScrollEle.length > 0) {
-                    let titleEle = $kbScrollEle[0].querySelector(`.card-title[data-task-id="${$(taskIDEle).val()}"]`);
-                    if (titleEle) {
-                        $(titleEle).trigger('click');
-                    }
-                }
-            }
-        }
+        $canvasEle.offcanvas('show');
+        return true;
+    };
+
+    static openListTaskFromTblRow(ele, $table) {
+        let $modalEle = $('#listTaskAssignedModal');
+        let row = ele.closest('tr');
+        let rowIndex = $table.DataTable().row(row).index();
+        $modalEle.attr('data-tbl-id', $table[0].id);
+        $modalEle.attr('data-row-idx', rowIndex);
+        $modalEle.modal('show');
         return true;
     };
 
@@ -184,40 +180,43 @@ class TaskExtend {
         let taskIDs = [];
         $table.DataTable().rows().every(function () {
             let row = this.node();
-            let taskIDEle = row.querySelector('.table-row-task-id');
-            if (taskIDEle) {
-                if ($(taskIDEle).val()) {
-                    taskIDs.push($(taskIDEle).val());
+            let taskDataEle = row.querySelector('.table-row-task-data');
+            if (taskDataEle) {
+                if ($(taskDataEle).val()) {
+                    let taskData = JSON.parse($(taskDataEle).val());
+                    for (let task of taskData) {
+                        if (task?.['id']) {
+                            taskIDs.push(task?.['id']);
+                        }
+                    }
                 }
             }
         });
         return taskIDs;
     };
 
-    static storeData(formData) {
-        let $canvasEle = $('#offCanvasRightTask');
-        let $cusAssigneeEle = $('#custom_assignee');
-
-        let $table = $(`#${$canvasEle.attr('data-tbl-id')}`);
-        let rowIdx = $canvasEle.attr('data-row-idx');
-        let rowApi = $table.DataTable().row(rowIdx);
-        let row = rowApi.node();
-        let taskIDEle = row.querySelector('.table-row-task-id');
+    static storeData(formData, row) {
         let taskDataEle = row.querySelector('.table-row-task-data');
-        let assigneeNameEle = row.querySelector('.assignee-name');
-        let assigneeCharEle = row.querySelector('.assignee-char');
-        if (taskIDEle) {
-            $(taskIDEle).val(formData?.['id']);
-        }
+        let avaGrTaskEle = row.querySelector('.avatar-group-task');
+
+        // update task data
         if (taskDataEle) {
-            $(taskDataEle).val(JSON.stringify(formData));
+            let taskData = [];
+            if ($(taskDataEle).val()) {
+                taskData = JSON.parse($(taskDataEle).val());
+            }
+            taskData.push(formData);
+            $(taskDataEle).val(JSON.stringify(taskData));
         }
-        let assigneeData = SelectDDControl.get_data_from_idx($cusAssigneeEle, formData?.['employee_inherit_id']);
-        if (assigneeNameEle) {
-            $(assigneeNameEle).attr('title', assigneeData?.['full_name']);
-        }
-        if (assigneeCharEle) {
-            $(assigneeCharEle).html(assigneeData?.['first_name'].charAt(0).toUpperCase());
+
+        // append avatar
+        let color = ['red', 'blue', 'yellow', 'green', 'pink', 'purple', 'violet', 'indigo', 'sky', 'cyan', 'teal', 'neon', 'lime', 'sun', 'orange'];
+        let randomColor = color[Math.floor(Math.random() * color.length)];
+        let avatarEle = `<div class="avatar avatar-xs avatar-${randomColor} avatar-rounded" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${formData?.['employee_inherit']?.['full_name']}">
+                                <span class="initial-wrap text-white assignee-char">${formData?.['employee_inherit']?.['first_name'].charAt(0).toUpperCase()}</span>
+                            </div>`;
+        if (avaGrTaskEle) {
+            $(avaGrTaskEle).append(avatarEle);
         }
         return true;
     };

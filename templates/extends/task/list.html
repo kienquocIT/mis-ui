@@ -115,18 +115,18 @@
                 <span class="nav-link-text">{% trans 'Kanban' %}</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tab_list">
-                <i class="fa-solid fa-list-ul"></i>
-                <span class="nav-link-text">{% trans 'List' %}</span>
-            </a>
-        </li>
-        <li class="nav-item hidden">
-            <a class="nav-link tab-gantt" data-bs-toggle="tab" href="#tab_gantt">
-                <i class="fa-solid fa-chart-gantt"></i>
-                <span class="nav-link-text">Gantt</span>
-            </a>
-        </li>
+{#        <li class="nav-item">#}
+{#            <a class="nav-link" data-bs-toggle="tab" href="#tab_list">#}
+{#                <i class="fa-solid fa-list-ul"></i>#}
+{#                <span class="nav-link-text">{% trans 'List' %}</span>#}
+{#            </a>#}
+{#        </li>#}
+{#        <li class="nav-item">#}
+{#            <a class="nav-link tab-gantt" data-bs-toggle="tab" href="#tab_gantt">#}
+{#                <i class="fa-solid fa-chart-gantt"></i>#}
+{#                <span class="nav-link-text">Gantt</span>#}
+{#            </a>#}
+{#        </li>#}
     </ul>
     <!-- task kanban -->
     <div class="tab-content">
@@ -141,15 +141,15 @@
             </div>
 
         </div>
-        <div class="tab-pane fade" id="tab_list">
-            <div class="list_task_wrap">
-                <table id="table_task_list" class="table nowrap table-advance w-100">
-                </table>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="tab_gantt">
-            <div class="gantt_table"></div>
-        </div>
+{#        <div class="tab-pane fade" id="tab_list">#}
+{#            <div class="list_task_wrap">#}
+{#                <table id="table_task_list" class="table nowrap table-advance w-100">#}
+{#                </table>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="tab-pane fade" id="tab_gantt">#}
+{#            <div class="gantt_table"></div>#}
+{#        </div>#}
     </div>
     <div class="btn-task-bar" style="display: none;">
         <button class="btn btn-primary btn-rounded w-200p" id="btn_load-more">{% trans 'Load more' %}</button>

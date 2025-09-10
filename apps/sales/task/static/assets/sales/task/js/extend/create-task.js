@@ -392,7 +392,15 @@ $(document).ready(function () {
                                 $('body').append(elm).trigger('From-Task.Submitted')
 
                                 if ($('#offCanvasRightTask').attr('data-tbl-id') && $('#offCanvasRightTask').attr('data-row-idx')) {
-                                    TaskExtend.storeData(formData);
+                                    if (data?.['id']) {
+                                        formData['id'] = data?.['id'];
+                                    }
+                                    let $canvasEle = $('#offCanvasRightTask');
+                                    let $table = $(`#${$canvasEle.attr('data-tbl-id')}`);
+                                    let rowIdx = $canvasEle.attr('data-row-idx');
+                                    let rowApi = $table.DataTable().row(rowIdx);
+                                    let row = rowApi.node();
+                                    TaskExtend.storeData(formData, row);
                                 }
                             }
                             if ($('.current-create-task').length) $('.cancel-task').trigger('click')

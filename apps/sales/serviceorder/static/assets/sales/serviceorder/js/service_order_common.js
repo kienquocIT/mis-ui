@@ -575,28 +575,7 @@ const ServiceOrder = (function($) {
                     width: '9%',
                     title: $.fn.gettext('Assignee'),
                     render: (data, type, row) => {
-                        let color = ['red', 'blue', 'yellow', 'green', 'pink', 'purple', 'violet', 'indigo', 'sky', 'cyan', 'teal', 'neon', 'lime', 'sun', 'orange'];
-                        let randomColor = color[Math.floor(Math.random() * color.length)];
-                        return `<div class="d-flex align-items-center" style="max-width: 100px">
-                                    <div class="d-flex align-items-center mr-1">
-                                        <div class="avatar-group avatar-group-overlapped avatar-group-task"></div>
-                                        <button 
-                                            type="button" 
-                                            class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-list-task"
-                                            data-bs-toggle="tooltip" data-bs-placement="bottom" title="Task assigned list"
-                                        >
-                                            <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
-                                        </button>
-                                    </div>
-                                    <button 
-                                        type="button" 
-                                        class="btn btn-icon btn-white btn-animated btn-open-task"
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add new task"
-                                    >
-                                        <span class="icon"><i class="fa-solid fa-plus"></i></span>
-                                    </button>
-                                    <input type="text" class="form-control table-row-task-data hidden">
-                                </div>`
+                        return TaskExtend.renderTaskTblRow();
                     }
                 },
                 {

@@ -15,6 +15,39 @@ $(document).ready(async function () {
                         let data = $.fn.switcherResp(resp);
                         if (data) {
                             $.fn.notifyB({description: "Successfully"}, 'success')
+
+                            // call API update avatar img
+                            if (pageVariables.avatarFiles) {
+                                let eleInputAvatar = $('#avatar-img-input');
+                                let formData = new FormData();
+                                formData.append('file', pageVariables.avatarFiles);
+                                $.fn.callAjax2({
+                                    url: eleInputAvatar.attr('data-url'),
+                                    method: eleInputAvatar.attr('data-method'),
+                                    data: formData,
+                                    contentType: 'multipart/form-data',
+                                    isLoading: true,
+                                    'loadingOpts': {
+                                        'loadingTitleAction': 'UPDATE',
+                                        'loadingTitleMore': 'Avatar',
+                                    },
+                                }).then(
+                                    (resp) => {
+                                        let data = $.fn.switcherResp(resp);
+                                        if (data) {
+                                            $.fn.notifyB({
+                                                'title': `${$.fn.gettext('Avatar')}`,
+                                                'description': $.fn.transEle.attr('data-success')
+                                            }, 'success');
+                                            setTimeout(() => window.location.reload(), 1000)
+                                        }
+                                    },
+                                    (errs) => $.fn.switcherResp(errs),
+                                )
+                            } else {
+                                setTimeout(() => window.location.reload(), 1000)
+                            }
+
                             setTimeout(() => {
                                 window.location.replace($(this).attr('data-url-redirect').format_url_with_uuid(pk));
                                 location.reload.bind(location);

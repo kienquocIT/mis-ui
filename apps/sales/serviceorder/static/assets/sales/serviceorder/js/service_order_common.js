@@ -572,12 +572,12 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '8%',
+                    width: '9%',
                     title: $.fn.gettext('Assignee'),
                     render: (data, type, row) => {
                         let color = ['red', 'blue', 'yellow', 'green', 'pink', 'purple', 'violet', 'indigo', 'sky', 'cyan', 'teal', 'neon', 'lime', 'sun', 'orange'];
                         let randomColor = color[Math.floor(Math.random() * color.length)];
-                        return `<div class="d-flex align-items-center">
+                        return `<div class="d-flex align-items-center" style="max-width: 100px">
                                     <div class="d-flex align-items-center mr-1">
                                         <div class="avatar-group avatar-group-overlapped avatar-group-task"></div>
                                         <button 
@@ -647,7 +647,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '7%',
+                    width: '6%',
                     title: $.fn.gettext('Quantity'),
                     render: (data, type, row) => {
                         const quantity = row.quantity || 1
@@ -3374,7 +3374,11 @@ const ServiceOrder = (function($) {
         })
         ServiceOrder.pageElement.workOrder.$table.on('draw.dt', function() {
             $(this).find('button, select, input, textarea').each(function () {
-                if(!$(this).hasClass('btn-open-task') && !$(this).hasClass('btn-open-service-delivery') && !$(this).hasClass('btn-open-work-order-cost')){
+                if(!$(this).hasClass('btn-open-task')
+                    && !$(this).hasClass('btn-open-service-delivery')
+                    && !$(this).hasClass('btn-open-work-order-cost')
+                    && !$(this).hasClass('btn-list-task'))
+                {
                     $(this).attr('disabled', true).attr('readonly', true)
                 }
             })

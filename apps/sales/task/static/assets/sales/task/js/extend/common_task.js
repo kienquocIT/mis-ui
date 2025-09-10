@@ -246,6 +246,12 @@ class TaskExtend {
         return true;
     };
 
+    static calculatePercentCompletedAll(taskDatas) {
+        if (!taskDatas.length) return 0;
+        let total = taskDatas.reduce((sum, task) => sum + task?.['percent_completed'], 0);
+        return total / taskDatas.length;
+    }
+
     static delTaskFromDelRow(ele) {
         let row = ele.closest('tr');
         let taskIDEle = row.querySelector('.table-row-task-id');

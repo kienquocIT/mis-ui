@@ -666,15 +666,7 @@ const ServiceOrder = (function($) {
                     width: '5%',
                     title: $.fn.gettext('Status'),
                     render: (data, type, row) => {
-                        const status = row.status || WORK_ORDER_STATUS.pending
-                        const statusOptions = {
-                            0: { label: 'Pending', class: 'badge-warning' },
-                            1: { label: 'In Progress', class: 'badge-info' },
-                            2: { label: 'Completed', class: 'badge-success' },
-                            3: { label: 'Cancelled', class: 'badge-danger' }
-                        }
-                        const statusInfo = statusOptions[status] || statusOptions[0]
-                        return `<span class="badge ${statusInfo.class}">${$.fn.gettext(statusInfo.label)}</span>`
+                        return `<span class="badge table-row-percent-completed"></span>`
                     }
                 },
                 {
@@ -699,6 +691,19 @@ const ServiceOrder = (function($) {
                 if (data?.['task_data']) {
                     for (let taskData of data?.['task_data']) {
                         TaskExtend.storeData(taskData, row);
+                    }
+                    let percentCompletedEle = row.querySelector('.table-row-percent-completed');
+                    if (percentCompletedEle) {
+                        let percent = TaskExtend.calculatePercentCompletedAll(data?.['task_data']);
+                        percentCompletedEle.innerHTML = String(percent) + ' %';
+                        let badgeCls = 'badge-soft-light';
+                        if (percent >= 50 && percent < 100) {
+                            badgeCls = 'badge-soft-info';
+                        }
+                        if (percent >= 100) {
+                            badgeCls = 'badge-soft-success';
+                        }
+                        $(percentCompletedEle).addClass(badgeCls);
                     }
                 }
             },

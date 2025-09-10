@@ -1625,4 +1625,41 @@ $(function () {
         let taskIDs = TaskExtend.getTaskIDsFromTbl($table);
         callDataTaskList(kanbanTask, listTask, {'id__in': taskIDs.join(',')});
     });
+    // event on click btn-list-task (task extend to other apps)
+    $('#listTaskAssignedModal').on('shown.bs.modal', function () {
+        let $table = $(`#${$(this).attr('data-tbl-id')}`);
+        let rowIdx = $(this).attr('data-row-idx');
+        let rowApi = $table.DataTable().row(rowIdx);
+        let row = rowApi.node();
+        let taskDataEle = row.querySelector('.table-row-task-data');
+        if (taskDataEle) {
+            if ($(taskDataEle).val()) {
+                let taskIDs = [];
+                let taskData = JSON.parse($(taskDataEle).val());
+                for (let task of taskData) {
+                    if (task?.['id']) {
+                        taskIDs.push(task?.['id']);
+                    }
+                }
+                let callData = $.fn.callAjax2({
+                    'url': $urlFact.attr('data-task-list'),
+                    'method': 'GET',
+                    'data': {'id__in': taskIDs.join(',')},
+                    'isLoading': true
+                })
+                callData.then(
+                    (req) => {
+                        let data = $.fn.switcherResp(req);
+                        if (data?.['status'] === 200) {
+                            const taskList = data?.['task_list']
+                            listTask.init(listTask, taskList)
+                        }
+                    },
+                    (err) => {
+                        $.fn.notifyB({description: err.data.errors}, 'failure');
+                    }
+                );
+            }
+        }
+    });
 }, jQuery);

@@ -666,7 +666,7 @@ const ServiceOrder = (function($) {
                     width: '5%',
                     title: $.fn.gettext('Status'),
                     render: (data, type, row) => {
-                        return `<span class="badge table-row-percent-completed"></span>`
+                        return `<span class="badge badge text-dark-10 fs-8 table-row-percent-completed"></span>`;
                     }
                 },
                 {
@@ -696,12 +696,12 @@ const ServiceOrder = (function($) {
                     if (percentCompletedEle) {
                         let percent = TaskExtend.calculatePercentCompletedAll(data?.['task_data']);
                         percentCompletedEle.innerHTML = String(percent) + ' %';
-                        let badgeCls = 'badge-soft-light';
+                        let badgeCls = 'bg-grey-light-4';
                         if (percent >= 50 && percent < 100) {
-                            badgeCls = 'badge-soft-info';
+                            badgeCls = 'bg-blue-light-4';
                         }
                         if (percent >= 100) {
-                            badgeCls = 'badge-soft-success';
+                            badgeCls = 'bg-green-light-4';
                         }
                         $(percentCompletedEle).addClass(badgeCls);
                     }

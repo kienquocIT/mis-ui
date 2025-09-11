@@ -451,7 +451,7 @@ const ServiceOrder = (function($) {
                     render: (data, type, row) => {
                         const rowDescription = row.description || ''
                         return `<div class="input-group">
-                                <textarea class="form-control cost-description">${rowDescription}</textarea>
+                                <textarea class="form-control cost-description" rows="2">${rowDescription}</textarea>
                             </div>`
                     }
                 },
@@ -565,7 +565,7 @@ const ServiceOrder = (function($) {
                             return `<div class="input-group">
                                         <textarea
                                             class="form-control work-order-description"
-                                            rows="1"
+                                            rows="2"
                                         >${name}</textarea>
                                     </div>`
                         }
@@ -774,7 +774,7 @@ const ServiceOrder = (function($) {
                         return `<div class="input-group">
                                     <textarea
                                         class="form-control wo-cost-description"
-                                        rows="1"
+                                        rows="2"
                                     >${description}</textarea>
                                 </div>`
                     }
@@ -1068,7 +1068,7 @@ const ServiceOrder = (function($) {
                         return `<div class="input-group">
                                     <textarea
                                         class="form-control payment-description"
-                                        rows="1"
+                                        rows="2"
                                     >${description}</textarea>
                                 </div>`
                     }
@@ -3307,7 +3307,11 @@ const ServiceOrder = (function($) {
         }
 
         function addUnitCostData(workOrder){
-            ServiceOrder.pageVariable.workOrderCostData[workOrder.id] = JSON.parse(JSON.stringify(workOrder.cost_data))
+            let costData = [{}]
+            if (workOrder.cost_data && workOrder.cost_data.length > 0){
+                costData = workOrder.cost_data
+            }
+            ServiceOrder.pageVariable.workOrderCostData[workOrder.id] = JSON.parse(JSON.stringify(costData))
         }
 
         for (const workOrder of workOrderData){
@@ -3523,6 +3527,7 @@ const ServiceOrder = (function($) {
             $.fn.initMaskMoney2();
         }
     }
+
     function handleDeleteWorkOrderRow() {
         pageElement.workOrder.$table.on('click', '.work-order-del-row', function(e) {
             e.preventDefault();

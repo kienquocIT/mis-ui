@@ -59,7 +59,19 @@
         <div class="tab-content mb-10" id="service-order-tab-content">
             <div class="tab-pane fade show active" id="tab_service_detail">
                 <table id="table-service-detail" class="table nowrap w-100 ">
-                    <thead class="bg-secondary-light-5"></thead>
+                    <thead class="bg-secondary-light-5">
+                        <tr>
+                            <th style="min-width: 30px"></th>
+                            <th style="min-width: 250px">{% trans 'Name' %}</th>
+                            <th style="min-width: 250px">{% trans 'Description' %}</th>
+                            <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                            <th style="min-width: 100px">{% trans 'UOM' %}</th>
+                            <th style="min-width: 150px">{% trans 'Price' %}</th>
+                            <th style="min-width: 100px">{% trans 'Tax' %}</th>
+                            <th style="min-width: 150px">{% trans 'Total amount' %}</th>
+                            <th style="min-width: 30px"></th>
+                        </tr>
+                    </thead>
                     <tbody></tbody>
                 </table>
                 <button type="button" class="btn btn-primary mt-5" id="btn-open-service-product-modal"

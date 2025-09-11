@@ -126,6 +126,9 @@ class ProductPageVariables {
                 }
             },
         ]
+
+        // file
+        this.avatarFiles = null;
     }
 }
 const pageVariables = new ProductPageVariables();
@@ -1263,6 +1266,34 @@ class ProductPageFunction {
             });
         }
     }
+
+    // init upload image ele
+    static initImgUpload(data) {
+        let $avatarEle = $('#avatar-img-input');
+        if (data?.['avatar_img']) {
+            $avatarEle.attr('data-default-file', data?.['avatar_img'])
+        }
+        $avatarEle.dropify({
+            messages: {
+                'default': '',
+            }
+        })
+        $avatarEle.on('change', function (event) {
+            pageVariables.avatarFiles = event.target.files[0];
+            console.log('avatarFiles:', pageVariables.avatarFiles);
+        })
+        $avatarEle.fadeIn();
+    }
+
+    static loadImgDetail(data) {
+        let avatarEle = $('#avatar-img-input');
+        if (data?.['avatar_img']) {
+            $(`
+                    <img src="${data?.['avatar_img']}" style="width: 90%; object-fit: cover;"/>
+                `).insertAfter(avatarEle);
+        }
+        avatarEle.remove();
+    }
 }
 
 /**
@@ -1827,6 +1858,14 @@ class ProductHandler {
                     UsualLoadPageFunction.DisablePage(
                         option==='detail'
                     )
+
+                    // init and load avatar img
+                    if (option === 'detail') {
+                        ProductPageFunction.loadImgDetail(product_detail);
+                    }
+                    if (option === 'update') {
+                        ProductPageFunction.initImgUpload(product_detail);
+                    }
                 }
             })
     }

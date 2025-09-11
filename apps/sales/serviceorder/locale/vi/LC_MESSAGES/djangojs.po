@@ -128,3 +128,23 @@ msgstr "Giá Trị Phải Thu"
 #
 msgid "Due Date"
 msgstr "Đến Hạn"
+
+#
+msgid "Change service quantity"
+msgstr "Thay đổi số lượng dịch vụ"
+
+#
+msgid "This will result in resetting contribution and payment data"
+msgstr "Điều này dẫn đến việc thiết lập lại dữ liệu đóng góp và thanh toán"
+
+#
+msgid "Delete Container ?"
+msgstr "Xóa container ?"
+
+#
+msgid "This action will delete the container and all its packages"
+msgstr "Thao tác này sẽ xóa container và tất cả các kiện hàng bên trong nó"
+
+#
+msgid "Delete Package ?"
+msgstr "Xóa kiện hàng ?"

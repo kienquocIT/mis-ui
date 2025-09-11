@@ -158,6 +158,14 @@ class TaskExtend {
 
     static renderTaskTblRow() {
         return `<div class="d-flex align-items-center justify-content-between">
+                    <button 
+                        type="button" 
+                        class="btn btn-icon btn-white btn-animated btn-open-task"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add new task"
+                    >
+                        <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <input type="text" class="form-control table-row-task-data hidden">
                     <div class="d-flex align-items-center">
                         <div class="avatar-group avatar-group-overlapped avatar-group-task"></div>
                         <button 
@@ -168,14 +176,6 @@ class TaskExtend {
                             <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
                         </button>
                     </div>
-                    <button 
-                        type="button" 
-                        class="btn btn-icon btn-white btn-animated btn-open-task"
-                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add new task"
-                    >
-                        <span class="icon"><i class="fa-solid fa-plus"></i></span>
-                    </button>
-                    <input type="text" class="form-control table-row-task-data hidden">
                 </div>`;
     };
 

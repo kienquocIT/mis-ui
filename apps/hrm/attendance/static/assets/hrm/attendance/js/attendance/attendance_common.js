@@ -61,8 +61,8 @@ class AttendanceElements {
             1: 'Present',
             2: 'Leave',
             3: 'Business Trip',
-            4: 'Holiday',
-            5: 'Weekend',
+            4: 'Weekend',
+            5: 'Holiday',
             6: 'Overtime',
             7: 'Overtime on business trip'
         }
@@ -600,7 +600,583 @@ class AttendancePageFunction {
                 }).then(
                     (resp) => {
                         let data = $.fn.switcherResp(resp);
-                        return data?.['attendance_list'] || [];
+                        // return data?.['attendance_list'] || [];
+
+                        // mockup data for demo, will remove lately
+                        return [
+                            {
+                                "id": "3ae0e19f-30e4-4979-831e-214484c12f46",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "13313570-128b-4728-b51d-7c85ae80c465",
+                                    "first_name": "Tâm",
+                                    "last_name": "Hồ Minh",
+                                    "full_name": "Hồ Minh Tâm",
+                                    "email": "vtkthu1970@gmail.com",
+                                    "phone": "0939111001",
+                                    "avatar_img": "/media/public/80785ce8f13848b8b7fa5fb1971fe204/global/avatar/13313570128b4728b51d7c85ae80c465.png",
+                                    "code": "EMO0052"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:16:21",
+                                "checkout_time": "18:26:21",
+                                "date": "2025-09-11",
+                                "attendance_status": 1,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "8882e94e-8f34-4fa3-8bd6-9c34ac4e4a0d",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "f5b8c004-8910-4117-8c66-521f10752b27",
+                                    "first_name": "Việt",
+                                    "last_name": "Nguyễn",
+                                    "full_name": "Nguyễn Việt",
+                                    "email": "vietnn@mtsolution.com.vn",
+                                    "phone": "0903331211",
+                                    "avatar_img": null,
+                                    "code": "EMP0001"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:18:21",
+                                "checkout_time": "17:42:21",
+                                "date": "2025-09-11",
+                                "attendance_status": 1,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "bfc979dd-dc76-4e43-9787-0720de6309b0",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "f5b8c004-8910-4117-8c66-521f10752b27",
+                                    "first_name": "Việt",
+                                    "last_name": "Nguyễn",
+                                    "full_name": "Nguyễn Việt",
+                                    "email": "vietnn@mtsolution.com.vn",
+                                    "phone": "0903331211",
+                                    "avatar_img": null,
+                                    "code": "EMP0001"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:08:21",
+                                "checkout_time": "17:53:21",
+                                "date": "2025-09-10",
+                                "attendance_status": 1,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "ee2dfca3-6ea8-4469-9794-f14801e3fe8b",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "13313570-128b-4728-b51d-7c85ae80c465",
+                                    "first_name": "Tâm",
+                                    "last_name": "Hồ Minh",
+                                    "full_name": "Hồ Minh Tâm",
+                                    "email": "vtkthu1970@gmail.com",
+                                    "phone": "0939111001",
+                                    "avatar_img": "/media/public/80785ce8f13848b8b7fa5fb1971fe204/global/avatar/13313570128b4728b51d7c85ae80c465.png",
+                                    "code": "EMO0052"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:40:21",
+                                "checkout_time": "18:26:21",
+                                "date": "2025-09-10",
+                                "attendance_status": 0,
+                                "is_late": true,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "3ae0e19f-30e4-4979-831e-214484c12f46",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "13313570-128b-4728-b51d-7c85ae80c465",
+                                    "first_name": "Tâm",
+                                    "last_name": "Hồ Minh",
+                                    "full_name": "Hồ Minh Tâm",
+                                    "email": "vtkthu1970@gmail.com",
+                                    "phone": "0939111001",
+                                    "avatar_img": "/media/public/80785ce8f13848b8b7fa5fb1971fe204/global/avatar/13313570128b4728b51d7c85ae80c465.png",
+                                    "code": "EMO0052"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:16:21",
+                                "checkout_time": "18:26:21",
+                                "date": "2025-09-09",
+                                "attendance_status": 1,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "8882e94e-8f34-4fa3-8bd6-9c34ac4e4a0d",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "f5b8c004-8910-4117-8c66-521f10752b27",
+                                    "first_name": "Việt",
+                                    "last_name": "Nguyễn",
+                                    "full_name": "Nguyễn Việt",
+                                    "email": "vietnn@mtsolution.com.vn",
+                                    "phone": "0903331211",
+                                    "avatar_img": null,
+                                    "code": "EMP0001"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:18:21",
+                                "checkout_time": "17:42:21",
+                                "date": "2025-09-09",
+                                "attendance_status": 1,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "3ae0e19f-30e4-4979-831e-214484c12f46",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "13313570-128b-4728-b51d-7c85ae80c465",
+                                    "first_name": "Tâm",
+                                    "last_name": "Hồ Minh",
+                                    "full_name": "Hồ Minh Tâm",
+                                    "email": "vtkthu1970@gmail.com",
+                                    "phone": "0939111001",
+                                    "avatar_img": "/media/public/80785ce8f13848b8b7fa5fb1971fe204/global/avatar/13313570128b4728b51d7c85ae80c465.png",
+                                    "code": "EMO0052"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:16:21",
+                                "checkout_time": "18:26:21",
+                                "date": "2025-09-08",
+                                "attendance_status": 1,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "8882e94e-8f34-4fa3-8bd6-9c34ac4e4a0d",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "f5b8c004-8910-4117-8c66-521f10752b27",
+                                    "first_name": "Việt",
+                                    "last_name": "Nguyễn",
+                                    "full_name": "Nguyễn Việt",
+                                    "email": "vietnn@mtsolution.com.vn",
+                                    "phone": "0903331211",
+                                    "avatar_img": null,
+                                    "code": "EMP0001"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:18:21",
+                                "checkout_time": "17:42:21",
+                                "date": "2025-09-08",
+                                "attendance_status": 1,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "3ae0e19f-30e4-4979-831e-214484c12f46",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "13313570-128b-4728-b51d-7c85ae80c465",
+                                    "first_name": "Tâm",
+                                    "last_name": "Hồ Minh",
+                                    "full_name": "Hồ Minh Tâm",
+                                    "email": "vtkthu1970@gmail.com",
+                                    "phone": "0939111001",
+                                    "avatar_img": "/media/public/80785ce8f13848b8b7fa5fb1971fe204/global/avatar/13313570128b4728b51d7c85ae80c465.png",
+                                    "code": "EMO0052"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": null,
+                                "checkout_time": null,
+                                "date": "2025-09-07",
+                                "attendance_status": 4,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "8882e94e-8f34-4fa3-8bd6-9c34ac4e4a0d",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "f5b8c004-8910-4117-8c66-521f10752b27",
+                                    "first_name": "Việt",
+                                    "last_name": "Nguyễn",
+                                    "full_name": "Nguyễn Việt",
+                                    "email": "vietnn@mtsolution.com.vn",
+                                    "phone": "0903331211",
+                                    "avatar_img": null,
+                                    "code": "EMP0001"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": null,
+                                "checkout_time": null,
+                                "date": "2025-09-07",
+                                "attendance_status": 4,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "3ae0e19f-30e4-4979-831e-214484c12f46",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "13313570-128b-4728-b51d-7c85ae80c465",
+                                    "first_name": "Tâm",
+                                    "last_name": "Hồ Minh",
+                                    "full_name": "Hồ Minh Tâm",
+                                    "email": "vtkthu1970@gmail.com",
+                                    "phone": "0939111001",
+                                    "avatar_img": "/media/public/80785ce8f13848b8b7fa5fb1971fe204/global/avatar/13313570128b4728b51d7c85ae80c465.png",
+                                    "code": "EMO0052"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": null,
+                                "checkout_time": null,
+                                "date": "2025-09-06",
+                                "attendance_status": 4,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "8882e94e-8f34-4fa3-8bd6-9c34ac4e4a0d",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "f5b8c004-8910-4117-8c66-521f10752b27",
+                                    "first_name": "Việt",
+                                    "last_name": "Nguyễn",
+                                    "full_name": "Nguyễn Việt",
+                                    "email": "vietnn@mtsolution.com.vn",
+                                    "phone": "0903331211",
+                                    "avatar_img": null,
+                                    "code": "EMP0001"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": null,
+                                "checkout_time": null,
+                                "date": "2025-09-06",
+                                "attendance_status": 4,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "3ae0e19f-30e4-4979-831e-214484c12f46",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "13313570-128b-4728-b51d-7c85ae80c465",
+                                    "first_name": "Tâm",
+                                    "last_name": "Hồ Minh",
+                                    "full_name": "Hồ Minh Tâm",
+                                    "email": "vtkthu1970@gmail.com",
+                                    "phone": "0939111001",
+                                    "avatar_img": "/media/public/80785ce8f13848b8b7fa5fb1971fe204/global/avatar/13313570128b4728b51d7c85ae80c465.png",
+                                    "code": "EMO0052"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:16:21",
+                                "checkout_time": "18:26:21",
+                                "date": "2025-09-05",
+                                "attendance_status": 1,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "8882e94e-8f34-4fa3-8bd6-9c34ac4e4a0d",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "f5b8c004-8910-4117-8c66-521f10752b27",
+                                    "first_name": "Việt",
+                                    "last_name": "Nguyễn",
+                                    "full_name": "Nguyễn Việt",
+                                    "email": "vietnn@mtsolution.com.vn",
+                                    "phone": "0903331211",
+                                    "avatar_img": null,
+                                    "code": "EMP0001"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:18:21",
+                                "checkout_time": "14:42:21",
+                                "date": "2025-09-05",
+                                "attendance_status": 0,
+                                "is_late": false,
+                                "is_early_leave": true
+                            },
+                            {
+                                "id": "3ae0e19f-30e4-4979-831e-214484c12f46",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "13313570-128b-4728-b51d-7c85ae80c465",
+                                    "first_name": "Tâm",
+                                    "last_name": "Hồ Minh",
+                                    "full_name": "Hồ Minh Tâm",
+                                    "email": "vtkthu1970@gmail.com",
+                                    "phone": "0939111001",
+                                    "avatar_img": "/media/public/80785ce8f13848b8b7fa5fb1971fe204/global/avatar/13313570128b4728b51d7c85ae80c465.png",
+                                    "code": "EMO0052"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:16:21",
+                                "checkout_time": "18:26:21",
+                                "date": "2025-09-04",
+                                "attendance_status": 1,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "8882e94e-8f34-4fa3-8bd6-9c34ac4e4a0d",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "f5b8c004-8910-4117-8c66-521f10752b27",
+                                    "first_name": "Việt",
+                                    "last_name": "Nguyễn",
+                                    "full_name": "Nguyễn Việt",
+                                    "email": "vietnn@mtsolution.com.vn",
+                                    "phone": "0903331211",
+                                    "avatar_img": null,
+                                    "code": "EMP0001"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:18:21",
+                                "checkout_time": "17:42:21",
+                                "date": "2025-09-04",
+                                "attendance_status": 1,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "3ae0e19f-30e4-4979-831e-214484c12f46",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "13313570-128b-4728-b51d-7c85ae80c465",
+                                    "first_name": "Tâm",
+                                    "last_name": "Hồ Minh",
+                                    "full_name": "Hồ Minh Tâm",
+                                    "email": "vtkthu1970@gmail.com",
+                                    "phone": "0939111001",
+                                    "avatar_img": "/media/public/80785ce8f13848b8b7fa5fb1971fe204/global/avatar/13313570128b4728b51d7c85ae80c465.png",
+                                    "code": "EMO0052"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:16:21",
+                                "checkout_time": "18:26:21",
+                                "date": "2025-09-03",
+                                "attendance_status": 1,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "8882e94e-8f34-4fa3-8bd6-9c34ac4e4a0d",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "f5b8c004-8910-4117-8c66-521f10752b27",
+                                    "first_name": "Việt",
+                                    "last_name": "Nguyễn",
+                                    "full_name": "Nguyễn Việt",
+                                    "email": "vietnn@mtsolution.com.vn",
+                                    "phone": "0903331211",
+                                    "avatar_img": null,
+                                    "code": "EMP0001"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": "08:18:21",
+                                "checkout_time": "17:42:21",
+                                "date": "2025-09-03",
+                                "attendance_status": 1,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "3ae0e19f-30e4-4979-831e-214484c12f46",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "13313570-128b-4728-b51d-7c85ae80c465",
+                                    "first_name": "Tâm",
+                                    "last_name": "Hồ Minh",
+                                    "full_name": "Hồ Minh Tâm",
+                                    "email": "vtkthu1970@gmail.com",
+                                    "phone": "0939111001",
+                                    "avatar_img": "/media/public/80785ce8f13848b8b7fa5fb1971fe204/global/avatar/13313570128b4728b51d7c85ae80c465.png",
+                                    "code": "EMO0052"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": null,
+                                "checkout_time": null,
+                                "date": "2025-09-02",
+                                "attendance_status": 5,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "8882e94e-8f34-4fa3-8bd6-9c34ac4e4a0d",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "f5b8c004-8910-4117-8c66-521f10752b27",
+                                    "first_name": "Việt",
+                                    "last_name": "Nguyễn",
+                                    "full_name": "Nguyễn Việt",
+                                    "email": "vietnn@mtsolution.com.vn",
+                                    "phone": "0903331211",
+                                    "avatar_img": null,
+                                    "code": "EMP0001"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": null,
+                                "checkout_time": null,
+                                "date": "2025-09-02",
+                                "attendance_status": 5,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "3ae0e19f-30e4-4979-831e-214484c12f46",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "13313570-128b-4728-b51d-7c85ae80c465",
+                                    "first_name": "Tâm",
+                                    "last_name": "Hồ Minh",
+                                    "full_name": "Hồ Minh Tâm",
+                                    "email": "vtkthu1970@gmail.com",
+                                    "phone": "0939111001",
+                                    "avatar_img": "/media/public/80785ce8f13848b8b7fa5fb1971fe204/global/avatar/13313570128b4728b51d7c85ae80c465.png",
+                                    "code": "EMO0052"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": null,
+                                "checkout_time": null,
+                                "date": "2025-09-01",
+                                "attendance_status": 5,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                            {
+                                "id": "8882e94e-8f34-4fa3-8bd6-9c34ac4e4a0d",
+                                "code": "",
+                                "title": "",
+                                "employee": {
+                                    "id": "f5b8c004-8910-4117-8c66-521f10752b27",
+                                    "first_name": "Việt",
+                                    "last_name": "Nguyễn",
+                                    "full_name": "Nguyễn Việt",
+                                    "email": "vietnn@mtsolution.com.vn",
+                                    "phone": "0903331211",
+                                    "avatar_img": null,
+                                    "code": "EMP0001"
+                                },
+                                "shift": {
+                                    "id": "13639719-cabf-4c20-bfff-f9027041f4aa",
+                                    "title": "Ca Hành Chính",
+                                    "code": "SH001"
+                                },
+                                "checkin_time": null,
+                                "checkout_time": null,
+                                "date": "2025-09-01",
+                                "attendance_status": 5,
+                                "is_late": false,
+                                "is_early_leave": false
+                            },
+                        ];
                     },
                     (errs) => {
                         console.log(errs);

@@ -1628,7 +1628,10 @@ $(function () {
     $('#tab_task_nav').on('click', function () {
         let $table = $(`#${$('#tab_task_nav').attr('data-tbl-id')}`);
         let taskIDs = TaskExtend.getTaskIDsFromTbl($table);
-        callDataTaskList(kanbanTask, listTask, {'id__in': taskIDs.join(',')});
+        if (taskIDs.length > 0) {
+            callDataTaskList(kanbanTask, listTask, {'id__in': taskIDs.join(',')});
+        }
+        $('#kb_scroll').css('max-height', 'none');
     });
     // event on click btn-list-task (task extend to other apps)
     $('#listTaskAssignedModal').on('shown.bs.modal', function () {
@@ -1646,24 +1649,26 @@ $(function () {
                         taskIDs.push(task?.['id']);
                     }
                 }
-                let callData = $.fn.callAjax2({
-                    'url': $urlFact.attr('data-task-list'),
-                    'method': 'GET',
-                    'data': {'id__in': taskIDs.join(',')},
-                    'isLoading': true
-                })
-                callData.then(
-                    (req) => {
-                        let data = $.fn.switcherResp(req);
-                        if (data?.['status'] === 200) {
-                            const taskList = data?.['task_list']
-                            listTask.init(listTask, taskList)
+                if (taskIDs.length > 0) {
+                    let callData = $.fn.callAjax2({
+                        'url': $urlFact.attr('data-task-list'),
+                        'method': 'GET',
+                        'data': {'id__in': taskIDs.join(',')},
+                        'isLoading': true
+                    })
+                    callData.then(
+                        (req) => {
+                            let data = $.fn.switcherResp(req);
+                            if (data?.['status'] === 200) {
+                                const taskList = data?.['task_list']
+                                listTask.init(listTask, taskList)
+                            }
+                        },
+                        (err) => {
+                            $.fn.notifyB({description: err.data.errors}, 'failure');
                         }
-                    },
-                    (err) => {
-                        $.fn.notifyB({description: err.data.errors}, 'failure');
-                    }
-                );
+                    );
+                }
             }
         }
     });

@@ -340,8 +340,10 @@ $(document).ready(function () {
                     })
                 })
 
+                let opportunity_data = {};
+                if ($empElm[0].closest('#formOpportunityTask')) {
                 if (!formData.opportunity) delete formData.opportunity
-                let opportunity_data = {}
+                // let opportunity_data = {}
                 if ($oppElm.val()) {
                     formData.opportunity = formData.opportunity_id = $oppElm.val()
                     opportunity_data = $oppElm.select2('data')[0]['data']
@@ -349,6 +351,12 @@ $(document).ready(function () {
                 if (!formData.project) delete formData.project
                 if ($prjElm.val()) formData.project = formData.project_id = $prjElm.val()
 
+                }
+                // case task extend to other apps
+                if (!$empElm[0].closest('#formOpportunityTask')) {
+                    opportunity_data = $oppElm.select2('data')[0]['data'];
+                    formData['opportunity_data'] = $oppElm.select2('data')[0]['data'];
+                }
                 formData.attach = $x.cls.file.get_val(formData.attach, []);
                 formData.attach_assignee = $x.cls.file.get_val(formData.attach_assignee, []);
                 let method = 'POST'

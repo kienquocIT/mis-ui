@@ -664,9 +664,9 @@ const ServiceOrder = (function($) {
                 },
                 {
                     width: '5%',
-                    title: $.fn.gettext('Status'),
+                    title: $.fn.gettext('Progress'),
                     render: (data, type, row) => {
-                        return `<span class="badge badge text-dark-10 fs-8 table-row-percent-completed"></span>`;
+                        return `<span class="table-row-percent-completed"></span>`;
                     }
                 },
                 {
@@ -695,7 +695,6 @@ const ServiceOrder = (function($) {
                     let percentCompletedEle = row.querySelector('.table-row-percent-completed');
                     if (percentCompletedEle) {
                         let percent = TaskExtend.calculatePercentCompletedAll(data?.['task_data']);
-                        percentCompletedEle.innerHTML = String(percent) + ' %';
                         let badgeCls = 'bg-grey-light-4';
                         if (percent >= 50 && percent < 100) {
                             badgeCls = 'bg-blue-light-4';
@@ -703,7 +702,7 @@ const ServiceOrder = (function($) {
                         if (percent >= 100) {
                             badgeCls = 'bg-green-light-4';
                         }
-                        $(percentCompletedEle).addClass(badgeCls);
+                        $(percentCompletedEle).html(`<span class="badge ${badgeCls} text-dark-10 fs-8">${String(percent) + ' %'}</span>`);
                     }
                 }
             },

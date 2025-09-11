@@ -156,6 +156,29 @@ function logworkSubmit() {
 // logic of task extend to other apps
 class TaskExtend {
 
+    static renderTaskTblRow() {
+        return `<div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-group avatar-group-overlapped avatar-group-task"></div>
+                        <button 
+                            type="button" 
+                            class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-list-task"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom" title="Task assigned list"
+                        >
+                            <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                        </button>
+                    </div>
+                    <button 
+                        type="button" 
+                        class="btn btn-icon btn-white btn-animated btn-open-task"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add new task"
+                    >
+                        <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <input type="text" class="form-control table-row-task-data hidden">
+                </div>`;
+    };
+
     static openAddTaskFromTblRow(ele, $table) {
         let $canvasEle = $('#offCanvasRightTask');
         let row = ele.closest('tr');
@@ -222,6 +245,12 @@ class TaskExtend {
         }
         return true;
     };
+
+    static calculatePercentCompletedAll(taskDatas) {
+        if (!taskDatas.length) return 0;
+        let total = taskDatas.reduce((sum, task) => sum + task?.['percent_completed'], 0);
+        return total / taskDatas.length;
+    }
 
     static delTaskFromDelRow(ele) {
         let row = ele.closest('tr');

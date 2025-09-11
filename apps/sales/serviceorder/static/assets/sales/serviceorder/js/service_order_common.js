@@ -572,31 +572,10 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '8%',
+                    width: '9%',
                     title: $.fn.gettext('Assignee'),
                     render: (data, type, row) => {
-                        let color = ['red', 'blue', 'yellow', 'green', 'pink', 'purple', 'violet', 'indigo', 'sky', 'cyan', 'teal', 'neon', 'lime', 'sun', 'orange'];
-                        let randomColor = color[Math.floor(Math.random() * color.length)];
-                        return `<div class="d-flex align-items-center">
-                                    <div class="d-flex align-items-center mr-1">
-                                        <div class="avatar-group avatar-group-overlapped avatar-group-task"></div>
-                                        <button 
-                                            type="button" 
-                                            class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-list-task"
-                                            data-bs-toggle="tooltip" data-bs-placement="bottom" title="Task assigned list"
-                                        >
-                                            <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
-                                        </button>
-                                    </div>
-                                    <button 
-                                        type="button" 
-                                        class="btn btn-icon btn-white btn-animated btn-open-task"
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add new task"
-                                    >
-                                        <span class="icon"><i class="fa-solid fa-plus"></i></span>
-                                    </button>
-                                    <input type="text" class="form-control table-row-task-data hidden">
-                                </div>`
+                        return TaskExtend.renderTaskTblRow();
                     }
                 },
                 {
@@ -647,7 +626,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '7%',
+                    width: '6%',
                     title: $.fn.gettext('Quantity'),
                     render: (data, type, row) => {
                         const quantity = row.quantity || 1
@@ -687,15 +666,7 @@ const ServiceOrder = (function($) {
                     width: '5%',
                     title: $.fn.gettext('Status'),
                     render: (data, type, row) => {
-                        const status = row.status || WORK_ORDER_STATUS.pending
-                        const statusOptions = {
-                            0: { label: 'Pending', class: 'badge-warning' },
-                            1: { label: 'In Progress', class: 'badge-info' },
-                            2: { label: 'Completed', class: 'badge-success' },
-                            3: { label: 'Cancelled', class: 'badge-danger' }
-                        }
-                        const statusInfo = statusOptions[status] || statusOptions[0]
-                        return `<span class="badge ${statusInfo.class}">${$.fn.gettext(statusInfo.label)}</span>`
+                        return `<span class="badge badge text-dark-10 fs-8 table-row-percent-completed"></span>`;
                     }
                 },
                 {
@@ -720,6 +691,19 @@ const ServiceOrder = (function($) {
                 if (data?.['task_data']) {
                     for (let taskData of data?.['task_data']) {
                         TaskExtend.storeData(taskData, row);
+                    }
+                    let percentCompletedEle = row.querySelector('.table-row-percent-completed');
+                    if (percentCompletedEle) {
+                        let percent = TaskExtend.calculatePercentCompletedAll(data?.['task_data']);
+                        percentCompletedEle.innerHTML = String(percent) + ' %';
+                        let badgeCls = 'bg-grey-light-4';
+                        if (percent >= 50 && percent < 100) {
+                            badgeCls = 'bg-blue-light-4';
+                        }
+                        if (percent >= 100) {
+                            badgeCls = 'bg-green-light-4';
+                        }
+                        $(percentCompletedEle).addClass(badgeCls);
                     }
                 }
             },
@@ -3374,7 +3358,11 @@ const ServiceOrder = (function($) {
         })
         ServiceOrder.pageElement.workOrder.$table.on('draw.dt', function() {
             $(this).find('button, select, input, textarea').each(function () {
-                if(!$(this).hasClass('btn-open-task') && !$(this).hasClass('btn-open-service-delivery') && !$(this).hasClass('btn-open-work-order-cost')){
+                if(!$(this).hasClass('btn-open-task')
+                    && !$(this).hasClass('btn-open-service-delivery')
+                    && !$(this).hasClass('btn-open-work-order-cost')
+                    && !$(this).hasClass('btn-list-task'))
+                {
                     $(this).attr('disabled', true).attr('readonly', true)
                 }
             })

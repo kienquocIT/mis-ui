@@ -323,6 +323,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_SALE_LIST = StringUrl('saledata/products-sale/list')
     PRODUCT_SALE_DETAIL = StringUrl('saledata/products-sale')
     PRODUCT_VARIANT_LIST = StringUrl('saledata/products-variants')
+    PRODUCT_UPLOAD_AVATAR = StringUrl('saledata/product/{pk}/upload-avatar')
 
     # advance payment
     CASHOUTFLOW_QUOTATION_LIST = StringUrl('cashoutflow/quotation-list')

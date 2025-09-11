@@ -249,7 +249,7 @@ class TaskExtend {
     static calculatePercentCompletedAll(taskDatas) {
         if (!taskDatas.length) return 0;
         let total = taskDatas.reduce((sum, task) => sum + task?.['percent_completed'], 0);
-        return total / taskDatas.length;
+        return Math.round(total / taskDatas.length);
     }
 
     static delTaskFromDelRow(ele) {

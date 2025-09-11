@@ -86,26 +86,44 @@ function setUpFormSubmit($form) {
 
 class DetailDataHandler {
     static loadDetailOpp(data){
-         new $x.cls.bastionField({
-            data_opp: data?.['opportunity']?.['id'] ? [
+        //  new $x.cls.bastionField({
+        //     data_opp: data?.['opportunity']?.['id'] ? [
+        //         {
+        //             "id": data?.['opportunity']?.['id'],
+        //             "title": data?.['opportunity']?.['title'] || '',
+        //             "code": data?.['opportunity']?.['code'] || '',
+        //             "selected": true,
+        //         }
+        //     ] : [],
+        //     data_inherit: data?.['employee_inherit']?.['id'] ? [
+        //         {
+        //             "id": data?.['employee_inherit']?.['id'],
+        //             "full_name": data?.['employee_inherit']?.['full_name'] || '',
+        //             "code": data?.['employee_inherit']?.['code'] || '',
+        //             "selected": true,
+        //         }
+        //     ] : [],
+        //      "oppFlagData": {"disabled": true},
+        //      "inheritFlagData": {"disabled": true},
+        // }).init()
+        let oppData = data?.['opportunity'];
+        let inheritData = data?.['employee_inherit'];
+        new $x.cls.bastionField({
+            has_opp: true,
+            has_inherit: true,
+            data_opp: oppData && Object.keys(oppData).length > 0 ? [
                 {
-                    "id": data?.['opportunity']?.['id'],
-                    "title": data?.['opportunity']?.['title'] || '',
-                    "code": data?.['opportunity']?.['code'] || '',
-                    "selected": true,
+                    ...oppData,
+                    'selected': true,
                 }
             ] : [],
-            data_inherit: data?.['employee_inherit']?.['id'] ? [
+            data_inherit: inheritData && Object.keys(inheritData).length > 0 ? [
                 {
-                    "id": data?.['employee_inherit']?.['id'],
-                    "full_name": data?.['employee_inherit']?.['full_name'] || '',
-                    "code": data?.['employee_inherit']?.['code'] || '',
-                    "selected": true,
+                    ...inheritData,
+                    'selected': true,
                 }
             ] : [],
-             "oppFlagData": {"disabled": true},
-             "inheritFlagData": {"disabled": true},
-        }).init()
+        }).init();
     }
 
     static loadCustomerList(data) {

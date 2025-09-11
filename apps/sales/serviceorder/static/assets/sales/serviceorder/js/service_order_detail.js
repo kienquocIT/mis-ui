@@ -164,11 +164,11 @@ $(document).ready(function () {
         DetailDataHandler.loadDetailServiceOrder($('#form-detail-service-order'), "detail");
     })
     ServiceOrder.pageElement.workOrder.$table.on('click', '.btn-open-task', function () {
-            TaskExtend.openAddTaskFromTblRow(this, ServiceOrder.pageElement.workOrder.$table);
-        })
-        ServiceOrder.pageElement.workOrder.$table.on('click', '.btn-list-task', function () {
-            TaskExtend.openListTaskFromTblRow(this, ServiceOrder.pageElement.workOrder.$table);
-        })
+        TaskExtend.openAddTaskFromTblRow(this, ServiceOrder.pageElement.workOrder.$table);
+    })
+    ServiceOrder.pageElement.workOrder.$table.on('click', '.btn-list-task', function () {
+        TaskExtend.openListTaskFromTblRow(this, ServiceOrder.pageElement.workOrder.$table);
+    })
     ServiceOrder.adjustTableSizeWhenChangeTab()
     ServiceOrder.handleClickOpenServiceDelivery()
     ServiceOrder.handleClickOpenWorkOrderCost()

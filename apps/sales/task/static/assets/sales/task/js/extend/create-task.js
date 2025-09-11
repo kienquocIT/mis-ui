@@ -391,7 +391,8 @@ $(document).ready(function () {
                                 elm.removeAttr('data-task').attr('data-task', datadump)
                                 $('body').append(elm).trigger('From-Task.Submitted')
 
-                                if ($('#offCanvasRightTask').attr('data-tbl-id') && $('#offCanvasRightTask').attr('data-row-idx')) {
+                                // handle logic for task extend to other apps
+                                if (data?.['id'] && $('#offCanvasRightTask').attr('data-tbl-id') && $('#offCanvasRightTask').attr('data-row-idx')) {
                                     if (data?.['id']) {
                                         formData['id'] = data?.['id'];
                                     }
@@ -401,6 +402,43 @@ $(document).ready(function () {
                                     let rowApi = $table.DataTable().row(rowIdx);
                                     let row = rowApi.node();
                                     TaskExtend.storeData(formData, row);
+                                }
+                                if (!data?.id && data?.status === 200) {
+                                    let tasksDataEle = document.querySelectorAll('.table-row-task-data');
+                                    if (tasksDataEle.length > 0) {
+                                        for (let taskDataEle of tasksDataEle) {
+                                            let target= false;
+                                            if ($(taskDataEle).val()) {
+                                                let taskData = JSON.parse($(taskDataEle).val());
+                                                for (let task of taskData) {
+                                                    if (task?.['id'] === formData?.['id']) {
+                                                        task['percent_completed'] = formData?.['percent_completed'];
+                                                        target = true;
+                                                        break;
+                                                    }
+                                                }
+                                                if (target === true) {
+                                                    $(taskDataEle).val(JSON.stringify(taskData));
+                                                    let row = taskDataEle.closest('tr');
+                                                    if (row) {
+                                                        let percentCompletedEle = row.querySelector('.table-row-percent-completed');
+                                                        if (percentCompletedEle) {
+                                                            let percent = TaskExtend.calculatePercentCompletedAll(taskData);
+                                                            let badgeCls = 'bg-grey-light-4';
+                                                            if (percent >= 50 && percent < 100) {
+                                                                badgeCls = 'bg-blue-light-4';
+                                                            }
+                                                            if (percent >= 100) {
+                                                                badgeCls = 'bg-green-light-4';
+                                                            }
+                                                            $(percentCompletedEle).html(`<span class="badge ${badgeCls} text-dark-10 fs-8">${String(percent) + ' %'}</span>`);
+                                                        }
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             if ($('.current-create-task').length) $('.cancel-task').trigger('click')

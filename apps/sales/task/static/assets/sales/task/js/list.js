@@ -71,6 +71,9 @@ $(function () {
     }
 
     function callDataTaskList(kanban, list, params = {}, isReturn=false) {
+        if (!$empElm[0].closest('#formOpportunityTask') && Object.keys(params).length === 0) {
+            return true;
+        }
         let callData = $.fn.callAjax2({
             'url': $urlFact.attr('data-task-list'),
             'method': 'GET',
@@ -1432,6 +1435,7 @@ $(function () {
             }
             else{
                 let oldData = GanttViewTask.bk_taskList[data.id]
+                if (oldData) {
                 if (oldData.desc === undefined) oldData.name = data.title
                 else oldData.desc = data.title
                 let from = new Date(data.start_date)
@@ -1455,6 +1459,7 @@ $(function () {
                     dataObj: new_value
                 }]
                 dictList = GanttViewTask.saveTaskList(oldData)
+                }
             }
             const arrayList = GanttViewTask.convertFromDictToArray(dictList, true)
             $('#gantt_reload').data('data', arrayList).trigger('click')

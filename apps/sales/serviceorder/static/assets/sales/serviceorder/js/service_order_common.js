@@ -423,96 +423,59 @@ const ServiceOrder = (function($) {
             scrollCollapse: true,
             columns: [
                 {
-                    width: '1',
-                    title: $.fn.gettext(''),
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
-                    width: '5%',
-                    title: $.fn.gettext('Code'),
-                    className: 'dt-code-wrap',
+                    className: 'w-25',
                     render: (data, type, row) => {
-                        const code = row.code || ''
-                        return `<div class="dt-code-wrap">${code}</div>`
+                        return `<span class="badge badge-sm badge-primary">${row?.['code'] || ''}</span><br><span>${row?.['title'] || ''}</span>`
                     }
                 },
                 {
-                    width: '20%',
-                    title: $.fn.gettext('Name'),
+                    className: 'w-15',
                     render: (data, type, row) => {
-                        return row.title || ''
+                        return `<textarea class="form-control cost-description" rows="3">${row?.['description'] || ''}</textarea>`
                     }
                 },
                 {
-                    width: '20%',
-                    title: $.fn.gettext('Description'),
+                    className: 'w-10',
                     render: (data, type, row) => {
-                        const rowDescription = row.description || ''
-                        return `<div class="input-group">
-                                <textarea class="form-control cost-description">${rowDescription}</textarea>
-                            </div>`
+                        return `<input type="number" class="form-control service-quantity" value="${row?.['quantity'] || 1}" min="0">`
                     }
                 },
                 {
-                    width: '8%',
-                    title: $.fn.gettext('Quantity'),
+                    className: 'w-10',
                     render: (data, type, row) => {
-                        const rowQuantity = row.quantity || 1
-                        return `<div class="input-group">
-                                <input type="number" class="form-control service-quantity" value="${rowQuantity}" min="0">
-                            </div>`
+                        return `<span>${row?.['uom_title']}</span>`
                     }
                 },
                 {
-                    width: '7%',
-                    title: $.fn.gettext('Unit'),
+                    className: 'w-10',
                     render: (data, type, row) => {
-                        return row.uom_title || ''
+                        return `<span class="mask-money" data-init-money="${row?.['price'] || 0}"></span>`
                     }
                 },
                 {
-                    width: '15%',
-                    title: $.fn.gettext('Price'),
+                    className: 'w-10',
                     render: (data, type, row) => {
-                        const price = row.price || 0
-                        return `<div class="input-group">
-                                <span class="mask-money" data-init-money="${price}"></span>
-                            </div>`
+                        return `<span class="badge badge-soft-blue">${row?.['tax_code']}</span>`
                     }
                 },
                 {
-                    width: '10%',
-                    title: $.fn.gettext('Tax'),
+                    className: 'w-10',
                     render: (data, type, row) => {
-                        return row.tax_code || ''
+                        return `<span class="mask-money" data-init-money="${row?.['total_value'] || 0}"></span>`
                     }
                 },
                 {
-                    width: '15%',
-                    title: $.fn.gettext('Total amount'),
+                    className: 'w-5 text-right',
                     render: (data, type, row) => {
-                        const total = row.total_value || 0
-                        return `<div class="input-group">
-                                <span class="mask-money" data-init-money="${total}"></span>
-                            </div>`
-                    }
-                },
-                {
-                    width: '5%',
-                    title: $.fn.gettext('Action'),
-                    render: (data, type, row) => {
-                        return `<div class="d-flex justify-content-center">
-                                    <button 
-                                        type="button" 
-                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover service-del-row"
-                                        data-bs-toggle="tooltip" 
-                                        data-bs-placement="bottom"
-                                    >
-                                        <span class="icon"><i class="far fa-trash-alt"></i></span>
-                                    </button>
-                                </div>`
+                        return `<button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover service-del-row">
+                                    <span class="icon"><i class="far fa-trash-alt"></i></span>
+                                </button>`
 
                     }
                 },
@@ -565,7 +528,7 @@ const ServiceOrder = (function($) {
                             return `<div class="input-group">
                                         <textarea
                                             class="form-control work-order-description"
-                                            rows="1"
+                                            rows="2"
                                         >${name}</textarea>
                                     </div>`
                         }
@@ -664,9 +627,9 @@ const ServiceOrder = (function($) {
                 },
                 {
                     width: '5%',
-                    title: $.fn.gettext('Status'),
+                    title: $.fn.gettext('Progress'),
                     render: (data, type, row) => {
-                        return `<span class="badge badge text-dark-10 fs-8 table-row-percent-completed"></span>`;
+                        return `<span class="table-row-percent-completed"></span>`;
                     }
                 },
                 {
@@ -695,7 +658,6 @@ const ServiceOrder = (function($) {
                     let percentCompletedEle = row.querySelector('.table-row-percent-completed');
                     if (percentCompletedEle) {
                         let percent = TaskExtend.calculatePercentCompletedAll(data?.['task_data']);
-                        percentCompletedEle.innerHTML = String(percent) + ' %';
                         let badgeCls = 'bg-grey-light-4';
                         if (percent >= 50 && percent < 100) {
                             badgeCls = 'bg-blue-light-4';
@@ -703,7 +665,7 @@ const ServiceOrder = (function($) {
                         if (percent >= 100) {
                             badgeCls = 'bg-green-light-4';
                         }
-                        $(percentCompletedEle).addClass(badgeCls);
+                        $(percentCompletedEle).html(`<span class="badge ${badgeCls} text-dark-10 fs-8">${String(percent) + ' %'}</span>`);
                     }
                 }
             },
@@ -774,7 +736,7 @@ const ServiceOrder = (function($) {
                         return `<div class="input-group">
                                     <textarea
                                         class="form-control wo-cost-description"
-                                        rows="1"
+                                        rows="2"
                                     >${description}</textarea>
                                 </div>`
                     }
@@ -1068,7 +1030,7 @@ const ServiceOrder = (function($) {
                         return `<div class="input-group">
                                     <textarea
                                         class="form-control payment-description"
-                                        rows="1"
+                                        rows="2"
                                     >${description}</textarea>
                                 </div>`
                     }
@@ -3307,7 +3269,11 @@ const ServiceOrder = (function($) {
         }
 
         function addUnitCostData(workOrder){
-            ServiceOrder.pageVariable.workOrderCostData[workOrder.id] = JSON.parse(JSON.stringify(workOrder.cost_data))
+            let costData = [{}]
+            if (workOrder.cost_data && workOrder.cost_data.length > 0){
+                costData = workOrder.cost_data
+            }
+            ServiceOrder.pageVariable.workOrderCostData[workOrder.id] = JSON.parse(JSON.stringify(costData))
         }
 
         for (const workOrder of workOrderData){
@@ -3523,6 +3489,7 @@ const ServiceOrder = (function($) {
             $.fn.initMaskMoney2();
         }
     }
+
     function handleDeleteWorkOrderRow() {
         pageElement.workOrder.$table.on('click', '.work-order-del-row', function(e) {
             e.preventDefault();

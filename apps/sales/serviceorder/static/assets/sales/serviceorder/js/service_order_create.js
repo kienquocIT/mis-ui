@@ -29,6 +29,8 @@ function handleModalWorkOrderContributionEvent(){
     ServiceOrder.handleCheckPackage()
     ServiceOrder.handleOpenModalPackage()
     ServiceOrder.handleSaveModalPackage()
+    ServiceOrder.handleTogglePackageChildren()
+    ServiceOrder.handleSelectContainer()
 }
 
 function handlePaymentTabEvent(){

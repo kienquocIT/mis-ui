@@ -174,4 +174,6 @@ $(document).ready(function () {
     ServiceOrder.handleClickOpenWorkOrderCost()
     ServiceOrder.handleOpenPaymentDetail()
     ServiceOrder.handleOpenModalReconcile()
+    ServiceOrder.handleOpenModalPackage()
+    ServiceOrder.handleTogglePackageChildren()
 })

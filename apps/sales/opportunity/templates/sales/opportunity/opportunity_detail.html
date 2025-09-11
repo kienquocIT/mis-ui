@@ -209,6 +209,7 @@
             data-url-consulting-detail="{% url "ConsultingDetail" pk=0%}"
             data-url-lease-order-detail="{% url "LeaseOrderDetail" pk=0%}"
             data-url-contract-detail="{% url "ContractApprovalDetail" pk=0%}"
+            data-url-service-order-detail="{% url "ServiceOrderDetail" pk=0%}"
 
             data-url-quo-list="{% url "QuotationListAPI" %}"
             data-url-so-list="{% url "SaleOrderListAPI" %}"
@@ -253,6 +254,7 @@
             data-trans-bidding="{% trans "Bidding" %}"
             data-trans-consulting="{% trans "Consulting" %}"
             data-trans-activity-cancelled="{% trans 'Cancelled' %}"
+            data-trans-service-order="{% trans "Service Order" %}"
     ></script>
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
     <script type="text" id="data-detail"></script>

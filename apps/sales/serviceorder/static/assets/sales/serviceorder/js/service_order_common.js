@@ -952,14 +952,14 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '30%',
+                    width: '27%',
                     title: $.fn.gettext('Title'),
                     render: (data, type, row) => {
                         return row?.title
                     }
                 },
                 {
-                    width: '15%',
+                    width: '18%',
                     title: $.fn.gettext('Contribution'),
                     render: (data, type, row) => {
                         const contribution = row.contribution_percent || 0
@@ -1013,12 +1013,14 @@ const ServiceOrder = (function($) {
                         return `<div class="d-flex align-items-center">
                                     <div class="form-check me-2">
                                         <input 
+                                            ${!isDelivery ? 'disabled' : ''}
                                             type="checkbox"  
                                             class="form-check-input contribution-package"
                                             ${hasPackage ? 'checked' : ''}
                                         />
                                     </div>
                                     <button 
+                                        ${!isDelivery ? 'disabled' : ''}
                                         type="button" 
                                         class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-contribution-package"
                                         data-contribution-id="${rowId}"
@@ -1072,9 +1074,8 @@ const ServiceOrder = (function($) {
                         if(isContainer){
                             return `
                                 <button type="button" 
-                                        class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs show-child" 
-                                        id="ctn-idx-${row?.containerRefNumber}">
-                                    <span class="icon"><i class="fa-solid fa-sort-down"></i></span>
+                                        class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs btn-show-package-child">
+                                    <span class="icon"><i class="fa-solid fa-caret-down"></i></span>
                                 </button>`
                         }
                         else {
@@ -1849,10 +1850,10 @@ const ServiceOrder = (function($) {
             const rowData = table.row($row).data()
             const oldEndDate = rowData.end_date
             rowData.end_date = moment(picker.endDate).format('DD/MM/YYYY')
-            if (!validateDates(rowData)) {
-                rowData.end_date = oldEndDate
-                $input.val(oldEndDate || '')
-            }
+            // if (!validateDates(rowData)) {
+            //     rowData.end_date = oldEndDate
+            //     $input.val(oldEndDate || '')
+            // }
         })
         pageElement.workOrder.$table.on('click', '.btn-open-task', function () {
             TaskExtend.openAddTaskFromTblRow(this, pageElement.workOrder.$table);
@@ -2320,6 +2321,11 @@ const ServiceOrder = (function($) {
             const table = pageElement.modalData.$tableProductContribution.DataTable()
             const rowData = table.row($row).data()
             rowData.has_package= isCheck
+
+            if(!isCheck){
+                const contributionId = rowData.id
+                delete pageVariable.contributionPackageData[contributionId]
+            }
         })
     }
 
@@ -2329,36 +2335,53 @@ const ServiceOrder = (function($) {
             const $row = $ele.closest('tr')
             const rowData = pageElement.modalData.$tableProductContribution.DataTable().row($row).data()
             const contributionId = $ele.attr('data-contribution-id')
-            const packageData = pageVariable.contributionPackageData[contributionId]
-            if(rowData.has_package){
-                if(packageData && packageData.length > 0){
-                    initContributionPackageModalDataTable(packageData)
-                } else {
-                    const shipmentTable = $('#table_shipment').DataTable()
-                    let shipmentData = shipmentTable.data().toArray()
-                    shipmentData = shipmentData.map(item => {
-                        if(item.isContainer){
-                            return {
-                                is_container: item.isContainer,
-                                title: item.containerName,
-                                description: item.containerNote,
-                                packages: item.packages,
-                                container_ref: item.containerRefNumber
-                            }
-                        }
-                        else {
-                            return {
-                                is_container: item.isContainer,
-                                title: item.packageName,
-                                description: item.packageNote,
-                                container_ref: item.packageContainerRef
-                            }
-                        }
-                    })
-                    initContributionPackageModalDataTable(shipmentData)
-                }
-                pageElement.modalData.$modalContributionPackage.modal('show')
+            const shipmentTable = $('#table_shipment').DataTable()
+            const shipmentData = shipmentTable.data().toArray()
+            if(!rowData.has_package){
+                return
             }
+            let packageData = shipmentData.map((item, index) => {
+                if(item.isContainer || item.is_container){
+                    return {
+                        id: item.id,
+                        is_container: true,
+                        title: item.containerName,
+                        description: item.containerNote,
+                        packages: item.packages,
+                        container_ref: item.containerRefNumber,
+                        is_selected: false,
+                    }
+                }
+                else {
+                    return {
+                        id: item.id,
+                        is_container: false,
+                        title: item.packageName,
+                        description: item.packageNote,
+                        container_ref: item.packageContainerRef,
+                        is_selected: false,
+                    }
+                }
+            })
+            const currPackageData = pageVariable.contributionPackageData[contributionId]
+            if(currPackageData) {
+                packageData = packageData.map((pItem, index) => {
+                    const currPackage = currPackageData.find(cpItem =>
+                        pItem.id === cpItem.id
+                    )
+                    if(currPackage){
+                        return {
+                            ...pItem,
+                            is_selected: currPackage.is_selected
+                        }
+                    }
+                    return pItem
+                })
+            }
+
+            pageVariable.contributionPackageData[contributionId] = JSON.parse(JSON.stringify(packageData))
+            initContributionPackageModalDataTable(JSON.parse(JSON.stringify(packageData)))
+            pageElement.modalData.$modalContributionPackage.modal('show')
 
             //save contribution id to btn save
             pageElement.modalData.$btnSaveContributionPackage.attr('data-contribution-id', contributionId)
@@ -2370,9 +2393,101 @@ const ServiceOrder = (function($) {
             const $ele = $(e.currentTarget)
             const contributionID = $ele.attr('data-contribution-id')
             const table = pageElement.modalData.$tableContributionPackage.DataTable()
-            const tableData = table.data().toArray()
-            pageVariable.contributionPackageData[contributionID] = JSON.parse(JSON.stringify(tableData))
+
+            // Get all rows data with their corresponding checkbox states
+            let allRows = []
+
+            // Loop through each row in the table
+            table.rows().every(function(rowIdx) {
+                const rowNode = this.node()
+                const rowData = this.data()
+
+                // Check if the checkbox in this row is checked
+                const checkbox = $(rowNode).find('input[name="select-package"]')
+
+                // Update the is_selected property based on current checkbox state
+                rowData.is_selected = checkbox.prop('checked')
+
+                // Add all rows (both checked and unchecked) to the array
+                allRows.push(rowData)
+            })
+
+            // Save all rows to pageVariable with updated is_selected states
+            pageVariable.contributionPackageData[contributionID] = JSON.parse(JSON.stringify(allRows))
         })
+    }
+
+    function handleTogglePackageChildren() {
+        pageElement.modalData.$tableContributionPackage.on('click', '.btn-show-package-child', function(e) {
+            const $btn = $(e.currentTarget);
+            const $row = $btn.closest('tr');
+            const table = pageElement.modalData.$tableContributionPackage.DataTable();
+            const rowData = table.row($row).data();
+            const containerRef = rowData.container_ref;
+
+            // Toggle icon
+            const $icon = $btn.find('i');
+            const isExpanded = $icon.hasClass('fa-caret-down');
+
+            if (isExpanded) {
+                $icon.removeClass('fa-caret-down').addClass('fa-caret-right');
+            } else {
+                $icon.removeClass('fa-caret-right').addClass('fa-caret-down');
+            }
+
+            // Toggle visibility of child rows
+            table.rows().every(function() {
+                const childRowData = this.data();
+                const $childRow = $(this.node());
+
+                // Skip the container row itself
+                if (childRowData.id === rowData.id) {
+                    return;
+                }
+
+                // Check if this row belongs to the container
+                if (!childRowData.is_container && childRowData.container_ref === containerRef) {
+                    if (isExpanded) {
+                        $childRow.hide();
+                    } else {
+                        $childRow.show();
+                    }
+                }
+            });
+        });
+    }
+
+    function handleSelectContainer() {
+        pageElement.modalData.$tableContributionPackage.on('change', 'input[name="select-package"]', function(e) {
+            const $checkbox = $(e.currentTarget);
+            const $row = $checkbox.closest('tr');
+            const table = pageElement.modalData.$tableContributionPackage.DataTable();
+            const rowData = table.row($row).data();
+            const isChecked = $checkbox.prop('checked');
+
+            // Only process if this is a container row
+            if (rowData.is_container) {
+                const containerRef = rowData.container_ref;
+
+                // Update all child packages with the same container_ref
+                table.rows().every(function() {
+                    const childRowData = this.data();
+                    const $childRow = $(this.node());
+
+                    // Skip the container row itself
+                    if (childRowData.id === rowData.id) {
+                        return;
+                    }
+
+                    // Check if this row is a child of the container
+                    if (!childRowData.is_container && childRowData.container_ref === containerRef) {
+                        // Update the checkbox
+                        const $childCheckbox = $childRow.find('input[name="select-package"]');
+                        $childCheckbox.prop('checked', isChecked);
+                    }
+                });
+            }
+        });
     }
 
     // ============ payment =============
@@ -3253,12 +3368,31 @@ const ServiceOrder = (function($) {
                 order: index + 1,
             }))
 
-            //get contribution
+            //get contribution with package data
             let contributionData = pageVariable.productContributionData?.[rowData.id] || []
-            contributionData = contributionData.map((item, index) => ({
-                ...item,
-                order: index + 1
-            }))
+            contributionData = contributionData.map((item, index) => {
+                // Get package data for this contribution if it has packages
+                let packageData = null;
+                if (item.has_package && pageVariable.contributionPackageData?.[item.id]) {
+                    packageData = pageVariable.contributionPackageData[item.id]
+                        .map((pkg, pkgIndex) => ({
+                            id: pkg.id,
+                            order: pkgIndex + 1,
+                            is_container: pkg.is_container,
+                            title: pkg.title,
+                            description: pkg.description,
+                            container_ref: pkg.container_ref,
+                            packages: pkg.packages || null,
+                            is_selected: pkg.is_selected
+                        }));
+                }
+
+                return {
+                    ...item,
+                    order: index + 1,
+                    package_data: packageData
+                }
+            })
 
             // task_id & task data
             let taskData = [];
@@ -3434,7 +3568,24 @@ const ServiceOrder = (function($) {
             const productContributionAPIData = workOrder.product_contribution_data
             const productContributionData = []
             for (const productContribution of productContributionAPIData){
-                    productContributionData.push(productContribution)
+                productContributionData.push(productContribution)
+
+                //push product contribution
+                if (productContribution.has_package && productContribution.package_data) {
+                    const packageData = []
+                    for (const pkg of productContribution.package_data){
+                        packageData.push({
+                            id: pkg.id,
+                            is_container: pkg.is_container,
+                            title: pkg.title,
+                            description: pkg.description,
+                            container_ref: pkg.container_ref,
+                            packages: pkg.packages || null,
+                            is_selected: pkg.is_selected
+                        })
+                    }
+                    ServiceOrder.pageVariable.contributionPackageData[productContribution.id] = JSON.parse(JSON.stringify(packageData))
+                }
             }
             ServiceOrder.pageVariable.productContributionData[workOrder.id] = JSON.parse(JSON.stringify(productContributionData.reverse()))
         }
@@ -4049,6 +4200,8 @@ const ServiceOrder = (function($) {
         handleCheckPackage,
         handleOpenModalPackage,
         handleSaveModalPackage,
+        handleTogglePackageChildren,
+        handleSelectContainer,
 
         handleChangePaymentDate,
         handleAddPaymentRow,

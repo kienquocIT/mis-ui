@@ -84,7 +84,12 @@ class TabShipmentFunction {
                             `;
                         } else {
                             // No add button and dropdown if package name field
-                            return `<span class="ctn-idx-${row?.packageContainerRef}">${row?.packageName}</span>`;
+                            return `
+                                <div style="display: flex;">
+                                    <div style="width: 4rem;"></div>
+                                    <span class="ctn-idx-${row?.packageContainerRef}">${row?.packageName}</span>
+                                </div>
+                            `;
                         }
                     }
                 },
@@ -331,8 +336,7 @@ class TabShipmentEventHandler {
             Swal.fire({
                 html: `
                     <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
-                    <h5 class="text-danger">Delete Package ?</h5>
-                    <p>Deleting package row</p>`,
+                    <h5 class="text-danger">${$.fn.gettext('Delete Package ?')}</h5>`,
                 customClass: {
                     confirmButton: 'btn btn-outline-secondary text-danger',
                     cancelButton: 'btn btn-outline-secondary text-gray',
@@ -362,8 +366,8 @@ class TabShipmentEventHandler {
             Swal.fire({
                 html: `
                     <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
-                    <h5 class="text-danger">Delete Container ?</h5>
-                    <p>Deleting container and all its packages</p>`,
+                    <h5 class="text-danger">${$.fn.gettext('Delete Container ?')}</h5>
+                    <p>${$.fn.gettext('This action will delete the container and all its packages')}</p>`,
                 customClass: {
                     confirmButton: 'btn btn-outline-secondary text-danger',
                     cancelButton: 'btn btn-outline-secondary text-gray',
@@ -417,18 +421,24 @@ class TabShipmentEventHandler {
             })
         });
 
-        // event for add package in add button in container row
-        $(document).on("click", '.btn-add-package', function () {
+        $(document).on("click", ".btn-add-package", function () {
             $('#modal_package').modal('show');
-            TabShipmentFunction.loadContainersToDropDown();
-
-            const containerRef = $(this).data('container-ref');
-            pageElements.$packageContainer.val(containerRef);
+            let $row = $(this).closest("tr");
+            const containerRef = $row.find("td:eq(3)").text().trim();
+            if (pageElements.$packageContainer.find("option[value='" + containerRef + "']").length === 0) {
+                let newOption = new Option(containerRef, containerRef, true, true);
+                pageElements.$packageContainer.append(newOption).trigger("change");
+            } else {
+                pageElements.$packageContainer.val(containerRef).trigger("change");
+            }
             pageElements.$packageContainer.prop('disabled', true); // disable dropdown package_container
         })
 
         // event when click Package from dropdown Add
         $('a[data-bs-target="#modal_package"]').on('click', function () {
+            let tblData = pageElements.$tableShipment.DataTable().data().toArray();
+            pageVariables.shipmentData = tblData;
+
             // Load containers to dropdown
             TabShipmentFunction.loadContainersToDropDown();
 
@@ -439,6 +449,3 @@ class TabShipmentEventHandler {
         });
     }
 }
-
-
-

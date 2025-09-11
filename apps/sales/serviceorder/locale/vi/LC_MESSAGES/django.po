@@ -99,11 +99,11 @@ msgstr "Sản Phẩm Dịch Vụ Ngoài"
 
 #
 msgid "Shipment"
-msgstr "Vận chuyển hàng"
+msgstr "Vận chuyển"
 
 #
 msgid "Package"
-msgstr "Gói hàng"
+msgstr "Kiện hàng"
 
 #
 msgid "Reference number"
@@ -127,15 +127,15 @@ msgstr "Loại container"
 
 #
 msgid "Add package"
-msgstr "Thêm Gói Hàng"
+msgstr "Thêm Kiện Hàng"
 
 #
 msgid "Package name"
-msgstr "Tên gói hàng"
+msgstr "Tên kiện hàng"
 
 #
 msgid "Package type"
-msgstr "Tên gói hàng"
+msgstr "Loại kiện hàng"
 
 #
 msgid "Delete Package ?"
@@ -144,14 +144,6 @@ msgstr "Xóa gói hàng ?"
 #
 msgid "Deleting package row"
 msgstr "Xóa dòng gói hàng"
-
-#
-msgid "Delete Container ?"
-msgstr "Xóa container ?"
-
-#
-msgid "Deleting container and all its packages"
-msgstr "Xóa container và tất cả các gói hàng liên quan"
 
 #
 msgid "Add Installment"

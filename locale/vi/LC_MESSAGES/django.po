@@ -12232,10 +12232,6 @@ msgid "Overtime request"
 msgstr "Đăng ký làm ngoài giờ"
 
 #
-msgid "Shipment"
-msgstr "Vận chuyển hàng"
-
-#
 msgid "Container Type"
 msgstr "Loại Container"
 
@@ -12250,18 +12246,6 @@ msgstr "Tạo loại container mới thành công"
 #
 msgid "Update container type successfully"
 msgstr "Cập nhật loại container thành công"
-
-#
-msgid "Package Type"
-msgstr "Loại gói hàng"
-
-#
-msgid "Package type"
-msgstr "Loại gói hàng"
-
-#
-msgid "Package"
-msgstr "Gói Hàng"
 
 #
 msgid "Update package type successfully"

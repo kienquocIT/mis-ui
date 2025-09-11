@@ -515,7 +515,7 @@ msgstr "Cập Nhật Loại Container"
 
 #
 msgid "Add Package Type"
-msgstr "Thêm Loại Hàng"
+msgstr "Thêm Loại Kiện Hàng"
 
 #
 msgid "Update Package Type"

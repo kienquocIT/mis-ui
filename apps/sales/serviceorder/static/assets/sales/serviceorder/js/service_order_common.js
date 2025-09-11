@@ -34,6 +34,10 @@ const ServiceOrder = (function($) {
             $modalPaymentReconcile: $('#modal-payment-reconcile'),
             $tablePaymentReconcile: $('#modal-table-payment-reconcile'),
             $btnSavePaymentReconcile: $('#btn-save-payment-reconcile'),
+
+            $modalContributionPackage: $('#modal-contribution-package'),
+            $tableContributionPackage: $('#modal-table-contribution-package'),
+            $btnSaveContributionPackage: $('#btn-save-contribution-package'),
         },
         serviceDetail: {
             $table: $('#table-service-detail'),
@@ -66,6 +70,12 @@ const ServiceOrder = (function($) {
          * @description Biến lưu dữ liệu tổng đóng góp và còn lại của 1 dòng service detail
          */
         serviceDetailTotalContributionData: {},
+
+        /**
+         * @type {{ [contribution_id: string]: [{ title: string}] }}
+         * @description Biến lưu dữ liệu package của 1 contribution
+         */
+        contributionPackageData: {},
 
         /**
          * @type {{ [payment_id: string]: [{ service_id: string, payment_percent: number, payment_value: number, total_reconciled_value: number}] }}
@@ -987,7 +997,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '20%',
+                    width: '15%',
                     title: $.fn.gettext('Contribution'),
                     render: (data, type, row) => {
                         const contribution = row.contribution_percent || 0
@@ -1004,7 +1014,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '20%',
+                    width: '15%',
                     title: $.fn.gettext('Total Balance'),
                     render: (data, type, row) => {
                         let balance = row.balance_quantity || 0
@@ -1015,7 +1025,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '20%',
+                    width: '15%',
                     title: $.fn.gettext('No of Service Delivered'),
                     render: (data, type, row) => {
                         const quantity = row.delivered_quantity || 0
@@ -1030,6 +1040,98 @@ const ServiceOrder = (function($) {
                                         max="${balance}"
                                     />
                                 </div>`
+                    }
+                },
+                {
+                    width: '15%',
+                    title: $.fn.gettext('Package'),
+                    render: (data, type, row) => {
+                        const hasPackage = row.has_package || false
+                        const rowId = row.id
+                        return `<div class="d-flex align-items-center">
+                                    <div class="form-check me-2">
+                                        <input 
+                                            type="checkbox"  
+                                            class="form-check-input contribution-package"
+                                            ${hasPackage ? 'checked' : ''}
+                                        />
+                                    </div>
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-contribution-package"
+                                        data-contribution-id="${rowId}"
+                                        title="Open package"
+                                    >
+                                        <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                                    </button>
+                                </div>`
+                    }
+                }
+            ],
+        })
+    }
+
+    function initContributionPackageModalDataTable(data=[{}]){
+        if ($.fn.DataTable.isDataTable(pageElement.modalData.$tableContributionPackage)) {
+            pageElement.modalData.$tableContributionPackage.DataTable().destroy()
+        }
+
+        pageElement.modalData.$tableContributionPackage.DataTableDefault({
+            data: data,
+            reloadCurrency: true,
+            rowIdx: false,
+            autoWidth: false,
+            scrollX: true,
+            scrollY: '35vh',
+            scrollCollapse: true,
+            columns: [
+                {
+                    width: '5%',
+                    title: $.fn.gettext(''),
+                    className: 'text-center',
+                    render: (data, type, row, meta) => {
+                        const isChecked = row.is_selected
+                        return `<div class="form-check">
+                                    <input
+                                        ${isChecked ? 'checked ' : ' '} 
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        name="select-package"
+                                    />
+                                </div>`
+                    }
+                },
+                {
+                    width: '10%',
+                    title: $.fn.gettext(''),
+                    className: 'text-center',
+                    render: (data, type, row, meta) => {
+                        const isContainer = row.is_container
+                        if(isContainer){
+                            return `
+                                <button type="button" 
+                                        class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs show-child" 
+                                        id="ctn-idx-${row?.containerRefNumber}">
+                                    <span class="icon"><i class="fa-solid fa-sort-down"></i></span>
+                                </button>`
+                        }
+                        else {
+                            return ''
+                        }
+                    }
+                },
+                {
+                    width: '30%',
+                    title: $.fn.gettext('Name'),
+                    render: (data, type, row) => {
+                        return row.title || ''
+                    }
+                },
+                {
+                    width: '55%',
+                    title: $.fn.gettext('Note'),
+                    render: (data, type, row) => {
+                        return row.description || ''
                     }
                 },
             ],
@@ -2030,8 +2132,9 @@ const ServiceOrder = (function($) {
                 const totalContribution = contributionData?.total_contribution_percent || 0
                 //if .balance = null or undefined, get .quantity, else get .balance
                 const balance = contributionData?.delivery_balance_value ?? sdItem.quantity
-
+                const uniqueStr = Math.random().toString(36).slice(2)
                 return {
+                    id: uniqueStr,
                     service_id: serviceDetailId,
                     code: sdItem.code,
                     title: sdItem.title,
@@ -2041,6 +2144,7 @@ const ServiceOrder = (function($) {
                     contribution_percent: 0,
                     delivered_quantity: 0,
                     is_selected: false,
+                    has_package: false,
                 }
             })
 
@@ -2055,9 +2159,11 @@ const ServiceOrder = (function($) {
                     if(currProductContribution){
                         return {
                             ...pcItem,
+                            id: currProductContribution.id,
                             is_selected: Boolean(currProductContribution.is_selected),
                             contribution_percent: currProductContribution.contribution_percent || 0,
-                            delivered_quantity: currProductContribution.delivered_quantity || 0
+                            delivered_quantity: currProductContribution.delivered_quantity || 0,
+                            has_package: currProductContribution.has_package,
                         }
                     }
                     return pcItem
@@ -2084,6 +2190,7 @@ const ServiceOrder = (function($) {
                 const $deliveredQuantityInput = $row.find('.pc-delivered-quantity')
 
                 const isSelected = $checkbox.is(':checked')
+                const hasPackage = $row.find('.contribution-package').is(':checked')
                 const rowId = $checkbox.data('service-row-id')
                 let contribution = parseFloat($contributionInput.val()) || 0
                 let deliveredQuantity = parseFloat($deliveredQuantityInput.val()) || 0
@@ -2165,6 +2272,7 @@ const ServiceOrder = (function($) {
                     if(item.service_id === rowId){
                         return{
                             ...item,
+                            has_package: hasPackage,
                             is_selected: isSelected,
                             contribution_percent: isSelected ? contribution : 0,
                             delivered_quantity: isSelected ? deliveredQuantity : 0,
@@ -2239,6 +2347,69 @@ const ServiceOrder = (function($) {
                 $row.find('.pc-contribution').val(0)
                 $row.find('.pc-delivered-quantity').val(0)
             }
+        })
+    }
+
+    function handleCheckPackage(){
+        pageElement.modalData.$tableProductContribution.on('change', '.contribution-package', function(e) {
+            const $ele = $(e.currentTarget)
+            const isCheck = $ele.is(':checked')
+            const $row = $ele.closest('tr')
+            const table = pageElement.modalData.$tableProductContribution.DataTable()
+            const rowData = table.row($row).data()
+            rowData.has_package= isCheck
+        })
+    }
+
+    function handleOpenModalPackage(){
+        pageElement.modalData.$tableProductContribution.on('click', '.btn-open-contribution-package', function(e) {
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+            const rowData = pageElement.modalData.$tableProductContribution.DataTable().row($row).data()
+            const contributionId = $ele.attr('data-contribution-id')
+            const packageData = pageVariable.contributionPackageData[contributionId]
+            if(rowData.has_package){
+                if(packageData && packageData.length > 0){
+                    initContributionPackageModalDataTable(packageData)
+                } else {
+                    const shipmentTable = $('#table_shipment').DataTable()
+                    let shipmentData = shipmentTable.data().toArray()
+                    shipmentData = shipmentData.map(item => {
+                        if(item.isContainer){
+                            return {
+                                is_container: item.isContainer,
+                                title: item.containerName,
+                                description: item.containerNote,
+                                packages: item.packages,
+                                container_ref: item.containerRefNumber
+                            }
+                        }
+                        else {
+                            return {
+                                is_container: item.isContainer,
+                                title: item.packageName,
+                                description: item.packageNote,
+                                container_ref: item.packageContainerRef
+                            }
+                        }
+                    })
+                    initContributionPackageModalDataTable(shipmentData)
+                }
+                pageElement.modalData.$modalContributionPackage.modal('show')
+            }
+
+            //save contribution id to btn save
+            pageElement.modalData.$btnSaveContributionPackage.attr('data-contribution-id', contributionId)
+        })
+    }
+
+    function handleSaveModalPackage(){
+        pageElement.modalData.$btnSaveContributionPackage.on('click', function(e) {
+            const $ele = $(e.currentTarget)
+            const contributionID = $ele.attr('data-contribution-id')
+            const table = pageElement.modalData.$tableContributionPackage.DataTable()
+            const tableData = table.data().toArray()
+            pageVariable.contributionPackageData[contributionID] = JSON.parse(JSON.stringify(tableData))
         })
     }
 
@@ -3913,6 +4084,10 @@ const ServiceOrder = (function($) {
         handleSaveProductContribution,
         handleCheckDelivery,
         handleUncheckContribution,
+        handleCheckPackage,
+        handleOpenModalPackage,
+        handleSaveModalPackage,
+
         handleChangePaymentDate,
         handleAddPaymentRow,
         handleChangePaymentType,

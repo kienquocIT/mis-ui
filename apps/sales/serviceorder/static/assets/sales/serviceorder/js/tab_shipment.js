@@ -191,6 +191,7 @@ class TabShipmentFunction {
             let shipmentData = {};
             if (row?.isContainer || row ?.is_container) {
                 shipmentData = {
+                    id: row?.id,
                     title: row?.containerName || '',
                     container_type: row?.containerType || null,
                     package_type: null,
@@ -203,6 +204,7 @@ class TabShipmentFunction {
                 };
             } else {
                shipmentData = {
+                    id: row?.id,
                     title: row?.packageName || '',
                     container_type: null,
                     package_type: row?.packageType || null,
@@ -239,7 +241,9 @@ class TabShipmentEventHandler {
 
         // save container event
         pageElements.$btnSaveContainer.on('click', function () {
+            const uniqueStr = Math.random().toString(36).slice(2)
             const newContainer = {
+                id: uniqueStr,
                 isContainer: true,
                 containerName: pageElements.$containerName.val() || '',
                 containerType: SelectDDControl.get_data_from_idx(pageElements.$containerType, pageElements.$containerType.val()),
@@ -291,7 +295,10 @@ class TabShipmentEventHandler {
         pageElements.$btnSavePackage.on('click', function () {
             const selectedContainerRef = pageElements.$packageContainer.val() || '';
 
+            const uniqueStr = Math.random().toString(36).slice(2)
+
             const newPackage = {
+                id: uniqueStr,
                 isContainer: false,
                 packageName: pageElements.$packageName.val() || '',
                 packageType: SelectDDControl.get_data_from_idx(pageElements.$packageType, pageElements.$packageType.val()),

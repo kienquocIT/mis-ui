@@ -28,6 +28,8 @@ class HRMAttendanceList(View):
         template='hrm/attendance/attendance/attendance_list.html',
         breadcrumb='HRM_ATTENDANCE_LIST_PAGE',
         menu_active='menu_attendance_list',
+        icon_cls='fa-solid fa-user-check',
+        icon_bg='bg-green',
     )
     def get(self, request, *args, **kwargs):
         resp1 = ServerAPI(user=request.user, url=f'{ApiURL.PERIODS_CONFIG_LIST}?get_current=True').get()

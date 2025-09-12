@@ -195,13 +195,7 @@ class OpportunityPageFunction {
                             'consulting.consulting': $transEle.attr('data-trans-consulting'),
                             'leaseorder.leaseorder': $transEle.attr('data-trans-lease-order'),
                             'contract.contractapproval': $transEle.attr('data-trans-contract'),
-                            'serviceorder.serviceorder': transEle.attr('data-trans-service-order'),
-                        }
-                        let typeMapActivityIcon = {
-                            1: 'fa-solid fa-list-check',
-                            2: 'fas fa-phone-volume',
-                            3: 'bi bi-envelope-fill',
-                            4: 'bi bi-person-workspace',
+                            'serviceorder.serviceorder': $transEle.attr('data-trans-service-order'),
                         }
                         let typeMapActivity = {
                             1: $transEle.attr('data-trans-task'),
@@ -218,7 +212,7 @@ class OpportunityPageFunction {
                             if (row?.['call_log']['is_cancelled'] || row?.['meeting']['is_cancelled']) {
                                 status = `<span class="badge badge-sm badge-icon-xs badge-soft-danger">${$transEle.attr('data-trans-activity-cancelled')}</i>`
                             }
-                            return `<i class="text-primary ${typeMapActivityIcon[row?.['log_type']]}"></i>  <span class="text-primary small">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
+                            return `<span class="fst-italic text-muted">${typeMapActivity[row?.['log_type']]}</span> ${status}`;
                         }
                         return ``;
                     }
@@ -246,7 +240,7 @@ class OpportunityPageFunction {
                             'consulting.consulting': $urlEle.attr('data-url-consulting-detail'),
                             'leaseorder.leaseorder': $urlEle.attr('data-url-lease-order-detail'),
                             'contract.contractapproval': $urlEle.attr('data-url-contract-detail'),
-                            'serviceorder.serviceorder': urlFactory.attr('data-url-service-order-detail'),
+                            'serviceorder.serviceorder': $urlEle.attr('data-url-service-order-detail'),
                         }
                         let link = '';
                         let title = '';
@@ -286,7 +280,7 @@ class OpportunityPageFunction {
                                 return WFRTControl.displayRuntimeStatus(row?.['doc_data']?.['system_status']);
                             }
                             if (row?.['log_type'] === 1 && row?.['doc_data']?.['task_status']) {
-                                return `<span class="badge badge-soft-pink">${row?.['doc_data']?.['task_status']}</span>`;
+                                return `<span class="badge badge-soft-purple">${row?.['doc_data']?.['task_status']}</span>`;
                             }
                         }
                         return ``;
@@ -882,7 +876,7 @@ class OpportunityPageFunction {
             }
         )
         const service_order_check_perm = $.fn.callAjax2({
-            url: urlFactory.attr('data-url-opp-list'),
+            url: $urlEle.attr('data-url-opp-list'),
             data: {
                 'list_from_app': 'serviceorder.serviceorder.create', 'id': $.fn.getPkDetail()
             },
@@ -987,9 +981,9 @@ class OpportunityPageFunction {
                     create_lo_sc.removeAttr('href');
                 }
                 if (results_perm_app[8]) {
-                    let create_so_sc = $('#create-service-order-shortcut')
-                    create_so_sc.removeClass('disabled');
-                    let param_url = OpportunityLoadPage.push_param_to_url(create_so_sc.attr('data-url'), {
+                    let create_svo_sc = $('#create-service-order-shortcut')
+                    create_svo_sc.removeClass('disabled');
+                    let param_url = UsualLoadPageFunction.Push_param_to_url(create_svo_sc.attr('data-url'), {
                         'opp_id': results_perm_app[8]?.['id'],
                         'opp_code': results_perm_app[8]?.['code'],
                         'opp_title': results_perm_app[8]?.['title'],
@@ -997,7 +991,7 @@ class OpportunityPageFunction {
                         'inherit_title': results_perm_app[8]?.['sale_person']?.['full_name'],
                         'customer': encodeURIComponent(JSON.stringify(results_perm_app[8]?.['customer'])),
                     })
-                    create_so_sc.attr('href', param_url)
+                    create_svo_sc.attr('href', param_url)
                 }
                 $('#btn-create-related-feature').attr('data-call-check-perm', 'true')
             })
@@ -1890,7 +1884,6 @@ class OpportunityHandler {
         ])
     }
     static LoadDetailOpportunity(option) {
-        const urlFactory = $('#url-factory');
         const pk = $.fn.getPkDetail();
 
         let ajax_opp_detail = $.fn.callAjax2({
@@ -1909,7 +1902,7 @@ class OpportunityHandler {
         )
 
         let ajax_opp_config = $.fn.callAjax2({
-            url: urlFactory.data('url-config'),
+            url: $urlEle.data('url-config'),
             method: 'GET'
         }).then(
             (resp) => {

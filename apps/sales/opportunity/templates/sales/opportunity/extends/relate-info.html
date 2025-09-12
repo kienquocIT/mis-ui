@@ -41,7 +41,7 @@
             </li>
             <li class="nav-item" id="tab_activity_logs_btn">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_activity_logs">
-                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-chat-left-quote"></i></span></span>
+                    <span class="nav-icon-wrap"><span class="feather-icon"><i class="fas fa-comments"></i></span></span>
                     <span class="nav-link-text">{% trans "Sale activities logged" %}</span>
                 </a>
             </li>
@@ -110,8 +110,6 @@
                                 <input id="estimated-gross-profit-value" type="text" class="text-right text-primary form-control-line form-control mask-money" data-return-type="number" disabled readonly>
                             </div>
                         </div>
-                        <a id="create-service-order-shortcut" class="disabled dropdown-item" data-url="{% url 'ServiceOrderCreate' %}" href="#" target="_blank"><i class="dropdown-icon fa-solid fa-briefcase"></i><span class="small">{% trans 'Service Order' %}</span></a>
-
                     </div>
                 </div>
             </div>
@@ -251,7 +249,7 @@
             <div class="tab-pane fade" id="tab_activity_logs">
                 <div class="row">
                     <div class="col-12 d-flex">
-                        <button type="button" id="btn-refresh-activity" class="btn btn-custom btn-gradient-success btn-xs">
+                        <button type="button" id="btn-refresh-activity" class="btn btn-custom btn-gradient-primary btn-xs">
                             {% trans 'Refresh' %}
                         </button>
                         <div class="dropdown ml-2">
@@ -301,6 +299,9 @@
                                     </a>
                                     <a id="create-consulting-shortcut" class="disabled dropdown-item small" data-url="{% url 'ConsultingCreate' %}" href="#" target="_blank">
                                         <span>{% trans 'Consulting' %}</span>
+                                    </a>
+                                    <a id="create-service-order-shortcut" class="disabled dropdown-item small" data-url="{% url 'ServiceOrderCreate' %}" href="#" target="_blank">
+                                        <span>{% trans 'Service order' %}</span>
                                     </a>
                                 </div>
                             </div>

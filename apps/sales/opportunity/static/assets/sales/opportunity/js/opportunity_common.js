@@ -195,6 +195,7 @@ class OpportunityPageFunction {
                             'consulting.consulting': $transEle.attr('data-trans-consulting'),
                             'leaseorder.leaseorder': $transEle.attr('data-trans-lease-order'),
                             'contract.contractapproval': $transEle.attr('data-trans-contract'),
+                            'serviceorder.serviceorder': transEle.attr('data-trans-service-order'),
                         }
                         let typeMapActivityIcon = {
                             1: 'fa-solid fa-list-check',
@@ -245,6 +246,7 @@ class OpportunityPageFunction {
                             'consulting.consulting': $urlEle.attr('data-url-consulting-detail'),
                             'leaseorder.leaseorder': $urlEle.attr('data-url-lease-order-detail'),
                             'contract.contractapproval': $urlEle.attr('data-url-contract-detail'),
+                            'serviceorder.serviceorder': urlFactory.attr('data-url-service-order-detail'),
                         }
                         let link = '';
                         let title = '';
@@ -879,10 +881,30 @@ class OpportunityPageFunction {
                 console.log(errs);
             }
         )
+        const service_order_check_perm = $.fn.callAjax2({
+            url: urlFactory.attr('data-url-opp-list'),
+            data: {
+                'list_from_app': 'serviceorder.serviceorder.create', 'id': $.fn.getPkDetail()
+            },
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list) && data?.['opportunity_list'].length === 1) {
+                        return data?.['opportunity_list'][0];
+                    }
+                    return null
+                }
+            },
+            (errs) => {
+                console.log(errs);
+            }
+        )
         let create_return_sc = $('#create-return-advance-shortcut')
         create_return_sc.attr('href', create_return_sc.attr('data-url'))
 
-        Promise.all([quotation_check_perm, sale_order_check_perm, advance_check_perm, payment_check_perm, bom_check_perm, biding_check_perm, consulting_check_perm, lease_order_check_perm]).then(
+        Promise.all([quotation_check_perm, sale_order_check_perm, advance_check_perm, payment_check_perm, bom_check_perm, biding_check_perm, consulting_check_perm, lease_order_check_perm, service_order_check_perm]).then(
             (results_perm_app) => {
                 if (results_perm_app[0]) {
                     let create_quotation_sc = $('#create-quotation-shortcut')
@@ -964,6 +986,20 @@ class OpportunityPageFunction {
                     create_lo_sc.removeClass('disabled');
                     create_lo_sc.removeAttr('href');
                 }
+                if (results_perm_app[8]) {
+                    let create_so_sc = $('#create-service-order-shortcut')
+                    create_so_sc.removeClass('disabled');
+                    let param_url = OpportunityLoadPage.push_param_to_url(create_so_sc.attr('data-url'), {
+                        'opp_id': results_perm_app[8]?.['id'],
+                        'opp_code': results_perm_app[8]?.['code'],
+                        'opp_title': results_perm_app[8]?.['title'],
+                        'inherit_id': results_perm_app[8]?.['sale_person']?.['id'],
+                        'inherit_title': results_perm_app[8]?.['sale_person']?.['full_name'],
+                        'customer': encodeURIComponent(JSON.stringify(results_perm_app[8]?.['customer'])),
+                    })
+                    create_so_sc.attr('href', param_url)
+                }
+                $('#btn-create-related-feature').attr('data-call-check-perm', 'true')
             })
     }
     // tab product functions

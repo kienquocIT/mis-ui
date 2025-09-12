@@ -312,6 +312,11 @@ function TemplateDOM(node, data, configData) {
                         nodeMatch => {
                             nodeMatch.removeAttribute('style');
                             nodeMatch.innerText = dataList[codeKey].length >= i ? dataList[codeKey][i] : '_';
+                            // check if data is path of img element
+                            let inner = dataList[codeKey].length >= i ? dataList[codeKey][i] : '_';
+                            if (inner.includes('/media')) {
+                                nodeMatch.innerHTML = `<img src="${inner}" class="img-fluid" alt="img" style="width: 150px; height: 150px">`;
+                            }
                         }
                     )
                 }

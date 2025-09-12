@@ -142,6 +142,7 @@ $(document).ready(function () {
     window.formLabel = formLabel
 
     //--DROPDOWN OPPORTUNITY-- autoload opp if in page opp
+    if ($empElm[0].closest('#formOpportunityTask')) {
     const $btnInOpp = $('.current-create-task')
     if ($btnInOpp.length) {
         const pk = $.fn.getPkDetail()
@@ -159,6 +160,7 @@ $(document).ready(function () {
             }
         }, 1000)
     } else $oppElm.initSelect2() // run init select2 in task page
+    }
 
     //--BTN LOG-TIME-- action click to log-work
     const $logWorkModal = $('#logWorkModal');
@@ -194,6 +196,12 @@ $(document).ready(function () {
 
     // reset form create task khi click huỷ bỏ hoặc tạo mới task con
     $('#offCanvasRightTask').on('hidden.bs.offcanvas', () => resetFormTask())
+
+    $('.btn-create-todo').on('click', function () {
+        let $canvasEle = $('#offCanvasRightTask');
+        $canvasEle.removeAttr('data-tbl-id');
+        $canvasEle.removeAttr('data-row-idx');
+    });
 
     $('#offCanvasRightTask').on('shown.bs.offcanvas', function () {
         // init S2 custom assignee
@@ -300,8 +308,10 @@ $(document).ready(function () {
                     return false
                 }
 
+                let assign_toData = {};
+                if ($empElm[0].closest('#formOpportunityTask')) {
                 const assign_to = $empElm.select2('data')[0]
-                let assign_toData = {}
+                // let assign_toData = {}
                 if (assign_to) {
                     assign_toData = {
                         'id': assign_to.id,
@@ -309,6 +319,7 @@ $(document).ready(function () {
                         'first_name': assign_to.first_name,
                         'last_name': assign_to.last_name,
                     }
+                }
                 }
 
                 if ($customAssignee.length > 0) {
@@ -329,8 +340,10 @@ $(document).ready(function () {
                     })
                 })
 
+                let opportunity_data = {};
+                if ($empElm[0].closest('#formOpportunityTask')) {
                 if (!formData.opportunity) delete formData.opportunity
-                let opportunity_data = {}
+                // let opportunity_data = {}
                 if ($oppElm.val()) {
                     formData.opportunity = formData.opportunity_id = $oppElm.val()
                     opportunity_data = $oppElm.select2('data')[0]['data']
@@ -338,6 +351,12 @@ $(document).ready(function () {
                 if (!formData.project) delete formData.project
                 if ($prjElm.val()) formData.project = formData.project_id = $prjElm.val()
 
+                }
+                // case task extend to other apps
+                if (!$empElm[0].closest('#formOpportunityTask')) {
+                    opportunity_data = $oppElm.select2('data')[0]['data'];
+                    formData['opportunity_data'] = $oppElm.select2('data')[0]['data'];
+                }
                 formData.attach = $x.cls.file.get_val(formData.attach, []);
                 formData.attach_assignee = $x.cls.file.get_val(formData.attach_assignee, []);
                 let method = 'POST'
@@ -379,6 +398,56 @@ $(document).ready(function () {
                                 const datadump = JSON.stringify(formData)
                                 elm.removeAttr('data-task').attr('data-task', datadump)
                                 $('body').append(elm).trigger('From-Task.Submitted')
+
+                                // handle logic for task extend to other apps
+                                if (data?.['id'] && $('#offCanvasRightTask').attr('data-tbl-id') && $('#offCanvasRightTask').attr('data-row-idx')) {
+                                    if (data?.['id']) {
+                                        formData['id'] = data?.['id'];
+                                    }
+                                    let $canvasEle = $('#offCanvasRightTask');
+                                    let $table = $(`#${$canvasEle.attr('data-tbl-id')}`);
+                                    let rowIdx = $canvasEle.attr('data-row-idx');
+                                    let rowApi = $table.DataTable().row(rowIdx);
+                                    let row = rowApi.node();
+                                    TaskExtend.storeData(formData, row);
+                                }
+                                if (!data?.id && data?.status === 200) {
+                                    let tasksDataEle = document.querySelectorAll('.table-row-task-data');
+                                    if (tasksDataEle.length > 0) {
+                                        for (let taskDataEle of tasksDataEle) {
+                                            let target= false;
+                                            if ($(taskDataEle).val()) {
+                                                let taskData = JSON.parse($(taskDataEle).val());
+                                                for (let task of taskData) {
+                                                    if (task?.['id'] === formData?.['id']) {
+                                                        task['percent_completed'] = formData?.['percent_completed'];
+                                                        target = true;
+                                                        break;
+                                                    }
+                                                }
+                                                if (target === true) {
+                                                    $(taskDataEle).val(JSON.stringify(taskData));
+                                                    let row = taskDataEle.closest('tr');
+                                                    if (row) {
+                                                        let percentCompletedEle = row.querySelector('.table-row-percent-completed');
+                                                        if (percentCompletedEle) {
+                                                            let percent = TaskExtend.calculatePercentCompletedAll(taskData);
+                                                            let badgeCls = 'bg-grey-light-4';
+                                                            if (percent >= 50 && percent < 100) {
+                                                                badgeCls = 'bg-blue-light-4';
+                                                            }
+                                                            if (percent >= 100) {
+                                                                badgeCls = 'bg-green-light-4';
+                                                            }
+                                                            $(percentCompletedEle).html(`<span class="badge ${badgeCls} text-dark-10 fs-8">${String(percent) + ' %'}</span>`);
+                                                        }
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                             if ($('.current-create-task').length) $('.cancel-task').trigger('click')
                         }

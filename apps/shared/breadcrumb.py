@@ -354,7 +354,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DASHBOARD_COMMON_PAGE = BreadcrumbChildren(_('Dashboard'), 'DashboardCommonPage')
     DASHBOARD_GENERAL_LIST_PAGE = BreadcrumbChildren(_('General dashboard'), 'DashboardGeneralList')
     DASHBOARD_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pipeline dashboard'), 'DashboardPipelineList')
-    DASHBOARD_SERVICE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Service order dashboard'), 'DashboardServiceOrderList')
+    DASHBOARD_SERVICE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Service order progress dashboard'), 'DashboardServiceOrderList')
 
     PERIODS_CONFIG_PAGE = BreadcrumbChildren(_('Periods config'), 'PeriodsConfigList')
     ACCOUNTING_POLICIES_PAGE = BreadcrumbChildren(_('Accounting policies'), 'AccountingPoliciesList')
@@ -551,6 +551,11 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # master data - attribute
     ATTRIBUTE_LIST_PAGE = BreadcrumbChildren(_('Product/ service attribute'), 'AttributeList')
+    # Service order
+    SERVICE_ORDER_PAGE = BreadcrumbChildren(_('Service order'), 'ServiceOrderList')
+
+    # shipment
+    SHIPMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master data shipment'), 'ShipmentMasterDataList')
 
 
 class BreadcrumbView:
@@ -1485,6 +1490,16 @@ class BreadcrumbView:
         BreadcrumbItem.ATTENDANCE_DEVICE_LIST_PAGE
     ]
 
+    # Service Order
+    SERVICE_ORDER = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.SERVICE_ORDER_PAGE
+    ]
+    SERVICE_ORDER_LIST_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_LIST]
+    SERVICE_ORDER_CREATE_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_CREATE]
+    SERVICE_ORDER_DETAIL_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_DETAIL]
+    SERVICE_ORDER_UPDATE_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_UPDATE]
+
     # Absence explanation
     ABSENCE_EXPLANATION_LIST_PAGE = [
         BreadcrumbItem.ABSENCE_EXPLANATION_LIST
@@ -1497,3 +1512,5 @@ class BreadcrumbView:
     ATTRIBUTE_LIST_PAGE = [
         BreadcrumbItem.ATTRIBUTE_LIST_PAGE
     ]
+
+    SHIPMENT_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.SHIPMENT_MASTER_DATA_LIST_PAGE]

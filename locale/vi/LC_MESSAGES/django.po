@@ -9921,10 +9921,6 @@ msgid "Consulting"
 msgstr "Tư vấn"
 
 #
-msgid "Due Date"
-msgstr "Thời hạn"
-
-#
 msgid "Consulting list"
 msgstr "Danh sách tư vấn"
 
@@ -12234,6 +12230,42 @@ msgstr "Thay đổi thuộc tính của sản phẩm này?"
 #
 msgid "Overtime request"
 msgstr "Đăng ký làm ngoài giờ"
+
+#
+msgid "Container Type"
+msgstr "Loại Container"
+
+#
+msgid "Container type"
+msgstr "Loại container"
+
+#
+msgid "Create new container type successfully"
+msgstr "Tạo loại container mới thành công"
+
+#
+msgid "Update container type successfully"
+msgstr "Cập nhật loại container thành công"
+
+#
+msgid "Update package type successfully"
+msgstr "Cập nhật loại hàng thành công"
+
+#
+msgid "Create new package type successfully"
+msgstr "Tạo loại hàng thành công"
+
+#
+msgid "Service order"
+msgstr "Đơn dịch vụ"
+
+#
+msgid "Package type"
+msgstr "Loại kiện hàng"
+
+#
+msgid "Package Type"
+msgstr "Loại Kiện Hàng"
 
 #
 msgid "Summarize contract"

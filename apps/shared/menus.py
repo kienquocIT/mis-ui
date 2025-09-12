@@ -203,6 +203,11 @@ class MenusCoreConfigurations:
                 name='Shift', code='id_menu_master_data_shift',
                 view_name='ShiftMasterDataList',
                 icon='<i class="fas fa-history"></i>'
+            ),
+            MenuCommon(
+                name='Shipment', code='menu_master_data_shipment',
+                view_name='ShipmentMasterDataList',
+                icon='<i class="fa-solid fa-truck-arrow-right"></i>'
             )
         ]
     )
@@ -405,6 +410,10 @@ class MenusCRM:
     WORK_ORDER = MenuCommon(
         name='Work order', code='menu_work_order_list', view_name='WorkOrderList',
         icon='<i class="fas fa-pencil-ruler"></i>',
+    )
+    SERVICE_ORDER = MenuCommon(
+        name='Service order', code='menu_service_order_list', view_name='ServiceOrderList',
+        icon='<i class="fa-solid fa-calendar-check"></i>',
     )
     AR_INVOICE = MenuCommon(
         name='AR invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
@@ -1043,6 +1052,7 @@ class SpaceItem:
                 MenusCRM.AR_INVOICE,
                 MenusCRM.LEASE_ASSET_LIST,
                 MenusCRM.RECURRENCE,
+                MenusCRM.SERVICE_ORDER,
                 MenusCRM.WORK_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.CONTRACT_APPROVAL,

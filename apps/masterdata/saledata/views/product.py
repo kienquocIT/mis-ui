@@ -1,5 +1,7 @@
 from django.views import View
+from requests_toolbelt import MultipartEncoder
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI, PermCheck
@@ -435,4 +437,19 @@ class ProductQuotationListLoadDBAPI(APIView):
     def post(self, request, *arg, **kwargs):
         data = request.data  # noqa
         resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_QUOTATION_LOAD_DB).post(data)
+        return resp.auto_return()
+
+
+class ProductUploadAvatarAPI(APIView):
+    parser_classes = [MultiPartParser]
+
+    @mask_view(auth_require=True, login_require=True, is_api=True)
+    def post(self, request, *args, pk, **kwargs):
+        url = ApiURL.PRODUCT_UPLOAD_AVATAR.fill_key(pk=pk)
+        uploaded_file = request.FILES.get('file')
+        m = MultipartEncoder(fields={'avatar_img': (uploaded_file.name, uploaded_file, uploaded_file.content_type)})
+        headers = {'content-type': m.content_type}
+        resp = ServerAPI(request=request, user=request.user, url=url, cus_headers=headers).post(data=m)
+        if resp.state:
+            return {'detail': resp.result}, status.HTTP_200_OK
         return resp.auto_return()

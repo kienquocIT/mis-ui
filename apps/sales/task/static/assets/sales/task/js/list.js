@@ -71,6 +71,9 @@ $(function () {
     }
 
     function callDataTaskList(kanban, list, params = {}, isReturn=false) {
+        if (!$empElm[0].closest('#formOpportunityTask') && Object.keys(params).length === 0) {
+            return true;
+        }
         let callData = $.fn.callAjax2({
             'url': $urlFact.attr('data-task-list'),
             'method': 'GET',
@@ -430,7 +433,7 @@ $(function () {
                             }
                             let $customAssignee = $('#custom_assignee');
                             if ($customAssignee.length > 0) {
-                                FormElementControl.loadInitS2($customAssignee, [data.employee_inherit]);
+                                FormElementControl.loadInitS2($customAssignee, [data?.['employee_inherit']]);
                             }
                             window.editor.setData(data.remark)
                             window.checklist.setDataList = data.checklist
@@ -1432,6 +1435,7 @@ $(function () {
             }
             else{
                 let oldData = GanttViewTask.bk_taskList[data.id]
+                if (oldData) {
                 if (oldData.desc === undefined) oldData.name = data.title
                 else oldData.desc = data.title
                 let from = new Date(data.start_date)
@@ -1455,6 +1459,7 @@ $(function () {
                     dataObj: new_value
                 }]
                 dictList = GanttViewTask.saveTaskList(oldData)
+                }
             }
             const arrayList = GanttViewTask.convertFromDictToArray(dictList, true)
             $('#gantt_reload').data('data', arrayList).trigger('click')
@@ -1618,4 +1623,53 @@ $(function () {
         kanbanTask.editTask($(tempHTML))
         $('.card-title', tempHTML).trigger('click')
     }
+
+    // event on click tab task (task extend to other apps)
+    $('#tab_task_nav').on('click', function () {
+        let $table = $(`#${$('#tab_task_nav').attr('data-tbl-id')}`);
+        let taskIDs = TaskExtend.getTaskIDsFromTbl($table);
+        if (taskIDs.length > 0) {
+            callDataTaskList(kanbanTask, listTask, {'id__in': taskIDs.join(',')});
+        }
+        $('#kb_scroll').css('max-height', 'none');
+    });
+    // event on click btn-list-task (task extend to other apps)
+    $('#listTaskAssignedModal').on('shown.bs.modal', function () {
+        let $table = $(`#${$(this).attr('data-tbl-id')}`);
+        let rowIdx = $(this).attr('data-row-idx');
+        let rowApi = $table.DataTable().row(rowIdx);
+        let row = rowApi.node();
+        let taskDataEle = row.querySelector('.table-row-task-data');
+        if (taskDataEle) {
+            if ($(taskDataEle).val()) {
+                let taskIDs = [];
+                let taskData = JSON.parse($(taskDataEle).val());
+                for (let task of taskData) {
+                    if (task?.['id']) {
+                        taskIDs.push(task?.['id']);
+                    }
+                }
+                if (taskIDs.length > 0) {
+                    let callData = $.fn.callAjax2({
+                        'url': $urlFact.attr('data-task-list'),
+                        'method': 'GET',
+                        'data': {'id__in': taskIDs.join(',')},
+                        'isLoading': true
+                    })
+                    callData.then(
+                        (req) => {
+                            let data = $.fn.switcherResp(req);
+                            if (data?.['status'] === 200) {
+                                const taskList = data?.['task_list']
+                                listTask.init(listTask, taskList)
+                            }
+                        },
+                        (err) => {
+                            $.fn.notifyB({description: err.data.errors}, 'failure');
+                        }
+                    );
+                }
+            }
+        }
+    });
 }, jQuery);

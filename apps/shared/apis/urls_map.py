@@ -323,6 +323,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_SALE_LIST = StringUrl('saledata/products-sale/list')
     PRODUCT_SALE_DETAIL = StringUrl('saledata/products-sale')
     PRODUCT_VARIANT_LIST = StringUrl('saledata/products-variants')
+    PRODUCT_UPLOAD_AVATAR = StringUrl('saledata/product/{pk}/upload-avatar')
 
     # advance payment
     CASHOUTFLOW_QUOTATION_LIST = StringUrl('cashoutflow/quotation-list')
@@ -1011,3 +1012,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # master data - attribute
     ATTRIBUTE_LIST = StringUrl('saledata/attribute/list')
     ATTRIBUTE_DETAIL = StringUrl('saledata/attribute/{pk}')
+
+    # master data - shipment
+    CONTAINER_LIST = StringUrl('saledata/shipment/container/list')
+    CONTAINER_DETAIL = StringUrl('saledata/shipment/container/detail/{pk}')
+    PACKAGE_LIST = StringUrl('saledata/shipment/package/list')
+    PACKAGE_DETAIL = StringUrl('saledata/shipment/package/detail/{pk}')
+
+    # service-order
+    SERVICE_ORDER_LIST = StringUrl('serviceorder/list')
+    SERVICE_ORDER_DETAIL = StringUrl('serviceorder/detail/{pk}')
+    SERVICE_ORDER_DETAIL_FOR_DASHBOARD = StringUrl('serviceorder/detail-for-dashboard/{pk}')

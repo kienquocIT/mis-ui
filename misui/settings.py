@@ -121,6 +121,7 @@ INSTALLED_APPS = \
         'apps.sales.productmodificationbom',
         'apps.sales.equipmentloan',
         'apps.sales.equipmentreturn',
+        'apps.sales.serviceorder',
     ] + [  # e-office Application
         'apps.eoffice.leave',
         'apps.eoffice.businesstrip',

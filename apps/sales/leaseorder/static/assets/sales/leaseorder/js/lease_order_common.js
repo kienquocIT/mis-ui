@@ -3471,7 +3471,31 @@ class LeaseOrderLoadDataHandle {
             LeaseOrderLoadDataHandle.loadBoxQuotationContact(data?.['contact_data']);
         }
         if (data?.['payment_term_data']) {
-            FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);
+            // FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_term_data']], {}, null, true);
+            // load realtime payment data
+            WindowControl.showLoading();
+            $.fn.callAjax2({
+                    'url': LeaseOrderLoadDataHandle.paymentSelectEle.attr('data-url'),
+                    'method': "GET",
+                    'data': {'id': data?.['payment_term_data']?.['id']},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('payment_terms_list') && Array.isArray(data.payment_terms_list)) {
+                            if (data?.['payment_terms_list'].length > 0) {
+                                FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [data?.['payment_terms_list'][0]], {}, null, true);
+                            }
+                            if (data?.['payment_terms_list'].length === 0) {
+                                FormElementControl.loadInitS2(LeaseOrderLoadDataHandle.paymentSelectEle, [], {}, null, true);
+                            }
+                            WindowControl.hideLoading();
+                        }
+                    }
+                }
+            )
         }
         if (data?.['quotation_data']) {
             if (data?.['quotation_data']?.['title']) {
@@ -3486,20 +3510,14 @@ class LeaseOrderLoadDataHandle {
             $('#is_customer_confirm')[0].checked = data?.['is_customer_confirm'];
         }
         if (is_copy === false) {
-            // check if finish then remove hidden btnDelivery (SO)
-            if (data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get') {
+            // check remove hidden btnDelivery
+            if (data?.['delivery_call'] === false && data?.['system_status'] === 3 && $(form).attr('data-method').toLowerCase() === 'get') {
                 if (LeaseOrderLoadDataHandle.opportunitySelectEle.val()) {
                     if (data?.['opportunity']?.['is_deal_close'] === false) {
-                        let btnDelivery = $('#btnDeliverySaleOrder');
-                        if (btnDelivery && btnDelivery.length > 0) {
-                            btnDelivery[0].removeAttribute('hidden');
-                        }
+                        LeaseOrderDeliveryHandle.$btnDeliveryInfo[0].removeAttribute('hidden');
                     }
                 } else {
-                    let btnDelivery = $('#btnDeliverySaleOrder');
-                    if (btnDelivery && btnDelivery.length > 0) {
-                        btnDelivery[0].removeAttribute('hidden');
-                    }
+                    LeaseOrderDeliveryHandle.$btnDeliveryInfo[0].removeAttribute('hidden');
                 }
             }
             // check if finish then remove hidden btnCopy
@@ -5984,7 +6002,7 @@ class LeaseOrderDataTableHandle {
                     width: '12%',
                     render: (data, type, row) => {
                         return `<div class="input-affix-wrapper">
-                                    <input type="text" class="form-control date-picker text-black table-row-date" autocomplete="off">
+                                    <input type="text" class="form-control flat-picker text-black table-row-date" autocomplete="off">
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -8418,6 +8436,70 @@ class LeaseOrderShippingHandle {
         }
         return true;
     };
+}
+
+// Delivery
+class LeaseOrderDeliveryHandle {
+    static $btnDeliveryInfo = $('#delivery-info');
+    static $modalDeliveryInfoEle = $('#deliveryInfoModalCenter');
+    static $deliveryEstimatedDateEle = $('#estimated_delivery_date');
+    static $deliveryRemarkEle = $('#remarks');
+    static $btnDelivery = $('#btn-delivery');
+
+    static checkOpenDeliveryInfo(data) {
+        // check CR all cancel then allow delivery
+        WindowControl.showLoading();
+        $.fn.callAjax2({
+                'url': LeaseOrderLoadDataHandle.urlEle.attr('data-lo-list-api'),
+                'method': 'GET',
+                'data': {'document_root_id': data?.['document_root_id']},
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let dataCR = $.fn.switcherResp(resp);
+                if (dataCR) {
+                    if (dataCR.hasOwnProperty('lease_order_list') && Array.isArray(dataCR.lease_order_list)) {
+                        let check = false;
+                        if (dataCR?.['lease_order_list'].length > 0) {
+                            let countCancel = 0;
+                            for (let saleOrder of dataCR?.['lease_order_list']) {
+                                if (saleOrder?.['system_status'] === 4) {
+                                    countCancel++;
+                                }
+                            }
+                            if (countCancel === (dataCR?.['lease_order_list'].length - 1)) {
+                                check = true;
+                            }
+                        }
+                        if (check === true) {
+                            // open modal
+                            LeaseOrderDeliveryHandle.$btnDelivery.attr('data-id', data?.['id']);
+                            let targetCodeEle = LeaseOrderDeliveryHandle.$modalDeliveryInfoEle[0].querySelector('.target-code');
+                            if (targetCodeEle) {
+                                targetCodeEle.innerHTML = data?.['code'] ? data?.['code'] : '';
+                            }
+                            LeaseOrderDeliveryHandle.$modalDeliveryInfoEle.modal('show');
+                        }
+                        if (check === false) {
+                            Swal.fire({
+                                title: "Oops...",
+                                text: $.fn.transEle.attr('data-check-cr'),
+                                icon: "error",
+                                allowOutsideClick: false,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                }
+                            })
+                        }
+                        WindowControl.hideLoading();
+                    }
+                }
+            }
+        )
+        return true;
+    };
+
 }
 
 // Store data

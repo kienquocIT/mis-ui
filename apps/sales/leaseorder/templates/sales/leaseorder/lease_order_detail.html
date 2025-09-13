@@ -31,7 +31,7 @@
 
     <div class="row">
         <div class="col-12 col-md-6 col-lg-6">
-            <ul class="nav nav-line nav-tabs nav-light justify-content-start quotation-tabs">
+            <ul class="nav nav-pills-bfl quotation-tabs">
                 <li class="nav-item quotation-tab-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
                         <span class="nav-link-text">{% trans 'Lease order' %}</span>
@@ -46,8 +46,9 @@
         </div>
         <div class="col-12 col-md-6 col-lg-6">
             <div class="d-flex justify-content-end">
-                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                    <button type="button" class="btn btn-outline-secondary" id="print-document" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Print' %}" hidden><i class="fas fa-print"></i></button>
+                <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
+                    <button type="button" class="btn nav-link" id="delivery-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Delivery' %}" hidden><span class="icon"><i class="fas fa-truck"></i></span></button>
+                    <button type="button" class="btn nav-link" id="print-document" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Print' %}" hidden><i class="fas fa-print"></i></button>
                 </div>
             </div>
         </div>
@@ -85,7 +86,7 @@
                                         <label class="form-label required" for="lease_from">{% trans 'Lease from' %}</label>
                                         <div class="input-affix-wrapper">
                                             <input type="text" name="lease_from" id="lease_from"
-                                                   class="form-control date-picker text-black" autocomplete="off" disabled>
+                                                   class="form-control flat-picker text-black" autocomplete="off" disabled>
                                             <div class="input-suffix">
                                                 <i class="fas fa-calendar-alt"></i>
                                             </div>
@@ -97,7 +98,7 @@
                                         <label class="form-label required" for="lease_to">{% trans 'Lease to' %}</label>
                                         <div class="input-affix-wrapper">
                                             <input type="text" name="lease_to" id="lease_to"
-                                                   class="form-control date-picker text-black" autocomplete="off" disabled>
+                                                   class="form-control flat-picker text-black" autocomplete="off" disabled>
                                             <div class="input-suffix">
                                                 <i class="fas fa-calendar-alt"></i>
                                             </div>
@@ -1187,7 +1188,7 @@
                                 <label class="form-label required" for="depreciation_start_date">{% trans 'Start depreciation' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" id="depreciation_start_date"
-                                           class="form-control depreciation-start-date date-picker" autocomplete="off" disabled>
+                                           class="form-control depreciation-start-date flat-picker" autocomplete="off" disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -1199,7 +1200,7 @@
                                 <label class="form-label required" for="depreciation_end_date">{% trans 'End depreciation' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" id="depreciation_end_date"
-                                           class="form-control depreciation-end-date date-picker" autocomplete="off" disabled>
+                                           class="form-control depreciation-end-date flat-picker" autocomplete="off" disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -1211,7 +1212,7 @@
                                 <label class="form-label required" for="lease_start_date">{% trans 'Start lease' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" id="lease_start_date"
-                                           class="form-control lease-start-date date-picker" autocomplete="off" data-zone="lease_costs_data" disabled>
+                                           class="form-control lease-start-date flat-picker" autocomplete="off" data-zone="lease_costs_data" disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -1223,7 +1224,7 @@
                                 <label class="form-label required" for="lease_end_date">{% trans 'End lease' %}</label>
                                 <div class="input-affix-wrapper">
                                     <input type="text" id="lease_end_date"
-                                           class="form-control lease-end-date date-picker" autocomplete="off" data-zone="lease_costs_data" disabled>
+                                           class="form-control lease-end-date flat-picker" autocomplete="off" data-zone="lease_costs_data" disabled>
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
@@ -1277,6 +1278,52 @@
                     <button type="button" class="btn btn-primary" id="btn-save-depreciation-detail" data-bs-dismiss="offcanvas" data-zone="lease_costs_data" hidden>{% trans 'Save' %}</button>
                 </div>
             </div>
+
+            <div
+                class="modal fade" id="deliveryInfoModalCenter" tabindex="-1"
+                role="dialog" aria-labelledby="deliveryInfoModalCenter"
+                aria-hidden="true" data-zone="title"
+        >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b>{% trans 'Delivery information' %}</b></h5>
+                        <button
+                                type="button"
+                                class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg"
+                                data-bs-dismiss="modal"
+                        ><span class="icon"><i class="far fa-window-close"></i></span></button>
+                    </div>
+                    <div class="modal-body">
+                        <b class="target-code text-primary"></b>
+                        <div class="row">
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="estimated_delivery_date">{% trans 'Estimated delivery date' %}</label>
+                                    <div class="input-affix-wrapper">
+                                        <input type="text" id="estimated_delivery_date"
+                                               class="form-control flat-picker" autocomplete="off">
+                                        <div class="input-suffix">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label" for="remarks">{% trans 'Note' %}</label>
+                                <textarea class="form-control" rows="4" id="remarks" name="remarks"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                        <button type="button" class="btn btn-primary" id="btn-delivery">{% trans 'Save' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         </div>
     </form>
@@ -1359,6 +1406,10 @@
         data-so-detail="{% url 'SaleOrderDetailAPI' pk=1 %}"
         data-quotation="{% url "QuotationListAPI" %}"
         data-quotation-detail="{% url "QuotationDetailAPI" 1 %}"
+        data-lo-list-api="{% url 'LeaseOrderListAPI' %}"
+        data-create-delivery="{% url 'LeaseOrderDetailDeliveryAPI' 1 %}"
+        data-delivery="{% url 'OrderDeliveryList' %}"
+        data-picking="{% url 'OrderPickingList' %}"
     >
 
     <input

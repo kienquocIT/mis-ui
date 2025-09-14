@@ -149,7 +149,7 @@ class OpportunityPageFunction {
                 if (index === passed_stages.length - 1) {
                     $opp_stage_pipeline.find('.stage-selected2').last().removeClass('lost completed cancel').addClass('active');
                 }
-            }, index * 500);
+            }, index * 250);
         })
     }
     // load tab functions
@@ -1946,8 +1946,6 @@ class OpportunityHandler {
                     pageVariables.opp_stage_data = opp_stage_data
 
                     OpportunityHandler.LoadDetailOppSub(option)
-
-                    OpportunityEventHandler.InitPageEven()
 
                     SetupFormSubmit.validate($('#frm-add-member'), {
                         submitHandler: function (form) {

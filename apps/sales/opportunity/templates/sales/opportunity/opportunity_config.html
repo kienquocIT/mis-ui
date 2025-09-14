@@ -21,7 +21,7 @@
     <div id="div-data" class="hidden">
         {{ data.property_opportunity_list | json_script:"id-property-stage-condition" }}
     </div>
-    <form id="frm-detail-opportunity-config" data-method="PUT" data-url="{% url 'OpportunityConfigAPI' %}">
+    <form id="frm-detail-opportunity-config" data-method="PUT" data-url="{% url 'OpportunityConfigDetailAPI' %}">
         {% csrf_token %}
         <div class="row">
             <div class="col-12">

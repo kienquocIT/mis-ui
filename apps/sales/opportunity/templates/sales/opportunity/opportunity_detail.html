@@ -94,7 +94,7 @@
             </div>
         </form>
 
-        <form id="frm-add-member" data-method="POST" data-url="{% url 'MemberOfOpportunityDetailAddAPI' pk_opp='__pk_opp__' %}">
+        <form id="frm-add-member" data-method="POST" data-url="{% url 'OpportunityMemberListAPI' pk_opp='__pk_opp__' %}">
             <div
                     class="modal fade" id="modalAddMember" tabindex="-1" role="dialog"
                     aria-labelledby="exampleModalLarge01"
@@ -198,12 +198,9 @@
             data-url-competitor="{% url 'AccountForSaleListAPI' %}"
             data-url-contact="{% url 'ContactListAPI' %}"
             data-url-emp-detail="{% url 'EmployeeDetail' pk=0 %}"
-            data-url-config="{% url 'OpportunityConfigAPI' %}"
+            data-url-config="{% url 'OpportunityConfigDetailAPI' %}"
             data-url-related-quotation="{% url 'QuotationDetail' pk=0 %}"
             data-url-related-sale-order="{% url 'SaleOrderDetail' pk=0 %}"
-            data-url-member-detail="{% url 'OpportunityMemberDetailAPI' pk=0 %}"
-            data-url-delete-member="{% url 'OpportunityDeleteMemberAPI' pk=0 %}"
-            data-url-member-list="{% url 'OpportunityMemberListAPI' pk=0 %}"
 
             data-url-account-list="{% url 'AccountListAPI' %}"
             data-url-contact-list="{% url 'ContactListAPI' %}"

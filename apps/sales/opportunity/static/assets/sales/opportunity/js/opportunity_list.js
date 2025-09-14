@@ -94,11 +94,11 @@ $(document).ready(function () {
             url: url,
             method: method,
         }).then((resp) => {
-                return $.fn.switcherResp(resp);
-            },
-            (errs) => {
-                console.log(errs)
-            });
+            return $.fn.switcherResp(resp);
+        },
+        (errs) => {
+            console.log(errs)
+        });
     }
 
     function LoadConfigPromise() {

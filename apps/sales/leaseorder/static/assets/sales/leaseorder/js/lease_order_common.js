@@ -4409,11 +4409,15 @@ class LeaseOrderDataTableHandle {
                         if (row?.['asset_type'] === 1) {
                             readonly = "";
                         }
+                        let costPrice = row?.['product_cost_price'] ? row?.['product_cost_price'] : 0;
+                        if (costPrice === 0) {
+                            costPrice = row?.['offset_data']?.['standard_price'] ? row?.['offset_data']?.['standard_price'] : 0;
+                        }
                         return `<div class="row">
                                     <input 
                                         type="text" 
                                         class="form-control mask-money table-row-price disabled-custom-show" 
-                                        value="${row?.['product_cost_price'] ? row?.['product_cost_price'] : 0}"
+                                        value="${costPrice}"
                                         data-return-type="number"
                                         data-zone="${dataZone}"
                                         ${readonly}

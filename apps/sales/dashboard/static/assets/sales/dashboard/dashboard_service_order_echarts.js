@@ -83,15 +83,15 @@ $(document).ready(function () {
                 let avg_task_percent_completed = task_percent_completed.length !== 0 ? (task_percent_completed.reduce((a, b) => a + b, 0) / task_percent_completed.length) : 0
                 avg_wo_percent_completed += avg_task_percent_completed * wo_ctb_item?.['contribution_percent'] / 100
                 if (avg_task_percent_completed === 0) {
-                    wo_status_html = `<span class="badge badge-orange me-2"><i class="far fa-clock"></i> ${$.fn.gettext('WAITING')}</span>`
+                    wo_status_html = `<span class="badge badge-orange me-2"><i class="far fa-clock"></i> ${$.fn.gettext('WAITING')} (${avg_task_percent_completed}%)</span>`
                     waiting_wo += 1
                 }
                 else if (avg_task_percent_completed === 100) {
-                    wo_status_html = `<span class="badge badge-success me-2"><i class="bi bi-check-circle-fill"></i> ${$.fn.gettext('COMPLETED')}</span>`
+                    wo_status_html = `<span class="badge badge-success me-2"><i class="bi bi-check-circle-fill"></i> ${$.fn.gettext('COMPLETED')} (${avg_task_percent_completed}%)</span>`
                     completed_wo += 1
                 }
                 else {
-                    wo_status_html = `<span class="badge badge-blue me-2"><i class="bi bi-hourglass-split"></i> ${$.fn.gettext('PROCESSING')}</span>`
+                    wo_status_html = `<span class="badge badge-blue me-2"><i class="bi bi-hourglass-split"></i> ${$.fn.gettext('PROCESSING')} (${avg_task_percent_completed}%)</span>`
                     progressing_wo += 1
                 }
 
@@ -103,9 +103,7 @@ $(document).ready(function () {
                                                 <div class="d-flex align-items-center">
                                                     <span class="badge badge-light badge-outline me-2 d-md-inline-block d-none wo-contribution">${wo_ctb_item?.['contribution_percent']}% ${$.fn.gettext('contribution')}</span>
                                                     <span class="badge badge-light badge-indicator me-2"></span>
-                                                    <span class="small text-muted wo-inherit me-2">Nguyễn Văn Nam</span>
-                                                    <span class="badge badge-light badge-indicator me-2"></span>
-                                                    <span class="small text-muted wo-date me-2">${moment(wo_ctb_item?.['work_order_data']?.['start_date']).format('DD/MM/YYYY')} - ${moment(wo_ctb_item?.['work_order_data']?.['end_date']).format('DD/MM/YYYY')}</span>
+                                                    <span class="text-muted wo-date me-2">${moment(wo_ctb_item?.['work_order_data']?.['start_date']).format('DD/MM/YYYY')} - ${moment(wo_ctb_item?.['work_order_data']?.['end_date']).format('DD/MM/YYYY')}</span>
                                                     <span class="badge badge-light badge-indicator me-2"></span>
                                                     ${wo_status_html}
                                                     <span class="badge badge-light badge-indicator me-2"></span>

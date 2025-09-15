@@ -160,8 +160,8 @@
         ]
     },
     "emptyTable": "Không có dữ liệu",
-    "info": "Hiển thị từ dòng _START_ đến _END_ trên tổng _TOTAL_",
-    "infoEmpty": "Hiển thị từ dòng 0 đến 0 trên tổng 0",
+    "info": "Từ _START_ đến _END_ trên tổng _TOTAL_",
+    "infoEmpty": "Từ 0 đến 0 trên tổng 0",
     "lengthMenu": "Hiển thị _MENU_ dòng",
     "loadingRecords": "Đang tải...",
     "paginate": {

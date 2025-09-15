@@ -6,7 +6,7 @@ function InitAdvancePaymentTable(data_param={}) {
         rowIdx: true,
         reloadCurrency: true,
         scrollX: true,
-        scrollY: '70vh',
+        scrollY: '64vh',
         scrollCollapse: true,
         fixedColumns: {
             leftColumns: 2,
@@ -66,7 +66,7 @@ function InitAdvancePaymentTable(data_param={}) {
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="bottom" 
                                             title="${dtb.attr('data-type-translate-return')}"
-                                        ><i class="fas fa-hand-holding-usd fa-flip-horizontal"></i></button>
+                                        ><i class="bi bi-arrow-return-left"></i></button>
                                     </a>`;
                     }
                     const link = dtb.attr('data-url-detail').replace('0', row?.['id']);

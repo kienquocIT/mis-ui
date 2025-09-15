@@ -467,7 +467,7 @@ class MenusCRM:
             ),
             MenuCommon(
                 name='Return advance', code='id_menu_return_advance', view_name='ReturnAdvanceList',
-                icon='<i class="fas fa-hand-holding-usd fa-flip-horizontal"></i>',
+                icon='<i class="bi bi-arrow-return-left"></i>',
             ),
         ],
     )

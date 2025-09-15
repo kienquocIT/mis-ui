@@ -49,7 +49,7 @@ class PaymentPageFunction {
         pageElements.$bank_account_table.DataTable().clear().destroy()
         pageElements.$bank_account_table.DataTableDefault({
             styleDom: 'hide-foot',
-            scrollY: '70vh',
+            scrollY: '64vh',
             scrollCollapse: true,
             rowIdx: true,
             paging: false,
@@ -544,7 +544,7 @@ class PaymentPageFunction {
         pageElements.$advance_payment_list_datatable.DataTable().clear().destroy();
         pageElements.$advance_payment_list_datatable.DataTableDefault({
             styleDom: 'hide-foot',
-            scrollY: '70vh',
+            scrollY: '64vh',
             scrollCollapse: true,
             rowIdx: true,
             paging: false,

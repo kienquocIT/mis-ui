@@ -62,7 +62,7 @@ $(document).ready(function () {
             rowIdx: true,
             useDataServer: true,
             scrollX: true,
-            scrollY: '70vh',
+            scrollY: '64vh',
             scrollCollapse: true,
             reloadCurrency: true,
             ajax: {

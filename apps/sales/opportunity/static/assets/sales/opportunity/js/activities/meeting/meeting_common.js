@@ -14,7 +14,7 @@ function loadOpportunityMeetingList() {
         dtb.DataTableDefault({
             rowIdx: true,
             scrollX: true,
-            scrollY: '70vh',
+            scrollY: '64vh',
             scrollCollapse: true,
             useDataServer: true,
             fixedColumns: {

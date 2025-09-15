@@ -313,7 +313,7 @@ $(document).ready(function () {
             styleDom: 'hide-foot',
             rowIdx: true,
             paging: false,
-            scrollY: '70vh',
+            scrollY: '64vh',
             scrollX: true,
             scrollCollapse: true,
             reloadCurrency: true,

@@ -57,7 +57,7 @@ $(document).ready(function() {
                 reloadCurrency: true,
                 paging: false,
                 scrollX: true,
-                scrollY: '70vh',
+                scrollY: '64vh',
                 scrollCollapse: true,
                 ajax: {
                     url: frm.dataUrl,

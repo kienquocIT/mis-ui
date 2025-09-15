@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="modal fade" id="modal-exchange-rate" tabindex="-1" role="dialog" aria-labelledby="modal-exchange-rate" data-bs-backdrop="static">
+<div class="modal fade" id="modal-exchange-rate" tabindex="-1" role="dialog" aria-labelledby="modal-exchange-rate">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -40,30 +40,30 @@
     </div>
 </div>
 
-
-<div class="modal fade" id="modal-product" tabindex="-1" role="dialog" aria-labelledby="modal-product" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<div class="modal fade" id="modal-product" tabindex="-1" role="dialog" aria-labelledby="modal-product">
+    <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{% trans "Select Product/ Service" %}</h5>
+                <h5 class="modal-title">{% trans "Select Product/Service" %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span>&times;</span>
                 </button>
             </div>
             <div class="modal-body" style="max-height: 70vh; overflow: auto">
-                <div class="nicescroll-bar">
-                    <table class="table nowrap w-100" id="modal-table-product" data-url="{% url 'ProductListAPI' %}">
-                        <thead>
-                            <tr class="bg-light">
-                                <th></th>
-                                <th>{% trans 'Code' %}</th>
-                                <th>{% trans 'Name' %}</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table nowrap w-100" id="modal-table-product" data-url="{% url 'ProductListAPI' %}">
+                            <thead>
+                                <tr class="bg-secondary-light-5">
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 250px">{% trans 'Product/Service' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Description' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody> </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -268,7 +268,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{% trans "Contribution of Product/ Service" %}</h5>
+                <h5 class="modal-title">{% trans "Contribution of Product/Service" %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span>&times;</span>
                 </button>

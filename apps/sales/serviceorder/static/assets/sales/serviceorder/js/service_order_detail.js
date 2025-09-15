@@ -78,12 +78,6 @@ class DetailDataHandler {
 
                 DetailDataHandler.loadDetailOpp(data)
 
-                const createdDate = data.date_created ? DateTimeControl.formatDateType(
-                    "YYYY-MM-DD",
-                    "DD/MM/YYYY",
-                    data.date_created
-                ) : ''
-
                 const startDate = data.start_date ? DateTimeControl.formatDateType(
                     "YYYY-MM-DD",
                     "DD/MM/YYYY",
@@ -98,7 +92,6 @@ class DetailDataHandler {
 
                 // basic information fields
                 ServiceOrder.pageElement.commonData.$titleEle.val(data?.title)
-                ServiceOrder.pageElement.commonData.$createdDate.val(createdDate)
                 DetailDataHandler.loadCustomerList(data?.customer_data)
                 ServiceOrder.pageElement.commonData.$startDate.val(startDate)
                 ServiceOrder.pageElement.commonData.$endDate.val(endDate)

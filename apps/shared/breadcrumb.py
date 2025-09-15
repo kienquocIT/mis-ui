@@ -550,7 +550,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ABSENCE_EXPLANATION_LIST = BreadcrumbChildren(_('Absence Explanation'), 'AbsenceExplanationList')
 
     # master data - attribute
-    ATTRIBUTE_LIST_PAGE = BreadcrumbChildren(_('Product/ service attribute'), 'AttributeList')
+    ATTRIBUTE_LIST_PAGE = BreadcrumbChildren(_('Product/Service attribute'), 'AttributeList')
     # Service order
     SERVICE_ORDER_PAGE = BreadcrumbChildren(_('Service order'), 'ServiceOrderList')
 

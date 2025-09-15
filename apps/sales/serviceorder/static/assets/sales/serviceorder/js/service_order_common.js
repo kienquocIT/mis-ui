@@ -4,7 +4,6 @@ const ServiceOrder = (function($) {
         $urlScript: $('#script-url'),
         commonData: {
             $titleEle: $('#so-title'),
-            $createdDate: $('#so-created-date'),
             $startDate: $('#so-start-date'),
             $endDate: $('#so-end-date'),
             $customer: $('#so-customer'),
@@ -119,11 +118,6 @@ const ServiceOrder = (function($) {
     }
 
     function initDateTime() {
-        UsualLoadPageFunction.LoadDate({
-            element: pageElement.commonData.$createdDate,
-            empty: false
-        })
-
         UsualLoadPageFunction.LoadDate({
             element: pageElement.commonData.$startDate,
             empty: false
@@ -294,17 +288,14 @@ const ServiceOrder = (function($) {
 // --------------------HANDLE INIT DATATABLES---------------------
     function initProductModalDataTable() {
         pageElement.modalData.$tableProduct.DataTableDefault({
+            rowIdx: true,
             useDataServer: true,
             reloadCurrency: true,
-            autoWidth: false,
             scrollCollapse: true,
-            scrollY: '35vh',
+            scrollY: '50vh',
             ajax: {
                 url: pageElement.modalData.$tableProduct.attr('data-url'),
                 type: 'GET',
-                data: function (params) {
-
-                },
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data) {
@@ -315,43 +306,25 @@ const ServiceOrder = (function($) {
             },
             columns: [
                 {
-                    targets: 0,
-                    width: '10%',
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
-                    targets: 1,
-                    width: '30%',
-                    className: 'min-w-150p',
                     render: (data, type, row) => {
-                        const code = row?.['code']
-                        return `<div>${code}</div>`
-                    }
-                },
-                {
-                    targets: 2,
-                    width: '50%',
-                    className: 'min-w-210p',
-                    render: (data, type, row) => {
-                        const name = row?.['title']
-                        return `<div>${name}</div>`
-                    }
-                },
-                {
-                    targets: 4,
-                    width: '10%',
-                    render: (data, type, row) => {
-                        const productId = row?.['id']
                         return `<div class="form-check">
-                                <input 
-                                    type="checkbox"  
-                                    class="form-check-input"
-                                    name="select-product" 
-                                    data-product-id="${productId}"
-                                />
-                            </div>`
+                                    <input type="checkbox" class="form-check-input" name="select-product" data-product-id="${row?.['id'] || ''}"/>
+                                </div>`
+                    }
+                },
+                {
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code'] || ''}</span><span>${row?.['title'] || ''}</span>`
+                    }
+                },
+                {
+                    render: (data, type, row) => {
+                        return `<span>${row?.['description'] || ''}</span>`
                     }
                 },
             ],
@@ -424,10 +397,10 @@ const ServiceOrder = (function($) {
         }
 
         pageElement.serviceDetail.$table.DataTableDefault({
+            styleDom: "hide-foot",
             data: data,
             reloadCurrency: true,
             rowIdx: true,
-            autoWidth: false,
             scrollX: true,
             scrollY: '50vh',
             scrollCollapse: true,
@@ -441,13 +414,13 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-25',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-primary">${row?.['code'] || ''}</span><br><span>${row?.['title'] || ''}</span>`
+                        return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code'] || ''}</span><span>${row?.['title'] || ''}</span>`
                     }
                 },
                 {
                     className: 'w-15',
                     render: (data, type, row) => {
-                        return `<textarea class="form-control cost-description" rows="3">${row?.['description'] || ''}</textarea>`
+                        return `<textarea disabled readonly class="form-control cost-description" rows="2">${row?.['description'] || ''}</textarea>`
                     }
                 },
                 {
@@ -502,149 +475,84 @@ const ServiceOrder = (function($) {
         }
 
         pageElement.workOrder.$table.DataTableDefault({
+            styleDom: "hide-foot",
             data: data,
             reloadCurrency: true,
             rowIdx: true,
-            autoWidth: false,
             scrollX: true,
             scrollY: '50vh',
             scrollCollapse: true,
             columns: [
                 {
-                    width: '1%',
-                    title: $.fn.gettext(''),
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
-                    width: '5%',
-                    title: $.fn.gettext('Code'),
-                    className: 'dt-code-wrap',
                     render: (data, type, row) => {
-                        const code = row.code || ''
-                        return `<div class="dt-code-wrap">${code}</div>`
-                    }
-                },
-                {
-                    width: '12%',
-                    title: $.fn.gettext('Description'),
-                    render: (data, type, row) => {
-                        const name = row.title || ''
-                        const isItemRow = row?.product_id
-                        if (isItemRow){
-                            return `<div class="" title="${name}">${name}</div>`
+                        if (row?.['product_id']){
+                            return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code'] || ''}</span><span class="" title="${row?.['title'] || ''}">${row?.['title'] || ''}</span>`
                         } else {
-                            return `<div class="input-group">
-                                        <textarea
-                                            class="form-control work-order-description"
-                                            rows="2"
-                                        >${name}</textarea>
-                                    </div>`
+                            return `<textarea class="form-control work-order-description" rows="2">${row?.['title'] || ''}</textarea>`
                         }
                     }
                 },
                 {
-                    width: '9%',
-                    title: $.fn.gettext('Assignee'),
                     render: (data, type, row) => {
                         return TaskExtend.renderTaskTblRow();
                     }
                 },
                 {
-                    width: '9%',
-                    title: $.fn.gettext('Start Date'),
                     render: (data, type, row) => {
-                        const startDate = row.start_date || ''
-                        return `<div class="input-group">
-                                <input type="text" class="form-control date-input work-order-start-date" value="${startDate}" placeholder="DD/MM/YYYY">
-                            </div>`
+                        return `<input type="text" class="form-control date-input work-order-start-date" value="${row?.['start_date'] || ''}" placeholder="DD/MM/YYYY">`
                     }
                 },
                 {
-                    width: '9%',
-                    title: $.fn.gettext('End Date'),
                     render: (data, type, row) => {
-                        const endDate = row.end_date || ''
-                        return `<div class="input-group">
-                                <input type="text" class="form-control date-input work-order-end-date" value="${endDate}" placeholder="DD/MM/YYYY">
-                            </div>`
+                        return `<input type="text" class="form-control date-input work-order-end-date" value="${row?.['end_date'] || ''}" placeholder="DD/MM/YYYY">`
                     }
                 },
                 {
-                    width: '9%',
-                    title: $.fn.gettext('Is Service Delivery'),
                     render: (data, type, row) => {
-                        const isServiceDelivery = row.is_delivery_point || false
-                        const rowId = row.id
                         return `<div class="d-flex align-items-center">
                                     <div class="form-check me-2">
-                                        <input 
-                                            type="checkbox"  
-                                            class="form-check-input work-order-service-delivery"
-                                            ${isServiceDelivery ? 'checked' : ''}
-                                        />
+                                        <input type="checkbox" class="form-check-input work-order-service-delivery" ${row?.['is_delivery_point'] || false ? 'checked' : ''}/>
                                     </div>
-                                    <button 
-                                        type="button" 
-                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-service-delivery"
-                                        data-row-id="${rowId}"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal-product-contribution"
-                                        title="Open service delivery details"
-                                    >
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-service-delivery" 
+                                    data-row-id="${row?.['id']}" data-bs-toggle="modal" data-bs-target="#modal-product-contribution" title="Open service delivery details">
                                         <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
                                     </button>
                                 </div>`
                     }
                 },
                 {
-                    width: '6%',
-                    title: $.fn.gettext('Quantity'),
                     render: (data, type, row) => {
-                        const quantity = row.quantity || 1
-                        return `<div class="input-group">
-                                <input type="number" class="form-control work-order-quantity" value="${quantity}" min="0">
-                            </div>`
+                        return `<input type="number" class="form-control work-order-quantity" value="${row?.['quantity'] || 1}" min="0">`
                     }
                 },
                 {
-                    width: '13%',
-                    title: $.fn.gettext('Unit Cost'),
                     render: (data, type, row) => {
-                        const unitCost = row.unit_cost || 0
-                        const workOrderId = row.id || null
                         return `<div class="d-flex align-items-center">
-                                    <div>
-                                        <span class="mask-money" data-init-money="${unitCost}"></span>
-                                    </div>
+                                    <span class="mask-money" data-init-money="${row?.['unit_cost'] || 0}"></span>
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover ml-2 btn-open-work-order-cost"
-                                            data-bs-toggle="modal" data-bs-target="#modal-work-order-cost" data-work-order-id="${workOrderId}">
+                                            data-bs-toggle="modal" data-bs-target="#modal-work-order-cost" data-work-order-id="${row?.['id'] || ''}">
                                         <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
                                     </button>
                                 </div>`
                     }
                 },
                 {
-                    width: '11%',
-                    title: $.fn.gettext('Total Amount'),
                     render: (data, type, row) => {
-                        const totalAmount = row.total_value || 0
-                        return `<div class="input-group">
-                                    <span class="mask-money" data-init-money="${totalAmount}"></span>
-                                </div>`
+                        return `<span class="mask-money" data-init-money="${row?.['total_value'] || 0}"></span>`
                     }
                 },
                 {
-                    width: '5%',
-                    title: $.fn.gettext('Progress'),
                     render: (data, type, row) => {
                         return `<span class="table-row-percent-completed"></span>`;
                     }
                 },
                 {
-                    width: '5%',
-                    title: $.fn.gettext('Action'),
+                    className: 'text-right',
                     render: (data, type, row) => {
                         return `<div class="d-flex justify-content-center">
                                     <button 

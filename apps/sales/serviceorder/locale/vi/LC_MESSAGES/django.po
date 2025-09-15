@@ -188,3 +188,7 @@ msgstr "TT giao hàng"
 #
 msgid "Unit Cost"
 msgstr "Chi phí đơn vị"
+
+#
+msgid "Progress"
+msgstr "Tiến độ"

@@ -52,7 +52,7 @@
                     <input required style="font-weight: bolder; font-size: large" id="opp_title" class="text-primary form-control form-control-line">
                 </div>
                 <div class="col-1 d-flex align-items-end justify-content-end">
-                    <a href="#" id="btn-auto-update-stage" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover" title="{% trans "Auto Update Stage" %}">
+                    <a hidden href="#" id="btn-auto-update-stage" data-url="{% url 'OpportunityStageCheckingAPI' %}" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover" title="{% trans "Auto Update Stage" %}">
                         <span class="icon"><i class="fas fa-sync-alt"></i></span>
                     </a>
                     <a href="#" id="btn-summarize-contract" class="btn btn-icon border btn-rounded btn-flush-success flush-soft-hover" title="{% trans "Summarize contract" %}">

@@ -390,6 +390,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # stage
     OPPORTUNITY_CONFIG_STAGE_LIST = StringUrl('opportunity/stage/list')
     OPPORTUNITY_CONFIG_STAGE_DETAIL = StringUrl('opportunity/stage/{pk}')
+    OPPORTUNITY_STAGE_CHECKING = StringUrl('opportunity/stage-checking')
     # related
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR_LIST = StringUrl('opportunity/decision-factor/list')
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL = StringUrl('opportunity/decision-factor/{pk}')

@@ -1281,10 +1281,8 @@ class OpportunityPageFunction {
                         targets: 0,
                         width: "35%",
                         render: (data, type, row) => {
-                            let avatar = ''
                             let avClass = 'avatar-rounded avatar-xs avatar-' + $x.fn.randomColor()
-                            avatar = $x.fn.renderAvatar(data, avClass)
-                            return avatar;
+                            return $x.fn.renderAvatar(data, avClass);
                         }
                     },
                     {
@@ -1327,9 +1325,9 @@ class OpportunityPageFunction {
             .then((resp) => {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
-                    for (let [key, item] of data.task_list.entries()) {
+                    for (let [key, item] of data?.['task_list'].entries()) {
                         const template = $(`<div class="d-flex justify-content-start align-items-center subtask_item">
-                                    <p>${item.title}</p>
+                                    <p>${item?.['title']}</p>
                                     <button class="btn btn-flush-primary btn-icon btn-rounded ml-auto flush-soft-hover" disabled>
                                         <span><i class="fa-regular fa-trash-can fa-sm"></i></span>
                                     </button>
@@ -1613,74 +1611,51 @@ class OpportunityPageFunction {
  * Khai báo các hàm chính
  */
 class OpportunityHandler {
-    static GetDataForm(data_form) {
-        // only add field is change to form
-        let ele_customer = $('#select-box-customer.tag-change');
-        let ele_end_customer = $('#select-box-end-customer.tag-change');
-        let ele_budget = $('#input-budget.tag-change');
-        let ele_decision_maker = $('#input-decision-maker.tag-change');
-        let ele_product_category = $('#select-box-product-category.tag-change');
-        let ele_tr_products = $('#table-product.tag-change tbody tr');
-        let ele_tr_competitors = $('#table-competitors.tag-change tbody tr');
-        let ele_tr_contact_role = $('#table-contact-role.tag-change tbody tr');
-        let ele_decision_factor = $('#box-select-factor.tag-change');
-        let ele_sale_team_members = $('#card-member.tag-change .card');
-
+    static GetDataForm() {
+        let data_form= {}
         data_form['title'] = $opp_title.val()
-        data_form['win_rate'] = parseFloat($inputRateEle.val());
-        data_form['is_input_rate'] = !!$checkInputRateEle.is(':checked');
-        ele_customer.val() !== undefined ? data_form['customer'] = ele_customer.val() : undefined;
-        ele_end_customer.val() !== undefined ? data_form['end_customer'] = ele_end_customer.val() : undefined;
-        ele_budget.attr('value') !== undefined ? data_form['budget_value'] = ele_budget.attr('value') : undefined;
-        ele_decision_maker.data('id') !== undefined ? data_form['decision_maker'] = ele_decision_maker.data('id') : undefined;
+        data_form['sale_person'] = $salePersonSelectEle.val() || null
+        data_form['win_rate'] = parseFloat($inputRateEle.val() || 0)
+        data_form['is_input_rate'] = $checkInputRateEle.prop('checked')
+        data_form['customer'] = $customerSelectEle.val() || null
+        data_form['end_customer'] = $endCustomerSelectEle.val() || null
+        data_form['budget_value'] = parseFloat($input_budget.attr('value') || 0)
+        data_form['decision_maker'] = $input_decision_maker.attr('data-id') || null
 
         data_form['open_date'] = moment($input_open_date.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
         data_form['close_date'] = moment($input_close_date.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
 
-        ele_product_category.val() !== undefined ? data_form['product_category'] = ele_product_category.val() : undefined;
-        ele_decision_factor.val() !== undefined ? data_form['customer_decision_factor'] = ele_decision_factor.val() : undefined;
-
-        data_form['is_close_lost'] = false;
-        data_form['is_deal_close'] = false;
-
-        if (data_form['end_customer'] === '') {
-            data_form['end_customer'] = null;
-        }
-
-        if (data_form['decision_maker'] === '') {
-            data_form['decision_maker'] = null;
-        }
+        data_form['product_category'] = $productCategorySelectEle.val() || null
+        data_form['customer_decision_factor'] = $box_select_factor.val() || null
 
         // tab product
-        if ($table_product.hasClass('tag-change')) {
-            let list_product_data = []
-            if ($table_product.DataTable().data().length > 0) {
-                ele_tr_products.each(function () {
-                    let ele_product = $(this).find('.select-box-product');
-                    let product_id = ele_product.val();
-                    let product_name = ele_product.find('option:selected').text();
-                    if (ele_product.length === 0) {
-                        product_id = null;
-                        product_name = $(this).find('.input-product-name').val();
-                    }
-                    let data = {
-                        'product': product_id,
-                        'product_category': $(this).find('.box-select-product-category').val(),
-                        'tax': $(this).find('.box-select-tax').val(),
-                        'uom': $(this).find('.box-select-uom').val(),
-                        'product_name': product_name,
-                        'product_quantity': $(this).find('.input-quantity').val(),
-                        'product_unit_price': $(this).find('.input-unit-price').attr('value'),
-                        'product_subtotal_price': $(this).find('.input-subtotal').attr('value'),
-                    }
-                    if (!$(this).find('.box-select-tax').val()) {
-                        delete data['tax']
-                    }
-                    list_product_data.push(data);
-                })
-            }
-            data_form['opportunity_product_datas'] = list_product_data;
+        let list_product_data = []
+        if ($table_product.DataTable().data().length > 0) {
+            $table_product.find('tbody tr').each(function () {
+                let ele_product = $(this).find('.select-box-product');
+                let product_id = ele_product.val();
+                let product_name = ele_product.find('option:selected').text();
+                if (ele_product.length === 0) {
+                    product_id = null;
+                    product_name = $(this).find('.input-product-name').val();
+                }
+                let data = {
+                    'product': product_id,
+                    'product_category': $(this).find('.box-select-product-category').val(),
+                    'tax': $(this).find('.box-select-tax').val(),
+                    'uom': $(this).find('.box-select-uom').val(),
+                    'product_name': product_name,
+                    'product_quantity': $(this).find('.input-quantity').val(),
+                    'product_unit_price': $(this).find('.input-unit-price').attr('value'),
+                    'product_subtotal_price': $(this).find('.input-subtotal').attr('value'),
+                }
+                if (!$(this).find('.box-select-tax').val()) {
+                    delete data['tax']
+                }
+                list_product_data.push(data);
+            })
         }
+        data_form['opportunity_product_datas'] = list_product_data
         data_form['total_product'] = $input_product_total.valCurrency();
         data_form['total_product_pretax_amount'] = $input_product_pretax_amount.valCurrency();
         data_form['total_product_tax'] = $input_product_taxes.valCurrency();
@@ -1688,56 +1663,50 @@ class OpportunityHandler {
         data_form['estimated_gross_profit_value'] = $estimated_gross_profit_value.valCurrency();
 
         // tab competitor
-        if ($table_competitor.hasClass('tag-change')) {
-            let list_competitor_data = []
-            if ($table_competitor.DataTable().data().length > 0) {
-                ele_tr_competitors.each(function () {
-                    let win_deal = false;
-                    if ($(this).find('.input-win-deal').is(':checked')) {
-                        win_deal = true;
-                        data_form['is_close_lost'] = true;
-                    }
-                    let data = {
-                        'competitor': $(this).find('.box-select-competitor').val(),
-                        'strength': $(this).find('.input-strength').val(),
-                        'weakness': $(this).find('.input-weakness').val(),
-                        'win_deal': win_deal,
-                    }
-                    list_competitor_data.push(data);
-                })
-            }
-            data_form['opportunity_competitors_datas'] = list_competitor_data;
+        let list_competitor_data = []
+        if ($table_competitor.DataTable().data().length > 0) {
+            $table_competitor.find('tbody tr').each(function () {
+                let win_deal = false;
+                if ($(this).find('.input-win-deal').is(':checked')) {
+                    win_deal = true;
+                    data_form['is_close_lost'] = true;
+                }
+                let data = {
+                    'competitor': $(this).find('.box-select-competitor').val(),
+                    'strength': $(this).find('.input-strength').val(),
+                    'weakness': $(this).find('.input-weakness').val(),
+                    'win_deal': win_deal,
+                }
+                list_competitor_data.push(data);
+            })
         }
+        data_form['opportunity_competitors_datas'] = list_competitor_data
 
         // tab contact role
-        if ($table_contact_role.hasClass('tag-change')) {
-            let list_contact_role_data = []
-            if ($table_contact_role.DataTable().data().length > 0) {
-                ele_tr_contact_role.each(function () {
-                    let data = {
-                        'type_customer': $(this).find('.box-select-type-customer').val(),
-                        'contact': $(this).find('.box-select-contact').val(),
-                        'job_title': $(this).find('.input-job-title').val(),
-                        'role': $(this).find('.box-select-role').val(),
-                    }
-                    list_contact_role_data.push(data);
-                })
-            }
-            data_form['opportunity_contact_role_datas'] = list_contact_role_data;
+        let list_contact_role_data = []
+        if ($table_contact_role.DataTable().data().length > 0) {
+            $table_contact_role.find('tbody tr').each(function () {
+                let data = {
+                    'type_customer': $(this).find('.box-select-type-customer').val(),
+                    'contact': $(this).find('.box-select-contact').val(),
+                    'job_title': $(this).find('.input-job-title').val(),
+                    'role': $(this).find('.box-select-role').val(),
+                }
+                list_contact_role_data.push(data);
+            })
         }
+        data_form['opportunity_contact_role_datas'] = list_contact_role_data
 
         // tab member
-        if ($('#card-member').hasClass('tag-change')) {
-            let list_member = []
-            ele_sale_team_members.each(function () {
-                list_member.push({'member': $(this).data('id')});
-            })
-            data_form['opportunity_sale_team_datas'] = list_member;
-        }
+        let list_member = []
+        $('#card-member .card').each(function () {
+            list_member.push({'member': $(this).data('id')});
+        })
+        data_form['opportunity_sale_team_datas'] = list_member
 
         // stage
         let list_stage = []
-        let ele_stage = $('.stage-selected2');
+        let ele_stage = $('.stage-selected2')
         ele_stage.not(':last').each(function () {
             list_stage.push({
                 'stage': $(this).data('id'),
@@ -1748,14 +1717,9 @@ class OpportunityHandler {
             'stage': ele_stage.last().data('id'),
             'is_current': true,
         })
+        data_form['list_stage'] = list_stage
 
-        if ($('#input-close-deal').is(':checked')) {
-            data_form['is_deal_close'] = true;
-        }
-
-        data_form['list_stage'] = list_stage;
-
-        data_form['lost_by_other_reason'] = false;
+        data_form['is_deal_close'] = $('#input-close-deal').prop('checked')
 
         data_form['lost_by_other_reason'] = $check_lost_reason.prop('checked')
 
@@ -2032,14 +1996,13 @@ class OpportunityEventHandler {
         })
         $productCategorySelectEle.on('select2:unselect', function (e) {
             let removedOption = e.params.data;
-            let table = $('#table-product');
             $(`.box-select-product-category option[value="${removedOption.id}"]:selected`).closest('tr').each(function () {
-                table.DataTable().row($(this).index()).remove().draw();
+                $table_product.DataTable().row($(this).index()).remove().draw();
             })
-            table.addClass('tag-change');
+            $table_product.addClass('tag-change');
             $(`.box-select-product-category option[value="${removedOption.id}"]`).remove();
             OpportunityPageFunction.getTotalPrice();
-            table.find('.select-box-product').each(function () {
+            $table_product.find('.select-box-product').each(function () {
                 let optionSelected = $(this).find('option:selected');
                 OpportunityPageFunction.LoadRowProduct(
                     $(this),
@@ -2143,19 +2106,17 @@ class OpportunityEventHandler {
             OpportunityPageFunction.addRowContactRole();
         })
         $(document).on('change', '#select-box-end-customer', function () {
-            let table = $('#table-contact-role');
-            table.addClass('tag-change');
+            $table_contact_role.addClass('tag-change');
 
-            table.find('.box-select-type-customer option[value="1"]:selected').closest('tr').each(function () {
-                table.addClass('tag-change');
-                table.DataTable().row($(this).index()).remove().draw();
+            $table_contact_role.find('.box-select-type-customer option[value="1"]:selected').closest('tr').each(function () {
+                $table_contact_role.addClass('tag-change');
+                $table_contact_role.DataTable().row($(this).index()).remove().draw();
             });
         })
         $(document).on('change', '#select-box-customer', function () {
-            let table = $('#table-contact-role');
-            table.find('.box-select-type-customer option[value="0"]:selected').closest('tr').each(function () {
-                table.addClass('tag-change');
-                table.DataTable().row($(this).index()).remove().draw();
+            $table_contact_role.find('.box-select-type-customer option[value="0"]:selected').closest('tr').each(function () {
+                $table_contact_role.addClass('tag-change');
+                $table_contact_role.DataTable().row($(this).index()).remove().draw();
             });
         })
         $(document).on('change', '.box-select-type-customer', function () {
@@ -2183,19 +2144,17 @@ class OpportunityEventHandler {
             $(this).closest('table').addClass('tag-change');
         })
         $check_agency_role.on('change', function () {
-            let table = $('#table-contact-role');
-            let ele_end_customer = $('#select-box-end-customer');
             if ($(this).is(':checked')) {
-                ele_end_customer.prop('disabled', false);
-                table.find('.box-select-type-customer option[value="1"]').prop('disabled', false);
+                $endCustomerSelectEle.prop('disabled', false);
+                $table_contact_role.find('.box-select-type-customer option[value="1"]').prop('disabled', false);
             } else {
-                ele_end_customer.val(null).trigger('change');
-                ele_end_customer.prop('disabled', true);
-                table.find('.box-select-type-customer option[value="1"]:selected').closest('tr').remove();
-                table.find('.box-select-type-customer option[value="1"]').prop('disabled', true);
+                $endCustomerSelectEle.val(null).trigger('change');
+                $endCustomerSelectEle.prop('disabled', true);
+                $table_contact_role.find('.box-select-type-customer option[value="1"]:selected').closest('tr').remove();
+                $table_contact_role.find('.box-select-type-customer option[value="1"]').prop('disabled', true);
 
             }
-            ele_end_customer.addClass('tag-change');
+            $endCustomerSelectEle.addClass('tag-change');
         })
         $checkInputRateEle.on('change', function () {
             if ($(this).is(':checked')) {
@@ -2264,37 +2223,37 @@ class OpportunityEventHandler {
                 $(this).val('');
             }
         });
-        $(document).on('click', '.btn-go-to-stage', function () {
-            if (config_is_select_stage) {
-                if ($('#input-close-deal').is(':checked')) {
-                    OpportunityPageFunction.renderAlert($('#deal-closed').text());
-                } else {
-                    if ($check_lost_reason.is(':checked') || $('.input-win-deal:checked').length > 0) {
-                        OpportunityPageFunction.renderAlert($('#deal-close-lost').text());
-                    } else {
-                        let stage = $(this).closest('.sub-stage');
-                        let index = stage.index();
-                        let ele_stage = $('#div-stage .sub-stage');
-                        $('.stage-lost').removeClass('stage-selected');
-                        for (let i = 0; i <= ele_stage.length; i++) {
-                            if (i <= index) {
-                                if (!ele_stage.eq(i).hasClass('stage-lost')) {
-                                    ele_stage.eq(i).addClass('stage-selected');
-                                }
-                            } else {
-                                ele_stage.eq(i).removeClass('stage-selected');
-                            }
-                        }
-                        if (!$checkInputRateEle.prop('checked')) {
-                            $inputRateEle.val(30);
-                            $rangeInputEle.val(30)
-                        }
-                    }
-                }
-            } else {
-                OpportunityPageFunction.renderAlert($('#not-select-stage').text());
-            }
-        })
+        // $(document).on('click', '.btn-go-to-stage', function () {
+        //     if (config_is_select_stage) {
+        //         if ($('#input-close-deal').is(':checked')) {
+        //             OpportunityPageFunction.renderAlert($('#deal-closed').text());
+        //         } else {
+        //             if ($check_lost_reason.is(':checked') || $('.input-win-deal:checked').length > 0) {
+        //                 OpportunityPageFunction.renderAlert($('#deal-close-lost').text());
+        //             } else {
+        //                 let stage = $(this).closest('.sub-stage');
+        //                 let index = stage.index();
+        //                 let ele_stage = $('#div-stage .sub-stage');
+        //                 $('.stage-lost').removeClass('stage-selected');
+        //                 for (let i = 0; i <= ele_stage.length; i++) {
+        //                     if (i <= index) {
+        //                         if (!ele_stage.eq(i).hasClass('stage-lost')) {
+        //                             ele_stage.eq(i).addClass('stage-selected');
+        //                         }
+        //                     } else {
+        //                         ele_stage.eq(i).removeClass('stage-selected');
+        //                     }
+        //                 }
+        //                 if (!$checkInputRateEle.prop('checked')) {
+        //                     $inputRateEle.val(30);
+        //                     $rangeInputEle.val(30)
+        //                 }
+        //             }
+        //         }
+        //     } else {
+        //         OpportunityPageFunction.renderAlert($('#not-select-stage').text());
+        //     }
+        // })
         $(document).on('change', '#input-close-deal', function () {
             if ($(this).is(':checked')) {
                 $(this).closest('.sub-stage').addClass('stage-selected');
@@ -2303,9 +2262,9 @@ class OpportunityEventHandler {
                 $(this).closest('.sub-stage').removeClass('stage-selected');
                 $('.page-content input, .page-content select, .page-content .btn').not($(this)).prop('disabled', false);
                 if ($check_agency_role.is(':checked')) {
-                    $('#select-box-end-customer').prop('disabled', false);
+                    $endCustomerSelectEle.prop('disabled', false);
                 } else {
-                    $('#select-box-end-customer').prop('disabled', true);
+                    $endCustomerSelectEle.prop('disabled', true);
                 }
             }
             if (!$checkInputRateEle.prop('checked')) {
@@ -2333,7 +2292,30 @@ class OpportunityEventHandler {
             }
         })
         $('#btn-auto-update-stage').on('click', function () {
+            let dataForm = OpportunityHandler.GetDataForm()
+            console.log(dataForm)
+            let ajax_auto_update_stage = $.fn.callAjax2({
+                url: $(this).attr('data-url') + `?opportunity_id=${$.fn.getPkDetail()}`,
+                data: dataForm,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_stage_checking')) {
+                        return data?.['opportunity_stage_checking'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
 
+            Promise.all([ajax_auto_update_stage]).then(
+                (results) => {
+                    let data = results[0];
+                    console.log(data)
+                })
         })
     }
 }

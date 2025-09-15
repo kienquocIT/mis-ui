@@ -15,7 +15,7 @@ from apps.sales.opportunity.views import (
     OpportunityConfigStageListAPI, OpportunityConfigStageDetailAPI,
     # related
     OpportunityCustomerDecisionFactorListAPI, OpportunityCustomerDecisionFactorDetailAPI,
-    OpportunityMemberListAPI, OpportunityMemberDetailAPI
+    OpportunityMemberListAPI, OpportunityMemberDetailAPI, OpportunityStageCheckingAPI
 )
 
 urlpatterns = [
@@ -45,8 +45,9 @@ urlpatterns = [
     path('config-detail', OpportunityConfigDetail.as_view(), name='OpportunityConfigDetail'),
     path('config-detail/api', OpportunityConfigDetailAPI.as_view(), name='OpportunityConfigDetailAPI'),
     # stages
-    path('config/stage/list/api', OpportunityConfigStageListAPI.as_view(), name='OpportunityConfigStageListAPI'),
-    path('config/stage/detail/api/<str:pk>', OpportunityConfigStageDetailAPI.as_view(), name='OpportunityConfigStageDetailAPI'),
+    path('stage/list/api', OpportunityConfigStageListAPI.as_view(), name='OpportunityConfigStageListAPI'),
+    path('stage/detail/api/<str:pk>', OpportunityConfigStageDetailAPI.as_view(), name='OpportunityConfigStageDetailAPI'),
+    path('stage-checking/api', OpportunityStageCheckingAPI.as_view(), name='OpportunityStageCheckingAPI'),
     # related
     path('config/decision-factor/list/api', OpportunityCustomerDecisionFactorListAPI.as_view(), name='OpportunityCustomerDecisionFactorListAPI'),
     path('config/decision-factor/detail/api/<str:pk>', OpportunityCustomerDecisionFactorDetailAPI.as_view(), name='OpportunityCustomerDecisionFactorDetailAPI'),

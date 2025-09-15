@@ -9,11 +9,11 @@ $(document).ready(function () {
         submitHandler: function (form) {
             WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
             let frm = new SetupFormSubmit($(form));
-            frm.dataForm = OpportunityHandler.GetDataForm(frm.dataForm);
+            let dataForm = OpportunityHandler.GetDataForm();
             $.fn.callAjax2({
                 url: frm.dataUrl,
                 method: frm.dataMethod,
-                data: frm.dataForm,
+                data: dataForm,
             }).then(
                 (resp) => {
                     let data = $.fn.switcherResp(resp);

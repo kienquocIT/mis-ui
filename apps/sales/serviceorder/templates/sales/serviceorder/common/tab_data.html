@@ -57,6 +57,7 @@
         </ul>
         <!-- tabs content -->
         <div class="tab-content" id="service-order-tab-content">
+
             <div class="tab-pane fade show active" id="tab_service_detail">
                 <div class="row">
                     <div class="col-12">
@@ -84,6 +85,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="tab-pane fade" id="tab_work_order">
                 <div class="row">
                     <div class="col-12">
@@ -122,46 +124,63 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="tab_shipment">
-                <!-- main shipment table -->
-                <table class="table nowrap w-100" id="table_shipment">
 
-                    <thead class="bg-secondary-light-5">
-                        <tr>
-                            <th></th>
-                            <th>{% trans 'Description' %}</th>
-                            <th>{% trans 'Type' %}</th>
-                            <th>{% trans 'Reference number' %}</th>
-                            <th>{% trans 'Weight' %}</th>
-                            <th>{% trans 'Dimension' %}</th>
-                            <th>{% trans 'Note' %}</th>
-                            <th>{% trans 'Action' %}</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="tab-pane fade show active" id="tab_shipment">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- main shipment table -->
+                        <table class="table nowrap w-100" id="table_shipment">
+                            <thead class="bg-secondary-light-5">
+                                <tr>
+                                <th style="min-width: 50px"></th>
+                                <th style="min-width: 250px">{% trans 'Description' %}</th>
+                                <th style="min-width: 100px">{% trans 'Type' %}</th>
+                                <th style="min-width: 150px">{% trans 'Reference number' %}</th>
+                                <th style="min-width: 100px">{% trans 'Weight' %}</th>
+                                <th style="min-width: 100px">{% trans 'Dimension' %}</th>
+                                <th style="min-width: 150px">{% trans 'Note' %}</th>
+                                <th style="min-width: 50px"></th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
 
-                <!-- button dropdown -->
-                <div class="dropdown">
-                    <button class="btn btn-primary mt-5 dropdown-toggle d-flex align-items-center" type="button"
-                            id="btn_add_container" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-plus-circle me-2"></i>
-                        {% trans 'Add' %}
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="btn_add_container">
-                        <li>
-                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal_container">
-                               <i class="fa-solid fa-truck" style="margin-right: 5px;"></i>{% trans 'Container' %}
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal_package">
-                                <i class="fa-solid fa-box-open" style="margin-right: 5px;"></i> {% trans 'Package' %}
-                            </a>
-                        </li>
-                    </ul>
+                        <!-- button dropdown -->
+                        <div class="dropdown">
+                            <button
+                                    class="btn btn-primary mt-5 dropdown-toggle d-flex align-items-center" type="button"
+                                    id="btn_add_container" data-bs-toggle="dropdown" aria-expanded="false"
+                            >
+                                <i class="fas fa-plus-circle me-2"></i>
+                                {% trans 'Add' %}
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="btn_add_container">
+                                <li>
+                                    <a
+                                            class="dropdown-item" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#modal_container"
+                                    >
+                                        <i
+                                                class="fa-solid fa-truck" style="margin-right: 5px;"
+                                        ></i>{% trans 'Container' %}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                            class="dropdown-item" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#modal_package"
+                                    >
+                                        <i
+                                                class="fa-solid fa-box-open" style="margin-right: 5px;"
+                                        ></i> {% trans 'Package' %}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
+
             <div class="tab-pane fade" id="tab_expense">
                 <!-- main expense table -->
                 <table class="table nowrap w-100" id="table_expense">
@@ -211,6 +230,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="tab-pane fade" id="tab_payment">
                 <table id="table-payment" class="table nowrap w-100 min-w-1350p">
                     <thead class="bg-secondary-light-5"></thead>
@@ -221,6 +241,7 @@
                     {% trans 'Add Installment' %}
                 </button>
             </div>
+
             <div class="tab-pane fade" id="tab_attachment">
                 <div class="form-group content_attached">
                     <div id="attachment" class="{{ addClass }}">{% include 'extends/files/all.html' %}</div>

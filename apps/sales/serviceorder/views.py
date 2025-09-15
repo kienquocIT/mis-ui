@@ -16,7 +16,7 @@ class ServiceOrderList(View):
         breadcrumb='SERVICE_ORDER_LIST_PAGE',
     )
     def get(self, request, *args, **kwargs):
-        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class ServiceOrderCreate(View):

@@ -293,6 +293,7 @@ const ServiceOrder = (function($) {
             reloadCurrency: true,
             scrollCollapse: true,
             scrollY: '50vh',
+            scrollX: true,
             ajax: {
                 url: pageElement.modalData.$tableProduct.attr('data-url'),
                 type: 'GET',

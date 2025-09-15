@@ -46,7 +46,7 @@ $(document).ready(function () {
         visibleButton: true,
         rowIdx: true,
         scrollX: true,
-        scrollY: '70vh',
+        scrollY: '64vh',
         scrollCollapse: true,
         useDataServer: true,
         reloadCurrency: true,

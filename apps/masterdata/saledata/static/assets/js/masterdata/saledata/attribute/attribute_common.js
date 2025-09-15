@@ -214,7 +214,7 @@ class AttributeHandle {
             },
         },
         pageLength:10,
-        scrollY: '70vh',
+        scrollY: '64vh',
         info: false,
         columns: [
             {

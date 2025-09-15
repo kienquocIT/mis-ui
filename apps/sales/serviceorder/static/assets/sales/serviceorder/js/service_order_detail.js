@@ -142,7 +142,7 @@ class DetailDataHandler {
                 $.fn.initMaskMoney2()
                 ServiceOrder.disableTableFields()
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
-                UsualLoadPageFunction.DisablePage(isDisablePage, ['.btn-close', '.modal-header button'])
+                UsualLoadPageFunction.DisablePage(isDisablePage, ['.btn-close', '.modal-header button', '#view-dashboard'])
             }
         )
     }
@@ -169,4 +169,9 @@ $(document).ready(function () {
     ServiceOrder.handleOpenModalReconcile()
     ServiceOrder.handleOpenModalPackage()
     ServiceOrder.handleTogglePackageChildren()
+
+    $('#view-dashboard').on('click', function () {
+        let url = $(this).attr('data-url') + '?service_order_id=' + $.fn.getPkDetail()
+        $(this).attr('href', url)
+    })
 })

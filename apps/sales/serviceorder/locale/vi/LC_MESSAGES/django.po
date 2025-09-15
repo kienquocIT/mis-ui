@@ -192,3 +192,7 @@ msgstr "Chi phí đơn vị"
 #
 msgid "Progress"
 msgstr "Tiến độ"
+
+#
+msgid "View dashboard"
+msgstr "Xem Dashboard"

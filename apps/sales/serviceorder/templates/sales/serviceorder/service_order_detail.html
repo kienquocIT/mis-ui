@@ -17,6 +17,16 @@
     </style>
 {% endblock %}
 {% block pageAction %}
+    <a id="view-dashboard" href="#" target="_blank" data-url="{% url 'DashboardServiceOrderList' %}">
+        <button class="btn btn-gradient-primary">
+            <span>
+                <span class="icon">
+                  <span class="feather-icon"><i class="bi bi-clipboard-data"></i></span>
+                </span>
+                <span>{% trans 'View dashboard' %}</span>
+            </span>
+        </button>
+    </a>
     {% url 'ServiceOrderUpdate' pk=data.pk as edit_link %}
     {% include 'extends/systems/page_actions.html' with is_edit=True edit_link=edit_link %}
 {% endblock %}
@@ -49,8 +59,6 @@
             data-tax-url='{% url 'TaxListAPI' %}'
     ></script>
 {% endblock %}
-
-
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>

@@ -256,7 +256,7 @@ class DetailDataHandler {
 
                 $.fn.initMaskMoney2()
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
-                UsualLoadPageFunction.DisablePage(false, ['.btn-close'])
+                UsualLoadPageFunction.DisablePage(false, ['.btn-close', '.modal-header button', '#view-dashboard'])
             }
         )
     }
@@ -298,4 +298,9 @@ $(document).ready(function () {
     handleModalPaymentDetailEvent()
 
     setUpFormSubmit($('#form-update-service-order'))
+
+    $('#view-dashboard').on('click', function () {
+        let url = $(this).attr('data-url') + '?service_order_id=' + $.fn.getPkDetail()
+        $(this).attr('href', url)
+    })
 })

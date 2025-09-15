@@ -17,7 +17,6 @@
 {% block pageAction %}
     {% include 'extends/systems/page_actions.html' with is_save=True save_frm='form-create-service-order' %}
 {% endblock %}
-
 {% block pageContent %}
     <form data-method="POST" id="form-create-service-order"
           data-url="{% url 'ServiceOrderListAPI' %}"
@@ -27,12 +26,10 @@
         {% include 'sales/serviceorder/common/tab_data.html' %}
     </form>
 {% endblock %}
-
 {% block modalData %}
     {% include 'sales/serviceorder/common/modal_data.html' %}
     {% include 'sales/task/extend/task-form.html' with not_bastion=True custom_assignee=True %}
 {% endblock %}
-
 {% block dataHiddenGroup %}
     <script id="script-url"
             data-expense-item-list-url="{% url 'ExpenseItemListAPI' %}"
@@ -47,8 +44,6 @@
             data-tax-url='{% url 'TaxListAPI' %}'
     ></script>
 {% endblock %}
-
-
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>

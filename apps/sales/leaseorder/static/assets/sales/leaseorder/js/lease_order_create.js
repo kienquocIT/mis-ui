@@ -34,7 +34,7 @@ $(function () {
         // init config
         LeaseOrderLoadDataHandle.loadInitQuotationConfig(LeaseOrderLoadDataHandle.$form.attr('data-method'));
         // date picker
-        $('.date-picker').each(function () {
+        $('.flat-picker').each(function () {
             DateTimeControl.initFlatPickrDate(this);
         });
         // attachment
@@ -977,6 +977,51 @@ $(function () {
         });
 
 // IMPORT TABLE
+
+
+// DELIVERY
+        LeaseOrderDeliveryHandle.$btnDeliveryInfo.on('click', function () {
+            if (LeaseOrderLoadDataHandle.$eleStoreDetail.val()) {
+                let dataDetail = JSON.parse(LeaseOrderLoadDataHandle.$eleStoreDetail.val());
+                LeaseOrderDeliveryHandle.checkOpenDeliveryInfo(dataDetail);
+            }
+        });
+
+        LeaseOrderDeliveryHandle.$btnDelivery.on('click', function () {
+            if (!LeaseOrderDeliveryHandle.$deliveryEstimatedDateEle.val()) {
+                $.fn.notifyB({description: LeaseOrderLoadDataHandle.transEle.attr('data-required-delivery-date')}, 'failure');
+                return false;
+            }
+
+            let dataDelivery = {};
+            dataDelivery['estimated_delivery_date'] = moment(LeaseOrderDeliveryHandle.$deliveryEstimatedDateEle.val(), "DD/MM/YYYY").format("YYYY-MM-DD HH:mm:ss");
+            dataDelivery['remarks'] = LeaseOrderDeliveryHandle.$deliveryRemarkEle.val();
+
+            WindowControl.showLoading();
+            $.fn.callAjax2({
+                url: LeaseOrderLoadDataHandle.urlEle.attr('data-create-delivery').replace('1', $(this).attr('data-id')),
+                method: 'POST',
+                data: dataDelivery,
+                urlRedirect: null,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data?.['status'] === 200) {
+                        const config = data?.config
+                        let url_redirect = LeaseOrderLoadDataHandle.urlEle.attr('data-delivery')
+                        if (config?.is_picking && !data?.['is_not_picking'])
+                            url_redirect = LeaseOrderLoadDataHandle.urlEle.attr('data-picking')
+                        setTimeout(() => {
+                            window.location.href = url_redirect
+                        }, 1000);
+                    }
+                },
+                (errs) => {
+                    WindowControl.hideLoading();
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                }
+            )
+        });
 
 
 

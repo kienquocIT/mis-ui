@@ -169,9 +169,9 @@
 .required::after {
     content: "*";
     color: red;
-    font-size: 0.8rem;
-    padding-left: 5px;
-    padding-right: 5px;
+    font-size: 1rem;
+    padding-left: 3px;
+    padding-right: 3px;
 }
 
 .wrap-text {
@@ -302,15 +302,15 @@ div.dataTables_wrapper .dataTables_scrollBody table {
 /*    margin-left: 2px!important;*/
 /*}*/
 .dtb-info-custom {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .dtb-length-custom {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .dtb-length-list-custom {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 /*[type="search"] {*/

@@ -1,0 +1,104 @@
+#opp-stage-pipeline {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;             /* bật scroll ngang */
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  text-align: center;
+  scrollbar-width: thin;        /* Firefox: thanh cuộn mảnh */
+}
+#opp-stage-pipeline li {
+  flex: 1 0 auto;   /* ít item thì chiếm đều hết chiều rộng */
+  min-width: 150px; /* nhiều item thì mỗi ô vẫn giữ kích thước tối thiểu */
+  padding: 1rem 2rem 1rem 3.5rem;
+  background: #e3dbdb;
+  position: relative;
+  margin: 0 1px;
+  list-style: none;
+  text-align: center;
+}
+#opp-stage-pipeline li:before {
+  content: '';
+  border-left: 25px solid #fff;
+  border-top: 25px solid transparent;
+  border-bottom: 25px solid transparent;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+#opp-stage-pipeline li:first-child {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+#opp-stage-pipeline li:first-child:before {
+  display: none;
+}
+#opp-stage-pipeline li:last-child {
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+#opp-stage-pipeline li:last-child:after {
+  display: none;
+}
+#opp-stage-pipeline li:after {
+  content: '';
+  border-left: 25px solid #e3dbdb;
+  border-top: 25px solid transparent;
+  border-bottom: 25px solid transparent;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  z-index: 20;
+}
+#opp-stage-pipeline li.active {
+  background: rgb(72, 133, 225);
+  color: #fff;
+}
+#opp-stage-pipeline li.active:after {
+  border-left-color: rgb(72, 133, 225);
+}
+#opp-stage-pipeline li.completed {
+  background: #00ab57;
+  color: #fff;
+}
+#opp-stage-pipeline li.completed:after {
+  border-left-color: #00ab57;
+}
+#opp-stage-pipeline li.lost {
+  background: #ff7676;
+  color: #fff;
+}
+#opp-stage-pipeline li.lost:after {
+  border-left-color: #ff7676;
+}
+#opp-stage-pipeline li.cancel {
+  background: #706f6f;
+  color: #fff;
+}
+#opp-stage-pipeline li.cancel:after {
+  border-left-color: #706f6f;
+}
+
+#opp-stage-pipeline li.completed:last-child {
+  background: rgb(72, 133, 225);
+  color: #fff;
+}
+
+#opp-stage-pipeline li > span {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 1.5rem;
+}
+#opp-stage-pipeline li.completed span,
+#opp-stage-pipeline li.active span,
+#opp-stage-pipeline li.lose span,
+#opp-stage-pipeline li.cancel span {
+  color: #fff
+}
+#opp-stage-pipeline li span {
+  color: #000;
+}

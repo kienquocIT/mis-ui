@@ -214,8 +214,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     APPLICATION_PERMISSION = StringUrl('base/permissions')
     INDICATOR_PARAM = StringUrl('base/indicator-params')
 
-    APPLICATION_PROPERTY_OPPORTUNITY_LIST = StringUrl('base/applications-property-opportunity')
-
     TENANT = StringUrl('tenant/userlist')
 
     # F-Import-Data
@@ -323,6 +321,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     PRODUCT_SALE_LIST = StringUrl('saledata/products-sale/list')
     PRODUCT_SALE_DETAIL = StringUrl('saledata/products-sale')
     PRODUCT_VARIANT_LIST = StringUrl('saledata/products-variants')
+    PRODUCT_UPLOAD_AVATAR = StringUrl('saledata/product/{pk}/upload-avatar')
 
     # advance payment
     CASHOUTFLOW_QUOTATION_LIST = StringUrl('cashoutflow/quotation-list')
@@ -373,18 +372,46 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     EXPENSE_SALE_LIST = StringUrl('saledata/expenses-sale')
 
     # opportunity
-    OPPORTUNITY_LIST = StringUrl('opportunity/lists')
-    OPPORTUNITY_CALL_LOG_LIST = StringUrl('opportunity/call-log/lists')
-    OPPORTUNITY_CALL_LOG_UPDATE = StringUrl('opportunity/call-log/{pk}')
-    OPPORTUNITY_EMAIL_LIST = StringUrl('opportunity/send-email/lists')
-    OPPORTUNITY_EMAIL_UPDATE = StringUrl('opportunity/send-email/{pk}')
-    OPPORTUNITY_MEETING_LIST = StringUrl('opportunity/meeting/lists')
-    OPPORTUNITY_MEETING_UPDATE = StringUrl('opportunity/meeting/{pk}')
+    # main
+    OPPORTUNITY_LIST = StringUrl('opportunity/list')
+    OPPORTUNITY_DETAIL = StringUrl('opportunity/detail/{pk}')
+    # activities
+    OPPORTUNITY_CALL_LOG_LIST = StringUrl('opportunity/call-log/list')
     OPPORTUNITY_CALL_LOG_DETAIL = StringUrl('opportunity/call-log/{pk}')
+    OPPORTUNITY_EMAIL_LIST = StringUrl('opportunity/send-email/list')
     OPPORTUNITY_EMAIL_DETAIL = StringUrl('opportunity/send-email/{pk}')
+    OPPORTUNITY_MEETING_LIST = StringUrl('opportunity/meeting/list')
     OPPORTUNITY_MEETING_DETAIL = StringUrl('opportunity/meeting/{pk}')
-    OPPORTUNITY_ACTIVITY_LOGS = StringUrl('opportunity/activity-log/lists')
-    OPPORTUNITY_SALE_LIST = StringUrl('opportunity/lists-sale')
+    OPPORTUNITY_DOCUMENT_LIST = StringUrl('opportunity/document/list')
+    OPPORTUNITY_DOCUMENT_DETAIL = StringUrl('opportunity/document/{pk}')
+    OPPORTUNITY_ACTIVITY_LOGS = StringUrl('opportunity/activity-log/list')
+    # config
+    OPPORTUNITY_CONFIG_DETAIL = StringUrl('opportunity/config-detail')
+    # stage
+    OPPORTUNITY_CONFIG_STAGE_LIST = StringUrl('opportunity/stage/list')
+    OPPORTUNITY_CONFIG_STAGE_DETAIL = StringUrl('opportunity/stage/{pk}')
+    OPPORTUNITY_STAGE_CHECKING = StringUrl('opportunity/stage-checking')
+    # related
+    OPPORTUNITY_CUSTOMER_DECISION_FACTOR_LIST = StringUrl('opportunity/decision-factor/list')
+    OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL = StringUrl('opportunity/decision-factor/{pk}')
+    OPPORTUNITY_MEMBER_LIST = StringUrl('opportunity/detail/{pk_opp}/member/list')
+    OPPORTUNITY_MEMBER_DETAIL = StringUrl('opportunity/detail/{pk_opp}/member/{pk_member}')
+
+    # Application for Opportunity permission
+    APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')
+    APPLICATION_PROPERTY_OPPORTUNITY_LIST = StringUrl('base/applications-property-opportunity')
+
+    # task
+    OPPORTUNITY_TASK_CONFIG = StringUrl('task/config')
+    OPPORTUNITY_TASK_STT_LIST = StringUrl('task/status')
+    OPPORTUNITY_TASK_LIST = StringUrl('task/list')
+    OPPORTUNITY_TASK_DETAIL = StringUrl('task/detail')
+    OPPORTUNITY_TASK_LOG_WORK = StringUrl('task/log-work')
+    OPPORTUNITY_TASK_STT_UPDATE = StringUrl('task/update-status')
+    OPPORTUNITY_TASK_MY_TASK_REPORT = StringUrl('task/my-report')
+    OPPORTUNITY_TASK_MY_TASK_SUMMARY_REPORT = StringUrl('task/my-summary-report')
+    OPPORTUNITY_TASK_GROUP_ASSIGNEE_LIST = StringUrl('task/list-has-group-assign')
+    OPPORTUNITY_TASK_ASSIGNEE_GROUP_LIST = StringUrl('task/assignee-group/list')
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/list')
@@ -471,34 +498,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_FOR_RECOVERY_LIST = StringUrl('delivery/for-recovery')
     DELIVERY_PRODUCT_LEASE_LIST = StringUrl('delivery/product-lease')
 
-    # Opportunity detail
-    OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk}')
-    OPPORTUNITY_DETAIL_GET_CREATE_FROM_OPP = StringUrl('opportunity/{pk}/create-from-opp')
-    MEMBER_OF_OPPORTUNITY_DETAIL = StringUrl('opportunity/{pk_opp}/member/{pk_member}')
-    MEMBER_OF_OPPORTUNITY_ADD = StringUrl('opportunity/{pk_opp}/member/add')
-
-    # Opportunity config
-    OPPORTUNITY_CONFIG = StringUrl('opportunity/config')
-    OPPORTUNITY_CUSTOMER_DECISION_FACTOR = StringUrl('opportunity/config/decision-factors')
-    OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL = StringUrl('opportunity/config/decision-factor/{pk}')
-    OPPORTUNITY_CONFIG_STAGE = StringUrl('opportunity/config/stage')
-    OPPORTUNITY_CONFIG_STAGE_DETAIL = StringUrl('opportunity/config/stage/{pk}')
-
-    # Task
-    OPPORTUNITY_TASK_CONFIG = StringUrl('task/config')
-    OPPORTUNITY_TASK_STT_LIST = StringUrl('task/status')
-    OPPORTUNITY_TASK_LIST = StringUrl('task/list')
-    OPPORTUNITY_TASK_GROUP_ASSIGNEE_LIST = StringUrl('task/list-has-group-assign')
-    OPPORTUNITY_TASK_DETAIL = StringUrl('task/detail')
-    OPPORTUNITY_TASK_LOG_WORK = StringUrl('task/log-work')
-    OPPORTUNITY_TASK_STT_UPDATE = StringUrl('task/update-status')
-    OPPORTUNITY_TASK_MY_TASK_REPORT = StringUrl('task/my-report')
-    OPPORTUNITY_TASK_MY_TASK_SUMMARY_REPORT = StringUrl('task/my-summary-report')
-    OPPORTUNITY_TASK_ASSIGNEE_GROUP_LIST = StringUrl('task/assignee-group/list')
-
-    OPPORTUNITY_DOCUMENT_LIST = StringUrl('opportunity/document/list')
-    OPPORTUNITY_DOCUMENT_DETAIL = StringUrl('opportunity/document/{pk}')
-
     # Purchase
     PURCHASE_REQUEST_LIST = StringUrl('purchasing/purchase-request/list')
     PURCHASE_REQUEST_DETAIL = StringUrl('purchasing/purchase-request/{pk}')
@@ -560,17 +559,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     INVENTORY_ADJUSTMENT_PRODUCT_LIST = StringUrl('inventory/inventory-adjustment/product/list/{ia_id}')
     INVENTORY_ADJUSTMENT_GR_LIST = StringUrl('inventory/inventory-adjustments-gr')
 
-    # Application for Opportunity permission
-    APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')
-
-    # Opportunity Detail
-    OPPORTUNITY_MEMBER_DETAIL = StringUrl('opportunity/member/detail/{pk}')
-
-    # Opportunity add member, delete member, set permission for member
-    OPPORTUNITY_ADD_MEMBER = StringUrl('opportunity/add-member/{pk}')
-    OPPORTUNITY_DELETE_MEMBER = StringUrl('opportunity/member/delete/{pk}')
-    SET_MEMBER_PERMISSION = StringUrl('opportunity/member/set/permission/{pk}')
-
     # Purchase request config
     PURCHASE_REQUEST_CONFIG = StringUrl('purchasing/purchase-request/config')
 
@@ -602,9 +590,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     #  Goods transfer
     GOODS_TRANSFER_LIST = StringUrl('inventory/goods-transfer/list')
     GOODS_TRANSFER_DETAIL = StringUrl('inventory/goods-transfer/{pk}')
-
-    # Opportunity Member List
-    OPPORTUNITY_MEMBER_LIST = StringUrl('opportunity/member/list/{pk}')
 
     # Goods issue
     GOODS_ISSUE_LIST = StringUrl('inventory/goods-issue/list')
@@ -1013,3 +998,14 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # master data - attribute
     ATTRIBUTE_LIST = StringUrl('saledata/attribute/list')
     ATTRIBUTE_DETAIL = StringUrl('saledata/attribute/{pk}')
+
+    # master data - shipment
+    CONTAINER_LIST = StringUrl('saledata/shipment/container/list')
+    CONTAINER_DETAIL = StringUrl('saledata/shipment/container/detail/{pk}')
+    PACKAGE_LIST = StringUrl('saledata/shipment/package/list')
+    PACKAGE_DETAIL = StringUrl('saledata/shipment/package/detail/{pk}')
+
+    # service-order
+    SERVICE_ORDER_LIST = StringUrl('serviceorder/list')
+    SERVICE_ORDER_DETAIL = StringUrl('serviceorder/detail/{pk}')
+    SERVICE_ORDER_DETAIL_FOR_DASHBOARD = StringUrl('serviceorder/detail-for-dashboard/{pk}')

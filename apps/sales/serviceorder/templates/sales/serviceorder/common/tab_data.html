@@ -1,0 +1,216 @@
+{% load i18n %}
+
+<!-- tabs -->
+<div class="row mt-5 mb-5">
+    <div class="col-12">
+        <!-- tabs navigation -->
+        <ul class="nav nav-light nav-tabs" id="service-order-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tab_service_detail">
+                    <span class="nav-link-text">{% trans 'Service detail' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_work_order">
+                    <span class="nav-link-text">{% trans 'Work order' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_shipment">
+                    <span class="nav-link-text">{% trans 'Shipment' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_expense">
+                    <span class="nav-link-text">{% trans 'Expense' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_payment">
+                    <span class="nav-link-text">{% trans 'Payment' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_attachment">
+                    <span class="nav-link-text">{% trans 'Attachment' %}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_task" id="tab_task_nav" data-tbl-id="table-work-order">
+                    <span class="nav-link-text">{% trans 'Task' %}</span>
+                </a>
+            </li>
+            <li class="nav-item ms-auto">
+                <button hidden type="button" class="btn btn-sm btn-light" id="btn-export-cost-excel">
+                    <i class="fas fa-file-excel"></i>
+                    {% trans 'Export to Excel' %}
+                </button>
+                <button type="button" class="btn btn-sm btn-light" id="btn-open-exchange-modal" data-bs-toggle="modal" data-bs-target="#modal-exchange-rate">
+                    <span>
+                        <span class="icon"><i class="fa-solid fa-exchange"></i></span>
+                        <span>{% trans 'Exchange Rate' %}</span>
+                    </span>
+                </button>
+            </li>
+        </ul>
+
+
+        <!-- tabs content -->
+        <div class="tab-content mb-10" id="service-order-tab-content">
+            <div class="tab-pane fade show active" id="tab_service_detail">
+                <table id="table-service-detail" class="table nowrap w-100 ">
+                    <thead class="bg-secondary-light-5">
+                        <tr>
+                            <th style="min-width: 30px"></th>
+                            <th style="min-width: 250px">{% trans 'Name' %}</th>
+                            <th style="min-width: 250px">{% trans 'Description' %}</th>
+                            <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                            <th style="min-width: 100px">{% trans 'UOM' %}</th>
+                            <th style="min-width: 150px">{% trans 'Price' %}</th>
+                            <th style="min-width: 100px">{% trans 'Tax' %}</th>
+                            <th style="min-width: 150px">{% trans 'Total amount' %}</th>
+                            <th style="min-width: 30px"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <button type="button" class="btn btn-primary mt-5" id="btn-open-service-product-modal"
+                        data-bs-target="#modal-product" data-bs-toggle="modal">
+                    <i class="fas fa-plus-circle"></i>
+                    {% trans 'Add service' %}
+                </button>
+            </div>
+            <div class="tab-pane fade" id="tab_work_order">
+                <table id="table-work-order" class="table nowrap w-100 min-w-1350p">
+                    <thead class="bg-secondary-light-5"></thead>
+                    <tbody></tbody>
+                </table>
+                <div class="row mt-5">
+                    <div class="col-12 col-md-4">
+                        <div class="dropdown">
+                            <button aria-expanded="false" data-bs-toggle="dropdown" type="button" class="btn btn-primary dropdown-toggle">
+                                <i class="fas fa-plus-circle"></i>
+                                {% trans 'Add' %}
+                            </button>
+                            <div class="dropdown-menu  dropdown-bordered">
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-product">
+                                    <i class="dropdown-icon fa-solid fa-circle-check"></i>
+                                    <span>{% trans 'Add Item' %}</span>
+                                </a>
+                                <a class="dropdown-item" href="#" id="btn-add-non-item">
+                                    <i class="dropdown-icon fa-solid fa-circle-question"></i>
+                                    <span>{% trans 'Add Non Item' %}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+            <div class="tab-pane fade" id="tab_shipment">
+                <!-- main shipment table -->
+                <table class="table nowrap w-100" id="table_shipment">
+
+                    <thead class="bg-secondary-light-5">
+                        <tr>
+                            <th></th>
+                            <th>{% trans 'Description' %}</th>
+                            <th>{% trans 'Type' %}</th>
+                            <th>{% trans 'Reference number' %}</th>
+                            <th>{% trans 'Weight' %}</th>
+                            <th>{% trans 'Dimension' %}</th>
+                            <th>{% trans 'Note' %}</th>
+                            <th>{% trans 'Action' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <!-- button dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-primary mt-5 dropdown-toggle d-flex align-items-center" type="button"
+                            id="btn_add_container" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        {% trans 'Add' %}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="btn_add_container">
+                        <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal_container">
+                               <i class="fa-solid fa-truck" style="margin-right: 5px;"></i>{% trans 'Container' %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal_package">
+                                <i class="fa-solid fa-box-open" style="margin-right: 5px;"></i> {% trans 'Package' %}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_expense">
+                <!-- main expense table -->
+                <table class="table nowrap w-100" id="table_expense">
+                    <thead class="bg-secondary-light-5">
+                        <tr>
+                            <th style="min-width: 30px"></th>
+                            <th style="min-width: 200px">{% trans 'Expense name' %}</th>
+                            <th style="min-width: 250px">{% trans 'Expense items' %}</th>
+                            <th style="min-width: 150px">{% trans 'UOM' %}</th>
+                            <th style="min-width: 150px">{% trans 'Quantity' %}</th>
+                            <th style="min-width: 200px">{% trans 'Expense Price' %}</th>
+                            <th style="min-width: 150px">{% trans 'Tax' %}</th>
+                            <th style="min-width: 200px">{% trans 'Subtotal Price' %}</th>
+                            <th style="min-width: 30px"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="row">
+                    <div class="col-12 col-lg-7 mt-3">
+                        <button class="btn btn-primary mt-4" type="button" id="add_expense" aria-expanded="false">
+                            <i class="fas fa-plus-circle me-2"></i>{% trans 'Add' %}
+                        </button>
+                    </div>
+                    <div class="col-12 col-lg-5 mt-3 text-right">
+                        <div class="row">
+                            <label for="pretax-value" class="col-4 col-form-label text-primary">{% trans 'Pretax Amount' %}</label>
+                            <div class="col-8">
+                                <input disabled id="pretax-value" value="0"
+                                       class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="taxes-value" class="col-4 col-form-label text-primary">{% trans 'Taxes' %}</label>
+                            <div class="col-8">
+                                <input disabled id="taxes-value" value="0"
+                                       class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="total-value" class="col-4 col-form-label text-primary">{% trans 'TOTAL' %}</label>
+                            <div class="col-8">
+                                <input disabled id="total-value" value="0"
+                                       class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_payment">
+                <table id="table-payment" class="table nowrap w-100 min-w-1350p">
+                    <thead class="bg-secondary-light-5"></thead>
+                    <tbody></tbody>
+                </table>
+                <button type="button" class="btn btn-primary mt-5" id="btn-add-installment">
+                    <i class="fas fa-plus-circle"></i>
+                    {% trans 'Add Installment' %}
+                </button>
+            </div>
+            <div class="tab-pane fade" id="tab_attachment">
+                <div class="form-group content_attached">
+                    <div id="attachment" class="{{ addClass }}">{% include 'extends/files/all.html' %}</div>
+                </div>
+            </div>
+            {% include 'extends/task/tab_pane.html' %}
+        </div>
+    </div>
+</div>

@@ -504,3 +504,19 @@ msgstr "Hành động này không thể hoàn tác!"
 #
 msgid "Code"
 msgstr "Mã"
+
+#
+msgid "Add Container Type"
+msgstr "Thêm Loại Container"
+
+#
+msgid "Update Container Type"
+msgstr "Cập Nhật Loại Container"
+
+#
+msgid "Add Package Type"
+msgstr "Thêm Loại Kiện Hàng"
+
+#
+msgid "Update Package Type"
+msgstr "Cập nhật loại hàng"

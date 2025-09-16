@@ -779,19 +779,25 @@
                     </div>
                     <div class="modal-body">
                         <b class="target-code text-primary"></b>
-                        <div class="form-group">
-                            <label class="form-label required" for="estimated_delivery_date">{% trans 'Estimated delivery date' %}</label>
-                            <div class="input-affix-wrapper">
-                                <input type="text" id="estimated_delivery_date"
-                                       class="form-control date-picker" autocomplete="off">
-                                <div class="input-suffix">
-                                    <i class="fas fa-calendar-alt"></i>
+                        <div class="row">
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label required" for="estimated_delivery_date">{% trans 'Estimated delivery date' %}</label>
+                                    <div class="input-affix-wrapper">
+                                        <input type="text" id="estimated_delivery_date"
+                                               class="form-control flat-picker" autocomplete="off">
+                                        <div class="input-suffix">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" for="remarks">{% trans 'Note' %}</label>
-                            <textarea class="form-control" rows="4" id="remarks" name="remarks"></textarea>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="form-label" for="remarks">{% trans 'Note' %}</label>
+                                <textarea class="form-control" rows="4" id="remarks" name="remarks"></textarea>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -28,7 +28,7 @@
         #idxPageContent {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             background-size: cover;
-            padding: 1rem 0;
+            padding: 1rem;
         }
 
         .container-fluid {
@@ -41,6 +41,17 @@
             border: none;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-md);
+            padding: 5px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(255, 255, 255, 0.2)
+        }
+
+        .transparent-main-card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
             padding: 15px;
             position: relative;
             overflow: hidden;
@@ -48,24 +59,18 @@
             background: rgba(255, 255, 255, 0.2)
         }
 
-        .stat-card {
+        .progress-card {
             border: none;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-md);
-            padding: 15px;
+            padding: 5px;
             position: relative;
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .progress-card {
-            border: none;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            padding: 15px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        #service-order-progress {
+            transition: width 1s ease-in-out; /* mượt trong 1 giây */
         }
 
         .service-card {
@@ -78,18 +83,6 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .advance-list-item-detail {
-            padding: 20px;
-            border: 1px solid #d8d8d8;
-            border-radius: 0.5rem;
-            list-style: none;
-            background: #fff;
-            position: relative;
-            -webkit-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            -moz-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
         /* Chart Container Enhancements */
         .chart-container {
             position: relative;
@@ -99,7 +92,7 @@
             margin-bottom: 0.5rem;
             box-shadow: var(--shadow-sm);
         }
-        
+
         /* Ensure proper spacing for chart containers */
         .chart-container > div {
             position: relative;
@@ -200,223 +193,79 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
+            data-url-service-order-detail-for-dashboard="{% url 'ServiceOrderDetailForDashboardAPI' '0'%}"
     ></script>
     <script id="trans-script"
     ></script>
-    
-    <div class="container-fluid mb-10">
+
+    <div class="container-fluid mt-5 mb-10">
         <div class="row">
             <div class="col-12">
-                <h2 class="fw-bold text-white">{% trans 'SERVICE ORDER PROGRESS DASHBOARD' %}</h2>
-                <h5 class="fst-italic text-white" id="service-order-title">Vận chuyển hàng từ Việt Nam sang Nhật Bản</h5>
+                <span class="text-white">{% trans 'TITLE' %}</span>
+                <h2 class="fw-bold text-white" id="service-order-title"></h2>
             </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="card transparent-card">
-                    <div class="card-body p-2">
-                        <span class="text-white">{% trans 'SERVICE ORDER CODE' %}</span>
-                        <h4 class="fw-bold text-white" id="service-order-code">SO0001</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="card transparent-card">
-                    <div class="card-body p-2">
-                        <span class="text-white">{% trans 'CUSTOMER' %}</span>
-                        <h4 class="fw-bold text-white" id="service-order-customer">Công ty cổ phần ABC</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-3">
-                <div class="card transparent-card">
-                    <div class="card-body p-2">
-                        <span class="text-white">{% trans 'TIME' %}</span>
-                        <h4 class="fw-bold text-white" id="service-order-time">28/08/2025 - 05/09/2025</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-12">
-                <div class="card transparent-card">
-                    <div class="card-body p-2">
-                        <span class="text-white">{% trans 'OVERALL PROGRESS' %}</span>
-                        <div class="progress progress-bar-rounded progress-width-animated my-3" style="min-height: 30px">
-                            <div class="progress-bar bg-gradient-success" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="progress-tooltip">75</span></div>
-                        </div>
-                    </div>
-                </div>
+                <div class="separator"></div>
             </div>
-        </div>
-        <div class="row">
+            <div class="col-12 col-md-9 col-lg-9">
+                <span class="text-white">{% trans 'CUSTOMER' %}</span>
+                <h4 class="fw-bold text-white" id="service-order-customer"></h4>
+            </div>
             <div class="col-12 col-md-3 col-lg-3">
-                <div class="card stat-card" style="background: linear-gradient(135deg, #b5b32a 0%, #ff5e5e 100%);">
+                <span class="text-white">{% trans 'TIME' %}</span>
+                <h4 class="fw-bold text-white" id="service-order-time"></h4>
+            </div>
+            <div class="col-12">
+                <div class="separator"></div>
+            </div>
+            <div class="col-12 mb-5" id="service-order-progress">
+                <span class="text-white">{% trans 'OVERALL PROGRESS' %}</span>
+            </div>
+            <div class="col-12 col-md-3 col-lg-3">
+                <div class="card transparent-card">
                     <div class="card-body p-2">
                         <span class="text-white">{% trans 'TOTAL SERVICES' %}</span>
-                        <h1 class="fw-bold text-white" id="total-services">2</h1>
-                        <span class="fst-italic text-white" id="total-services-des">0 hoàn thành - 2 đang thực hiện</span>
+                        <h1 class="fw-bold text-white" id="total-services"></h1>
+                        <span class="fst-italic text-white" id="total-services-des"><span id="svo-completed"></span> {% trans 'completed' %} - <span id="svo-progressing"></span> {% trans 'progressing' %} - <span id="svo-waiting"></span> {% trans 'waiting' %}</span>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-3">
-                <div class="card stat-card" style="background: linear-gradient(135deg, #3dc3ff 0%, #005880 100%);">
+                <div class="card transparent-card">
                     <div class="card-body p-2">
                         <span class="text-white">{% trans 'TOTAL WORK ORDERS' %}</span>
-                        <h1 class="fw-bold text-white" id="total-work-orders">5</h1>
-                        <span class="fst-italic text-white" id="total-work-orders-des">1 hoàn thành - 2 đang thực hiện - 2 đang chờ</span>
+                        <h1 class="fw-bold text-white" id="total-work-orders"></h1>
+                        <span class="fst-italic text-white" id="total-work-orders-des"><span id="wo-completed"></span> {% trans 'completed' %} - <span id="wo-progressing"></span> {% trans 'progressing' %} - <span id="wo-waiting"></span> {% trans 'waiting' %}</span>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-3">
-                <div class="card stat-card" style="background: linear-gradient(135deg, #d85897 0%, #aa0046 100%);">
+                <div class="card transparent-card">
                     <div class="card-body p-2">
                         <span class="text-white">{% trans 'TOTAL TASKS' %}</span>
-                        <h1 class="fw-bold text-white" id="total-tasks">14</h1>
-                        <span class="fst-italic text-white" id="total-tasks-des">6 hoàn thành - 8 đang thực hiện</span>
+                        <h1 class="fw-bold text-white" id="total-tasks"></h1>
+                        <span class="fst-italic text-white" id="total-tasks-des"><span id="task-completed"></span> {% trans 'completed' %} - <span id="task-progressing"></span> {% trans 'progressing' %} - <span id="task-waiting"></span> {% trans 'waiting' %}</span>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-3 col-lg-3">
-                <div class="card stat-card" style="background: linear-gradient(135deg, #c7a9fc 0%, #3a157c 100%)">
+                <div class="card transparent-card">
                     <div class="card-body p-2">
                         <span class="text-white">{% trans 'CONTRACT VALUE' %}</span>
-                        <h1 class="fw-bold text-white"><span class="mask-money" id="contract-value" data-init-money="2500000000"></span></h1>
-                        <span class="fst-italic text-white" id="contract-value-des"><span class="mask-money" id="contract-value-delivered" data-init-money="500000000"></span> đã giao (20%)</span>
+                        <h1 class="fw-bold text-white"><span class="mask-money" id="contract-value" data-init-money="0"></span></h1>
+                        <span class="fst-italic text-white" id="contract-value-des"><span class="mask-money" id="contract-value-delivered" data-init-money="0"></span> {% trans 'delivered' %} (~<span id="contract-value-delivered-percent"></span>%)</span>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row mt-5">
             <div class="col-12">
-                <div class="card progress-card">
-                    <div class="card-title p-2">
-                        <h3 class="fw-bold">{% trans 'SERVICE PROGRESS' %}</h3>
-                    </div>
+                <h3 class="text-white">{% trans 'SERVICE PROGRESS' %}</h3>
+            </div>
+            <div class="col-12">
+                <div class="card transparent-main-card">
                     <div class="card-body p-2">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card service-card">
-                                    <div class="card-body p-2">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <h5 class="fw-bold"><span class="badge badge-dark badge-pill service-code">SV001</span> <span class="service-name">Dịch vụ Bốc xếp hàng từ cảng lên tàu vận chuyển</span></h5>
-                                                <span class="fst-italic fw-bold text-muted">
-                                                    <span>{% trans 'Service value' %}:</span> <span class="service-value mask-money" data-init-money="500000000"></span>
-                                                    <span class="badge badge-light badge-indicator mx-2"></span>
-                                                    <span>{% trans 'Service weight' %}:</span> <span class="service-weight">20%</span>
-                                                </span>
-                                                <div class="progress progress-bar-rounded my-3" style="min-height: 20px">
-                                                    <div class="progress-bar bg-gradient-primary service-progress-bar" role="progressbar" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">30%</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="separator"></div>
-                                            </div>
-                                            <div class="col-12">
-                                                <h6 class="fw-bold text-muted">{% trans 'Work order list' %}:</h6>
-                                                <ul class="advance-list wo-list mt-3">
-                                                    <li class="advance-list-item">
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <div class="d-flex align-items-center">
-                                                                <span class="text-success me-2"><i class="bi bi-check-circle-fill"></i></span>
-                                                                <span class="badge badge-pill badge-soft-primary me-2 wo-code">WO001</span>
-                                                                <span class="me-2 wo-name">Work order 1</span>
-                                                            </div>
-                                                            <div class="d-flex align-items-center">
-                                                                <span class="text-danger me-2">High</span>
-                                                                <span class="badge badge-light badge-indicator me-2"></span>
-                                                                <span class="badge badge-soft-blue badge-outline me-2 d-md-inline-block d-none wo-contribution">30% contribution</span>
-                                                                <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover">
-                                                                    <span class="icon">
-                                                                        <span class="feather-icon"><i class="far fa-eye"></i></span>
-                                                                    </span>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="advance-list-item-detail mt-3">
-                                                            <div class="d-flex align-items-center justify-content-between">
-                                                                <div class="d-flex align-items-center">
-                                                                    <span class="badge badge-primary badge-pill h3 fw-bold me-2 wo-detail-code">WO001</span>
-                                                                    <span class="text-primary h3 me-2 wo-detail-name">Work order 1</span>
-                                                                </div>
-                                                                <div class="d-flex align-items-center">
-                                                                    <span class="badge badge-soft-success">
-                                                                        <i class="bi bi-check-circle-fill"></i> DONE
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <span class="text-muted me-2 wo-detail-inherit"><i class="fas fa-user"></i> Nguyễn Văn Nam</span>
-                                                            <span class="badge badge-light badge-indicator me-2"></span>
-                                                            <span class="text-muted me-2 wo-detail-date"><i class="fas fa-calendar-minus"></i> 28/08/2025 - 30/09/2025</span>
-                                                            <ul class="advance-list task-list mt-3">
-                                                                <li class="advance-list-item">
-                                                                    <div class="d-flex align-items-center justify-content-between">
-                                                                        <div class="d-flex align-items-center">
-                                                                            <span class="text-orange me-2"><i class="far fa-clock"></i></span>
-                                                                            <span class="badge badge-pill badge-soft-primary me-2 wo-code">WO003</span>
-                                                                            <span class="me-2 wo-name">Work order 3</span>
-                                                                        </div>
-                                                                        <div class="d-flex align-items-center">
-                                                                            <span class="text-orange me-2">Low</span>
-                                                                            <span class="badge badge-light badge-indicator me-2"></span>
-                                                                            <span class="badge badge-soft-blue badge-outline me-2 d-md-inline-block d-none wo-contribution">30% contribution</span>
-                                                                            <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover">
-                                                                                <span class="icon">
-                                                                                    <span class="feather-icon"><i class="far fa-eye"></i></span>
-                                                                                </span>
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </li>
-                                                    <li class="advance-list-item">
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <div class="d-flex align-items-center">
-                                                                <span class="text-blue me-2"><i class="fas fa-spinner"></i></span>
-                                                                <span class="badge badge-pill badge-soft-primary me-2 wo-code">WO002</span>
-                                                                <span class="me-2 wo-name">Work order 2</span>
-                                                            </div>
-                                                            <div class="d-flex align-items-center">
-                                                                <span class="text-blue me-2">Medium</span>
-                                                                <span class="badge badge-light badge-indicator me-2"></span>
-                                                                <span class="badge badge-soft-blue badge-outline me-2 d-md-inline-block d-none wo-contribution">40% contribution</span>
-                                                                <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover">
-                                                                    <span class="icon">
-                                                                        <span class="feather-icon"><i class="far fa-eye"></i></span>
-                                                                    </span>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li class="advance-list-item">
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <div class="d-flex align-items-center">
-                                                                <span class="text-orange me-2"><i class="far fa-clock"></i></span>
-                                                                <span class="badge badge-pill badge-soft-primary me-2 wo-code">WO003</span>
-                                                                <span class="me-2 wo-name">Work order 3</span>
-                                                            </div>
-                                                            <div class="d-flex align-items-center">
-                                                                <span class="text-orange me-2">Low</span>
-                                                                <span class="badge badge-light badge-indicator me-2"></span>
-                                                                <span class="badge badge-soft-blue badge-outline me-2 d-md-inline-block d-none wo-contribution">30% contribution</span>
-                                                                <button class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover">
-                                                                    <span class="icon">
-                                                                        <span class="feather-icon"><i class="far fa-eye"></i></span>
-                                                                    </span>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="row" id="service-detail-list"></div>
                     </div>
                 </div>
             </div>

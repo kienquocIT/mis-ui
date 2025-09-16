@@ -2961,8 +2961,17 @@ class WFRTControl {
                             if (docData?.['system_status'] === 3) {
                                 // Bật nút CR & Cancel
                                 if (docData?.['employee_inherit']?.['id'] === $x.fn.getEmployeeCurrentID()) {
-                                    let appAllowChange = ["quotation.quotation", "saleorder.saleorder",];
-                                    let appAllowCancel = ["quotation.quotation", "saleorder.saleorder", "purchasing.purchaserequest"];
+                                    let appAllowChange = [
+                                        "quotation.quotation",
+                                        "saleorder.saleorder",
+                                    ];
+                                    let appAllowCancel = [
+                                        "quotation.quotation",
+                                        "saleorder.saleorder",
+                                        "leaseorder.leaseorder",
+                                        "purchasing.purchaserequest",
+                                        "purchasing.purchaseorder",
+                                    ];
                                     if (appAllowChange.includes(runtimeData?.['app_code']) && appAllowCancel.includes(runtimeData?.['app_code'])) {
                                         WFRTControl.setBtnWFAfterFinishDetail('all');
                                     }

@@ -37,7 +37,8 @@ from apps.masterdata.saledata.views.product import (
     UnitOfMeasureGroupListAPI, UnitOfMeasureDetailAPI, ProductTypeDetailAPI, ProductCategoryDetailAPI,
     UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
     ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI, ProductForSaleDetailAPI,
-    ProductQuickCreateAPI, ProductQuotationListLoadDBAPI, BaseUnitListAPI, ManufacturerListAPI, ManufacturerDetailAPI
+    ProductQuickCreateAPI, ProductQuotationListLoadDBAPI, BaseUnitListAPI, ManufacturerListAPI, ManufacturerDetailAPI,
+    ProductUploadAvatarAPI
 )
 from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
@@ -46,6 +47,8 @@ from apps.masterdata.saledata.views.price import (
     PriceDeleteAPI, PriceListUpdate, PriceListItemListImportDBAPI
 )
 from apps.masterdata.saledata.views.revenue_plan_config import RevenuePlanConfigList, RevenuePlanConfigListAPI
+from apps.masterdata.saledata.views.shipment import ShipmentMasterDataList, ContainerMasterDataListAPI, \
+    ContainerMasterDataDetailAPI, PackageMasterDataListAPI, PackageMasterDataDetailAPI
 from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate, ShippingListAPI, ShippingDetail, \
     ShippingDetailAPI, ShippingCheckListAPI, ShippingUpdate
 from apps.masterdata.saledata.views.warehouse import (
@@ -204,6 +207,9 @@ urlpatterns = [
     path('product/update/<str:pk>', ProductUpdate.as_view(), name='ProductUpdate'),
     path('product/detail/<str:pk>', ProductDetail.as_view(), name='ProductDetail'),
     path('product/api/<str:pk>', ProductDetailAPI.as_view(), name='ProductDetailAPI'),
+    path(
+        'product/api/<str:pk>/upload-avatar', ProductUploadAvatarAPI.as_view(), name='ProductUploadAvatarAPI'
+    ),
     path('products-sale/api/list', ProductForSaleListAPI.as_view(), name='ProductForSaleListAPI'),
     path('products-sale/detail-api/<str:pk>', ProductForSaleDetailAPI.as_view(), name='ProductForSaleDetailAPI'),
     ] + [
@@ -418,4 +424,12 @@ urlpatterns += [
     path('attribute/list', AttributeList.as_view(), name='AttributeList'),
     path('attribute/list/api', AttributeListAPI.as_view(), name='AttributeListAPI'),
     path('attribute/detail/api/<str:pk>', AttributeDetailAPI.as_view(), name='AttributeDetailAPI'),
+]
+
+urlpatterns += [
+    path('masterdata/shipment/list', ShipmentMasterDataList.as_view(), name='ShipmentMasterDataList'),
+    path('masterdata/container/list/api', ContainerMasterDataListAPI.as_view(), name='ContainerMasterDataListAPI'),
+    path('masterdata/container/detail/api/<str:pk>', ContainerMasterDataDetailAPI.as_view(), name='ContainerMasterDataDetailAPI'),
+    path('masterdata/package/list/api', PackageMasterDataListAPI.as_view(), name='PackageMasterDataListAPI'),
+    path('masterdata/package/detail/api/<str:pk>', PackageMasterDataDetailAPI.as_view(), name='PackageMasterDataDetailAPI'),
 ]

@@ -61,7 +61,7 @@ class DashboardServiceOrderList(View):
         auth_require=True,
         template='sales/dashboard/dashboard_service_order_echarts.html',
         breadcrumb='DASHBOARD_SERVICE_ORDER_LIST_PAGE',
-        icon_cls='fas fa-filter',
+        icon_cls='bi bi-clipboard-data',
         icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):

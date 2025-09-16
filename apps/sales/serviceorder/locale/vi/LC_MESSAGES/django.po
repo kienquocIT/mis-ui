@@ -1,0 +1,150 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 00:08+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#
+msgid "Service order progress dashboard"
+msgstr "Dashboard tiến độ đơn hàng dịch vụ"
+
+#
+msgid "TITLE"
+msgstr "TIÊU ĐỀ"
+
+#
+msgid "CUSTOMER"
+msgstr "KHÁCH HÀNG"
+
+#
+msgid "TIME"
+msgstr "THỜI GIAN"
+
+#
+msgid "OVERALL PROGRESS"
+msgstr "TIẾN ĐỘ TỔNG QUAN"
+
+#
+msgid "TOTAL SERVICES"
+msgstr "TỔNG SỐ DỊCH VỤ"
+
+#
+msgid "TOTAL WORK ORDERS"
+msgstr "TỔNG SỐ YÊU CẦU CÔNG VIỆC"
+
+#
+msgid "TOTAL TASKS"
+msgstr "TỔNG SỐ GIAO VIỆC"
+
+#
+msgid "CONTRACT VALUE"
+msgstr "GIÁ TRỊ HỢP ĐỒNG"
+
+#
+msgid "completed"
+msgstr "đã hoàn thành"
+
+#
+msgid "progressing"
+msgstr "đang xử lý"
+
+#
+msgid "waiting"
+msgstr "đang chờ"
+
+#
+msgid "delivered"
+msgstr "đã giao"
+
+#
+msgid "SERVICE PROGRESS"
+msgstr "TIẾN ĐỘ DỊCH VỤ"
+
+#
+msgid "Start Date"
+msgstr "Ngày bắt đầu"
+
+#
+msgid "End Date"
+msgstr "Ngày kết thúc"
+
+#
+msgid "Service detail"
+msgstr "Chi tiết dịch vụ"
+
+#
+msgid "Select Product/ Service"
+msgstr "Chọn Sản Phẩm / Dịch Vụ"
+
+#
+msgid "Add Item"
+msgstr "Sản Phẩm Dịch Vụ"
+
+#
+msgid "Add Non Item"
+msgstr "Sản Phẩm Dịch Vụ Ngoài"
+
+#
+msgid "Shipment"
+msgstr "Vận chuyển"
+
+#
+msgid "Package"
+msgstr "Kiện hàng"
+
+#
+msgid "Reference number"
+msgstr "Tên tham chiếu"
+
+#
+msgid "Dimension"
+msgstr "Kích thước"
+
+#
+msgid "Add container"
+msgstr "Thêm Container"
+
+#
+msgid "Container name"
+msgstr "Tên container"
+
+#
+msgid "Container type"
+msgstr "Loại container"
+
+#
+msgid "Add package"
+msgstr "Thêm Kiện Hàng"
+
+#
+msgid "Package name"
+msgstr "Tên kiện hàng"
+
+#
+msgid "Package type"
+msgstr "Loại kiện hàng"
+
+#
+msgid "Delete Package ?"
+msgstr "Xóa gói hàng ?"
+
+#
+msgid "Deleting package row"
+msgstr "Xóa dòng gói hàng"
+
+#
+msgid "Add Installment"
+msgstr "Thêm PT Thanh Toán"

@@ -1,0 +1,59 @@
+{% load i18n %}
+
+{% trans 'Select Sale Person' as inherit_title %}
+                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-process-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True inherit_readonly=True auto_select_current_employee=True %}
+
+<div class="row">
+    <div class="col-12 col-lg-6 col-md-6">
+        <div class="form-group">
+            <label class="form-label required" for="so-title">{% trans 'Description' %}</label>
+            <input type="text" name="title" class="form-control" id="so-title" required>
+        </div>
+    </div>
+    <div class="col-12 col-lg-3 col-md-3">
+        <div class="form-group">
+            <label class="form-label required" for="so-created-date">{% trans 'Created Date' %}</label>
+            <div class="input-affix-wrapper">
+                <input required type="text" name="created_date"
+                       class="form-control" autocomplete="off" id="so-created-date" disabled>
+                <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-lg-6 col-md-6">
+        <div class="form-group">
+            <label class="form-label required" for="so-customer">{% trans 'Customer' %}</label>
+            <select class="form-select" id="so-customer"
+                data-url="{% url 'AccountDDListAPI' %}"
+                data-method="GET"
+                data-keyResp="account_dd_list"
+                data-keytext="name"
+                required>
+            </select>
+        </div>
+    </div>
+    <div class="col-12 col-lg-3 col-md-3">
+        <div class="form-group">
+            <label class="form-label required" for="so-start-date">{% trans 'Start Date' %}</label>
+            <div class="input-affix-wrapper">
+                <input required type="text" name="start_date" class="form-control" autocomplete="off" id="so-start-date">
+                <div class="input-suffix"><i class="fas fa-calendar-alt"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-3 col-md-3">
+        <div class="form-group">
+            <label class="form-label required" for="so-end-date">{% trans 'End Date' %}</label>
+            <div class="input-affix-wrapper">
+                <input required type="text" name="end_date"
+                       class="form-control" autocomplete="off" id="so-end-date">
+                <div class="input-suffix">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -28,6 +28,7 @@ class TabShipmentElements {
         this.$packageModal = $('#modal_package');
     }
 }
+
 const pageElements = new TabShipmentElements();
 
 
@@ -39,6 +40,7 @@ class TabShipmentVariables {
         this.shipmentData = [];
     }
 }
+
 const pageVariables = new TabShipmentVariables();
 
 
@@ -46,7 +48,7 @@ const pageVariables = new TabShipmentVariables();
  * Các hàm load page và hàm hỗ trợ
  */
 class TabShipmentFunction {
-    static initShipmentDataTable(data = [], option="create") {
+    static initShipmentDataTable(data = [], option = "create") {
         pageElements.$tableShipment.DataTable().destroy();
         pageElements.$tableShipment.DataTableDefault({
             styleDom: 'hide-foot',
@@ -65,7 +67,7 @@ class TabShipmentFunction {
                     }
                 },
                 {
-                    className: "w-20",
+                    className: "w-15",
                     render: (data, type, row) => {
                         if (row?.containerName) {
                             return `
@@ -124,17 +126,27 @@ class TabShipmentFunction {
                     }
                 },
                 {
-                    className: "w-5 text-right",
+                    className: "w-10 text-right",
                     render: (data, type, row) => {
-                        return row?.isContainer ? `<button ${option === 'detail' ? 'disabled' : ''} type="button"  
-                                                class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-delete-container">
-                                                <span class="icon"><i class="far fa-trash-alt"></i></span>
-                                         </button>` : `<button ${option === 'detail' ? 'disabled' : ''} type="button" 
-                                                class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-delete-package">
-                                                <span class="icon"><i class="far fa-trash-alt"></i></span>
-                                        </button>`;
+                        const editBtn = `<button ${option === 'detail' ? 'disabled' : ''} type="button"  
+                                class="btn btn-icon btn-rounded btn-flush-right flush-soft-hover btn-edit-${row?.isContainer ? 'container' : 'package'}"
+                                data-container-ref="${row?.containerRefNumber || ''}"
+                                data-package-ref="${row?.packageRefNumber || ''}"
+                                title="Edit ${row?.isContainer ? 'Container' : 'Package'}">
+                                <span class="icon"><i class="far fa-edit"></i></span>
+                        </button>`;
+                        const deleteBtn = row?.isContainer ?
+                            `<button ${option === 'detail' ? 'disabled' : ''} type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-delete-container">
+                                    <span class="icon"><i class="far fa-trash-alt"></i></span>
+                             </button>` : `<button ${option === 'detail' ? 'disabled' : ''} type="button"
+                                    class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-delete-package">
+                                    <span class="icon"><i class="far fa-trash-alt"></i></span>
+                            </button>`;
+
+                        return editBtn + ' ' + deleteBtn
                     }
-                },
+                }
             ],
         });
     }
@@ -144,7 +156,7 @@ class TabShipmentFunction {
         if (pageVariables.shipmentData && pageVariables.shipmentData.length > 0) {
             pageVariables.shipmentData.forEach(function (item) {
                 if (item.isContainer) {
-                        pageElements.$packageContainer.append(`
+                    pageElements.$packageContainer.append(`
                         <option value="${item.containerRefNumber}">
                             ${item.containerRefNumber}
                         </option>
@@ -154,7 +166,7 @@ class TabShipmentFunction {
         }
     }
 
-     static LoadContainerType(data) {
+    static LoadContainerType(data) {
         pageElements.$containerType.initSelect2({
             allowClear: true,
             ajax: {
@@ -189,7 +201,7 @@ class TabShipmentFunction {
 
         tableData.forEach(row => {
             let shipmentData = {};
-            if (row?.isContainer || row ?.is_container) {
+            if (row?.isContainer || row?.is_container) {
                 shipmentData = {
                     id: row?.id,
                     title: row?.containerName || '',
@@ -203,15 +215,15 @@ class TabShipmentFunction {
                     is_container: true
                 };
             } else {
-               shipmentData = {
+                shipmentData = {
                     id: row?.id,
                     title: row?.packageName || '',
                     container_type: null,
                     package_type: row?.packageType || null,
                     reference_number: row?.packageRefNumber || '',
                     weight: row?.packageWeight || 0,
-                    dimension:  row?.packageDimension || 0,
-                    description:  row?.packageNote || '',
+                    dimension: row?.packageDimension || 0,
+                    description: row?.packageNote || '',
                     reference_container: row?.packageContainerRef || '',
                     is_container: false
                 };
@@ -220,6 +232,7 @@ class TabShipmentFunction {
         });
         return serviceOrderShipmentData;
     }
+
 }
 
 
@@ -439,7 +452,7 @@ class TabShipmentEventHandler {
                 pageElements.$packageContainer.val(containerRef).trigger("change");
             }
             pageElements.$packageContainer.prop('disabled', true); // disable dropdown package_container
-        })
+        });
 
         // event when click Package from dropdown Add
         $('a[data-bs-target="#modal_package"]').on('click', function () {
@@ -454,5 +467,64 @@ class TabShipmentEventHandler {
             pageElements.$packageContainer.removeClass('bg-light');
             pageElements.$packageContainer.val('');
         });
+
+        // edit container event
+        pageElements.$tableShipment.on('click', '.btn-edit-container', function() {
+            let currentRow = $(this).closest('tr');
+            let containerRefNumber = currentRow.find('td:nth-child(4)').text().trim();
+
+            // find container in shipmentData
+            let container = pageVariables.shipmentData.find(
+                c => c.containerRefNumber === containerRefNumber
+            );
+
+            if (!container) {
+                $.fn.notifyB({description: "Container not found"}, 'failure');
+                return;
+            }
+
+            // fill data to form
+            pageElements.$containerType.val(container?.containerType?.idx || '');
+            pageElements.$containerRef.val(container?.containerRefNumber || '');
+            pageElements.$containerWeight.val(container?.containerWeight || 0);
+            pageElements.$containerDimension.val(container?.containerDimension || 0);
+            pageElements.$containerNote.val(container?.containerNote || '');
+
+            // save status
+            pageVariables.editingContainerRef = containerRefNumber;
+
+            pageElements.$containerModal.modal('show');
+        });
+
+        // edit package row event
+        pageElements.$tableShipment.on('click', '.btn-edit-package', function() {
+            let currentRow = $(this).closest('tr');
+            let packageRefNumber = currentRow.find('td:nth-child(4)').text().trim();
+
+            // find container contain package
+            let container = pageVariables.shipmentData.find(c =>
+                c.packages.some(p => p.packageRefNumber === packageRefNumber)
+            );
+            if (!container) {
+                $.fn.notifyB({description: "Package not found"}, 'failure');
+                return;
+            }
+
+            // find package
+            let pkg = container?.packages.find(p => p.packageRefNumber === packageRefNumber);
+
+            pageElements.$packageName.val(pkg?.packageName || '');
+            pageElements.$packageType.val(pkg?.packageType?.idx || '');
+            pageElements.$packageRef.val(pkg?.packageRefNumber || '');
+            pageElements.$packageWeight.val(pkg?.packageWeight || 0);
+            pageElements.$packageDimension.val(pkg?.packageDimension || 0);
+            pageElements.$packageNote.val(pkg?.packageNote || '');
+            pageElements.$packageContainer.val(pkg?.packageContainerRef || '');
+
+            pageVariables.editingPackageRef = packageRefNumber;
+            pageVariables.editingContainerRefForPackage = container.containerRefNumber;
+
+            pageElements.$packageModal.modal('show');
+        })
     }
 }

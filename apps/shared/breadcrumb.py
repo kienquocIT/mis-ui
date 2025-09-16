@@ -164,6 +164,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Opportunity
     OPPORTUNITY_LIST_PAGE = BreadcrumbChildren(_('Opportunity'), 'OpportunityList')
+    OPPORTUNITY_CONTRAT_SUMMARY_PAGE = BreadcrumbChildren(_('Contract summary'), 'OpportunityContractSummary')
 
     # Quotation
     QUOTATION_CONFIG_PAGE = BreadcrumbChildren(_('Quotation'), 'QuotationConfigDetail')
@@ -835,6 +836,9 @@ class BreadcrumbView:
     OPPORTUNITY_DETAIL_PAGE = OPPORTUNITY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     OPPORTUNITY_UPDATE_PAGE = OPPORTUNITY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
     OPPORTUNITY_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_CONFIG_PAGE]
+    OPPORTUNITY_CONTRAT_SUMMARY_PAGE = [
+        BreadcrumbItem.OPPORTUNITY_CONTRAT_SUMMARY_PAGE
+    ]
 
     # Quotation
     QUOTATION_LIST_PAGE = [

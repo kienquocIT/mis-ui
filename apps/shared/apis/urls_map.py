@@ -396,6 +396,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL = StringUrl('opportunity/decision-factor/{pk}')
     OPPORTUNITY_MEMBER_LIST = StringUrl('opportunity/detail/{pk_opp}/member/list')
     OPPORTUNITY_MEMBER_DETAIL = StringUrl('opportunity/detail/{pk_opp}/member/{pk_member}')
+    OPPORTUNITY_CONTRACT_SUMMARY = StringUrl('opportunity/contract-summary')
 
     # Application for Opportunity permission
     APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')

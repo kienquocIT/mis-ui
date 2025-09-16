@@ -533,3 +533,27 @@ class OpportunityMemberDetailAPI(APIView):
             ).delete()
             return resp.auto_return(key_success='member')
         return RespData.resp_404()
+
+
+class OpportunityContractSummary(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/opportunity/opportunity_contract_summary.html',
+        menu_active='',
+        breadcrumb='OPPORTUNITY_CONTRAT_SUMMARY_PAGE',
+        icon_cls='fas fa-pager',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class OpportunityContractSummaryAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONTRACT_SUMMARY).get(data)
+        return resp.auto_return(key_success='opportunity_contract_summary')

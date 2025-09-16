@@ -2317,5 +2317,10 @@ class OpportunityEventHandler {
                     console.log(data)
                 })
         })
+        // contract summarize
+        $('#btn-summarize-contract').on('click', function () {
+            let url = $(this).attr('data-url') + '?opportunity_id=' + $.fn.getPkDetail()
+            $(this).attr('href', url)
+        })
     }
 }

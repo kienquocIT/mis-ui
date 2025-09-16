@@ -4435,7 +4435,7 @@ class QuotationDataTableHandle {
                     width: '12%',
                     render: (data, type, row) => {
                         return `<div class="input-affix-wrapper">
-                                    <input type="text" class="form-control date-picker text-black table-row-date" autocomplete="off">
+                                    <input type="text" class="form-control flat-picker text-black table-row-date" autocomplete="off">
                                     <div class="input-suffix">
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>

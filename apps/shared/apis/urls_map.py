@@ -411,6 +411,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_STT_UPDATE = StringUrl('task/update-status')
     OPPORTUNITY_TASK_MY_TASK_REPORT = StringUrl('task/my-report')
     OPPORTUNITY_TASK_MY_TASK_SUMMARY_REPORT = StringUrl('task/my-summary-report')
+    OPPORTUNITY_TASK_GROUP_ASSIGNEE_LIST = StringUrl('task/list-has-group-assign')
+    OPPORTUNITY_TASK_ASSIGNEE_GROUP_LIST = StringUrl('task/assignee-group/list')
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/list')

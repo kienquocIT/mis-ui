@@ -56,3 +56,17 @@ msgstr "Thu nhỏ"
 #
 msgid "of task"
 msgstr "của giao việc"
+
+#
+msgid "Assignee group"
+msgstr "Nhóm người nhận việc"
+
+#
+msgid "Need assignee!"
+msgstr "Cần người nhận!"
+#
+msgid "Assign to me"
+msgstr "Giao cho tôi"
+#
+msgid "Assigned to me"
+msgstr "Đã giao cho tôi"

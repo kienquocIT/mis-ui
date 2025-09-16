@@ -21,6 +21,7 @@
                 data-url-redirect="{% url 'HomeView' %}"
         >
             <li class="nav-item">
+                <div data-bs-smooth-scroll="true" class="mh-500p overflow-y-scroll">
                 <ul class="nav flex-column">
                     {% csrf_token %}
                     {% for item in base.space_list %}
@@ -49,6 +50,7 @@
                         {% endif %}
                     {% endfor %}
                 </ul>
+                </div>
             </li>
         </ul>
     </li>

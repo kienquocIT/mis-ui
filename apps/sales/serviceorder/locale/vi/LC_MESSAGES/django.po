@@ -18,8 +18,8 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
-msgid "Service order progress dashboard"
-msgstr "Dashboard tiến độ đơn hàng dịch vụ"
+msgid "Service order detail dashboard"
+msgstr "Dashboard chi tiết đơn dịch vụ"
 
 #
 msgid "TITLE"

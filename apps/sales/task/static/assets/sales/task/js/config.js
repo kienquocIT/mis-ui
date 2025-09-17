@@ -62,6 +62,37 @@ $(function(){
                     this.checked = true
                 })
                 WindowControl.hideLoading();
+                if (config?.['user_allow_group_handle']){
+                    const $groupAssign = $('#group_assignee_list');
+                    const selectedData = config['user_allow_group_handle']
+                    let htmlStr = ''
+                    for (let item in selectedData){
+                        const value = selectedData[item]
+                        htmlStr += `<option value="${item}" selected>${value.full_name}</option>`
+                        value.selected = true;
+                    }
+                    $groupAssign.append(htmlStr).initSelect2()
+                        .on('select2:select', function (e) {
+                            const befData = $(this).data('employee_lst') || {}
+                            const data = {
+                                'id': e.params.data.id,
+                                'full_name': e.params.data.data?.full_name || `${e.params.data.data?.first_name} ${e.params.data.data?.last_name}`
+                            }
+                            if (e.params.data.data?.group) data.group = {
+                                'id': e.params.data.data.group.id,
+                                'title': e.params.data.data.group.title
+                            }
+                            else data.group = {}
+                            befData[e.params.data.id] = data
+                            $(this).data('employee_lst', befData)
+                        })
+                        .on('select2:unselect', function (e) {
+                            const befData = $(this).data('employee_lst') || {}
+                            if (befData?.[e.params.data.id])
+                                delete befData[e.params.data.id]
+                            $(this).data('employee_lst', befData)
+                        })
+                }
             }
         },
         (errs) => WindowControl.hideLoading()
@@ -105,6 +136,7 @@ $(function(){
             'list_status': list_status,
             'is_edit_date': $('#assignee_edit_date').prop('checked'),
             'is_edit_est': $('#assignee_edit_est').prop('checked'),
+            'user_allow_group_handle': $('#group_assignee_list').data('employee_lst') || {}
         }
         $.fn.callAjax2({
             'url': $form.attr('data-url'),

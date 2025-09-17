@@ -15,7 +15,8 @@ from apps.sales.opportunity.views import (
     OpportunityConfigStageListAPI, OpportunityConfigStageDetailAPI,
     # related
     OpportunityCustomerDecisionFactorListAPI, OpportunityCustomerDecisionFactorDetailAPI,
-    OpportunityMemberListAPI, OpportunityMemberDetailAPI, OpportunityStageCheckingAPI
+    OpportunityMemberListAPI, OpportunityMemberDetailAPI, OpportunityStageCheckingAPI, OpportunityContractSummary,
+    OpportunityContractSummaryAPI
 )
 
 urlpatterns = [
@@ -53,4 +54,6 @@ urlpatterns = [
     path('config/decision-factor/detail/api/<str:pk>', OpportunityCustomerDecisionFactorDetailAPI.as_view(), name='OpportunityCustomerDecisionFactorDetailAPI'),
     path('detail/api/<str:pk_opp>/member/list', OpportunityMemberListAPI.as_view(), name='OpportunityMemberListAPI'),
     path('detail/api/<str:pk_opp>/member/<str:pk_member>', OpportunityMemberDetailAPI.as_view(), name='OpportunityMemberDetailAPI'),
+    path('contract-summary', OpportunityContractSummary.as_view(), name='OpportunityContractSummary'),
+    path('contract-summary/api', OpportunityContractSummaryAPI.as_view(), name='OpportunityContractSummaryAPI'),
 ]

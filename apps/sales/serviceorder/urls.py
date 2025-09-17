@@ -1,7 +1,9 @@
 from django.urls import path
 from . import views
-from .views import ServiceOrderListAPI, ServiceOrderDetail, ServiceOrderUpdate, ServiceOrderDetailAPI, \
-    ServiceOrderDetailForDashboardAPI
+from .views import (
+    ServiceOrderListAPI, ServiceOrderDetail, ServiceOrderUpdate, ServiceOrderDetailAPI,
+    ServiceOrderDetailDashboardAPI, ServiceOrderDetailDashboard
+)
 
 urlpatterns = [
     # Render Views - HTML page rendering
@@ -15,5 +17,6 @@ urlpatterns = [
     path('detail/<str:pk>', ServiceOrderDetail.as_view(), name='ServiceOrderDetail'),
     path('detail/api/<str:pk>', ServiceOrderDetailAPI.as_view(), name='ServiceOrderDetailAPI'),
     path('update/<str:pk>', ServiceOrderUpdate.as_view(), name='ServiceOrderUpdate'),
-    path('detail-for-dashboard/api/<str:pk>', ServiceOrderDetailForDashboardAPI.as_view(), name='ServiceOrderDetailForDashboardAPI'),
+    path('dashboard', ServiceOrderDetailDashboard.as_view(), name='ServiceOrderDetailDashboard'),
+    path('dashboard/api/<str:pk>', ServiceOrderDetailDashboardAPI.as_view(), name='ServiceOrderDetailDashboardAPI'),
 ]

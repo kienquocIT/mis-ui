@@ -3,7 +3,7 @@ from django.urls import path
 from apps.sales.task.views import (
     OpportunityTaskConfig, OpportunityTaskConfigAPI, OpportunityTaskList,
     OpportunityTaskListAPI, OpportunityTaskStatusAPI, OpportunityTaskDetailAPI, OpportunityTaskLogTimeAPI,
-    MyTaskReportAPI, MyTaskSummaryReport,
+    MyTaskReportAPI, MyTaskSummaryReport, TaskAssigneeGroupListAPI, OpportunityTaskHasGroupListAPI
 )
 
 urlpatterns = [
@@ -17,4 +17,10 @@ urlpatterns = [
 
     path('my-report', MyTaskReportAPI.as_view(), name='MyTaskReportAPI'),
     path('my-summary-report', MyTaskSummaryReport.as_view(), name='MyTaskSummaryReport'),
+
+    path('assignee-group/api', TaskAssigneeGroupListAPI.as_view(), name='TaskAssigneeGroupListAPI'),
+    path(
+        'list-with-group/api', OpportunityTaskHasGroupListAPI.as_view(),
+        name='OpportunityTaskHasGroupListAPI'
+    ),
 ]

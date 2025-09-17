@@ -52,7 +52,7 @@ $(document).ready(function () {
                         targets: 3,
                         className: 'ellipsis-cell-lg w-20',
                         render: (data, type, row) => {
-                            return `<span title="${row?.['customer']?.['title']}">${row?.['customer']?.['title']}</span>`
+                            return `<span title="${row?.['customer']?.['name']}">${row?.['customer']?.['name']}</span>`
                         }
                     },
                     {

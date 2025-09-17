@@ -252,7 +252,7 @@ class BastionFieldControl {
 
         this.ajaxOpp = {
             'ajax': {
-                'url': '/opportunity/api/lists',
+                'url': '/opportunity/list/api',
                 'method': 'GET',
             },
             'keyResp': 'opportunity_list',

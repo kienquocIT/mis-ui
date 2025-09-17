@@ -396,6 +396,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL = StringUrl('opportunity/decision-factor/{pk}')
     OPPORTUNITY_MEMBER_LIST = StringUrl('opportunity/detail/{pk_opp}/member/list')
     OPPORTUNITY_MEMBER_DETAIL = StringUrl('opportunity/detail/{pk_opp}/member/{pk_member}')
+    OPPORTUNITY_CONTRACT_SUMMARY = StringUrl('opportunity/contract-summary')
 
     # Application for Opportunity permission
     APPLICATION_OPPORTUNITY_PERMISSION = StringUrl('base/applications-opportunity-permit')
@@ -410,6 +411,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_TASK_STT_UPDATE = StringUrl('task/update-status')
     OPPORTUNITY_TASK_MY_TASK_REPORT = StringUrl('task/my-report')
     OPPORTUNITY_TASK_MY_TASK_SUMMARY_REPORT = StringUrl('task/my-summary-report')
+    OPPORTUNITY_TASK_GROUP_ASSIGNEE_LIST = StringUrl('task/list-has-group-assign')
+    OPPORTUNITY_TASK_ASSIGNEE_GROUP_LIST = StringUrl('task/assignee-group/list')
 
     # quotation
     QUOTATION_LIST = StringUrl('quotation/list')
@@ -1006,4 +1009,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # service-order
     SERVICE_ORDER_LIST = StringUrl('serviceorder/list')
     SERVICE_ORDER_DETAIL = StringUrl('serviceorder/detail/{pk}')
-    SERVICE_ORDER_DETAIL_FOR_DASHBOARD = StringUrl('serviceorder/detail-for-dashboard/{pk}')
+    SERVICE_ORDER_DETAIL_DASHBOARD = StringUrl('serviceorder/detail-dashboard/{pk}')

@@ -314,13 +314,16 @@ const ServiceOrder = (function($) {
                 {
                     render: (data, type, row) => {
                         return `<div class="form-check">
-                                    <input type="checkbox" class="form-check-input" name="select-product" data-product-id="${row?.['id'] || ''}"/>
+                                    <input type="checkbox" class="form-check-input" id="select-product-${row?.['id']}" name="select-product" data-product-id="${row?.['id'] || ''}"/>
                                 </div>`
                     }
                 },
                 {
                     render: (data, type, row) => {
-                        return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code'] || ''}</span><span>${row?.['title'] || ''}</span>`
+                        return `<label class="form-check-label mr-2" for="select-product-${row?.['id']}">
+                                    <span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code'] || ''}</span>
+                                    <span>${row?.['title'] || ''}</span>
+                                </label>`
                     }
                 },
                 {
@@ -421,7 +424,7 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-15',
                     render: (data, type, row) => {
-                        return `<textarea disabled readonly class="form-control cost-description" rows="2">${row?.['description'] || ''}</textarea>`
+                        return `<textarea class="form-control cost-description" rows="2">${row?.['description'] || ''}</textarea>`
                     }
                 },
                 {
@@ -439,7 +442,11 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="mask-money" data-init-money="${row?.['price'] || 0}"></span>`
+                        return `<input
+                            type="text"
+                            class="form-control mask-money service-detail-price"
+                            value="${row?.['price'] || 0}"
+                        />`
                     }
                 },
                 {
@@ -451,7 +458,7 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<span class="mask-money" data-init-money="${row?.['total_value'] || 0}"></span>`
+                        return `<span class="mask-money service-detail-total" data-init-money="${row?.['total_value'] || 0}"></span>`
                     }
                 },
                 {
@@ -485,11 +492,13 @@ const ServiceOrder = (function($) {
             scrollCollapse: true,
             columns: [
                 {
+                    className: '',
                     render: (data, type, row) => {
                         return ``
                     }
                 },
                 {
+                    className: 'w-15',
                     render: (data, type, row) => {
                         if (row?.['product_id']){
                             return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code'] || ''}</span><span class="" title="${row?.['title'] || ''}">${row?.['title'] || ''}</span>`
@@ -499,21 +508,25 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
+                    className: 'w-10',
                     render: (data, type, row) => {
                         return TaskExtend.renderTaskTblRow();
                     }
                 },
                 {
+                    className: 'w-10',
                     render: (data, type, row) => {
                         return `<input type="text" class="form-control date-input work-order-start-date" value="${row?.['start_date'] || ''}" placeholder="DD/MM/YYYY">`
                     }
                 },
                 {
+                    className: 'w-10',
                     render: (data, type, row) => {
                         return `<input type="text" class="form-control date-input work-order-end-date" value="${row?.['end_date'] || ''}" placeholder="DD/MM/YYYY">`
                     }
                 },
                 {
+                    className: 'w-10',
                     render: (data, type, row) => {
                         return `<div class="d-flex align-items-center">
                                     <div class="form-check me-2">
@@ -527,11 +540,13 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return `<input type="number" class="form-control work-order-quantity" value="${row?.['quantity'] || 1}" min="0">`
                     }
                 },
                 {
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<div class="d-flex align-items-center">
                                     <span class="mask-money" data-init-money="${row?.['unit_cost'] || 0}"></span>
@@ -543,17 +558,19 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
+                    className: 'w-15',
                     render: (data, type, row) => {
                         return `<span class="mask-money" data-init-money="${row?.['total_value'] || 0}"></span>`
                     }
                 },
                 {
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return `<span class="table-row-percent-completed"></span>`;
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'w-5 text-right',
                     render: (data, type, row) => {
                         return `<div class="d-flex justify-content-center">
                                     <button 
@@ -1563,7 +1580,7 @@ const ServiceOrder = (function($) {
             const rowData = table.row($row).data()
 
             const confirmTitle = $.fn.gettext('Change service quantity')
-            const confirmText = $.fn.gettext('This will result in resetting contribution and payment data')
+            const confirmText = $.fn.gettext('This will reset the contribution and payment data')
             Swal.fire({
                 html: `
                     <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
@@ -1582,7 +1599,6 @@ const ServiceOrder = (function($) {
                 reverseButtons: true
             }).then((result) => {
                 if (result.value) {
-                    console.log(pageVariable.paymentDetailData)
                     if (rowData) {
                         const newQuantity = parseFloat($input.val()) || 0
                         const serviceId = rowData.id
@@ -1598,10 +1614,9 @@ const ServiceOrder = (function($) {
                         rowData.sub_total_value = subtotal
                         rowData.total_value = subtotal + taxAmount
 
-                        //col 8
-                        const $totalCell = $row.find('td').eq(8)
-                        const $totalMoneySpan = $totalCell.find('.mask-money')
-                        $totalMoneySpan.attr('data-init-money', subtotal + taxAmount)
+                        //update total
+                        const $totalMoney = $row.find('.service-detail-total')
+                        $totalMoney.attr('data-init-money', subtotal + taxAmount)
 
                         // 1. Reset serviceDetailTotalContributionData
                         if (pageVariable.serviceDetailTotalContributionData[serviceId]) {
@@ -1628,6 +1643,107 @@ const ServiceOrder = (function($) {
                                 })
                             }
                         })
+
+                        // 3. Reset serviceDetailTotalPaymentData
+                        if (pageVariable.serviceDetailTotalPaymentData[serviceId]) {
+                            delete pageVariable.serviceDetailTotalPaymentData[serviceId]
+                        }
+
+                        // 4. Reset payment detail data for this service
+                        Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
+                            const paymentDetails = pageVariable.paymentDetailData[paymentId]
+                            if (paymentDetails) {
+                                pageVariable.paymentDetailData[paymentId] = paymentDetails.map(detail => {
+                                    if (detail.service_id === serviceId) {
+                                        // Reset payment detail for this service
+                                        const resetDetail = {
+                                            ...detail,
+                                            sub_total_value: subtotal,
+                                            payment_percent: 0,
+                                            payment_value: 0,
+                                            is_selected: false,
+
+                                        }
+
+                                        // For each advance and invoiced payments, also reset additional fields
+                                        if (detail.tax_data !== undefined) {
+                                            resetDetail.tax_value = 0
+                                            resetDetail.issued_value = 0
+                                            resetDetail.balance_value = subtotal
+                                            resetDetail.reconcile_value = 0
+                                            resetDetail.receivable_value = 0
+                                        }
+                                        else {
+                                            resetDetail.total_reconciled_value = 0
+                                        }
+
+                                        // Remove reconcile data for this payment detail
+                                        if (pageVariable.reconcileData[detail.id]) {
+                                            delete pageVariable.reconcileData[detail.id]
+                                        }
+
+                                        return resetDetail
+                                    }
+                                    return detail
+                                })
+                            }
+                            updatePaymentRowAfterReset(paymentId)
+                        })
+                        $.fn.initMaskMoney2()
+                    }
+                }
+                else {
+                    $input.val(rowData.quantity)
+                }
+            });
+        })
+    }
+
+    function handleChangeServicePrice(){
+        pageElement.serviceDetail.$table.on('change', '.service-detail-price', function (e) {
+            const $input = $(this)
+            const $row = $input.closest('tr')
+            const table = pageElement.serviceDetail.$table.DataTable()
+            const rowData = table.row($row).data()
+
+            const confirmTitle = $.fn.gettext('Change service quantity')
+            const confirmText = $.fn.gettext('This will reset the payment data')
+            Swal.fire({
+                html: `
+                    <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
+                    <h5 class="text-danger">${confirmTitle}</h5>
+                    <p>${confirmText}</p>`,
+                customClass: {
+                    confirmButton: 'btn btn-outline-secondary text-danger',
+                    cancelButton: 'btn btn-outline-secondary text-gray',
+                    container: 'swal2-has-bg',
+                    actions: 'w-100'
+                },
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: $.fn.gettext('Yes'),
+                cancelButtonText: $.fn.gettext('Cancel'),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    if (rowData) {
+                        const newPrice = parseFloat($input.attr('value')) || 0
+                        const serviceId = rowData.id
+
+                        // Update row data
+                        rowData.price = newPrice
+
+                        // Calculate new total (quantity * price)
+                        const quantity = parseFloat(rowData.quantity) || 0;
+                        const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
+                        const subtotal = newPrice * quantity
+                        const taxAmount = subtotal * taxRate
+                        rowData.sub_total_value = subtotal
+                        rowData.total_value = subtotal + taxAmount
+
+                        //update total
+                        const $totalMoney = $row.find('.service-detail-total')
+                        $totalMoney.attr('data-init-money', subtotal + taxAmount)
 
                         // 3. Reset serviceDetailTotalPaymentData
                         if (pageVariable.serviceDetailTotalPaymentData[serviceId]) {
@@ -1725,6 +1841,7 @@ const ServiceOrder = (function($) {
         }
     }
 
+
     // ============ work order =============
 
     function handleChangeWorkOrderDetail(){
@@ -1801,7 +1918,11 @@ const ServiceOrder = (function($) {
             const rowData = table.row($row).data()
             const rowId = rowData.id
             // const rowIndex = table.row($row).index()
-            const rowWorkOrderCost = pageVariable.workOrderCostData[rowId]
+            let rowWorkOrderCost = pageVariable.workOrderCostData[rowId]
+
+            if(!rowWorkOrderCost || rowWorkOrderCost?.length === 0){
+                rowWorkOrderCost = [{}]
+            }
 
             pageElement.modalData.$tableWorkOrderCost.attr('data-work-order-id', rowId)
             initWorkOrderCostModalDataTable(rowWorkOrderCost)
@@ -3206,6 +3327,12 @@ const ServiceOrder = (function($) {
 
     // ============ submit handler =============
 
+    function getExchangeRate(){
+        const table = pageElement.modalData.$tableExchangeRate.DataTable()
+        let exchangeData = table.data().toArray()
+        return exchangeData || {}
+    }
+
     function getServiceDetailData(){
         const table = pageElement.serviceDetail.$table.DataTable()
         const serviceDetailData = []
@@ -3500,7 +3627,7 @@ const ServiceOrder = (function($) {
         }
 
         function addUnitCostData(workOrder){
-            let costData = [{}]
+            let costData = []
             if (workOrder.cost_data && workOrder.cost_data.length > 0){
                 costData = workOrder.cost_data
             }
@@ -4092,7 +4219,9 @@ const ServiceOrder = (function($) {
         initAttachment,
         handleSaveProduct,
         handleChangeServiceQuantity,
+        handleChangeServicePrice,
         handleChangeServiceDescription,
+
         handleChangeWorkOrderDetail,
         handleClickOpenWorkOrderCost,
         handleSelectWorkOrderCostTax,
@@ -4121,6 +4250,8 @@ const ServiceOrder = (function($) {
         handleChangePaymentDetail,
         handleOpenModalReconcile,
         handleSavePaymentReconcile,
+
+        getExchangeRate,
         getServiceDetailData,
         getWorkOrderData,
         getPaymentData,

@@ -151,6 +151,14 @@ class DetailDataHandler {
 $(document).ready(function () {
     Promise.all([
         ServiceOrder.loadCurrencyRateData(),
+        // let currencyList = resp.data['currency_list']
+        // currencyList.map(item => {
+        //     if (item.rate === null){
+        //         item.rate = 0
+        //     }
+        //     return item
+        // })
+        // pageVariable.currencyList = currencyList
         ServiceOrder.loadTaxData(),
     ]).then(() => {
         TabShipmentEventHandler.InitPageEvent();

@@ -2,6 +2,7 @@ function handleServiceDetailTabEvent(){
     ServiceOrder.handleChangeServiceDescription()
     ServiceOrder.handleChangeServiceQuantity()
     ServiceOrder.handleDeleteServiceDetailRow()
+    ServiceOrder.handleChangeServicePrice()
 }
 
 function handleWorkOrderDetailTabEvent(){
@@ -57,6 +58,7 @@ function setUpFormData(formInstance) {
     formInstance.dataForm['customer'] = $('#so-customer').val() || null
     formInstance.dataForm['start_date'] = startDate
     formInstance.dataForm['end_date'] = endDate
+    formInstance.dataForm['exchange_rate_data'] = ServiceOrder.getExchangeRate()
     formInstance.dataForm['service_detail_data'] = ServiceOrder.getServiceDetailData()
     formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData()
     formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()

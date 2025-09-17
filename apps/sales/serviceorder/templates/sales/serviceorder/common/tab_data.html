@@ -147,32 +147,20 @@
 
                         <!-- button dropdown -->
                         <div class="dropdown">
-                            <button
-                                    class="btn btn-primary mt-5 dropdown-toggle d-flex align-items-center" type="button"
-                                    id="btn_add_container" data-bs-toggle="dropdown" aria-expanded="false"
-                            >
+                            <button class="btn btn-primary mt-5 dropdown-toggle d-flex align-items-center" type="button"
+                                    id="btn_add_row_shipment" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-plus-circle me-2"></i>
                                 {% trans 'Add' %}
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="btn_add_container">
+                            <ul class="dropdown-menu" aria-labelledby="btn_add_row_shipment">
                                 <li>
-                                    <a
-                                            class="dropdown-item" href="#" data-bs-toggle="modal"
-                                            data-bs-target="#modal_container"
-                                    >
-                                        <i
-                                                class="fa-solid fa-truck" style="margin-right: 5px;"
-                                        ></i>{% trans 'Container' %}
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal_container">
+                                        <i class="fa-solid fa-truck" style="margin-right: 5px;"></i>{% trans 'Container' %}
                                     </a>
                                 </li>
                                 <li>
-                                    <a
-                                            class="dropdown-item" href="#" data-bs-toggle="modal"
-                                            data-bs-target="#modal_package"
-                                    >
-                                        <i
-                                                class="fa-solid fa-box-open" style="margin-right: 5px;"
-                                        ></i> {% trans 'Package' %}
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal_package">
+                                        <i class="fa-solid fa-box-open" style="margin-right: 5px;"></i> {% trans 'Package' %}
                                     </a>
                                 </li>
                             </ul>
@@ -180,7 +168,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="tab-pane fade" id="tab_expense">
                 <!-- main expense table -->
                 <table class="table nowrap w-100" id="table_expense">

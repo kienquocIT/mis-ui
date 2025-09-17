@@ -5489,8 +5489,8 @@ msgid "Meeting"
 msgstr "Cuộc họp"
 
 #
-msgid "Sale activities logged"
-msgstr "Nhật ký bán hàng"
+msgid "Activities logged"
+msgstr "Nhật ký hoạt động"
 
 #
 msgid "Current action"

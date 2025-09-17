@@ -1009,4 +1009,4 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # service-order
     SERVICE_ORDER_LIST = StringUrl('serviceorder/list')
     SERVICE_ORDER_DETAIL = StringUrl('serviceorder/detail/{pk}')
-    SERVICE_ORDER_DETAIL_FOR_DASHBOARD = StringUrl('serviceorder/detail-for-dashboard/{pk}')
+    SERVICE_ORDER_DETAIL_DASHBOARD = StringUrl('serviceorder/detail-dashboard/{pk}')

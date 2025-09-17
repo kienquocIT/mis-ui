@@ -130,7 +130,7 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
-            data-url-service-order-detail-for-dashboard="{% url 'ServiceOrderDetailForDashboardAPI' '0'%}"
+            data-url-service-order-detail-for-dashboard="{% url 'ServiceOrderDetailDashboardAPI' '0'%}"
     ></script>
     <script id="trans-script"
     ></script>
@@ -213,6 +213,6 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/echartjs/echart.js' %}"></script>
-    <script src="{% static 'assets/sales/dashboard/dashboard_service_order_echarts.js' %}"></script>
+    <script src="{% static 'assets/sales/serviceorder/js/service_order_detail_dashboard_echarts.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
 {% endblock %}

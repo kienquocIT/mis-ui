@@ -10,8 +10,8 @@ $(document).ready(function () {
     }).then(
         (resp) => {
             let data = $.fn.switcherResp(resp);
-            if (data && typeof data === 'object' && data.hasOwnProperty('service_order_detail_for_dashboard')) {
-                return data?.['service_order_detail_for_dashboard'];
+            if (data && typeof data === 'object' && data.hasOwnProperty('service_order_detail_dashboard')) {
+                return data?.['service_order_detail_dashboard'];
             }
             return {};
         },

@@ -240,6 +240,7 @@ const ServiceOrder = (function($) {
     }
 
 // --------------------LOAD DATA---------------------
+
     function loadCurrencyRateData() {
         const currencyListUrl = pageElement.$urlScript.attr('data-currency-list-url')
         return $.fn.callAjax2({
@@ -286,6 +287,7 @@ const ServiceOrder = (function($) {
     }
 
 // --------------------HANDLE INIT DATATABLES---------------------
+
     function initProductModalDataTable() {
         pageElement.modalData.$tableProduct.DataTableDefault({
             rowIdx: true,
@@ -516,7 +518,7 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control date-input work-order-start-date" value="${row?.['start_date'] || ''}" placeholder="DD/MM/YYYY">`
+                        return `<input type="text" class="form-control date-input work-order-start-date" required value="${row?.['start_date'] || ''}" placeholder="DD/MM/YYYY">`
                     }
                 },
                 {
@@ -549,7 +551,7 @@ const ServiceOrder = (function($) {
                     className: 'w-15',
                     render: (data, type, row) => {
                         return `<div class="d-flex align-items-center">
-                                    <span class="mask-money" data-init-money="${row?.['unit_cost'] || 0}"></span>
+                                    <span class="mask-money work-order-unit-cost" data-init-money="${row?.['unit_cost'] || 0}"></span>
                                     <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover ml-2 btn-open-work-order-cost"
                                             data-bs-toggle="modal" data-bs-target="#modal-work-order-cost" data-work-order-id="${row?.['id'] || ''}">
                                         <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
@@ -560,7 +562,7 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-15',
                     render: (data, type, row) => {
-                        return `<span class="mask-money" data-init-money="${row?.['total_value'] || 0}"></span>`
+                        return `<span class="mask-money work-order-total-amount" data-init-money="${row?.['total_value'] || 0}"></span>`
                     }
                 },
                 {
@@ -878,14 +880,14 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '27%',
+                    width: '20%',
                     title: $.fn.gettext('Title'),
                     render: (data, type, row) => {
                         return row?.title
                     }
                 },
                 {
-                    width: '18%',
+                    width: '15%',
                     title: $.fn.gettext('Contribution'),
                     render: (data, type, row) => {
                         const contribution = row.contribution_percent || 0
@@ -902,7 +904,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '15%',
+                    width: '5%',
                     title: $.fn.gettext('Total Balance'),
                     render: (data, type, row) => {
                         let balance = row.balance_quantity || 0
@@ -913,7 +915,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '15%',
+                    width: '10%',
                     title: $.fn.gettext('No of Service Delivered'),
                     render: (data, type, row) => {
                         const quantity = row.delivered_quantity || 0
@@ -931,7 +933,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '15%',
+                    width: '10%',
                     title: $.fn.gettext('Package'),
                     render: (data, type, row) => {
                         const hasPackage = row.has_package || false
@@ -956,7 +958,29 @@ const ServiceOrder = (function($) {
                                     </button>
                                 </div>`
                     }
-                }
+                },
+                {
+                    width: '15%',
+                    title: $.fn.gettext('Unit Cost'),
+                    render: (data, type, row) => {
+                        const unitCost = row?.unit_cost || 0
+                        return `<input
+                                    type="text"
+                                    class="form-control mask-money pc-unit-cost"
+                                    value="${unitCost}"
+                                />`
+                    }
+                },
+                {
+                    width: '15%',
+                    title: $.fn.gettext('Total Cost'),
+                    render: (data, type, row) => {
+                        const total = row?.total_cost || 0
+                        return `<div>
+                                    <span class="mask-money" data-init-money="${total}"></span>
+                                </div>`
+                    }
+                },
             ],
         })
     }
@@ -1557,6 +1581,58 @@ const ServiceOrder = (function($) {
         })
     }
 
+    function handleSaveExchangeRate(){
+        pageElement.modalData.$btnSaveExchangeRate.on('click', function (e) {
+            const table = pageElement.modalData.$tableExchangeRate.DataTable()
+            const rows = table.rows()
+            const currencyData = []
+            rows.every(function(){
+                const $row = $(this.node())
+                const rowData = this.data()
+                const $rate = $row.find('input[type="text"]')
+                const rateValue = Number($rate.val())
+                console.log($rate.val())
+                rowData.rate = rateValue || 0
+                $rate.attr('value', rateValue)
+                currencyData.push(rowData)
+            })
+            pageVariable.currencyList = currencyData
+
+            Object.keys(pageVariable.workOrderCostData).forEach(workOrderId => {
+                const costDataList = pageVariable.workOrderCostData[workOrderId]
+
+                if (costDataList && costDataList.length > 0) {
+                    costDataList.forEach(costItem => {
+                        const totalData = calculateWorkOrderCostTotalData(costItem)
+                        costItem.total_value = totalData.total_value
+                        costItem.exchanged_total_value = totalData.exchanged_total_value
+                    })
+
+                    const $workOrderRow = pageElement.workOrder.$table.find(`.btn-open-work-order-cost[data-work-order-id=${workOrderId}]`).closest('tr')
+                    if ($workOrderRow.length > 0) {
+                        const workOrderTable = pageElement.workOrder.$table.DataTable()
+                        const workOrderRowData = workOrderTable.row($workOrderRow).data()
+
+                        let totalAmount = 0
+                        costDataList.forEach(item => {
+                            totalAmount += item.exchanged_total_value || 0
+                        })
+
+                        workOrderRowData.unit_cost = totalAmount
+                        workOrderRowData.total_value = totalAmount * workOrderRowData.quantity
+
+                        $workOrderRow.find('.work-order-unit-cost').attr('data-init-money', totalAmount)
+                        $workOrderRow.find('.work-order-total-amount').attr('data-init-money', totalAmount * workOrderRowData.quantity)
+
+                        $.fn.initMaskMoney2()
+
+                        // workOrderTable.row($workOrderRow).data(workOrderRowData).draw(false)
+                    }
+                }
+            })
+        })
+    }
+
     // ============ service detail =============
 
     function handleChangeServiceDescription() {
@@ -1636,7 +1712,9 @@ const ServiceOrder = (function($) {
                                             contribution_percent: 0,
                                             delivered_quantity: 0,
                                             is_selected: false,
-                                            total_contribution_percent: 0
+                                            total_contribution_percent: 0,
+                                            unit_cost: 0,
+                                            total_cost: 0
                                         }
                                     }
                                     return contribution
@@ -2138,6 +2216,8 @@ const ServiceOrder = (function($) {
                     delivered_quantity: 0,
                     is_selected: false,
                     has_package: false,
+                    unit_cost: 0,
+                    total_cost: 0
                 }
             })
 
@@ -2157,6 +2237,8 @@ const ServiceOrder = (function($) {
                             contribution_percent: currProductContribution.contribution_percent || 0,
                             delivered_quantity: currProductContribution.delivered_quantity || 0,
                             has_package: currProductContribution.has_package,
+                            unit_cost: currProductContribution.unit_cost,
+                            total_cost: currProductContribution.total_cost,
                         }
                     }
                     return pcItem
@@ -2181,12 +2263,16 @@ const ServiceOrder = (function($) {
                 const $checkbox = $row.find('input[name="select-pc"]')
                 const $contributionInput = $row.find('.pc-contribution')
                 const $deliveredQuantityInput = $row.find('.pc-delivered-quantity')
+                const $deliveryUnitCost = $row.find('.pc-unit-cost')
 
                 const isSelected = $checkbox.is(':checked')
                 const hasPackage = $row.find('.contribution-package').is(':checked')
                 const rowId = $checkbox.data('service-row-id')
                 let contribution = parseFloat($contributionInput.val()) || 0
                 let deliveredQuantity = parseFloat($deliveredQuantityInput.val()) || 0
+                let unitCost = parseFloat($deliveryUnitCost.attr('value')) || 0
+                let totalCost = unitCost * deliveredQuantity  // Calculate total cost
+
                 const serviceRowContributionData = productContributionData.find(item => item.service_id === rowId)
                 const serviceRowContribution = serviceRowContributionData.contribution_percent
                 const serviceRowDeliveredQuantity = serviceRowContributionData.delivered_quantity
@@ -2271,6 +2357,8 @@ const ServiceOrder = (function($) {
                             delivered_quantity: isSelected ? deliveredQuantity : 0,
                             total_contribution_percent: pageVariable.serviceDetailTotalContributionData[rowId]?.total_contribution_percent,
                             balance_quantity: pageVariable.serviceDetailTotalContributionData[rowId]?.delivery_balance_value,
+                            unit_cost: isSelected ? unitCost : 0,
+                            total_cost: isSelected ? totalCost : 0,
                         }
                     }
                     return item
@@ -2339,7 +2427,45 @@ const ServiceOrder = (function($) {
             if(!isChecked){
                 $row.find('.pc-contribution').val(0)
                 $row.find('.pc-delivered-quantity').val(0)
+                $row.find('.pc-unit-cost').attr('value', 0)
+                $row.find('.pc-total-cost').attr('value', 0)
             }
+            $.fn.initMaskMoney2()
+        })
+    }
+
+    function handleChangeDeliveryCost(){
+        pageElement.modalData.$modalProductContribution.on('change', '.pc-unit-cost', function(e) {
+            const $input = $(e.currentTarget)
+            const $row = $input.closest('tr')
+            const table = pageElement.modalData.$tableProductContribution.DataTable()
+            const rowData = table.row($row).data()
+
+            const unitCost = parseFloat($input.attr('value')) || 0
+            const deliveredQuantity = rowData.delivered_quantity || 0
+            const totalCost = unitCost * deliveredQuantity
+
+            rowData.unit_cost = unitCost
+            rowData.total_cost = totalCost
+
+            $row.find('.mask-money').attr('data-init-money', totalCost)
+            $.fn.initMaskMoney2()
+        })
+
+        pageElement.modalData.$modalProductContribution.on('change', '.pc-delivered-quantity', function(e) {
+            const $input = $(e.currentTarget)
+            const $row = $input.closest('tr')
+            const table = pageElement.modalData.$tableProductContribution.DataTable()
+            const rowData = table.row($row).data()
+
+            const deliveredQuantity = parseFloat($input.val()) || 0
+            const unitCost = rowData.unit_cost || 0
+            const totalCost = unitCost * deliveredQuantity
+
+            rowData.delivered_quantity = deliveredQuantity
+            rowData.total_cost = totalCost
+            $row.find('.mask-money').attr('data-init-money', totalCost)
+            $.fn.initMaskMoney2()
         })
     }
 
@@ -3419,7 +3545,7 @@ const ServiceOrder = (function($) {
                             description: pkg.description,
                             container_ref: pkg.container_ref,
                             packages: pkg.packages || null,
-                            is_selected: pkg.is_selected
+                            is_selected: pkg.is_selected,
                         }));
                 }
 
@@ -3700,6 +3826,10 @@ const ServiceOrder = (function($) {
         })
     }
 
+    function loadExchangeRateData(exchangeRateData=[]){
+        ServiceOrder.pageVariable.currencyList = exchangeRateData
+        initCurrencyRateModalDataTable(exchangeRateData)
+    }
 
     // ============ delete handler ==============
 
@@ -4217,7 +4347,9 @@ const ServiceOrder = (function($) {
         initModalContextTracking,
         initPaymentDataTable,
         initAttachment,
+
         handleSaveProduct,
+        handleSaveExchangeRate,
         handleChangeServiceQuantity,
         handleChangeServicePrice,
         handleChangeServiceDescription,
@@ -4235,11 +4367,13 @@ const ServiceOrder = (function($) {
         handleSaveProductContribution,
         handleCheckDelivery,
         handleUncheckContribution,
+        handleChangeDeliveryCost,
         handleCheckPackage,
         handleOpenModalPackage,
         handleSaveModalPackage,
         handleTogglePackageChildren,
         handleSelectContainer,
+
 
         handleChangePaymentDate,
         handleAddPaymentRow,
@@ -4257,10 +4391,10 @@ const ServiceOrder = (function($) {
         getPaymentData,
         validateDates,
 
+        loadExchangeRateData,
         loadServiceDetailRelatedData,
         loadWorkOrderRelatedData,
         loadPaymentRelatedData,
-        disableTableFields,
 
         handleDeleteServiceDetailRow,
         handleDeleteWorkOrderRow,

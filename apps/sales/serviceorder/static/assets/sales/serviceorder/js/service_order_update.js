@@ -25,6 +25,8 @@ function handleModalWorkOrderCostEvent(){
 function handleModalWorkOrderContributionEvent(){
     ServiceOrder.handleSaveProductContribution()
     ServiceOrder.handleUncheckContribution()
+    ServiceOrder.handleChangeDeliveryCost()
+
     ServiceOrder.handleCheckPackage()
     ServiceOrder.handleOpenModalPackage()
     ServiceOrder.handleSaveModalPackage()
@@ -208,6 +210,7 @@ class DetailDataHandler {
                 this.loadCustomerList(data?.customer_data)
                 ServiceOrder.pageElement.commonData.$startDate.val(startDate)
                 ServiceOrder.pageElement.commonData.$endDate.val(endDate)
+                ServiceOrder.loadExchangeRateData(data?.exchange_rate_data)
 
                 // shipment
                 let shipmentDataFormatted = DetailDataHandler.formatShipmentDetailData(data?.shipment || [])
@@ -287,7 +290,7 @@ $(document).ready(function () {
     TabExpenseEventHandler.InitPageEvent()
 
     ServiceOrder.handleSaveProduct()
-
+    ServiceOrder.handleSaveExchangeRate()
     handleServiceDetailTabEvent()
     handleWorkOrderDetailTabEvent()
     handleModalWorkOrderCostEvent()

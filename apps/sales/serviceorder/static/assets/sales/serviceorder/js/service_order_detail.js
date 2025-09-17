@@ -95,6 +95,8 @@ class DetailDataHandler {
                 DetailDataHandler.loadCustomerList(data?.customer_data)
                 ServiceOrder.pageElement.commonData.$startDate.val(startDate)
                 ServiceOrder.pageElement.commonData.$endDate.val(endDate)
+                console.log(data?.exchange_rate_data)
+                ServiceOrder.loadExchangeRateData(data?.exchange_rate_data)
 
                 // shipment
                 let shipmentDataFormatted = DetailDataHandler.formatShipmentDetailData(data?.shipment || [])
@@ -140,9 +142,10 @@ class DetailDataHandler {
                 TabExpenseFunction.initExpenseTable(data?.expense || [], isDetail)
 
                 $.fn.initMaskMoney2()
-                ServiceOrder.disableTableFields()
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
-                UsualLoadPageFunction.DisablePage(isDisablePage, ['.btn-close', '.modal-header button', '#view-dashboard'])
+                UsualLoadPageFunction.DisablePage(isDisablePage,
+                    ['.btn-close', '.modal-header button', '#view-dashboard', '#btn-open-exchange-modal', '.btn-list-task',
+                            '.btn-open-service-delivery', '.btn-open-work-order-cost', '.btn-open-contribution-package'])
             }
         )
     }
@@ -151,14 +154,6 @@ class DetailDataHandler {
 $(document).ready(function () {
     Promise.all([
         ServiceOrder.loadCurrencyRateData(),
-        // let currencyList = resp.data['currency_list']
-        // currencyList.map(item => {
-        //     if (item.rate === null){
-        //         item.rate = 0
-        //     }
-        //     return item
-        // })
-        // pageVariable.currencyList = currencyList
         ServiceOrder.loadTaxData(),
     ]).then(() => {
         TabShipmentEventHandler.InitPageEvent();

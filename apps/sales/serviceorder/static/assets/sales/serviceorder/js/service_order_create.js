@@ -27,6 +27,8 @@ function handleModalWorkOrderCostEvent(){
 function handleModalWorkOrderContributionEvent(){
     ServiceOrder.handleSaveProductContribution()
     ServiceOrder.handleUncheckContribution()
+    ServiceOrder.handleChangeDeliveryCost()
+
     ServiceOrder.handleCheckPackage()
     ServiceOrder.handleOpenModalPackage()
     ServiceOrder.handleSaveModalPackage()
@@ -155,6 +157,7 @@ $(document).ready(function () {
     TabExpenseEventHandler.InitPageEvent()
 
     ServiceOrder.handleSaveProduct()
+    ServiceOrder.handleSaveExchangeRate()
 
     handleServiceDetailTabEvent()
     handleWorkOrderDetailTabEvent()

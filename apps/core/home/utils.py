@@ -238,6 +238,13 @@ PLAN_APP_OF_SALE = {
             detail_view_name='EquipmentReturnDetail',
             create_view_name='EquipmentReturnCreate').data,
     },
+    'leaseorder': {
+        'leaseorder': ReverseUrlCommon(
+            list_view_name='LeaseOrderList',
+            detail_view_name='LeaseOrderDetail',
+            create_view_name='LeaseOrderCreate',
+        ).data,
+    },
 }
 
 PLAN_APP_OF_E_OFFICE = {

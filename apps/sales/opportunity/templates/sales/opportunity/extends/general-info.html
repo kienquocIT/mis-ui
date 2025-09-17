@@ -7,19 +7,19 @@
             <span class="fw-bold text-muted">{% trans 'General Information' %}</span>
         </h5>
     </div>
-    <div class="col-12 d-flex mt-2 mb-3" id="activities-btn-group">
-        <div class="nav-pills-bfl w-100" role="group">
-            <a id="goto-call-log" data-url="{% url 'OpportunityCallLogList' %}" target="_blank" class="btn nav-link w-25" href="#" title="{% trans 'Call to customer' %}">
-                <span class="icon text-green"><i class="fas fa-phone-volume"></i></span>
+    <div class="col-12 mt-3 mb-4" id="activities-btn-group">
+        <div class="d-flex justify-content-between px-15">
+            <a id="goto-call-log" data-url="{% url 'OpportunityCallLogList' %}" target="_blank" class="btn btn-rounded btn-gradient-primary" href="#" title="{% trans 'Call to customer' %}">
+                <span class="icon text-white"><i class="fas fa-phone-volume"></i></span>
             </a>
-            <a id="goto-email" data-url="{% url 'OpportunityEmailList' %}" target="_blank" class="btn nav-link w-25" href="#" title="{% trans 'Email to customer' %}">
-                <span class="icon text-blue"><i class="bi bi-envelope-fill"></i></span>
+            <a id="goto-email" data-url="{% url 'OpportunityEmailList' %}" target="_blank" class="btn btn-rounded btn-gradient-info" href="#" title="{% trans 'Email to customer' %}">
+                <span class="icon text-white"><i class="bi bi-envelope-fill"></i></span>
             </a>
-            <a id="goto-meeting" data-url="{% url 'OpportunityMeetingList' %}" target="_blank" class="btn nav-link w-25" href="#" title="{% trans 'Meeting with customer' %}">
-                <span class="icon text-orange"><i class="bi bi-person-workspace"></i></span>
+            <a id="goto-meeting" data-url="{% url 'OpportunityMeetingList' %}" target="_blank" class="btn btn-rounded btn-gradient-danger" href="#" title="{% trans 'Meeting with customer' %}">
+                <span class="icon text-white"><i class="bi bi-person-workspace"></i></span>
             </a>
-            <a id="goto-task" class="current-create-task btn nav-link w-25" data-bs-toggle="offcanvas" data-bs-target="#offCanvasRightTask" href="#" title="{% trans 'Task' %}">
-                <span class="icon text-purple"><i class="fa-solid fa-list-check"></i></span>
+            <a id="goto-task" class="current-create-task btn btn-rounded btn-gradient-success" data-bs-toggle="offcanvas" data-bs-target="#offCanvasRightTask" href="#" title="{% trans 'Task' %}">
+                <span class="icon text-white"><i class="fa-solid fa-list-check"></i></span>
             </a>
         </div>
     </div>

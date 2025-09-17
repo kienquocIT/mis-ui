@@ -127,6 +127,12 @@
                                readonly>
                     </div>
                 </div>
+                {% if data.create_group_allow %}
+                    <div class="col-md-6 col-xs-12" id="has_group_assignee">
+                        <br class="mt-2">
+                        <p><a href="#" class="text-decoration-underline text-uppercase" data-bs-toggle="modal" data-bs-target="#modalAssigneeGroup">{% trans 'Create' %}</a> {% trans 'employee group for receiving tasks' %}</p>
+                    </div>
+                {% endif %}
                 <div class="col-xs-12 custom-layout">
                     {% trans 'Assignee' as inherit_title %}
                     {% if is_project_page %}
@@ -135,7 +141,7 @@
                     {% elif not_bastion != True %}
                         {% trans 'Opp code' as opp_title %}
                         {% trans 'Project code' as prj_title %}
-                        {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=False show_warning=True priority_app='opp-process-prj-inherit' has_opp=True has_process=True has_prj=has_prj has_inherit=True is_open=True inherit_required=True new_list_from_app=new_list_from_app new_list_from_app_id=data.list_from_app_id %}
+                        {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=False show_warning=True priority_app='opp-process-prj-inherit' has_opp=True has_process=True has_prj=has_prj has_inherit=True is_open=True inherit_required=False new_list_from_app=new_list_from_app new_list_from_app_id=data.list_from_app_id %}
                     {% elif not_bastion and custom_assignee %}
                         <div class="row">
                             <div class="col-12 col-md-6 col-lg-6">
@@ -324,7 +330,46 @@
            data-opps-detail="{% url 'OpportunityDetailAPI' 0 %}"
            data-employee="{% url 'EmployeeListAPI' %}">
 {% endblock %}
-
+{% block modalData %}
+    <div class="modal fade" id="modalAssigneeGroup" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenter" aria-hidden="true" data-url="{% url 'TaskAssigneeGroupListAPI' %}">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans "Create employee group for receiving tasks" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="group_data_onload" aria-label="hidden modal data load">
+                    <div class="col">
+                        <div class="form-group mb-2">
+                            <label class="label-field form-label required" for="group_title">{% trans "Title" %}</label>
+                            <input class="form-control" type="text" id="group_title"
+                                   placeholder="group received new project">
+                        </div>
+                        <div class="form-group">
+                            <label class="label-field form-label required" for="group_assignee_list">{% trans "Employee list" %}</label>
+                            <select id="group_assignee_list" class="form-select" name="group_assignee_list"
+                                    multiple
+                                    data-closeOnSelect="false"
+                                    data-allowClear="true"
+                                    data-url="{% url 'EmployeeListAPI' %}"
+                                    data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
+                            ></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="save_group">
+                        {% trans 'Save' %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 <div class="modal fade" id="logWorkModal" tabindex="-1" role="dialog"
      aria-labelledby="logWorkModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">

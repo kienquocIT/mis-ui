@@ -359,6 +359,9 @@ $(document).ready(function () {
                 }
                 formData.attach = $x.cls.file.get_val(formData.attach, []);
                 formData.attach_assignee = $x.cls.file.get_val(formData.attach_assignee, []);
+
+
+                if (formData?.['assignee_group']) formData.group_assignee = formData['assignee_group']
                 let method = 'POST'
                 let url = form.attr('data-url')
                 formData.id = $('input[name="id"]', form).val()

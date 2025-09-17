@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Contract summarize' %}{% endblock %}
+{% block cssHeader %}
+{% endblock %}
+{% block pageAction %}
+{% endblock %}
+{% block pageContent %}
+    <script id="script-url"
+            data-url-call-opportunity-contract-summary="{% url 'OpportunityContractSummaryAPI' %}"
+    >
+    </script>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="title-lg title-wth-divider">
+                <span>
+                    <span class="h2 text-primary fw-bold" id="opp-title"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row">
+                <div class="col-12">
+                    <span class="text-primary">{% trans 'Open date' %}</span>: <span class="text-primary fw-bold" id="open-date"></span>
+                </div>
+                <div class="col-12">
+                    <span class="text-primary">{% trans 'Close date' %}</span>: <span class="text-primary fw-bold" id="close-date"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="row">
+                <div class="col-12">
+                    <span class="text-primary">{% trans 'Customer' %}</span>: <span class="text-primary fw-bold" id="customer-name"></span>
+                </div>
+                <div class="col-12">
+                    <span class="text-primary">{% trans 'Sale person' %}</span>: <span class="text-primary fw-bold" id="sale-person"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <table class="table w-100 nowrap" id="dtb-sale-order-indicator">
+                <thead>
+                    <tr class="bg-secondary-light-5">
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 200px">{% trans 'Indicator name' %}</th>
+                        <th style="min-width: 150px">{% trans 'Quotation value' %}</th>
+                        <th style="min-width: 150px">{% trans 'Sale order value' %}</th>
+                        <th style="min-width: 150px">{% trans 'Difference value' %}</th>
+                        <th style="min-width: 100px">{% trans 'Indicator rate' %}</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-5 mb-5">
+        <div class="col-12">
+            <table class="table w-100 nowrap" id="dtb-lease-order-indicator">
+                <thead>
+                    <tr class="bg-secondary-light-5">
+                        <th style="min-width: 30px"></th>
+                        <th style="min-width: 200px">{% trans 'Indicator name' %}</th>
+                        <th style="min-width: 150px">{% trans 'Quotation value' %}</th>
+                        <th style="min-width: 150px">{% trans 'Sale order value' %}</th>
+                        <th style="min-width: 150px">{% trans 'Difference value' %}</th>
+                        <th style="min-width: 100px">{% trans 'Indicator rate' %}</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_contract_summary.js' %}"></script>
+{% endblock %}

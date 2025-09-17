@@ -7,7 +7,7 @@
 {% endblock %}
 {% block pageContent %}
     <table class="table nowrap w-100 mb-5" data-method="get" id="table-service-order"
-           data-url-dashboard="{% url 'DashboardServiceOrderList' %}"
+           data-url-dashboard="{% url 'ServiceOrderDetailDashboard' %}"
            data-url="{% url 'ServiceOrderListAPI' %}"
            data-url-detail="{% url 'ServiceOrderDetail' pk='0'%}">
         <thead>

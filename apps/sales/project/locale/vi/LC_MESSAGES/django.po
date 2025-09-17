@@ -18,6 +18,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #
+msgid "Open date"
+msgstr "Ngày mở dự án"
+
+#
 msgid "Close date"
 msgstr "Ngày đóng dự án"
 

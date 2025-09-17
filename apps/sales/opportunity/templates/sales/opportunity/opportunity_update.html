@@ -55,11 +55,6 @@
                     <a hidden href="#" id="btn-auto-update-stage" data-url="{% url 'OpportunityStageCheckingAPI' %}" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover" title="{% trans "Auto Update Stage" %}">
                         <span class="icon"><i class="fas fa-sync-alt"></i></span>
                     </a>
-                    <a href="#" id="btn-summarize-contract" class="btn btn-icon border btn-rounded btn-flush-success flush-soft-hover" title="{% trans "Summarize contract" %}">
-                        <span class="icon">
-                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABTklEQVR4nO1UPUsDQRBdbMSPVhEJFhYWNmojCiEzySWQIp3uzGHyH7SzM/4Kf4AgWCsKJngzuXxUFtZi6f9QVpu7kKC53IGCD6aZXebNsu89Y/4xCUD5DZXb3xUovZY6dtdMClSSGKHYFRA6Kai/E+/zOQhjCgTcAfEPUSgs9/zVVAmq99VZFGp99fkMA/ZSfwEqXaLSBSp3a0+1+dQJzHtzBsRuVx4aC9F2cgLhm5+oCJXbXsgb5tcBhK7Hbi3UAqnnsl9C+RmFXhIZEJWPUfl0XOVDu1Tu2jUQ6o8ahEpNDCyMJSio3Qeh8qjCgD3nDXev0m8sOxNGvfH5OqnnonKeCiB2EYTvQNmarLA3sHOodIsBHWRC4HWP1lF4UHykrdSHl0K76T47E8MVnBiUe8O+ALH5aOomQrHjl1xmOckOnyXOKBMbQld/L6OmwQf68PS45sL1tQAAAABJRU5ErkJggg==" alt="external-ic_SUM-dex-outline-lafs">
-                        </span>
-                    </a>
                 </div>
                 <div class="col-12">
                     <ul class="mt-2" id="opp-stage-pipeline" data-url="{% url "OpportunityConfigStageListAPI" %}"></ul>
@@ -210,6 +205,7 @@
             data-url-consulting-detail="{% url "ConsultingDetail" pk=0%}"
             data-url-lease-order-detail="{% url "LeaseOrderDetail" pk=0%}"
             data-url-contract-detail="{% url "ContractApprovalDetail" pk=0%}"
+            data-url-service-order-detail="{% url "ServiceOrderDetail" pk=0%}"
 
             data-url-quo-list="{% url "QuotationListAPI" %}"
             data-url-so-list="{% url "SaleOrderListAPI" %}"
@@ -230,6 +226,7 @@
             data-assignee_empty="{% trans 'Assignee is required' %}"
             data-trans-not-created="{% trans 'has not been created for Opportunity' %}"
             data-msg-deny-delete-member-owner="{% trans 'This is Sale Person, can not remove!' %}"
+            data-trans-notify-update-permission="{% trans 'Please save Update Opportunity page to apply all the permissions!' %}"
 
             data-trans-quotation="{% trans "Quotation" %}"
             data-trans-sale-order="{% trans "Sale Order" %}"
@@ -254,7 +251,7 @@
             data-trans-bidding="{% trans "Bidding" %}"
             data-trans-consulting="{% trans "Consulting" %}"
             data-trans-activity-cancelled="{% trans 'Cancelled' %}"
-            data-trans-notify-update-permission="{% trans 'Please save Update Opportunity page to apply all the permissions!' %}"
+            data-trans-service-order="{% trans "Service order" %}"
     ></script>
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
     <script type="text" id="data-detail"></script>

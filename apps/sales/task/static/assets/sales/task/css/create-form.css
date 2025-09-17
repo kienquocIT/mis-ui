@@ -50,3 +50,11 @@
 #formOpportunityTask + .task_loading > div{
     margin-top: calc(50% - 14px);
 }
+@media screen and (min-width: 768px){
+    .wrap_task_inherit{
+        display: flex;
+    }
+    .wrap_task_inherit > div {
+        width: 50%;
+    }
+}

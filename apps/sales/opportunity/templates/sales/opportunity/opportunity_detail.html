@@ -55,15 +55,8 @@
         <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=pk %}" data-url-redirect="{% url "OpportunityList" %}">
             {% csrf_token %}
             <div class="row mb-3">
-                <div class="col-11">
+                <div class="col-12">
                     <input required style="font-weight: bolder; font-size: large" id="opp_title" class="text-primary form-control form-control-line">
-                </div>
-                <div class="col-1 d-flex align-items-end justify-content-end">
-                    <a href="#" id="btn-summarize-contract" class="btn btn-icon border btn-rounded btn-flush-success flush-soft-hover" title="{% trans "Summarize contract" %}">
-                        <span class="icon">
-                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABTklEQVR4nO1UPUsDQRBdbMSPVhEJFhYWNmojCiEzySWQIp3uzGHyH7SzM/4Kf4AgWCsKJngzuXxUFtZi6f9QVpu7kKC53IGCD6aZXebNsu89Y/4xCUD5DZXb3xUovZY6dtdMClSSGKHYFRA6Kai/E+/zOQhjCgTcAfEPUSgs9/zVVAmq99VZFGp99fkMA/ZSfwEqXaLSBSp3a0+1+dQJzHtzBsRuVx4aC9F2cgLhm5+oCJXbXsgb5tcBhK7Hbi3UAqnnsl9C+RmFXhIZEJWPUfl0XOVDu1Tu2jUQ6o8ahEpNDCyMJSio3Qeh8qjCgD3nDXev0m8sOxNGvfH5OqnnonKeCiB2EYTvQNmarLA3sHOodIsBHWRC4HWP1lF4UHykrdSHl0K76T47E8MVnBiUe8O+ALH5aOomQrHjl1xmOckOnyXOKBMbQld/L6OmwQf68PS45sL1tQAAAABJRU5ErkJggg==" alt="external-ic_SUM-dex-outline-lafs">
-                        </span>
-                    </a>
                 </div>
                 <div class="col-12">
                     <ul class="mt-2" id="opp-stage-pipeline" data-url="{% url "OpportunityConfigStageListAPI" %}"></ul>
@@ -264,7 +257,7 @@
             data-trans-bidding="{% trans "Bidding" %}"
             data-trans-consulting="{% trans "Consulting" %}"
             data-trans-activity-cancelled="{% trans 'Cancelled' %}"
-            data-trans-service-order="{% trans "Service Order" %}"
+            data-trans-service-order="{% trans "Service order" %}"
     ></script>
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
     <script type="text" id="data-detail"></script>

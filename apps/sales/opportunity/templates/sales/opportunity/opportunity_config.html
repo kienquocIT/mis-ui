@@ -73,7 +73,7 @@
                         <table class="table nowrap w-100" id="table-opportunity-customer-decision-factor"
                                data-method="GET"
                                data-url="{% url 'OpportunityCustomerDecisionFactorListAPI' %}"
-                               data-url-redirect="{% url 'OpportunityConfig' %}"
+                               data-url-redirect="{% url 'OpportunityConfigDetail' %}"
                                data-url-detail="{% url 'OpportunityCustomerDecisionFactorDetailAPI' pk=0 %}">
                             <thead>
                                 <tr>
@@ -312,5 +312,5 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
-    <script src="{% static 'assets/sales/opportunity/js/opp_config_data.js' %}"></script>
+    <script src="{% static 'assets/sales/opportunity/js/opportunity_config.js' %}"></script>
 {% endblock %}'

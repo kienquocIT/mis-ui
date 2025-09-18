@@ -298,6 +298,18 @@ class OpportunityPageFunction {
                     const taskObj = data?.["doc_data"];
                     OpportunityPageFunction.displayTaskView($urlEle.attr("data-task_detail").format_url_with_uuid(taskObj.id))
                 })
+            },
+            initComplete: function () {
+                let wrapper$ = $table.closest('.dataTables_wrapper');
+                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+                headerToolbar$.prepend(textFilter$);
+                if (textFilter$.length > 0) {
+                    textFilter$.css('display', 'flex');
+                    textFilter$.append(`
+                        <button type="button" id="btn-refresh-activity" class="btn btn-rounded btn-soft-success btn-xs" title="${$.fn.gettext('Refresh')}"><i class="bi bi-arrow-repeat"></i></button>
+                    `)
+                }
             }
         });
     };
@@ -714,8 +726,18 @@ class OpportunityPageFunction {
             });
         }
     }
-    // sub functions
-    static CheckPermissionAppRelated() {
+    // check permission apps related functions
+    static CheckPermissionCreateAppRelated() {
+        $.notify($.fn.gettext('Checking create permission of related apps...'), {
+            type: 'info',
+            animate: {
+                enter: 'animated lightSpeedIn',
+                exit: 'animated lightSpeedOut'
+            },
+            allow_dismiss: false,
+            showProgressbar: true,
+        });
+
         const quotation_check_perm = $.fn.callAjax2({
             url: $urlEle.attr('data-url-opp-list'),
             data: {
@@ -996,6 +1018,72 @@ class OpportunityPageFunction {
                 }
                 $('#btn-create-related-feature').attr('data-call-check-perm', 'true')
             })
+    }
+    static CheckPermissionDetailOrdersAppRelated(ele) {
+        // check permission before redirect
+        if ($(ele).attr('data-label') && pageVariables.opp_detail_data) {
+            let label = $(ele).attr('data-label');
+            let appMapPerm = {
+                'quotation.quotation': 'quotation.quotation.create',
+                'saleorder.saleorder': 'saleorder.saleorder.create',
+                'leaseorder.leaseorder': 'leaseorder.leaseorder.create',
+            };
+            let appMapErr = {
+                'quotation.quotation': $transEle.attr('data-cancel-quo'),
+                'saleorder.saleorder': $transEle.attr('data-cancel-so'),
+                'leaseorder.leaseorder': $transEle.attr('data-cancel-lo'),
+            }
+            if (appMapPerm?.[label] && pageVariables.opp_detail_data?.['id']) {
+                let tableData = $('#table-timeline').DataTable().rows().data().toArray();
+                $.fn.callAjax2({
+                    'url': $urlEle.attr('data-url-opp-list'),
+                    'method': 'GET',
+                    'data': {'list_from_app': appMapPerm[label], 'id': pageVariables.opp_detail_data?.['id']},
+                    isLoading: true,
+                }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                if (data.opportunity_list.length === 1) {
+                                    // Validate: check opp already has quotation/ sale order
+                                    let listCheck = ['quotation.quotation', 'saleorder.saleorder', 'leaseorder.leaseorder'];
+                                    if (listCheck.includes(label)) {
+                                        for (let tData of tableData) {
+                                            let tDataLabel = tData?.['app_code'];
+                                            let tDataStatus = tData?.['doc_data']?.['system_status'];
+                                            if (label === 'quotation.quotation') {
+                                                if (tDataLabel === 'saleorder.saleorder' && [1, 2, 3].includes(tDataStatus)) {
+                                                    $.fn.notifyB({description: $transEle.attr('data-cancel-quo-so')}, 'failure');
+                                                    return false;
+                                                }
+                                            }
+                                            if (tDataLabel === label && [1, 2, 3].includes(tDataStatus)) {
+                                                $.fn.notifyB({description: appMapErr?.[label]}, 'failure');
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                    const paramData = $.param({
+                                        'create_open': true,
+                                        'opp_id': pageVariables.opp_detail_data?.['id'],
+                                        'opp_title': pageVariables.opp_detail_data?.['title'],
+                                        'opp_code': pageVariables.opp_detail_data?.['code'],
+                                    });
+                                    let url = $(ele).data('url') + '?' + paramData;
+                                    window.open(url, '_blank');
+                                    return true;
+                                }
+                                $.fn.notifyB({description: $transEle.attr('data-forbidden')}, 'failure');
+                                return false;
+                            }
+                        }
+                    }
+                )
+            }
+        }
+        return true;
     }
     // tab product functions
     static LoadRowProduct(ele, data, opp_category_id_list) {
@@ -1393,72 +1481,6 @@ class OpportunityPageFunction {
                     }
                 })
     }
-    static loadOpenRelateApp(ele) {
-        // check permission before redirect
-        if ($(ele).attr('data-label') && pageVariables.opp_detail_data) {
-            let label = $(ele).attr('data-label');
-            let appMapPerm = {
-                'quotation.quotation': 'quotation.quotation.create',
-                'saleorder.saleorder': 'saleorder.saleorder.create',
-                'leaseorder.leaseorder': 'leaseorder.leaseorder.create',
-            };
-            let appMapErr = {
-                'quotation.quotation': $transEle.attr('data-cancel-quo'),
-                'saleorder.saleorder': $transEle.attr('data-cancel-so'),
-                'leaseorder.leaseorder': $transEle.attr('data-cancel-lo'),
-            }
-            if (appMapPerm?.[label] && pageVariables.opp_detail_data?.['id']) {
-                let tableData = $('#table-timeline').DataTable().rows().data().toArray();
-                $.fn.callAjax2({
-                        'url': $urlEle.attr('data-url-opp-list'),
-                        'method': 'GET',
-                        'data': {'list_from_app': appMapPerm[label], 'id': pageVariables.opp_detail_data?.['id']},
-                        isLoading: true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                if (data.opportunity_list.length === 1) {
-                                    // Validate: check opp already has quotation/ sale order
-                                    let listCheck = ['quotation.quotation', 'saleorder.saleorder', 'leaseorder.leaseorder'];
-                                    if (listCheck.includes(label)) {
-                                        for (let tData of tableData) {
-                                            let tDataLabel = tData?.['app_code'];
-                                            let tDataStatus = tData?.['doc_data']?.['system_status'];
-                                            if (label === 'quotation.quotation') {
-                                                if (tDataLabel === 'saleorder.saleorder' && [1, 2, 3].includes(tDataStatus)) {
-                                                    $.fn.notifyB({description: $transEle.attr('data-cancel-quo-so')}, 'failure');
-                                                    return false;
-                                                }
-                                            }
-                                            if (tDataLabel === label && [1, 2, 3].includes(tDataStatus)) {
-                                                $.fn.notifyB({description: appMapErr?.[label]}, 'failure');
-                                                return false;
-                                            }
-                                        }
-                                    }
-                                    const paramData = $.param({
-                                        'create_open': true,
-                                        'opp_id': pageVariables.opp_detail_data?.['id'],
-                                        'opp_title': pageVariables.opp_detail_data?.['title'],
-                                        'opp_code': pageVariables.opp_detail_data?.['code'],
-                                    });
-                                    let url = $(ele).data('url') + '?' + paramData;
-                                    window.open(url, '_blank');
-                                    return true;
-                                }
-                                $.fn.notifyB({description: $transEle.attr('data-forbidden')}, 'failure');
-                                return false;
-                            }
-                        }
-                    }
-                )
-            }
-        }
-        return true;
-    }
     // load config and load stage
     static async loadMemberSaleTeam() {
         if (!$.fn.DataTable.isDataTable('#dtbMember')) {
@@ -1791,7 +1813,7 @@ class OpportunityHandler {
         $check_lost_reason.prop('checked', pageVariables.opp_detail_data?.['lost_by_other_reason'])
         // 5. LOAD SALE ACTIVITIES
         // a. Load button group related activities
-        OpportunityPageFunction.CheckPermissionAppRelated()
+        OpportunityPageFunction.CheckPermissionCreateAppRelated()
         if ($.fn.hasOwnProperties(pageVariables.opp_detail_data, ['sale_order'])) {
             let so_id = pageVariables.opp_detail_data?.['sale_order']?.['id'];
             let link = so_id !== undefined ? $urlEle.data('url-related-sale-order').format_url_with_uuid(so_id) : '#';
@@ -1834,6 +1856,16 @@ class OpportunityHandler {
         ])
     }
     static LoadDetailOpportunity(option) {
+        $.notify($.fn.gettext('Loading opportunity detail, opportunity config and opportunity stage...'), {
+            type: 'info',
+            animate: {
+                enter: 'animated lightSpeedIn',
+                exit: 'animated lightSpeedOut'
+            },
+            allow_dismiss: false,
+            showProgressbar: true,
+        });
+
         const pk = $.fn.getPkDetail();
 
         let ajax_opp_detail = $.fn.callAjax2({
@@ -1842,14 +1874,13 @@ class OpportunityHandler {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity')) {
-                    loadPermitEmpty();
+                if (data?.['opportunity']) {
                     return data?.['opportunity'];
                 }
                 return {};
             },
             (errs) => {}
-        )
+        );
 
         let ajax_opp_config = $.fn.callAjax2({
             url: $urlEle.data('url-config'),
@@ -1857,13 +1888,13 @@ class OpportunityHandler {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('opp_config_data')) {
-                    return data['opp_config_data'];
+                if (data?.['opportunity_config']) {
+                    return data?.['opportunity_config'];
                 }
                 return {};
             },
             (errs) => {}
-        )
+        );
 
         let ajax_opp_config_stage = $.fn.callAjax2({
             url: $opp_stage_pipeline.attr('data-url'),
@@ -1871,69 +1902,60 @@ class OpportunityHandler {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_config_stage')) {
-                    return data['opportunity_config_stage'];
+                if (data?.['opportunity_config_stage']) {
+                    return data?.['opportunity_config_stage'];
                 }
-                return {};
+                return [];
             },
             (errs) => {}
-        )
+        );
 
-        Promise.all([ajax_opp_detail, ajax_opp_config, ajax_opp_config_stage]).then(
-            (results) => {
-                const opp_detail_data = results[0]
-                const opp_config_data = results[1]
-                const opp_stage_data = results[2]
+        Promise.all([ajax_opp_detail, ajax_opp_config, ajax_opp_config_stage]).then(([opp_detail_data, opp_config_data, opp_stage_data]) => {
+            if (opp_detail_data) {
+                $('.page-content').prop('hidden', false);
 
-                if (opp_detail_data) {
-                    $('.page-content').prop('hidden', false)
+                pageVariables.opp_detail_data = opp_detail_data;
+                pageVariables.opp_config_data = opp_config_data;
+                pageVariables.opp_stage_data = opp_stage_data;
 
-                    // console.log(opp_detail_data)
+                OpportunityHandler.LoadDetailOppSub(option)
 
-                    // store data detail
-                    pageVariables.opp_detail_data = opp_detail_data
-                    pageVariables.opp_config_data = opp_config_data
-                    pageVariables.opp_stage_data = opp_stage_data
+                SetupFormSubmit.validate($('#frm-add-member'), {
+                    submitHandler: function (form) {
+                        let frm = new SetupFormSubmit($(form));
+                        $.fn.callAjax2({
+                            sweetAlertOpts: {'allowOutsideClick': true},
+                            url: frm.dataUrl.replaceAll('__pk_opp__', pk),
+                            method: frm.dataMethod,
+                            data: {
+                                'members': $('#dtbMember').DataTable().data().filter((item) => item?.['is_checked_new'] === true).map((item) => item?.['id']).toArray(),
+                            },
+                        }).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                                    setTimeout(
+                                        () => {
+                                            window.location.reload();
+                                        },
+                                        1000
+                                    )
 
-                    OpportunityHandler.LoadDetailOppSub(option)
-
-                    SetupFormSubmit.validate($('#frm-add-member'), {
-                        submitHandler: function (form) {
-                            let frm = new SetupFormSubmit($(form));
-                            $.fn.callAjax2({
-                                sweetAlertOpts: {'allowOutsideClick': true},
-                                url: frm.dataUrl.replaceAll('__pk_opp__', pk),
-                                method: frm.dataMethod,
-                                data: {
-                                    'members': $('#dtbMember').DataTable().data().filter((item) => item?.['is_checked_new'] === true).map((item) => item?.['id']).toArray(),
-                                },
-                            }).then(
-                                (resp) => {
-                                    let data = $.fn.switcherResp(resp);
-                                    if (data) {
-                                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                                        setTimeout(
-                                            () => {
-                                                window.location.reload();
-                                            },
-                                            1000
-                                        )
-
-                                        // OpportunityPageFunction.reloadMemberList(pk);
-                                        // $('#modalAddMember').modal('hide');
-                                    }
-                                    $x.fn.hideLoadingPage();
-                                },
-                                (errs) => {
-                                    $.fn.switcherResp(errs);
-                                    $x.fn.hideLoadingPage();
+                                    // OpportunityPageFunction.reloadMemberList(pk);
+                                    // $('#modalAddMember').modal('hide');
                                 }
-                            )
-                        }
-                    })
-                }
+                                $x.fn.hideLoadingPage();
+                            },
+                            (errs) => {
+                                $.fn.switcherResp(errs);
+                                $x.fn.hideLoadingPage();
+                            }
+                        )
+                    }
+                })
             }
-        )
+        })
     }
 }
 
@@ -2174,7 +2196,7 @@ class OpportunityEventHandler {
         })
         // event on click to create relate apps from opportunity (for cancel quotation - sale order)
         $('#dropdown-menu-relate-app').on('click', '.relate-app', function () {
-            OpportunityPageFunction.loadOpenRelateApp(this);
+            OpportunityPageFunction.CheckPermissionDetailOrdersAppRelated(this);
         })
         // tab add member for sale
         let eleFrmPermit = $('#permit-member');

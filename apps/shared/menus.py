@@ -236,7 +236,7 @@ class MenusCoreConfigurations:
             #     icon='<i class="fas fa-file-invoice"></i>',
             # ),
             MenuCommon(
-                name='Opportunity', code='menu_opportunity_config', view_name='OpportunityConfig',
+                name='Opportunity', code='menu_opportunity_config', view_name='OpportunityConfigDetail',
                 icon='<i class="fas fa-solid fa-lightbulb"></i>',
             ),
             MenuCommon(

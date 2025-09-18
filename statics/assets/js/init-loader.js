@@ -153,8 +153,8 @@ $.fn.extend({
         let prefixType = `dismissible alert-`  // `` | `dismissible alert-inv alert-inv-`
         let alert_config = {
             animate: {
-                enter: 'animated bounceInDown',
-                exit: 'animated bounceOutUp'
+                enter: 'animated lightSpeedIn',
+                exit: 'animated lightSpeedOut'
             },
             type: prefixType + "primary",
             allow_dismiss: true,

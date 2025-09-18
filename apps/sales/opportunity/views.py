@@ -421,7 +421,6 @@ class OpportunityConfigStageListAPI(APIView):
         login_require=True,
     )
     def post(self, request, *arg, **kwargs):
-        print('---', request.data)
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE_LIST).post(request.data)
         return resp.auto_return()
 

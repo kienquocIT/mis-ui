@@ -106,7 +106,7 @@ $(document).ready(function () {
         let method = 'GET';
         return CallDataConfig(url, method).then(
             result => {
-                return result?.['opp_config_data']
+                return result?.['opportunity_config']
             },
         );
     }

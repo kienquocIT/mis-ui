@@ -92,8 +92,8 @@ $.fn.extend({
         }
         let alert_config = {
             animate: {
-                enter: 'animated bounceInDown',
-                exit: 'animated bounceOutUp'
+                enter: 'animated lightSpeedIn',
+                exit: 'animated lightSpeedOut'
             },
             type: "dismissible alert-primary",
             z_index: 2147483647, /* Maximum index */

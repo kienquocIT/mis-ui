@@ -452,8 +452,8 @@ class OpportunityPageFunction {
                     {
                         className: 'w-50',
                         render: (data, type, row) => {
-                            return `<input class="form-control input-strength mb-1" value="${row?.['strength'] || ''}">
-                                <input class="form-control input-weakness" value="${row?.['weakness'] || ''}">`
+                            return `<textarea class="form-control input-strength mb-1" rows="1">${row?.['strength'] || ''}</textarea>
+                                <textarea class="form-control input-weakness" rows="1">${row?.['weakness'] || ''}</textarea>`
                         }
                     },
                     {

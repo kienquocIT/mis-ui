@@ -326,7 +326,7 @@ $(document).ready(function(){
     // handle btn save group
     $ElmModal.find('#save_group').on('click', function(){
         const $btn = $(this);
-        // Prevent double-click                                                                                                                                                       ¦ ¦
+        // Prevent double-click
         if ($btn.prop('disabled')) return;
         $btn.prop('disabled', true);
 

@@ -41,6 +41,9 @@ const ServiceOrder = (function($) {
         serviceDetail: {
             $table: $('#table-service-detail'),
             $btnOpenServiceProductModal: $('#btn-open-service-product-modal'),
+            $pretaxValue: $('#service-detail-pretax-value'),
+            $taxValue: $('#service-detail-taxes-value'),
+            $totalValue: $('#service-detail-total-value'),
         },
         workOrder:{
             $table: $('#table-work-order'),
@@ -237,6 +240,45 @@ const ServiceOrder = (function($) {
                 pageElement.workOrder.$table.DataTable().columns.adjust();
             }
         })
+    }
+
+    function loadServiceDetailSummaryValue(){
+        const table = pageElement.serviceDetail.$table.DataTable()
+        let pretaxTotal = 0
+        let taxTotal = 0
+        let grandTotal = 0
+
+        // Calculate totals from all rows
+        table.rows().every(function() {
+            const rowData = this.data()
+            const $row = $(this.node())
+
+            // Get current quantity from input
+            const quantity = parseFloat($row.find('.service-quantity').val()) || rowData.quantity || 0
+
+            // Get current price from input (use the 'value' attribute for masked money inputs)
+            const price = parseFloat($row.find('.service-detail-price').attr('value')) || rowData.price || 0
+
+            // Calculate subtotal for this row
+            const subtotal = quantity * price
+
+            // Calculate tax
+            const taxRate = (rowData.tax_data?.rate || 0) / 100
+            const taxAmount = subtotal * taxRate
+
+            // Add to totals
+            pretaxTotal += subtotal
+            taxTotal += taxAmount
+            grandTotal += (subtotal + taxAmount)
+        })
+
+        // Update the summary fields
+        pageElement.serviceDetail.$pretaxValue.attr('value', pretaxTotal)
+        pageElement.serviceDetail.$taxValue.attr('value', taxTotal)
+        pageElement.serviceDetail.$totalValue.attr('value', grandTotal)
+
+        // Reinitialize money formatting
+        $.fn.initMaskMoney2()
     }
 
 // --------------------LOAD DATA---------------------
@@ -1569,6 +1611,7 @@ const ServiceOrder = (function($) {
                     const currentData = table.data().toArray()
                     const newData = [...currentData, ...checkedProducts]
                     table.clear().rows.add(newData).draw(false)
+                    loadServiceDetailSummaryValue()
                 } else if (pageVariable.modalContext === 'workOrder') {
                     const table = pageElement.workOrder.$table.DataTable()
                     const currentData = table.data().toArray()
@@ -1768,6 +1811,7 @@ const ServiceOrder = (function($) {
                             updatePaymentRowAfterReset(paymentId)
                         })
                         $.fn.initMaskMoney2()
+                        loadServiceDetailSummaryValue()
                     }
                 }
                 else {
@@ -1869,6 +1913,7 @@ const ServiceOrder = (function($) {
                             updatePaymentRowAfterReset(paymentId)
                         })
                         $.fn.initMaskMoney2()
+                        loadServiceDetailSummaryValue()
                     }
                 }
                 else {
@@ -3865,6 +3910,7 @@ const ServiceOrder = (function($) {
 
                     // Clean up related data structures
                     cleanupServiceDetailRelatedData(serviceDetailId);
+                    loadServiceDetailSummaryValue()
                 }
             });
         });
@@ -4353,6 +4399,7 @@ const ServiceOrder = (function($) {
         handleChangeServiceQuantity,
         handleChangeServicePrice,
         handleChangeServiceDescription,
+        loadServiceDetailSummaryValue,
 
         handleChangeWorkOrderDetail,
         handleClickOpenWorkOrderCost,

@@ -77,11 +77,38 @@
                             </thead>
                             <tbody></tbody>
                         </table>
-                        <button type="button" class="btn btn-sm btn-primary mt-2" id="btn-open-service-product-modal"
-                                data-bs-target="#modal-product" data-bs-toggle="modal">
-                            <i class="fas fa-plus-circle"></i>
-                            {% trans 'Add service' %}
-                        </button>
+                        <div class="row">
+                            <div class="col-12 col-lg-7">
+                                <button type="button" class="btn btn-sm btn-primary mt-2" id="btn-open-service-product-modal"
+                                        data-bs-target="#modal-product" data-bs-toggle="modal">
+                                    <i class="fas fa-plus-circle"></i>
+                                    {% trans 'Add service' %}
+                                </button>
+                            </div>
+                            <div class="col-12 col-lg-5 mt-3 text-right">
+                                <div class="row">
+                                    <label for="service-detail-pretax-value" class="col-4 col-form-label text-primary">{% trans 'Pretax Amount' %}</label>
+                                    <div class="col-8">
+                                        <input disabled id="service-detail-pretax-value" value="0"
+                                               class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label for="service-detail-taxes-value" class="col-4 col-form-label text-primary">{% trans 'Taxes' %}</label>
+                                    <div class="col-8">
+                                        <input disabled id="service-detail-taxes-value" value="0"
+                                               class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label for="service-detail-total-value" class="col-4 col-form-label text-primary">{% trans 'TOTAL' %}</label>
+                                    <div class="col-8">
+                                        <input disabled id="service-detail-total-value" value="0"
+                                               class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

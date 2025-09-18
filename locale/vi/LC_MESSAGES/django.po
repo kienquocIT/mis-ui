@@ -3493,7 +3493,7 @@ msgstr "Điểm yếu"
 
 #
 msgid "Win deal"
-msgstr "Thắng giao dịch"
+msgstr "Thắng GD"
 
 #
 msgid "User choise stage of Opportunity"

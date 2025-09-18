@@ -56,26 +56,13 @@
                     </div>
                 </div>
             </div>
-            <select class="select2 form-control" id="select-box-customer"
-                    data-url="{% url 'AccountListAPI' %}"
-                    data-method="GET"
-                    data-close-on-select="true"
-                    data-keyResp="account_list"
-                    data-keyText="name"
-                    required>
-            </select>
+            <select class="select2 form-control" id="select-box-customer" required></select>
         </div>
     </div>
     <div class="col-12">
         <div class="form-group">
             <label class="form-label" for="select-box-end-customer">{% trans "End Customer" %}</label>
-            <select class="select2 form-control" id="select-box-end-customer"
-                    data-close-on-select="true"
-                    data-url="{% url 'AccountListAPI' %}"
-                    disabled
-                    data-method="GET"
-                    data-keyResp="account_list"
-                    data-keyText="name">
+            <select class="select2 form-control" id="select-box-end-customer" disabled>
             </select>
         </div>
     </div>
@@ -94,13 +81,7 @@
     <div class="col-12">
         <div class="form-group">
             <label for="select-box-sale-person" class="form-label required">{% trans "Sale Person" %}</label>
-            <select class="form-select" id="select-box-sale-person" data-method="GET"
-                    data-close-on-select="true"
-                    data-url="{% url 'EmployeeListAPI' %}"
-                    name="sale_person"
-                    data-keyText="full_name"
-                    required>
-            </select>
+            <select class="form-select" id="select-box-sale-person" data-method="GET" required></select>
         </div>
     </div>
     <div class="col-12">

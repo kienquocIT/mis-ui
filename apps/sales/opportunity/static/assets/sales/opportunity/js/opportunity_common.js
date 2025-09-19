@@ -556,14 +556,14 @@ class OpportunityPageFunction {
         let html = `
             <div class="member-item col-md-12 col-lg-6 col-xl-4">
                <div
-                  class="card" data-manual-hide="false" data-footer-show="always"
+                  class="card bg-gradient-light" data-manual-hide="false" data-footer-show="always"
                   data-id="__idx__"
                   >
                   <div class="card-header card-header-action">
                      <div class="hidden-md">__avatar__</div>
                      <div class="ml-1 card-main-title">
-                        <p class="fw-bold text-muted">__full_name__</p>
-                        <p class="small text-blue">__group_title__</p>
+                        <p class="fw-bold">__full_name__</p>
+                        <p class="small text-muted">__group_title__</p>
                         <p class="small text-primary"><a href="mailto:__email__">__email__</a></p>
                     </div>
                      <div class="card-action-wrap __is_edit__">
@@ -616,7 +616,7 @@ class OpportunityPageFunction {
                 item?.['email'] || '',
             ).replaceAll(
                 "__avatar__",
-                $x.fn.renderAvatar(item),
+                $x.fn.renderAvatar(item, 'avatar-soft-light avatar-rounded'),
             ).replaceAll(
                 "__permit_data__",
                 JSON.stringify(item?.['permit_app'] || [])

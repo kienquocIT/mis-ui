@@ -160,7 +160,7 @@ class TaskExtend {
         return `<div class="d-flex align-items-center justify-content-between">
                     <button 
                         type="button" 
-                        class="btn btn-icon btn-white btn-animated btn-open-task"
+                        class="btn btn-icon btn-rounded btn-soft-primary btn-xs btn-open-task"
                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add new task"
                     >
                         <span class="icon"><i class="fa-solid fa-plus"></i></span>
@@ -170,7 +170,7 @@ class TaskExtend {
                         <div class="avatar-group avatar-group-overlapped avatar-group-task"></div>
                         <button 
                             type="button" 
-                            class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-list-task"
+                            class="btn btn-icon btn-rounded btn-soft-secondary btn-xs btn-list-task"
                             data-bs-toggle="tooltip" data-bs-placement="bottom" title="Task assigned list"
                         >
                             <span class="icon"><i class="fas fa-ellipsis-h"></i></span>

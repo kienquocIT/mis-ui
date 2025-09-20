@@ -62,9 +62,6 @@ function setUpFormData(formInstance) {
     formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
     formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData()
     formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData()
-    formInstance.dataForm['expense_pretax_value'] = parseFloat(tabExpenseElements.$preTaxAmount.attr('value') || 0)
-    formInstance.dataForm['expense_tax_value'] = parseFloat(tabExpenseElements.$taxEle.attr('value') || 0)
-    formInstance.dataForm['expense_total_value'] = parseFloat(tabExpenseElements.$totalValueEle.attr('value') || 0)
 }
 
 function setUpFormSubmit($form) {

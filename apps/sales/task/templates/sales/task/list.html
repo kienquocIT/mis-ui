@@ -108,17 +108,6 @@
                     </div>
                 </div>
             </div>
-            <div class="row-sort">
-                <span class="col max-w-180p text-decoration-underline text-uppercase">{% trans 'Sort by' %}:</span>
-                <div class="col max-w-180p">
-                </div>
-                <div class="max-w-280">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="sort_by_group_assignee">
-                        <label class="form-check-label" for="sort_by_group_assignee">{% trans 'In group'%}</label>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -146,6 +135,26 @@
     <!-- task kanban -->
     <div class="tab-content">
         <div class="tab-pane fade show active" id="tab_kanban">
+            <div class="wrap-filter position-relative">
+                <div class="row-filter">
+                    <h6>
+                        <i class="fa-solid fa-filter"></i>
+                        <span class="font-weight-bold">{% trans 'Filter by' %}</span>
+                    </h6>
+                    <div class="item-filter">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="sort_by_group_assignee">
+                            <label class="form-check-label" for="sort_by_group_assignee">{% trans 'Unassigned' %}</label>
+                        </div>
+                    </div>
+                </div>
+                <p class="m-0 close-filter">
+                    <input type="checkbox" id="close_toggle" class="d-none">
+                    <label for="close_toggle" class="icon-container">
+                        <span class="plus"></span>
+                    </label>
+                </p>
+            </div>
             <div id="kb_scroll" class="tasklist-scroll position-relative">
                 <div id="tasklist_wrap" class="tasklist-wrap">
                 </div>
@@ -167,7 +176,7 @@
         </div>
     </div>
     <div class="btn-task-bar" style="display: none;">
-        <button class="btn btn-primary btn-rounded w-200p" id="btn_load-more">{% trans 'Load more' %}</button>
+        <button type="button" class="btn btn-primary btn-rounded w-200p" id="btn_load-more">{% trans 'Load more' %}</button>
     </div>
     <div class="hidden">
         <div class="card-parent_template">

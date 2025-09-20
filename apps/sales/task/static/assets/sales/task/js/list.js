@@ -1150,12 +1150,11 @@ $(function () {
                             elmTaskID.val(data.id)
                         })
                     }
-                })
-                    .on('draw.dt', function () {
-                        $tblElm.find('tbody').find('tr').each(function () {
-                            $(this).after('<tr class="table-row-gap"><td></td></tr>');
-                        });
+                }).on('draw.dt', function () {
+                    $tblElm.find('tbody').find('tr').each(function () {
+                        $(this).after('<tr class="table-row-gap"><td></td></tr>');
                     });
+                });
         }
 
         static addNewData(cls, newData) {
@@ -1618,7 +1617,10 @@ $(function () {
         const $taskItemElm = $('.tasklist-card')
         if (this.checked) {
             $taskItemElm.addClass('hidden')
-            $taskItemElm.hasClass('has_group').removeClass('hidden')
+            $taskItemElm.each(function(){
+                if($(this).hasClass('has_group'))
+                   $(this).removeClass('hidden')
+            })
         } else {
             $taskItemElm.removeClass('hidden')
         }
@@ -1747,4 +1749,12 @@ $(function () {
             }
         }
     });
+
+    // filter group animation
+    $('#close_toggle').on('change', function(e){
+        e.preventDefault()
+        if ($(this).prop('checked')){
+            $('.wrap-filter').addClass('show-less')
+        }else $('.wrap-filter').removeClass('show-less')
+    })
 }, jQuery);

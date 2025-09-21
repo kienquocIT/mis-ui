@@ -14,6 +14,8 @@ class ServiceOrderList(View):
         template='sales/serviceorder/service_order_list.html',
         menu_active='menu_service_order_list',
         breadcrumb='SERVICE_ORDER_LIST_PAGE',
+        icon_cls='fas fa-concierge-bell',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -25,6 +27,8 @@ class ServiceOrderCreate(View):
         template='sales/serviceorder/service_order_create.html',
         menu_active='menu_service_order_list',
         breadcrumb='SERVICE_ORDER_CREATE_PAGE',
+        icon_cls='fas fa-concierge-bell',
+        icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         employee_current = {}
@@ -38,6 +42,63 @@ class ServiceOrderCreate(View):
             'form_id': '',
             'app_id': '',
             'list_from_app': 'serviceorder.serviceorder.create',
+
+            'employee_current': employee_current,
+            'task_config': task_config,
+            'employee_info': request.user.employee_current_data,
+        }
+        return ctx, status.HTTP_200_OK
+
+
+class ServiceOrderDetail(View):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        template='sales/serviceorder/service_order_detail.html',
+        menu_active='menu_service_order_list',
+        breadcrumb='SERVICE_ORDER_DETAIL_PAGE',
+        icon_cls='fas fa-concierge-bell',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_CONFIG).get()
+        task_config = {}
+        if resp.state:
+            task_config = resp.result
+        return {
+                   'pk': pk,
+
+                   'employee_current': employee_current,
+                   'task_config': task_config,
+                   'employee_info': request.user.employee_current_data,
+               }, status.HTTP_200_OK
+
+
+class ServiceOrderUpdate(View):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        template='sales/serviceorder/service_order_update.html',
+        menu_active='menu_service_order_list',
+        breadcrumb='SERVICE_ORDER_UPDATE_PAGE',
+        icon_cls='fas fa-concierge-bell',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_CONFIG).get()
+        task_config = {}
+        if resp.state:
+            task_config = resp.result
+        ctx = {
+            'pk': pk,
+            'data': {'doc_id': pk},
+            'form_id': 'form-detail-service-order',
 
             'employee_current': employee_current,
             'task_config': task_config,
@@ -69,31 +130,6 @@ class ServiceOrderListAPI(APIView):
         return resp.auto_return()
 
 
-class ServiceOrderDetail(View):
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        template='sales/serviceorder/service_order_detail.html',
-        menu_active='menu_service_order_list',
-        breadcrumb='SERVICE_ORDER_DETAIL_PAGE',
-    )
-    def get(self, request, pk, *args, **kwargs):
-        employee_current = {}
-        if request.user and not isinstance(request.user, AnonymousUser):
-            employee_current = getattr(request.user, 'employee_current_data', {})
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_CONFIG).get()
-        task_config = {}
-        if resp.state:
-            task_config = resp.result
-        return {
-                   'pk': pk,
-
-                   'employee_current': employee_current,
-                   'task_config': task_config,
-                   'employee_info': request.user.employee_current_data,
-               }, status.HTTP_200_OK
-
-
 class ServiceOrderDetailAPI(APIView):
     @mask_view(
         login_require=True,
@@ -123,35 +159,20 @@ class ServiceOrderDetailAPI(APIView):
         return resp.auto_return()
 
 
-class ServiceOrderUpdate(View):
+# related
+class ServiceOrderDetailDashboard(View):
     @mask_view(
-        login_require=True,
         auth_require=True,
-        template='sales/serviceorder/service_order_update.html',
-        menu_active='menu_service_order_list',
-        breadcrumb='SERVICE_ORDER_UPDATE_PAGE',
+        template='sales/serviceorder/service_order_detail_dashboard_echarts.html',
+        breadcrumb='SERVICE_ORDER_DETAIL_DASHBOARD_PAGE',
+        icon_cls='bi bi-clipboard-data',
+        icon_bg='bg-primary',
     )
-    def get(self, request, pk, *args, **kwargs):
-        employee_current = {}
-        if request.user and not isinstance(request.user, AnonymousUser):
-            employee_current = getattr(request.user, 'employee_current_data', {})
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_CONFIG).get()
-        task_config = {}
-        if resp.state:
-            task_config = resp.result
-        ctx = {
-            'pk': pk,
-            'data': {'doc_id': pk},
-            'form_id': 'form-detail-service-order',
-
-            'employee_current': employee_current,
-            'task_config': task_config,
-            'employee_info': request.user.employee_current_data,
-        }
-        return ctx, status.HTTP_200_OK
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
 
 
-class ServiceOrderDetailForDashboardAPI(APIView):
+class ServiceOrderDetailDashboardAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
@@ -159,5 +180,5 @@ class ServiceOrderDetailForDashboardAPI(APIView):
         is_api=True,
     )
     def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.SERVICE_ORDER_DETAIL_FOR_DASHBOARD.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='service_order_detail_for_dashboard')
+        resp = ServerAPI(user=request.user, url=ApiURL.SERVICE_ORDER_DETAIL_DASHBOARD.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='service_order_detail_dashboard')

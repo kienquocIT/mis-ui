@@ -1062,8 +1062,7 @@ const ServiceOrder = (function($) {
                     title: $.fn.gettext(''),
                     className: 'text-center',
                     render: (data, type, row, meta) => {
-                        const isContainer = row.is_container
-                        if(isContainer){
+                        if(row?.is_container){
                             return `
                                 <button type="button" 
                                         class="btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs btn-show-package-child">
@@ -2542,7 +2541,7 @@ const ServiceOrder = (function($) {
                 return
             }
             let packageData = shipmentData.map((item, index) => {
-                if(item.isContainer || item.is_container){
+                if(item.is_container){
                     return {
                         id: item.id,
                         is_container: true,

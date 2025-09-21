@@ -153,7 +153,6 @@ class DetailDataHandler {
             containers.sort((a, b) => a?.order - b?.order);   // sort container by order
             containers.forEach(container => {
                 result.push({
-                    isContainer: container.is_container,
                     ...container
                 });
 
@@ -162,9 +161,6 @@ class DetailDataHandler {
                 );
 
                 containerPackages.sort((a, b) => a?.order - b?.order);  // sort package by order
-                containerPackages.forEach(item => {
-                    item.isContainer = item.is_container
-                })
                 result.push(...containerPackages);
             });
             return result;
@@ -215,6 +211,7 @@ class DetailDataHandler {
                 // shipment
                 let shipmentDataFormatted = DetailDataHandler.formatShipmentDetailData(data?.shipment || [])
                 TabShipmentFunction.initShipmentDataTable(shipmentDataFormatted, isDetail)
+                TabShipmentFunction.pushToShipmentData(shipmentDataFormatted)
 
                 //service detail
                 ServiceOrder.initServiceDetailDataTable(data.service_detail_data)

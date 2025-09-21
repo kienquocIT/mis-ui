@@ -160,7 +160,7 @@ class OpportunityPageFunction {
         $table.DataTableDefault({
             rowIdx: true,
             scrollX: true,
-            scrollY: '64vh',
+            scrollY: '58vh',
             scrollCollapse: true,
             ajax: {
                 url: $table.attr('data-url-logs_list'),
@@ -280,7 +280,7 @@ class OpportunityPageFunction {
                                 return WFRTControl.displayRuntimeStatus(row?.['doc_data']?.['system_status']);
                             }
                             if (row?.['log_type'] === 1 && row?.['doc_data']?.['task_status']) {
-                                return `<span class="badge badge-soft-purple">${row?.['doc_data']?.['task_status']}</span>`;
+                                return `<span class="badge badge-soft-secondary">${row?.['doc_data']?.['task_status']}</span>`;
                             }
                         }
                         return ``;
@@ -304,11 +304,12 @@ class OpportunityPageFunction {
     static LoadDtbProduct(data_list=[]) {
         if (!$.fn.DataTable.isDataTable('#table-product')) {
             $table_product.DataTableDefault({
+                styleDom: 'hide-foot',
                 rowIdx: true,
                 reloadCurrency: true,
                 paging: false,
                 scrollX: true,
-                scrollY: '64vh',
+                scrollY: '58vh',
                 scrollCollapse: true,
                 data: data_list,
                 columns: [
@@ -319,10 +320,10 @@ class OpportunityPageFunction {
                     },
                     {
                         render: (data, type, row) => {
-                            if (data) {
-                                return `<select class="form-select select-box-product" data-method="GET" data-url="${$urlEle.data('url-product')}" data-keyResp="product_sale_list" required></select><input class="form-control input-product-name hidden" type="text" value="${row?.['product']?.['title']}"/>`
+                            if (row?.['product']) {
+                                return `<select class="form-select select-box-product" data-method="GET" data-url="${$urlEle.data('url-product')}" data-keyResp="product_sale_list" required></select>`
                             } else {
-                                return `<input class="form-control input-product-name" type="text" required/>`
+                                return `<textarea class="form-control input-product-name" type="text" required></textarea>`
                             }
                         }
                     },
@@ -338,12 +339,12 @@ class OpportunityPageFunction {
                     },
                     {
                         render: (data, type, row) => {
-                            return `<input type="number" class="form-control input-quantity" value="{0}" required/>`.format_by_idx(row?.['product_quantity'])
+                            return `<input type="number" class="form-control input-quantity" value="{0}" required/>`.format_by_idx(row?.['product_quantity'] || 0)
                         }
                     },
                     {
                         render: (data, type, row) => {
-                            return `<input type="text" class="form-control mask-money input-unit-price" data-return-type="number" value="{0}" required/>`.format_by_idx(row?.['product_unit_price'])
+                            return `<input type="text" class="form-control mask-money input-unit-price" data-return-type="number" value="{0}" required/>`.format_by_idx(row?.['product_unit_price'] || 0)
                         }
                     },
                     {
@@ -353,7 +354,7 @@ class OpportunityPageFunction {
                     },
                     {
                         render: (data, type, row) => {
-                            return `<input class="form-control mask-money input-subtotal" type="text" data-return-type="number" value="{0}" disabled required>`.format_by_idx(row?.['product_subtotal_price'])
+                            return `<input class="form-control mask-money input-subtotal" type="text" data-return-type="number" value="{0}" disabled required>`.format_by_idx(row?.['product_subtotal_price'] || 0)
                         }
                     },
                     {
@@ -394,7 +395,7 @@ class OpportunityPageFunction {
                 data: data_list,
                 paging: false,
                 scrollX: true,
-                scrollY: '64vh',
+                scrollY: '58vh',
                 scrollCollapse: true,
                 columns: [
                     {
@@ -445,7 +446,7 @@ class OpportunityPageFunction {
                 data: data_list,
                 paging: false,
                 scrollX: true,
-                scrollY: '64vh',
+                scrollY: '58vh',
                 scrollCollapse: true,
                 columns: [
                     {
@@ -662,7 +663,7 @@ class OpportunityPageFunction {
                 useDataServer: true,
                 rowIdx: true,
                 scrollX: true,
-                scrollY: '64vh',
+                scrollY: '58vh',
                 scrollCollapse: true,
                 ajax: {
                     url: dtb.attr('data-url') + `?opp_id=${$.fn.getPkDetail()}`,
@@ -1091,32 +1092,17 @@ class OpportunityPageFunction {
     }
     // sub others
     static addRowSelectProduct() {
-        $table_product.addClass('tag-change');
-        let data = {
-            'product': {},
-            'product_quantity': '',
-            'product_unit_price': '',
-            'product_subtotal_price': '',
-
-        }
-        $table_product.DataTable().row.add(data).draw();
-        let tr_current_ele = $table_product.find('tbody tr').last();
-        OpportunityPageFunction.LoadRowProduct(tr_current_ele.find('.select-box-product'), {}, $productCategorySelectEle.val());
-        OpportunityPageFunction.LoadRowTax(tr_current_ele.find('.box-select-tax'), {})
+        UsualLoadPageFunction.AddTableRow($table_product, {'product': {}})
+        let row_added = $table_product.find('tbody tr:last-child')
+        OpportunityPageFunction.LoadRowProduct(row_added.find('.select-box-product'), {}, $productCategorySelectEle.val());
+        OpportunityPageFunction.LoadRowTax(row_added.find('.box-select-tax'), {})
     }
     static addRowInputProduct() {
-        $table_product.addClass('tag-change');
-        let data = {
-            'product': null,
-            'product_quantity': '',
-            'product_unit_price': '',
-            'product_subtotal_price': '',
-        }
-        $table_product.DataTable().row.add(data).draw();
-        let tr_current_ele = $table_product.find('tbody tr').last();
-        OpportunityPageFunction.LoadRowProductCategory(tr_current_ele.find('.box-select-product-category'), {}, $productCategorySelectEle.val());
-        OpportunityPageFunction.LoadRowTax(tr_current_ele.find('.box-select-tax'), {})
-        OpportunityPageFunction.LoadRowUOM(tr_current_ele.find('.box-select-uom'), {})
+        UsualLoadPageFunction.AddTableRow($table_product, {'product': null})
+        let row_added = $table_product.find('tbody tr:last-child')
+        OpportunityPageFunction.LoadRowProductCategory(row_added.find('.box-select-product-category'), {}, $productCategorySelectEle.val());
+        OpportunityPageFunction.LoadRowTax(row_added.find('.box-select-tax'), {})
+        OpportunityPageFunction.LoadRowUOM(row_added.find('.box-select-uom'), {})
     }
     static getRateTax(ele) {
         let tax_obj = SelectDDControl.get_data_from_idx(ele, ele.val());

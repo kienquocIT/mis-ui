@@ -1,12 +1,6 @@
-from django.conf import settings
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, InputMappingProperties
-import requests
-
-from apps.shared.msg import SaleMsg
+from apps.shared import mask_view, ApiURL, ServerAPI
 
 
 class DashboardCommonPage(View):
@@ -53,16 +47,4 @@ class DashboardPipelineList(View):
             return {
                 'data': {'current_period': resp1.result[0]},
             }, status.HTTP_200_OK
-        return {}, status.HTTP_200_OK
-
-
-class DashboardServiceOrderList(View):
-    @mask_view(
-        auth_require=True,
-        template='sales/dashboard/dashboard_service_order_echarts.html',
-        breadcrumb='DASHBOARD_SERVICE_ORDER_LIST_PAGE',
-        icon_cls='bi bi-clipboard-data',
-        icon_bg='bg-primary',
-    )
-    def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

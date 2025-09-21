@@ -2465,39 +2465,39 @@ msgstr "Người bán hàng"
 
 #
 msgid "title of sale order"
-msgstr "Tiêu đề của đơn hàng"
+msgstr "Tiêu đề của đơn bán hàng"
 
 #
 msgid "Opportunity link to sale order"
-msgstr "Cơ hội kinh doanh liên kết với đơn hàng"
+msgstr "Cơ hội kinh doanh liên kết với đơn bán hàng"
 
 #
 msgid "Customer link to sale order"
-msgstr "Khách hàng liên kết với đơn hàng"
+msgstr "Khách hàng liên kết với đơn bán hàng"
 
 #
 msgid "Contact link to sale order"
-msgstr "Liên hệ liên kết với đơn hàng"
+msgstr "Liên hệ liên kết với đơn bán hàng"
 
 #
 msgid "Payment term of sale order"
-msgstr "Điều khoản của đơn hàng"
+msgstr "Điều khoản của đơn bán hàng"
 
 #
 msgid "Date create sale order"
-msgstr "Ngày tạo đơn hàng"
+msgstr "Ngày tạo đơn bán hàng"
 
 #
 msgid "Status of sale order"
-msgstr "Trạng thái đơn hàng"
+msgstr "Trạng thái đơn bán hàng"
 
 #
 msgid "Sale person of sale order"
-msgstr "Người bán hàng của đơn hàng"
+msgstr "Người bán hàng của đơn bán hàng"
 
 #
 msgid "Quotation link to sale order"
-msgstr "Báo giá liên kết với đơn hàng"
+msgstr "Báo giá liên kết với đơn bán hàng"
 
 #
 msgid "Copy Quotation"
@@ -2505,11 +2505,11 @@ msgstr "Sao chép báo giá"
 
 #
 msgid "Sale order list"
-msgstr "Danh sách đơn hàng"
+msgstr "Danh sách đơn bán hàng"
 
 #
 msgid "Create Sale Order"
-msgstr "Tạo đơn hàng"
+msgstr "Tạo đơn bán hàng"
 
 #
 msgid "Home Page"
@@ -2677,11 +2677,11 @@ msgstr "Tạo vận chuyển"
 
 #
 msgid "Sale order create"
-msgstr "Tạo đơn hàng"
+msgstr "Tạo đơn bán hàng"
 
 #
 msgid "Sale order detail"
-msgstr "Chi tiết đơn hàng"
+msgstr "Chi tiết đơn bán hàng"
 
 #
 msgid "Return Advance"
@@ -2901,11 +2901,11 @@ msgstr "Cập nhật báo giá thành công"
 
 #
 msgid "Sale order create successfully"
-msgstr "Tạo đơn hàng thành công"
+msgstr "Tạo đơn bán hàng thành công"
 
 #
 msgid "Sale order update successfully"
-msgstr "Cập nhật đơn hàng thành công"
+msgstr "Cập nhật đơn bán hàng thành công"
 
 #
 msgid "Server errors"
@@ -3169,7 +3169,7 @@ msgstr "Báo giá"
 
 #
 msgid "Sale Order"
-msgstr "Đơn hàng"
+msgstr "Đơn bán hàng"
 
 #
 msgid "Master data config"
@@ -3377,7 +3377,7 @@ msgstr "Đang hiển thị {} dữ liệu"
 
 #
 msgid "Sale order config update successfully"
-msgstr "Cập nhật cấu hình đơn hàng thành công"
+msgstr "Cập nhật cấu hình đơn bán hàng thành công"
 
 #
 msgid "Change Space to "
@@ -3605,7 +3605,7 @@ msgstr "Ngày dự kiến"
 
 #
 msgid "Select Order"
-msgstr "Chọn đơn hàng"
+msgstr "Chọn đơn bán hàng"
 
 #
 msgid "Select"
@@ -3725,7 +3725,7 @@ msgstr "Áp dụng khuyến mãi không thành công"
 
 #
 msgid "Document is unqualified for promotion applied. Remove promotion or select another available promotion."
-msgstr "Báo giá/ đơn hàng của bạn hiện chưa thỏa điều kiện áp dụng của khuyến mãi đã chọn. Nhấn bỏ khuyến mãi hoặc xem khuyến mãi khả dụng khác"
+msgstr "Báo giá/ đơn bán hàng của bạn hiện chưa thỏa điều kiện áp dụng của khuyến mãi đã chọn. Nhấn bỏ khuyến mãi hoặc xem khuyến mãi khả dụng khác"
 
 #
 msgid "Remove Promotion."
@@ -3857,7 +3857,7 @@ msgstr "Mã của báo giá"
 
 #
 msgid "Code of sale order"
-msgstr "Mã của đơn hàng"
+msgstr "Mã của đơn bán hàng"
 
 #
 msgid "Refresh data"
@@ -3925,7 +3925,7 @@ msgstr "Giá trị báo giá"
 
 #
 msgid "Sale order value"
-msgstr "Giá trị đơn hàng"
+msgstr "Giá trị đơn bán hàng"
 
 #
 msgid "Difference value"
@@ -3933,15 +3933,15 @@ msgstr "Giá trị chênh lệch"
 
 #
 msgid "Sale order indicator create successfully"
-msgstr "Tạo chỉ tiêu đơn hàng thành công"
+msgstr "Tạo chỉ tiêu đơn bán hàng thành công"
 
 #
 msgid "Sale order indicator update successfully"
-msgstr "Cập nhật chỉ tiêu đơn hàng thành công"
+msgstr "Cập nhật chỉ tiêu đơn bán hàng thành công"
 
 #
 msgid "Sale order indicator restore successfully"
-msgstr "Khôi phục chỉ tiêu đơn hàng thành công"
+msgstr "Khôi phục chỉ tiêu đơn bán hàng thành công"
 
 #
 msgid "Can not select stage because this opportunity has been closed"
@@ -4068,7 +4068,7 @@ msgstr "Tài liệu cho khách hàng"
 
 #
 msgid "Copy to sale order"
-msgstr "Sao chép đến đơn hàng"
+msgstr "Sao chép đến đơn bán hàng"
 
 #
 msgid "Is admin"
@@ -4291,7 +4291,7 @@ msgstr "CHKD đã đóng"
 
 #
 msgid "Opportunity had sale order"
-msgstr "CHKD đã có đơn hàng"
+msgstr "CHKD đã có đơn bán hàng"
 
 #
 msgid "Introduce"
@@ -5418,11 +5418,11 @@ msgstr "Giá trị chênh lệch"
 
 #
 msgid "Please select sale order"
-msgstr "Vui lòng chọn đơn hàng"
+msgstr "Vui lòng chọn đơn bán hàng"
 
 #
 msgid "Select Sale order"
-msgstr "Chọn Đơn hàng"
+msgstr "Chọn Đơn bán hàng"
 
 #
 msgid "Load last storage local"
@@ -5446,11 +5446,11 @@ msgstr "Báo cáo khách hàng"
 
 #
 msgid "Sale order code"
-msgstr "Mã đơn hàng"
+msgstr "Mã đơn bán hàng"
 
 #
 msgid "Sale order name"
-msgstr "Tên đơn hàng"
+msgstr "Tên đơn bán hàng"
 
 #
 msgid "Gross profit"
@@ -5489,8 +5489,8 @@ msgid "Meeting"
 msgstr "Cuộc họp"
 
 #
-msgid "Sale activities logged"
-msgstr "Nhật ký bán hàng"
+msgid "Activities logged"
+msgstr "Nhật ký hoạt động"
 
 #
 msgid "Current action"
@@ -5854,7 +5854,7 @@ msgstr "Tính giá cost theo từng kho"
 
 #
 msgid "Cost per project (sale order in Opp)"
-msgstr "Tính giá cost theo dự án (đơn hàng trong CHKD)"
+msgstr "Tính giá cost theo dự án (đơn bán hàng trong CHKD)"
 
 #
 msgid "Cost per Lot/batch"
@@ -6482,7 +6482,7 @@ msgstr "Số ngày công tác không chính xác"
 
 #
 msgid "Sale order"
-msgstr "Đơn hàng"
+msgstr "Đơn bán hàng"
 
 #
 msgid "Copy successfully"
@@ -6942,7 +6942,7 @@ msgstr "Doanh thu năm"
 
 #
 msgid "Number of order"
-msgstr "SL đơn hàng"
+msgstr "SL đơn bán hàng"
 
 #
 msgid "Revenue average"
@@ -7418,11 +7418,11 @@ msgstr "Giá trị đơn hàng"
 
 #
 msgid "Received value"
-msgstr "GT đơn hàng đã nhận"
+msgstr "GT đã nhận"
 
 #
 msgid "Remaining value"
-msgstr "GT đơn hàng còn lại"
+msgstr "GT còn lại"
 
 #
 msgid "AR Invoice"
@@ -7546,11 +7546,11 @@ msgstr "Vui lòng hủy báo giá hiện tại"
 
 #
 msgid "Please cancel current sale order"
-msgstr "Vui lòng hủy đơn hàng hiện tại"
+msgstr "Vui lòng hủy đơn bán hàng hiện tại"
 
 #
 msgid "Please cancel current quotation, sale order"
-msgstr "Vui lòng hủy báo giá, đơn hàng hiện tại"
+msgstr "Vui lòng hủy báo giá, đơn bán hàng hiện tại"
 
 #
 msgid "Opportunity is disabled because employee in short sales roles"
@@ -8562,7 +8562,7 @@ msgstr "Đơn hàng hiện tại"
 
 #
 msgid "Other order"
-msgstr "Đơn hàng khác"
+msgstr "Đơn bán hàng khác"
 
 #
 msgid "Labor summary"
@@ -9026,7 +9026,7 @@ msgstr "chữ cái viết thường, số, dấu gạch dưới hoặc dấu g�
 
 #
 msgid "SALE ORDER"
-msgstr "ĐƠN HÀNG"
+msgstr "ĐƠN BÁN HÀNG"
 
 #
 msgid "Import data from excel"
@@ -10049,7 +10049,7 @@ msgstr "Giá trị còn lại"
 
 #
 msgid "Customers pay in advance (not according to Sale order)"
-msgstr "Khách hàng tạm ứng trước (không theo Đơn hàng)"
+msgstr "Khách hàng tạm ứng trước (không theo Đơn bán hàng)"
 
 #
 msgid "Payment method"
@@ -10077,7 +10077,7 @@ msgstr "Chủ tài khoản"
 
 #
 msgid "Customers pay in advance (according to Sale order)"
-msgstr "Khách hàng tạm ứng trước (theo Đơn hàng)"
+msgstr "Khách hàng tạm ứng trước (theo Đơn bán hàng)"
 
 #
 msgid "Add Company Bank Account"
@@ -10377,7 +10377,7 @@ msgstr "Biểu đồ Hoạt động bán hàng"
 
 #
 msgid "Purchase request for Sale order"
-msgstr "Yêu cầu mua hàng cho Đơn hàng"
+msgstr "Yêu cầu mua hàng cho Đơn bán hàng"
 
 #
 msgid "Purchase request for Distribution plan"
@@ -10389,11 +10389,11 @@ msgstr "Chọn Kế hoạch nhập hàng"
 
 #
 msgid "Only create Purchase request your own Sale order"
-msgstr "Chỉ được làm Yêu cầu mua hàng cho Đơn hàng của bản thân"
+msgstr "Chỉ được làm Yêu cầu mua hàng cho Đơn bán hàng của bản thân"
 
 #
 msgid "Configured to create Purchase request for all Sale order"
-msgstr "Được cấu hình để làm Yêu cầu mua hàng cho mọi Đơn hàng"
+msgstr "Được cấu hình để làm Yêu cầu mua hàng cho mọi Đơn bán hàng"
 
 #
 msgid "Assets"
@@ -11333,11 +11333,11 @@ msgstr "Thêm dòng tùy chọn"
 
 #
 msgid "If not referring to SO"
-msgstr "Nếu không tham chiếu tới đơn hàng nào"
+msgstr "Nếu không tham chiếu tới đơn bán hàng nào"
 
 #
 msgid "If referring to SO"
-msgstr "Nếu tham chiếu tới đơn hàng"
+msgstr "Nếu tham chiếu tới đơn bán hàng"
 
 #
 msgid "Get by selected customer"
@@ -12270,3 +12270,7 @@ msgstr "Loại Kiện Hàng"
 #
 msgid "Summarize contract"
 msgstr "Tổng hợp hợp đồng"
+
+#
+msgid "Orders"
+msgstr "Đơn hàng"

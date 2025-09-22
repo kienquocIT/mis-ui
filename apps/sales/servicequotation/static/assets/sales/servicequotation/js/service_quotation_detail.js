@@ -122,7 +122,7 @@ class DetailDataHandler {
                         workOrder.end_date
                     )
                 })
-                ServiceOrder.initWorkOrderDataTable(workOrderData)
+                ServiceOrder.initQuotationWorkOrderDataTable(workOrderData)
                 ServiceOrder.loadWorkOrderRelatedData(workOrderData)
 
                 //payment

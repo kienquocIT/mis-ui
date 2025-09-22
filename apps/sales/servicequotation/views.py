@@ -78,6 +78,36 @@ class ServiceQuotationDetail(View):
         }, status.HTTP_200_OK
 
 
+class ServiceQuotationUpdate(View):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        template='sales/servicequotation/service_quotation_update.html',
+        menu_active='menu_service_quotation_list',
+        breadcrumb='SERVICE_QUOTATION_UPDATE_PAGE',
+        icon_cls='fas fa-concierge-bell',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, pk, *args, **kwargs):
+        employee_current = {}
+        if request.user and not isinstance(request.user, AnonymousUser):
+            employee_current = getattr(request.user, 'employee_current_data', {})
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_TASK_CONFIG).get()
+        task_config = {}
+        if resp.state:
+            task_config = resp.result
+        ctx = {
+            'pk': pk,
+            'data': {'doc_id': pk},
+            'form_id': 'form-detail-service-quotation',
+
+            'employee_current': employee_current,
+            'task_config': task_config,
+            'employee_info': request.user.employee_current_data,
+        }
+        return ctx, status.HTTP_200_OK
+
+
 class ServiceQuotationListAPI(APIView):
     @mask_view(
         login_require=True,
@@ -98,4 +128,33 @@ class ServiceQuotationListAPI(APIView):
         if resp.state:
             resp.result['message'] = SaleMsg.SERVICE_QUOTATION_CREATE
             return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
+
+
+class ServiceQuotationDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(
+            user=request.user,
+            url=ApiURL.SERVICE_QUOTATION_DETAIL.fill_key(pk=pk)
+        ).get()
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def put(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(
+            user=request.user,
+            url=ApiURL.SERVICE_QUOTATION_DETAIL.fill_key(pk=pk)
+        ).put(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.SERVICE_QUOTATION_UPDATE
+            return resp.result, status.HTTP_200_OK
         return resp.auto_return()

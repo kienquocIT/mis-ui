@@ -664,6 +664,118 @@ const ServiceOrder = (function($) {
         })
     }
 
+    function initQuotationWorkOrderDataTable(data = []){
+        if ($.fn.DataTable.isDataTable(pageElement.workOrder.$table)) {
+            pageElement.workOrder.$table.DataTable().destroy()
+        }
+
+        pageElement.workOrder.$table.DataTableDefault({
+            styleDom: "hide-foot",
+            data: data,
+            reloadCurrency: true,
+            rowIdx: true,
+            scrollX: true,
+            scrollY: '50vh',
+            scrollCollapse: true,
+            columns: [
+                {
+                    className: '',
+                    render: (data, type, row) => {
+                        return ``
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        if (row?.['product_id']){
+                            return `<span class="badge badge-sm badge-soft-secondary mr-1">${row?.['code'] || ''}</span><span class="" title="${row?.['title'] || ''}">${row?.['title'] || ''}</span>`
+                        } else {
+                            return `<textarea class="form-control work-order-description" rows="2">${row?.['title'] || ''}</textarea>`
+                        }
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<input type="text" class="form-control date-input work-order-start-date" required value="${row?.['start_date'] || ''}" placeholder="DD/MM/YYYY">`
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<input type="text" class="form-control date-input work-order-end-date" value="${row?.['end_date'] || ''}" placeholder="DD/MM/YYYY">`
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        return `<div class="d-flex align-items-center">
+                                    <div class="form-check me-2">
+                                        <input type="checkbox" class="form-check-input work-order-service-delivery" ${row?.['is_delivery_point'] || false ? 'checked' : ''}/>
+                                    </div>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-open-service-delivery" 
+                                    data-row-id="${row?.['id']}" data-bs-toggle="modal" data-bs-target="#modal-product-contribution" title="Open service delivery details">
+                                        <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                                    </button>
+                                </div>`
+                    }
+                },
+                {
+                    className: 'w-5',
+                    render: (data, type, row) => {
+                        return `<input type="number" class="form-control work-order-quantity" value="${row?.['quantity'] || 1}" min="0">`
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return `<div class="d-flex align-items-center">
+                                    <span class="mask-money work-order-unit-cost" data-init-money="${row?.['unit_cost'] || 0}"></span>
+                                    <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover ml-2 btn-open-work-order-cost"
+                                            data-bs-toggle="modal" data-bs-target="#modal-work-order-cost" data-work-order-id="${row?.['id'] || ''}">
+                                        <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                                    </button>
+                                </div>`
+                    }
+                },
+                {
+                    className: 'w-15',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money work-order-total-amount" data-init-money="${row?.['total_value'] || 0}"></span>`
+                    }
+                },
+                {
+                    className: 'w-5 text-right',
+                    render: (data, type, row) => {
+                        return `<div class="d-flex justify-content-center">
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover work-order-del-row"
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="bottom"
+                                        title="Delete"
+                                    >
+                                        <span class="icon"><i class="far fa-trash-alt"></i></span>
+                                    </button>
+                                </div>`
+                    }
+                },
+            ],
+            drawCallback: function (data, type, row) {
+                pageElement.workOrder.$table.find('input.date-input').each(function(){
+                    const $input = $(this)
+                    const value = $input.val()
+
+                    UsualLoadPageFunction.LoadDate({ element: $input })
+
+                    if (value && $input.data('daterangepicker')) {
+                        $input.data('daterangepicker').setStartDate(value)
+                    }
+                })
+            }
+        })
+    }
+
     function initWorkOrderCostModalDataTable(data=[{}]){
         if ($.fn.DataTable.isDataTable(pageElement.modalData.$tableWorkOrderCost)) {
             pageElement.modalData.$tableWorkOrderCost.DataTable().destroy()
@@ -1007,6 +1119,7 @@ const ServiceOrder = (function($) {
                     render: (data, type, row) => {
                         const unitCost = row?.unit_cost || 0
                         return `<input
+                                    ${!isDelivery ? 'disabled' : ''}
                                     type="text"
                                     class="form-control mask-money pc-unit-cost"
                                     value="${unitCost}"
@@ -4389,6 +4502,7 @@ const ServiceOrder = (function($) {
         initProductModalDataTable,
         initServiceDetailDataTable,
         initWorkOrderDataTable,
+        initQuotationWorkOrderDataTable,
         initModalContextTracking,
         initPaymentDataTable,
         initAttachment,

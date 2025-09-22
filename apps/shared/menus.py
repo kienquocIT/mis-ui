@@ -391,6 +391,10 @@ class MenusCRM:
             )
         ],
     )
+    SERVICE_QUOTATION = MenuCommon(
+        name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
+        icon='<i class="fas fa-file-invoice-dollar"></i>',
+    )
     # GROUP_ORDER = MenuCommon(
     #     name='Group order', code='menu_group_order_list', view_name='GroupOrderList',
     #     icon='<i class="fas fa-file-invoice"></i>',
@@ -1049,6 +1053,7 @@ class SpaceItem:
                 MenusCRM.OPPORTUNITY,
                 MenusCRM.QUOTATION,
                 MenusCRM.ORDERS,
+                MenusCRM.SERVICE_QUOTATION,
                 MenusCRM.CALENDAR,
                 MenusCRM.CONSULTING,
                 MenusCRM.BIDDING,

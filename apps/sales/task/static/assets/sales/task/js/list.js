@@ -646,11 +646,10 @@ $(function () {
         // on page loaded render task list for task status
         getAndRenderTask(data) {
             let taskByID = {};
-            const taskList = data
-            this.setTaskList = taskList
+            this.setTaskList = data
             let count_parent = {}
             // loop trong ds, lấy data parse ra HTML và cộng vào dict theo task status tương ứng
-            for (const item of taskList) {
+            for (const item of data) {
                 if (item.parent_n && Object.keys(item.parent_n).length){
                     if (count_parent?.[item.parent_n.id]) count_parent[item.parent_n.id] += 1
                     else count_parent[item.parent_n.id] = 1
@@ -958,12 +957,8 @@ $(function () {
                         listViewTask.selfInitSelect2($('#selectStatus', $form), data.task_status)
                         const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
                         $formElm.append(taskIDElm).addClass('task_edit')
-                        $('#inputTextStartDate', $form).val(
-                            moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                        )
-                        $('#inputTextEndDate', $form).val(
-                            moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                        )
+                        $('#inputTextStartDate', $form)[0]._flatpickr.setDate(data.start_date)
+                        $('#inputTextEndDate', $form)[0]._flatpickr.setDate(data.end_date)
                         $('#inputTextEstimate', $form).val(data.estimate)
 
                         $('#selectPriority', $form).val(data.priority).trigger('change')
@@ -1028,7 +1023,6 @@ $(function () {
                 $tblElm.DataTable().clear().rows.add(dataList).draw();
             else
                 $tblElm.DataTableDefault({
-                    "pageLength": 50,
                     "data": dataList,
                     "columns": [
                         {
@@ -1097,7 +1091,7 @@ $(function () {
                             }
                         },
                         {
-                            "data": "date_created",
+                            "data": "end_date",
                             "class": "col-1",
                             render: (row) => {
                                 if (!row) row = new Date()
@@ -1196,7 +1190,7 @@ $(function () {
     // gantt view handle
     class GanttViewTask {
         static taskList = []
-        static bk_taskList = []
+        static bk_taskList = {}
 
         static convertFromDictToArray(dataList, isReturn = false) {
             let reNewList = []
@@ -1222,7 +1216,7 @@ $(function () {
 
         static saveTaskList(data = []) {
             let settingColors = JSON.parse($('#task_config').text());
-            let bk_list = GanttViewTask.bk_taskList
+            let bk_list = $.extend(true, {}, GanttViewTask.bk_taskList)
             let taskClr = {}
             for (let item of settingColors.list_status) {
                 taskClr[item.id] = item.task_color
@@ -1275,7 +1269,13 @@ $(function () {
                     }
                 }
             }
-            return bk_list
+            GanttViewTask.bk_taskList = bk_list
+            let sortNew = Object.values(bk_list).sort((a, b) => {
+                const cA = a.values[0].dataObj.end_date.split(' ')[0];
+                const cB = b.values[0].dataObj.end_date.split(' ')[0];
+                return cA.localeCompare(cB);
+            })
+            return sortNew
         }
 
         static loadTaskInfo(dataID) {
@@ -1294,12 +1294,8 @@ $(function () {
                     $formElm.find('input[name="id"]').remove()
                     const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
                     $formElm.append(taskIDElm).addClass('task_edit')
-                    $('#inputTextStartDate', $formElm).val(
-                        moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                    )
-                    $('#inputTextEndDate', $formElm).val(
-                        moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                    )
+                    $('#inputTextStartDate', $formElm)[0]._flatpickr.setDate(data.start_date)
+                    $('#inputTextEndDate', $formElm)[0]._flatpickr.setDate(data.end_date)
                     $('#inputTextEstimate', $formElm).val(data.estimate)
 
                     $('#selectPriority', $formElm).val(data.priority).trigger('change')
@@ -1383,25 +1379,28 @@ $(function () {
         }
 
         static clickLoadMore(e) {
-            let load_moreif = $('.gantt_table').data('api_info')
-            if (load_moreif.page_next > 0) {
+            let loadMoreIf = $('.gantt_table').data('api_info')
+            if (loadMoreIf.page_next > 0) {
                 const params = {
                     "parent_n__isnull": true,
-                    "page": load_moreif.page_next,
-                    "pageSize": load_moreif.page_size
+                    "page": loadMoreIf.page_next,
+                    "pageSize": loadMoreIf.page_size
                 }
                 let loadMoreData = GanttViewTask.CallData(params)
                 loadMoreData.then(
                     (req) => {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
-                            const temp = Object.assign({}, req.data)
+                            const temp = Object.assign({}, req.data);
                             delete temp['task_list'];
                             $('.gantt_table').data('api_info', temp)
                             $(e).prop("disabled", temp.page_next > 0)
-                            const dictList = GanttViewTask.saveTaskList(data['task_list'])
-                            const arrayList = GanttViewTask.convertFromDictToArray(dictList)
-                            $('#gantt_reload').data('data', arrayList).trigger('click')
+                            // clone old data
+                            // convert new data to object and merge with oldData
+                            // convert to array and reload new data
+                            const oldData = $.extend(true, {}, GanttViewTask.bk_taskList)
+                            const newObjData = GanttViewTask.saveTaskList(data['task_list'])
+                            $('#gantt_reload').data('data', newObjData).trigger('click')
                         }
                     })
             }
@@ -1500,29 +1499,29 @@ $(function () {
             } else {
                 let oldData = GanttViewTask.bk_taskList[data.id]
                 if (oldData) {
-                if (oldData.desc === undefined) oldData.name = data.title
-                else oldData.desc = data.title
-                let from = new Date(data.start_date)
-                from.setHours(0, 0, 0, 0);
-                from.setDate(from.getDate() + 1)
-                let to = new Date(data.end_date)
-                to.setHours(0, 0, 0, 0);
-                to.setDate(to.getDate() + 1);
-                let new_value = {}
-                for (let item in oldData.values[0].dataObj) {
-                    if (data.hasOwnProperty(item))
-                        new_value[item] = data[item]
-                    if (item === 'opportunity')
-                        new_value['opportunity'] = data['opportunity_data']
-                    if (item === 'child_task_count')
-                        new_value['child_task_count'] = oldData.values[0].dataObj[item]
-                }
-                oldData.values = [{
-                    from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
-                    to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
-                    dataObj: new_value
-                }]
-                dictList = GanttViewTask.saveTaskList(oldData)
+                    if (oldData.desc === undefined) oldData.name = data.title
+                    else oldData.desc = data.title
+                    let from = new Date(data.start_date)
+                    from.setHours(0, 0, 0, 0);
+                    from.setDate(from.getDate() + 1)
+                    let to = new Date(data.end_date)
+                    to.setHours(0, 0, 0, 0);
+                    to.setDate(to.getDate() + 1);
+                    let new_value = {}
+                    for (let item in oldData.values[0].dataObj) {
+                        if (data.hasOwnProperty(item))
+                            new_value[item] = data[item]
+                        if (item === 'opportunity')
+                            new_value['opportunity'] = data['opportunity_data']
+                        if (item === 'child_task_count')
+                            new_value['child_task_count'] = oldData.values[0].dataObj[item]
+                    }
+                    oldData.values = [{
+                        from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
+                        to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
+                        dataObj: new_value
+                    }]
+                    dictList = GanttViewTask.saveTaskList(oldData)
                 }
             }
             const arrayList = GanttViewTask.convertFromDictToArray(dictList, true)
@@ -1659,7 +1658,9 @@ $(function () {
                 delete temp['task_list']
                 $('.btn-task-bar').data('task_info', temp)
                 $('#btn_load-more').prop('disabled', temp.page_next === 0)
-                let currentData = kanbanTask.getTaskList.concat(data['task_list'])
+                // merge danh sach cu voi danh sach lay duoc xoa danh sach cu va render lai danh sach moi
+                const currentData = kanbanTask.getTaskList.concat(data['task_list'])
+                $('.tasklist .wrap-child').html('')
                 kanbanTask.getAndRenderTask(currentData)
                 listTask.init(listTask, currentData)
             }

@@ -5874,9 +5874,9 @@ class DTBControl {
                 url: globeDTBLanguageConfig.trim(),
             },
             lengthMenu: [
-                [5, 10, 25, 50, -1], [5, 10, 25, 50, $.fn.transEle.attr('data-all')],
+                [10, 20, 30, 50, -1], [10, 20, 30, 50, $.fn.transEle.attr('data-all')],
             ],
-            pageLength: 10,
+            pageLength: 20,
             ...domOpts,
             columns: this.columns,
             rowCallback: this.mergeRowCallback,

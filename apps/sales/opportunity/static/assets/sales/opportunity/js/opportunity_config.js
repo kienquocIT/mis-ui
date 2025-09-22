@@ -58,9 +58,9 @@ $(document).ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     $('#opp_config_data_id').attr('value', data.id);
-                    $('#is-select-stage')[0].checked = data?.['opp_config_data'].is_select_stage;
-                    $('#is-input-win-rate')[0].checked = data?.['opp_config_data'].is_input_win_rate;
-                    $('#is-AM-create')[0].checked = data?.['opp_config_data'].is_account_manager_create;
+                    $('#is-select-stage')[0].checked = data?.['opportunity_config']?.['is_select_stage'];
+                    $('#is-input-win-rate')[0].checked = data?.['opportunity_config']?.['is_input_win_rate'];
+                    $('#is-AM-create')[0].checked = data?.['opportunity_config']?.['is_account_manager_create'];
                     loadFactorTable();
                 }
             }
@@ -226,7 +226,7 @@ $(document).ready(function () {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('opportunity_config_stage')) {
-                        return resp.data['opportunity_config_stage'] ? OpportunityPageFunction.sortStage(resp.data['opportunity_config_stage']) : [];
+                        return resp.data['opportunity_config_stage'] ? OpportunityPageFunction.SortOppStageByWinrate(resp.data['opportunity_config_stage']) : [];
                     }
                     throw Error('Call data raise errors.')
                 },

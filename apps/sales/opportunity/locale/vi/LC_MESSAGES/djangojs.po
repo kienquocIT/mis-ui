@@ -24,3 +24,11 @@ msgstr "Chỉ tiêu Đơn bán hàng"
 #
 msgid "Lease order indicator"
 msgstr "Chỉ tiêu Đơn cho thuê"
+
+#
+msgid "Checking create permission of related apps..."
+msgstr "Đang kiểm tra quyền tạo các Chức năng liên quan..."
+
+#
+msgid "Loading opportunity detail, opportunity config and opportunity stage..."
+msgstr "Đang tải dữ liệu chi tiết, cấu hình và giai đoạn của cơ hội kinh doanh..."

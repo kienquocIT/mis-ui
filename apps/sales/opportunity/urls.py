@@ -16,7 +16,8 @@ from apps.sales.opportunity.views import (
     # related
     OpportunityCustomerDecisionFactorListAPI, OpportunityCustomerDecisionFactorDetailAPI,
     OpportunityMemberListAPI, OpportunityMemberDetailAPI, OpportunityStageCheckingAPI, OpportunityContractSummary,
-    OpportunityContractSummaryAPI
+    OpportunityContractSummaryAPI, OppProductListAPI, OppProductCategoryListAPI, OppTaxListAPI, OppUOMListAPI,
+    OppCompetitorListAPI, OppContactListAPI
 )
 
 urlpatterns = [
@@ -56,4 +57,12 @@ urlpatterns = [
     path('detail/api/<str:pk_opp>/member/<str:pk_member>', OpportunityMemberDetailAPI.as_view(), name='OpportunityMemberDetailAPI'),
     path('contract-summary', OpportunityContractSummary.as_view(), name='OpportunityContractSummary'),
     path('contract-summary/api', OpportunityContractSummaryAPI.as_view(), name='OpportunityContractSummaryAPI'),
+] + [
+    # table API
+    path('opp-product/api', OppProductListAPI.as_view(), name='OppProductListAPI'),
+    path('opp-product-categry/api', OppProductCategoryListAPI.as_view(), name='OppProductCategoryListAPI'),
+    path('opp-tax/api', OppTaxListAPI.as_view(), name='OppTaxListAPI'),
+    path('opp-uom/api', OppUOMListAPI.as_view(), name='OppUOMListAPI'),
+    path('opp-competitor/api', OppCompetitorListAPI.as_view(), name='OppCompetitorListAPI'),
+    path('opp-contact/api', OppContactListAPI.as_view(), name='OppContactListAPI'),
 ]

@@ -33,7 +33,7 @@ var data = [
 $(document).ready(function () {
 
 	$('#myTimeline').albeTimeline(data, {
-		effect: 'bounceInDown',
+		effect: 'lightSpeedIn',
 		showGroup: false,
 		formatDate: 'dd de MMMM de yyyy HH:mm'
 	});

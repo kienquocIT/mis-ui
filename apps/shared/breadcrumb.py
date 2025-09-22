@@ -218,7 +218,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Opportunity Config
-    OPPORTUNITY_CONFIG_PAGE = BreadcrumbChildren(_('Opportunity'), 'OpportunityConfig')
+    OPPORTUNITY_CONFIG_PAGE = BreadcrumbChildren(_('Opportunity'), 'OpportunityConfigDetail')
 
     # Payment Config
     PAYMENT_CONFIG_PAGE = BreadcrumbChildren(_('Payment Config'), 'PaymentConfigList')

@@ -29,6 +29,9 @@ const $productCategorySelectEle = $('#select-box-product-category')
 const $customerSelectEle = $('#select-box-customer')
 const $endCustomerSelectEle = $('#select-box-end-customer')
 const $salePersonSelectEle = $('#select-box-sale-person')
+const $data_type_customer = $('#data_type_customer')
+const $data_role_customer = $('#data_role_customer')
+const $process_runtime_detail = $('#process-runtime-detail')
 
 /**
  * Khai báo các biến sử dụng trong page
@@ -38,6 +41,8 @@ class OpportunityPageVariables {
         this.opp_detail_data = null
         this.opp_config_data = null
         this.opp_stage_data = null
+        this.data_type_customer = $data_type_customer.text() ? JSON.parse($data_type_customer.text()) : []
+        this.data_role_customer = $data_role_customer.text() ? JSON.parse($data_role_customer.text()) : [];
     }
 }
 const pageVariables = new OpportunityPageVariables()
@@ -58,7 +63,7 @@ class OpportunityPageFunction {
             Object.keys((pageVariables.opp_detail_data?.['sale_order'] || {})?.['delivery'] || {}).length > 0,
             pageVariables.opp_detail_data?.['is_deal_close']
         ]
-        let stages_list_data = OpportunityPageFunction.sortStage(pageVariables.opp_stage_data);
+        let stages_list_data = OpportunityPageFunction.SortOppStageByWinrate(pageVariables.opp_stage_data);
 
         $opp_stage_pipeline.html('')
 
@@ -152,8 +157,8 @@ class OpportunityPageFunction {
             }, index * 250);
         })
     }
-    // load tab functions
-    static LoadDtbActivityLogs() {
+    // render tables functions
+    static LoadTableActivityLogs() {
         let $table = $('#table-timeline');
         let pk = $.fn.getPkDetail();
         $table.DataTable().clear().destroy()
@@ -177,11 +182,13 @@ class OpportunityPageFunction {
             columnDefs: [],
             columns: [
                 {
+                    className: 'w-5',
                     render: () => {
                         return ``
                     }
                 },
                 {
+                    className: 'w-15',
                     render: (data, type, row) => {
                         let appMapTrans = {
                             'quotation.quotation': $transEle.attr('data-trans-quotation'),
@@ -218,6 +225,7 @@ class OpportunityPageFunction {
                     }
                 },
                 {
+                    className: 'w-15',
                     render: (data, type, row) => {
                         if ([0, 1].includes(row?.['log_type'])) {
                             if (row?.['app_code'] && row?.['doc_data']?.['code']) {
@@ -228,6 +236,7 @@ class OpportunityPageFunction {
                     }
                 },
                 {
+                    className: 'w-25',
                     render: (data, type, row) => {
                         let urlMapApp = {
                             'quotation.quotation': $urlEle.attr('data-url-quotation-detail'),
@@ -274,6 +283,7 @@ class OpportunityPageFunction {
                     }
                 },
                 {
+                    className: 'w-25',
                     render: (data, type, row) => {
                         if (row?.['app_code'] && [0, 1].includes(row?.['log_type'])) {
                             if (row?.['log_type'] === 0 && (row?.['doc_data']?.['system_status'] || row?.['doc_data']?.['system_status'] === 0)) {
@@ -287,7 +297,7 @@ class OpportunityPageFunction {
                     }
                 },
                 {
-                    className: 'text-right',
+                    className: 'w-15 text-right',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                     }
@@ -296,12 +306,24 @@ class OpportunityPageFunction {
             rowCallback: (row, data, index) => {
                 $('.show-task-detail', row).on('click', function () {
                     const taskObj = data?.["doc_data"];
-                    OpportunityPageFunction.displayTaskView($urlEle.attr("data-task_detail").format_url_with_uuid(taskObj.id))
+                    OpportunityPageFunction.DisplayTaskView($urlEle.attr("data-task_detail").format_url_with_uuid(taskObj.id))
                 })
+            },
+            initComplete: function () {
+                let wrapper$ = $table.closest('.dataTables_wrapper');
+                const headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+                const textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
+                headerToolbar$.prepend(textFilter$);
+                if (textFilter$.length > 0) {
+                    textFilter$.css('display', 'flex');
+                    textFilter$.append(`
+                        <button type="button" id="btn-refresh-activity" class="btn btn-rounded btn-soft-success btn-xs" title="${$.fn.gettext('Refresh')}"><i class="bi bi-arrow-repeat"></i></button>
+                    `)
+                }
             }
         });
     };
-    static LoadDtbProduct(data_list=[]) {
+    static LoadTableProduct(data_list=[]) {
         if (!$.fn.DataTable.isDataTable('#table-product')) {
             $table_product.DataTableDefault({
                 styleDom: 'hide-foot',
@@ -314,51 +336,59 @@ class OpportunityPageFunction {
                 data: data_list,
                 columns: [
                     {
+                        className: 'w-5',
                         render: () => {
                             return '';
                         }
                     },
                     {
+                        className: 'w-25',
                         render: (data, type, row) => {
                             if (row?.['product']) {
-                                return `<select class="form-select select-box-product" data-method="GET" data-url="${$urlEle.data('url-product')}" data-keyResp="product_sale_list" required></select>`
+                                return `<select class="form-select select-box-product" required></select>`
                             } else {
-                                return `<textarea class="form-control input-product-name" type="text" required></textarea>`
+                                return `<textarea class="form-control input-product-name" required></textarea>`
                             }
                         }
                     },
                     {
+                        className: 'w-20',
                         render: () => {
-                            return `<select class="form-select box-select-product-category" data-method="GET" data-url="${$urlEle.data('url-product-category')}" data-keyResp="product_category_list" required></select>`
+                            return `<select class="form-select box-select-product-category" required></select>`
                         }
                     },
                     {
+                        className: 'w-10',
+                        render: (data, type, row) => {
+                            return `<input type="number" class="form-control input-quantity" value="${row?.['product_quantity'] || 0}" required/>`
+                        }
+                    },
+                    {
+                        className: 'w-10',
                         render: () => {
-                            return `<select class="form-select box-select-uom" data-method="GET" data-url="${$urlEle.data('url-uom')}" data-keyResp="unit_of_measure" required></select>`
+                            return `<select class="form-select box-select-uom" required></select>`
                         }
                     },
                     {
+                        className: 'w-10',
                         render: (data, type, row) => {
-                            return `<input type="number" class="form-control input-quantity" value="{0}" required/>`.format_by_idx(row?.['product_quantity'] || 0)
+                            return `<input class="form-control mask-money input-unit-price" value="${row?.['product_unit_price'] || 0}" required/>`
                         }
                     },
                     {
-                        render: (data, type, row) => {
-                            return `<input type="text" class="form-control mask-money input-unit-price" data-return-type="number" value="{0}" required/>`.format_by_idx(row?.['product_unit_price'] || 0)
-                        }
-                    },
-                    {
+                        className: 'w-10',
                         render: () => {
-                            return `<select class="form-select box-select-tax" data-method="GET" data-url="${$urlEle.data('url-tax')}" data-keyResp="tax_list" required></select>`
+                            return `<select class="form-select box-select-tax" required></select>`
                         }
                     },
                     {
+                        className: 'w-10',
                         render: (data, type, row) => {
-                            return `<input class="form-control mask-money input-subtotal" type="text" data-return-type="number" value="{0}" disabled required>`.format_by_idx(row?.['product_subtotal_price'] || 0)
+                            return `<input class="form-control mask-money input-subtotal" value="${row?.['product_subtotal_price'] || 0}" readonly disabled required>`
                         }
                     },
                     {
-                        className: 'text-right',
+                        className: 'w-5 text-right',
                         render: () => {
                             return `<a class="btn btn-icon btn-del-item"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
                         }
@@ -367,28 +397,37 @@ class OpportunityPageFunction {
                 initComplete: function () {
                     $table_product.find('tbody tr').each(function (index, ele) {
                         if (data_list[index]?.['product']) {
-                            OpportunityPageFunction.LoadRowProduct(
-                                $(ele).find('.select-box-product'),
-                                data_list[index]?.['product'],
-                                pageVariables.opp_detail_data?.['product_category'].map(obj => obj?.['id'])
-                            )
+                            UsualLoadPageFunction.LoadProduct({
+                                element: $(ele).find('.select-box-product'),
+                                data: data_list[index]?.['product'],
+                                data_url: `${$urlEle.data('url-product')}?general_product_category_id__in=${$productCategorySelectEle.val().join(',')}`
+                            })
+                            $(ele).find(`.box-select-product-category`).prop('disabled', true)
                         }
                         else {
-                            $(ele).find('.input-product-name').val(data_list[index]?.['product_name'])
+                            $(ele).find('.input-product-name').val(data_list[index]?.['product_name'] || '')
                         }
-                        OpportunityPageFunction.LoadRowProductCategory(
-                            $(ele).find('.box-select-product-category'),
-                            data_list[index]?.['product_category'],
-                            pageVariables.opp_detail_data?.['product_category'].map(obj => obj?.['id'])
-                        )
-                        OpportunityPageFunction.LoadRowUOM($(ele).find('.box-select-uom'), data_list[index]?.['uom'])
-                        OpportunityPageFunction.LoadRowTax($(ele).find('.box-select-tax'), data_list[index]?.['tax'])
+                        UsualLoadPageFunction.LoadProductCategory({
+                            element: $(ele).find('.box-select-product-category'),
+                            data: data_list[index]?.['product_category'],
+                            data_url: `${$urlEle.data('url-product')}?id=${$productCategorySelectEle.val().join(',')}`
+                        })
+                        UsualLoadPageFunction.LoadUOM({
+                            element: $(ele).find('.box-select-uom'),
+                            data: data_list[index]?.['uom'],
+                            data_url: $urlEle.data('url-uom')
+                        })
+                        UsualLoadPageFunction.LoadTax({
+                            element: $(ele).find('.box-select-tax'),
+                            data: data_list[index]?.['tax'],
+                            data_url: $urlEle.data('url-tax')
+                        })
                     })
                 }
             });
         }
     }
-    static LoadDtbCompetitor(data_list=[]) {
+    static LoadTableCompetitor(data_list=[]) {
         if (!$.fn.DataTable.isDataTable('#table-competitors')) {
             $table_competitor.DataTableDefault({
                 rowIdx: true,
@@ -399,33 +438,32 @@ class OpportunityPageFunction {
                 scrollCollapse: true,
                 columns: [
                     {
+                        className: 'w-5',
                         render: () => {
                             return ``
                         }
                     },
                     {
+                        className: 'w-25',
                         render: () => {
-                            return `<select class="form-control box-select-competitor" data-method="GET" data-url="${$urlEle.data('url-competitor')}" data-keyResp="account_sale_list" data-keyText="name" required></select>`
+                            return `<select class="form-control box-select-competitor" required></select>`
                         }
                     },
                     {
+                        className: 'w-50',
                         render: (data, type, row) => {
-                            return `<textarea class="form-control input-strength" type="text" value="{0}"></textarea>`.format_by_idx(row?.['strength'])
+                            return `<textarea class="form-control input-strength mb-1" rows="1">${row?.['strength'] || ''}</textarea>
+                                <textarea class="form-control input-weakness" rows="1">${row?.['weakness'] || ''}</textarea>`
                         }
                     },
                     {
-                        render: (data, type, row) => {
-                            return `<textarea type="text" class="form-control input-weakness" value="{0}"></textarea>`.format_by_idx(row?.['weakness'])
-                        }
-                    },
-                    {
-                        className: 'text-center',
+                        className: 'w-15 text-center',
                         render: (data, type, row) => {
                             return `<div class="form-check"><input ${row?.['win_deal'] ? 'checked' : ''} type="checkbox" class="form-check-input input-win-deal"></div>`
                         }
                     },
                     {
-                        className: 'text-right',
+                        className: 'w-5 text-right',
                         render: () => {
                             return `<a class="btn btn-icon btn-del-item"><span class="btn-icon-wrap"><span class="feather-icon"><i data-feather="trash-2"></i></span></span></a>`
                         }
@@ -433,13 +471,21 @@ class OpportunityPageFunction {
                 ],
                 initComplete: function () {
                     $table_competitor.find('tbody tr').each(function (index, ele) {
-                        OpportunityPageFunction.LoadRowCompetitor($(ele).find('.box-select-competitor'), data_list[index]?.['competitor'], $customerSelectEle.val())
+                        UsualLoadPageFunction.LoadAccount({
+                            element: $(ele).find('.box-select-competitor'),
+                            data: data_list[index]?.['competitor'],
+                            data_params: {
+                                'opp_customer': $customerSelectEle.val(),
+                                'opp_end_customer': $endCustomerSelectEle.val()
+                            },
+                            data_url: $urlEle.data('url-competitor')
+                        })
                     })
                 }
             });
         }
     }
-    static LoadDtbContactRole(data_list=[]) {
+    static LoadTableContactRole(data_list=[]) {
         if (!$.fn.DataTable.isDataTable('#table-contact-role')) {
             $table_contact_role.DataTableDefault({
                 rowIdx: true,
@@ -450,32 +496,37 @@ class OpportunityPageFunction {
                 scrollCollapse: true,
                 columns: [
                     {
+                        className: 'w-5',
                         render: () => {
                             return ``
                         }
                     },
                     {
+                        className: 'w-25',
                         render: () => {
                             return `<select class="form-select box-select-type-customer" required></select>`
                         }
                     },
                     {
+                        className: 'w-25',
                         render: () => {
-                            return `<select class="form-select box-select-contact" data-method="GET" data-url="${$urlEle.data('url-contact')}" data-keyResp="contact_list" data-keyText="fullname" required></select>`
+                            return `<select class="form-select box-select-contact" required></select>`
                         }
                     },
                     {
+                        className: 'w-20',
                         render: (data, type, row) => {
-                            return `<input type="text" class="form-control input-job-title" value="{0}" disabled/>`.format_by_idx(row?.['job_title'])
+                            return `<input type="text" class="form-control input-job-title" value="${row?.['job_title'] || ''}" readonly/>`
                         }
                     },
                     {
+                        className: 'w-20',
                         render: () => {
                             return `<select class="form-select box-select-role" required></select>`
                         }
                     },
                     {
-                        className: 'text-right',
+                        className: 'w-5 text-right',
                         render: () => {
                             return `<a class="btn btn-icon btn-del-item">
                                         <span class="btn-icon-wrap">
@@ -487,27 +538,32 @@ class OpportunityPageFunction {
                 ],
                 initComplete: function () {
                     $table_contact_role.find('tbody tr').each(function (index, ele) {
-                        OpportunityPageFunction.LoadRowContact($(ele).find('.box-select-contact'), data_list[index]?.['contact'], $customerSelectEle.val())
-                        OpportunityPageFunction.AppendTypeCustomer(data_list[index]?.['type_customer'], $(ele).find('.box-select-type-customer'))
-                        OpportunityPageFunction.AppendRole(data_list[index]?.['role'], $(ele).find('.box-select-role'))
+                        UsualLoadPageFunction.LoadContact({
+                            element: $(ele).find('.box-select-contact'),
+                            data: data_list[index]?.['contact'],
+                            data_params: {'account_name_id': $customerSelectEle.val()},
+                            data_url: $urlEle.data('url-contact')
+                        })
+                        OpportunityPageFunction.ParseOptionCustomerType($(ele).find('.box-select-type-customer'), data_list[index]?.['type_customer'])
+                        OpportunityPageFunction.ParseOptionCustomerRole($(ele).find('.box-select-role'), data_list[index]?.['role'])
                     })
                 }
             });
         }
     }
-    static LoadSaleTeam(data, isEdit = true, employee_inherit = {}) {
+    static LoadSaleTeamList(data, isEdit = true, employee_inherit = {}) {
         let employee_inherit_id = employee_inherit?.['id'] || null;
         let html = `
             <div class="member-item col-md-12 col-lg-6 col-xl-4">
                <div
-                  class="card" data-manual-hide="false" data-footer-show="always"
+                  class="card bg-gradient-light" data-manual-hide="false" data-footer-show="always"
                   data-id="__idx__"
                   >
                   <div class="card-header card-header-action">
                      <div class="hidden-md">__avatar__</div>
                      <div class="ml-1 card-main-title">
-                        <p class="fw-bold text-muted">__full_name__</p>
-                        <p class="small text-blue">__group_title__</p>
+                        <p class="fw-bold">__full_name__</p>
+                        <p class="small text-muted">__group_title__</p>
                         <p class="small text-primary"><a href="mailto:__email__">__email__</a></p>
                     </div>
                      <div class="card-action-wrap __is_edit__">
@@ -560,7 +616,7 @@ class OpportunityPageFunction {
                 item?.['email'] || '',
             ).replaceAll(
                 "__avatar__",
-                $x.fn.renderAvatar(item),
+                $x.fn.renderAvatar(item, 'avatar-soft-light avatar-rounded'),
             ).replaceAll(
                 "__permit_data__",
                 JSON.stringify(item?.['permit_app'] || [])
@@ -656,7 +712,7 @@ class OpportunityPageFunction {
             )
         })
     }
-    static LoadDtbLead() {
+    static LoadTableLeadMapped() {
         if (!$.fn.DataTable.isDataTable('#lead-list-table')) {
             let dtb = $('#lead-list-table');
             dtb.DataTableDefault({
@@ -714,8 +770,18 @@ class OpportunityPageFunction {
             });
         }
     }
-    // sub functions
-    static CheckPermissionAppRelated() {
+    // check permission apps related functions
+    static CheckPermissionCreateAppRelated() {
+        $.notify($.fn.gettext('Checking create permission of related apps...'), {
+            type: 'info',
+            animate: {
+                enter: 'animated lightSpeedIn',
+                exit: 'animated lightSpeedOut'
+            },
+            allow_dismiss: false,
+            showProgressbar: true,
+        });
+
         const quotation_check_perm = $.fn.callAjax2({
             url: $urlEle.attr('data-url-opp-list'),
             data: {
@@ -997,92 +1063,83 @@ class OpportunityPageFunction {
                 $('#btn-create-related-feature').attr('data-call-check-perm', 'true')
             })
     }
-    // tab product functions
-    static LoadRowProduct(ele, data, opp_category_id_list) {
-        ele.initSelect2({
-            data: data,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                resp.data[keyResp].map(function (item) {
-                    if (opp_category_id_list.includes(item?.['general_information']?.['product_category']?.['id'])) {
-                        list_result.push(item)
-                    }
-                })
-                return list_result
+    static CheckPermissionDetailOrdersAppRelated(ele) {
+        // check permission before redirect
+        if ($(ele).attr('data-label') && pageVariables.opp_detail_data) {
+            let label = $(ele).attr('data-label');
+            let appMapPerm = {
+                'quotation.quotation': 'quotation.quotation.create',
+                'saleorder.saleorder': 'saleorder.saleorder.create',
+                'leaseorder.leaseorder': 'leaseorder.leaseorder.create',
+            };
+            let appMapErr = {
+                'quotation.quotation': $transEle.attr('data-cancel-quo'),
+                'saleorder.saleorder': $transEle.attr('data-cancel-so'),
+                'leaseorder.leaseorder': $transEle.attr('data-cancel-lo'),
             }
-        })
-    }
-    static LoadRowProductCategory(ele, data, opp_category_id_list) {
-        ele.initSelect2({
-            data: data,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                resp.data[keyResp].map(function (item) {
-                    if (opp_category_id_list.includes(item?.['id'])) {
-                        list_result.push(item)
+            if (appMapPerm?.[label] && pageVariables.opp_detail_data?.['id']) {
+                let tableData = $('#table-timeline').DataTable().rows().data().toArray();
+                $.fn.callAjax2({
+                    'url': $urlEle.attr('data-url-opp-list'),
+                    'method': 'GET',
+                    'data': {'list_from_app': appMapPerm[label], 'id': pageVariables.opp_detail_data?.['id']},
+                    isLoading: true,
+                }
+                ).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data) {
+                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
+                                if (data.opportunity_list.length === 1) {
+                                    // Validate: check opp already has quotation/ sale order
+                                    let listCheck = ['quotation.quotation', 'saleorder.saleorder', 'leaseorder.leaseorder'];
+                                    if (listCheck.includes(label)) {
+                                        for (let tData of tableData) {
+                                            let tDataLabel = tData?.['app_code'];
+                                            let tDataStatus = tData?.['doc_data']?.['system_status'];
+                                            if (label === 'quotation.quotation') {
+                                                if (tDataLabel === 'saleorder.saleorder' && [1, 2, 3].includes(tDataStatus)) {
+                                                    $.fn.notifyB({description: $transEle.attr('data-cancel-quo-so')}, 'failure');
+                                                    return false;
+                                                }
+                                            }
+                                            if (tDataLabel === label && [1, 2, 3].includes(tDataStatus)) {
+                                                $.fn.notifyB({description: appMapErr?.[label]}, 'failure');
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                    const paramData = $.param({
+                                        'create_open': true,
+                                        'opp_id': pageVariables.opp_detail_data?.['id'],
+                                        'opp_title': pageVariables.opp_detail_data?.['title'],
+                                        'opp_code': pageVariables.opp_detail_data?.['code'],
+                                    });
+                                    let url = $(ele).data('url') + '?' + paramData;
+                                    window.open(url, '_blank');
+                                    return true;
+                                }
+                                $.fn.notifyB({description: $transEle.attr('data-forbidden')}, 'failure');
+                                return false;
+                            }
+                        }
                     }
-                })
-                return list_result
-
+                )
             }
-        })
-    }
-    static LoadRowUOM(ele, data, product) {
-        ele.initSelect2({
-            data: data,
-            dataParams: {
-                'group': product?.['general_information']?.['uom_group']?.['id']
-            },
-        })
-    }
-    static LoadRowTax(ele, data) {
-        ele.initSelect2({
-            data: data,
-        })
-    }
-    // tab competitor functions
-    static LoadRowCompetitor(ele, data, opp_customer_id) {
-        ele.initSelect2({
-            data: data,
-            dataParams: {
-                'account_types_mapped__account_type_order': 3,
-            },
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                resp.data[keyResp].map(function (item) {
-                    if (opp_customer_id !== item?.['id']) {
-                        list_result.push(item)
-                    }
-                })
-                return list_result
-            }
-        })
+        }
+        return true;
     }
     // tab contact role functions
-    static LoadRowContact(ele, data, customer) {
-        ele.initSelect2({
-            data: data,
-            'dataParams': {'account_name_id': customer},
+    static ParseOptionCustomerType(ele, value=null) {
+        ele.append('<option value=""></option>')
+        pageVariables.data_type_customer.map(function (item) {
+            ele.append(`<option value="${item?.['value']}" ${value === item?.['value'] ? 'selected' : ''}>${item?.['name']}</option>`);
         })
     }
-    static AppendTypeCustomer(value, ele) {
-        let data = JSON.parse($('#data_type_customer').text());
-        data.map(function (item) {
-            if (value === item.value) {
-                ele.append(`<option value="${item.value}" selected>${item.name}</option>`);
-            } else {
-                ele.append(`<option value="${item.value}">${item.name}</option>`);
-            }
-        })
-    }
-    static AppendRole(value, ele) {
-        let data = JSON.parse($('#data_role_customer').text());
-        data.map(function (item) {
-            if (value === item.value) {
-                ele.append(`<option value="${item.value}" selected>${item.name}</option>`);
-            } else {
-                ele.append(`<option value="${item.value}">${item.name}</option>`);
-            }
+    static ParseOptionCustomerRole(ele, value=null) {
+        ele.append('<option value=""></option>')
+        pageVariables.data_role_customer.map(function (item) {
+            ele.append(`<option value="${item?.['value']}" ${value === item?.['value'] ? 'selected' : ''}>${item?.['name']}</option>`);
         })
     }
     static LoadFactor(ele, data) {
@@ -1091,83 +1148,38 @@ class OpportunityPageFunction {
         })
     }
     // sub others
-    static addRowSelectProduct() {
-        UsualLoadPageFunction.AddTableRow($table_product, {'product': {}})
-        let row_added = $table_product.find('tbody tr:last-child')
-        OpportunityPageFunction.LoadRowProduct(row_added.find('.select-box-product'), {}, $productCategorySelectEle.val());
-        OpportunityPageFunction.LoadRowTax(row_added.find('.box-select-tax'), {})
-    }
-    static addRowInputProduct() {
-        UsualLoadPageFunction.AddTableRow($table_product, {'product': null})
-        let row_added = $table_product.find('tbody tr:last-child')
-        OpportunityPageFunction.LoadRowProductCategory(row_added.find('.box-select-product-category'), {}, $productCategorySelectEle.val());
-        OpportunityPageFunction.LoadRowTax(row_added.find('.box-select-tax'), {})
-        OpportunityPageFunction.LoadRowUOM(row_added.find('.box-select-uom'), {})
-    }
-    static getRateTax(ele) {
-        let tax_obj = SelectDDControl.get_data_from_idx(ele, ele.val());
-        return tax_obj.rate
-    }
-    static getTotalPrice() {
-        let ele_tr_products = $table_product.find('tbody tr');
+    static CalculateSumPrice() {
         let tax_value = 0;
         let total_pretax = 0;
-        ele_tr_products.each(function () {
-            let tax_rate = OpportunityPageFunction.getRateTax($(this).find('.box-select-tax')) || 0;
-            let sub_total = $(this).find('.input-subtotal').valCurrency();
+        $table_product.find('tbody tr').each(function () {
+            let tax_obj = SelectDDControl.get_data_from_idx($(this).find('.box-select-tax'), $(this).find('.box-select-tax').val())
+            let tax_rate = tax_obj?.['rate'] || 0
+            let sub_total = $(this).find('.input-subtotal').valCurrency()
             let tax_price = sub_total * (tax_rate / 100)
-            total_pretax += sub_total;
-            tax_value += tax_price;
+            total_pretax += sub_total
+            tax_value += tax_price
         })
-
         $input_product_pretax_amount.attr('value', total_pretax);
         $input_product_taxes.attr('value', tax_value);
         $input_product_total.attr('value', total_pretax + tax_value);
-        let value = parseFloat($input_product_total.attr('value')) * parseFloat($estimated_gross_profit_percent.val()) / 100
-        $estimated_gross_profit_value.attr('value', value)
+        $estimated_gross_profit_value.attr('value', parseFloat($input_product_total.attr('value')) * parseFloat($estimated_gross_profit_percent.val()) / 100)
         $.fn.initMaskMoney2();
     }
-    static addRowCompetitor() {
-        $table_competitor.addClass('tag-change');
-        let data = {
-            'strength': '',
-            'weakness': '',
-            'win_deal': false,
+    static CommonDeleteTableRow(ele) {
+        let table = ele.closest(`table`)
+        UsualLoadPageFunction.DeleteTableRow(table, parseInt(ele.closest('tr').find('td:first-child').text()))
+        if (table.attr('id') === 'table-product') {
+                OpportunityPageFunction.CalculateSumPrice()
         }
-        $table_competitor.DataTable().row.add(data).draw();
-        let tr_current_ele = $table_competitor.find('tbody tr').last();
-        OpportunityPageFunction.LoadRowCompetitor(tr_current_ele.find('.box-select-competitor'), {}, $customerSelectEle.val());
-    }
-    static addRowContactRole() {
-        $table_contact_role.addClass('tag-change');
-        let data = {
-            'job_title': '',
-        }
-        $table_contact_role.DataTable().row.add(data).draw();
-        let tr_current_ele = $table_contact_role.find('tbody tr').last();
-        OpportunityPageFunction.LoadRowContact(tr_current_ele.find('.box-select-contact'), {}, $customerSelectEle.val());
-        OpportunityPageFunction.AppendTypeCustomer(null, tr_current_ele.find('.box-select-type-customer'));
-        OpportunityPageFunction.AppendRole(null, tr_current_ele.find('.box-select-role'));
-        tr_current_ele.find('.box-select-role').val('');
-    }
-    static delRowTable(ele) {
-        let table = ele.closest(`table`);
-        table.addClass('tag-change');
-        table.DataTable().row(ele.closest('tr').index()).remove().draw();
-        switch (table.attr('id')) {
-            case 'table-product':
-                this.getTotalPrice();
-                break;
-            case 'table-contact-role':
-                if (table.find(`.box-select-role option[value="0"]:selected`).length === 0) {
-                    $input_decision_maker.val('');
-                    $input_decision_maker.attr('data-id', '');
-                    $input_decision_maker.addClass('tag-change');
-                }
+        else if (table.attr('id') ===  'table-contact-role') {
+            if (table.find('tbody .box-select-role option[value="0"]:selected').length === 0) {
+                $input_decision_maker.val('');
+                $input_decision_maker.attr('data-id', '')
+            }
         }
     }
-    static async loadMemberForDtb() {
-        await OpportunityPageFunction.loadMemberSaleTeam();
+    static async LoadMemberForDtb() {
+        await OpportunityPageFunction.LoadTableSaleTeamMember();
         let card_member = $('#card-member .card');
         let table = $('#dtbMember');
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -1217,7 +1229,7 @@ class OpportunityPageFunction {
             }
         )
     }
-    static onChangeContactRole(ele) {
+    static OnChangeContactRole(ele) {
         if (ele.val() === '0') {
             if ($table_contact_role.find('.box-select-role').not(ele).find('option[value="0"]:selected').length === 1) {
                 ele.val('');
@@ -1229,20 +1241,17 @@ class OpportunityPageFunction {
             } else {
                 let ele_contact = ele.closest('tr').find('.box-select-contact');
                 let contact_data = SelectDDControl.get_data_from_idx(ele_contact, ele_contact.val());
-                this.setDataDecisionMaker(contact_data.fullname, contact_data.id);
+                $input_decision_maker.val(contact_data?.['fullname'])
+                $input_decision_maker.attr('data-id', contact_data?.['id'])
             }
         }
 
         if ($('.box-select-role option[value="0"]:selected').length === 0) {
-            this.setDataDecisionMaker('', '');
+            $input_decision_maker.val('')
+            $input_decision_maker.attr('data-id', '')
         }
     }
-    static setDataDecisionMaker(value, id) {
-        $input_decision_maker.val(value);
-        $input_decision_maker.attr('data-id', id);
-        $input_decision_maker.addClass('tag-change');
-    }
-    static renderAlert(text) {
+    static CommonShowAlert(text) {
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -1250,7 +1259,7 @@ class OpportunityPageFunction {
         })
     }
     // opp activity
-    static tabLogWork(dataList) {
+    static LoadLogWork(dataList) {
         let $table = $('#table_log-work')
         if ($table.hasClass('datatable'))
             $table.DataTable().clear().rows.add(dataList).draw();
@@ -1303,7 +1312,7 @@ class OpportunityPageFunction {
                 ]
             })
     }
-    static tabSubtask(taskID) {
+    static LoadSubtask(taskID) {
         if (!taskID) return false
         const $wrap = $('.wrap-subtask')
         const url = $urlEle.attr('data-task_list')
@@ -1323,7 +1332,7 @@ class OpportunityPageFunction {
                 }
             })
     }
-    static displayTaskView(url) {
+    static DisplayTaskView(url) {
         if (url)
             $.fn.callAjax2({
                 url: url,
@@ -1381,8 +1390,8 @@ class OpportunityPageFunction {
                         window.editor.setData(data.remark)
                         window.checklist.setDataList = data.checklist
                         window.checklist.render()
-                        if (data?.['task_log_work'].length) OpportunityPageFunction.tabLogWork(data['task_log_work'])
-                        if (data?.['sub_task_list']) OpportunityPageFunction.tabSubtask(data.id)
+                        if (data?.['task_log_work'].length) OpportunityPageFunction.LoadLogWork(data['task_log_work'])
+                        if (data?.['sub_task_list']) OpportunityPageFunction.LoadSubtask(data.id)
                         if (data.attach) {
                             const fileDetail = data.attach[0]?.['files']
                             FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
@@ -1393,74 +1402,8 @@ class OpportunityPageFunction {
                     }
                 })
     }
-    static loadOpenRelateApp(ele) {
-        // check permission before redirect
-        if ($(ele).attr('data-label') && pageVariables.opp_detail_data) {
-            let label = $(ele).attr('data-label');
-            let appMapPerm = {
-                'quotation.quotation': 'quotation.quotation.create',
-                'saleorder.saleorder': 'saleorder.saleorder.create',
-                'leaseorder.leaseorder': 'leaseorder.leaseorder.create',
-            };
-            let appMapErr = {
-                'quotation.quotation': $transEle.attr('data-cancel-quo'),
-                'saleorder.saleorder': $transEle.attr('data-cancel-so'),
-                'leaseorder.leaseorder': $transEle.attr('data-cancel-lo'),
-            }
-            if (appMapPerm?.[label] && pageVariables.opp_detail_data?.['id']) {
-                let tableData = $('#table-timeline').DataTable().rows().data().toArray();
-                $.fn.callAjax2({
-                        'url': $urlEle.attr('data-url-opp-list'),
-                        'method': 'GET',
-                        'data': {'list_from_app': appMapPerm[label], 'id': pageVariables.opp_detail_data?.['id']},
-                        isLoading: true,
-                    }
-                ).then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            if (data.hasOwnProperty('opportunity_list') && Array.isArray(data.opportunity_list)) {
-                                if (data.opportunity_list.length === 1) {
-                                    // Validate: check opp already has quotation/ sale order
-                                    let listCheck = ['quotation.quotation', 'saleorder.saleorder', 'leaseorder.leaseorder'];
-                                    if (listCheck.includes(label)) {
-                                        for (let tData of tableData) {
-                                            let tDataLabel = tData?.['app_code'];
-                                            let tDataStatus = tData?.['doc_data']?.['system_status'];
-                                            if (label === 'quotation.quotation') {
-                                                if (tDataLabel === 'saleorder.saleorder' && [1, 2, 3].includes(tDataStatus)) {
-                                                    $.fn.notifyB({description: $transEle.attr('data-cancel-quo-so')}, 'failure');
-                                                    return false;
-                                                }
-                                            }
-                                            if (tDataLabel === label && [1, 2, 3].includes(tDataStatus)) {
-                                                $.fn.notifyB({description: appMapErr?.[label]}, 'failure');
-                                                return false;
-                                            }
-                                        }
-                                    }
-                                    const paramData = $.param({
-                                        'create_open': true,
-                                        'opp_id': pageVariables.opp_detail_data?.['id'],
-                                        'opp_title': pageVariables.opp_detail_data?.['title'],
-                                        'opp_code': pageVariables.opp_detail_data?.['code'],
-                                    });
-                                    let url = $(ele).data('url') + '?' + paramData;
-                                    window.open(url, '_blank');
-                                    return true;
-                                }
-                                $.fn.notifyB({description: $transEle.attr('data-forbidden')}, 'failure');
-                                return false;
-                            }
-                        }
-                    }
-                )
-            }
-        }
-        return true;
-    }
     // load config and load stage
-    static async loadMemberSaleTeam() {
+    static async LoadTableSaleTeamMember() {
         if (!$.fn.DataTable.isDataTable('#dtbMember')) {
             let dtb = $('#dtbMember');
             let frm = new SetupFormSubmit(dtb);
@@ -1528,7 +1471,7 @@ class OpportunityPageFunction {
             });
         }
     }
-    static sortStage(list_stage) {
+    static SortOppStageByWinrate(list_stage) {
         let object_lost = null;
         let delivery = null;
         let object_close = null;
@@ -1556,40 +1499,6 @@ class OpportunityPageFunction {
         list_result.push(object_close);
 
         return list_result
-    }
-    // load dropdown
-    static LoadOppCustomer(data, sale_person_id) {
-        $customerSelectEle.initSelect2({
-            data: data,
-            dataParams: {
-                'account_types_mapped__account_type_order': 0,
-                'employee__id': sale_person_id,
-            },
-        })
-    }
-    static LoadOppEndCustomer(data) {
-        $endCustomerSelectEle.initSelect2({
-            data: data,
-            callbackDataResp(resp, keyResp) {
-                let list_result = []
-                resp.data[keyResp].map(function (item) {
-                    if (data?.['id'] !== item?.['id']) {
-                        list_result.push(item)
-                    }
-                })
-                return list_result
-            }
-        })
-    }
-    static LoadOppProductCategory(data) {
-        $productCategorySelectEle.initSelect2({
-            data: data,
-        })
-    }
-    static LoadOppSalePerson(data) {
-        $salePersonSelectEle.initSelect2({
-            data: data,
-        })
     }
 }
 
@@ -1771,14 +1680,36 @@ class OpportunityHandler {
             $checkInputRateEle.prop('checked', false);
         }
         // c. Load customer
-        OpportunityPageFunction.LoadOppCustomer(pageVariables.opp_detail_data?.['customer'], pageVariables.opp_detail_data?.['sale_person']?.['id'])
+        UsualLoadPageFunction.LoadCustomer({
+            element: $customerSelectEle,
+            data: pageVariables.opp_detail_data?.['customer'],
+            data_params: {
+                'employee__id': pageVariables.opp_detail_data?.['sale_person']?.['id'],
+            },
+            data_url: $urlEle.data('url-customer-list')
+        })
         // d. Load end customer
         $check_agency_role.prop('checked', Object.keys(pageVariables.opp_detail_data?.['end_customer']).length !== 0)
-        OpportunityPageFunction.LoadOppEndCustomer(pageVariables.opp_detail_data?.['end_customer'])
+        UsualLoadPageFunction.LoadCustomer({
+            element: $endCustomerSelectEle,
+            data: pageVariables.opp_detail_data?.['end_customer'],
+            data_params: {
+                'employee__id': pageVariables.opp_detail_data?.['sale_person']?.['id'],
+            },
+            data_url: $urlEle.data('url-customer-list')
+        })
         // e. Load product category
-        OpportunityPageFunction.LoadOppProductCategory(pageVariables.opp_detail_data?.['product_category'])
+        UsualLoadPageFunction.LoadProductCategory({
+            element: $productCategorySelectEle,
+            data: pageVariables.opp_detail_data?.['product_category'],
+            data_url: $urlEle.data('url-product')
+        })
         // f. Load sale person
-        OpportunityPageFunction.LoadOppSalePerson(pageVariables.opp_detail_data?.['sale_person'])
+        UsualLoadPageFunction.LoadEmployee({
+            element: $salePersonSelectEle,
+            data: pageVariables.opp_detail_data?.['sale_person'],
+            data_url: $urlEle.data('url-employee-list')
+        })
         // g. Load budget
         $input_budget.attr('value', pageVariables.opp_detail_data?.['budget_value'])
         // h. Load open/close date
@@ -1791,7 +1722,7 @@ class OpportunityHandler {
         $check_lost_reason.prop('checked', pageVariables.opp_detail_data?.['lost_by_other_reason'])
         // 5. LOAD SALE ACTIVITIES
         // a. Load button group related activities
-        OpportunityPageFunction.CheckPermissionAppRelated()
+        OpportunityPageFunction.CheckPermissionCreateAppRelated()
         if ($.fn.hasOwnProperties(pageVariables.opp_detail_data, ['sale_order'])) {
             let so_id = pageVariables.opp_detail_data?.['sale_order']?.['id'];
             let link = so_id !== undefined ? $urlEle.data('url-related-sale-order').format_url_with_uuid(so_id) : '#';
@@ -1803,28 +1734,28 @@ class OpportunityHandler {
             $('#item-related-quotation').attr('href', link)
         }
         // b. Load table activity logs
-        OpportunityPageFunction.LoadDtbActivityLogs()
+        OpportunityPageFunction.LoadTableActivityLogs()
         // 6. LOAD DETAIL TABS
         // a. Load tab product
-        OpportunityPageFunction.LoadDtbProduct(pageVariables.opp_detail_data?.['opportunity_product_datas'] || [])
+        OpportunityPageFunction.LoadTableProduct(pageVariables.opp_detail_data?.['opportunity_product_datas'] || [])
         $input_product_pretax_amount.attr('value', pageVariables.opp_detail_data?.['total_product_pretax_amount'])
         $input_product_taxes.attr('value', pageVariables.opp_detail_data?.['total_product_tax'])
         $input_product_total.attr('value', pageVariables.opp_detail_data?.['total_product'])
         $estimated_gross_profit_percent.val(pageVariables.opp_detail_data?.['estimated_gross_profit_percent'])
         $estimated_gross_profit_value.attr('value', pageVariables.opp_detail_data?.['estimated_gross_profit_value'])
         // b. Load tab competitor
-        OpportunityPageFunction.LoadDtbCompetitor(pageVariables.opp_detail_data?.['opportunity_competitors_datas'] || [])
+        OpportunityPageFunction.LoadTableCompetitor(pageVariables.opp_detail_data?.['opportunity_competitors_datas'] || [])
         // c. Load tab contact role
-        OpportunityPageFunction.LoadDtbContactRole(pageVariables.opp_detail_data?.['opportunity_contact_role_datas'] || [])
+        OpportunityPageFunction.LoadTableContactRole(pageVariables.opp_detail_data?.['opportunity_contact_role_datas'] || [])
         OpportunityPageFunction.LoadFactor($box_select_factor, pageVariables.opp_detail_data?.['customer_decision_factor'])
         // d. Load tab sale team
-        OpportunityPageFunction.LoadSaleTeam(
+        OpportunityPageFunction.LoadSaleTeamList(
             pageVariables.opp_detail_data?.['members'] || [],
             true,
             pageVariables.opp_detail_data?.['sale_person'] || {}
         );
         // e. Load tab lead
-        OpportunityPageFunction.LoadDtbLead()
+        OpportunityPageFunction.LoadTableLeadMapped()
 
         $.fn.initMaskMoney2();
 
@@ -1834,6 +1765,16 @@ class OpportunityHandler {
         ])
     }
     static LoadDetailOpportunity(option) {
+        $.notify($.fn.gettext('Loading opportunity detail, opportunity config and opportunity stage...'), {
+            type: 'info',
+            animate: {
+                enter: 'animated lightSpeedIn',
+                exit: 'animated lightSpeedOut'
+            },
+            allow_dismiss: false,
+            showProgressbar: true,
+        });
+
         const pk = $.fn.getPkDetail();
 
         let ajax_opp_detail = $.fn.callAjax2({
@@ -1842,14 +1783,13 @@ class OpportunityHandler {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity')) {
-                    loadPermitEmpty();
+                if (data?.['opportunity']) {
                     return data?.['opportunity'];
                 }
                 return {};
             },
             (errs) => {}
-        )
+        );
 
         let ajax_opp_config = $.fn.callAjax2({
             url: $urlEle.data('url-config'),
@@ -1857,13 +1797,13 @@ class OpportunityHandler {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('opp_config_data')) {
-                    return data['opp_config_data'];
+                if (data?.['opportunity_config']) {
+                    return data?.['opportunity_config'];
                 }
                 return {};
             },
             (errs) => {}
-        )
+        );
 
         let ajax_opp_config_stage = $.fn.callAjax2({
             url: $opp_stage_pipeline.attr('data-url'),
@@ -1871,69 +1811,60 @@ class OpportunityHandler {
         }).then(
             (resp) => {
                 let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('opportunity_config_stage')) {
-                    return data['opportunity_config_stage'];
+                if (data?.['opportunity_config_stage']) {
+                    return data?.['opportunity_config_stage'];
                 }
-                return {};
+                return [];
             },
             (errs) => {}
-        )
+        );
 
-        Promise.all([ajax_opp_detail, ajax_opp_config, ajax_opp_config_stage]).then(
-            (results) => {
-                const opp_detail_data = results[0]
-                const opp_config_data = results[1]
-                const opp_stage_data = results[2]
+        Promise.all([ajax_opp_detail, ajax_opp_config, ajax_opp_config_stage]).then(([opp_detail_data, opp_config_data, opp_stage_data]) => {
+            if (opp_detail_data) {
+                $('.page-content').prop('hidden', false);
 
-                if (opp_detail_data) {
-                    $('.page-content').prop('hidden', false)
+                pageVariables.opp_detail_data = opp_detail_data;
+                pageVariables.opp_config_data = opp_config_data;
+                pageVariables.opp_stage_data = opp_stage_data;
 
-                    // console.log(opp_detail_data)
+                OpportunityHandler.LoadDetailOppSub(option)
 
-                    // store data detail
-                    pageVariables.opp_detail_data = opp_detail_data
-                    pageVariables.opp_config_data = opp_config_data
-                    pageVariables.opp_stage_data = opp_stage_data
+                SetupFormSubmit.validate($('#frm-add-member'), {
+                    submitHandler: function (form) {
+                        let frm = new SetupFormSubmit($(form));
+                        $.fn.callAjax2({
+                            sweetAlertOpts: {'allowOutsideClick': true},
+                            url: frm.dataUrl.replaceAll('__pk_opp__', pk),
+                            method: frm.dataMethod,
+                            data: {
+                                'members': $('#dtbMember').DataTable().data().filter((item) => item?.['is_checked_new'] === true).map((item) => item?.['id']).toArray(),
+                            },
+                        }).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data) {
+                                    $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
+                                    setTimeout(
+                                        () => {
+                                            window.location.reload();
+                                        },
+                                        1000
+                                    )
 
-                    OpportunityHandler.LoadDetailOppSub(option)
-
-                    SetupFormSubmit.validate($('#frm-add-member'), {
-                        submitHandler: function (form) {
-                            let frm = new SetupFormSubmit($(form));
-                            $.fn.callAjax2({
-                                sweetAlertOpts: {'allowOutsideClick': true},
-                                url: frm.dataUrl.replaceAll('__pk_opp__', pk),
-                                method: frm.dataMethod,
-                                data: {
-                                    'members': $('#dtbMember').DataTable().data().filter((item) => item?.['is_checked_new'] === true).map((item) => item?.['id']).toArray(),
-                                },
-                            }).then(
-                                (resp) => {
-                                    let data = $.fn.switcherResp(resp);
-                                    if (data) {
-                                        $.fn.notifyB({description: $('#base-trans-factory').data('success')}, 'success')
-                                        setTimeout(
-                                            () => {
-                                                window.location.reload();
-                                            },
-                                            1000
-                                        )
-
-                                        // OpportunityPageFunction.reloadMemberList(pk);
-                                        // $('#modalAddMember').modal('hide');
-                                    }
-                                    $x.fn.hideLoadingPage();
-                                },
-                                (errs) => {
-                                    $.fn.switcherResp(errs);
-                                    $x.fn.hideLoadingPage();
+                                    // OpportunityPageFunction.reloadMemberList(pk);
+                                    // $('#modalAddMember').modal('hide');
                                 }
-                            )
-                        }
-                    })
-                }
+                                $x.fn.hideLoadingPage();
+                            },
+                            (errs) => {
+                                $.fn.switcherResp(errs);
+                                $x.fn.hideLoadingPage();
+                            }
+                        )
+                    }
+                })
             }
-        )
+        })
     }
 }
 
@@ -1943,19 +1874,18 @@ class OpportunityHandler {
 class OpportunityEventHandler {
     static InitPageEven() {
         // process
-        const target$ = $('#process-runtime-detail');
         $('#btn-collapse-process-show').on('click', function () {
             if ($(this).attr('data-loaded') !== '1' && pageVariables.opp_detail_data) {
                 $(this).attr('data-loaded', '1');
                 $.fn.callAjax2({
-                    url: target$.data('url').replaceAll('__pk__', pageVariables.opp_detail_data?.['process']?.['id']),
+                    url: $process_runtime_detail.data('url').replaceAll('__pk__', pageVariables.opp_detail_data?.['process']?.['id']),
                     method: 'GET',
                     isLoading: true,
                 }).then(resp => {
                     const detailData = $.fn.switcherResp(resp);
                     if (detailData) {
                         const processDetail = detailData?.['process_runtime_detail'] || {};
-                        const clsProcess = new ProcessStages(target$, processDetail, {
+                        const clsProcess = new ProcessStages($process_runtime_detail, processDetail, {
                             'debug': true,
                             'enableAppInfoShow': true,
                             'enableAppControl': true,
@@ -1967,91 +1897,64 @@ class OpportunityEventHandler {
                 });
             }
             $(this).toggleClass('collapsed-active');
-            target$.slideToggle('slow');
+            $process_runtime_detail.slideToggle('slow');
         });
         // even in timeline table
-        $('#btn-refresh-activity').on('click', function () {
-            OpportunityPageFunction.LoadDtbActivityLogs();
+        $(document).on('click', '#btn-refresh-activity', function () {
+            OpportunityPageFunction.LoadTableActivityLogs();
         });
         // even in tab product
         $('#btn-add-select-product').on('click', function () {
-            OpportunityPageFunction.addRowSelectProduct();
+            UsualLoadPageFunction.AddTableRow($table_product, {'product': {}})
+            let row_added = $table_product.find('tbody tr:last-child')
+            UsualLoadPageFunction.LoadProduct({
+                element: row_added.find('.select-box-product'),
+                data_url: `${$urlEle.data('url-product')}?general_product_category_id__in=${$productCategorySelectEle.val().join(',')}`
+            });
+            UsualLoadPageFunction.LoadTax({
+                element: row_added.find('.box-select-tax'),
+                data_url: $urlEle.data('url-tax')
+            })
         })
         $('#btn-add-input-product').on('click', function () {
-            OpportunityPageFunction.addRowInputProduct()
-        })
-        $productCategorySelectEle.on('select2:unselect', function (e) {
-            let removedOption = e.params.data;
-            $(`.box-select-product-category option[value="${removedOption.id}"]:selected`).closest('tr').each(function () {
-                $table_product.DataTable().row($(this).index()).remove().draw();
+            UsualLoadPageFunction.AddTableRow($table_product, {'product': null})
+            let row_added = $table_product.find('tbody tr:last-child')
+            UsualLoadPageFunction.LoadProductCategory({
+                element: row_added.find('.box-select-product-category'),
+                data_url: $productCategorySelectEle.val()
+            });
+            UsualLoadPageFunction.LoadUOM({
+                element: row_added.find('.box-select-uom'),
+                data_url: $urlEle.data('url-uom')
             })
-            $table_product.addClass('tag-change');
-            $(`.box-select-product-category option[value="${removedOption.id}"]`).remove();
-            OpportunityPageFunction.getTotalPrice();
-            $table_product.find('.select-box-product').each(function () {
-                let optionSelected = $(this).find('option:selected');
-                OpportunityPageFunction.LoadRowProduct(
-                    $(this),
-                    {
-                        'id': optionSelected.val(),
-                        'title': optionSelected.text()
-                    },
-                    $productCategorySelectEle.val()
-                );
+            UsualLoadPageFunction.LoadTax({
+                element: row_added.find('.box-select-tax'),
+                data_url: $urlEle.data('url-tax')
             })
-        });
-        $productCategorySelectEle.on('select2:select', function () {
-            let table = $('#table-product');
-            table.find('.select-box-product').each(function () {
-                let optionSelected = $(this).find('option:selected');
-                OpportunityPageFunction.LoadRowProduct(
-                    $(this),
-                    {
-                        'id': optionSelected.val(),
-                        'title': optionSelected.text()
-                    },
-                    $productCategorySelectEle.val()
-                );
-            })
-        });
-        $estimated_gross_profit_percent.on('change', function () {
-            if ($(this).val()) {
-                let percent = parseFloat($(this).val() || 0)
-                let value = parseFloat($input_product_pretax_amount.attr('value')) * percent / 100
-                $estimated_gross_profit_value.attr('value', value)
-            }
-            else {
-                $(this).val(0)
-                $estimated_gross_profit_value.attr('value', 0)
-            }
-            $.fn.initMaskMoney2()
         })
         $(document).on('change', '.select-box-product', function () {
-            let ele_tr = $(this).closest('tr');
+            let ele_tr = $(this).closest('tr')
+            ele_tr.find(`.box-select-product-category`).empty().prop('disabled', true)
+            ele_tr.find(`.box-select-uom`).empty()
+            ele_tr.find(`.box-select-tax`).empty()
+
             let product = SelectDDControl.get_data_from_idx($(this), $(this).val());
-            ele_tr.find(`.input-product-name`).attr('value', product.title)
-
-            let [product_category_ele, uom_ele, tax_ele] = [ele_tr.find(`.box-select-product-category`), ele_tr.find(`.box-select-uom`), ele_tr.find(`.box-select-tax`)];
-            product_category_ele.empty();
-            uom_ele.empty();
-            tax_ele.empty();
-
-            OpportunityPageFunction.LoadRowProductCategory(
-                product_category_ele,
-                product?.['general_information']?.['product_category'],
-                $productCategorySelectEle.val(),
-            )
-
-            OpportunityPageFunction.LoadRowUOM(
-                uom_ele,
-                product?.['sale_information']?.['default_uom'],
-                product,
-            )
-
-            OpportunityPageFunction.LoadRowTax(
-                tax_ele,
-                product?.['sale_information']?.['tax_code'],
-            )
+            UsualLoadPageFunction.LoadProductCategory({
+                element: ele_tr.find(`.box-select-product-category`),
+                data: product?.['general_information']?.['product_category'],
+                data_url: $productCategorySelectEle.val()
+            })
+            UsualLoadPageFunction.LoadUOM({
+                element: ele_tr.find(`.box-select-uom`).find('.box-select-uom'),
+                data: product?.['sale_information']?.['default_uom'],
+                data_params: {'group_id': product?.['general_information']?.['uom_group']?.['id']},
+                data_url: $urlEle.data('url-uom'),
+            })
+            UsualLoadPageFunction.LoadTax({
+                element: ele_tr.find(`.box-select-tax`),
+                data: product?.['sale_information']?.['tax_code'],
+                data_url: $urlEle.data('url-tax')
+            })
         })
         $(document).on('change', '.input-unit-price', function () {
             let price = $(this).valCurrency();
@@ -2059,7 +1962,7 @@ class OpportunityEventHandler {
             let quantity = ele_parent.find('.input-quantity').val();
             let subtotal = price * quantity;
             ele_parent.find('.input-subtotal').attr('value', subtotal);
-            OpportunityPageFunction.getTotalPrice();
+            OpportunityPageFunction.CalculateSumPrice();
         })
         $(document).on('change', '.input-quantity', function () {
             let quantity = $(this).val();
@@ -2072,7 +1975,7 @@ class OpportunityEventHandler {
             let price = ele_parent.find('.input-unit-price').valCurrency();
             let subtotal = price * quantity;
             ele_parent.find('.input-subtotal').attr('value', subtotal);
-            OpportunityPageFunction.getTotalPrice();
+            OpportunityPageFunction.CalculateSumPrice();
         })
         $(document).on('change', '.box-select-tax', function () {
             let ele_parent = $(this).closest('tr');
@@ -2081,54 +1984,81 @@ class OpportunityEventHandler {
             let subtotal = price * quantity;
             ele_parent.find('.input-subtotal').attr('value', subtotal);
 
-            OpportunityPageFunction.getTotalPrice();
+            OpportunityPageFunction.CalculateSumPrice();
+        })
+        $estimated_gross_profit_percent.on('change', function () {
+            if ($(this).val()) {
+                let percent = parseFloat($(this).val() || 0)
+                let value = parseFloat($input_product_pretax_amount.attr('value')) * percent / 100
+                $estimated_gross_profit_value.attr('value', value)
+            }
+            else {
+                $(this).val(0)
+                $estimated_gross_profit_value.attr('value', 0)
+            }
+            $.fn.initMaskMoney2()
         })
         // event in tab competitor
         $('#btn-add-competitor').on('click', function () {
-            OpportunityPageFunction.addRowCompetitor()
+            UsualLoadPageFunction.AddTableRow($table_competitor)
+            let row_added = $table_competitor.find('tbody tr:last-child')
+            UsualLoadPageFunction.LoadAccount({
+                element: row_added.find('.box-select-competitor'),
+                data_params: {
+                    'opp_customer': $customerSelectEle.val(),
+                    'opp_end_customer': $endCustomerSelectEle.val()
+                },
+                data_url: $urlEle.data('url-competitor')
+            })
         })
         // event in tab contact role
         $('#btn-add-contact').on('click', function () {
-            OpportunityPageFunction.addRowContactRole();
+            UsualLoadPageFunction.AddTableRow($table_contact_role)
+            let row_added = $table_contact_role.find('tbody tr:last-child')
+            UsualLoadPageFunction.LoadContact({
+                element: row_added.find('.box-select-contact'),
+                data_params: {'account_name_id': $customerSelectEle.val()},
+                data_url: $urlEle.data('url-contact')
+            })
+            OpportunityPageFunction.ParseOptionCustomerType(row_added.find('.box-select-type-customer'))
+            OpportunityPageFunction.ParseOptionCustomerRole(row_added.find('.box-select-role'))
         })
         $(document).on('change', '#select-box-end-customer', function () {
-            $table_contact_role.addClass('tag-change');
-
             $table_contact_role.find('.box-select-type-customer option[value="1"]:selected').closest('tr').each(function () {
-                $table_contact_role.addClass('tag-change');
                 $table_contact_role.DataTable().row($(this).index()).remove().draw();
             });
         })
         $(document).on('change', '#select-box-customer', function () {
             $table_contact_role.find('.box-select-type-customer option[value="0"]:selected').closest('tr').each(function () {
-                $table_contact_role.addClass('tag-change');
                 $table_contact_role.DataTable().row($(this).index()).remove().draw();
             });
         })
         $(document).on('change', '.box-select-type-customer', function () {
-            let box_select_contact = $(this).closest('tr').find('.box-select-contact');
-            $(this).closest('tr').find('.input-job-title').val('');
+            let box_select_contact = $(this).closest('tr').find('.box-select-contact')
             if ($(this).val() === '0') {
-                OpportunityPageFunction.LoadRowContact(box_select_contact, {}, $customerSelectEle.val());
+                UsualLoadPageFunction.LoadContact({
+                    element: box_select_contact,
+                    data_params: {'account_name_id': $customerSelectEle.val()},
+                    data_url: $urlEle.data('url-contact')
+                })
             } else {
-                OpportunityPageFunction.LoadRowContact(box_select_contact, {}, $endCustomerSelectEle.val());
+                UsualLoadPageFunction.LoadContact({
+                    element: box_select_contact,
+                    data_params: {'account_name_id': $endCustomerSelectEle.val()},
+                    data_url: $urlEle.data('url-contact')
+                })
             }
+            $(this).closest('tr').find('.input-job-title').val('')
         })
         $(document).on('change', '.box-select-contact', function () {
             let contact_data = SelectDDControl.get_data_from_idx($(this), $(this).val());
             $(this).closest('tr').find('.input-job-title').val(contact_data.job_title);
-
-            OpportunityPageFunction.onChangeContactRole($(this));
+            OpportunityPageFunction.OnChangeContactRole($(this));
         })
         $(document).on('change', '.box-select-role', function () {
-            OpportunityPageFunction.onChangeContactRole($(this));
+            OpportunityPageFunction.OnChangeContactRole($(this));
         })
         // event general
-        $(document).on('change', 'select, input', function () {
-            $(this).addClass('tag-change');
-            $(this).closest('tr').addClass('tag-change');
-            $(this).closest('table').addClass('tag-change');
-        })
         $check_agency_role.on('change', function () {
             if ($(this).is(':checked')) {
                 $endCustomerSelectEle.prop('disabled', false);
@@ -2140,7 +2070,6 @@ class OpportunityEventHandler {
                 $table_contact_role.find('.box-select-type-customer option[value="1"]').prop('disabled', true);
 
             }
-            $endCustomerSelectEle.addClass('tag-change');
         })
         $checkInputRateEle.on('change', function () {
             if ($(this).is(':checked')) {
@@ -2159,7 +2088,7 @@ class OpportunityEventHandler {
             }
         })
         $(document).on('click', '.btn-del-item', function () {
-            OpportunityPageFunction.delRowTable($(this));
+            OpportunityPageFunction.CommonDeleteTableRow($(this));
         })
         $(document).on('click', '.btn-add-document', function () {
             if (pageVariables.opp_detail_data) {
@@ -2174,12 +2103,12 @@ class OpportunityEventHandler {
         })
         // event on click to create relate apps from opportunity (for cancel quotation - sale order)
         $('#dropdown-menu-relate-app').on('click', '.relate-app', function () {
-            OpportunityPageFunction.loadOpenRelateApp(this);
+            OpportunityPageFunction.CheckPermissionDetailOrdersAppRelated(this);
         })
         // tab add member for sale
         let eleFrmPermit = $('#permit-member');
         $('#btn-show-modal-add-member').on('click', async function () {
-            await OpportunityPageFunction.loadMemberForDtb().then();
+            await OpportunityPageFunction.LoadMemberForDtb().then();
         })
         $('.mask-money').on('change', function () {
             if ($(this).valCurrency() < 0) {
@@ -2212,10 +2141,10 @@ class OpportunityEventHandler {
         // $(document).on('click', '.btn-go-to-stage', function () {
         //     if (config_is_select_stage) {
         //         if ($('#input-close-deal').is(':checked')) {
-        //             OpportunityPageFunction.renderAlert($('#deal-closed').text());
+        //             OpportunityPageFunction.CommonShowAlert($('#deal-closed').text());
         //         } else {
         //             if ($check_lost_reason.is(':checked') || $('.input-win-deal:checked').length > 0) {
-        //                 OpportunityPageFunction.renderAlert($('#deal-close-lost').text());
+        //                 OpportunityPageFunction.CommonShowAlert($('#deal-close-lost').text());
         //             } else {
         //                 let stage = $(this).closest('.sub-stage');
         //                 let index = stage.index();
@@ -2237,7 +2166,7 @@ class OpportunityEventHandler {
         //             }
         //         }
         //     } else {
-        //         OpportunityPageFunction.renderAlert($('#not-select-stage').text());
+        //         OpportunityPageFunction.CommonShowAlert($('#not-select-stage').text());
         //     }
         // })
         $(document).on('change', '#input-close-deal', function () {
@@ -2261,7 +2190,7 @@ class OpportunityEventHandler {
         $('.item-detail-related-feature').on('click', function () {
             if ($(this).attr('href') === '#') {
                 $(this).removeAttr('target');
-                OpportunityPageFunction.renderAlert(`${$(this).text()} ${$transEle.data('trans-not-created')}`);
+                OpportunityPageFunction.CommonShowAlert(`${$(this).text()} ${$transEle.data('trans-not-created')}`);
             }
         })
         $(document).on('click', '#btnOpenPermit', function () {
@@ -2274,7 +2203,7 @@ class OpportunityEventHandler {
         SetupFormSubmit.validate($form_Opp_Task, {
             errorClass: 'is-invalid cl-red',
             submitHandler: function () {
-                TaskSubmitFuncOpps($form_Opp_Task, OpportunityPageFunction.LoadDtbActivityLogs)
+                TaskSubmitFuncOpps($form_Opp_Task, OpportunityPageFunction.LoadTableActivityLogs)
             }
         })
         $('#btn-auto-update-stage').on('click', function () {

@@ -58,7 +58,7 @@
             <div class="tab-pane fade show active" id="tab_block_1">
                 <div class="container-fluid">
                     {% trans 'Select Sale Person' as inherit_title %}
-                    {% include 'extends/the-documents/bastion.html' with auto_select_current_employee=True priority_app='opp-process-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True inherit_readonly=True %}
+                    {% include 'extends/the-documents/bastion.html' with priority_app='opp-process-prj-inherit' opp_title=opp_title has_opp=True has_inherit=True is_open=True inherit_title=inherit_title inherit_required=True %}
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-6">
                             <div class="form-group">
@@ -189,7 +189,7 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-product"
-                                            class="table nowrap min-w-1366p w-100 mb-5"
+                                            class="table nowrap min-w-1500p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr class="bg-light">
@@ -198,6 +198,8 @@
                                             <th>{% trans 'Description' %}</th>
                                             <th>{% trans 'UoM' %}</th>
                                             <th>{% trans 'Quantity' %}</th>
+                                            <th>{% trans 'Duration UOM' %}</th>
+                                            <th>{% trans 'Duration' %}</th>
                                             <th>{% trans 'Unit Price' %}</th>
                                             <th>{% trans 'Discount' %}</th>
                                             <th>{% trans 'Tax' %}</th>
@@ -209,8 +211,8 @@
                                         </tbody>
                                         <tfoot>
                                         <tr>
-                                            <th colspan="5"></th>
-                                            <th colspan="5">
+                                            <th colspan="6"></th>
+                                            <th colspan="6">
                                                 <div class="row mb-2">
                                                     <div class="col-6">
                                                         <p style="text-align: right">{% trans 'Pretax Amount' %}:</p>
@@ -885,10 +887,11 @@
                                 <thead>
                                 <tr class="bg-light">
                                     <th class="w-20">{% trans 'Product name' %}</th>
-                                    <th class="w-20">{% trans 'Product code' %}</th>
+                                    <th class="w-15">{% trans 'Product code' %}</th>
                                     <th class="w-15">{% trans 'Description' %}</th>
                                     <th class="w-10">{% trans 'Category' %}</th>
                                     <th class="w-10">{% trans 'UOM' %}</th>
+                                    <th class="w-10">{% trans 'Duration UOM' %}</th>
                                     <th class="w-10">{% trans 'Status' %}</th>
                                     <th class="w-10">{% trans 'Note' %}</th>
                                 </tr>

@@ -25,7 +25,7 @@ class GoodsReceiptList(View):
         menu_active='menu_goods_receipt_list',
         breadcrumb='GOODS_RECEIPT_LIST_PAGE',
         icon_cls='fas fa-dolly-flatbed',
-        icon_bg='bg-yellow',
+        icon_bg='bg-gold',
     )
     def get(self, request, *args, **kwargs):
         return {'stt_sys': SYSTEM_STATUS, 'gr_type': GR_TYPE}, status.HTTP_200_OK
@@ -38,7 +38,7 @@ class GoodsReceiptCreate(View):
         menu_active='menu_goods_receipt_list',
         breadcrumb='GOODS_RECEIPT_CREATE_PAGE',
         icon_cls='fas fa-dolly-flatbed',
-        icon_bg='bg-yellow',
+        icon_bg='bg-gold',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -74,7 +74,7 @@ class GoodsReceiptDetail(View):
         menu_active='menu_goods_receipt_list',
         breadcrumb='GOODS_RECEIPT_DETAIL_PAGE',
         icon_cls='fas fa-dolly-flatbed',
-        icon_bg='bg-yellow',
+        icon_bg='bg-gold',
         perm_check=PermCheck(url=ApiURL.GOODS_RECEIPT_DETAIL_PK, method='GET', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):
@@ -88,7 +88,7 @@ class GoodsReceiptUpdate(View):
         menu_active='menu_goods_receipt_list',
         breadcrumb='GOODS_RECEIPT_UPDATE_PAGE',
         icon_cls='fas fa-dolly-flatbed',
-        icon_bg='bg-yellow',
+        icon_bg='bg-gold',
         perm_check=PermCheck(url=ApiURL.GOODS_RECEIPT_DETAIL_PK, method='PUT', fill_key=['pk']),
     )
     def get(self, request, pk, *args, **kwargs):

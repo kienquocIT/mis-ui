@@ -278,7 +278,7 @@
                     settings.source = data ? data : settings.source
                     settings.itemsPerPage = settings.source.length
                     element.data = data ? data : settings.source
-                    if (data.count) {
+                    if (data?.count) {
                         settings.pageNum = 1
                         let count = data ? data.count : 0
                         let pageSize = data ? data.page_size : 1

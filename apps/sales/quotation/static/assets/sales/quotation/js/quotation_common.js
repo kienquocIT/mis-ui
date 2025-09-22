@@ -7196,7 +7196,7 @@ class QuotationSubmitHandle {
                     let dataProduct = SelectDDControl.get_data_from_idx($(productEle), $(productEle).val());
                     if (dataProduct) {
                         rowData['product_id'] = dataProduct?.['id'];
-                        rowData['product_title'] = dataProduct?.['title'];
+                        // rowData['product_title'] = dataProduct?.['title'];
                         rowData['product_code'] = dataProduct?.['code'];
                         rowData['product_data'] = dataProduct;
                     }
@@ -7405,7 +7405,7 @@ class QuotationSubmitHandle {
                 let dataProduct = SelectDDControl.get_data_from_idx($(eleProduct), $(eleProduct).val());
                 if (dataProduct) {
                     rowData['product_id'] = dataProduct?.['id'];
-                    rowData['product_title'] = dataProduct?.['title'];
+                    // rowData['product_title'] = dataProduct?.['title'];
                     rowData['product_code'] = dataProduct?.['code'];
                     rowData['product_data'] = dataProduct;
                 }

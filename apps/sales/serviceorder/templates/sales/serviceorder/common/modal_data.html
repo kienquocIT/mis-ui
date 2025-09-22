@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="modal fade" id="modal-exchange-rate" tabindex="-1" role="dialog" aria-labelledby="modal-exchange-rate" data-bs-backdrop="static">
+<div class="modal fade" id="modal-exchange-rate" tabindex="-1" role="dialog" aria-labelledby="modal-exchange-rate">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -40,30 +40,30 @@
     </div>
 </div>
 
-
-<div class="modal fade" id="modal-product" tabindex="-1" role="dialog" aria-labelledby="modal-product" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+<div class="modal fade" id="modal-product" tabindex="-1" role="dialog" aria-labelledby="modal-product">
+    <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{% trans "Select Product/ Service" %}</h5>
+                <h5 class="modal-title">{% trans "Select Product/Service" %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span>&times;</span>
                 </button>
             </div>
             <div class="modal-body" style="max-height: 70vh; overflow: auto">
-                <div class="nicescroll-bar">
-                    <table class="table nowrap w-100" id="modal-table-product" data-url="{% url 'ProductListAPI' %}">
-                        <thead>
-                            <tr class="bg-light">
-                                <th></th>
-                                <th>{% trans 'Code' %}</th>
-                                <th>{% trans 'Name' %}</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table nowrap w-100" id="modal-table-product" data-url="{% url 'ProductListAPI' %}">
+                            <thead>
+                                <tr class="bg-secondary-light-5">
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 250px">{% trans 'Product/Service' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Description' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody> </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -96,7 +96,7 @@
                             <input type="text" class="form-control" name="container_name" id="container_name" required>
                         </div>
                     </div>
-                    <div class="col-12 mt-1">
+                    <div class="col-12">
                         <div class="form-group">
                             <label class="form-label" for="container_type">{% trans 'Container type' %}</label>
                             <select class="form-select select2" id="container_type"
@@ -105,48 +105,41 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-12 mt-2">
+                    <div class="col-12">
                         <div class="form-group">
                             <label class="form-label required" for="txt_title">{% trans 'Reference number' %}</label>
                             <input type="text" class="form-control" name="container_ref_number" id="container_ref_number" required>
                         </div>
                     </div>
-
-                    <div class="col-12 mt-2">
-                        <div class="d-flex flex-wrap gap-3">
-                            <div class="flex-grow-1">
-                                <label class="form-label" for="weight_input">{% trans 'Weight' %}</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control text-end" id="container_weight"
-                                           name="weight" placeholder="0" step="0.1" min="0">
-                                    <span class="input-group-text">Kg</span>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <label class="form-label" for="dimension_input">{% trans 'Dimension' %}</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control text-end" id="container_dimension"
-                                           name="dimension" placeholder="0" step="0.5" min="0">
-                                    <span class="input-group-text">M³</span>
-                                </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="weight_input">{% trans 'Weight' %}</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="container_weight"
+                                       name="weight" placeholder="0" step="0.1" min="0">
+                                <span class="input-group-text">Kg</span>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-12 mt-3">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="dimension_input">{% trans 'Dimension' %}</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="container_dimension"
+                                       name="dimension" placeholder="0" step="0.5" min="0">
+                                <span class="input-group-text">M³</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
                         <label for="container_note" class="form-label">{% trans 'Note' %}</label>
                         <textarea name="container_note" class="form-control" id="container_note" rows="2"></textarea>
                     </div>
-
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    {% trans 'Close' %}
-                </button>
-                <button type="button" id="btn_apply_container" class="btn btn-primary" data-bs-dismiss="modal">
-                    {% trans 'Save' %}
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn_apply_container" class="btn btn-primary">{% trans 'Save' %}</button>
             </div>
         </div>
     </div>
@@ -170,8 +163,7 @@
                             <input type="text" class="form-control" name="package_name" id="package_name" required>
                         </div>
                     </div>
-
-                    <div class="col-12 mt-1">
+                    <div class="col-12">
                         <div class="form-group">
                             <label class="form-label" for="package_type">{% trans 'Package type' %}</label>
                             <select class="form-select select2" id="package_type"
@@ -180,54 +172,50 @@
                             </select>
                         </div>
                     </div>
-
-                    <div class="col-12 mt-2">
-                        <label for="package_container" class="form-label">{% trans 'Container' %}</label>
-                        <select name="package_container" class="form-select" id="package_container"></select>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="package_container" class="form-label">{% trans 'Container' %}</label>
+                            <select name="package_container" class="form-select" id="package_container"></select>
+                        </div>
                     </div>
 
-                    <div class="col-12 mt-2">
+                    <div class="col-12">
                         <div class="form-group">
                             <label class="form-label" for="package_ref_number">{% trans 'Reference number' %}</label>
                             <input type="text" class="form-control" name="package_ref_number" id="package_ref_number">
                         </div>
                     </div>
-
-                    <div class="col-12 mt-2">
-                        <div class="d-flex flex-wrap gap-3">
-                            <div class="flex-grow-1">
-                                <label class="form-label" for="package_weight">{% trans 'Weight' %}</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control text-end" id="package_weight"
-                                           name="package_weight" placeholder="0" step="0.1" min="0">
-                                    <span class="input-group-text">Kg</span>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <label class="form-label" for="package_dimension">{% trans 'Dimension' %}</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control text-end" id="package_dimension"
-                                           name="package_dimension" placeholder="0" step="1" min="0">
-                                    <span class="input-group-text">M³</span>
-                                </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="package_weight">{% trans 'Weight' %}</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="package_weight"
+                                       name="package_weight" placeholder="0" step="0.1" min="0">
+                                <span class="input-group-text">Kg</span>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-12 mt-3">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="package_dimension">{% trans 'Dimension' %}</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="package_dimension"
+                                       name="package_dimension" placeholder="0" step="0.5" min="0">
+                                <span class="input-group-text">M³</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
                         <label for="package_note" class="form-label">{% trans 'Note' %}</label>
                         <textarea name="package_note" class="form-control" id="package_note" rows="2"></textarea>
                     </div>
-
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     {% trans 'Close' %}
                 </button>
-                <button type="button" id="btn_apply_package" class="btn btn-primary" data-bs-dismiss="modal">
-                    {% trans 'Save' %}
-                </button>
+                <button type="button" id="btn_apply_package" class="btn btn-primary">{% trans 'Save' %}</button>
             </div>
         </div>
     </div>
@@ -268,7 +256,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{% trans "Contribution of Product/ Service" %}</h5>
+                <h5 class="modal-title">{% trans "Contribution of Product/Service" %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span>&times;</span>
                 </button>

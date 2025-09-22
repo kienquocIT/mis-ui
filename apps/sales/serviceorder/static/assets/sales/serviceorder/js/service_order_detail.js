@@ -78,12 +78,6 @@ class DetailDataHandler {
 
                 DetailDataHandler.loadDetailOpp(data)
 
-                const createdDate = data.date_created ? DateTimeControl.formatDateType(
-                    "YYYY-MM-DD",
-                    "DD/MM/YYYY",
-                    data.date_created
-                ) : ''
-
                 const startDate = data.start_date ? DateTimeControl.formatDateType(
                     "YYYY-MM-DD",
                     "DD/MM/YYYY",
@@ -98,7 +92,6 @@ class DetailDataHandler {
 
                 // basic information fields
                 ServiceOrder.pageElement.commonData.$titleEle.val(data?.title)
-                ServiceOrder.pageElement.commonData.$createdDate.val(createdDate)
                 DetailDataHandler.loadCustomerList(data?.customer_data)
                 ServiceOrder.pageElement.commonData.$startDate.val(startDate)
                 ServiceOrder.pageElement.commonData.$endDate.val(endDate)
@@ -106,6 +99,7 @@ class DetailDataHandler {
                 // shipment
                 let shipmentDataFormatted = DetailDataHandler.formatShipmentDetailData(data?.shipment || [])
                 TabShipmentFunction.initShipmentDataTable(shipmentDataFormatted, isDetail)
+                TabShipmentFunction.pushToShipmentData(shipmentDataFormatted)
 
                 //service detail
                 ServiceOrder.initServiceDetailDataTable(data.service_detail_data)
@@ -149,7 +143,7 @@ class DetailDataHandler {
                 $.fn.initMaskMoney2()
                 ServiceOrder.disableTableFields()
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
-                UsualLoadPageFunction.DisablePage(isDisablePage, ['.btn-close', '.modal-header button'])
+                UsualLoadPageFunction.DisablePage(isDisablePage, ['.btn-close', '.modal-header button', '#view-dashboard'])
             }
         )
     }
@@ -176,4 +170,9 @@ $(document).ready(function () {
     ServiceOrder.handleOpenModalReconcile()
     ServiceOrder.handleOpenModalPackage()
     ServiceOrder.handleTogglePackageChildren()
+
+    $('#view-dashboard').on('click', function () {
+        let url = $(this).attr('data-url') + '?service_order_id=' + $.fn.getPkDetail()
+        $(this).attr('href', url)
+    })
 })

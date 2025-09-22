@@ -186,6 +186,38 @@ class UsualLoadPageFunction {
     }
 
     /**
+     * Load ô Contact (expected-data-url = ContactListAPI)
+     * @param {HTMLElement|jQuery} element - element
+     * @param {Object} data - data json
+     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Object} data_params - data_params
+     * @param {string} data_url - data_url
+     * @returns {void}
+     */
+    static LoadContact({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+        if (!element) {
+            console.error("element is required.");
+            return;
+        }
+        data_url = data_url || element.attr('data-url')
+        let queryString = '';
+        if (typeof data_params === 'object' && data_params !== null && Object.keys(data_params).length > 0) {
+            queryString = '?' + new URLSearchParams(data_params).toString();
+        }
+        element.initSelect2({
+            allow_clear: allow_clear,
+            ajax: {
+                url: data_url + queryString,
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'contact_list',
+            keyId: 'id',
+            keyText: 'fullname',
+        })
+    }
+
+    /**
      * Load ô Account (expected-data-url = AccountListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json

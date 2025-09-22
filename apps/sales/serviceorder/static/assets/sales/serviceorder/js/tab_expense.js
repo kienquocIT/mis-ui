@@ -150,7 +150,6 @@ class TabExpenseFunction {
                     quantity: parseFloat($tr.find(".row-quantity").val() || 0),
                     expense_price: parseFloat($tr.find(".row-expense-price").attr('value') || 0),
                     tax: $tr.find(".row-tax").val() || null,
-                    subtotal_price: parseFloat($tr.find(".row-subtotal").attr('value') || 0),
                 };
                 serviceOrderExpenseData.push(item);
             }

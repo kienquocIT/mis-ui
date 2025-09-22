@@ -86,16 +86,20 @@ msgid "Service detail"
 msgstr "Chi tiết dịch vụ"
 
 #
-msgid "Select Product/ Service"
-msgstr "Chọn Sản Phẩm / Dịch Vụ"
+msgid "Select Product/Service"
+msgstr "Chọn Sản phẩm/Dịch vụ"
 
 #
-msgid "Add Item"
-msgstr "Sản Phẩm Dịch Vụ"
+msgid "Product/Service"
+msgstr "Sản phẩm/Dịch vụ"
 
 #
-msgid "Add Non Item"
-msgstr "Sản Phẩm Dịch Vụ Ngoài"
+msgid "Add item"
+msgstr "Thêm sản phẩm/dịch vụ"
+
+#
+msgid "Add non-item"
+msgstr "Thêm sản phẩm/dịch vụ bên ngoài"
 
 #
 msgid "Shipment"
@@ -148,3 +152,47 @@ msgstr "Xóa dòng gói hàng"
 #
 msgid "Add Installment"
 msgstr "Thêm PT Thanh Toán"
+
+#
+msgid "Exchange Rate"
+msgstr "Tỉ giá"
+
+#
+msgid "Assignee"
+msgstr "Người nhận việc"
+
+#
+msgid "Name"
+msgstr "Tên"
+
+#
+msgid "Unit"
+msgstr "Đơn vị"
+
+#
+msgid "Price"
+msgstr "Giá"
+
+#
+msgid "Total Amount"
+msgstr "Tổng giá trị"
+
+#
+msgid "Action"
+msgstr "Thao tác"
+
+#
+msgid "Is Service Delivery"
+msgstr "TT giao hàng"
+
+#
+msgid "Unit Cost"
+msgstr "Chi phí đơn vị"
+
+#
+msgid "Progress"
+msgstr "Tiến độ"
+
+#
+msgid "View dashboard"
+msgstr "Xem Dashboard"

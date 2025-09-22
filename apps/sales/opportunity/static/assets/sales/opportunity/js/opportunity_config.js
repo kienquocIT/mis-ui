@@ -226,7 +226,7 @@ $(document).ready(function () {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('opportunity_config_stage')) {
-                        return resp.data['opportunity_config_stage'] ? OpportunityPageFunction.sortStage(resp.data['opportunity_config_stage']) : [];
+                        return resp.data['opportunity_config_stage'] ? OpportunityPageFunction.SortOppStageByWinrate(resp.data['opportunity_config_stage']) : [];
                     }
                     throw Error('Call data raise errors.')
                 },

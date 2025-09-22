@@ -1,6 +1,5 @@
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from apps.shared.apis import RespData
 from apps.shared.constant import TYPE_CUSTOMER, ROLE_CUSTOMER, SYSTEM_STATUS
@@ -23,8 +22,6 @@ class OpportunityList(View):
 
 
 class OpportunityDetail(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/opportunity/opportunity_detail.html',
@@ -46,8 +43,6 @@ class OpportunityDetail(View):
 
 
 class OpportunityUpdate(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/opportunity/opportunity_update.html',
@@ -113,8 +108,6 @@ class OpportunityDetailAPI(APIView):
 
 # activities
 class OpportunityCallLogList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/opportunity/activities/call_log/call_log_list.html',
@@ -169,8 +162,6 @@ class OpportunityCallLogDetailAPI(APIView):
 
 
 class OpportunityEmailList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/opportunity/activities/email/email_list.html',
@@ -226,8 +217,6 @@ class OpportunityEmailDetailAPI(APIView):
 
 
 class OpportunityMeetingList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/opportunity/activities/meeting/meeting_list.html',
@@ -556,3 +545,70 @@ class OpportunityContractSummaryAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONTRACT_SUMMARY).get(data)
         return resp.auto_return(key_success='opportunity_contract_summary')
+
+
+# table API
+class OppProductListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SALE_LIST).get(data)
+        return resp.auto_return(key_success='product_list')
+
+
+class OppProductCategoryListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_LIST).get(data)
+        return resp.auto_return(key_success='product_category_list')
+
+
+class OppTaxListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get(data)
+        return resp.auto_return(key_success='tax_list')
+
+
+class OppUOMListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get(data)
+        return resp.auto_return(key_success='unit_of_measure')
+
+
+class OppCompetitorListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get(data)
+        return resp.auto_return(key_success='account_list')
+
+
+class OppContactListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get(data)
+        return resp.auto_return(key_success='contact_list')

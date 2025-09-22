@@ -18,7 +18,7 @@ class ServiceOrderList(View):
         icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
-        return {'stt_sys': SYSTEM_STATUS}, status.HTTP_200_OK
+        return {}, status.HTTP_200_OK
 
 
 class ServiceOrderCreate(View):

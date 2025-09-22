@@ -6521,7 +6521,7 @@ class DocumentControl {
     }
 
     static async getCompanyConfig() {
-        let dataText = globeDataCompanyConfig;
+        let dataText = sessionStorage.getItem('companyConfig');
         if (!dataText || dataText === '') {
             let companyConfigUrl = globeUrlCompanyConfig;
             if (companyConfigUrl) {
@@ -6531,13 +6531,21 @@ class DocumentControl {
                 }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     dataText = JSON.stringify(data);
-                    globeDataCompanyConfig = dataText;
+                    sessionStorage.setItem('companyConfig', dataText);
+                    sessionStorage.setItem('companyConfigTime', Date.now());
                     return data;
                 }).then((rs) => {
                     return rs
                 });
             }
-        } else return JSON.parse(dataText);
+        } else{
+            let cacheTime = sessionStorage.getItem('companyConfigTime');
+            if (Date.now() - cacheTime > 1440 * 60 * 1000) {
+                sessionStorage.removeItem('companyConfig');
+                return this.getCompanyConfig(); // Gọi lại
+            }
+            return JSON.parse(dataText);
+        }
     }
 
     static async getCompanyCurrencyConfig() {

@@ -14,8 +14,17 @@
         }
     </style>
 {% endblock %}
-
 {% block pageAction %}
+    <a id="view-dashboard" href="#" target="_blank" data-url="{% url 'ServiceOrderDetailDashboard' %}">
+        <button class="btn btn-gradient-primary">
+            <span>
+                <span class="icon">
+                  <span class="feather-icon"><i class="bi bi-clipboard-data"></i></span>
+                </span>
+                <span>{% trans 'View dashboard' %}</span>
+            </span>
+        </button>
+    </a>
     <button class="btn btn-outline-primary" type="submit" form="form-update-service-order">
         <span>
             <span>{% trans 'Save' %}</span>
@@ -23,7 +32,6 @@
         </span>
     </button>
 {% endblock %}
-
 {% block pageContent %}
     <form data-method="PUT" id="form-update-service-order"
           data-url="{% url 'ServiceOrderDetailAPI' data.pk %}"
@@ -33,12 +41,10 @@
         {% include 'sales/serviceorder/common/tab_data.html' %}
     </form>
 {% endblock %}
-
 {% block modalData %}
     {% include 'sales/serviceorder/common/modal_data.html' %}
     {% include 'sales/task/extend/task-form.html' with not_bastion=True custom_assignee=True %}
 {% endblock %}
-
 {% block dataHiddenGroup %}
     <script id="script-url"
             data-expense-item-list-url="{% url 'ExpenseItemListAPI' %}"
@@ -53,8 +59,6 @@
             data-tax-url='{% url 'TaxListAPI' %}'
     ></script>
 {% endblock %}
-
-
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>

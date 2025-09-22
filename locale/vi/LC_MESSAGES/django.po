@@ -12266,3 +12266,7 @@ msgstr "Loại kiện hàng"
 #
 msgid "Package Type"
 msgstr "Loại Kiện Hàng"
+
+#
+msgid "Profit plan"
+msgstr "Kế hoạch LN"

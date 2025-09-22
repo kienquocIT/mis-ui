@@ -2748,6 +2748,9 @@ class QuotationLoadDataHandle {
         for (let ele of table[0].querySelectorAll('.table-row-uom')) {
             ele.setAttribute('readonly', 'true');
         }
+        for (let ele of table[0].querySelectorAll('.table-row-uom-time')) {
+            ele.setAttribute('readonly', 'true');
+        }
         for (let ele of table[0].querySelectorAll('.table-row-quantity')) {
             ele.setAttribute('readonly', 'true');
         }
@@ -3082,7 +3085,7 @@ class QuotationDataTableHandle {
                         if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
                             dataZone = "sale_order_products_data";
                         }
-                        return `<input type="text" class="form-control table-row-quantity-time valid-num" value="${row?.['product_duration'] ? row?.['product_duration'] : 0}" data-zone="${dataZone}" disabled>`;
+                        return `<input type="text" class="form-control table-row-quantity-time valid-num" value="${row?.['product_quantity_time'] ? row?.['product_quantity_time'] : 0}" data-zone="${dataZone}" disabled>`;
                     }
                 },
                 {
@@ -7286,6 +7289,18 @@ class QuotationSubmitHandle {
                         rowData['remain_for_purchase_order'] = parseFloat(eleQuantity.value);
                         rowData['quantity_wo_remain'] = parseFloat(eleQuantity.value);
                     }
+                }
+                let eleUOMTime = row.querySelector('.table-row-uom-time');
+                if ($(eleUOMTime).val()) {
+                    let dataUOMTime = SelectDDControl.get_data_from_idx($(eleUOMTime), $(eleUOMTime).val());
+                    if (dataUOMTime) {
+                        rowData['uom_time_id'] = dataUOMTime?.['id'];
+                        rowData['uom_time_data'] = dataUOMTime;
+                    }
+                }
+                let eleQuantityTime = row.querySelector('.table-row-quantity-time');
+                if (eleQuantityTime) {
+                    rowData['product_quantity_time'] = parseFloat(eleQuantityTime.value);
                 }
                 let eleTax = row.querySelector('.table-row-tax');
                 if ($(eleTax).val()) {

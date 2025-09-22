@@ -24,7 +24,7 @@ class GoodsReceiptList(View):
         template='sales/inventory/goodreceipt/goods_receipt_list.html',
         menu_active='menu_goods_receipt_list',
         breadcrumb='GOODS_RECEIPT_LIST_PAGE',
-        icon_cls='fas fa-dolly-flatbed',
+        icon_cls='fa-solid fa-dolly',
         icon_bg='bg-gold',
     )
     def get(self, request, *args, **kwargs):
@@ -37,7 +37,7 @@ class GoodsReceiptCreate(View):
         template='sales/inventory/goodreceipt/goods_receipt_create.html',
         menu_active='menu_goods_receipt_list',
         breadcrumb='GOODS_RECEIPT_CREATE_PAGE',
-        icon_cls='fas fa-dolly-flatbed',
+        icon_cls='fa-solid fa-dolly',
         icon_bg='bg-gold',
     )
     def get(self, request, *args, **kwargs):
@@ -73,7 +73,7 @@ class GoodsReceiptDetail(View):
         template='sales/inventory/goodreceipt/goods_receipt_detail.html',
         menu_active='menu_goods_receipt_list',
         breadcrumb='GOODS_RECEIPT_DETAIL_PAGE',
-        icon_cls='fas fa-dolly-flatbed',
+        icon_cls='fa-solid fa-dolly',
         icon_bg='bg-gold',
         perm_check=PermCheck(url=ApiURL.GOODS_RECEIPT_DETAIL_PK, method='GET', fill_key=['pk']),
     )
@@ -87,7 +87,7 @@ class GoodsReceiptUpdate(View):
         template='sales/inventory/goodreceipt/goods_receipt_update.html',
         menu_active='menu_goods_receipt_list',
         breadcrumb='GOODS_RECEIPT_UPDATE_PAGE',
-        icon_cls='fas fa-dolly-flatbed',
+        icon_cls='fa-solid fa-dolly',
         icon_bg='bg-gold',
         perm_check=PermCheck(url=ApiURL.GOODS_RECEIPT_DETAIL_PK, method='PUT', fill_key=['pk']),
     )

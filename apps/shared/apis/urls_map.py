@@ -558,7 +558,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     INVENTORY_ADJUSTMENT_LIST = StringUrl('inventory/inventory-adjustments')
     INVENTORY_ADJUSTMENT_DETAIL = StringUrl('inventory/inventory-adjustment/{pk}')
     INVENTORY_ADJUSTMENT_PRODUCT_LIST = StringUrl('inventory/inventory-adjustment/product/list/{ia_id}')
-    INVENTORY_ADJUSTMENT_GR_LIST = StringUrl('inventory/inventory-adjustments-gr')
+    INVENTORY_ADJUSTMENT_PRODUCT_GR_LIST = StringUrl('inventory/inventory-adjustments-product-gr')
+    INVENTORY_ADJUSTMENT_DROPDOWN_LIST = StringUrl('inventory/inventory-adjustments-dropdown')
 
     # Purchase request config
     PURCHASE_REQUEST_CONFIG = StringUrl('purchasing/purchase-request/config')

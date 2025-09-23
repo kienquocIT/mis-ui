@@ -123,16 +123,16 @@ class InventoryAdjustmentDetailAPI(APIView):
         return resp.auto_return()
 
 
-# Inventory adjustment use for GR
-class InventoryAdjustmentGRListAPI(APIView):
+# Inventory adjustment product use for GR
+class InventoryAdjustmentProductGRListAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_ADJUSTMENT_GR_LIST).get(data)
-        return resp.auto_return(key_success='inventory_adjustment_gr')
+        resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_ADJUSTMENT_PRODUCT_GR_LIST).get(data)
+        return resp.auto_return(key_success='inventory_adjustment_product_gr')
 
 
 class InventoryAdjustmentProductListAPI(APIView):
@@ -145,3 +145,15 @@ class InventoryAdjustmentProductListAPI(APIView):
     def get(self, request, ia_id, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_ADJUSTMENT_PRODUCT_LIST.fill_key(ia_id=ia_id)).get()
         return resp.auto_return(key_success='ia_product_list')
+
+
+class InventoryAdjustmentDDListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.INVENTORY_ADJUSTMENT_DROPDOWN_LIST).get(params)
+        return resp.auto_return(key_success='inventory_adjustment_dd_list')

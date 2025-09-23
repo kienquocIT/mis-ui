@@ -6,7 +6,7 @@ from apps.sales.inventory.views import (
     InventoryAdjustmentList, InventoryAdjustmentCreate,
     InventoryAdjustmentUpdate, InventoryAdjustmentListAPI,
     InventoryAdjustmentDetailAPI, InventoryAdjustmentDetail,
-    InventoryAdjustmentGRListAPI, GoodsIssueList, GoodsIssueCreate, GoodsIssueDetail, GoodsIssueListAPI,
+    InventoryAdjustmentProductGRListAPI, GoodsIssueList, GoodsIssueCreate, GoodsIssueDetail, GoodsIssueListAPI,
     GoodsIssueDetailAPI, InventoryAdjustmentProductListAPI, GoodsIssueUpdate,
     GoodsReturnList, GoodsReturnCreate, GoodsReturnDetail, GoodsReturnUpdate, SaleOrderListAPIForGoodsReturn,
     DeliveryListForGoodsReturnAPI, GoodsReturnListAPI, GoodsReturnDetailAPI,
@@ -25,7 +25,7 @@ from apps.sales.inventory.views import (
     ProductionOrderDetailAPIForGIS, InventoryAdjustmentListAPIForGIS, InventoryAdjustmentDetailAPIForGIS,
     ProductWarehouseSerialListAPIForGIS, ProductWarehouseLotListAPIForGIS, ProductWarehouseListAPIForGIS,
     WorkOrderListAPIForGIS, WorkOrderDetailAPIForGIS, GoodsIssueProductListAPI,
-    GoodsDetailListImportDBAPI, GoodsDetailSerialDataAPI
+    GoodsDetailListImportDBAPI, GoodsDetailSerialDataAPI, InventoryAdjustmentDDListAPI
 )
 from apps.sales.inventory.views.goods_recovery import GoodsRecoveryCreate, GoodsRecoveryList, GoodsRecoveryListAPI, \
     GoodsRecoveryDetail, GoodsRecoveryDetailAPI, GoodsRecoveryUpdate, GoodsRecoveryLeaseGenerateListAPI
@@ -57,8 +57,15 @@ urlpatterns = [
     path('inventory-adjustment/detail/<str:pk>', InventoryAdjustmentDetail.as_view(), name='InventoryAdjustmentDetail'),
     path('inventory-adjustment/update/<str:pk>', InventoryAdjustmentUpdate.as_view(), name='InventoryAdjustmentUpdate'),
     path('inventory-adjustment/api/list', InventoryAdjustmentListAPI.as_view(), name='InventoryAdjustmentListAPI'),
-    path('inventory-adjustment/api/list-gr', InventoryAdjustmentGRListAPI.as_view(),
-         name='InventoryAdjustmentGRListAPI'),
+    path(
+        'inventory-adjustment/api/list-product-gr',
+        InventoryAdjustmentProductGRListAPI.as_view(),
+        name='InventoryAdjustmentProductGRListAPI'),
+    path(
+        'inventory-adjustment-dropdown/api/list',
+        InventoryAdjustmentDDListAPI.as_view(),
+        name='InventoryAdjustmentDDListAPI'
+    ),
     path('inventory-adjustment/api', InventoryAdjustmentListAPI.as_view(), name='InventoryAdjustmentListAPI'),
     path('inventory-adjustment/api/<str:pk>', InventoryAdjustmentDetailAPI.as_view(),
          name='InventoryAdjustmentDetailAPI'),

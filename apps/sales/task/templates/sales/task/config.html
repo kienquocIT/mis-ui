@@ -83,14 +83,17 @@
 
 {% block pageAction %}
     <button
-            class="btn btn-icon btn-flush-dark btnrounded- flush-soft-hover no-caret d-lg-inline-block d-none"
+            class="btn btn-outline-primary flush-soft-hover no-caret d-lg-inline-block d-none"
             data-bs-toggle="tooltip"
             data-bs-placement="top"
             data-bs-original-title="{% trans 'Save' %}"
             form="formOpportunityTaskConfig" type="submit"
     >
-        <span class="btn-icon-wrap">
-            <i class="far fa-save"></i>
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
         </span>
     </button>
 {% endblock %}

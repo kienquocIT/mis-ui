@@ -16,6 +16,14 @@ $(document).ready(function () {
         'inherit_id', 'inherit_title',
     ])
 
+    let $employeeEle = $('#employee_inherit_id');
+    let dataEmployeeCurrent = [];
+    if ($employeeEle.length > 0) {
+        if ($employeeEle.attr('data-onload')) {
+            dataEmployeeCurrent = JSON.parse($employeeEle.attr('data-onload'));
+        }
+    }
+
     new $x.cls.bastionField({
         has_opp: true,
         has_inherit: true,
@@ -49,6 +57,6 @@ $(document).ready(function () {
                 "full_name": inherit_title,
                 "selected": true,
             }
-        ] : [],
+        ] : dataEmployeeCurrent,
     }).init();
 })

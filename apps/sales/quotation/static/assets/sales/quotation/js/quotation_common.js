@@ -5471,6 +5471,7 @@ class QuotationCalculateCaseHandle {
         let price = 0;
         let quantity = 0;
         let quantityTime = 0;
+        let isTime = false;
         let elePrice = row.querySelector('.table-row-price');
         if (elePrice) {
             price = $(elePrice).valCurrency();
@@ -5540,12 +5541,17 @@ class QuotationCalculateCaseHandle {
                     } else if (!eleQuantityTime.value || eleQuantityTime.value === "0") {
                         quantityTime = 0;
                     }
-                    subtotal = (price * quantity * quantityTime);
+                    isTime = true;
                 }
             }
-
+            if (isTime === true) {
+                subtotal = subtotal * quantityTime;
+            }
             let discountAmountOnTotal = ((priceDiscountOnRow * discount_on_total) / 100);
             subtotalPlus = ((priceDiscountOnRow - discountAmountOnTotal) * quantity);
+            if (isTime === true) {
+                subtotalPlus = subtotalPlus * quantityTime;
+            }
             // calculate tax
             if (eleTaxAmount) {
                 if (!form.classList.contains('sale-order')) { // Quotation (normal calculate)

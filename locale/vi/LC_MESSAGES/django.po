@@ -12270,3 +12270,11 @@ msgstr "Loại Kiện Hàng"
 #
 msgid "Profit plan"
 msgstr "Kế hoạch LN"
+
+#
+msgid "UoM"
+msgstr "ĐV"
+
+#
+msgid "Duration UoM"
+msgstr "ĐV thời gian"

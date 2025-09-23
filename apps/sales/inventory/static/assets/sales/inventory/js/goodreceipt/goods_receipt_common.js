@@ -316,6 +316,29 @@ class GRLoadDataHandle {
         return true;
     };
 
+    static loadCallAjaxIAProduct() {
+        WindowControl.showLoading();
+        $.fn.callAjax2({
+                'url': GRLoadDataHandle.urlEle.attr('data-ia-product-gr'),
+                'method': "GET",
+                'data': {'inventory_adjustment_mapped_id': GRLoadDataHandle.IASelectEle.val()},
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('inventory_adjustment_product_gr') && Array.isArray(data.inventory_adjustment_product_gr)) {
+                        GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+                        GRDataTableHandle.tablePOProduct.DataTable().rows.add(data?.['inventory_adjustment_product_gr']).draw();
+                    }
+                    WindowControl.hideLoading();
+                }
+            }
+        )
+        return true;
+    };
+
     static loadCallAjaxPMProduct() {
         WindowControl.showLoading();
         $.fn.callAjax2({
@@ -1393,6 +1416,7 @@ class GRLoadDataHandle {
         let typeGR = GRLoadDataHandle.typeSelectEle.val();
         let frm = new SetupFormSubmit(GRDataTableHandle.tablePOProduct);
         if (typeGR === '1' && GRLoadDataHandle.POSelectEle.val()) {
+            WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': frm.dataUrl,
                     'method': frm.dataMethod,
@@ -1431,28 +1455,46 @@ class GRLoadDataHandle {
                             GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
                             GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
                         }
+                        WindowControl.hideLoading();
                     }
                 }
             )
         }
         if (typeGR === '2' && GRLoadDataHandle.IASelectEle.val()) {
-            let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.IASelectEle, $(this).val());
-            for (let dataIAPro of dataSelected?.['gr_products_data']) {
-                let isDetail = false;
-                for (let dataProduct of dataProducts) {
-                    if (dataProduct?.['ia_item_id'] === dataIAPro?.['ia_item_id']) {
-                        dataProduct['gr_completed_quantity'] = dataIAPro?.['gr_completed_quantity'];
-                        dataProduct['gr_remain_quantity'] = dataIAPro?.['gr_remain_quantity'];
-                        isDetail = true;
-                        break;
+            WindowControl.showLoading();
+            $.fn.callAjax2({
+                    'url': GRLoadDataHandle.urlEle.attr('data-ia-product-gr'),
+                    'method': "GET",
+                    'data': {'inventory_adjustment_mapped_id': GRLoadDataHandle.IASelectEle.val()},
+                    'isDropdown': true,
+                }
+            ).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if (data.hasOwnProperty('inventory_adjustment_product_gr') && Array.isArray(data.inventory_adjustment_product_gr)) {
+                            GRLoadDataHandle.loadTotal(dataDetail);
+                            for (let dataIAPro of data?.['inventory_adjustment_product_gr']) {
+                                let isDetail = false;
+                                for (let dataProduct of dataProducts) {
+                                    if (dataProduct?.['ia_item_id'] === dataIAPro?.['ia_item_id']) {
+                                        dataProduct['gr_completed_quantity'] = dataIAPro?.['gr_completed_quantity'];
+                                        dataProduct['gr_remain_quantity'] = dataIAPro?.['gr_remain_quantity'];
+                                        isDetail = true;
+                                        break;
+                                    }
+                                }
+                                if (isDetail === false) {
+                                    dataProducts.push(dataIAPro);
+                                }
+                            }
+                            GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
+                            GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
+                        }
+                        WindowControl.hideLoading();
                     }
                 }
-                if (isDetail === false) {
-                    dataProducts.push(dataIAPro);
-                }
-            }
-            GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
-            GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
+            )
         }
         if (typeGR === '3' && (GRLoadDataHandle.$boxProductionOrder.val() || GRLoadDataHandle.$boxWorkOrder.val())) {
             let idList = [];
@@ -1461,7 +1503,7 @@ class GRLoadDataHandle {
                     idList.push(report?.['production_report_id']);
                 }
             }
-
+            WindowControl.showLoading();
             $.fn.callAjax2({
                     'url': GRLoadDataHandle.$boxProductionReport.attr('data-url'),
                     'method': 'GET',
@@ -1502,6 +1544,7 @@ class GRLoadDataHandle {
                                 GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataProducts).draw();
                             }
                         }
+                        WindowControl.hideLoading();
                     }
                 }
             )
@@ -2210,7 +2253,6 @@ class GRDataTableHandle {
                                     class="form-control mask-money table-row-price" 
                                     value="${row?.['product_unit_price'] ? row?.['product_unit_price'] : 0}"
                                     data-return-type="number"
-                                    readonly
                                 >`;
                     }
                 },
@@ -2931,6 +2973,13 @@ class GRSubmitHandle {
                                     }
                                     if (dataRow.hasOwnProperty('product_subtotal_price') && dataRow.hasOwnProperty('product_tax_amount')) {
                                         dataRow['product_subtotal_price_after_tax'] = dataRow['product_subtotal_price'] + dataRow['product_tax_amount'];
+                                    }
+                                    let taxEle = row.querySelector('.table-row-tax');
+                                    if (taxEle) {
+                                        if ($(taxEle).val()) {
+                                            dataRow['tax_id'] = $(taxEle).val();
+                                            dataRow['tax_data'] = SelectDDControl.get_data_from_idx($(taxEle), $(taxEle).val());
+                                        }
                                     }
                                 }
                             }

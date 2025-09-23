@@ -144,11 +144,11 @@
                                         <select
                                                 class="form-select"
                                                 id="box-good-receipt-inventory-adjustment"
-                                                data-url="{% url 'InventoryAdjustmentGRListAPI' %}"
+                                                data-url="{% url 'InventoryAdjustmentDDListAPI' %}"
                                                 data-method="GET"
                                                 data-link-detail=""
                                                 name="inventory_adjustment"
-                                                data-keyResp="inventory_adjustment_gr"
+                                                data-keyResp="inventory_adjustment_dd_list"
                                         >
                                         </select>
                                     </div>
@@ -649,6 +649,7 @@
             data-md-product="{% url 'ProductForSaleListAPI' %}"
             data-md-warehouse="{% url 'WareHouseListAPI' %}"
             data-pm-product="{% url 'ProductModificationProductGRListAPI' %}"
+            data-ia-product-gr="{% url 'InventoryAdjustmentProductGRListAPI' %}"
     >
 {% endblock %}
 

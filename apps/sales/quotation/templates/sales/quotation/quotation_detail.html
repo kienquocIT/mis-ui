@@ -192,7 +192,7 @@
                                 <div class="row">
                                     <table
                                             id="datable-quotation-create-product"
-                                            class="table nowrap min-w-1366p w-100 mb-5"
+                                            class="table nowrap min-w-1600p w-100 mb-5"
                                     >
                                         <thead>
                                         <tr class="bg-light">
@@ -201,6 +201,8 @@
                                             <th>{% trans 'Description' %}</th>
                                             <th>{% trans 'UoM' %}</th>
                                             <th>{% trans 'Quantity' %}</th>
+                                            <th>{% trans 'Duration UoM' %}</th>
+                                            <th>{% trans 'Duration' %}</th>
                                             <th>{% trans 'Unit Price' %}</th>
                                             <th>{% trans 'Discount' %}</th>
                                             <th>{% trans 'Tax' %}</th>
@@ -212,8 +214,8 @@
                                         </tbody>
                                         <tfoot>
                                         <tr>
-                                            <th colspan="5"></th>
-                                            <th colspan="5">
+                                            <th colspan="6"></th>
+                                            <th colspan="6">
                                                 <div class="row mb-2">
                                                     <div class="col-6">
                                                         <p style="text-align: right">{% trans 'Pretax Amount' %}:</p>
@@ -574,10 +576,11 @@
                                 <thead>
                                 <tr class="bg-light">
                                     <th class="w-20">{% trans 'Product name' %}</th>
-                                    <th class="w-20">{% trans 'Product code' %}</th>
+                                    <th class="w-15">{% trans 'Product code' %}</th>
                                     <th class="w-15">{% trans 'Description' %}</th>
                                     <th class="w-10">{% trans 'Category' %}</th>
-                                    <th class="w-10">{% trans 'UOM' %}</th>
+                                    <th class="w-10">{% trans 'UoM' %}</th>
+                                    <th class="w-10">{% trans 'Duration UoM' %}</th>
                                     <th class="w-10">{% trans 'Status' %}</th>
                                     <th class="w-10">{% trans 'Note' %}</th>
                                 </tr>

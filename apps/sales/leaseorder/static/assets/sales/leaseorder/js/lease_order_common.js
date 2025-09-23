@@ -5173,7 +5173,7 @@ class LeaseOrderDataTableHandle {
                         if (row?.['title'] && row?.['code']) {
                             return `<div class="form-check form-check-lg d-flex align-items-center">
                                         <input type="checkbox" name="row-checkbox" class="form-check-input table-row-checkbox ${clsZoneReadonly}" id="s-service-${row?.['id'].replace(/-/g, "")}" ${disabled} ${checked} data-zone="${dataZone}">
-                                        <label class="form-check-label table-row-title" for="s-service-${row?.['id'].replace(/-/g, "")}">${row?.['title']}</label>
+                                        <textarea class="form-control form-check-label table-row-title" rows="3" readonly>${row?.['title']}</textarea>
                                     </div>`;
                         }
                         return `<span>--</span>`;
@@ -5182,13 +5182,13 @@ class LeaseOrderDataTableHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<span class="table-row-code">${row?.['code'] ? row?.['code'] : ''}</span>`;
+                        return `<textarea class="form-control table-row-code" rows="3" readonly>${row?.['code'] ? row?.['code'] : ''}</textarea>`;
                     }
                 },
                 {
                     targets: 2,
                     render: (data, type, row) => {
-                        return `<textarea class="form-control table-row-description" rows="2" readonly>${row?.['description'] ? row?.['description'] : ''}</textarea>`
+                        return `<textarea class="form-control table-row-description" rows="3" readonly>${row?.['description'] ? row?.['description'] : ''}</textarea>`
                     }
                 },
                 {

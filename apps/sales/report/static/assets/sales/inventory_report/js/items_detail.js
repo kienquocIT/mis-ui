@@ -98,7 +98,7 @@ $(document).ready(function () {
                         else if (row?.['row_type'] === 'open') {
                             return `--`
                         }
-                        return `***`
+                        return ''
                     }
                 },
                 {

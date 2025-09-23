@@ -24,6 +24,35 @@
     <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilter">
         <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
     </button>
+
+    <div class="row">
+        <div class="col-12">
+            <table id="main-table" class="w-100 table-hover table nowrap">
+                <thead class="bg-primary">
+                <tr>
+                    <th style="min-width: 50px; border-top-left-radius: calc(0.5rem - 1px);"></th>
+                    <th class="text-white" style="min-width: 300px">{% trans 'Expense item' %}</th>
+                    <th class="text-white" style="min-width: 200px">
+                        {% trans 'Plan' %}
+                        <i class="fas fa-info-circle icon-info"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="bottom"
+                           title=""
+                           data-bs-original-title="{% trans 'Red lines are the expenses out of plan.' %}">
+                        </i>
+                    </th>
+                    <th class="text-white" style="min-width: 200px">{% trans 'Actual' %}</th>
+                    <th class="text-white" style="min-width: 200px">{% trans 'Difference' %}</th>
+                    <th class="text-white" style="min-width: 150px; border-top-right-radius: calc(0.5rem - 1px);">{% trans 'Rate' %}</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block modalData %}
     <div class="offcanvas offcanvas-end w-40" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasFilter">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasScrollingLabel">{% trans 'Filter' %}</h5>
@@ -55,33 +84,6 @@
                     <span class="text-muted small">{% trans 'Uncheck all filters to view full year plan' %}</span>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12">
-            <table id="main-table" class="w-100 table-hover table nowrap">
-                <thead class="bg-primary">
-                <tr>
-                    <th style="min-width: 50px; border-top-left-radius: calc(0.5rem - 1px);"></th>
-                    <th class="text-white" style="min-width: 300px">{% trans 'Expense item' %}</th>
-                    <th class="text-white" style="min-width: 200px">
-                        {% trans 'Plan' %}
-                        <i class="fas fa-info-circle icon-info"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="bottom"
-                           title=""
-                           data-bs-original-title="{% trans 'Red lines are the expenses out of plan.' %}">
-                        </i>
-                    </th>
-                    <th class="text-white" style="min-width: 200px">{% trans 'Actual' %}</th>
-                    <th class="text-white" style="min-width: 200px">{% trans 'Difference' %}</th>
-                    <th class="text-white" style="min-width: 150px; border-top-right-radius: calc(0.5rem - 1px);">{% trans 'Rate' %}</th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-                <tfoot></tfoot>
-            </table>
         </div>
     </div>
 {% endblock %}

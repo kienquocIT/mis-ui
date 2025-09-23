@@ -4,6 +4,7 @@ const script_url = $('#script-url')
 const script_trans = $('#script-trans')
 const urlParams = new URLSearchParams(window.location.search);
 const $request_for = $('#request-for')
+const $transaction_code = $('#transaction-code')
 // for so
 const supplier_so = $('#supplier-so')
 const contact_so = $('#contact-so')
@@ -44,6 +45,7 @@ let current_dp_id = null
 
 $request_for.on('change', function () {
     $('.for-sale-order-request, .for-stock-free-request, .for-fixed-asset-request, .for-distribution-request').prop('hidden', true)
+    $transaction_code.val('')
     if ($request_for.val() === '0') {
         $('.for-sale-order-request').prop('hidden', false)
         UsualLoadPageFunction.LoadDate({element: deliveryDate_so})
@@ -55,6 +57,10 @@ $request_for.on('change', function () {
         UsualLoadPageFunction.LoadCustomer({
             element: $so_filter_by_customer,
             data_url: $so_filter_by_customer.attr('data-url')
+        })
+        UsualLoadPageFunction.LoadContact({
+            element: contact_so,
+            data_url: contact_so.attr('data-url')
         })
 
         let dataParam = {}
@@ -89,6 +95,10 @@ $request_for.on('change', function () {
             element: supplier_sf,
             data_url: supplier_sf.attr('data-url')
         })
+        UsualLoadPageFunction.LoadContact({
+            element: contact_sf,
+            data_url: contact_sf.attr('data-url')
+        })
         LoadLineDetailTableAddRow(lineDetailTable_sf, [])
     }
     else if ($request_for.val() === '2') {
@@ -98,6 +108,10 @@ $request_for.on('change', function () {
             element: supplier_fa,
             data_url: supplier_fa.attr('data-url')
         })
+        UsualLoadPageFunction.LoadContact({
+            element: contact_fa,
+            data_url: contact_fa.attr('data-url')
+        })
         LoadLineDetailTableAddRow(lineDetailTable_fa, [])
     }
     else if ($request_for.val() === '3') {
@@ -106,6 +120,10 @@ $request_for.on('change', function () {
         UsualLoadPageFunction.LoadSupplier({
             element: supplier_dp,
             data_url: supplier_dp.attr('data-url')
+        })
+        UsualLoadPageFunction.LoadContact({
+            element: contact_dp,
+            data_url: contact_dp.attr('data-url')
         })
         LoadLineDetailTable(lineDetailTable_dp, [])
         LoadDistributionTable()
@@ -354,12 +372,14 @@ function LoadSaleOrderTable() {
                 render: () => {
                     return ``
                 }
-            }, {
+            },
+            {
                 className: 'w-5',
                 render: (data, type, row) => {
                     return `<div class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-so" data-id="${row?.['id']}"/></span>`
                 }
-            }, {
+            },
+            {
                 className: 'w-90',
                 render: (data, type, row) => {
                     let group = row?.['employee_inherit']?.['group']?.['title']
@@ -404,7 +424,7 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
         {
             className: 'text-center w-15',
             render: (data, type, row) => {
-                return `<input type="number" class="form-control text-center request-number-input" value="0" max="${parseFloat(row?.['remain_for_purchase_request'] || 0)}">`
+                return `<input type="number" class="form-control text-center request-number-input" value="0" min="0" max="${parseFloat(row?.['remain_for_purchase_request'] || 0)}">`
             }
         }
     ]
@@ -437,7 +457,6 @@ function LoadSaleOrderProductTable(sale_order_id=null) {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && resp.data.hasOwnProperty('so_product_list')) {
-                        console.log(resp.data['so_product_list']?.['product_data'])
                         return resp.data['so_product_list']?.['product_data'] || [];
                     }
                     throw Error('Call data raise errors.')
@@ -477,21 +496,19 @@ function LoadDistributionTable() {
                 render: () => {
                     return ``
                 }
-            }, {
+            },
+            {
                 className: 'w-5',
                 render: (data, type, row) => {
                     return `<div class="form-check"><input type="radio" name="radioSaleOrder" class="form-check-input inp-check-dp" data-id="${row?.['id']}"/></span>`
                 }
-            }, {
-                className: 'w-45',
+            },
+            {
+                className: 'w-90',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-primary p-dp-code">${row?.['code']}</span><br><span class="text-secondary">${row?.['title']}</span>`
-                }
-            }, {
-                className: 'w-45',
-                render: (data, type, row) => {
-                   let group = row?.['employee_inherit']?.['group']?.['title']
-                    return `<span class="badge badge-light">${row?.['employee_inherit']?.['code']}</span><br><span class="text-muted">${row?.['employee_inherit']?.['full_name']} ${group ? '(' + group + ')' : ''}</span>`
+                    let group = row?.['employee_inherit']?.['group']?.['title']
+                    return `<span class="badge badge-soft-primary mr-1 dp-code">${row?.['code']}</span><span class="text-primary">${row?.['title']}</span>
+                            <br><span class="text-blue">${row?.['employee_inherit']?.['full_name']} ${group ? `(${group})` : ''}</span>`
                 }
             }
         ],
@@ -507,44 +524,31 @@ function LoadDistributionProductTable(distribution_id=null) {
             }
         },
         {
+            className: 'w-45',
+            render: (data, type, row) => {
+                return `<span data-product='${JSON.stringify(row?.['product_data'] || {})}'
+                          data-uom='${JSON.stringify(row?.['uom_data'] || {})}'
+                          class="badge badge-sm badge-soft-primary product-span"
+                    >${row?.['product_data']?.['code']}</span>
+                    <br><span class="text-muted">${row?.['product_data']?.['title'] || ''}</span>
+                    <br><span class="text-muted small">${row?.['product_data']?.['description'] || ''}</span>`
+            }
+        },
+        {
             className: 'w-35',
             render: (data, type, row) => {
-                return `<span data-so-product-id="${row?.['id']}"
-                          data-product-id="${row?.['id']}"
-                          data-product-code="${row?.['code']}"
-                          data-product-title="${row?.['title']}"
-                          data-product-uom-id="${row?.['uom']?.['id']}"
-                          data-product-uom-title="${row?.['uom']?.['title']}"
-                          data-product-description="${row?.['description']}"
-                          class="badge badge-outline badge-primary product-span"
-                    >${row?.['code']}</span><br><span class="text-secondary">${row?.['title']}</span>`
-            }
-        },
-        {
-            className: 'text-center w-15',
-            render: (data, type, row) => {
                 let planned_quantity = parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month'])
-                return `<span class="quantity-span">${planned_quantity}</span>`
-            }
-        },
-        {
-            className: 'text-center w-15',
-            render: (data, type, row) => {
                 let requested_quantity = parseFloat(row?.['purchase_request_number'])
-                return `<span class="requested-span">${requested_quantity}</span>`
-            }
-        },
-        {
-            className: 'text-center w-15',
-            render: (data, type, row) => {
                 let remain_quantity = (parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month'])) - parseFloat(row?.['purchase_request_number'])
-                return `<span class="remain-span">${remain_quantity >= 0 ? remain_quantity : '(' + remain_quantity * (-1) + ')'}</span>`
+                return `<span class="mr-1">${$.fn.gettext('Ordered')}:</span><span class="quantity-span mr-1">${planned_quantity}</span><span>${row?.['uom_data']?.['title'] || ''}</span>
+                <br><span class="mr-1">${$.fn.gettext('Requested')}:</span><span class="requested-span mr-1">${requested_quantity}</span><span>${row?.['uom_data']?.['title'] || ''}</span>
+                <br><span class="mr-1">${$.fn.gettext('Remain')}:</span><span class="remain-span mr-1">${remain_quantity >= 0 ? remain_quantity : '(' + remain_quantity * (-1) + ')'}</span><span>${row?.['uom_data']?.['title'] || ''}</span>`
             }
         },
         {
             className: 'text-center w-15',
             render: (data, type, row) => {
-                return `<input type="number" class="form-control text-center request-number-input" value="0">`
+                return `<input type="number" class="form-control text-center request-number-input" min="0" value="0">`
             }
         }
     ]
@@ -574,13 +578,8 @@ function LoadDistributionProductTable(distribution_id=null) {
                 type: 'GET',
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    if (data && resp.data.hasOwnProperty('distribution_plan_detail')) {
-                        let product_data = resp.data['distribution_plan_detail']?.['product']
-                        return [product_data]
-                        // if (parseFloat(product_data?.['expected_number']) - parseFloat(product_data?.['purchase_request_number']) > 0) {
-                        //     return [product_data]
-                        // }
-                        // return []
+                    if (data && resp.data.hasOwnProperty('dp_product_list')) {
+                        return [resp.data['dp_product_list']]
                     }
                     throw Error('Call data raise errors.')
                 },
@@ -706,8 +705,8 @@ class PurchaseRequestHandler {
             $('#datatable-pr-product-distribution tbody tr').each(function () {
                 purchase_request_product_datas.push({
                     'sale_order_product': null,
-                    'product': $(this).find('.product-detail').attr('data-id') || null,
-                    'uom': $(this).find('.product-uom').attr('data-id') || null,
+                    'product': $(this).find('.product-detail').attr('data-product-id') || null,
+                    'uom': $(this).find('.product-uom').attr('data-uom-id') || null,
                     'tax': $(this).find('.tax').val() || null,
                     'quantity': parseFloat($(this).find('.request-number').text() || 0),
                     'unit_price': parseFloat($(this).find('.unit-price').attr('value') || 0),
@@ -750,6 +749,8 @@ function LoadDetailPR(option) {
                     })
                     $('#code-so').val(data?.['sale_order']?.['code'])
                     $('#note-so').val(data?.['note'])
+                    current_so_id = data?.['sale_order']?.['id']
+                    $transaction_code.val(data?.['sale_order']?.['code'])
 
                     LoadLineDetailTable(lineDetailTable_so, data?.['purchase_request_product_datas'] || [], option)
                     $('#input-product-pretax-amount').attr('value', data?.['pretax_amount'])
@@ -861,6 +862,8 @@ function LoadDetailPR(option) {
                         data_url: contact_dp.attr('data-url')
                     })
                     $('#note-dp').val(data?.['note'])
+                    current_dp_id = data?.['distribution_plan']?.['id']
+                    $transaction_code.val(data?.['distribution_plan']?.['code'])
 
                     LoadLineDetailTable(lineDetailTable_dp, data?.['purchase_request_product_datas'] || [], option)
                     $('#input-product-pretax-amount').attr('value', data?.['pretax_amount'])
@@ -960,6 +963,7 @@ btnSelectSOProduct.on('click', function () {
         $('.inp-check-so').each(function () {
             if ($(this).prop('checked')) {
                 current_so_id = $(this).attr('data-id')
+                $transaction_code.val($(this).closest('tr').find('.so-code').text())
             }
         })
         modalSelectSaleOrder.modal('hide')
@@ -975,7 +979,6 @@ btnSelectDPProduct.on('click', function () {
 
         if (request_number <= limit_number) {
             request_product_data.push({
-                'sale_order_product_id': $(this).find('.product-span').attr('data-so-product-id'),
                 'product_data': JSON.parse($(this).find('.product-span').attr('data-product') || '{}'),
                 'uom_data': JSON.parse($(this).find('.product-span').attr('data-uom') || '{}'),
                 'tax_data': JSON.parse($(this).find('.product-span').attr('data-tax') || '{}'),
@@ -995,6 +998,7 @@ btnSelectDPProduct.on('click', function () {
         $('.inp-check-dp').each(function () {
             if ($(this).prop('checked')) {
                 current_dp_id = $(this).attr('data-id')
+                $transaction_code.val($(this).closest('tr').find('.dp-code').text())
             }
         })
         modalSelectDistribution.modal('hide')
@@ -1056,6 +1060,10 @@ $(document).on('change', '.unit-price', function () {
 })
 
 $(document).on('change', '.request-number', function () {
+    CalculateSumLineDetail($(this).closest('tr'))
+})
+
+$(document).on('change', '.tax', function () {
     CalculateSumLineDetail($(this).closest('tr'))
 })
 

@@ -5,11 +5,11 @@
         <div class="form-group">
             <label for="request-for" class="form-label required">{% trans 'Request For' %}</label>
             <select class="form-select" id="request-for">
-                <option value=""></option>
-                <option value="0">{% trans 'For Sale Order' %}</option>
-                <option value="3">{% trans 'For Stock Plan' %}</option>
+                <option value="0" selected>{% trans 'For Sale Order' %}</option>
                 <option value="1">{% trans 'For Stock Free' %}</option>
                 <option value="2">{% trans 'For Fixed Asset' %}</option>
+                <option value="3">{% trans 'For Stock Plan' %}</option>
+                <option value="4">{% trans 'For Service Order' %}</option>
             </select>
         </div>
     </div>
@@ -26,7 +26,7 @@
             <div class="col-12 col-md-8 col-lg-8">
                 <div class="form-group">
                     <label for="supplier-so" class="form-label required">{% trans 'Supplier' %}</label>
-                    <select class="form-control select2" id="supplier-so" data-url="{% url "AccountForSaleListAPI" %}"></select>
+                    <select class="form-control select2" id="supplier-so" data-url="{% url "SupplierListAPI" %}"></select>
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg-4">
@@ -77,7 +77,7 @@
             <div class="col-12 col-md-8 col-lg-8">
                 <div class="form-group">
                     <label for="supplier-dp" class="form-label required">{% trans 'Supplier' %}</label>
-                    <select class="form-control select2" id="supplier-dp" data-url="{% url "AccountForSaleListAPI" %}"></select>
+                    <select class="form-control select2" id="supplier-dp" data-url="{% url "SupplierListAPI" %}"></select>
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg-4">
@@ -128,7 +128,7 @@
             <div class="col-12 col-md-8 col-lg-8">
                 <div class="form-group">
                     <label for="supplier-sf" class="form-label required">{% trans 'Supplier' %}</label>
-                    <select class="form-control select2" id="supplier-sf" data-url="{% url "AccountForSaleListAPI" %}"></select>
+                    <select class="form-control select2" id="supplier-sf" data-url="{% url "SupplierListAPI" %}"></select>
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg-4">
@@ -179,7 +179,7 @@
             <div class="col-12 col-md-8 col-lg-8">
                 <div class="form-group">
                     <label for="supplier-fa" class="form-label required">{% trans 'Supplier' %}</label>
-                    <select class="form-control select2" id="supplier-fa" data-url="{% url "AccountForSaleListAPI" %}"></select>
+                    <select class="form-control select2" id="supplier-fa" data-url="{% url "SupplierListAPI" %}"></select>
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg-4">

@@ -49,7 +49,7 @@
                                 <tr>
                                     <th style="min-width: 30px"></th>
                                     <th style="min-width: 100px">{% trans "Product" %}</th>
-                                    <th style="min-width: 250px">{% trans "Quantity" %}</th>
+                                    <th style="min-width: 200px">{% trans "Quantity" %}</th>
                                     <th style="min-width: 150px">{% trans "This time" %}</th>
                                 </tr>
                             </thead>
@@ -79,46 +79,38 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-12">
-                        <h6>1. {% trans 'Select Distribution plan' %}</h6>
-                        <div class="border rounded p-2">
-                            <table id="datatable-distribution"
-                                   class="table nowrap table-hover w-100"
-                                   data-url="{% url 'DistributionPlanListAPI' %}"
-                                   data-method="GET">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th></th>
-                                        <th>{% trans "Stock plan" %}</th>
-                                        <th>{% trans "Employee inherit" %}</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-5">
-                    <div class="col-12">
-                        <h6>2. {% trans 'Select products' %}</h6>
-                        <div class="border rounded p-2">
-                            <table id="datatable-product-of-distribution" class="table nowrap table-hover w-100"
-                               data-method="GET"
-                               data-url="{% url 'DistributionPlanDetailAPI' pk=0 %}">
+                    <div class="col-12 col-md-6 col-lg-6 border-right">
+                        <h6 class="fw-bold">1. {% trans 'Select Distribution plan' %}</h6>
+                        <table id="datatable-distribution"
+                               class="table nowrap w-100"
+                               data-url="{% url 'DistributionPlanListAPI' %}"
+                               data-method="GET">
                             <thead>
                                 <tr>
-                                    <th style="min-width: 50px"></th>
-                                    <th style="min-width: 100px">{% trans "Product" %}</th>
-                                    <th style="min-width: 100px">{% trans "Planned quantity" %}</th>
-                                    <th style="min-width: 100px">{% trans "Requested quantity" %}</th>
-                                    <th style="min-width: 100px">{% trans "Remain" %}</th>
-                                    <th style="min-width: 100px">{% trans "Quantity this time" %}</th>
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 250px">{% trans "Stock plan" %}</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
-                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <h6 class="fw-bold">2. {% trans 'Select products' %}</h6>
+                        <table id="datatable-product-of-distribution"
+                               class="table nowrap w-100"
+                               data-method="GET"
+                               data-url="{% url 'ProductListDistributionPlanAPI' pk=0 %}">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 100px">{% trans "Product" %}</th>
+                                    <th style="min-width: 200px">{% trans "Quantity" %}</th>
+                                    <th style="min-width: 150px">{% trans "This time" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
             </div>

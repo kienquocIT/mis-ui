@@ -670,6 +670,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Distribution plan
     DISTRIBUTION_PLAN_LIST = StringUrl('distribution-plans/list')
     DISTRIBUTION_PLAN_DETAIL = StringUrl('distribution-plans/detail/{pk}')
+    PRODUCT_LIST_DISTRIBUTION_PLAN = StringUrl('distribution-plans/product/list/{pk}')
 
     # Bill of material
     BOM_LIST = StringUrl('production/bom/list')

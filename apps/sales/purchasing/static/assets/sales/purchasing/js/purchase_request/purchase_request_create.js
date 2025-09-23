@@ -12,4 +12,6 @@ $(document).ready(function () {
         }
     })
     AutoValidator.CustomValidator(form_validator)
+
+    $request_for.trigger('change')
 })

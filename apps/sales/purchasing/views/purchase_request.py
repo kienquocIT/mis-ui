@@ -64,8 +64,10 @@ class PurchaseRequestUpdate(View):
     def get(self, request, *args, **kwargs):
         input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_REQUEST
         return {
-                   'input_mapping_properties': input_mapping_properties, 'form_id': 'frm-detail-pr'
-               }, status.HTTP_200_OK
+            'data': {'employee_current': request.user.employee_current_data},
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'frm-detail-pr'
+        }, status.HTTP_200_OK
 
 
 class PurchaseRequestListAPI(APIView):

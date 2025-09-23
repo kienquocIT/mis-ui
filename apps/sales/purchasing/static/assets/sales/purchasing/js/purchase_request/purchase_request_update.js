@@ -3,23 +3,13 @@ $(document).ready(function () {
 
     WFRTControl.setWFInitialData('purchaserequest');
 
-    $('#frm-detail-pr').submit(function (event) {
-        event.preventDefault();
-        let form = null;
-        if ($request_for.val() === '0') {
-            form = new PurchaseRequestHandle().combinesDataSO($(this));
-        }
-        else if ($request_for.val() === '1') {
-            form = new PurchaseRequestHandle().combinesDataSF($(this));
-        }
-        else if ($request_for.val() === '2') {
-            form = new PurchaseRequestHandle().combinesDataFA($(this));
-        }
-        else if ($request_for.val() === '3') {
-            form = new PurchaseRequestHandle().combinesDataDP($(this));
-        }
-        if (form) {
-            WFRTControl.callWFSubmitForm(form);
+    let form_validator = $('#frm-detail-pr').validate({
+        submitHandler: function (form) {
+            let form_data = PurchaseRequestHandler.CombinesData(form);
+            if (form_data) {
+                WFRTControl.callWFSubmitForm(form_data);
+            }
         }
     })
+    AutoValidator.CustomValidator(form_validator)
 })

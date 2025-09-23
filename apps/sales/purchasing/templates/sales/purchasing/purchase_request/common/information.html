@@ -70,20 +70,20 @@
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
-                    <label for="title-db" class="form-label required">{% trans 'Title' %}</label>
-                    <input id="title-db" class="form-control">
+                    <label for="title-dp" class="form-label required">{% trans 'Title' %}</label>
+                    <input id="title-dp" class="form-control">
                 </div>
             </div>
             <div class="col-12 col-md-8 col-lg-8">
                 <div class="form-group">
-                    <label for="supplier-db" class="form-label required">{% trans 'Supplier' %}</label>
-                    <select class="form-control select2" id="supplier-db" data-url="{% url "AccountForSaleListAPI" %}"></select>
+                    <label for="supplier-dp" class="form-label required">{% trans 'Supplier' %}</label>
+                    <select class="form-control select2" id="supplier-dp" data-url="{% url "AccountForSaleListAPI" %}"></select>
                 </div>
             </div>
             <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
-                    <label for="contact-db" class="form-label required">{% trans 'Contact' %}</label>
-                    <select class="form-select select2" id="contact-db" data-url="{% url "ContactListAPI" %}"></select>
+                    <label for="contact-dp" class="form-label required">{% trans 'Contact' %}</label>
+                    <select class="form-select select2" id="contact-dp" data-url="{% url "ContactListAPI" %}"></select>
                 </div>
             </div>
         </div>
@@ -92,11 +92,11 @@
         <div class="row">
             <div class="col-12">
                 <div class="form-group">
-                    <label class="form-label required" for="date-delivery-db">{% trans "Delivered Date" %}</label>
+                    <label class="form-label required" for="date-delivery-dp">{% trans "Delivered Date" %}</label>
                     <div class="input-group mb-3">
                         <span class="input-affix-wrapper">
                             <span class="input-prefix">📅</span>
-                            <input required class="form-control" id="date-delivery-db">
+                            <input required class="form-control" id="date-delivery-dp">
                         </span>
                     </div>
                 </div>
@@ -111,8 +111,8 @@
     </div>
     <div class="col-12">
         <div class="form-group">
-            <label for="note-db" class="form-label">{% trans 'Note' %}</label>
-            <textarea id="note-db" class="form-control"></textarea>
+            <label for="note-dp" class="form-label">{% trans 'Note' %}</label>
+            <textarea id="note-dp" class="form-control"></textarea>
         </div>
     </div>
 </div>

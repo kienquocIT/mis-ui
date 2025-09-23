@@ -3,9 +3,7 @@ const emp_current_id = employee_current ? JSON.parse(employee_current)?.['id'] :
 const script_url = $('#script-url')
 const script_trans = $('#script-trans')
 const urlParams = new URLSearchParams(window.location.search);
-const TYPE = urlParams.get('type');
 const $request_for = $('#request-for')
-let is_all_so = false
 // for so
 const supplier_so = $('#supplier-so')
 const contact_so = $('#contact-so')
@@ -16,6 +14,7 @@ const tableSaleOrder = $('#datatable-sale-order')
 const tableSaleOrderProduct = $('#datatable-product-of-so')
 const btnSelectSOProduct = $('#btn-select-so-product')
 const $so_filter_by_customer = $('#so-filter-by-customer')
+const $btn_change_sale_order = $('#btn-change-sale-order')
 // for sf
 const supplier_sf = $('#supplier-sf')
 const contact_sf = $('#contact-sf')
@@ -28,105 +27,138 @@ const contact_fa = $('#contact-fa')
 const deliveryDate_fa = $('#date-delivery-fa')
 const lineDetailTable_fa = $('#datatable-pr-product-fixed-asset')
 const btnAddFAProduct = $('#btn-add-fixed-asset-product')
-// for db
-const supplier_db = $('#supplier-db')
-const contact_db = $('#contact-db')
-const deliveryDate_db = $('#date-delivery-db')
-const lineDetailTable_db = $('#datatable-pr-product-distribution')
+// for dp
+const supplier_dp = $('#supplier-dp')
+const contact_dp = $('#contact-dp')
+const deliveryDate_dp = $('#date-delivery-dp')
+const lineDetailTable_dp = $('#datatable-pr-product-distribution')
 const modalSelectDistribution = $('#modal-select-distribution')
 const tableDistribution = $('#datatable-distribution')
 const tableDistributionProduct = $('#datatable-product-of-distribution')
-const btnSelectDBProduct = $('#btn-select-distribution-product')
+const btnSelectDPProduct = $('#btn-select-distribution-product')
+const $btn_change_distribution = $('#btn-change-distribution')
 // variable
+let is_all_so = false
 let current_so_id = null
+let current_dp_id = null
 
-function LoadSupplier(ele, data) {
-    ele.initSelect2({
-        ajax: {
-            url: ele.attr('data-url'),
-            method: 'GET',
-        },
-        callbackDataResp: function (resp, keyResp) {
-            let result = [];
-            for (let i = 0; i < resp.data[keyResp].length; i++) {
-                if (resp.data[keyResp][i].account_type.includes('Supplier')) {
-                    result.push(resp.data[keyResp][i])
+$request_for.on('change', function () {
+    $('.for-sale-order-request, .for-stock-free-request, .for-fixed-asset-request, .for-distribution-request').prop('hidden', true)
+    if ($request_for.val() === '0') {
+        $('.for-sale-order-request').prop('hidden', false)
+        UsualLoadPageFunction.LoadDate({element: deliveryDate_so})
+        UsualLoadPageFunction.LoadSupplier({
+            element: supplier_so,
+            data_url: supplier_so.attr('data-url')
+        })
+        LoadLineDetailTable(lineDetailTable_so, [])
+        UsualLoadPageFunction.LoadCustomer({
+            element: $so_filter_by_customer,
+            data_url: $so_filter_by_customer.attr('data-url')
+        })
+
+        let dataParam = {}
+        let pr_config = $.fn.callAjax2({
+            url: script_url.attr('data-url-pr-config-so'),
+            data: dataParam,
+            method: 'GET'
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && typeof data === 'object' && data.hasOwnProperty('config')) {
+                    return data?.['config']?.['employee_reference'] ? data?.['config']?.['employee_reference'] : [];
                 }
+                return {};
+            },
+            (errs) => {
+                console.log(errs);
             }
-            return result;
-        },
-        data: (data ? data : null),
-        keyResp: 'account_sale_list',
-        keyId: 'id',
-        keyText: 'name',
-    }).on('change', function () {
-        let selected = SelectDDControl.get_data_from_idx(ele, ele.val())
-        if (selected) {
-            let contact_owner = selected?.['owner']
-            if ($request_for.val() === '0') {
-                contact_so.empty()
-                LoadContactOwner(contact_so, contact_owner)
-            }
-            else if ($request_for.val() === '1') {
-                contact_sf.empty()
-                LoadContactOwner(contact_sf, contact_owner)
-            }
-            else if ($request_for.val() === '2') {
-                contact_fa.empty()
-                LoadContactOwner(contact_fa, contact_owner)
-            }
-            else if ($request_for.val() === '3') {
-                contact_db.empty()
-                LoadContactOwner(contact_db, contact_owner)
-            }
-        }
-    })
-}
+        )
 
-function LoadContactOwner(ele, data) {
-    ele.initSelect2({
-        ajax: {
-            url: ele.attr('data-url'),
-            method: 'GET',
-        },
-        data: (data ? data : null),
-        keyResp: 'contact_list',
-        keyId: 'id',
-        keyText: 'fullname',
-    })
-}
+        Promise.all([pr_config]).then(
+            (results) => {
+                is_all_so = (results[0] || []).some(emp => emp?.['employee']?.['id'] === emp_current_id)
+                LoadSaleOrderTable()
+                LoadSaleOrderProductTable()
+            })
+    }
+    else if ($request_for.val() === '1') {
+        $('.for-stock-free-request').prop('hidden', false)
+        UsualLoadPageFunction.LoadDate({element: deliveryDate_sf})
+        UsualLoadPageFunction.LoadSupplier({
+            element: supplier_sf,
+            data_url: supplier_sf.attr('data-url')
+        })
+        LoadLineDetailTableAddRow(lineDetailTable_sf, [])
+    }
+    else if ($request_for.val() === '2') {
+        $('.for-fixed-asset-request').prop('hidden', false)
+        UsualLoadPageFunction.LoadDate({element: deliveryDate_fa})
+        UsualLoadPageFunction.LoadSupplier({
+            element: supplier_fa,
+            data_url: supplier_fa.attr('data-url')
+        })
+        LoadLineDetailTableAddRow(lineDetailTable_fa, [])
+    }
+    else if ($request_for.val() === '3') {
+        $('.for-distribution-request').prop('hidden', false)
+        UsualLoadPageFunction.LoadDate({element: deliveryDate_dp})
+        UsualLoadPageFunction.LoadSupplier({
+            element: supplier_dp,
+            data_url: supplier_dp.attr('data-url')
+        })
+        LoadLineDetailTable(lineDetailTable_dp, [])
+        LoadDistributionTable()
+        LoadDistributionProductTable()
+    }
+})
 
-function LoadDeliveryDate(ele) {
-    ele.daterangepicker({
-        singleDatePicker: true,
-        timepicker: false,
-        showDropdowns: false,
-        minYear: 2023,
-        locale: {
-            format: 'DD/MM/YYYY',
-        },
-        maxYear: parseInt(moment().format('YYYY'), 10),
-        autoApply: true,
-        autoUpdateInput: false,
-    }).on('apply.daterangepicker', function (ev, picker) {
-        $(this).val(picker.startDate.format('DD/MM/YYYY'));
-    }).val('');
-}
+supplier_so.on('change', function () {
+    let selected = SelectDDControl.get_data_from_idx(supplier_so, supplier_so.val())
+    if (selected) {
+        contact_so.empty()
+        UsualLoadPageFunction.LoadContact({
+            element: contact_so,
+            data: selected?.['owner'],
+            data_url: contact_so.attr('data-url')
+        })
+    }
+})
 
-$(document).on('change', '.product-detail', function () {
-    let product_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
-    $(this).closest('tr').find('.product-des-detail').text(product_selected?.['description'] || '')
-    UsualLoadPageFunction.LoadUOM({
-        element: $(this).closest('tr').find('.product-uom'),
-        data: product_selected?.['purchase_information']?.['default_uom'] || {},
-        data_params: {'group_id': product_selected?.['general_uom_group']?.['id']},
-        data_url: script_url.attr('data-url-uom')
-    })
-    UsualLoadPageFunction.LoadTax({
-        element: $(this).closest('tr').find('.tax'),
-        data: product_selected?.['purchase_information']?.['tax'] || {},
-        data_url: script_url.attr('data-url-tax')
-    })
+supplier_sf.on('change', function () {
+    let selected = SelectDDControl.get_data_from_idx(supplier_sf, supplier_sf.val())
+    if (selected) {
+        contact_sf.empty()
+        UsualLoadPageFunction.LoadContact({
+            element: contact_sf,
+            data: selected?.['owner'],
+            data_url: contact_sf.attr('data-url')
+        })
+    }
+})
+
+supplier_fa.on('change', function () {
+    let selected = SelectDDControl.get_data_from_idx(supplier_fa, supplier_fa.val())
+    if (selected) {
+        contact_fa.empty()
+        UsualLoadPageFunction.LoadContact({
+            element: contact_fa,
+            data: selected?.['owner'],
+            data_url: contact_fa.attr('data-url')
+        })
+    }
+})
+
+supplier_dp.on('change', function () {
+    let selected = SelectDDControl.get_data_from_idx(supplier_dp, supplier_dp.val())
+    if (selected) {
+        contact_dp.empty()
+        UsualLoadPageFunction.LoadContact({
+            element: contact_dp,
+            data: selected?.['owner'],
+            data_url: contact_dp.attr('data-url')
+        })
+    }
 })
 
 function LoadLineDetailTable($table, data_list=[], option='create') {
@@ -180,7 +212,7 @@ function LoadLineDetailTable($table, data_list=[], option='create') {
             {
                 className: 'w-15 text-right',
                 render: (data, type, row) => {
-                    return `<input class="form-control mask-money text-right subtotal-price" disabled readonly value="${row?.['sub_total_price'] ? row?.['sub_total_price'] : 0}">`
+                    return `<input class="form-control mask-money text-right subtotal-price" disabled readonly value="${row?.['sub_total_price'] || 0}">`
                 }
             },
         ],
@@ -421,7 +453,7 @@ function LoadDistributionTable() {
     tableDistribution.DataTableDefault({
         useDataServer: true,
         rowIdx: true,
-        scrollY: '25vh',
+        scrollY: '45vh',
         scrollX: true,
         scrollCollapse: true,
         ajax: {
@@ -453,7 +485,7 @@ function LoadDistributionTable() {
             }, {
                 className: 'w-45',
                 render: (data, type, row) => {
-                    return `<span class="badge badge-primary p-db-code">${row?.['code']}</span><br><span class="text-secondary">${row?.['title']}</span>`
+                    return `<span class="badge badge-primary p-dp-code">${row?.['code']}</span><br><span class="text-secondary">${row?.['title']}</span>`
                 }
             }, {
                 className: 'w-45',
@@ -467,53 +499,65 @@ function LoadDistributionTable() {
 }
 
 function LoadDistributionProductTable(distribution_id=null) {
+    const table_cfg =  [
+        {
+            className: 'w-5',
+            render: () => {
+                return ``
+            }
+        },
+        {
+            className: 'w-35',
+            render: (data, type, row) => {
+                return `<span data-so-product-id="${row?.['id']}"
+                          data-product-id="${row?.['id']}"
+                          data-product-code="${row?.['code']}"
+                          data-product-title="${row?.['title']}"
+                          data-product-uom-id="${row?.['uom']?.['id']}"
+                          data-product-uom-title="${row?.['uom']?.['title']}"
+                          data-product-description="${row?.['description']}"
+                          class="badge badge-outline badge-primary product-span"
+                    >${row?.['code']}</span><br><span class="text-secondary">${row?.['title']}</span>`
+            }
+        },
+        {
+            className: 'text-center w-15',
+            render: (data, type, row) => {
+                let planned_quantity = parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month'])
+                return `<span class="quantity-span">${planned_quantity}</span>`
+            }
+        },
+        {
+            className: 'text-center w-15',
+            render: (data, type, row) => {
+                let requested_quantity = parseFloat(row?.['purchase_request_number'])
+                return `<span class="requested-span">${requested_quantity}</span>`
+            }
+        },
+        {
+            className: 'text-center w-15',
+            render: (data, type, row) => {
+                let remain_quantity = (parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month'])) - parseFloat(row?.['purchase_request_number'])
+                return `<span class="remain-span">${remain_quantity >= 0 ? remain_quantity : '(' + remain_quantity * (-1) + ')'}</span>`
+            }
+        },
+        {
+            className: 'text-center w-15',
+            render: (data, type, row) => {
+                return `<input type="number" class="form-control text-center request-number-input" value="0">`
+            }
+        }
+    ]
     tableDistributionProduct.DataTable().clear().destroy()
     if (!distribution_id) {
         tableDistributionProduct.DataTableDefault({
             rowIdx: true,
             paging: false,
-            scrollY: '30vh',
+            scrollY: '45vh',
             scrollX: true,
             scrollCollapse: true,
             data: [],
-            columns: [
-                {
-                    className: 'w-5',
-                    render: () => {
-                        return ``
-                    }
-                },
-                {
-                    className: 'w-35',
-                    render: (data, type, row) => {
-                        return ``
-                    }
-                },
-                {
-                    className: 'text-center w-15',
-                    render: (data, type, row) => {
-                        return ``
-                    }
-                },
-                {
-                    className: 'text-center w-15',
-                    render: (data, type, row) => {
-                        return ``
-                    }
-                },
-                {
-                    className: 'text-center w-15',
-                    render: (data, type, row) => {
-                        return ``
-                    }
-                },
-                {
-                    className: 'text-center w-15',
-                    render: (data, type, row) => {
-                        return ``
-                    }
-                }
-            ],
+            columns: table_cfg
         });
     }
     else {
@@ -521,7 +565,7 @@ function LoadDistributionProductTable(distribution_id=null) {
             useDataServer: true,
             rowIdx: true,
             paging: false,
-            scrollY: '30vh',
+            scrollY: '45vh',
             scrollX: true,
             scrollCollapse: true,
             ajax: {
@@ -541,72 +585,22 @@ function LoadDistributionProductTable(distribution_id=null) {
                     throw Error('Call data raise errors.')
                 },
             },
-            columns: [
-                {
-                    className: 'w-5',
-                    render: () => {
-                        return ``
-                    }
-                },
-                {
-                    className: 'w-35',
-                    render: (data, type, row) => {
-                        return `<span data-so-product-id="${row?.['id']}"
-                                  data-product-id="${row?.['id']}"
-                                  data-product-code="${row?.['code']}"
-                                  data-product-title="${row?.['title']}"
-                                  data-product-uom-id="${row?.['uom']?.['id']}"
-                                  data-product-uom-title="${row?.['uom']?.['title']}"
-                                  data-product-description="${row?.['description']}"
-                                  class="badge badge-outline badge-primary product-span"
-                            >${row?.['code']}</span><br><span class="text-secondary">${row?.['title']}</span>`
-                    }
-                },
-                {
-                    className: 'text-center w-15',
-                    render: (data, type, row) => {
-                        let planned_quantity = parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month'])
-                        return `<span class="quantity-span">${planned_quantity}</span>`
-                    }
-                },
-                {
-                    className: 'text-center w-15',
-                    render: (data, type, row) => {
-                        let requested_quantity = parseFloat(row?.['purchase_request_number'])
-                        return `<span class="requested-span">${requested_quantity}</span>`
-                    }
-                },
-                {
-                    className: 'text-center w-15',
-                    render: (data, type, row) => {
-                        let remain_quantity = (parseFloat(row?.['expected_number']) * parseFloat(row?.['no_of_month'])) - parseFloat(row?.['purchase_request_number'])
-                        return `<span class="remain-span">${remain_quantity >= 0 ? remain_quantity : '(' + remain_quantity * (-1) + ')'}</span>`
-                    }
-                },
-                {
-                    className: 'text-center w-15',
-                    render: (data, type, row) => {
-                        return `<input type="number" class="form-control text-center request-number-input" value="0">`
-                    }
-                }
-            ],
+            columns: table_cfg
         });
     }
 }
 
-function calculate_line_detail_table(row) {
+function CalculateSumLineDetail(row) {
     let table_line_detail = row.closest('table')
     let sum_pre_tax = 0
     let sum_tax = 0
     let sum_after_tax = 0
     table_line_detail.find('tbody tr').each(function () {
         let row = $(this)
-        let quantity = parseFloat(row.find('.request-number').text())
-        quantity = quantity ? quantity : parseFloat(row.find('.request-number').val())
-        quantity = quantity ? quantity : 0
-        let unit_price = row.find('.unit-price').attr('value') ? parseFloat(row.find('.unit-price').attr('value')) : 0
+        let quantity = parseFloat(row.find('.request-number').text()) || parseFloat(row.find('.request-number').val()) || 0
+        let unit_price = parseFloat(row.find('.unit-price').attr('value') || 0)
         let tax_rate = row.find('.tax').val() ? SelectDDControl.get_data_from_idx(row.find('.tax'), row.find('.tax').val())?.['rate'] : 0
-        tax_rate = tax_rate ? tax_rate : 0
+        tax_rate = tax_rate || 0
         let subtotal = quantity * unit_price
         let after_tax = subtotal + (subtotal * tax_rate/100)
         row.find('.subtotal-price').attr('value', subtotal + (subtotal * tax_rate / 100))
@@ -621,130 +615,108 @@ function calculate_line_detail_table(row) {
     $.fn.initMaskMoney2()
 }
 
-class PurchaseRequestHandle {
-    combinesDataSO(frmEle) {
-        let frm = new SetupFormSubmit($(frmEle));
-
-        frm.dataForm['title'] = $('#title-so').val()
-        frm.dataForm['delivered_date'] = moment(deliveryDate_so.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
-        frm.dataForm['supplier'] = supplier_so.val()
-        frm.dataForm['contact'] = contact_so.val()
-        frm.dataForm['request_for'] = $request_for.val()
-        frm.dataForm['sale_order'] = current_so_id || null
-        frm.dataForm['note'] = $('#note-so').val()
-        frm.dataForm['pretax_amount'] = $('#input-product-pretax-amount').attr('value')
-        frm.dataForm['taxes'] = $('#input-product-taxes').attr('value')
-        frm.dataForm['total_price'] = $('#input-product-total').attr('value')
-        let purchase_request_product_datas = []
-        lineDetailTable_so.find('tbody tr').each(function () {
-            purchase_request_product_datas.push({
-                'sale_order_product': $(this).find('.product-detail').attr('data-so-product-id'),
-                'product': $(this).find('.product-detail').attr('data-product-id') || null,
-                'uom': $(this).find('.product-uom').attr('data-uom-id') || null,
-                'tax': $(this).find('.tax').val() || null,
-                'quantity': $(this).find('.request-number').text(),
-                'unit_price': $(this).find('.unit-price').attr('value'),
-                'sub_total_price': $(this).find('.subtotal-price').attr('value'),
+class PurchaseRequestHandler {
+    static CombinesData(frmEle) {
+        let frm = new SetupFormSubmit($(frmEle))
+        if ($request_for.val() === '0') {
+            frm.dataForm['title'] = $('#title-so').val()
+            frm.dataForm['delivered_date'] = moment(deliveryDate_so.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+            frm.dataForm['supplier'] = supplier_so.val()
+            frm.dataForm['contact'] = contact_so.val()
+            frm.dataForm['request_for'] = $request_for.val()
+            frm.dataForm['sale_order'] = current_so_id || null
+            frm.dataForm['note'] = $('#note-so').val()
+            frm.dataForm['pretax_amount'] = parseFloat($('#input-product-pretax-amount').attr('value') || 0)
+            frm.dataForm['taxes'] = parseFloat($('#input-product-taxes').attr('value') || 0)
+            frm.dataForm['total_price'] = parseFloat($('#input-product-total').attr('value') || 0)
+            let purchase_request_product_datas = []
+            lineDetailTable_so.find('tbody tr').each(function () {
+                purchase_request_product_datas.push({
+                    'sale_order_product': $(this).find('.product-detail').attr('data-so-product-id'),
+                    'product': $(this).find('.product-detail').attr('data-product-id') || null,
+                    'uom': $(this).find('.product-uom').attr('data-uom-id') || null,
+                    'tax': $(this).find('.tax').val() || null,
+                    'quantity': parseFloat($(this).find('.request-number').text() || 0),
+                    'unit_price': parseFloat($(this).find('.unit-price').attr('value') || 0),
+                    'sub_total_price': parseFloat($(this).find('.subtotal-price').attr('value') || 0),
+                })
             })
-        })
-        frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
-        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
-
-        // console.log(frm)
-        return frm
-    }
-
-    combinesDataDP(frmEle) {
-        let frm = new SetupFormSubmit($(frmEle));
-
-        frm.dataForm['title'] = $('#title-db').val()
-        frm.dataForm['delivered_date'] = moment(deliveryDate_db.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
-        frm.dataForm['supplier'] = supplier_db.val()
-        frm.dataForm['contact'] = contact_db.val()
-        frm.dataForm['request_for'] = $('#request-for-db').attr('data-type')
-        frm.dataForm['distribution_plan'] = $('#code-db').attr('data-id')
-        frm.dataForm['note'] = $('#note-db').val()
-        frm.dataForm['pretax_amount'] = $('#input-product-pretax-amount').attr('value')
-        frm.dataForm['taxes'] = $('#input-product-taxes').attr('value')
-        frm.dataForm['total_price'] = $('#input-product-total').attr('value')
-        let purchase_request_product_datas = []
-        $('#datatable-pr-product-distribution tbody tr').each(function () {
-            purchase_request_product_datas.push({
-                'sale_order_product': null,
-                'product': $(this).find('.product-detail').attr('data-id'),
-                'uom': $(this).find('.product-uom').attr('data-id'),
-                'quantity': $(this).find('.request-number').text(),
-                'unit_price': $(this).find('.unit-price').attr('value'),
-                'tax': $(this).find('.tax').val() ? $(this).find('.tax').val() : null,
-                'sub_total_price': $(this).find('.subtotal-price').attr('value'),
+            frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
+        }
+        else if ($request_for.val() === '1') {
+            frm.dataForm['title'] = $('#title-sf').val()
+            frm.dataForm['delivered_date'] = moment(deliveryDate_sf.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+            frm.dataForm['supplier'] = supplier_sf.val() || null
+            frm.dataForm['contact'] = contact_sf.val() || null
+            frm.dataForm['request_for'] = $('#request-for-sf').attr('data-type')
+            frm.dataForm['note'] = $('#note-sf').val()
+            frm.dataForm['pretax_amount'] = parseFloat($('#input-product-pretax-amount').attr('value') || 0)
+            frm.dataForm['taxes'] = parseFloat($('#input-product-taxes').attr('value') || 0)
+            frm.dataForm['total_price'] = parseFloat($('#input-product-total').attr('value') || 0)
+            let purchase_request_product_datas = []
+            $('#datatable-pr-product-stock-free tbody tr').each(function () {
+                purchase_request_product_datas.push({
+                    'sale_order_product': null,
+                    'product': $(this).find('.product-detail').val() || null,
+                    'uom': $(this).find('.product-uom').val() || null,
+                    'tax': $(this).find('.tax').val() || null,
+                    'quantity': parseFloat($(this).find('.request-number').val() || 0),
+                    'unit_price': parseFloat($(this).find('.unit-price').attr('value') || 0),
+                    'sub_total_price': parseFloat($(this).find('.subtotal-price').attr('value') || 0),
+                })
             })
-        })
-        frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
-        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
-
-        // console.log(frm)
-        return frm
-    }
-
-    combinesDataSF(frmEle) {
-        let frm = new SetupFormSubmit($(frmEle));
-
-        frm.dataForm['title'] = $('#title-sf').val()
-        frm.dataForm['delivered_date'] = moment(deliveryDate_sf.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
-        frm.dataForm['supplier'] = supplier_sf.val()
-        frm.dataForm['contact'] = contact_sf.val()
-        frm.dataForm['request_for'] = $('#request-for-sf').attr('data-type')
-        frm.dataForm['note'] = $('#note-sf').val()
-        frm.dataForm['pretax_amount'] = $('#input-product-pretax-amount').attr('value')
-        frm.dataForm['taxes'] = $('#input-product-taxes').attr('value')
-        frm.dataForm['total_price'] = $('#input-product-total').attr('value')
-        let purchase_request_product_datas = []
-        $('#datatable-pr-product-stock-free tbody tr').each(function () {
-            purchase_request_product_datas.push({
-                'sale_order_product': null,
-                'product': $(this).find('.product-detail').val(),
-                'uom': $(this).find('.product-uom').val(),
-                'quantity': $(this).find('.request-number').val(),
-                'unit_price': $(this).find('.unit-price').attr('value'),
-                'tax': $(this).find('.tax').val() ? $(this).find('.tax').val() : null,
-                'sub_total_price': $(this).find('.subtotal-price').attr('value'),
+            frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
+        }
+        else if ($request_for.val() === '2') {
+            frm.dataForm['title'] = $('#title-fa').val()
+            frm.dataForm['delivered_date'] = moment(deliveryDate_fa.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+            frm.dataForm['supplier'] = supplier_fa.val() || null
+            frm.dataForm['contact'] = contact_fa.val() || null
+            frm.dataForm['request_for'] = $('#request-for-fa').attr('data-type')
+            frm.dataForm['note'] = $('#note-fa').val()
+            frm.dataForm['pretax_amount'] = parseFloat($('#input-product-pretax-amount').attr('value') || 0)
+            frm.dataForm['taxes'] = parseFloat($('#input-product-taxes').attr('value') || 0)
+            frm.dataForm['total_price'] = parseFloat($('#input-product-total').attr('value') || 0)
+            let purchase_request_product_datas = []
+            $('#datatable-pr-product-fixed-asset tbody tr').each(function () {
+                purchase_request_product_datas.push({
+                    'sale_order_product': null,
+                    'product': $(this).find('.product-detail').val() || null,
+                    'uom': $(this).find('.product-uom').val() || null,
+                    'tax': $(this).find('.tax').val() || null,
+                    'quantity': parseFloat($(this).find('.request-number').val() || 0),
+                    'unit_price': parseFloat($(this).find('.unit-price').attr('value') || 0),
+                    'sub_total_price': parseFloat($(this).find('.subtotal-price').attr('value') || 0),
+                })
             })
-        })
-        frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
-        frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
-
-        // console.log(frm)
-        return frm
-    }
-
-    combinesDataFA(frmEle) {
-        let frm = new SetupFormSubmit($(frmEle));
-
-        frm.dataForm['title'] = $('#title-fa').val()
-        frm.dataForm['delivered_date'] = moment(deliveryDate_fa.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
-        frm.dataForm['supplier'] = supplier_fa.val()
-        frm.dataForm['contact'] = contact_fa.val()
-        frm.dataForm['request_for'] = $('#request-for-fa').attr('data-type')
-        frm.dataForm['note'] = $('#note-fa').val()
-        frm.dataForm['pretax_amount'] = $('#input-product-pretax-amount').attr('value')
-        frm.dataForm['taxes'] = $('#input-product-taxes').attr('value')
-        frm.dataForm['total_price'] = $('#input-product-total').attr('value')
-        let purchase_request_product_datas = []
-        $('#datatable-pr-product-fixed-asset tbody tr').each(function () {
-            purchase_request_product_datas.push({
-                'sale_order_product': null,
-                'product': $(this).find('.product-detail').val(),
-                'uom': $(this).find('.product-uom').val(),
-                'quantity': $(this).find('.request-number').val(),
-                'unit_price': $(this).find('.unit-price').attr('value'),
-                'tax': $(this).find('.tax').val() ? $(this).find('.tax').val() : null,
-                'sub_total_price': $(this).find('.subtotal-price').attr('value'),
+            frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
+        }
+        else if ($request_for.val() === '3') {
+            frm.dataForm['title'] = $('#title-dp').val()
+            frm.dataForm['delivered_date'] = moment(deliveryDate_dp.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+            frm.dataForm['supplier'] = supplier_dp.val() || null
+            frm.dataForm['contact'] = contact_dp.val() || null
+            frm.dataForm['request_for'] = $request_for.val()
+            frm.dataForm['distribution_plan'] = current_dp_id || null
+            frm.dataForm['note'] = $('#note-dp').val()
+            frm.dataForm['pretax_amount'] = parseFloat($('#input-product-pretax-amount').attr('value') || 0)
+            frm.dataForm['taxes'] = parseFloat($('#input-product-taxes').attr('value') || 0)
+            frm.dataForm['total_price'] = parseFloat($('#input-product-total').attr('value') || 0)
+            let purchase_request_product_datas = []
+            $('#datatable-pr-product-distribution tbody tr').each(function () {
+                purchase_request_product_datas.push({
+                    'sale_order_product': null,
+                    'product': $(this).find('.product-detail').attr('data-id') || null,
+                    'uom': $(this).find('.product-uom').attr('data-id') || null,
+                    'tax': $(this).find('.tax').val() || null,
+                    'quantity': parseFloat($(this).find('.request-number').text() || 0),
+                    'unit_price': parseFloat($(this).find('.unit-price').attr('value') || 0),
+                    'sub_total_price': parseFloat($(this).find('.subtotal-price').attr('value') || 0),
+                })
             })
-        })
-        frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
+            frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
+        }
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
-
-        // console.log(frm)
         return frm
     }
 }
@@ -765,9 +737,17 @@ function LoadDetailPR(option) {
                     $('#title-so').val(data?.['title'])
                     deliveryDate_so.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $('#pr-status-so').val(data?.['purchase_status'])
-                    LoadSupplier(supplier_so, data?.['supplier'])
+                    UsualLoadPageFunction.LoadSupplier({
+                        element: supplier_so,
+                        data: data?.['supplier'],
+                        data_url: supplier_so.attr('data-url')
+                    })
                     contact_so.empty()
-                    LoadContactOwner(contact_so, data?.['contact'])
+                    UsualLoadPageFunction.LoadContact({
+                        element: contact_so,
+                        data: data?.['contact'],
+                        data_url: contact_so.attr('data-url')
+                    })
                     $('#code-so').val(data?.['sale_order']?.['code'])
                     $('#note-so').val(data?.['note'])
 
@@ -783,9 +763,17 @@ function LoadDetailPR(option) {
                     $('#title-sf').val(data?.['title'])
                     deliveryDate_sf.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $('#pr-status-sf').val(data?.['purchase_status'])
-                    LoadSupplier(supplier_sf, data?.['supplier'])
+                    UsualLoadPageFunction.LoadSupplier({
+                        element: supplier_sf,
+                        data: data?.['supplier'],
+                        data_url: supplier_sf.attr('data-url')
+                    })
                     contact_sf.empty()
-                    LoadContactOwner(contact_sf, data?.['contact'])
+                    UsualLoadPageFunction.LoadContact({
+                        element: contact_sf,
+                        data: data?.['contact'],
+                        data_url: contact_sf.attr('data-url')
+                    })
                     $('#note-sf').val(data?.['note'])
 
                     let request_product_data = []
@@ -818,9 +806,17 @@ function LoadDetailPR(option) {
                     $('#title-fa').val(data?.['title'])
                     deliveryDate_fa.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
                     $('#pr-status-fa').val(data?.['purchase_status'])
-                    LoadSupplier(supplier_fa, data?.['supplier'])
+                    UsualLoadPageFunction.LoadSupplier({
+                        element: supplier_fa,
+                        data: data?.['supplier'],
+                        data_url: supplier_fa.attr('data-url')
+                    })
                     contact_fa.empty()
-                    LoadContactOwner(contact_fa, data?.['contact'])
+                    UsualLoadPageFunction.LoadContact({
+                        element: contact_fa,
+                        data: data?.['contact'],
+                        data_url: contact_fa.attr('data-url')
+                    })
                     $('#note-fa').val(data?.['note'])
 
                     let request_product_data = []
@@ -850,16 +846,23 @@ function LoadDetailPR(option) {
                 else if (data?.['request_for'] === 3) {
                     $('.for-distribution-request').prop('hidden', false)
                     $request_for.val(3)
-                    $('#title-db').val(data?.['title'])
-                    deliveryDate_db.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
-                    $('#pr-status-db').val(data?.['purchase_status'])
-                    LoadSupplier(supplier_db, data?.['supplier'])
-                    contact_db.empty()
-                    LoadContactOwner(contact_db, data?.['contact'])
-                    $('#code-db').val(data?.['distribution_plan']?.['code'])
-                    $('#note-db').val(data?.['note'])
+                    $('#title-dp').val(data?.['title'])
+                    deliveryDate_dp.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
+                    $('#pr-status-dp').val(data?.['purchase_status'])
+                    UsualLoadPageFunction.LoadSupplier({
+                        element: supplier_dp,
+                        data: data?.['supplier'],
+                        data_url: supplier_dp.attr('data-url')
+                    })
+                    contact_dp.empty()
+                    UsualLoadPageFunction.LoadContact({
+                        element: contact_dp,
+                        data: data?.['contact'],
+                        data_url: contact_dp.attr('data-url')
+                    })
+                    $('#note-dp').val(data?.['note'])
 
-                    LoadLineDetailTable(lineDetailTable_db, data?.['purchase_request_product_datas'] || [], option)
+                    LoadLineDetailTable(lineDetailTable_dp, data?.['purchase_request_product_datas'] || [], option)
                     $('#input-product-pretax-amount').attr('value', data?.['pretax_amount'])
                     $('#input-product-taxes').attr('value', data?.['taxes'])
                     $('#input-product-total').attr('value', data?.['total_price'])
@@ -879,6 +882,42 @@ function LoadDetailPR(option) {
             }
         })
 }
+
+$btn_change_sale_order.on('click', function () {
+    $('.for-sale-order-request, .for-stock-free-request, .for-fixed-asset-request, .for-distribution-request').prop('hidden', true)
+    $('.for-sale-order-request').prop('hidden', false)
+    let dataParam = {}
+    let pr_config = $.fn.callAjax2({
+        url: script_url.attr('data-url-pr-config-so'),
+        data: dataParam,
+        method: 'GET'
+    }).then(
+        (resp) => {
+            let data = $.fn.switcherResp(resp);
+            if (data && typeof data === 'object' && data.hasOwnProperty('config')) {
+                return data?.['config']?.['employee_reference'] ? data?.['config']?.['employee_reference'] : [];
+            }
+            return {};
+        },
+        (errs) => {
+            console.log(errs);
+        }
+    )
+
+    Promise.all([pr_config]).then(
+        (results) => {
+            is_all_so = (results[0] || []).some(emp => emp?.['employee']?.['id'] === emp_current_id)
+            LoadSaleOrderTable()
+            LoadSaleOrderProductTable()
+        })
+})
+
+$btn_change_distribution.on('click', function () {
+    $('.for-sale-order-request, .for-stock-free-request, .for-fixed-asset-request, .for-distribution-request').prop('hidden', true)
+    $('.for-distribution-request').prop('hidden', false)
+    LoadDistributionTable()
+    LoadDistributionProductTable()
+})
 
 $(document).on('change', '.inp-check-so', function () {
     $(this).closest('table').find('tr').removeClass('bg-secondary-light-5');
@@ -910,11 +949,7 @@ btnSelectSOProduct.on('click', function () {
         }
         else {
             if (request_number) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Request number is invalid!',
-                })
+                $.fn.notifyB({description: $.fn.gettext('Request number is invalid!')}, 'failure')
                 flag = false
                 request_product_data = []
             }
@@ -931,42 +966,35 @@ btnSelectSOProduct.on('click', function () {
     }
 })
 
-btnSelectDBProduct.on('click', function () {
+btnSelectDPProduct.on('click', function () {
     let request_product_data = []
     let flag = true
     tableDistributionProduct.find('tbody tr').each(function () {
-        let limit_number = $(this).find('.remain-span').text() ? parseFloat($(this).find('.remain-span').text()) : ''
-        let request_number = $(this).find('.request-number-input').val() ? parseFloat($(this).find('.request-number-input').val()) : ''
+        let limit_number = parseFloat($(this).find('.remain-span').text() || 0)
+        let request_number = parseFloat($(this).find('.request-number-input').val() || 0)
 
-        if (limit_number && request_number && request_number <= limit_number || TYPE === '3') {
+        if (request_number <= limit_number) {
             request_product_data.push({
                 'sale_order_product_id': $(this).find('.product-span').attr('data-so-product-id'),
-                'id': $(this).find('.product-span').attr('data-product-id'),
-                'code': $(this).find('.product-span').attr('data-product-code'),
-                'title': $(this).find('.product-span').attr('data-product-title'),
-                'description': $(this).find('.product-span').attr('data-product-description'),
-                'uom_title': $(this).find('.product-span').attr('data-product-uom-title'),
-                'uom_id': $(this).find('.product-span').attr('data-product-uom-id'),
-                'request_number': request_number
+                'product_data': JSON.parse($(this).find('.product-span').attr('data-product') || '{}'),
+                'uom_data': JSON.parse($(this).find('.product-span').attr('data-uom') || '{}'),
+                'tax_data': JSON.parse($(this).find('.product-span').attr('data-tax') || '{}'),
+                'quantity': request_number
             })
         }
         else {
             if (request_number) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Request number is invalid!',
-                })
+                $.fn.notifyB({description: $.fn.gettext('Request number is invalid!')}, 'failure')
                 flag = false
                 request_product_data = []
             }
         }
     })
     if (flag) {
-        LoadLineDetailTable(lineDetailTable_db, request_product_data)
+        LoadLineDetailTable(lineDetailTable_dp, request_product_data)
         $('.inp-check-dp').each(function () {
             if ($(this).prop('checked')) {
-                $('#code-db').val($(this).closest('tr').find('.p-db-code').text()).attr('data-id', $(this).attr('data-id'))
+                current_dp_id = $(this).attr('data-id')
             }
         })
         modalSelectDistribution.modal('hide')
@@ -1004,82 +1032,34 @@ $(document).on("click", '.btn-del-line-detail', function () {
         $(this).closest('table'),
         parseInt($(this).closest('tr').find('td:first-child').text())
     )
-});
+    CalculateSumLineDetail($(this).closest('tr'))
+})
+
+$(document).on('change', '.product-detail', function () {
+    let product_selected = SelectDDControl.get_data_from_idx($(this), $(this).val())
+    $(this).closest('tr').find('.product-des-detail').text(product_selected?.['description'] || '')
+    UsualLoadPageFunction.LoadUOM({
+        element: $(this).closest('tr').find('.product-uom'),
+        data: product_selected?.['purchase_information']?.['default_uom'] || {},
+        data_params: {'group_id': product_selected?.['general_uom_group']?.['id']},
+        data_url: script_url.attr('data-url-uom')
+    })
+    UsualLoadPageFunction.LoadTax({
+        element: $(this).closest('tr').find('.tax'),
+        data: product_selected?.['purchase_information']?.['tax'] || {},
+        data_url: script_url.attr('data-url-tax')
+    })
+})
 
 $(document).on('change', '.unit-price', function () {
-    calculate_line_detail_table($(this).closest('tr'))
+    CalculateSumLineDetail($(this).closest('tr'))
 })
 
 $(document).on('change', '.request-number', function () {
-    calculate_line_detail_table($(this).closest('tr'))
-})
-
-$request_for.on('change', function () {
-    $('.for-sale-order-request, .for-stock-free-request, .for-fixed-asset-request, .for-distribution-request').prop('hidden', true)
-    if ($request_for.val() === '0') {
-        $('.for-sale-order-request').prop('hidden', false)
-        LoadDeliveryDate(deliveryDate_so)
-        LoadSupplier(supplier_so)
-        LoadLineDetailTable(lineDetailTable_so, [])
-        UsualLoadPageFunction.LoadCustomer({
-            element: $so_filter_by_customer,
-            data_url: $so_filter_by_customer.attr('data-url')
-        })
-
-        let dataParam = {}
-        let pr_config = $.fn.callAjax2({
-            url: script_url.attr('data-url-pr-config-so'),
-            data: dataParam,
-            method: 'GET'
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data && typeof data === 'object' && data.hasOwnProperty('config')) {
-                    return data?.['config']?.['employee_reference'] ? data?.['config']?.['employee_reference'] : [];
-                }
-                return {};
-            },
-            (errs) => {
-                console.log(errs);
-            }
-        )
-
-        Promise.all([pr_config]).then(
-            (results) => {
-                is_all_so = (results[0] || []).some(emp => emp?.['employee']?.['id'] === emp_current_id)
-                LoadSaleOrderTable()
-                LoadSaleOrderProductTable()
-            })
-    }
-    else if ($request_for.val() === '1') {
-        $('.for-stock-free-request').prop('hidden', false)
-        LoadDeliveryDate(deliveryDate_sf)
-        LoadSupplier(supplier_sf)
-        LoadLineDetailTableAddRow(lineDetailTable_sf, [])
-    }
-    else if ($request_for.val() === '2') {
-        $('.for-fixed-asset-request').prop('hidden', false)
-        LoadDeliveryDate(deliveryDate_fa)
-        LoadSupplier(supplier_fa)
-        LoadLineDetailTableAddRow(lineDetailTable_fa, [])
-    }
-    else if ($request_for.val() === '3') {
-        $('.for-distribution-request').prop('hidden', false)
-        LoadDeliveryDate(deliveryDate_db)
-        LoadSupplier(supplier_db)
-        LoadLineDetailTable(lineDetailTable_db, [])
-        LoadDistributionTable()
-        LoadDistributionProductTable()
-    }
+    CalculateSumLineDetail($(this).closest('tr'))
 })
 
 $so_filter_by_customer.on('change', function () {
     LoadSaleOrderTable()
     LoadSaleOrderProductTable()
-})
-
-$('.select-pr-type').on('mouseenter', function () {
-    $(this).addClass('bg-secondary-light-5')
-}).on('mouseleave', function () {
-    $(this).removeClass('bg-secondary-light-5')
 })

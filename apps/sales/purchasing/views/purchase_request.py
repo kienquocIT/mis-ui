@@ -105,6 +105,9 @@ class PurchaseRequestDetailAPI(APIView):
     )
     def put(self, request, pk, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_DETAIL.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = PurchasingMsg.PURCHASE_REQUEST_UPDATE
+            return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
 

@@ -2915,7 +2915,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 1,
-                    width: '12%',
+                    width: '13%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return `<input type="text" class="form-control table-row-group-title-edit" value="${row?.['group_title']}">
@@ -2982,7 +2982,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 2,
-                    width: '12%',
+                    width: '13%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3038,7 +3038,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 4,
-                    width: '8%',
+                    width: '7%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3075,7 +3075,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 6,
-                    width: '8%',
+                    width: '7%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3124,7 +3124,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 8,
-                    width: '8%',
+                    width: '7%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3166,7 +3166,7 @@ class QuotationDataTableHandle {
                 },
                 {
                     targets: 9,
-                    width: '8%',
+                    width: '7%',
                     render: (data, type, row) => {
                         if (row?.['is_group'] === true) {
                             return ``;
@@ -3244,6 +3244,7 @@ class QuotationDataTableHandle {
                 let shippingEle = row.querySelector('.table-row-shipping');
                 let uomEle = row.querySelector('.table-row-uom');
                 let uomTimeEle = row.querySelector('.table-row-uom-time');
+                let quantityTimeEle = row.querySelector('.table-row-quantity-time');
                 let taxEle = row.querySelector('.table-row-tax');
                 if (itemEle) {
                     let dataS2 = [];
@@ -3280,6 +3281,9 @@ class QuotationDataTableHandle {
                     let dataS2 = [];
                     if (data?.['uom_time_data']) {
                         dataS2 = [data?.['uom_time_data']];
+                        if (quantityTimeEle) {
+                            quantityTimeEle.removeAttribute('disabled');
+                        }
                     }
                     FormElementControl.loadInitS2($(uomTimeEle), dataS2, {'group__code': 'Time', 'group__is_default': true}, null, true);
                 }

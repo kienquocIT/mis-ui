@@ -6,9 +6,12 @@
         class="card p-1 dad-file-control-group"
         {% if id %} id="{{ id }}" {% endif %}
         data-url="{% url 'AttachmentUpload' %}"
+        data-url-document-type="{% url 'DocumentTypeConfigListAPI' %}"
+        data-url-content-group="{% url 'ContentGroupListAPI' %}"
         data-msg-upload-exception="{% trans 'Has exception in upload progress' %}"
         data-msg-skip-exist-file="{% trans 'Skip add exist file' %}"
         data-msg-description-file="{% trans 'Descriptions of file' %}"
+        data-msg-attribute-file="{% trans 'Attributes of file' %}"
 >
     <div
             class="dm-uploader w-100"
@@ -80,42 +83,68 @@
             <li
                     class="media dm-uploader-result-item d-flex align-items-center p-2 state-f-wait"
                     data-file-id="%%fileid%%"
+                    data-file="%%filedata%%"
             >
                 <img
                         class="mr-3 mw-50p mh-50p img-filter-opacity-50" src="%%filecapture%%"
                         alt="Preview"
                 >
                 <div class="media-body mb-1">
-                    <div class="d-flex">
-                        <p class="f-item-name">%%filename%%</p>
-                        <a
-                                class="file-preview-link ml-2"
-                                href="{% url 'AttachmentPreview' pk='__pk__' %}"
-                                target="_blank"
-                        >
-                            <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i>
-                        </a>
+                    <div class="row">
+                        <div class="col-12 col-md-4 col-lg-4">
+{#                            <b>{% trans 'Name' %}</b>#}
+                            <div class="d-flex">
+                                <p class="f-item-name">%%filename%%</p>
+                                <a
+                                        class="file-preview-link ml-2"
+                                        href="{% url 'AttachmentPreview' pk='__pk__' %}"
+                                        target="_blank"
+                                >
+                                    <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i>
+                                </a>
+                            </div>
+                            <span class="badge badge-sm text-dark-10 fs-8 bg-yellow-light-4 f-item-info">%%fileinfo%%</span>
+                        </div>
+{#                        <div class="col-12 col-md-2 col-lg-2">#}
+{#                            <b>{% trans 'Description' %}</b>#}
+{#                            <input type="text" class="form-control-plaintext file-txt-remark" placeholder="" value="%%fileremark%%" readonly disabled>#}
+{#                        </div>#}
+{#                        <div class="col-12 col-md-2 col-lg-2">#}
+{#                            <b>{% trans 'Document type' %}</b>#}
+{#                            <div><span class="badge badge-sm text-dark-10 fs-8 bg-green-light-4 file-txt-document-type">%%filedoctype%%</span></div>#}
+{#                        </div>#}
+{#                        <div class="col-12 col-md-2 col-lg-2">#}
+{#                            <b>{% trans 'Content group' %}</b>#}
+{#                            <div><span class="badge badge-sm text-dark-10 fs-8 bg-green-light-4 file-txt-content-group">%%filecontentgroup%%</span></div>#}
+{#                        </div>#}
                     </div>
 
-                    <small class="f-item-info">%%fileinfo%%</small>
-                    <input type="text" class="form-control-plaintext file-txt-remark" placeholder="" value="%%fileremark%%" readonly disabled>
+
                 </div>
                 <button
                         type="button"
                         class="ml-auto btn btn-rounded btn-icon btn-percent-upload mr-1" disabled
                 ></button>
+                <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
                 <button
                         type="button"
-                        class="ml-auto btn btn-soft-secondary btn-rounded btn-icon btn-download-file"
+                        class="btn nav-link btn-download-file"
                 >
                     <i class="fa-solid fa-download"></i>
                 </button>
                 <button
                         type="button"
-                        class="ml-auto btn btn-danger btn-rounded btn-icon btn-destroy-file"
+                        class="btn nav-link btn-edit-attribute"
+                >
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+                <button
+                        type="button"
+                        class="btn nav-link btn-destroy-file"
                 >
                     <i class="fa-solid fa-xmark"></i>
                 </button>
+                </div>
             </li>
         </script>
         {#  -- li.item with plain text      #}
@@ -168,3 +197,5 @@
         </div>
     </div>
 </div>
+
+{% include 'extends/files/file_attribute.html' %}

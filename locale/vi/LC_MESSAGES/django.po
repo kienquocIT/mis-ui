@@ -12264,10 +12264,6 @@ msgid "Package type"
 msgstr "Loại kiện hàng"
 
 #
-msgid "Package Type"
-msgstr "Loại Kiện Hàng"
-
-#
 msgid "Summarize contract"
 msgstr "Tổng hợp hợp đồng"
 

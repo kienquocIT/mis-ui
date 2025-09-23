@@ -607,7 +607,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_ISSUE_PRODUCT_LIST = StringUrl('inventory/goods-issue-product/list')
 
     # Sale Order List for Purchasing Staff
-    SALE_ORDER_LIST_FOR_PURCHASING_STAFF = StringUrl('saleorder/purchasing-staff/list')
+    PURCHASE_REQUEST_SALE_ORDER_LIST = StringUrl('purchasing/purchase-request-so-list')
 
     # Report
     REPORT_REVENUE_LIST = StringUrl('report/revenue/list')

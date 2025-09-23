@@ -144,6 +144,17 @@ class PurchaseRequestConfigAPI(APIView):
 
 
 # related
+class PurchaseRequestSaleOrderListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_SALE_ORDER_LIST).get(params)
+        return resp.auto_return(key_success='sale_order_list')
+
+
 class PurchaseRequestProductListAPI(APIView):
     @mask_view(
         auth_require=True,

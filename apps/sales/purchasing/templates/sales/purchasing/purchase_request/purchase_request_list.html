@@ -4,7 +4,7 @@
 {% block cssHeader %}
 {% endblock %}
 {% block pageAction %}
-    <a href="#" data-bs-toggle="modal" data-bs-target="#modal-select-request-for">
+    <a href="{% url "PurchaseRequestCreate" %}">
         <button class="btn btn-outline-primary">
             <span>
                 <span>{% trans 'Add' %}</span>
@@ -31,7 +31,7 @@
                     <tr>
                         <th style="min-width: 50px"></th>
                         <th style="min-width: 100px">{% trans "Code" %}</th>
-                        <th style="min-width: 300px">{% trans "Name" %}</th>
+                        <th style="min-width: 300px">{% trans "Title" %}</th>
                         <th style="min-width: 150px">{% trans "Type" %}</th>
                         <th style="min-width: 300px">{% trans "Supplier" %}</th>
                         <th style="min-width: 150px">{% trans "Delivered Date" %}</th>

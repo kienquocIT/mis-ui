@@ -2,7 +2,7 @@ import json
 import sys
 
 from django.core.management.commands.makemessages import Command as BaseMakeMessagesCommand
-from misui.celery import app
+from misui.celery_app import app
 
 
 class Command(BaseMakeMessagesCommand):

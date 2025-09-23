@@ -12274,3 +12274,7 @@ msgstr "Tổng hợp hợp đồng"
 #
 msgid "Orders"
 msgstr "Đơn hàng"
+
+#
+msgid "Filter by customer"
+msgstr "Lọc theo khách hàng"

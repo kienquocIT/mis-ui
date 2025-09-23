@@ -1,8 +1,8 @@
 {% load i18n %}
 
-<div class="row mb-5 mb-5">
+<div class="row mt-5">
     <div class="col-12">
-        <ul class="nav nav-tabs nav-icon nav-light" id="purchase-request-tabs">
+        <ul class="nav nav-pills-bfl quotation-tabs">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                     <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-list"></i></span></span>
@@ -21,16 +21,15 @@
                 <div class="row">
                     <div class="col-12 for-sale-order-request" hidden>
                         <table id="datatable-pr-product-so" class="table nowrap w-100 mb-5">
-                            <thead>
+                            <thead class="bg-secondary-light-5">
                             <tr>
                                 <th style="min-width: 50px"></th>
                                 <th style="min-width: 250px">{% trans "Product" %}</th>
-                                <th style="min-width: 200px">{% trans "Description" %}</th>
-                                <th style="min-width: 250px">{% trans "UoM" %}</th>
                                 <th style="min-width: 100px">{% trans "Request quantity" %}</th>
-                                <th style="min-width: 200px">{% trans "Unit Price" %}</th>
-                                <th style="min-width: 250px">{% trans "Tax" %}</th>
-                                <th style="min-width: 200px">{% trans "Subtotal Price" %}</th>
+                                <th style="min-width: 100px">{% trans "UoM" %}</th>
+                                <th style="min-width: 150px">{% trans "Unit Price" %}</th>
+                                <th style="min-width: 100px">{% trans "Tax" %}</th>
+                                <th style="min-width: 150px">{% trans "Subtotal Price" %}</th>
                             </tr>
                             </thead>
                             <tbody></tbody>
@@ -39,15 +38,14 @@
                     <div class="col-12 for-distribution-request" hidden>
                         <table id="datatable-pr-product-distribution" class="table nowrap w-100 mb-5">
                             <thead>
-                            <tr>
+                            <tr class="bg-secondary-light-5">
                                 <th style="min-width: 50px"></th>
                                 <th style="min-width: 250px">{% trans "Product" %}</th>
-                                <th style="min-width: 200px">{% trans "Description" %}</th>
-                                <th style="min-width: 250px">{% trans "UoM" %}</th>
                                 <th style="min-width: 100px">{% trans "Request quantity" %}</th>
-                                <th style="min-width: 200px">{% trans "Unit Price" %}</th>
-                                <th style="min-width: 250px">{% trans "Tax" %}</th>
-                                <th style="min-width: 200px">{% trans "Subtotal Price" %}</th>
+                                <th style="min-width: 100px">{% trans "UoM" %}</th>
+                                <th style="min-width: 150px">{% trans "Unit Price" %}</th>
+                                <th style="min-width: 100px">{% trans "Tax" %}</th>
+                                <th style="min-width: 150px">{% trans "Subtotal Price" %}</th>
                             </tr>
                             </thead>
                             <tbody></tbody>
@@ -56,15 +54,15 @@
                     <div class="col-12 for-stock-free-request" hidden>
                         <table id="datatable-pr-product-stock-free" class="table nowrap w-100 mb-5">
                             <thead>
-                            <tr>
+                            <tr class="bg-secondary-light-5">
                                 <th style="min-width: 50px"></th>
                                 <th style="min-width: 250px">{% trans "Product" %}</th>
                                 <th style="min-width: 200px">{% trans "Description" %}</th>
-                                <th style="min-width: 250px">{% trans "UoM" %}</th>
                                 <th style="min-width: 100px">{% trans "Request quantity" %}</th>
-                                <th style="min-width: 200px">{% trans "Unit Price" %}</th>
-                                <th style="min-width: 250px">{% trans "Tax" %}</th>
-                                <th style="min-width: 200px">{% trans "Subtotal Price" %}</th>
+                                <th style="min-width: 100px">{% trans "UoM" %}</th>
+                                <th style="min-width: 150px">{% trans "Unit Price" %}</th>
+                                <th style="min-width: 100px">{% trans "Tax" %}</th>
+                                <th style="min-width: 150px">{% trans "Subtotal Price" %}</th>
                                 <th style="min-width: 50px"></th>
                             </tr>
                             </thead>
@@ -74,15 +72,15 @@
                     <div class="col-12 for-fixed-asset-request" hidden>
                         <table id="datatable-pr-product-fixed-asset" class="table nowrap w-100 mb-5">
                             <thead>
-                            <tr>
+                            <tr class="bg-secondary-light-5">
                                 <th style="min-width: 50px"></th>
                                 <th style="min-width: 250px">{% trans "Product" %}</th>
                                 <th style="min-width: 200px">{% trans "Description" %}</th>
-                                <th style="min-width: 250px">{% trans "UoM" %}</th>
                                 <th style="min-width: 100px">{% trans "Request quantity" %}</th>
-                                <th style="min-width: 200px">{% trans "Unit Price" %}</th>
-                                <th style="min-width: 250px">{% trans "Tax" %}</th>
-                                <th style="min-width: 200px">{% trans "Subtotal Price" %}</th>
+                                <th style="min-width: 100px">{% trans "UoM" %}</th>
+                                <th style="min-width: 150px">{% trans "Unit Price" %}</th>
+                                <th style="min-width: 100px">{% trans "Tax" %}</th>
+                                <th style="min-width: 150px">{% trans "Subtotal Price" %}</th>
                                 <th style="min-width: 50px"></th>
                             </tr>
                             </thead>
@@ -91,42 +89,41 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12 col-lg-7 mt-3 for-sale-order-request" hidden>
+                    <div class="col-12 col-lg-7 mt-2 for-sale-order-request" hidden>
                         <button type="button"
                                 id="btn-change-sale-order"
                                 class="btn btn-primary btn-sm"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modal-select-sale-order">
-                            {% trans 'Change' %} {% trans 'Sale order' %}
+                            {% trans 'Select' %} {% trans 'Sale order' %}
                         </button>
                     </div>
-                    <div class="col-12 col-lg-7 mt-3 for-distribution-request" hidden>
+                    <div class="col-12 col-lg-7 mt-2 for-distribution-request" hidden>
                         <button type="button"
                                 id="btn-change-distribution"
                                 class="btn btn-primary btn-sm"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modal-select-distribution">
-                            {% trans 'Change' %} {% trans 'Stock plan' %}
+                            {% trans 'Select' %} {% trans 'Stock plan' %}
                         </button>
                     </div>
-                    <div class="col-12 col-lg-7 mt-3 for-stock-free-request" hidden>
+                    <div class="col-12 col-lg-7 mt-2 for-stock-free-request" hidden>
                         <button type="button"
                                 id="btn-add-stock-free-product"
                                 class="btn btn-primary btn-sm">
                             {% trans "New product" %}
                         </button>
                     </div>
-                    <div class="col-12 col-lg-7 mt-3 for-fixed-asset-request" hidden>
+                    <div class="col-12 col-lg-7 mt-2 for-fixed-asset-request" hidden>
                         <button type="button"
                                 id="btn-add-fixed-asset-product"
                                 class="btn btn-primary btn-sm">
                             {% trans "New product" %}
                         </button>
                     </div>
-                    <div class="col-12 col-lg-5 mt-3 text-right">
+                    <div class="col-12 col-lg-5 mt-2 text-right ms-auto">
                         <div class="row">
-                            <label for="input-product-pretax-amount" class="col-4 col-form-label text-primary">{% trans
-                                'Pretax Amount' %}</label>
+                            <label for="input-product-pretax-amount" class="col-4 col-form-label text-primary">{% trans 'Pretax Amount' %}</label>
                             <div class="col-8">
                                 <input id="input-product-pretax-amount"
                                        class="form-control form-control-line mask-money text-right text-primary mb-1"
@@ -134,8 +131,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label for="input-product-taxes" class="col-4 col-form-label text-primary">{% trans 'Taxes'
-                                %}</label>
+                            <label for="input-product-taxes" class="col-4 col-form-label text-primary">{% trans 'Taxes'%}</label>
                             <div class="col-8">
                                 <input id="input-product-taxes"
                                        class="form-control form-control-line mask-money text-right text-primary mb-1"
@@ -143,8 +139,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label for="input-product-total" class="col-4 col-form-label text-primary">{% trans 'TOTAL'
-                                %}</label>
+                            <label for="input-product-total" class="col-4 col-form-label text-primary">{% trans 'TOTAL'%}</label>
                             <div class="col-8">
                                 <input id="input-product-total"
                                        class="form-control form-control-line mask-money text-right text-primary mb-1"

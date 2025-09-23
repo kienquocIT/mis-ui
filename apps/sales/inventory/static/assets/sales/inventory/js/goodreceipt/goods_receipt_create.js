@@ -176,17 +176,10 @@ $(function () {
             GRLoadDataHandle.loadDateDateDtbSerial();
         });
 
-        // IA BEGIN
+        // Inventory Adjustment BEGIN
         GRLoadDataHandle.IASelectEle.on('change', function () {
             if ($(this).val()) {
-                let dataSelected = SelectDDControl.get_data_from_idx(GRLoadDataHandle.IASelectEle, $(this).val());
-                for (let dataIAProduct of dataSelected?.['gr_products_data']) {
-                    if (dataIAProduct?.['product_data']?.['general_traceability_method'] !== 0) {
-                        dataIAProduct['quantity_import'] = 0;
-                    }
-                }
-                GRDataTableHandle.tablePOProduct.DataTable().clear().draw();
-                GRDataTableHandle.tablePOProduct.DataTable().rows.add(dataSelected?.['gr_products_data']).draw();
+                GRLoadDataHandle.loadCallAjaxIAProduct();
             }
             $('#btn-edit-product-good-receipt').click();
         });

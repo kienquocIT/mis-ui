@@ -9,7 +9,7 @@ $(function () {
         let $quotationTabs = $('#quotation-tabs');
 
         // Load inits
-        QuotationLoadDataHandle.loadInitInherit();
+        // QuotationLoadDataHandle.loadInitInherit();
         QuotationLoadDataHandle.loadBoxQuotationCustomer();
         FormElementControl.loadInitS2(QuotationLoadDataHandle.contactSelectEle, [], {'account_name_id': QuotationLoadDataHandle.customerSelectEle.val()});
         FormElementControl.loadInitS2(QuotationLoadDataHandle.paymentSelectEle, [], {}, null, true);
@@ -212,14 +212,14 @@ $(function () {
             }
         });
 
-        QuotationDataTableHandle.$tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-price, .table-row-tax, .table-row-discount', function () {
+        QuotationDataTableHandle.$tableProduct.on('change', '.table-row-item, .table-row-uom, .table-row-quantity, .table-row-uom-time, .table-row-quantity-time, .table-row-price, .table-row-tax, .table-row-discount', function () {
             if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let row = this.closest('tr');
                 if ($(this).hasClass('table-row-price')) {
                     $(this).removeClass('text-primary');
                     QuotationLoadDataHandle.loadChangePaymentTerm();
                 }
-                if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-uom') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-tax')) {
+                if ($(this).hasClass('table-row-item') || $(this).hasClass('table-row-uom') || $(this).hasClass('table-row-quantity') || $(this).hasClass('table-row-quantity-time') || $(this).hasClass('table-row-tax')) {
                     QuotationLoadDataHandle.loadSetWFRuntimeZone();
                     if ($(this).hasClass('table-row-uom')) {
                         let modalBody = QuotationLoadDataHandle.$priceModal[0].querySelector('.modal-body');
@@ -241,6 +241,20 @@ $(function () {
                     }
                     QuotationLoadDataHandle.loadChangePaymentTerm();
                 }
+                // on change uom time
+                if ($(this).hasClass('table-row-uom-time')) {
+                    let quantityTimeEle = row.querySelector('.table-row-quantity-time');
+                    if (quantityTimeEle) {
+                        quantityTimeEle.setAttribute('disabled', 'true');
+                        if ($(this).val()) {
+                            quantityTimeEle.removeAttribute('disabled');
+                        }
+                        if (!$(this).val()) {
+                            quantityTimeEle.value = "0";
+                        }
+                    }
+                }
+
                 // Delete all promotion rows
                 deletePromotionRows(QuotationDataTableHandle.$tableProduct, true, false);
                 // Delete all shipping rows

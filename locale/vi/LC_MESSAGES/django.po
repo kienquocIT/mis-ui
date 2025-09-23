@@ -12274,3 +12274,15 @@ msgstr "Tổng hợp hợp đồng"
 #
 msgid "Orders"
 msgstr "Đơn hàng"
+
+#
+msgid "Profit plan"
+msgstr "Kế hoạch LN"
+
+#
+msgid "UoM"
+msgstr "ĐV"
+
+#
+msgid "Duration UoM"
+msgstr "ĐV thời gian"

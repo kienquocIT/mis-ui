@@ -99,7 +99,7 @@ $(function () {
                     },
                     {
                         targets: 5,
-                        width: '6%',
+                        width: '8%',
                         data: "date_created",
                         render: (data) => {
                             return DateTimeControl.formatDateType('YYYY-MM-DD hh:mm:ss', 'DD/MM/YYYY', data);

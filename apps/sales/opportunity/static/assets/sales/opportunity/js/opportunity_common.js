@@ -1153,8 +1153,8 @@ class OpportunityPageFunction {
         let total_pretax = 0;
         $table_product.find('tbody tr').each(function () {
             let tax_obj = SelectDDControl.get_data_from_idx($(this).find('.box-select-tax'), $(this).find('.box-select-tax').val())
-            let tax_rate = tax_obj?.['rate'] || 0
-            let sub_total = $(this).find('.input-subtotal').valCurrency()
+            let tax_rate = parseFloat(tax_obj?.['rate'] || 0)
+            let sub_total = parseFloat($(this).find('.input-subtotal').attr('value') || 0)
             let tax_price = sub_total * (tax_rate / 100)
             total_pretax += sub_total
             tax_value += tax_price
@@ -1945,7 +1945,7 @@ class OpportunityEventHandler {
                 data_url: $productCategorySelectEle.val()
             })
             UsualLoadPageFunction.LoadUOM({
-                element: ele_tr.find(`.box-select-uom`).find('.box-select-uom'),
+                element: ele_tr.find(`.box-select-uom`),
                 data: product?.['sale_information']?.['default_uom'],
                 data_params: {'group_id': product?.['general_information']?.['uom_group']?.['id']},
                 data_url: $urlEle.data('url-uom'),

@@ -860,12 +860,12 @@ class RevenuePlanEventHandler {
                 })
 
                 for (let i = 0; i < 12; i++) {
-                    group_row.find(`.sum-m${i+1} .sum-group-m${i+1}`).attr('value', sum_m[i])
+                    group_row.find(`.sum-group-m${i+1}`).attr('value', sum_m[i])
                     sum_month_target_company[i] += parseFloat(sum_m[i])
                 }
 
                 for (let i = 0; i < 4; i++) {
-                    group_row.find(`.sum-q${i+1} .sum-group-q${i+1}`).attr('value', sum_q[i])
+                    group_row.find(`.sum-group-q${i+1}`).attr('value', sum_q[i])
                     sum_quarter_target_company[i] += parseFloat(sum_q[i])
                 }
 
@@ -943,12 +943,12 @@ class RevenuePlanEventHandler {
                 })
 
                 for (let i = 0; i < 12; i++) {
-                    group_row.find(`.sum-m${i+1} .sum-group-m${i+1}-profit`).attr('value', sum_m[i])
+                    group_row.find(`.sum-group-m${i+1}-profit`).attr('value', sum_m[i])
                     sum_month_profit_target_company[i] += parseFloat(sum_m[i])
                 }
 
                 for (let i = 0; i < 4; i++) {
-                    group_row.find(`.sum-q${i+1} .sum-group-q${i+1}-profit`).attr('value', sum_q[i])
+                    group_row.find(`.sum-group-q${i+1}-profit`).attr('value', sum_q[i])
                     sum_quarter_profit_target_company[i] += parseFloat(sum_q[i])
                 }
 

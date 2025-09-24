@@ -5,7 +5,7 @@ from apps.sales.saleorder.views import (
     SaleOrderDetailAPI, SaleOrderExpenseListAPI, SaleOrderDetailDeliveryAPI, SaleOrderConfigDetail,
     SaleOrderConfigDetailAPI, SaleOrderIndicatorListAPI, SaleOrderIndicatorDetailAPI, SaleOrderIndicatorRestoreAPI,
     ProductListSaleOrderAPI, SaleOrderUpdate, SaleOrderPurchasingStaffListAPI, SOProductWOListAPI, SORecurrenceListAPI,
-    SaleOrderDDListAPI
+    SaleOrderDDListAPI, SaleOrderDetailPrintAPI
 )
 
 urlpatterns = [
@@ -20,6 +20,7 @@ urlpatterns = [
     path('create', SaleOrderCreate.as_view(), name='SaleOrderCreate'),
     path('detail/<str:pk>', SaleOrderDetail.as_view(), name='SaleOrderDetail'),
     path('detail-api/<str:pk>', SaleOrderDetailAPI.as_view(), name='SaleOrderDetailAPI'),
+    path('detail-print-api/<str:pk>', SaleOrderDetailPrintAPI.as_view(), name='SaleOrderDetailPrintAPI'),
     path('update/<str:pk>', SaleOrderUpdate.as_view(), name='SaleOrderUpdate'),
     path('sale-order-expense-list', SaleOrderExpenseListAPI.as_view(), name='SaleOrderExpenseListAPI'),
     path('detail-api/<str:pk>/delivery', SaleOrderDetailDeliveryAPI.as_view(), name='SaleOrderDetailDeliveryAPI'),

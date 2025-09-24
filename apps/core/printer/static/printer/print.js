@@ -316,7 +316,7 @@ function TemplateDOM(node, data, configData) {
                             // check if data is path of img element
                             let inner = dataList[codeKey].length >= i ? dataList[codeKey][i] : '_';
                             if (inner.includes('/media')) {
-                                nodeMatch.innerHTML = `<img src="${inner}" class="img-fluid" alt="img" style="width: 50%; height: 50%">`;
+                                nodeMatch.innerHTML = `<img src="${inner}" class="img-fluid" alt="img" style="width: 100px; height: 100px">`;
                             }
                         }
                     )

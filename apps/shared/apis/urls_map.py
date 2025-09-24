@@ -65,7 +65,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # files
     FILE_UPLOAD = StringUrl('attachment/upload')
     FILE_EDIT = StringUrl('attachment/edit')
-    FILE_UPDATE = StringUrl('attachment/detail/{pk}')
+    FILE_DETAIL = StringUrl('attachment/detail/{pk}')
     PUBLIC_FILE_UPLOAD = StringUrl('attachment/public-upload')
     FILE_UNUSED = StringUrl('attachment/unused')
     FILE_UPLOAD_WEB_BUILDER = StringUrl('attachment/web-builder/upload')

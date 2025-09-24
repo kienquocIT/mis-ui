@@ -54,22 +54,24 @@ class AttachmentEditAPI(APIView):
         return RespData.resp_400(errors_data={'File': 'Data error'})
 
 
-class AttachmentUpdateAPI(APIView):
+class AttachmentDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.FILE_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return()
 
     @mask_view(
         login_require=True,
         is_api=True
     )
     def put(self, request, *args, pk, **kwargs):
-        # return update_common(
-        #     request=request,
-        #     url=ApiURL.FILE_UPDATE,
-        #     pk=pk,
-        #     msg=CoreMsg.FILE_UPDATE
-        # )
         return BaseView.run_update(
             request=request,
-            url=ApiURL.FILE_UPDATE,
+            url=ApiURL.FILE_DETAIL,
             pk=pk,
         )
 

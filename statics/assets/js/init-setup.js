@@ -7454,6 +7454,106 @@ class FileControl {
         return result.join(",");
     }
 
+    static call_ajax_detail_attribute(fileID) {
+        let $modalFileAttr = $('#fileAttributeModal');
+        if (fileID && $modalFileAttr.length > 0) {
+            // call ajax get detail of file
+            $.fn.callAjax2({
+                url: $modalFileAttr.attr('data-url-detail').format_url_with_uuid(fileID),
+                method: 'GET',
+                isLoading: true,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        let fileData = data;
+                        let fileNameEle = $modalFileAttr[0].querySelector('.file-name');
+                        let docTypeEle = $modalFileAttr[0].querySelector('.file_attr_document_type');
+                        let contentGrEle = $modalFileAttr[0].querySelector('.file_attr_content_group');
+                        let remarkEle = $modalFileAttr[0].querySelector('.file_attr_remark');
+                        let btnSaveEle = $modalFileAttr[0].querySelector('.btn-save');
+                        if (fileNameEle) {
+                            fileNameEle.innerHTML = fileData?.['file_name'];
+                        }
+                        if (docTypeEle) {
+                            let dataS2 = [];
+                            if (fileData?.['document_type']) {
+                                dataS2 = [fileData?.['document_type']];
+                            }
+                            FormElementControl.loadInitS2($(docTypeEle), dataS2, {}, $modalFileAttr, true);
+                        }
+                        if (contentGrEle) {
+                            let dataS2 = [];
+                            if (fileData?.['content_group']) {
+                                dataS2 = [fileData?.['content_group']];
+                            }
+                            FormElementControl.loadInitS2($(contentGrEle), dataS2, {}, $modalFileAttr, true);
+                        }
+                        if (remarkEle) {
+                            $(remarkEle).val("");
+                            if (fileData?.['remarks']) {
+                                $(remarkEle).val(fileData?.['remarks']);
+                            }
+                        }
+                        if (btnSaveEle) {
+                                $(btnSaveEle).attr('data-id', fileID);
+                                $(btnSaveEle).on('click', function () {
+                                    let fileID = $(btnSaveEle).attr('data-id');
+                                    FileControl.call_ajax_edit_attribute(fileID);
+                                })
+                        }
+                        $modalFileAttr.modal('show');
+                    }
+                }
+            )
+        }
+    }
+
+    static call_ajax_edit_attribute(fileID) {
+        let dataSubmit = {};
+        let $modalFileAttr = $('#fileAttributeModal');
+        if (fileID && $modalFileAttr.length > 0) {
+            let docTypeEle = $modalFileAttr[0].querySelector('.file_attr_document_type');
+            let contentGrEle = $modalFileAttr[0].querySelector('.file_attr_content_group');
+            let remarkEle = $modalFileAttr[0].querySelector('.file_attr_remark');
+            if (docTypeEle && contentGrEle && remarkEle) {
+                if ($(docTypeEle).val()) {
+                    dataSubmit['document_type_id'] = $(docTypeEle).val();
+                }
+                if ($(contentGrEle).val()) {
+                    dataSubmit['content_group_id'] = $(contentGrEle).val();
+                }
+                if ($(remarkEle).val()) {
+                    dataSubmit['remarks'] = $(remarkEle).val();
+                }
+            }
+        }
+
+        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
+        $.fn.callAjax2(
+            {
+                'url': $modalFileAttr.attr('data-url-detail').format_url_with_uuid(fileID),
+                'method': 'PUT',
+                'data': dataSubmit,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data && (data['status'] === 201 || data['status'] === 200)) {
+                    $.fn.notifyB({description: data.message}, 'success');
+                    setTimeout(() => {
+                        WindowControl.hideLoading();
+                    }, 2000);
+                }
+            }, (err) => {
+                setTimeout(() => {
+                    WindowControl.hideLoading();
+                }, 1000)
+                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+            }
+        )
+    }
+
     ui_multi_add_file(id, file) {
         // Creates a new file and add it to our list
         let base64Capture = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzVweCIgaGVpZ2h0PSIzNXB4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGc+CiAgICA8cGF0aCBkPSJNMTkgOVYxNy44QzE5IDE4LjkyMDEgMTkgMTkuNDgwMiAxOC43ODIgMTkuOTA4QzE4LjU5MDMgMjAuMjg0MyAxOC4yODQzIDIwLjU5MDMgMTcuOTA4IDIwLjc4MkMxNy40ODAyIDIxIDE2LjkyMDEgMjEgMTUuOCAyMUg4LjJDNy4wNzk4OSAyMSA2LjUxOTg0IDIxIDYuMDkyMDIgMjAuNzgyQzUuNzE1NjkgMjAuNTkwMyA1LjQwOTczIDIwLjI4NDMgNS4yMTc5OSAxOS45MDhDNSAxOS40ODAyIDUgMTguOTIwMSA1IDE3LjhWNi4yQzUgNS4wNzk4OSA1IDQuNTE5ODQgNS4yMTc5OSA0LjA5MjAyQzUuNDA5NzMgMy43MTU2OSA1LjcxNTY5IDMuNDA5NzMgNi4wOTIwMiAzLjIxNzk5QzYuNTE5ODQgMyA3LjA3OTkgMyA4LjIgM0gxM00xOSA5TDEzIDNNMTkgOUgxNEMxMy40NDc3IDkgMTMgOC41NTIyOCAxMyA4VjMiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8L2c+Cjwvc3ZnPgo=';
@@ -7763,90 +7863,8 @@ class FileControl {
         let clsThis = this;
         let itemEle = parentEle ? parentEle : clsThis.ele$.find('.dm-uploader-result-item');
         itemEle.find('.btn-edit-attribute').on('click', function () {
-            let $itemEle = $(this).closest('.dm-uploader-result-item');
-            let $modalFileAttr = $('#fileAttributeModal');
-            if ($itemEle.length > 0 && $modalFileAttr.length > 0) {
-                if ($itemEle.attr('data-file')) {
-                    let fileData = JSON.parse($itemEle.attr('data-file'));
-                    let fileNameEle = $modalFileAttr[0].querySelector('.file-name');
-                    let docTypeEle = $modalFileAttr[0].querySelector('.file_attr_document_type');
-                    let contentGrEle = $modalFileAttr[0].querySelector('.file_attr_content_group');
-                    let remarkEle = $modalFileAttr[0].querySelector('.file_attr_remark');
-                    let btnSaveEle = $modalFileAttr[0].querySelector('.btn-save');
-                    if (fileNameEle) {
-                        fileNameEle.innerHTML = fileData?.['file_name'];
-                    }
-                    if (docTypeEle) {
-                        let dataS2 = [];
-                        if (fileData?.['document_type']) {
-                            dataS2 = [fileData?.['document_type']];
-                        }
-                        FormElementControl.loadInitS2($(docTypeEle), dataS2, {}, $modalFileAttr, true);
-                    }
-                    if (contentGrEle) {
-                        let dataS2 = [];
-                        if (fileData?.['content_group']) {
-                            dataS2 = [fileData?.['content_group']];
-                        }
-                        FormElementControl.loadInitS2($(contentGrEle), dataS2, {}, $modalFileAttr, true);
-                    }
-                    if (remarkEle) {
-                        if (fileData?.['remarks']) {
-                            $(remarkEle).val(fileData?.['remarks']);
-                        }
-                    }
-                    if (btnSaveEle) {
-                        if (fileData?.['id']) {
-                            $(btnSaveEle).attr('data-id', fileData?.['id']);
-                            $(btnSaveEle).on('click', function () {
-                                let dataSubmit = {};
-                                let $modalFileAttr = $('#fileAttributeModal');
-                                if ($modalFileAttr.length > 0) {
-                                    let docTypeEle = $modalFileAttr[0].querySelector('.file_attr_document_type');
-                                    let contentGrEle = $modalFileAttr[0].querySelector('.file_attr_content_group');
-                                    let remarkEle = $modalFileAttr[0].querySelector('.file_attr_remark');
-                                    if (docTypeEle && contentGrEle && remarkEle) {
-                                        if ($(docTypeEle).val()) {
-                                            dataSubmit['document_type_id'] = $(docTypeEle).val();
-                                        }
-                                        if ($(contentGrEle).val()) {
-                                            dataSubmit['content_group_id'] = $(contentGrEle).val();
-                                        }
-                                        if ($(remarkEle).val()) {
-                                            dataSubmit['remarks'] = $(remarkEle).val();
-                                        }
-                                    }
-                                }
-
-                                WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
-                                $.fn.callAjax2(
-                                    {
-                                        'url': $modalFileAttr.attr('data-url-put').format_url_with_uuid($(btnSaveEle).attr('data-id')),
-                                        'method': 'PUT',
-                                        'data': dataSubmit,
-                                    }
-                                ).then(
-                                    (resp) => {
-                                        let data = $.fn.switcherResp(resp);
-                                        if (data && (data['status'] === 201 || data['status'] === 200)) {
-                                            $.fn.notifyB({description: data.message}, 'success');
-                                            setTimeout(() => {
-                                                WindowControl.hideLoading();
-                                            }, 2000);
-                                        }
-                                    }, (err) => {
-                                        setTimeout(() => {
-                                            WindowControl.hideLoading();
-                                        }, 1000)
-                                        $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
-                                    }
-                                )
-                            })
-                        }
-                    }
-                    $modalFileAttr.modal('show');
-                }
-            }
+            let fileID = $(this).attr('data-file-id');
+            FileControl.call_ajax_detail_attribute(fileID);
         })
     }
 
@@ -8032,48 +8050,50 @@ class FileControl {
                         extraData: async function (fileId, fileData) {
                             const result = await Swal.fire({
                                 // input: "text",
-                                title: groupEle.attr('data-msg-attribute-file'),
+                                // title: groupEle.attr('data-msg-attribute-file'),
                                 // html: fileData.name,
                                 // inputAttributes: {
                                 //     autocapitalize: "off"
                                 // },
-                                html: String(FileControl.setupHTMLFileAttributes(groupEle, fileData.name)),
+                                // html: String(FileControl.setupHTMLFileAttributes(groupEle, fileData.name)),
+                                title: "Upload file successfully!",
+                                icon: "success",
                                 customClass: {
                                     htmlContainer: 'sweet-alert-left-content', // only the html content
                                 },
                                 cancelButtonText: $.fn.transEle.attr('data-cancel'),
                                 showCancelButton: true,
                                 allowOutsideClick: false,
-                                didOpen: () => {
-                                    // logics after SweetAlert render
-                                    let $attrDocTypeEle = $('#file_attr_document_type');
-                                    let $attrContentGrEle = $('#file_attr_content_group');
-                                    if ($attrDocTypeEle.length > 0 && $attrContentGrEle.length > 0) {
-                                        FormElementControl.loadInitS2($attrDocTypeEle, [], {}, $(Swal.getPopup()), true);
-                                        FormElementControl.loadInitS2($attrContentGrEle, [], {}, $(Swal.getPopup()), true);
-                                    }
-                                }
+                                // didOpen: () => {
+                                //     // logics after SweetAlert render
+                                //     let $attrDocTypeEle = $('#file_attr_document_type');
+                                //     let $attrContentGrEle = $('#file_attr_content_group');
+                                //     if ($attrDocTypeEle.length > 0 && $attrContentGrEle.length > 0) {
+                                //         FormElementControl.loadInitS2($attrDocTypeEle, [], {}, $(Swal.getPopup()), true);
+                                //         FormElementControl.loadInitS2($attrContentGrEle, [], {}, $(Swal.getPopup()), true);
+                                //     }
+                                // }
                             });
                             if (!result.isConfirmed) {
                                 clsThis.ui_remove_line_file_by_id(fileId);
                                 return {state: false, data: 'CANCEL'};
                             }
-                            const remarks = result.value;
+                            // const remarks = result.value;
                             const $folderId = opts?.['element_folder'];
                             // file attributes
-                            let $attrDocTypeEle = $('#file_attr_document_type');
-                            let $attrContentGrEle = $('#file_attr_content_group');
-                            let $attrRemarkEle = $('#file_attr_remark');
-                            let data = {'remarks': remarks};
-                            if ($attrDocTypeEle.length > 0 && $attrContentGrEle.length > 0 && $attrRemarkEle.length > 0) {
-                                data = {'remarks': $attrRemarkEle.val()};
-                                if ($attrDocTypeEle.val()) {
-                                    data['document_type_id'] = $attrDocTypeEle.val();
-                                }
-                                if ($attrContentGrEle.val()) {
-                                    data['content_group_id'] = $attrContentGrEle.val();
-                                }
-                            }
+                            // let $attrDocTypeEle = $('#file_attr_document_type');
+                            // let $attrContentGrEle = $('#file_attr_content_group');
+                            // let $attrRemarkEle = $('#file_attr_remark');
+                            let data = {};
+                            // if ($attrDocTypeEle.length > 0 && $attrContentGrEle.length > 0 && $attrRemarkEle.length > 0) {
+                            //     data = {'remarks': $attrRemarkEle.val()};
+                            //     if ($attrDocTypeEle.val()) {
+                            //         data['document_type_id'] = $attrDocTypeEle.val();
+                            //     }
+                            //     if ($attrContentGrEle.val()) {
+                            //         data['content_group_id'] = $attrContentGrEle.val();
+                            //     }
+                            // }
 
                             const finalExtend = {
                                 state: true,
@@ -8117,10 +8137,11 @@ class FileControl {
                                 let eleItem = clsThis.ele$.find(`.dm-uploader-result-item[data-file-id="${id}"]`);
                                 eleItem.attr('data-file', JSON.stringify(fileData));
                                 eleItem.attr('data-file-id', fileData.id);
-                                // eleItem.find('input.file-txt-remark').val(fileData.remarks);
                                 eleItem.find('a.file-preview-link').attr('href', '/attachment/preview/1'.format_url_with_uuid(fileData.id));
-                                // eleItem.find('span.file-txt-document-type').text(fileData?.['document_type']?.['title']);
-                                // eleItem.find('span.file-txt-content-group').text(fileData?.['content_group']?.['title']);
+                                let $btnEditAttr = eleItem.find('.btn-edit-attribute');
+                                if ($btnEditAttr.length > 0) {
+                                    $btnEditAttr.attr('data-file-id', fileData?.['id']);
+                                }
                                 clsThis.ui_on_click_remove(eleItem);
                                 clsThis.ui_on_click_download(eleItem);
                                 clsThis.ui_on_click_edit_attribute(eleItem);

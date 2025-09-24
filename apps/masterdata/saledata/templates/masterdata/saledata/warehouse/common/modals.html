@@ -11,34 +11,35 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label class="form-label required" for="addressDetail">{% trans "Detail address" %}</label>
-                            <textarea class="form-control" type="text" id="addressDetail"></textarea>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="warehouseCity" class="form-label required">{% trans "Province" %}</label>
-                            <select class="form-select" id="warehouseCity" data-url="{% url "CityListAPI" %}" data-method="GET"></select>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="warehouseDistrict" class="form-label required">{% trans "District" %}</label>
-                            <select class="form-select" id="warehouseDistrict"
-                                    data-url="{% url "DistrictAllListAPI" %}" data-method="GET"
-                            ></select>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="warehouseWard" class="form-label">{% trans "Ward" %}</label>
-                            <select class="form-select" id="warehouseWard"
-                                    data-url="{% url "WardAllListAPI" %}" data-method="GET"
-                            ></select>
-                        </div>
-                    </div>
+                    {% include 'extends/location/common_address.html' %}
+{#                    <div class="col-12">#}
+{#                        <div class="form-group">#}
+{#                            <label class="form-label required" for="addressDetail">{% trans "Detail address" %}</label>#}
+{#                            <textarea class="form-control" type="text" id="addressDetail"></textarea>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="col-12">#}
+{#                        <div class="form-group">#}
+{#                            <label for="warehouseCity" class="form-label required">{% trans "Province" %}</label>#}
+{#                            <select class="form-select" id="warehouseCity" data-url="{% url "CityListAPI" %}" data-method="GET"></select>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="col-12">#}
+{#                        <div class="form-group">#}
+{#                            <label for="warehouseDistrict" class="form-label required">{% trans "District" %}</label>#}
+{#                            <select class="form-select" id="warehouseDistrict"#}
+{#                                    data-url="{% url "DistrictAllListAPI" %}" data-method="GET"#}
+{#                            ></select>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="col-12">#}
+{#                        <div class="form-group">#}
+{#                            <label for="warehouseWard" class="form-label">{% trans "Ward" %}</label>#}
+{#                            <select class="form-select" id="warehouseWard"#}
+{#                                    data-url="{% url "WardAllListAPI" %}" data-method="GET"#}
+{#                            ></select>#}
+{#                        </div>#}
+{#                    </div>#}
                 </div>
             </div>
             <div class="modal-footer">

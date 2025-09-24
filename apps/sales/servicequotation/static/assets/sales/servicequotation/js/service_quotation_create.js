@@ -130,7 +130,7 @@ function initBastionFields(){
     }
 
 $(document).ready(function () {
-    WFRTControl.setWFInitialData('serviceorder')
+    WFRTControl.setWFInitialData('servicequotation')
 
     initBastionFields()
 
@@ -141,7 +141,7 @@ $(document).ready(function () {
 
     ServiceOrder.initProductModalDataTable()
     ServiceOrder.initServiceDetailDataTable()
-    ServiceOrder.initWorkOrderDataTable()
+    ServiceOrder.initQuotationWorkOrderDataTable()
     ServiceOrder.initPaymentDataTable()
     ServiceOrder.initModalContextTracking()
     ServiceOrder.initAttachment()
@@ -166,5 +166,5 @@ $(document).ready(function () {
     handlePaymentTabEvent()
     handleModalPaymentDetailEvent()
 
-    setUpFormSubmit($('#form-create-service-order'))
+    setUpFormSubmit($('#form-create-service-quotation'))
 })

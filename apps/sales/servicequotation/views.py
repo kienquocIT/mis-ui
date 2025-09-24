@@ -3,17 +3,18 @@ from django.views import View
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from apps.shared import mask_view, ApiURL, ServerAPI, SaleMsg, SYSTEM_STATUS
+
+from apps.shared import ServerAPI, ApiURL, mask_view, SaleMsg
 
 
-class ServiceOrderList(View):
+class ServiceQuotationList(View):
     permission_classes = [IsAuthenticated]
 
     @mask_view(
         auth_require=True,
-        template='sales/serviceorder/service_order_list.html',
-        menu_active='menu_service_order_list',
-        breadcrumb='SERVICE_ORDER_LIST_PAGE',
+        template='sales/servicequotation/service_quotation_list.html',
+        menu_active='menu_service_quotation_list',
+        breadcrumb='SERVICE_QUOTATION_LIST_PAGE',
         icon_cls='fas fa-concierge-bell',
         icon_bg='bg-primary',
     )
@@ -21,12 +22,12 @@ class ServiceOrderList(View):
         return {}, status.HTTP_200_OK
 
 
-class ServiceOrderCreate(View):
+class ServiceQuotationCreate(View):
     @mask_view(
         auth_require=True,
-        template='sales/serviceorder/service_order_create.html',
-        menu_active='menu_service_order_list',
-        breadcrumb='SERVICE_ORDER_CREATE_PAGE',
+        template='sales/servicequotation/service_quotation_create.html',
+        menu_active='menu_service_quotation_list',
+        breadcrumb='SERVICE_QUOTATION_CREATE_PAGE',
         icon_cls='fas fa-concierge-bell',
         icon_bg='bg-primary',
     )
@@ -41,7 +42,7 @@ class ServiceOrderCreate(View):
         ctx = {
             'form_id': '',
             'app_id': '',
-            'list_from_app': 'serviceorder.serviceorder.create',
+            'list_from_app': '',
 
             'employee_current': employee_current,
             'task_config': task_config,
@@ -50,13 +51,13 @@ class ServiceOrderCreate(View):
         return ctx, status.HTTP_200_OK
 
 
-class ServiceOrderDetail(View):
+class ServiceQuotationDetail(View):
     @mask_view(
         login_require=True,
         auth_require=True,
-        template='sales/serviceorder/service_order_detail.html',
-        menu_active='menu_service_order_list',
-        breadcrumb='SERVICE_ORDER_DETAIL_PAGE',
+        template='sales/servicequotation/service_quotation_detail.html',
+        menu_active='menu_service_quotation_list',
+        breadcrumb='SERVICE_QUOTATION_DETAIL_PAGE',
         icon_cls='fas fa-concierge-bell',
         icon_bg='bg-primary',
     )
@@ -69,21 +70,21 @@ class ServiceOrderDetail(View):
         if resp.state:
             task_config = resp.result
         return {
-                   'pk': pk,
+            'pk': pk,
 
-                   'employee_current': employee_current,
-                   'task_config': task_config,
-                   'employee_info': request.user.employee_current_data,
-               }, status.HTTP_200_OK
+            'employee_current': employee_current,
+            'task_config': task_config,
+            'employee_info': request.user.employee_current_data,
+        }, status.HTTP_200_OK
 
 
-class ServiceOrderUpdate(View):
+class ServiceQuotationUpdate(View):
     @mask_view(
         login_require=True,
         auth_require=True,
-        template='sales/serviceorder/service_order_update.html',
-        menu_active='menu_service_order_list',
-        breadcrumb='SERVICE_ORDER_UPDATE_PAGE',
+        template='sales/servicequotation/service_quotation_update.html',
+        menu_active='menu_service_quotation_list',
+        breadcrumb='SERVICE_QUOTATION_UPDATE_PAGE',
         icon_cls='fas fa-concierge-bell',
         icon_bg='bg-primary',
     )
@@ -98,7 +99,7 @@ class ServiceOrderUpdate(View):
         ctx = {
             'pk': pk,
             'data': {'doc_id': pk},
-            'form_id': 'form-detail-service-order',
+            'form_id': 'form-detail-service-quotation',
 
             'employee_current': employee_current,
             'task_config': task_config,
@@ -107,7 +108,7 @@ class ServiceOrderUpdate(View):
         return ctx, status.HTTP_200_OK
 
 
-class ServiceOrderListAPI(APIView):
+class ServiceQuotationListAPI(APIView):
     @mask_view(
         login_require=True,
         auth_require=True,
@@ -115,22 +116,22 @@ class ServiceOrderListAPI(APIView):
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.SERVICE_ORDER_LIST).get(params)
-        return resp.auto_return(key_success='service_order_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.SERVICE_QUOTATION_LIST).get(params)
+        return resp.auto_return(key_success='service_quotation_list')
 
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def post(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.SERVICE_ORDER_LIST).post(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.SERVICE_QUOTATION_LIST).post(request.data)
         if resp.state:
-            resp.result['message'] = SaleMsg.SERVICE_ORDER_CREATE
+            resp.result['message'] = SaleMsg.SERVICE_QUOTATION_CREATE
             return resp.result, status.HTTP_201_CREATED
         return resp.auto_return()
 
 
-class ServiceOrderDetailAPI(APIView):
+class ServiceQuotationDetailAPI(APIView):
     @mask_view(
         login_require=True,
         auth_require=True,
@@ -139,7 +140,7 @@ class ServiceOrderDetailAPI(APIView):
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(
             user=request.user,
-            url=ApiURL.SERVICE_ORDER_DETAIL.fill_key(pk=pk)
+            url=ApiURL.SERVICE_QUOTATION_DETAIL.fill_key(pk=pk)
         ).get()
         return resp.auto_return()
 
@@ -151,34 +152,9 @@ class ServiceOrderDetailAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(
             user=request.user,
-            url=ApiURL.SERVICE_ORDER_DETAIL.fill_key(pk=pk)
+            url=ApiURL.SERVICE_QUOTATION_DETAIL.fill_key(pk=pk)
         ).put(request.data)
         if resp.state:
-            resp.result['message'] = SaleMsg.SERVICE_ORDER_UPDATE
+            resp.result['message'] = SaleMsg.SERVICE_QUOTATION_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
-
-
-# related
-class ServiceOrderDetailDashboard(View):
-    @mask_view(
-        auth_require=True,
-        template='sales/serviceorder/service_order_detail_dashboard_echarts.html',
-        breadcrumb='SERVICE_ORDER_DETAIL_DASHBOARD_PAGE',
-        icon_cls='bi bi-clipboard-data',
-        icon_bg='bg-primary',
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
-class ServiceOrderDetailDashboardAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.SERVICE_ORDER_DETAIL_DASHBOARD.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='service_order_detail_dashboard')

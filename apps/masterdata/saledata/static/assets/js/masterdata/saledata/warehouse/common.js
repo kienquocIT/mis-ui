@@ -63,14 +63,20 @@ class WarehouseLoadPage {
                 })
             }
         })
+
         return {
             'title': $('#inpTitle').val(),
             'remarks': $('#inpRemarks').val(),
             'address': $('#addressDetail').val(),
-            'city': cityEle.val(),
-            'district': districtEle.val(),
-            'ward': wardEle.val(),
-            'full_address': $('#warehouseAddress').val(),
+            'city': $('.location_province').val(),
+            'district': $('.location_province').val(),
+            'ward': $('.location_province').val(),
+            // 'city': cityEle.val(),
+            // 'district': districtEle.val(),
+            // 'ward': wardEle.val(),
+            'detail_address': $('#warehouseAddress').val(),
+            'address_data': $('#warehouseAddress').attr('data-work-address') ? JSON.parse($('#warehouseAddress').attr('data-work-address')) : {},
+            // 'full_address': $('#warehouseAddress').val(),
             'is_active': $('#inputActive').is(':checked'),
             'is_dropship': $('#checkDropShip').prop('checked'),
             'is_bin_location': $('#checkBinLocation').prop('checked'),
@@ -101,9 +107,17 @@ class WarehouseLoadPage {
                 $('#inputActive').prop('checked', detail.is_active);
                 $('#warehouseAddress').val(detail.full_address);
                 $('#addressDetail').val(detail.address);
-                this.loadCities(detail.city);
-                this.loadDistrict(detail.district);
-                this.loadWard(detail.ward);
+                // this.loadCities(detail.city);
+                // this.loadDistrict(detail.district);
+                // this.loadWard(detail.ward);
+                // for location
+                UsualLoadPageFunction.LoadLocationCountry($('#modalWarehouseAddress .location_country'))
+                UsualLoadPageFunction.LoadLocationProvince($('#modalWarehouseAddress .location_province'))
+                UsualLoadPageFunction.LoadLocationWard($('#modalWarehouseAddress .location_ward'))
+                $('#warehouseAddress').attr(
+                    'data-work-address',
+                    JSON.stringify(detail?.address_data || {})
+                )
 
                 // load shelf
                 for (const shelf of detail?.['shelf_data']) {
@@ -142,16 +156,35 @@ class WarehouseLoadPage {
 
 function eventPage() {
     $('#saveWarehouseAddress').on('click', function () {
-        let city = SelectDDControl.get_data_from_idx(cityEle, cityEle.val());
-        let district = SelectDDControl.get_data_from_idx(districtEle, districtEle.val());
-        let ward = SelectDDControl.get_data_from_idx(wardEle, wardEle.val());
-        let detail = $('#addressDetail').val();
-
-        let fullAddress = `${detail}, ${ward.title}, ${district.title}, ${city.title}`;
-
-        $('#warehouseAddress').val(fullAddress);
-
-        $('#modalWarehouseAddress').modal('hide');
+        // let city = SelectDDControl.get_data_from_idx(cityEle, cityEle.val());
+        // let district = SelectDDControl.get_data_from_idx(districtEle, districtEle.val());
+        // let ward = SelectDDControl.get_data_from_idx(wardEle, wardEle.val());
+        // let detail = $('#addressDetail').val();
+        //
+        // let fullAddress = `${detail}, ${ward.title}, ${district.title}, ${city.title}`;
+        //
+        // $('#warehouseAddress').val(fullAddress);
+        //
+        // $('#modalWarehouseAddress').modal('hide');
+        let country_id = $('#modalWarehouseAddress .location_country').val()
+        let province_id = $('#modalWarehouseAddress .location_province').val()
+        let ward_id = $('#modalWarehouseAddress .location_ward').val()
+        let detail_address = $('#modalWarehouseAddress .location_detail_address').val()
+        if (detail_address && ward_id && province_id && country_id) {
+            $('#warehouseAddress').val(`${detail_address}, ${$('#modalWarehouseAddress .location_ward').find(`option:selected`).text()}, ${$('#modalWarehouseAddress .location_province').find(`option:selected`).text()}, ${$('#modalWarehouseAddress .location_country').find(`option:selected`).text()}`)
+            $('#warehouseAddress').attr(
+                'data-work-address',
+                JSON.stringify({
+                    country_id: country_id,
+                    province_id: province_id,
+                    ward_id: ward_id,
+                    detail_address: detail_address,
+                })
+            )
+            $('#modalWarehouseAddress').modal('hide');
+        } else {
+            $.fn.notifyB({description: "Missing address information!"}, 'failure');
+        }
     })
 
     $('#checkDropShip').on('change', function () {

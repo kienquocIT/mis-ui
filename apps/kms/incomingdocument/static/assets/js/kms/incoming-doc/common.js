@@ -15,7 +15,7 @@ class IncomingDocElements {
         this.$effectiveDateEle = $('#kms_effective_date');
         this.$expiredDateEle = $('#kms_expired_date');
         this.$securityLevelEle = $('#kms_security_level');
-        this.$folderEle = $('#kms_folder');
+        this.$folderEle = $('#kms_incoming_doc_folder');
 
         // internal recipient
         this.$recipientListEle = $('#recipient_list');
@@ -46,6 +46,7 @@ class IncomingDocLoadDataHandle {
             effective_date: parsedEffectiveDate.isValid() ? parsedEffectiveDate.format('YYYY-MM-DD') : null,
             expired_date: parsedExpiredDate.isValid() ? parsedExpiredDate.format('YYYY-MM-DD') : null,
             security_level: pageElements.$securityLevelEle.val(),
+            folder: pageElements.$folderEle.val()
         }]
     }
 
@@ -223,7 +224,7 @@ class IncomingDocPageFunction {
 
                 IncomingDocPageFunction.LoadDocumentType(attached.document_type);
                 IncomingDocPageFunction.LoadContentGroup(attached.content_group);
-                IncomingDocPageFunction.LoadFolderType();
+                IncomingDocPageFunction.LoadFolderType(attached.folder);
 
                 // Match by label (for cases where value may not be id)
                 const matchedOption = pageElements.$securityLevelEle.find('option').filter(function () {

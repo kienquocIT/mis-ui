@@ -7475,6 +7475,7 @@ class FileControl {
         let $modalFileAttr = $('#fileAttributeModal');
         if (fileID && $modalFileAttr.length > 0) {
             // call ajax get detail of file
+            WindowControl.showLoading();
             $.fn.callAjax2({
                 url: $modalFileAttr.attr('data-url-detail').format_url_with_uuid(fileID),
                 method: 'GET',
@@ -7513,13 +7514,14 @@ class FileControl {
                             }
                         }
                         if (btnSaveEle) {
-                                $(btnSaveEle).attr('data-id', fileID);
-                                $(btnSaveEle).on('click', function () {
-                                    let fileID = $(btnSaveEle).attr('data-id');
-                                    FileControl.call_ajax_edit_attribute(fileID);
-                                })
+                            $(btnSaveEle).attr('data-id', fileID);
+                            $(btnSaveEle).off('click').on('click', function () {
+                                let fileID = $(btnSaveEle).attr('data-id');
+                                FileControl.call_ajax_edit_attribute(fileID);
+                            })
                         }
                         $modalFileAttr.modal('show');
+                        WindowControl.hideLoading();
                     }
                 }
             )
@@ -7545,7 +7547,7 @@ class FileControl {
                 }
             }
         }
-
+        // call ajax update file
         WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
         $.fn.callAjax2(
             {
@@ -7580,10 +7582,6 @@ class FileControl {
                 .replace('%%fileid%%', id)
                 .replace('%%fileinfo%%', FileControl.parse_size(file.size))
                 .replace('%%filecapture%%', base64Capture)
-                // .replace('%%fileremark%%', file.remarks || '')
-                // .replace('%%filedata%%', JSON.stringify(file))
-                // .replace('%%filedoctype%%', file?.['document_type']?.['title'] || '')
-                // .replace('%%filecontentgroup%%', file?.['content_group']?.['title'] || '')
         );
         const elePreview$ = template.find('.file-preview-link');
         if (elePreview$.length > 0){
@@ -7592,6 +7590,15 @@ class FileControl {
         this.ele$.find('.dm-uploader-no-files').hide();
 
         this.ele$.find('.dm-uploader-result-list').prepend(template).fadeIn();
+
+        let $dmUploader = this.ele$.find(`.dm-uploader-result-item[data-file-id="${id}"]`);
+        if ($dmUploader.length > 0) {
+            let $btnEditAttr = $dmUploader.find('.btn-edit-attribute');
+            if ($btnEditAttr.length > 0) {
+                $btnEditAttr.attr('data-file-id', id);
+            }
+        }
+
     }
 
     ui_multi_update_file_progress(id, percent, class_state) {

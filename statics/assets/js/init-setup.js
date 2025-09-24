@@ -2961,8 +2961,17 @@ class WFRTControl {
                             if (docData?.['system_status'] === 3) {
                                 // Bật nút CR & Cancel
                                 if (docData?.['employee_inherit']?.['id'] === $x.fn.getEmployeeCurrentID()) {
-                                    let appAllowChange = ["quotation.quotation", "saleorder.saleorder",];
-                                    let appAllowCancel = ["quotation.quotation", "saleorder.saleorder", "purchasing.purchaserequest"];
+                                    let appAllowChange = [
+                                        "quotation.quotation",
+                                        "saleorder.saleorder",
+                                    ];
+                                    let appAllowCancel = [
+                                        "quotation.quotation",
+                                        "saleorder.saleorder",
+                                        "leaseorder.leaseorder",
+                                        "purchasing.purchaserequest",
+                                        "purchasing.purchaseorder",
+                                    ];
                                     if (appAllowChange.includes(runtimeData?.['app_code']) && appAllowCancel.includes(runtimeData?.['app_code'])) {
                                         WFRTControl.setBtnWFAfterFinishDetail('all');
                                     }
@@ -5865,9 +5874,9 @@ class DTBControl {
                 url: globeDTBLanguageConfig.trim(),
             },
             lengthMenu: [
-                [5, 10, 25, 50, -1], [5, 10, 25, 50, $.fn.transEle.attr('data-all')],
+                [10, 20, 30, 50, -1], [10, 20, 30, 50, $.fn.transEle.attr('data-all')],
             ],
-            pageLength: 10,
+            pageLength: 20,
             ...domOpts,
             columns: this.columns,
             rowCallback: this.mergeRowCallback,
@@ -6512,7 +6521,7 @@ class DocumentControl {
     }
 
     static async getCompanyConfig() {
-        let dataText = globeDataCompanyConfig;
+        let dataText = sessionStorage.getItem('companyConfig');
         if (!dataText || dataText === '') {
             let companyConfigUrl = globeUrlCompanyConfig;
             if (companyConfigUrl) {
@@ -6522,13 +6531,21 @@ class DocumentControl {
                 }).then((resp) => {
                     let data = $.fn.switcherResp(resp);
                     dataText = JSON.stringify(data);
-                    globeDataCompanyConfig = dataText;
+                    sessionStorage.setItem('companyConfig', dataText);
+                    sessionStorage.setItem('companyConfigTime', Date.now());
                     return data;
                 }).then((rs) => {
                     return rs
                 });
             }
-        } else return JSON.parse(dataText);
+        } else{
+            let cacheTime = sessionStorage.getItem('companyConfigTime');
+            if (Date.now() - cacheTime > 1440 * 60 * 1000) {
+                sessionStorage.removeItem('companyConfig');
+                return this.getCompanyConfig(); // Gọi lại
+            }
+            return JSON.parse(dataText);
+        }
     }
 
     static async getCompanyCurrencyConfig() {

@@ -25,6 +25,8 @@ function handleModalWorkOrderCostEvent(){
 function handleModalWorkOrderContributionEvent(){
     ServiceOrder.handleSaveProductContribution()
     ServiceOrder.handleUncheckContribution()
+    ServiceOrder.handleChangeDeliveryCost()
+
     ServiceOrder.handleCheckPackage()
     ServiceOrder.handleOpenModalPackage()
     ServiceOrder.handleSaveModalPackage()
@@ -56,14 +58,12 @@ function setUpFormData(formInstance) {
     formInstance.dataForm['customer'] = $('#so-customer').val() || null
     formInstance.dataForm['start_date'] = startDate
     formInstance.dataForm['end_date'] = endDate
+    formInstance.dataForm['exchange_rate_data'] = ServiceOrder.getExchangeRate()
     formInstance.dataForm['service_detail_data'] = ServiceOrder.getServiceDetailData()
     formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData()
     formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
     formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData()
     formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData()
-    formInstance.dataForm['expense_pretax_value'] = parseFloat(tabExpenseElements.$preTaxAmount.attr('value') || 0)
-    formInstance.dataForm['expense_tax_value'] = parseFloat(tabExpenseElements.$taxEle.attr('value') || 0)
-    formInstance.dataForm['expense_total_value'] = parseFloat(tabExpenseElements.$totalValueEle.attr('value') || 0)
 }
 
 function setUpFormSubmit($form) {
@@ -153,7 +153,6 @@ class DetailDataHandler {
             containers.sort((a, b) => a?.order - b?.order);   // sort container by order
             containers.forEach(container => {
                 result.push({
-                    isContainer: container.is_container,
                     ...container
                 });
 
@@ -162,9 +161,6 @@ class DetailDataHandler {
                 );
 
                 containerPackages.sort((a, b) => a?.order - b?.order);  // sort package by order
-                containerPackages.forEach(item => {
-                    item.isContainer = item.is_container
-                })
                 result.push(...containerPackages);
             });
             return result;
@@ -193,12 +189,6 @@ class DetailDataHandler {
 
                 this.loadDetailOpp(data)
 
-                const createdDate = data.date_created ? DateTimeControl.formatDateType(
-                    "YYYY-MM-DD",
-                    "DD/MM/YYYY",
-                    data.date_created
-                ) : ''
-
                 const startDate = data.start_date ? DateTimeControl.formatDateType(
                     "YYYY-MM-DD",
                     "DD/MM/YYYY",
@@ -213,14 +203,15 @@ class DetailDataHandler {
 
                 // basic information fields
                 ServiceOrder.pageElement.commonData.$titleEle.val(data?.title)
-                ServiceOrder.pageElement.commonData.$createdDate.val(createdDate)
                 this.loadCustomerList(data?.customer_data)
                 ServiceOrder.pageElement.commonData.$startDate.val(startDate)
                 ServiceOrder.pageElement.commonData.$endDate.val(endDate)
+                ServiceOrder.loadExchangeRateData(data?.exchange_rate_data)
 
                 // shipment
                 let shipmentDataFormatted = DetailDataHandler.formatShipmentDetailData(data?.shipment || [])
                 TabShipmentFunction.initShipmentDataTable(shipmentDataFormatted, isDetail)
+                TabShipmentFunction.pushToShipmentData(shipmentDataFormatted)
 
                 //service detail
                 ServiceOrder.initServiceDetailDataTable(data.service_detail_data)
@@ -263,7 +254,7 @@ class DetailDataHandler {
 
                 $.fn.initMaskMoney2()
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
-                UsualLoadPageFunction.DisablePage(false, ['.btn-close'])
+                UsualLoadPageFunction.DisablePage(false, ['.btn-close', '.modal-header button', '#view-dashboard'])
             }
         )
     }
@@ -296,7 +287,7 @@ $(document).ready(function () {
     TabExpenseEventHandler.InitPageEvent()
 
     ServiceOrder.handleSaveProduct()
-
+    ServiceOrder.handleSaveExchangeRate()
     handleServiceDetailTabEvent()
     handleWorkOrderDetailTabEvent()
     handleModalWorkOrderCostEvent()
@@ -305,4 +296,9 @@ $(document).ready(function () {
     handleModalPaymentDetailEvent()
 
     setUpFormSubmit($('#form-update-service-order'))
+
+    $('#view-dashboard').on('click', function () {
+        let url = $(this).attr('data-url') + '?service_order_id=' + $.fn.getPkDetail()
+        $(this).attr('href', url)
+    })
 })

@@ -46,63 +46,65 @@
             </span>
         </button>
         <div class="form-group-filter" style="display: none">
-            <span class="col text-decoration-underline text-uppercase">
-                <span>{% trans 'Filter by' %}</span>:
-            </span>
-            <span class="col clear-all-btn">
+            <div class="row-filter">
+                <span class="col text-decoration-underline text-uppercase">
+                    <span>{% trans 'Filter by' %}</span>:
+                </span>
+                <span class="col clear-all-btn">
                 <span class="text-uppercase font-2 p-1">
                 {% trans 'Clear all' %} x</span></span>
-            <label class="filter-label" for="filter_opportunity_id">
-                {% trans 'Opportunity list' %}
-            </label>
-            <div class="max-w-280">
-                <select
-                        id="filter_opportunity_id"
-                        class="form-select"
-                        data-url="{% url 'OpportunityListAPI' %}"
-                        data-method="GET"
-                        data-keyResp="opportunity_list"
-                        data-params='{"list_from_app": "{{ data.list_from_app }}"}'
-                        data-keyText="code"
-                        data-allowClear="true"
-                ></select>
-            </div>
-            <label for="filter_task_status" class="filter-label">{% trans 'Select Status' %}</label>
-            <div class="max-w-280">
-                <select class="form-select" id="filter_task_status"
-                        data-keyResp="task_status"
-                        data-url="{% url 'OpportunityTaskStatusAPI' %}"
-                        data-allowClear="true"
-                ></select>
-            </div>
-            <label class="filter-label" for="filter_employee_id">
-                {% trans 'Assignee' %}
-            </label>
-            <div class="max-w-280">
-                <select
-                        id="filter_employee_id"
-                        class="form-select"
-                        data-url="{% url 'EmployeeListAPI' %}"
-                        data-params='{"list_from_app": "{{ data.list_from_app }}"}'
-                        data-keyResp="employee_list"
-                        data-keyText="full_name"
-                        data-allowClear="true"
-                ></select>
-            </div>
-            <div class="filter-new_row" style="flex-basis: 100%">
-                <div class="d-flex justify-content-end align-items-center gap-3">
-                    <label class="filter-label" for="filter_employee_id">
-                        {% trans 'Priority' %}
-                    </label>
-                    <div class="max-w-280">
-                        <select id="filter_priority_id"
-                                class="form-select w-280p"
-                        >
-                            <option value=""></option>
-                            <option value="0">{% trans 'Low' %}</option>
-                            <option value="1">{% trans 'Medium' %}</option>
-                            <option value="2">{% trans 'High' %}</option>
-                        </select>
+                <label class="filter-label" for="filter_opportunity_id">
+                    {% trans 'Opportunity list' %}
+                </label>
+                <div class="max-w-280">
+                    <select
+                            id="filter_opportunity_id"
+                            class="form-select"
+                            data-url="{% url 'OpportunityListAPI' %}"
+                            data-method="GET"
+                            data-keyResp="opportunity_list"
+                            data-params='{"list_from_app": "{{ data.list_from_app }}"}'
+                            data-keyText="code"
+                            data-allowClear="true"
+                    ></select>
+                </div>
+                <label for="filter_task_status" class="filter-label">{% trans 'Select Status' %}</label>
+                <div class="max-w-280">
+                    <select class="form-select" id="filter_task_status"
+                            data-keyResp="task_status"
+                            data-url="{% url 'OpportunityTaskStatusAPI' %}"
+                            data-allowClear="true"
+                    ></select>
+                </div>
+                <label class="filter-label" for="filter_employee_id">
+                    {% trans 'Assignee' %}
+                </label>
+                <div class="max-w-280">
+                    <select
+                            id="filter_employee_id"
+                            class="form-select"
+                            data-url="{% url 'EmployeeListAPI' %}"
+                            data-params='{"list_from_app": "{{ data.list_from_app }}"}'
+                            data-keyResp="employee_list"
+                            data-keyText="full_name"
+                            data-allowClear="true"
+                    ></select>
+                </div>
+                <div class="filter-new_row" style="flex-basis: 100%">
+                    <div class="d-flex justify-content-end align-items-center gap-3">
+                        <label class="filter-label" for="filter_employee_id">
+                            {% trans 'Priority' %}
+                        </label>
+                        <div class="max-w-280">
+                            <select id="filter_priority_id"
+                                    class="form-select w-280p"
+                            >
+                                <option value=""></option>
+                                <option value="0">{% trans 'Low' %}</option>
+                                <option value="1">{% trans 'Medium' %}</option>
+                                <option value="2">{% trans 'High' %}</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -133,6 +135,26 @@
     <!-- task kanban -->
     <div class="tab-content">
         <div class="tab-pane fade show active" id="tab_kanban">
+            <div class="wrap-filter position-relative">
+                <div class="row-filter">
+                    <h6>
+                        <i class="fa-solid fa-filter"></i>
+                        <span>{% trans 'Filter by' %}</span>
+                    </h6>
+                    <div class="item-filter">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="sort_by_group_assignee">
+                            <label class="form-check-label" for="sort_by_group_assignee">{% trans 'Unassigned' %}</label>
+                        </div>
+                    </div>
+                </div>
+                <p class="m-0 close-filter">
+                    <input type="checkbox" id="close_toggle" class="d-none">
+                    <label for="close_toggle" class="icon-container">
+                        <span class="plus"></span>
+                    </label>
+                </p>
+            </div>
             <div id="kb_scroll" class="tasklist-scroll position-relative">
                 <div id="tasklist_wrap" class="tasklist-wrap">
                 </div>
@@ -154,7 +176,7 @@
         </div>
     </div>
     <div class="btn-task-bar" style="display: none;">
-        <button class="btn btn-primary btn-rounded w-200p" id="btn_load-more">{% trans 'Load more' %}</button>
+        <button type="button" class="btn btn-primary btn-rounded w-200p" id="btn_load-more">{% trans 'Load more' %}</button>
     </div>
     <div class="hidden">
         <div class="card-parent_template">
@@ -241,6 +263,7 @@
                data-task-detail="{% url 'OpportunityTaskDetailAPI' 1 %}"
                data-logtime="{% url 'OpportunityTaskLogTimeAPI' %}"
                data-change-stt="{% url 'OpportunityTaskStatusAPI' %}"
+               data-task-has-group="{% url 'OpportunityTaskHasGroupListAPI' %}"
         />
         <input type="text" id="trans-factory" data-name="{% trans 'Name' %}" data-assigner="{% trans 'Assigner' %}"
                data-assignee="{% trans 'Assignee' %}" data-priority="{% trans 'Priority' %}"

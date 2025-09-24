@@ -92,7 +92,7 @@
             margin-bottom: 0.5rem;
             box-shadow: var(--shadow-sm);
         }
-        
+
         /* Ensure proper spacing for chart containers */
         .chart-container > div {
             position: relative;
@@ -122,69 +122,6 @@
             box-shadow: var(--shadow-sm);
             border: 1px solid #e2e8f0;
         }
-
-        /* Responsive Enhancements */
-        @media (max-width: 768px) {
-            .card-body {
-                padding: 1rem;
-            }
-
-            .kpi-value {
-                font-size: 1.5rem;
-            }
-
-            .kpi-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 1rem;
-            }
-
-            .chart-container {
-                padding: 1rem;
-            }
-
-            .section-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            #idxPageContent {
-                padding: 1rem 0;
-            }
-
-            .container-fluid {
-                padding: 0 0.5rem;
-            }
-
-            .kpi-value {
-                font-size: 1.25rem;
-            }
-        }
-
-        /* Animation Classes */
-        .fade-in {
-            animation: fadeIn 0.6s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Dark mode support preparation */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --light-color: #1e293b;
-                --dark-color: #f1f5f9;
-            }
-        }
     </style>
 {% endblock %}
 {% block jsHeader %}
@@ -193,11 +130,11 @@
 {% endblock %}
 {% block pageContent %}
     <script id="script-url"
-            data-url-service-order-detail-for-dashboard="{% url 'ServiceOrderDetailForDashboardAPI' '0'%}"
+            data-url-service-order-detail-for-dashboard="{% url 'ServiceOrderDetailDashboardAPI' '0'%}"
     ></script>
     <script id="trans-script"
     ></script>
-    
+
     <div class="container-fluid mt-5 mb-10">
         <div class="row">
             <div class="col-12">
@@ -276,6 +213,6 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/echartjs/echart.js' %}"></script>
-    <script src="{% static 'assets/sales/dashboard/dashboard_service_order_echarts.js' %}"></script>
+    <script src="{% static 'assets/sales/serviceorder/js/service_order_detail_dashboard_echarts.js' %}"></script>
     <script src="{% static 'assets/core/workflow/js/jquery-ui.min.js' %}"></script>
 {% endblock %}

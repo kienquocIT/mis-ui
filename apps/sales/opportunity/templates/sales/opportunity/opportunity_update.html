@@ -5,6 +5,7 @@
     <link href="{% static 'vendors/dropify/dist/css/dropify.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}"/>
+    <link href="{% static 'assets/sales/opportunity/css/opportunity_css.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/sales/task/css/create-form.css' %}" rel="stylesheet" type="text/css"/>
 
     <link rel="stylesheet" href="{% static 'process/stages.css' %}">
@@ -15,12 +16,27 @@
         #process-runtime-detail {
             border-radius: 5px;
         }
-
         #btn-collapse-process-show .icon i {
             transition: transform 0.6s;
         }
         #btn-collapse-process-show.collapsed-active .icon i {
             transform: rotate(180deg);
+        }
+        #activities-btn-group a {
+          padding: 0.6rem 0.9rem;
+          border-radius: 10px;
+          transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+          will-change: transform;
+        }
+        #activities-btn-group a:hover {
+          transform: scale(1.05) translateY(-1px);
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+        }
+        .mask-money {
+            text-align: right; !important;
+        }
+        table .select2-selection__rendered {
+            max-width: 250px;
         }
     </style>
 {% endblock %}
@@ -41,9 +57,17 @@
         <form id="frm-detail" data-method="PUT" data-url="{% url 'OpportunityDetailAPI' pk=pk %}"
               data-url-redirect="{% url 'OpportunityUpdate' '0' %}">
             {% csrf_token %}
-            <div class="row mb-2">
-                <div class="col-12 text-center">
-                    <span id="header-title" class="text-primary" style="font-weight: bolder; font-size: x-large"></span>
+            <div class="row mb-3">
+                <div class="col-11">
+                    <input required style="font-weight: bolder; font-size: large" id="opp_title" class="text-primary form-control form-control-line">
+                </div>
+                <div class="col-1 d-flex align-items-end justify-content-end">
+                    <a hidden href="#" id="btn-auto-update-stage" data-url="{% url 'OpportunityStageCheckingAPI' %}" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover" title="{% trans "Auto Update Stage" %}">
+                        <span class="icon"><i class="fas fa-sync-alt"></i></span>
+                    </a>
+                </div>
+                <div class="col-12">
+                    <ul class="mt-2" id="opp-stage-pipeline" data-url="{% url "OpportunityConfigStageListAPI" %}"></ul>
                 </div>
             </div>
             <button id="btn-collapse-process-show" hidden
@@ -60,12 +84,12 @@
                     </span>
                 </span>
             </button>
-            {% include 'sales/opportunity/extends/stages-view.html' %}
-            <div class="row mt-3">
-                <div class="col-12 col-md-12 col-lg-3 mb-3" id="group-general-info-opp">
+{#            {% include 'sales/opportunity/extends/stages-view.html' %}#}
+            <div class="row mt-5">
+                <div class="col-12 col-md-12 col-lg-3 border-right" id="group-general-info-opp">
                     {% include 'sales/opportunity/extends/general-info.html' %}
                 </div>
-                <div class="col-12 col-md-12 col-lg-9 mb-3" id="group-relate-info-opp">
+                <div class="col-12 col-md-12 col-lg-9" id="group-relate-info-opp">
                     {% include 'sales/opportunity/extends/relate-info.html' %}
                 </div>
             </div>
@@ -86,9 +110,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-
-                </div>
+                <div class="modal-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary">{% trans 'Save' %}</button>
                     <button
@@ -108,8 +130,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12" style="overflow: auto; max-height: 80vh">
+                    <div class="row" style="overflow: auto; max-height: 74vh">
+                        <div class="col-12">
                             <div id="process-runtime-detail"
                                  data-url="{% url 'ProcessRuntimeDetailAPI' pk='__pk__' %}"
                                  data-url-app="{% url 'TenantApplicationListAPI' %}"
@@ -134,7 +156,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="frm-add-member" data-method="POST" data-url="{% url 'MemberOfOpportunityDetailAddAPI' pk_opp='__pk_opp__' %}">
+                    <form id="frm-add-member" data-method="POST" data-url="{% url 'OpportunityMemberListAPI' pk_opp='__pk_opp__' %}">
                         <table class="table nowrap w-100" id="dtbMember" data-method="GET"
                                data-url="{% url 'EmployeeListAPI' %}">
                             <thead>
@@ -165,21 +187,19 @@
     <script type="text" id="url-factory"
             data-task_detail="{% url 'OpportunityTaskDetailAPI' 1 %}"
             data-task_list="{% url 'OpportunityTaskListAPI' %}"
-            data-url-product="{% url 'ProductForSaleListAPI' %}"
-            data-url-product-category="{% url 'ProductCategoryListAPI' %}"
-            data-url-tax="{% url 'TaxListAPI' %}"
-            data-url-uom="{% url 'UnitOfMeasureListAPI' %}"
-            data-url-competitor="{% url 'AccountForSaleListAPI' %}"
-            data-url-contact="{% url 'ContactListAPI' %}"
+            data-url-product="{% url 'OppProductListAPI' %}"
+            data-url-product-category="{% url 'OppProductCategoryListAPI' %}"
+            data-url-tax="{% url 'OppTaxListAPI' %}"
+            data-url-uom="{% url 'OppUOMListAPI' %}"
+            data-url-competitor="{% url 'OppCompetitorListAPI' %}"
+            data-url-contact="{% url 'OppContactListAPI' %}"
             data-url-emp-detail="{% url 'EmployeeDetail' pk=0 %}"
-            data-url-config="{% url 'OpportunityConfigAPI' %}"
+            data-url-config="{% url 'OpportunityConfigDetailAPI' %}"
             data-url-related-quotation="{% url 'QuotationDetail' pk=0 %}"
             data-url-related-sale-order="{% url 'SaleOrderDetail' pk=0 %}"
-            data-url-member-detail="{% url 'OpportunityMemberDetailAPI' pk=0 %}"
-            data-url-delete-member="{% url 'OpportunityDeleteMemberAPI' pk=0 %}"
-            data-url-member-list="{% url 'OpportunityMemberListAPI' pk=0 %}"
 
             data-url-account-list="{% url 'AccountListAPI' %}"
+            data-url-customer-list="{% url 'CustomerListAPI' %}"
             data-url-contact-list="{% url 'ContactListAPI' %}"
             data-url-opp-list="{% url 'OpportunityListAPI' %}"
             data-url-employee-list="{% url 'EmployeeListAPI' %}"
@@ -196,6 +216,7 @@
             data-url-consulting-detail="{% url "ConsultingDetail" pk=0%}"
             data-url-lease-order-detail="{% url "LeaseOrderDetail" pk=0%}"
             data-url-contract-detail="{% url "ContractApprovalDetail" pk=0%}"
+            data-url-service-order-detail="{% url "ServiceOrderDetail" pk=0%}"
 
             data-url-quo-list="{% url "QuotationListAPI" %}"
             data-url-so-list="{% url "SaleOrderListAPI" %}"
@@ -216,6 +237,7 @@
             data-assignee_empty="{% trans 'Assignee is required' %}"
             data-trans-not-created="{% trans 'has not been created for Opportunity' %}"
             data-msg-deny-delete-member-owner="{% trans 'This is Sale Person, can not remove!' %}"
+            data-trans-notify-update-permission="{% trans 'Please save Update Opportunity page to apply all the permissions!' %}"
 
             data-trans-quotation="{% trans "Quotation" %}"
             data-trans-sale-order="{% trans "Sale Order" %}"
@@ -240,7 +262,7 @@
             data-trans-bidding="{% trans "Bidding" %}"
             data-trans-consulting="{% trans "Consulting" %}"
             data-trans-activity-cancelled="{% trans 'Cancelled' %}"
-            data-trans-notify-update-permission="{% trans 'Please save Update Opportunity page to apply all the permissions!' %}"
+            data-trans-service-order="{% trans "Service order" %}"
     ></script>
     <input type="hidden" id="employee_current_id" value="{{ data.employee_current_id }}">
     <script type="text" id="data-detail"></script>
@@ -275,6 +297,7 @@
             $('#member-current-edit').trigger('change');
         })
     </script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_common.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/opportunity_update.js' %}"></script>
     <script src="{% static 'assets/sales/opportunity/js/activities/task/task_in_opps.js' %}"></script>

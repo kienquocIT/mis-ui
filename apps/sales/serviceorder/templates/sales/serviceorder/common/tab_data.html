@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <!-- tabs -->
-<div class="row mt-5 mb-5">
+<div class="row mt-5 mb-10">
     <div class="col-12">
         <!-- tabs navigation -->
         <ul class="nav nav-light nav-tabs" id="service-order-tabs">
@@ -35,17 +35,21 @@
                     <span class="nav-link-text">{% trans 'Attachment' %}</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#tab_task" id="tab_task_nav" data-tbl-id="table-work-order">
-                    <span class="nav-link-text">{% trans 'Task' %}</span>
-                </a>
-            </li>
+            {% if feature != 'service_quotation' %}
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_task" id="tab_task_nav" data-tbl-id="table-work-order">
+                        <span class="nav-link-text">{% trans 'Task' %}</span>
+                    </a>
+                </li>
+            {% endif %}
             <li class="nav-item ms-auto">
-                <button hidden type="button" class="btn btn-sm btn-light" id="btn-export-cost-excel">
-                    <i class="fas fa-file-excel"></i>
-                    {% trans 'Export to Excel' %}
+                <button hidden type="button" class="btn btn-xs btn-light" id="btn-export-cost-excel">
+                    <span>
+                        <span class="icon"><i class="fas fa-file-excel"></i></span>
+                        <span>{% trans 'Export to Excel' %}</span>
+                    </span>
                 </button>
-                <button type="button" class="btn btn-sm btn-light" id="btn-open-exchange-modal" data-bs-toggle="modal" data-bs-target="#modal-exchange-rate">
+                <button type="button" class="btn btn-xs btn-blue" id="btn-open-exchange-modal" data-bs-toggle="modal" data-bs-target="#modal-exchange-rate">
                     <span>
                         <span class="icon"><i class="fa-solid fa-exchange"></i></span>
                         <span>{% trans 'Exchange Rate' %}</span>
@@ -53,99 +57,166 @@
                 </button>
             </li>
         </ul>
-
-
         <!-- tabs content -->
-        <div class="tab-content mb-10" id="service-order-tab-content">
+        <div class="tab-content" id="service-order-tab-content">
+
             <div class="tab-pane fade show active" id="tab_service_detail">
-                <table id="table-service-detail" class="table nowrap w-100 ">
-                    <thead class="bg-secondary-light-5">
-                        <tr>
-                            <th style="min-width: 30px"></th>
-                            <th style="min-width: 250px">{% trans 'Name' %}</th>
-                            <th style="min-width: 250px">{% trans 'Description' %}</th>
-                            <th style="min-width: 100px">{% trans 'Quantity' %}</th>
-                            <th style="min-width: 100px">{% trans 'UOM' %}</th>
-                            <th style="min-width: 150px">{% trans 'Price' %}</th>
-                            <th style="min-width: 100px">{% trans 'Tax' %}</th>
-                            <th style="min-width: 150px">{% trans 'Total amount' %}</th>
-                            <th style="min-width: 30px"></th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <button type="button" class="btn btn-primary mt-5" id="btn-open-service-product-modal"
-                        data-bs-target="#modal-product" data-bs-toggle="modal">
-                    <i class="fas fa-plus-circle"></i>
-                    {% trans 'Add service' %}
-                </button>
+                <div class="row">
+                    <div class="col-12">
+                        <table id="table-service-detail" class="table nowrap w-100">
+                            <thead class="bg-secondary-light-5">
+                                <tr>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 250px">{% trans 'Name' %}</th>
+                                    <th style="min-width: 250px">{% trans 'Description' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Quantity' %}</th>
+                                    <th style="min-width: 100px">{% trans 'UOM' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Price' %}</th>
+                                    <th style="min-width: 100px">{% trans 'Tax' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Total amount' %}</th>
+                                    <th style="min-width: 50px"></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-12 col-lg-7">
+                                <button type="button" class="btn btn-sm btn-primary mt-2" id="btn-open-service-product-modal"
+                                        data-bs-target="#modal-product" data-bs-toggle="modal">
+                                    <i class="fas fa-plus-circle"></i>
+                                    {% trans 'Add service' %}
+                                </button>
+                            </div>
+                            <div class="col-12 col-lg-5 mt-3 text-right">
+                                <div class="row">
+                                    <label for="service-detail-pretax-value" class="col-4 col-form-label text-primary">{% trans 'Pretax Amount' %}</label>
+                                    <div class="col-8">
+                                        <input disabled id="service-detail-pretax-value" value="0"
+                                               class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label for="service-detail-taxes-value" class="col-4 col-form-label text-primary">{% trans 'Taxes' %}</label>
+                                    <div class="col-8">
+                                        <input disabled id="service-detail-taxes-value" value="0"
+                                               class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label for="service-detail-total-value" class="col-4 col-form-label text-primary">{% trans 'TOTAL' %}</label>
+                                    <div class="col-8">
+                                        <input disabled id="service-detail-total-value" value="0"
+                                               class="text-primary form-control form-control-line mask-money zone-readonly mb-1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
             <div class="tab-pane fade" id="tab_work_order">
-                <table id="table-work-order" class="table nowrap w-100 min-w-1350p">
-                    <thead class="bg-secondary-light-5"></thead>
-                    <tbody></tbody>
-                </table>
-                <div class="row mt-5">
-                    <div class="col-12 col-md-4">
-                        <div class="dropdown">
-                            <button aria-expanded="false" data-bs-toggle="dropdown" type="button" class="btn btn-primary dropdown-toggle">
+                <div class="row">
+                    <div class="col-12">
+                        {% if feature == 'service_quotation' %}
+                            <table id="table-work-order" class="table nowrap w-100">
+                                <thead class="bg-secondary-light-5">
+                                    <tr>
+                                        <th style="min-width: 10px"></th>
+                                        <th style="min-width: 240px">{% trans 'Description' %}</th>
+                                        <th style="min-width: 120px">{% trans 'Start Date' %}</th>
+                                        <th style="min-width: 120px">{% trans 'End Date' %}</th>
+                                        <th style="min-width: 120px">{% trans 'Is Service Delivery' %}</th>
+                                        <th style="min-width: 60px">{% trans 'Quantity' %}</th>
+                                        <th style="min-width: 180px">{% trans 'Unit Cost' %}</th>
+                                        <th style="min-width: 180px">{% trans 'Total Amount' %}</th>
+                                        <th style="min-width: 60px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        {% else %}
+                            <table id="table-work-order" class="table nowrap w-100">
+                                <thead class="bg-secondary-light-5">
+                                    <tr>
+                                        <th style="min-width: 10px"></th>
+                                        <th style="min-width: 240px">{% trans 'Description' %}</th>
+                                        <th style="min-width: 120px">{% trans 'Assignee' %}</th>
+                                        <th style="min-width: 120px">{% trans 'Start Date' %}</th>
+                                        <th style="min-width: 120px">{% trans 'End Date' %}</th>
+                                        <th style="min-width: 120px">{% trans 'Is Service Delivery' %}</th>
+                                        <th style="min-width: 60px">{% trans 'Quantity' %}</th>
+                                        <th style="min-width: 180px">{% trans 'Unit Cost' %}</th>
+                                        <th style="min-width: 180px">{% trans 'Total Amount' %}</th>
+                                        <th style="min-width: 60px">{% trans 'Progress' %}</th>
+                                        <th style="min-width: 60px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        {% endif %}
+                        <div class="dropdown mt-2">
+                            <button aria-expanded="false" data-bs-toggle="dropdown" type="button" class="btn btn-sm btn-primary dropdown-toggle">
                                 <i class="fas fa-plus-circle"></i>
                                 {% trans 'Add' %}
                             </button>
-                            <div class="dropdown-menu  dropdown-bordered">
+                            <div class="dropdown-menu dropdown-bordered">
                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-product">
-                                    <i class="dropdown-icon fa-solid fa-circle-check"></i>
-                                    <span>{% trans 'Add Item' %}</span>
+                                    <span>{% trans 'Add item' %}</span>
                                 </a>
                                 <a class="dropdown-item" href="#" id="btn-add-non-item">
-                                    <i class="dropdown-icon fa-solid fa-circle-question"></i>
-                                    <span>{% trans 'Add Non Item' %}</span>
+                                    <span>{% trans 'Add non-item' %}</span>
                                 </a>
                             </div>
                         </div>
                     </div>
-                 </div>
-            </div>
-            <div class="tab-pane fade" id="tab_shipment">
-                <!-- main shipment table -->
-                <table class="table nowrap w-100" id="table_shipment">
-
-                    <thead class="bg-secondary-light-5">
-                        <tr>
-                            <th></th>
-                            <th>{% trans 'Description' %}</th>
-                            <th>{% trans 'Type' %}</th>
-                            <th>{% trans 'Reference number' %}</th>
-                            <th>{% trans 'Weight' %}</th>
-                            <th>{% trans 'Dimension' %}</th>
-                            <th>{% trans 'Note' %}</th>
-                            <th>{% trans 'Action' %}</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-
-                <!-- button dropdown -->
-                <div class="dropdown">
-                    <button class="btn btn-primary mt-5 dropdown-toggle d-flex align-items-center" type="button"
-                            id="btn_add_container" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-plus-circle me-2"></i>
-                        {% trans 'Add' %}
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="btn_add_container">
-                        <li>
-                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal_container">
-                               <i class="fa-solid fa-truck" style="margin-right: 5px;"></i>{% trans 'Container' %}
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal_package">
-                                <i class="fa-solid fa-box-open" style="margin-right: 5px;"></i> {% trans 'Package' %}
-                            </a>
-                        </li>
-                    </ul>
                 </div>
             </div>
+
+            <div class="tab-pane fade" id="tab_shipment">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- main shipment table -->
+                        <table class="table nowrap w-100" id="table_shipment">
+                            <thead class="bg-secondary-light-5">
+                                <tr>
+                                <th style="min-width: 50px"></th>
+                                <th style="min-width: 250px">{% trans 'Description' %}</th>
+                                <th style="min-width: 100px">{% trans 'Type' %}</th>
+                                <th style="min-width: 150px">{% trans 'Reference number' %}</th>
+                                <th style="min-width: 100px">{% trans 'Weight' %}</th>
+                                <th style="min-width: 100px">{% trans 'Dimension' %}</th>
+                                <th style="min-width: 150px">{% trans 'Note' %}</th>
+                                <th style="min-width: 50px"></th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+
+                        <!-- button dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-primary mt-5 dropdown-toggle d-flex align-items-center" type="button"
+                                    id="btn_add_row_shipment" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-plus-circle me-2"></i>
+                                {% trans 'Add' %}
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="btn_add_row_shipment">
+                                <li>
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal_container">
+                                        <i class="fa-solid fa-truck" style="margin-right: 5px;"></i>{% trans 'Container' %}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal_package">
+                                        <i class="fa-solid fa-box-open" style="margin-right: 5px;"></i> {% trans 'Package' %}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="tab-pane fade" id="tab_expense">
                 <!-- main expense table -->
                 <table class="table nowrap w-100" id="table_expense">
@@ -195,6 +266,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="tab-pane fade" id="tab_payment">
                 <table id="table-payment" class="table nowrap w-100 min-w-1350p">
                     <thead class="bg-secondary-light-5"></thead>
@@ -205,6 +277,7 @@
                     {% trans 'Add Installment' %}
                 </button>
             </div>
+
             <div class="tab-pane fade" id="tab_attachment">
                 <div class="form-group content_attached">
                     <div id="attachment" class="{{ addClass }}">{% include 'extends/files/all.html' %}</div>

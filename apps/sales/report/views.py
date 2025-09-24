@@ -39,6 +39,8 @@ class ReportRevenueList(View):
         template='sales/report/report_revenue.html',
         menu_active='menu_report_revenue_list',
         breadcrumb='REPORT_REVENUE_LIST_PAGE',
+        icon_cls='fa-solid fa-chart-bar',
+        icon_bg='bg-blue',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -64,6 +66,8 @@ class ReportProductList(View):
         template='sales/report/report_product.html',
         menu_active='menu_report_product_list',
         breadcrumb='REPORT_PRODUCT_LIST_PAGE',
+        icon_cls='fa-solid fa-chart-bar',
+        icon_bg='bg-blue',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -101,6 +105,8 @@ class ReportCustomerList(View):
         template='sales/report/report_customer.html',
         menu_active='menu_report_customer_list',
         breadcrumb='REPORT_CUSTOMER_LIST_PAGE',
+        icon_cls='fa-solid fa-chart-bar',
+        icon_bg='bg-blue',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
@@ -305,6 +311,8 @@ class ReportPipelineList(View):
         template='sales/report/report_pipeline.html',
         menu_active='menu_report_pipeline_list',
         breadcrumb='REPORT_PIPELINE_LIST_PAGE',
+        icon_cls='fa-solid fa-chart-bar',
+        icon_bg='bg-blue',
     )
     def get(self, request, *args, **kwargs):
         return {'filter_quarter': FILTER_QUARTER, 'filter_month': FILTER_MONTH}, status.HTTP_200_OK
@@ -330,6 +338,8 @@ class ReportCashflowList(View):
         template='sales/report/report_cashflow.html',
         menu_active='menu_report_cashflow_list',
         breadcrumb='REPORT_CASHFLOW_LIST_PAGE',
+        icon_cls='fa-solid fa-chart-bar',
+        icon_bg='bg-blue',
     )
     def get(self, request, *args, **kwargs):
         return {'filter_quarter': FILTER_QUARTER, 'filter_month': FILTER_MONTH}, status.HTTP_200_OK
@@ -355,6 +365,8 @@ class ReportGeneralList(View):
         template='sales/report/report_general.html',
         menu_active='menu_report_general_list',
         breadcrumb='REPORT_GENERAL_LIST_PAGE',
+        icon_cls='fa-solid fa-chart-bar',
+        icon_bg='bg-blue',
     )
     def get(self, request, *args, **kwargs):
         return {'filter_quarter': FILTER_QUARTER, 'filter_month': FILTER_MONTH}, status.HTTP_200_OK
@@ -515,6 +527,8 @@ class ReportLeaseList(View):
         template='sales/report/report_lease.html',
         menu_active='menu_report_lease_list',
         breadcrumb='REPORT_LEASE_LIST_PAGE',
+        icon_cls='fa-solid fa-chart-bar',
+        icon_bg='bg-blue',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK

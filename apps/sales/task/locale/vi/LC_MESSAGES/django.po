@@ -20,3 +20,11 @@ msgstr ""
 #
 msgid "Task parent"
 msgstr "Giao việc cha"
+
+#
+msgid "employee group for receiving tasks"
+msgstr "danh sách người nhận việc"
+
+#
+msgid "Unassigned"
+msgstr "Chưa phân công"

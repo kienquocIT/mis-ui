@@ -236,7 +236,7 @@ class MenusCoreConfigurations:
             #     icon='<i class="fas fa-file-invoice"></i>',
             # ),
             MenuCommon(
-                name='Opportunity', code='menu_opportunity_config', view_name='OpportunityConfig',
+                name='Opportunity', code='menu_opportunity_config', view_name='OpportunityConfigDetail',
                 icon='<i class="fas fa-solid fa-lightbulb"></i>',
             ),
             MenuCommon(
@@ -373,18 +373,32 @@ class MenusCRM:
         name='Bidding', code='menu_bidding_list', view_name='BiddingList',
         icon='<i class="fas fa-gavel"></i>',
     )
-    SALE_ORDER = MenuCommon(
-        name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
-        icon='<i class="fas fa-shopping-cart"></i>',
+    ORDERS = MenuCommon(
+        name='Orders', code='', view_name='#',
+        icon='<i class="fas fa-file-signature"></i>',
+        child=[
+            MenuCommon(
+                name='Sale order', code='menu_sale_order_list', view_name='SaleOrderList',
+                icon='<i class="fas fa-shopping-cart"></i>',
+            ),
+            MenuCommon(
+                name='Lease order', code='menu_lease_order_list', view_name='LeaseOrderList',
+                icon='<i class="fas fa-handshake"></i>',
+            ),
+            MenuCommon(
+                name='Service order', code='menu_service_order_list', view_name='ServiceOrderList',
+                icon='<i class="fas fa-concierge-bell"></i>',
+            )
+        ],
+    )
+    SERVICE_QUOTATION = MenuCommon(
+        name='Service quotation', code='menu_service_quotation_list', view_name='ServiceQuotationList',
+        icon='<i class="fas fa-file-invoice-dollar"></i>',
     )
     # GROUP_ORDER = MenuCommon(
     #     name='Group order', code='menu_group_order_list', view_name='GroupOrderList',
     #     icon='<i class="fas fa-file-invoice"></i>',
     # )
-    LEASE_ORDER = MenuCommon(
-        name='Lease order', code='menu_lease_order_list', view_name='LeaseOrderList',
-        icon='<i class="fas fa-handshake"></i>',
-    )
     LEASE_ASSET_LIST = MenuCommon(
         name='Lease asset list', code='menu_lease_asset_list', view_name='LeaseOrderAssetList',
         icon='<i class="fas fa-hand-holding-usd"></i>',
@@ -410,10 +424,6 @@ class MenusCRM:
     WORK_ORDER = MenuCommon(
         name='Work order', code='menu_work_order_list', view_name='WorkOrderList',
         icon='<i class="fas fa-pencil-ruler"></i>',
-    )
-    SERVICE_ORDER = MenuCommon(
-        name='Service order', code='menu_service_order_list', view_name='ServiceOrderList',
-        icon='<i class="fa-solid fa-calendar-check"></i>',
     )
     AR_INVOICE = MenuCommon(
         name='AR invoice', code='id_menu_ar_invoice', view_name='ARInvoiceList',
@@ -467,7 +477,7 @@ class MenusCRM:
             ),
             MenuCommon(
                 name='Return advance', code='id_menu_return_advance', view_name='ReturnAdvanceList',
-                icon='<i class="fas fa-hand-holding-usd fa-flip-horizontal"></i>',
+                icon='<i class="bi bi-arrow-return-left"></i>',
             ),
         ],
     )
@@ -1042,8 +1052,8 @@ class SpaceItem:
                 MenusCRM.ACCOUNT,
                 MenusCRM.OPPORTUNITY,
                 MenusCRM.QUOTATION,
-                MenusCRM.SALE_ORDER,
-                MenusCRM.LEASE_ORDER,
+                MenusCRM.ORDERS,
+                MenusCRM.SERVICE_QUOTATION,
                 MenusCRM.CALENDAR,
                 MenusCRM.CONSULTING,
                 MenusCRM.BIDDING,
@@ -1052,7 +1062,6 @@ class SpaceItem:
                 MenusCRM.AR_INVOICE,
                 MenusCRM.LEASE_ASSET_LIST,
                 MenusCRM.RECURRENCE,
-                MenusCRM.SERVICE_ORDER,
                 MenusCRM.WORK_ORDER,
                 MenusCRM.FINAL_ACCEPTANCE,
                 MenusCRM.CONTRACT_APPROVAL,

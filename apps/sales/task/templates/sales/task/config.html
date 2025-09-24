@@ -83,14 +83,17 @@
 
 {% block pageAction %}
     <button
-            class="btn btn-icon btn-flush-dark btnrounded- flush-soft-hover no-caret d-lg-inline-block d-none"
+            class="btn btn-outline-primary flush-soft-hover no-caret d-lg-inline-block d-none"
             data-bs-toggle="tooltip"
             data-bs-placement="top"
             data-bs-original-title="{% trans 'Save' %}"
             form="formOpportunityTaskConfig" type="submit"
     >
-        <span class="btn-icon-wrap">
-            <i class="far fa-save"></i>
+        <span>
+            <span>{% trans 'Save' %}</span>
+            <span class="icon">
+                <i class="fa-regular fa-floppy-disk"></i>
+            </span>
         </span>
     </button>
 {% endblock %}
@@ -121,17 +124,28 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade show active" id="tab_block_1">
-                <h5 class="h5 mb-3 font-weight-bold">{% trans 'Assignee Permission' %}</h5>
+                <h5 class="h5 font-weight-bold mb-3 mt-4">{% trans 'Assignee Permission' %}</h5>
                 <hr class="border-dark opacity-100">
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" name="is_edit_date" id="assignee_edit_date">
                     <label class="form-check-label" for="assignee_edit_date">
                         {% trans 'Assignee can edit Start Date and End Date' %}</label>
                 </div>
-                <div class="form-check">
+                <div class="form-check mb-sm-4 mb-md-10">
                     <input type="checkbox" class="form-check-input" name="is_edit_est" id="assignee_edit_est">
                     <label class="form-check-label" for="assignee_edit_est">
                         {% trans 'Assignee can edit Estimate' %}</label>
+                </div>
+                <h5 class="h5 mb-3 font-weight-bold">{% trans 'Assigneer can create group assignee' %}</h5>
+                <hr class="border-dark opacity-100">
+                <div class="col-md-6 col-sm-12 form-group">
+                    <select id="group_assignee_list" class="form-select" name="user_allow_group_handle"
+                            multiple
+                            data-closeOnSelect="false"
+                            data-allowClear="true"
+                            data-url="{% url 'EmployeeListAPI' %}"
+                            data-keyResp="employee_list" data-keyText="full_name" data-keyId="id"
+                    ></select>
                 </div>
             </div>
             <div class="tab-pane fade" id="tab_block_2">
@@ -168,22 +182,22 @@
             </div>
         </div>
     </form>
-    <div class="hidden">
-        <div id="item_config">
-            <li class="advance-list-item single-task-list active-todo">
-                <div class="status-item d-flex justify-content-between align-items-center">
-                    <span class="w-5 hand-drag"><i class="fa-solid fa-arrows-up-down"></i></span>
-                    <p class="status_name w-35" contenteditable="true"></p>
-                    <div class="is_finish w-10 pl-2">
-                        <div class="form-check"><input type="checkbox" class="form-check-input"></div>
-                    </div>
-                    <div class="status_color w-10 pl-2"><input type="color" class="picker_color"></div>
-                    <span class="icon-close w-10 text-right">
+{% endblock %}
+{% block dataHiddenGroup %}
+    <div id="item_config">
+        <li class="advance-list-item single-task-list active-todo">
+            <div class="status-item d-flex justify-content-between align-items-center">
+                <span class="w-5 hand-drag"><i class="fa-solid fa-arrows-up-down"></i></span>
+                <p class="status_name w-35" contenteditable="true"></p>
+                <div class="is_finish w-10 pl-2">
+                    <div class="form-check"><input type="checkbox" class="form-check-input"></div>
+                </div>
+                <div class="status_color w-10 pl-2"><input type="color" class="picker_color"></div>
+                <span class="icon-close w-10 text-right">
                         <i class="fa-regular fa-circle-xmark fa-lg"></i>
                     </span>
-                </div>
-            </li>
-        </div>
+            </div>
+        </li>
     </div>
 {% endblock %}
 {% block jsFooter %}

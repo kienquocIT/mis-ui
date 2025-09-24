@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Service Order' %}{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/sales/serviceorder/css/service_order.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        .mask-money {
+            text-align: right; !important;
+        }
+        table .select2-selection__rendered {
+            max-width: 250px;
+        }
+    </style>
+{% endblock %}
+{% block pageAction %}
+    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='form-create-service-quotation' %}
+{% endblock %}
+{% block pageContent %}
+    <form data-method="POST" id="form-create-service-quotation"
+          data-url="{% url 'ServiceQuotationListAPI' %}"
+          data-url-redirect="{% url 'ServiceQuotationList' %}">
+        {% csrf_token %}
+        {% include 'sales/serviceorder/common/common_data.html' %}
+        {% include 'sales/serviceorder/common/tab_data.html' with feature='service_quotation' %}
+    </form>
+{% endblock %}
+{% block modalData %}
+    {% include 'sales/serviceorder/common/modal_data.html' %}
+    {% include 'sales/task/extend/task-form.html' with not_bastion=True custom_assignee=True %}
+{% endblock %}
+{% block dataHiddenGroup %}
+    <script id="script-url"
+            data-expense-item-list-url="{% url 'ExpenseItemListAPI' %}"
+            data-tax-list-url = '{% url 'TaxListAPI' %}'
+            data-company-config-url = '{% url 'CompanyConfigDetailAPI' %}'
+            data-currency-list-url = '{% url 'CurrencyListAPI' %}'
+            data-uom-list-url = '{% url 'UnitOfMeasureListAPI' %}'
+            data-opp-detail-url= '{% url 'OpportunityDetailAPI' pk=0 %}'
+            data-labor-url="{% url "ExpenseListAPI" %}"
+            data-expense-item-url='{% url 'ExpenseItemListAPI' %}'
+            data-uom-url="{% url "UnitOfMeasureListAPI" %}"
+            data-tax-url='{% url 'TaxListAPI' %}'
+    ></script>
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
+    <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static 'assets/sales/serviceorder/js/service_order_common.js' %}"></script>
+    <script src="{% static 'assets/sales/servicequotation/js/service_quotation_create.js' %}"></script>
+    <script src="{% static 'assets/sales/serviceorder/js/tab_shipment.js' %}"></script>
+    <script src="{% static 'assets/sales/serviceorder/js/tab_expense.js' %}"></script>
+
+    <script src="{% static 'assets/js/extends/the-documents/auto-init-with-parameters.js' %}"></script>
+{% endblock %}

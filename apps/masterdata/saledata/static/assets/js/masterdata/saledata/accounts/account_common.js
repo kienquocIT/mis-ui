@@ -144,7 +144,7 @@ class AccountPageFunction {
             rowIdx: true,
             paging: false,
             scrollX: true,
-            scrollY: '70vh',
+            scrollY: '64vh',
             scrollCollapse: true,
             ajax: {
                 url: pageElements.$add_contact_table.attr('data-url'),

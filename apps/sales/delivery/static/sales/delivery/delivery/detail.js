@@ -56,7 +56,7 @@ $(async function () {
                 prod_data = $row.data();
             }
 
-            // Kiểm tra giao hàng theo đơn hàng hay đơn cho thuê
+            // Kiểm tra giao hàng theo đơn bán hàng hay đơn cho thuê
             let targetItemData = prod_data?.['product_data'];
             if (prod_data?.['offset_data']?.['id']) {
                 targetItemData = prod_data?.['offset_data'];

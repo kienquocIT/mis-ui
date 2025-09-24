@@ -164,6 +164,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
 
     # Opportunity
     OPPORTUNITY_LIST_PAGE = BreadcrumbChildren(_('Opportunity'), 'OpportunityList')
+    OPPORTUNITY_CONTRAT_SUMMARY_PAGE = BreadcrumbChildren(_('Contract summary'), 'OpportunityContractSummary')
 
     # Quotation
     QUOTATION_CONFIG_PAGE = BreadcrumbChildren(_('Quotation'), 'QuotationConfigDetail')
@@ -217,7 +218,7 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     OPPORTUNITY_DETAIL_PAGE = BreadcrumbChildren(_('Detail'))
 
     # Opportunity Config
-    OPPORTUNITY_CONFIG_PAGE = BreadcrumbChildren(_('Opportunity'), 'OpportunityConfig')
+    OPPORTUNITY_CONFIG_PAGE = BreadcrumbChildren(_('Opportunity'), 'OpportunityConfigDetail')
 
     # Payment Config
     PAYMENT_CONFIG_PAGE = BreadcrumbChildren(_('Payment Config'), 'PaymentConfigList')
@@ -354,7 +355,6 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     DASHBOARD_COMMON_PAGE = BreadcrumbChildren(_('Dashboard'), 'DashboardCommonPage')
     DASHBOARD_GENERAL_LIST_PAGE = BreadcrumbChildren(_('General dashboard'), 'DashboardGeneralList')
     DASHBOARD_PIPELINE_LIST_PAGE = BreadcrumbChildren(_('Pipeline dashboard'), 'DashboardPipelineList')
-    DASHBOARD_SERVICE_ORDER_LIST_PAGE = BreadcrumbChildren(_('Service order progress dashboard'), 'DashboardServiceOrderList')
 
     PERIODS_CONFIG_PAGE = BreadcrumbChildren(_('Periods config'), 'PeriodsConfigList')
     ACCOUNTING_POLICIES_PAGE = BreadcrumbChildren(_('Accounting policies'), 'AccountingPoliciesList')
@@ -550,12 +550,17 @@ class BreadcrumbItem:  # pylint: disable=too-few-public-methods
     ABSENCE_EXPLANATION_LIST = BreadcrumbChildren(_('Absence Explanation'), 'AbsenceExplanationList')
 
     # master data - attribute
-    ATTRIBUTE_LIST_PAGE = BreadcrumbChildren(_('Product/ service attribute'), 'AttributeList')
+    ATTRIBUTE_LIST_PAGE = BreadcrumbChildren(_('Product/Service attribute'), 'AttributeList')
+
     # Service order
     SERVICE_ORDER_PAGE = BreadcrumbChildren(_('Service order'), 'ServiceOrderList')
+    SERVICE_ORDER_DETAIL_DASHBOARD_PAGE = BreadcrumbChildren(_('Service order detail dashboard'), 'ServiceOrderDetailDashboard')
 
     # shipment
     SHIPMENT_MASTER_DATA_LIST_PAGE = BreadcrumbChildren(_('Master data shipment'), 'ShipmentMasterDataList')
+
+    # Service quotation
+    SERVICE_QUOTATION_PAGE = BreadcrumbChildren(_('Service quotation'), 'ServiceQuotationList')
 
 
 class BreadcrumbView:
@@ -835,6 +840,9 @@ class BreadcrumbView:
     OPPORTUNITY_DETAIL_PAGE = OPPORTUNITY_LIST_PAGE + [BreadcrumbItem.BASTION_DETAIL]
     OPPORTUNITY_UPDATE_PAGE = OPPORTUNITY_LIST_PAGE + [BreadcrumbItem.BASTION_UPDATE]
     OPPORTUNITY_CONFIG_PAGE = [BreadcrumbItem.OPPORTUNITY_CONFIG_PAGE]
+    OPPORTUNITY_CONTRAT_SUMMARY_PAGE = [
+        BreadcrumbItem.OPPORTUNITY_CONTRAT_SUMMARY_PAGE
+    ]
 
     # Quotation
     QUOTATION_LIST_PAGE = [
@@ -1120,7 +1128,6 @@ class BreadcrumbView:
     DASHBOARD_COMMON_PAGE = [BreadcrumbItem.DASHBOARD_COMMON_PAGE]
     DASHBOARD_GENERAL_LIST_PAGE = [BreadcrumbItem.DASHBOARD_GENERAL_LIST_PAGE]
     DASHBOARD_PIPELINE_LIST_PAGE = [BreadcrumbItem.DASHBOARD_PIPELINE_LIST_PAGE]
-    DASHBOARD_SERVICE_ORDER_LIST_PAGE = [BreadcrumbItem.DASHBOARD_SERVICE_ORDER_LIST_PAGE]
 
     PERIODS_CONFIG_PAGE = [BreadcrumbItem.PERIODS_CONFIG_PAGE]
     ACCOUNTING_POLICIES_PAGE = [BreadcrumbItem.ACCOUNTING_POLICIES_PAGE]
@@ -1499,6 +1506,7 @@ class BreadcrumbView:
     SERVICE_ORDER_CREATE_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_CREATE]
     SERVICE_ORDER_DETAIL_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_DETAIL]
     SERVICE_ORDER_UPDATE_PAGE = SERVICE_ORDER + [BreadcrumbItem.BASTION_UPDATE]
+    SERVICE_ORDER_DETAIL_DASHBOARD_PAGE = [BreadcrumbItem.SERVICE_ORDER_DETAIL_DASHBOARD_PAGE]
 
     # Absence explanation
     ABSENCE_EXPLANATION_LIST_PAGE = [
@@ -1514,3 +1522,13 @@ class BreadcrumbView:
     ]
 
     SHIPMENT_MASTER_DATA_LIST_PAGE = [BreadcrumbItem.SHIPMENT_MASTER_DATA_LIST_PAGE]
+
+    # Service quotation
+    SERVICE_QUOTATION = [
+        BreadcrumbItem.HOME_PAGE,
+        BreadcrumbItem.SERVICE_QUOTATION_PAGE
+    ]
+    SERVICE_QUOTATION_LIST_PAGE = SERVICE_QUOTATION + [BreadcrumbItem.BASTION_LIST]
+    SERVICE_QUOTATION_CREATE_PAGE = SERVICE_QUOTATION + [BreadcrumbItem.BASTION_CREATE]
+    SERVICE_QUOTATION_DETAIL_PAGE = SERVICE_QUOTATION + [BreadcrumbItem.BASTION_DETAIL]
+    SERVICE_QUOTATION_UPDATE_PAGE = SERVICE_QUOTATION + [BreadcrumbItem.BASTION_UPDATE]

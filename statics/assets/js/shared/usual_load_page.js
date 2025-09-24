@@ -186,6 +186,38 @@ class UsualLoadPageFunction {
     }
 
     /**
+     * Load ô Contact (expected-data-url = ContactListAPI)
+     * @param {HTMLElement|jQuery} element - element
+     * @param {Object} data - data json
+     * @param {Boolean} [allow_clear=true] - select allow clear
+     * @param {Object} data_params - data_params
+     * @param {string} data_url - data_url
+     * @returns {void}
+     */
+    static LoadContact({element, data=null, allow_clear=true, data_params = {}, data_url=''}) {
+        if (!element) {
+            console.error("element is required.");
+            return;
+        }
+        data_url = data_url || element.attr('data-url')
+        let queryString = '';
+        if (typeof data_params === 'object' && data_params !== null && Object.keys(data_params).length > 0) {
+            queryString = '?' + new URLSearchParams(data_params).toString();
+        }
+        element.initSelect2({
+            allow_clear: allow_clear,
+            ajax: {
+                url: data_url + queryString,
+                method: 'GET',
+            },
+            data: (data ? data : null),
+            keyResp: 'contact_list',
+            keyId: 'id',
+            keyText: 'fullname',
+        })
+    }
+
+    /**
      * Load ô Account (expected-data-url = AccountListAPI)
      * @param {HTMLElement|jQuery} element - element
      * @param {Object} data - data json
@@ -856,41 +888,77 @@ class UsualLoadPageFunction {
      * @param {Array} except - các element ngoại lệ
      * @returns {void}
      */
-    static DisablePage(active=true, except=[]) {
-        if (active) {
-            except = except.concat(['#print-document', '#printModal select', '#printModal button'])
-            const shouldExclude = (el) => except.some(selector => el.matches(selector));
+    static DisablePage(active = true, except = []) {
+        if (!active) return;
 
-            const containers = document.querySelectorAll('#idxPageContent, .idxModalData');
-            containers.forEach(container => {
-                if (!container) return;
+        except = except.concat([
+            '#print-document',
+            '#printModal select',
+            '#printModal button',
+            '.dtb-header-toolbar input',
+            '.dtb-header-toolbar select',
+            '.dtb-header-toolbar button',
+            '.tbl-footer-toolbar input',
+            '.tbl-footer-toolbar select',
+            '.tbl-footer-toolbar button',
+        ]);
 
-                container.querySelectorAll('select, input, textarea, button').forEach(el => {
-                    if (shouldExclude(el)) return;
-                    if (el.matches('select')) el.disabled = true;
-                    if (el.matches('input')) el.readOnly = true;
-                    if (el.matches('input')) el.disabled = true;
-                    if (el.matches('textarea')) el.readOnly = true;
-                    if (el.matches('button')) el.disabled = true;
-                });
+        const shouldExclude = (el) => except.some(selector => el.matches(selector));
 
-                const observer = new MutationObserver(mutations => {
-                    mutations.forEach(mutation => {
-                        mutation.addedNodes.forEach(node => {
-                            if (node.nodeType === 1 && !shouldExclude(node)) {
-                                if (node.matches('select')) node.disabled = true;
-                                if (node.matches('input')) node.readOnly = true;
-                                if (node.matches('input')) node.disabled = true;
-                                if (node.matches('textarea')) node.readOnly = true;
-                                if (node.matches('button')) node.disabled = true;
+        const disableElement = (el) => {
+            if (shouldExclude(el)) return;
+
+            if (el.matches('select, input, textarea, button')) {
+                el.disabled = true;
+            }
+
+            if (el.matches('textarea')) {
+                el.readOnly = true; // optional, chỉ để user vẫn copy text
+            }
+        };
+
+        const containers = document.querySelectorAll('#idxPageContent, .idxModalData');
+        containers.forEach(container => {
+            if (!container) return;
+
+            // disable các element hiện có
+            container.querySelectorAll('select, input, textarea, button').forEach(disableElement);
+
+            // theo dõi element mới được thêm
+            const observer = new MutationObserver(mutations => {
+                mutations.forEach(mutation => {
+                    mutation.addedNodes.forEach(node => {
+                        if (node.nodeType === 1) {
+                            if (node.matches('select, input, textarea, button')) {
+                                disableElement(node);
                             }
-                        });
+                            // nếu là container cha chứa nhiều input bên trong
+                            node.querySelectorAll?.('select, input, textarea, button, a')
+                                .forEach(disableElement);
+                        }
                     });
                 });
-
-                observer.observe(container, { childList: true, subtree: true });
             });
-        }
+
+            observer.observe(container, { childList: true, subtree: true });
+        });
+    }
+
+    /**
+     * Hàm đẩy tham số vào URL
+     * @param {string} [url] - url
+     * @param {Object} [params={}] - params (default = {})
+     * @returns {string}
+     */
+    static Push_param_to_url(url, params={}) {
+        const [baseUrl, queryString] = url.split('?');
+        const currentParams = new URLSearchParams(queryString);
+        Object.keys(params).forEach(key => {
+            if (params[key] !== undefined && params[key] !== null) {
+                currentParams.set(key, params[key]);
+            }
+        });
+        return `${baseUrl}?${currentParams.toString()}`;
     }
 
     /**

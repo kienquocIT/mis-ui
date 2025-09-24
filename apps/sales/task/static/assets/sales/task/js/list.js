@@ -12,6 +12,8 @@ $(function () {
     const $oppElm = $('#opportunity_id')
     const $empElm = $('#employee_inherit_id')
     const $prjElm = $('#project_id')
+    const $filterElm = $('.form-group-filter')
+    let $contentElm = $('#idxPageContent');
 
     // lấy danh sách status và render
     function getSttAndRender() {
@@ -70,7 +72,33 @@ $(function () {
         })
     }
 
-    function callDataTaskList(kanban, list, params = {}, isReturn=false) {
+    function InitActionClickBtn(){
+        const $assignToMe = $('.received-task a')
+        $assignToMe.on('click', function (e) {
+            const _this = $(this)
+            e.preventDefault()
+            $.fn.callAjax2({
+                'url': $urlFact.attr('data-task-detail').format_url_with_uuid($(this).attr('data-id')),
+                'method': 'PUT',
+                'data': {'employee_inherit_id': $x.fn.getEmployeeCurrentID()}
+            }).then((req)=> {
+                let res = $.fn.switcherResp(req);
+                if (res && (res['status'] === 201 || res['status'] === 200)) {
+                    $.fn.notifyB({'description': $.fn.gettext('Update successfully')}, 'success')
+                    _this.addClass('assigned').text($.fn.gettext('Assigned to me'))
+                    setTimeout(() => {
+                        _this.closest('.tasklist-card').removeClass('has_group')
+                    }, 2000)
+                }
+            },
+            (err) => {
+                $.fn.notifyB({description: err?.data?.errors || err?.message}, 'failure');
+            })
+
+        })
+    }
+
+    function callDataTaskList(kanban, list, params = {}, isReturn = false) {
         if (!$empElm[0].closest('#formOpportunityTask') && Object.keys(params).length === 0) {
             return true;
         }
@@ -81,11 +109,21 @@ $(function () {
             'isLoading': true
         })
         if (isReturn) return callData
-        callData.then(
-            (req) => {
-                let data = $.fn.switcherResp(req);
+        // in this case, we will call all tasks, that belong to employee groups
+        let callGAssign = $.fn.callAjax2({
+            'url': $urlFact.attr('data-task-has-group'),
+            'method': 'GET',
+            'data': params,
+            'isLoading': false
+        })
+        $.when(callData, callGAssign).then(
+            (reqCall, reqGA) => {
+                let data = $.fn.switcherResp(reqCall);
+                let dataGA = $.fn.switcherResp(reqGA);
                 if (data?.['status'] === 200) {
-                    const taskList = data?.['task_list']
+                    const lstGA = dataGA?.['status'] ? dataGA?.['task_has_group_list'] : [];
+                    const taskList = [...data?.['task_list'], ...lstGA]
+
                     kanban.init(taskList)
                     list.init(list, taskList)
                     // Function to wait form create on submit
@@ -94,6 +132,9 @@ $(function () {
                     delete temp['task_list']
                     $('.btn-task-bar').data('task_info', temp)
                     $('#btn_load-more').prop('disabled', temp.page_next === 0)
+
+                    // button assign to me of task has group_assignee
+                    InitActionClickBtn()
                 }
             },
             (err) => {
@@ -194,7 +235,7 @@ $(function () {
                                 // get current task list and remove
                                 let isIdx, parentIdx, parentID;
                                 for (let [key, value] of dataList.entries()) {
-                                    if (value.id === taskID){
+                                    if (value.id === taskID) {
                                         parentIdx = key
                                         parentID = value.id
                                     }
@@ -203,9 +244,9 @@ $(function () {
                                         break
                                     }
                                 }
-                                if (isIdx && parentIdx && parentID){
+                                if (isIdx && parentIdx && parentID) {
                                     dataList.splice(isIdx, 1)
-                                    if (parentIdx){
+                                    if (parentIdx) {
                                         dataList[parentIdx]['child_task_count'] -= 1
                                         if (dataList[parentIdx]['child_task_count'] < 0)
                                             dataList[parentIdx]['child_task_count'] = 0
@@ -219,7 +260,7 @@ $(function () {
 
                                 // change view gantt
                                 let bk_list = GanttViewTask.bk_taskList;
-                                if (subTaskID in bk_list[taskID].values[0].dataObj['parent_n']){
+                                if (subTaskID in bk_list[taskID].values[0].dataObj['parent_n']) {
                                     delete bk_list[taskID].values[0].dataObj['parent_n'][subTaskID]
                                 }
                                 bk_list[taskID].values[0].dataObj['child_task_count'] -= 1
@@ -297,7 +338,7 @@ $(function () {
 
         static reloadCountParent(taskList) {
             let countTemp = {}
-            for (let [idx, item] of taskList.entries()) {
+            for (let item of Object.values(taskList)) {
                 if (item?.parent_n?.id)
                     countTemp[item.parent_n.id] = (countTemp[item.parent_n.id] || 0) + 1;
                 else countTemp[item.id] = 0
@@ -345,8 +386,7 @@ $(function () {
                     $('.tasklist-card').addClass('hidden')
                     $(this).parents('.tasklist-card').removeClass('hidden')
 
-                    const taskList = _this.getTaskList
-                    for (let [key, item] of taskList.entries()) {
+                    for (let item of Object.values(_this.getTaskList)) {
                         if (item?.parent_n?.id === taskID)
                             $(`.sub-tasklist-wrap [data-task-id="${item.id}"]`).parents('.tasklist-card').removeClass(
                                 'hidden')
@@ -367,7 +407,8 @@ $(function () {
                 const taskID = $(this).attr('data-task-id')
                 $.fn.callAjax2({
                     'url': $urlFact.attr('data-task-detail').format_url_with_uuid(taskID),
-                    'method': 'GET'
+                    'method': 'GET',
+                    'sweetAlertOpts': {'allowOutsideClick': true},
                 })
                     .then((req) => {
                         let data = $.fn.switcherResp(req);
@@ -404,32 +445,35 @@ $(function () {
                                 .attr('value', data.employee_created.id)
                                 .attr('data-value-id', data.employee_created.id)
                             if ($('#employee_inherit_id')[0].closest('#formOpportunityTask')) {
-                            const runComponent = (elm, data) => {
-                                data.selected = true;
-                                elm.attr('data-onload', JSON.stringify(data))
-                                    .html(`<option value="${data.id}" selected>${data.title}</option>`)
-                                    .trigger('change')
+                                const runComponent = (elm, data) => {
+                                    data.selected = true;
+                                    elm.attr('data-onload', JSON.stringify(data))
+                                        .html(`<option value="${data.id}" selected>${data.title}</option>`)
+                                        .trigger('change')
+                                }
+                                if (data?.['process'] && data?.['process']?.['id']) {
+                                    const {process} = data;
+                                    runComponent($('#process_id'), process)
+                                } else if (data['opportunity'] && Object.keys(data["opportunity"]).length > 0) {
+                                    const {opportunity} = data
+                                    $prjElm.attr('disabled', true)
+                                    runComponent($oppElm, opportunity)
+                                } else if (data['project'] && Object.keys(data["project"]).length > 0) {
+                                    const {project} = data;
+                                    $oppElm.attr('disabled', true);
+                                    runComponent($prjElm, project)
+                                }
+                                if (Object.keys(data.employee_inherit).length > 0) {
+                                    data.employee_inherit.selected = true
+                                    $empElm.html(`<option value="${data.employee_inherit.id}">${data.employee_inherit.full_name}</option>`)
+                                        .attr('data-onload', JSON.stringify(data.employee_inherit))
+                                    $empElm.trigger("change", BastionFieldControl.skipBastionChange)
+                                }
                             }
-                            if (data?.['process'] && data?.['process']?.['id']){
-                                const { process } = data;
-                                runComponent($('#process_id'), process)
-                            }
-                            else if (data['opportunity'] && Object.keys(data["opportunity"]).length > 0) {
-                                const { opportunity } = data
-                                $prjElm.attr('disabled', true)
-                                runComponent($oppElm, opportunity)
-                            }
-                            else if (data['project'] && Object.keys(data["project"]).length > 0) {
-                                const { project } = data;
-                                $oppElm.attr('disabled', true);
-                                runComponent($prjElm, project)
-                            }
-                            if (data.employee_inherit) {
-                                data.employee_inherit.selected = true
-                                $empElm.html(`<option value="${data.employee_inherit.id}">${data.employee_inherit.full_name}</option>`)
-                                    .attr('data-onload', JSON.stringify(data.employee_inherit))
-                                $empElm.trigger("change", BastionFieldControl.skipBastionChange)
-                            }
+                            const $agElm = $('#assignee_group')
+                            if (data?.['group_assignee'] && $agElm.length && Object.keys(data?.['group_assignee']).length) {
+                                data.group_assignee.selected = true
+                                FormElementControl.loadInitS2($agElm, [data.group_assignee]);
                             }
                             let $customAssignee = $('#custom_assignee');
                             if ($customAssignee.length > 0) {
@@ -533,10 +577,13 @@ $(function () {
                     if (assign_to?.['avatar']) childHTML.find('img').attr('src', assign_to?.['avatar'])
                     else {
                         let avClass = 'avatar-xs avatar-' + $x.fn.randomColor()
-                        const nameHTML = $x.fn.renderAvatar(assign_to, avClass,"","full_name")
+                        const nameHTML = $x.fn.renderAvatar(assign_to, avClass, "", "full_name")
                         childHTML.find('.avatar').replaceWith(nameHTML)
                     }
-                } else childHTML.find('.avatar').addClass('visible-hidden')
+                }
+                // else{
+                //     childHTML.find('.avatar').addClass('visible-hidden')
+                // }
                 if (newData.checklist) {
                     let done = newData.checklist.reduce((acc, obj) => acc + (obj.done ? 1 : 0), 0);
                     const total = newData.checklist.length
@@ -558,6 +605,16 @@ $(function () {
                 if (newData?.['child_task_count'] > 0)
                     childHTML.find('.sub_task_count small').text(newData['child_task_count'])
                 else childHTML.find('.task-discuss').remove()
+
+                if (newData?.['group_assignee'] && Object.keys(newData?.['group_assignee']).length
+                    && Object.keys(newData.employee_inherit).length === 0) {
+                    childHTML.addClass('has_group')
+                    const $HTMLGroup = $(`<div class="card-noti"><span>${
+                            $.fn.gettext('Need assignee!')}</span></div>`
+                        + `<div class="received-task"><a href="#" class="w-100" data-id="${newData.id}">${$.fn.gettext('Assign to me')}</a></div>`
+                    );
+                    childHTML.append($HTMLGroup)
+                }
 
                 if (isReturn) return childHTML
                 else {
@@ -589,14 +646,14 @@ $(function () {
         // on page loaded render task list for task status
         getAndRenderTask(data) {
             let taskByID = {};
-            const taskList = data
-            this.setTaskList = taskList
+            this.setTaskList = data
             let count_parent = {}
             // loop trong ds, lấy data parse ra HTML và cộng vào dict theo task status tương ứng
-            for (const item of taskList) {
-                if (item.parent_n && Object.keys(item.parent_n).length)
+            for (const item of data) {
+                if (item.parent_n && Object.keys(item.parent_n).length){
                     if (count_parent?.[item.parent_n.id]) count_parent[item.parent_n.id] += 1
                     else count_parent[item.parent_n.id] = 1
+                }
                 const stt = item.task_status.id
                 const getStrID = taskByID?.[stt]
                 const newTask = this.addNewTask(item, true)
@@ -674,7 +731,7 @@ $(function () {
                 // call form create-task.js
                 const taskID = $(this).closest('form').find('[name="id"]').val()
                 const taskTxt = $(this).closest('form').find('[name="title"]').val()
-                $('#drawer_task_create .simplebar-content-wrapper').animate({ scrollTop: 0}, "fast");
+                $('#drawer_task_create .simplebar-content-wrapper').animate({scrollTop: 0}, "fast");
                 let oppData = {}
                 if ($oppElm.val())
                     oppData = {
@@ -726,12 +783,12 @@ $(function () {
             this.createSubTask();
             countSTT()
             const $this = this
-            $('[href="#tab_kanban"]').on('show.bs.tab', function(){
+            $('[href="#tab_kanban"]').on('show.bs.tab', function () {
                 $('.wrap-child').html('')
                 $this.getAndRenderTask($this.getTaskList)
             })
 
-            $('#idxPageContent').on('scroll', function(e){
+            $('#idxPageContent').on('scroll', function () {
                 let $kanbanEle = $('#tab_kanban');
                 let kanbanTop = $kanbanEle.offset().top;
                 if (kanbanTop > 0) {
@@ -753,7 +810,7 @@ $(function () {
                 "task_status": $(target).attr('id').split('taskID-')[1],
             }
             const config = JSON.parse($('#task_config').text());
-            let isCompleted = config.list_status.filter((item)=> {
+            let isCompleted = config.list_status.filter((item) => {
                 if (item.id === dataSttUpdate.task_status)
                     return item.is_finish
             })
@@ -771,11 +828,10 @@ $(function () {
                                 const taskTargetID = $(target).attr('id').split('sub-')[1]
                                 const taskEl = $(`[data-task-id="${taskID}"]`, '#tasklist_wrap').closest('.tasklist-card')
                                 // nếu kéo task từ sub -> lấy task ẩn của task chính kéo sang cột tương ứng
-                                 if (isCompleted && isCompleted?.[0]?.['is_finish'])
-                                     taskEl.find('.card-ticket span').text('100')
+                                if (isCompleted && isCompleted?.[0]?.['is_finish'])
+                                    taskEl.find('.card-ticket span').text('100')
                                 $(taskEl).appendTo($(`#${taskTargetID}`))
-                            }
-                            else {
+                            } else {
                                 const taskTargetID = $(target).attr('id')
                                 const taskEl = $(`[data-task-id="${taskID}"]`, '#sub-tasklist_wrap').closest('.tasklist-card')
                                 if (isCompleted && isCompleted?.[0]?.['is_finish'])
@@ -787,15 +843,15 @@ $(function () {
                             const config = JSON.parse($('#task_config').text());
                             let task_changed = {};
                             for (const item of config.list_status) {
-                                if (item.id === dataSttUpdate.task_status){
+                                if (item.id === dataSttUpdate.task_status) {
                                     task_changed = item
                                     break;
                                 }
                             }
 
                             let k_list = kanbanTask.getTaskList;
-                            for (let item of k_list){
-                                if (item.id === dataSttUpdate.id){
+                            for (let item of k_list) {
+                                if (item.id === dataSttUpdate.id) {
                                     if (isCompleted && isCompleted?.[0]?.['is_finish'])
                                         item.percent_completed = 100
                                     item.task_status = {...task_changed, 'title': task_changed.name}
@@ -871,16 +927,12 @@ $(function () {
 
         init(cls, data) {
             this.setTaskList = data
-            listViewTask.initTaskConfig(cls)
+            this.setConfig = JSON.parse($('#task_config').text());
             listViewTask.renderTable(cls)
 
-            $('[href="#tab_list"]').on('show.bs.tab', function(){
+            $('[href="#tab_list"]').on('show.bs.tab', function () {
                 listViewTask.renderTable(cls)
             })
-        }
-
-        static initTaskConfig(cls) {
-            cls.setConfig = JSON.parse($('#task_config').text());
         }
 
         static selfInitSelect2(elm, data, key = 'title') {
@@ -905,12 +957,8 @@ $(function () {
                         listViewTask.selfInitSelect2($('#selectStatus', $form), data.task_status)
                         const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
                         $formElm.append(taskIDElm).addClass('task_edit')
-                        $('#inputTextStartDate', $form).val(
-                            moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                        )
-                        $('#inputTextEndDate', $form).val(
-                            moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                        )
+                        $('#inputTextStartDate', $form)[0]._flatpickr.setDate(data.start_date)
+                        $('#inputTextEndDate', $form)[0]._flatpickr.setDate(data.end_date)
                         $('#inputTextEstimate', $form).val(data.estimate)
 
                         $('#selectPriority', $form).val(data.priority).trigger('change')
@@ -975,18 +1023,23 @@ $(function () {
                 $tblElm.DataTable().clear().rows.add(dataList).draw();
             else
                 $tblElm.DataTableDefault({
-                    "pageLength": 50,
                     "data": dataList,
                     "columns": [
                         {
                             "data": 'title',
                             "class": "col-3",
                             render: (row, type, data) => {
+                                let HTMLGroup = '';
+                                if (data?.group_assignee && Object.keys(data?.group_assignee).length > 0 && Object.keys(data?.employee_inherit).length === 0) {
+                                    HTMLGroup = `<div class="card-noti"><span>${
+                                            $.fn.gettext('Need assignee!')}</span></div>`
+                                        + `<div class="received-task"><a class="w-100" data-id="${data.id}"><span><i class="fa-solid fa-circle-plus"></i></span>${$.fn.gettext('Assign to me')}</a></div>`
+                                }
                                 return `<span class="mr-2">${row ? row : "_"}</span>` +
                                     '<span class="badge badge-primary badge-indicator-processing badge-indicator" style="margin-top: -1px;"></span>'
                                     + `<span class="ml-2 font-weight-bold mr-2">${data.code}</span>`
-                                + `<label class="card-ticket" title="${$.fn.gettext('Percent completed')}">
-                                        <span>${data['percent_completed']}</span>%</label>`
+                                    + `<label class="card-ticket" title="${$.fn.gettext('Percent completed')}" aria-labelledby="percent completed">`
+                                    + `<span>${data['percent_completed']}</span>%</label>${HTMLGroup}`
                             }
                         },
                         {
@@ -1028,7 +1081,8 @@ $(function () {
                                     'avatar-primary', 'avatar-' + $x.fn.randomColor())
                                 let assignee = ''
                                 if (row) {
-                                    if (!row.full_name) row.full_name = row.last_name + ' ' + row.first_name
+                                    if (!row.full_name && row.last_name && row.first_name)
+                                        row.full_name = row.last_name + ' ' + row.first_name
                                     assignee = $x.fn.renderAvatar(row).replace(
                                         'avatar-primary', 'avatar-soft-' + $x.fn.randomColor())
                                 }
@@ -1037,7 +1091,7 @@ $(function () {
                             }
                         },
                         {
-                            "data": "date_created",
+                            "data": "end_date",
                             "class": "col-1",
                             render: (row) => {
                                 if (!row) row = new Date()
@@ -1066,6 +1120,12 @@ $(function () {
                         }
                     ],
                     rowCallback: (row, data, index) => {
+                        if (data?.group_assignee
+                            && Object.keys(data?.group_assignee).length > 0
+                            && Object.keys(data?.employee_inherit).length === 0) {
+                            row.classList.add('has_group')
+                        }
+
                         $('.avatar', row).tooltip({placement: 'top'})
 
                         // click view task list
@@ -1084,12 +1144,11 @@ $(function () {
                             elmTaskID.val(data.id)
                         })
                     }
-                })
-                    .on('draw.dt', function () {
-                        $tblElm.find('tbody').find('tr').each(function () {
-                            $(this).after('<tr class="table-row-gap"><td></td></tr>');
-                        });
+                }).on('draw.dt', function () {
+                    $tblElm.find('tbody').find('tr').each(function () {
+                        $(this).after('<tr class="table-row-gap"><td></td></tr>');
                     });
+                });
         }
 
         static addNewData(cls, newData) {
@@ -1131,20 +1190,21 @@ $(function () {
     // gantt view handle
     class GanttViewTask {
         static taskList = []
-        static bk_taskList = []
-        static convertFromDictToArray(dataList, isReturn=false){
+        static bk_taskList = {}
+
+        static convertFromDictToArray(dataList, isReturn = false) {
             let reNewList = []
             // loop trong danh sách dictionary và duyệt lại thành danh sách array task con sau task cha
-            for (let key in dataList){
+            for (let key in dataList) {
                 const item = dataList[key]
                 if (!item.values?.[0]?.dataObj) continue;
                 item.show_expand = item.values?.[0].dataObj.child_task_count > 0 || false
                 reNewList.push(item)
                 const parent_n = item.values[0].dataObj['parent_n']
-                if (parent_n && Object.keys(parent_n).length){
+                if (parent_n && Object.keys(parent_n).length) {
                     // có task con
                     item.is_expand = true // mặc định ẩn task con "false" otherwise "true" show task con
-                    for (let value in parent_n){
+                    for (let value in parent_n) {
                         let child = parent_n[value]
                         reNewList.push(child)
                     }
@@ -1154,29 +1214,29 @@ $(function () {
             if (isReturn) return reNewList
         }
 
-        static saveTaskList(data = []){
+        static saveTaskList(data = []) {
             let settingColors = JSON.parse($('#task_config').text());
-            let bk_list = GanttViewTask.bk_taskList
+            let bk_list = $.extend(true, {}, GanttViewTask.bk_taskList)
             let taskClr = {}
-            for (let item of settingColors.list_status){
+            for (let item of settingColors.list_status) {
                 taskClr[item.id] = item.task_color
             }
-            if (data && data.length){
+            if (data && data.length) {
                 // convert data thành dictionary với parent_n là danh sách task con
-                for (let item of data){
+                for (let item of data) {
                     let from = new Date(item.start_date)
-                    from.setHours(0,0,0,0);
+                    from.setHours(0, 0, 0, 0);
                     from.setDate(from.getDate() + 1)
                     let to = new Date(item.end_date)
-                    to.setHours(0,0,0,0);
+                    to.setHours(0, 0, 0, 0);
                     to.setDate(to.getDate() + 1);
                     // kt có cấp cha và danh sách cấp con không rỗng
-                    if ('parent_n' in item && Object.keys(item['parent_n']).length){
-                        if (item.parent_n.id in bk_list){
+                    if ('parent_n' in item && Object.keys(item['parent_n']).length) {
+                        if (item.parent_n.id in bk_list) {
                             if (!('parent_n' in bk_list[item.parent_n.id])) bk_list[item.parent_n.id]['parent_n'] = []
                             bk_list[item.parent_n.id]['parent_n'][item.id] = {
                                 desc: item.title,
-                                show_expand: item?.['show_expand'] ? item.show_expand: false,
+                                show_expand: item?.['show_expand'] ? item.show_expand : false,
                                 values: [{
                                     from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
                                     to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
@@ -1190,8 +1250,7 @@ $(function () {
                                 bk_list[item.parent_n.id]['parent_n'][item.id]['is_expand'] = item['is_expand']
 
                         }
-                    }
-                    else {
+                    } else {
                         // ko có cấp cha
                         bk_list[item.id] = {
                             name: item.title,
@@ -1210,10 +1269,16 @@ $(function () {
                     }
                 }
             }
-            return bk_list
+            GanttViewTask.bk_taskList = bk_list
+            let sortNew = Object.values(bk_list).sort((a, b) => {
+                const cA = a.values[0].dataObj.end_date.split(' ')[0];
+                const cB = b.values[0].dataObj.end_date.split(' ')[0];
+                return cA.localeCompare(cB);
+            })
+            return sortNew
         }
 
-        static loadTaskInfo(dataID){
+        static loadTaskInfo(dataID) {
             $('#offCanvasRightTask').offcanvas('show')
             $.fn.callAjax2({
                 url: $urlFact.attr('data-task-detail').format_url_with_uuid(dataID),
@@ -1229,12 +1294,8 @@ $(function () {
                     $formElm.find('input[name="id"]').remove()
                     const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
                     $formElm.append(taskIDElm).addClass('task_edit')
-                    $('#inputTextStartDate', $formElm).val(
-                        moment(data.start_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                    )
-                    $('#inputTextEndDate', $formElm).val(
-                        moment(data.end_date, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY')
-                    )
+                    $('#inputTextStartDate', $formElm)[0]._flatpickr.setDate(data.start_date)
+                    $('#inputTextEndDate', $formElm)[0]._flatpickr.setDate(data.end_date)
                     $('#inputTextEstimate', $formElm).val(data.estimate)
 
                     $('#selectPriority', $formElm).val(data.priority).trigger('change')
@@ -1248,7 +1309,7 @@ $(function () {
                     listViewTask.selfInitSelect2($('#employee_inherit_id', $formElm), data.employee_inherit, 'full_name')
                     if (data.label) window.formLabel.renderLabel(data.label)
                     if (data.remark) window.editor.setData(data.remark)
-                    if (data.checklist){
+                    if (data.checklist) {
                         window.checklist.setDataList = data.checklist
                         window.checklist.render()
                     }
@@ -1270,17 +1331,17 @@ $(function () {
             let obj_parent = bk_list[ID]
             let settingColors = JSON.parse($('#task_config').text());
             let taskClr = {}
-            for (let item of settingColors.list_status){
+            for (let item of settingColors.list_status) {
                 taskClr[item.id] = item.task_color
             }
             // nếu task cha đang hide (expand = false)
-            if (!obj_parent.is_expand){
+            if (!obj_parent.is_expand) {
                 let callChill = GanttViewTask.CallData({parent_n: ID})
                 callChill.then((rep) => {
                     let data = $.fn.switcherResp(rep);
                     let newData = {}
                     if (data?.['status'] === 200 && data?.['task_list'].length) {
-                        for (let item of data['task_list']){
+                        for (let item of data['task_list']) {
                             let from = new Date(item.start_date)
                             from.setHours(0);
                             from.setMinutes(0);
@@ -1307,8 +1368,7 @@ $(function () {
                         $('#gantt_reload').data('data', afterCvt).trigger('click')
                     }
                 })
-            }
-            else{ // task cha đang show (expand = true)
+            } else { // task cha đang show (expand = true)
                 obj_parent.is_expand = false
                 obj_parent.values[0].dataObj.parent_n = {}
                 bk_list[ID] = obj_parent
@@ -1318,33 +1378,37 @@ $(function () {
             }
         }
 
-        static clickLoadMore(e){
-            let load_moreif = $('.gantt_table').data('api_info')
-            if (load_moreif.page_next > 0){
-                const params = {"parent_n__isnull": true,
-                    "page":load_moreif.page_next,
-                    "pageSize": load_moreif.page_size
+        static clickLoadMore(e) {
+            let loadMoreIf = $('.gantt_table').data('api_info')
+            if (loadMoreIf.page_next > 0) {
+                const params = {
+                    "parent_n__isnull": true,
+                    "page": loadMoreIf.page_next,
+                    "pageSize": loadMoreIf.page_size
                 }
                 let loadMoreData = GanttViewTask.CallData(params)
                 loadMoreData.then(
                     (req) => {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
-                            const temp = Object.assign({}, req.data)
+                            const temp = Object.assign({}, req.data);
                             delete temp['task_list'];
                             $('.gantt_table').data('api_info', temp)
                             $(e).prop("disabled", temp.page_next > 0)
-                            const dictList = GanttViewTask.saveTaskList(data['task_list'])
-                            const arrayList = GanttViewTask.convertFromDictToArray(dictList)
-                            $('#gantt_reload').data('data', arrayList).trigger('click')
+                            // clone old data
+                            // convert new data to object and merge with oldData
+                            // convert to array and reload new data
+                            const oldData = $.extend(true, {}, GanttViewTask.bk_taskList)
+                            const newObjData = GanttViewTask.saveTaskList(data['task_list'])
+                            $('#gantt_reload').data('data', newObjData).trigger('click')
                         }
                     })
             }
         }
 
-        static onCallback(){
+        static onCallback() {
             const $ganttElm = $('.gantt_table'), $fltBar = $('.filter_bar'), $leftC = $('.left-container'),
-            $panelElm = $('.rightPanel .dataPanel');
+                $panelElm = $('.rightPanel .dataPanel');
             const currentHeight = $panelElm.css("height");
             const callDataInfo = $ganttElm.data('api_info')
             const rightPanelHeight = $('.leftPanel .row.spacer').outerHeight()
@@ -1363,22 +1427,22 @@ $(function () {
             })
 
             // handle scroll down
-            $leftC.scroll(function(){
+            $leftC.scroll(function () {
                 $('.panel-content-bar').css({
                     "top": parseInt(`-${rightPanelHeight + $(this).scrollTop()}`)
                 })
             });
         }
 
-        static renderGantt(){
+        static renderGantt() {
             const $transElm = $('#trans-factory')
             let columns_gantt = [
-                {value: 'title', label: $transElm.attr('data-name'), show: true,width: '300'},
+                {value: 'title', label: $transElm.attr('data-name'), show: true, width: '300'},
                 {value: 'priority', label: $transElm.attr('data-priority'), show: true, width: '100'},
-                {value: 'employee_created', label: $transElm.attr('data-assigner'), show: true,  width: '50'},
-                {value: 'employee_inherit', label: $transElm.attr('data-assignee'), show: true,  width: '50'},
-                {value: 'start_date', label: $transElm.attr('data-st-date'), show: true,  width: '150'},
-                {value: 'end_date', label: $transElm.attr('data-ed-date'), show: true,  width: '150'},
+                {value: 'employee_created', label: $transElm.attr('data-assigner'), show: true, width: '50'},
+                {value: 'employee_inherit', label: $transElm.attr('data-assignee'), show: true, width: '50'},
+                {value: 'start_date', label: $transElm.attr('data-st-date'), show: true, width: '150'},
+                {value: 'end_date', label: $transElm.attr('data-ed-date'), show: true, width: '150'},
             ]
             const sourceDT = GanttViewTask.taskList
             $(".gantt").gantt({
@@ -1398,7 +1462,7 @@ $(function () {
             });
         }
 
-        static CallData(data= null){
+        static CallData(data = null) {
             let params = {"parent_n__isnull": true}
             if (data) params = data
             return $.fn.callAjax2({
@@ -1409,7 +1473,7 @@ $(function () {
             )
         }
 
-        static CallFilter(data){
+        static CallFilter(data) {
             let params = {"parent_n__isnull": true, ...data}
             let loadFilterData = GanttViewTask.CallData(params)
             loadFilterData.then((req) => {
@@ -1426,39 +1490,38 @@ $(function () {
             })
         }
 
-        static afterUpdate(data, is_new=false){
+        static afterUpdate(data, is_new = false) {
             let dictList;
-            if (is_new){
+            if (is_new) {
                 let temp = []
                 temp.push(data)
                 dictList = GanttViewTask.saveTaskList(temp)
-            }
-            else{
+            } else {
                 let oldData = GanttViewTask.bk_taskList[data.id]
                 if (oldData) {
-                if (oldData.desc === undefined) oldData.name = data.title
-                else oldData.desc = data.title
-                let from = new Date(data.start_date)
+                    if (oldData.desc === undefined) oldData.name = data.title
+                    else oldData.desc = data.title
+                    let from = new Date(data.start_date)
                     from.setHours(0, 0, 0, 0);
                     from.setDate(from.getDate() + 1)
                     let to = new Date(data.end_date)
                     to.setHours(0, 0, 0, 0);
                     to.setDate(to.getDate() + 1);
-                let new_value = {}
-                for (let item in oldData.values[0].dataObj){
-                    if (data.hasOwnProperty(item))
-                        new_value[item] = data[item]
-                    if (item === 'opportunity')
-                        new_value['opportunity'] = data['opportunity_data']
-                    if (item === 'child_task_count')
-                        new_value['child_task_count'] = oldData.values[0].dataObj[item]
-                }
-                oldData.values = [{
-                    from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
-                    to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
-                    dataObj: new_value
-                }]
-                dictList = GanttViewTask.saveTaskList(oldData)
+                    let new_value = {}
+                    for (let item in oldData.values[0].dataObj) {
+                        if (data.hasOwnProperty(item))
+                            new_value[item] = data[item]
+                        if (item === 'opportunity')
+                            new_value['opportunity'] = data['opportunity_data']
+                        if (item === 'child_task_count')
+                            new_value['child_task_count'] = oldData.values[0].dataObj[item]
+                    }
+                    oldData.values = [{
+                        from: isNaN(from.getTime()) ? null : "/Date(" + from.getTime() + ")/",
+                        to: isNaN(to.getTime()) ? null : "/Date(" + to.getTime() + ")/",
+                        dataObj: new_value
+                    }]
+                    dictList = GanttViewTask.saveTaskList(oldData)
                 }
             }
             const arrayList = GanttViewTask.convertFromDictToArray(dictList, true)
@@ -1478,7 +1541,7 @@ $(function () {
                         GanttViewTask.convertFromDictToArray(afterDataConvert)
                         GanttViewTask.renderGantt()
                     }
-            })
+                })
             if (!$('.gantt').length) $('.gantt_table').append('<div class="gantt"></div>');
             $('.tab-gantt[data-bs-toggle="tab"]').on('show.bs.tab', function () {
                 $('#gantt_reload').data('data', GanttViewTask.taskList).trigger('click')
@@ -1509,6 +1572,7 @@ $(function () {
     const $fEmpElm = $('#filter_employee_id')
     const $fPriority = $('#filter_priority_id')
     const $clearElm = $('.clear-all-btn')
+    const $sGrpElm = $('#sort_by_group_assignee')
     const listElm = [$fOppElm, $fSttElm, $fEmpElm]
     listElm.forEach(function (elm) {
         $(elm).initSelect2().on('select2:select', function () {
@@ -1521,19 +1585,18 @@ $(function () {
             $clearElm.addClass('d-block')
         })
     })
-    $fPriority.on('change', function(){
+    $fPriority.on('change', function () {
         let params = {}
         if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
         if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
         if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
         if (this.value)
             params.priority = this.value
-        if (Object.keys(params).length > 0){
+        if (Object.keys(params).length > 0) {
             callDataTaskList(kanbanTask, listTask, params)
             GanttViewTask.CallFilter(params)
             $clearElm.addClass('d-block')
-        }
-        else{
+        } else {
             callDataTaskList(kanbanTask, listTask)
             GanttViewTask.CallFilter({})
             $clearElm.removeClass('d-block')
@@ -1548,6 +1611,19 @@ $(function () {
         GanttViewTask.CallFilter({})
         $clearElm.removeClass('d-block')
     })
+    $sGrpElm.on('change', function (e) {
+        e.preventDefault()
+        const $taskItemElm = $('.tasklist-card')
+        if (this.checked) {
+            $taskItemElm.addClass('hidden')
+            $taskItemElm.each(function(){
+                if($(this).hasClass('has_group'))
+                   $(this).removeClass('hidden')
+            })
+        } else {
+            $taskItemElm.removeClass('hidden')
+        }
+    });
 
     // button filter on click show hide dropdown filter
     $('.leave-filter-wrap button.sp-btn').off().on('click', function () {
@@ -1557,32 +1633,34 @@ $(function () {
         // $(this).parents('.leave-filter-wrap').toggleClass('desktop-show')
         $('.form-group-filter').slideToggle()
     })
-    const $filterElm = $('.form-group-filter')
-    $('#idxPageContent').click(function(event){
+
+    $contentElm.click(function (event) {
         var $target = $(event.target);
         if (!$target.closest('.form-group-filter').length && $filterElm.is(":visible") && !$target.closest('.leave-filter-wrap button').length)
             $filterElm.slideToggle(200)
     })
 
     // load more button
-    $('#btn_load-more').on('click', function(){
+    $('#btn_load-more').on('click', function () {
         let load_info = $('.btn-task-bar').data('task_info')
         let params = {
-            "page":load_info.page_next,
+            "page": load_info.page_next,
             "pageSize": load_info.page_size
         }
         if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
         if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
         if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
         let request = callDataTaskList(null, null, params, true)
-        request.then((rep)=>{
+        request.then((rep) => {
             let data = $.fn.switcherResp(rep);
             if (data?.['status'] === 200) {
                 let temp = $.extend(true, {}, data)
                 delete temp['task_list']
                 $('.btn-task-bar').data('task_info', temp)
                 $('#btn_load-more').prop('disabled', temp.page_next === 0)
-                let currentData = kanbanTask.getTaskList.concat(data['task_list'])
+                // merge danh sach cu voi danh sach lay duoc xoa danh sach cu va render lai danh sach moi
+                const currentData = kanbanTask.getTaskList.concat(data['task_list'])
+                $('.tasklist .wrap-child').html('')
                 kanbanTask.getAndRenderTask(currentData)
                 listTask.init(listTask, currentData)
             }
@@ -1591,17 +1669,17 @@ $(function () {
     });
     // handle show/hide btn load more when scroll down
     // let contentElm = $('#idxPageContent .simplebar-content-wrapper');
-    let contentElm = $('#idxPageContent');
+
     const loadMoreBtn = $('.btn-task-bar')
-    $(contentElm).scroll(function () {
+    $contentElm.scroll(function () {
         $(this).scrollTop() > 100 && !$('.tab-gantt').hasClass('active') ? loadMoreBtn.fadeIn() : loadMoreBtn.fadeOut();
     });
 
     let urlParams = $x.fn.getManyUrlParameters(['task_id', 'comment_id']);
-    if (urlParams?.['comment_id'] && urlParams?.['task_id']){
+    if (urlParams?.['comment_id'] && urlParams?.['task_id']) {
         const modalEle = $('#CommentModal');
         const taskElm = $(`.card-title[data-task-id="${urlParams?.['task_id']}"]`, modalEle)
-        if (taskElm.length){
+        if (taskElm.length) {
             const titleTask = taskElm.attr('title')
             modalEle.find('.modal-title').append(`<span>${$.fn.gettext('of task')} "${titleTask}"</span>`)
         }
@@ -1611,11 +1689,11 @@ $(function () {
             "e66cfb5a-b3ce-4694-a4da-47618f53de4c",
             {"comment_id": urlParams?.['comment_id']}
         )
-        modalEle.on('hidden.bs.modal', function(){
+        modalEle.on('hidden.bs.modal', function () {
             delete modalEle.find('.modal-title span')
         })
     }
-    if (urlParams?.['task_id'] && !urlParams?.['comment_id']){
+    if (urlParams?.['task_id'] && !urlParams?.['comment_id']) {
         let tempHTML = document.createElement("p");
         tempHTML['style'] = 'display:none';
         tempHTML.innerHTML = `<span class="card-title" data-task-id="${urlParams?.['task_id']}"></span>`
@@ -1672,4 +1750,12 @@ $(function () {
             }
         }
     });
+
+    // filter group animation
+    $('#close_toggle').on('change', function(e){
+        e.preventDefault()
+        if ($(this).prop('checked')){
+            $('.wrap-filter').addClass('show-less')
+        }else $('.wrap-filter').removeClass('show-less')
+    })
 }, jQuery);

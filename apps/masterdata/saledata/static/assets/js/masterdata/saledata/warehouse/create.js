@@ -1,7 +1,12 @@
 $(document).ready(function () {
-    WarehouseLoadPage.loadCities();
-    WarehouseLoadPage.loadDistrict();
-    WarehouseLoadPage.loadWard();
+    // WarehouseLoadPage.loadCities();
+    // WarehouseLoadPage.loadDistrict();
+    // WarehouseLoadPage.loadWard();
+    // for location
+    UsualLoadPageFunction.LoadLocationCountry($('#modalWarehouseAddress .location_country'))
+    UsualLoadPageFunction.LoadLocationProvince($('#modalWarehouseAddress .location_province'))
+    UsualLoadPageFunction.LoadLocationWard($('#modalWarehouseAddress .location_ward'))
+
 
     eventPage();
 

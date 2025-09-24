@@ -1,12 +1,12 @@
 $('document').ready(function () {
-    function loadIncomingDocumentList() {
+    function loadAbsenceExplanationList() {
         if (!$.fn.DataTable.isDataTable('#tbl_absence_explanation')) {
             const $tb = $('#tbl_absence_explanation');
             $tb.DataTableDefault({
                 useDataServer: true,
                 rowIdx: true,
                 scrollX: true,
-                scrollY: '70vh',
+                scrollY: '64vh',
                 scrollCollapse: true,
                 reloadCurrency: true,
                 fixedColumns: {
@@ -68,5 +68,5 @@ $('document').ready(function () {
         }
     }
 
-    loadIncomingDocumentList();
+    loadAbsenceExplanationList();
 });

@@ -1,29 +1,12 @@
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from apps.shared.apis import RespData
-from apps.shared.constant import TYPE_CUSTOMER, ROLE_CUSTOMER
+from apps.shared.constant import TYPE_CUSTOMER, ROLE_CUSTOMER, SYSTEM_STATUS
 from apps.shared import mask_view, ServerAPI, ApiURL, SaleMsg, PermCheck, TypeCheck
-from apps.shared.msg import BaseMsg
-
-SYSTEM_STATUS = (
-    (0, BaseMsg.DRAFT),
-    (1, BaseMsg.CREATED),
-    (2, BaseMsg.ADDED),
-    (3, BaseMsg.FINISH),
-    (4, BaseMsg.CANCEL),
-)
 
 
-def create_update_opportunity(request, url, msg):
-    resp = ServerAPI(user=request.user, url=url).post(request.data)
-    if resp.state:
-        resp.result['message'] = msg
-        return resp.result, status.HTTP_201_CREATED
-    return resp.auto_return()
-
-
+# main
 class OpportunityList(View):
     @mask_view(
         auth_require=True,
@@ -38,32 +21,7 @@ class OpportunityList(View):
         return {}, status.HTTP_200_OK
 
 
-class OpportunityListAPI(APIView):
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get(data)
-        return resp.auto_return(key_success='opportunity_list')
-
-    @mask_view(
-        auth_require=True,
-        is_api=True
-    )
-    def post(self, request, *args, **kwargs):
-        return create_update_opportunity(
-            request=request,
-            url=ApiURL.OPPORTUNITY_LIST,
-            msg=SaleMsg.OPPORTUNITY_CREATE
-        )
-
-
 class OpportunityDetail(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/opportunity/opportunity_detail.html',
@@ -85,8 +43,6 @@ class OpportunityDetail(View):
 
 
 class OpportunityUpdate(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/opportunity/opportunity_update.html',
@@ -109,6 +65,29 @@ class OpportunityUpdate(View):
         return result, status.HTTP_200_OK
 
 
+class OpportunityListAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).get(data)
+        return resp.auto_return(key_success='opportunity_list')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.OPPORTUNITY_CREATE
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
+
+
 class OpportunityDetailAPI(APIView):
     @mask_view(
         is_api=True,
@@ -127,189 +106,8 @@ class OpportunityDetailAPI(APIView):
         return resp.auto_return(key_success='opportunity')
 
 
-class OpportunityDetailGetByCreateFromOppAPI(APIView):
-    @classmethod
-    def callback_success(cls, result):
-        if result and isinstance(result, dict) and 'id' in result:
-            return {
-                'opportunity_list': [
-                    {
-                        **result,
-                        'selected': True,
-                    }
-                ]
-            }
-        return {'opportunity_list': {}}
-
-    @mask_view(
-        is_api=True,
-        auth_require=True
-    )
-    def get(self, request, pk, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DETAIL_GET_CREATE_FROM_OPP.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='opportunity', callback_success=self.callback_success)
-
-
-class MemberOfOpportunityDetailAddAPI(APIView):
-    @mask_view(is_api=True, auth_require=True)
-    def post(self, request, *args, pk_opp, **kwargs):
-        if TypeCheck.check_uuid(pk_opp):
-            resp = ServerAPI(user=request.user, url=ApiURL.MEMBER_OF_OPPORTUNITY_ADD.fill_key(pk_opp=pk_opp)).post(
-                data=request.data
-            )
-            return resp.auto_return(key_success='member')
-        return RespData.resp_404()
-
-
-class MemberOfOpportunityDetail(APIView):
-    @mask_view(is_api=True, auth_require=True)
-    def get(self, request, *args, pk_opp, pk_member, **kwargs):
-        if TypeCheck.check_uuid(pk_opp) and TypeCheck.check_uuid(pk_member):
-            resp = ServerAPI(
-                user=request.user, url=ApiURL.MEMBER_OF_OPPORTUNITY_DETAIL.fill_key(pk_opp=pk_opp, pk_member=pk_member)
-            ).get()
-            return resp.auto_return(key_success='member')
-        return RespData.resp_404()
-
-    @mask_view(is_api=True, auth_require=True)
-    def put(self, request, *args, pk_opp, pk_member, **kwargs):
-        if TypeCheck.check_uuid(pk_opp) and TypeCheck.check_uuid(pk_member):
-            resp = ServerAPI(
-                user=request.user, url=ApiURL.MEMBER_OF_OPPORTUNITY_DETAIL.fill_key(pk_opp=pk_opp, pk_member=pk_member)
-            ).put(data=request.data)
-            return resp.auto_return(key_success='member')
-        return RespData.resp_404()
-
-    @mask_view(is_api=True, auth_require=True)
-    def delete(self, request, *args, pk_opp, pk_member, **kwargs):
-        if TypeCheck.check_uuid(pk_opp) and TypeCheck.check_uuid(pk_member):
-            resp = ServerAPI(
-                user=request.user, url=ApiURL.MEMBER_OF_OPPORTUNITY_DETAIL.fill_key(pk_opp=pk_opp, pk_member=pk_member)
-            ).delete()
-            return resp.auto_return(key_success='member')
-        return RespData.resp_404()
-
-
-class OpportunityCustomerDecisionFactorListAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR).get(params)
-        return resp.auto_return(key_success='opportunity_decision_factor')
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def post(self, request, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR).post(request.data)
-        return resp.auto_return()
-
-
-class OpportunityCustomerDecisionFactorDetailAPI(APIView):
-    @mask_view(auth_require=True, is_api=True)
-    def delete(self, request, pk, *args, **kwargs):
-        url = ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL.fill_key(pk=pk)
-        resp = ServerAPI(user=request.user, url=url).delete(request.data)
-        return resp.auto_return()
-
-
-class OpportunityConfig(View):
-    @mask_view(
-        auth_require=True,
-        template='sales/opportunity/opportunity_config.html',
-        menu_active='menu_opportunity_config',
-        breadcrumb='OPPORTUNITY_CONFIG_PAGE',
-        perm_check=PermCheck(url=ApiURL.OPPORTUNITY_CONFIG, method='GET'),
-        icon_cls='fas far fa-lightbulb',
-        icon_bg='bg-primary',
-    )
-    def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.APPLICATION_PROPERTY_OPPORTUNITY_LIST).get()
-        return resp.auto_return(key_success='property_opportunity_list')
-
-
-class OpportunityConfigAPI(APIView):
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        is_api=True
-    )
-    def get(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).get()
-        return resp.auto_return(key_success='opportunity_config')
-
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG).put(request.data)
-        if resp.state:
-            resp.result['message'] = SaleMsg.OPPORTUNITY_CONFIG_UPDATE
-            return resp.result, status.HTTP_200_OK
-        return resp.auto_return()
-
-
-class OpportunityConfigStageListAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-        login_require=True,
-    )
-    def get(self, request, *args, **kwargs):
-        params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE).get(params)
-        return resp.auto_return(key_success='opportunity_config_stage')
-
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-        login_require=True,
-    )
-    def post(self, request, *arg, **kwargs):
-        print('---', request.data)
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE).post(request.data)
-        return resp.auto_return()
-
-
-class OpportunityConfigStageDetailAPI(APIView):
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        is_api=True
-    )
-    def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE_DETAIL.fill_key(pk=pk)).get()
-        return resp.auto_return()
-
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, pk, *args, **kwargs):
-        url = ApiURL.OPPORTUNITY_CONFIG_STAGE_DETAIL.fill_key(pk=pk)
-        resp = ServerAPI(user=request.user, url=url).put(request.data)
-        if resp.state:
-            resp.result['message'] = SaleMsg.OPPORTUNITY_CONFIG_UPDATE
-            return resp.result, status.HTTP_200_OK
-        return resp.auto_return()
-
-    @mask_view(auth_require=True, is_api=True)
-    def delete(self, request, pk, *args, **kwargs):
-        url = ApiURL.OPPORTUNITY_CONFIG_STAGE_DETAIL.fill_key(pk=pk)
-        resp = ServerAPI(user=request.user, url=url).delete(request.data)
-        return resp.auto_return()
-
-
+# activities
 class OpportunityCallLogList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/opportunity/activities/call_log/call_log_list.html',
@@ -341,9 +139,11 @@ class OpportunityCallLogListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_update_opportunity(
-            request=request, url=ApiURL.OPPORTUNITY_CALL_LOG_LIST, msg=SaleMsg.OPPORTUNITY_CALL_LOG_CREATE
-        )
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.OPPORTUNITY_CALL_LOG_CREATE
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
 
 
 class OpportunityCallLogDetailAPI(APIView):
@@ -357,13 +157,11 @@ class OpportunityCallLogDetailAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True)
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_UPDATE.fill_key(pk=pk)).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CALL_LOG_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
 
 
 class OpportunityEmailList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/opportunity/activities/email/email_list.html',
@@ -395,9 +193,11 @@ class OpportunityEmailListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_update_opportunity(
-            request=request, url=ApiURL.OPPORTUNITY_EMAIL_LIST, msg=SaleMsg.OPPORTUNITY_EMAIL_SEND
-        )
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.OPPORTUNITY_EMAIL_SEND
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
 
 
 class OpportunityEmailDetailAPI(APIView):
@@ -412,13 +212,11 @@ class OpportunityEmailDetailAPI(APIView):
 
     @mask_view(auth_require=True, is_api=True, )
     def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_UPDATE.fill_key(pk=pk)).put(request.data)
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_EMAIL_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
 
 
 class OpportunityMeetingList(View):
-    permission_classes = [IsAuthenticated]
-
     @mask_view(
         auth_require=True,
         template='sales/opportunity/activities/meeting/meeting_list.html',
@@ -454,9 +252,11 @@ class OpportunityMeetingListAPI(APIView):
         is_api=True
     )
     def post(self, request, *args, **kwargs):
-        return create_update_opportunity(
-            request=request, url=ApiURL.OPPORTUNITY_MEETING_LIST, msg=SaleMsg.OPPORTUNITY_MEETING_CREATED
-        )
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_LIST).post(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.OPPORTUNITY_MEETING_CREATED
+            return resp.result, status.HTTP_201_CREATED
+        return resp.auto_return()
 
 
 class OpportunityMeetingDetailAPI(APIView):
@@ -473,17 +273,6 @@ class OpportunityMeetingDetailAPI(APIView):
     def put(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEETING_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
-
-
-class OpportunityActivityLogListAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_ACTIVITY_LOGS).get(params)
-        return resp.auto_return(key_success='activity_logs_list')
 
 
 class OpportunityDocumentList(View):
@@ -553,66 +342,273 @@ class OpportunityDocumentDetailAPI(APIView):
         return resp.auto_return(key_success='opportunity_doc')
 
 
-# Opportunity List use for Sale Apps
-class OpportunityForSaleListAPI(APIView):
-    permission_classes = [IsAuthenticated]
+class OpportunityActivityLogListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_ACTIVITY_LOGS).get(params)
+        return resp.auto_return(key_success='activity_logs_list')
+
+
+# config
+class OpportunityConfigDetail(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/opportunity/opportunity_config.html',
+        menu_active='menu_opportunity_config',
+        breadcrumb='OPPORTUNITY_CONFIG_PAGE',
+        perm_check=PermCheck(url=ApiURL.OPPORTUNITY_CONFIG_DETAIL, method='GET'),
+        icon_cls='fas far fa-lightbulb',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.APPLICATION_PROPERTY_OPPORTUNITY_LIST).get()
+        return resp.auto_return(key_success='property_opportunity_list')
+
+
+class OpportunityConfigDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_DETAIL).get()
+        return resp.auto_return(key_success='opportunity_config')
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_DETAIL).put(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.OPPORTUNITY_CONFIG_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
+
+
+# stages
+class OpportunityConfigStageListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+        login_require=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE_LIST).get(params)
+        return resp.auto_return(key_success='opportunity_config_stage')
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+        login_require=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE_LIST).post(request.data)
+        return resp.auto_return()
+
+
+class OpportunityConfigStageDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONFIG_STAGE_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return()
+
+    @mask_view(
+        login_require=True,
+        auth_require=True,
+        is_api=True,
+    )
+    def put(self, request, pk, *args, **kwargs):
+        url = ApiURL.OPPORTUNITY_CONFIG_STAGE_DETAIL.fill_key(pk=pk)
+        resp = ServerAPI(user=request.user, url=url).put(request.data)
+        if resp.state:
+            resp.result['message'] = SaleMsg.OPPORTUNITY_CONFIG_UPDATE
+            return resp.result, status.HTTP_200_OK
+        return resp.auto_return()
 
     @mask_view(auth_require=True, is_api=True)
+    def delete(self, request, pk, *args, **kwargs):
+        url = ApiURL.OPPORTUNITY_CONFIG_STAGE_DETAIL.fill_key(pk=pk)
+        resp = ServerAPI(user=request.user, url=url).delete(request.data)
+        return resp.auto_return()
+
+
+class OpportunityStageCheckingAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_SALE_LIST).get(data)
-        return resp.auto_return(key_success='opportunity_sale_list')
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_STAGE_CHECKING).get(data)
+        return resp.auto_return(key_success='opportunity_stage_checking')
 
 
-# Opportunity Member Detail
-class OpportunityMemberDetailAPI(APIView):
-    permission_classes = [IsAuthenticated]
+# related
+class OpportunityCustomerDecisionFactorListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR_LIST).get(params)
+        return resp.auto_return(key_success='opportunity_decision_factor')
 
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *arg, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR_LIST).post(request.data)
+        return resp.auto_return()
+
+
+class OpportunityCustomerDecisionFactorDetailAPI(APIView):
     @mask_view(auth_require=True, is_api=True)
-    def get(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEMBER_DETAIL.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='member')
-
-
-# Add member for Opportunity
-class OpportunityAddMemberAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_ADD_MEMBER.fill_key(pk=pk)).put(request.data)
+    def delete(self, request, pk, *args, **kwargs):
+        url = ApiURL.OPPORTUNITY_CUSTOMER_DECISION_FACTOR_DETAIL.fill_key(pk=pk)
+        resp = ServerAPI(user=request.user, url=url).delete(request.data)
         return resp.auto_return()
 
 
-# Remove member in Opportunity
-class OpportunityDeleteMemberAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DELETE_MEMBER.fill_key(pk=pk)).put(request.data)
-        return resp.auto_return()
-
-
-# update permission for member in Opportunity
-class OpportunityMemberPermissionUpdateAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, pk, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.SET_MEMBER_PERMISSION.fill_key(pk=pk)).put(request.data)
-        return resp.auto_return()
-
-
-# opportunity member list
 class OpportunityMemberListAPI(APIView):
+    @mask_view(is_api=True, auth_require=True)
+    def post(self, request, *args, pk_opp, **kwargs):
+        if TypeCheck.check_uuid(pk_opp):
+            resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEMBER_LIST.fill_key(pk_opp=pk_opp)).post(
+                data=request.data
+            )
+            return resp.auto_return(key_success='member')
+        return RespData.resp_404()
+
+
+class OpportunityMemberDetailAPI(APIView):
+    @mask_view(is_api=True, auth_require=True)
+    def get(self, request, *args, pk_opp, pk_member, **kwargs):
+        if TypeCheck.check_uuid(pk_opp) and TypeCheck.check_uuid(pk_member):
+            resp = ServerAPI(
+                user=request.user, url=ApiURL.OPPORTUNITY_MEMBER_DETAIL.fill_key(pk_opp=pk_opp, pk_member=pk_member)
+            ).get()
+            return resp.auto_return(key_success='member')
+        return RespData.resp_404()
+
+    @mask_view(is_api=True, auth_require=True)
+    def put(self, request, *args, pk_opp, pk_member, **kwargs):
+        if TypeCheck.check_uuid(pk_opp) and TypeCheck.check_uuid(pk_member):
+            resp = ServerAPI(
+                user=request.user, url=ApiURL.OPPORTUNITY_MEMBER_DETAIL.fill_key(pk_opp=pk_opp, pk_member=pk_member)
+            ).put(data=request.data)
+            return resp.auto_return(key_success='member')
+        return RespData.resp_404()
+
+    @mask_view(is_api=True, auth_require=True)
+    def delete(self, request, *args, pk_opp, pk_member, **kwargs):
+        if TypeCheck.check_uuid(pk_opp) and TypeCheck.check_uuid(pk_member):
+            resp = ServerAPI(
+                user=request.user, url=ApiURL.OPPORTUNITY_MEMBER_DETAIL.fill_key(pk_opp=pk_opp, pk_member=pk_member)
+            ).delete()
+            return resp.auto_return(key_success='member')
+        return RespData.resp_404()
+
+
+class OpportunityContractSummary(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/opportunity/opportunity_contract_summary.html',
+        menu_active='',
+        breadcrumb='OPPORTUNITY_CONTRAT_SUMMARY_PAGE',
+        icon_cls='fas fa-pager',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
+class OpportunityContractSummaryAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
-    def get(self, request, pk, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_MEMBER_LIST.fill_key(pk=pk)).get()
-        return resp.auto_return(key_success='opportunity_member')
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_CONTRACT_SUMMARY).get(data)
+        return resp.auto_return(key_success='opportunity_contract_summary')
+
+
+# table API
+class OppProductListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SALE_LIST).get(data)
+        return resp.auto_return(key_success='product_list')
+
+
+class OppProductCategoryListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_CATEGORY_LIST).get(data)
+        return resp.auto_return(key_success='product_category_list')
+
+
+class OppTaxListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.TAX_LIST).get(data)
+        return resp.auto_return(key_success='tax_list')
+
+
+class OppUOMListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.UNIT_OF_MEASURE).get(data)
+        return resp.auto_return(key_success='unit_of_measure')
+
+
+class OppCompetitorListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.ACCOUNT_LIST).get(data)
+        return resp.auto_return(key_success='account_list')
+
+
+class OppContactListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.CONTACT_LIST).get(data)
+        return resp.auto_return(key_success='contact_list')

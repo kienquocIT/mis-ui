@@ -252,7 +252,7 @@ class BastionFieldControl {
 
         this.ajaxOpp = {
             'ajax': {
-                'url': '/opportunity/api/lists',
+                'url': '/opportunity/list/api',
                 'method': 'GET',
             },
             'keyResp': 'opportunity_list',
@@ -426,7 +426,7 @@ class BastionFieldControl {
     configInheritSelect(opts) {
         let paramData = opts?.['data-params'] || null;
         if (!(paramData && typeof paramData === 'object')) paramData = {};
-        paramData['list_from_app'] = this.list_from_app;
+        // paramData['list_from_app'] = this.list_from_app;
         let paramDataBase = this.empInheritEle.attr('data-params');
         this.empInheritEle.removeAttr('data-onload');
         if (paramDataBase) {

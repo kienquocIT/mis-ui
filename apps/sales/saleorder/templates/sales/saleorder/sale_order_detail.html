@@ -53,6 +53,7 @@
     <form
             data-url="{% url 'SaleOrderDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'SaleOrderList' %}"
+            data-url-print="{% url "SaleOrderDetailPrintAPI" pk=pk %}"
             data-method="GET"
             id="frm_quotation_create"
             class="sale-order"

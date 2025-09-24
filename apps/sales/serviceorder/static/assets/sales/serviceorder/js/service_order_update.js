@@ -25,6 +25,8 @@ function handleModalWorkOrderCostEvent(){
 function handleModalWorkOrderContributionEvent(){
     ServiceOrder.handleSaveProductContribution()
     ServiceOrder.handleUncheckContribution()
+    ServiceOrder.handleChangeDeliveryCost()
+
     ServiceOrder.handleCheckPackage()
     ServiceOrder.handleOpenModalPackage()
     ServiceOrder.handleSaveModalPackage()
@@ -56,6 +58,7 @@ function setUpFormData(formInstance) {
     formInstance.dataForm['customer'] = $('#so-customer').val() || null
     formInstance.dataForm['start_date'] = startDate
     formInstance.dataForm['end_date'] = endDate
+    formInstance.dataForm['exchange_rate_data'] = ServiceOrder.getExchangeRate()
     formInstance.dataForm['service_detail_data'] = ServiceOrder.getServiceDetailData()
     formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData()
     formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
@@ -203,6 +206,7 @@ class DetailDataHandler {
                 this.loadCustomerList(data?.customer_data)
                 ServiceOrder.pageElement.commonData.$startDate.val(startDate)
                 ServiceOrder.pageElement.commonData.$endDate.val(endDate)
+                ServiceOrder.loadExchangeRateData(data?.exchange_rate_data)
 
                 // shipment
                 let shipmentDataFormatted = DetailDataHandler.formatShipmentDetailData(data?.shipment || [])
@@ -283,7 +287,7 @@ $(document).ready(function () {
     TabExpenseEventHandler.InitPageEvent()
 
     ServiceOrder.handleSaveProduct()
-
+    ServiceOrder.handleSaveExchangeRate()
     handleServiceDetailTabEvent()
     handleWorkOrderDetailTabEvent()
     handleModalWorkOrderCostEvent()

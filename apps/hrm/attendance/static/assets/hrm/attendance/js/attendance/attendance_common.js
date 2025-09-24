@@ -1352,7 +1352,11 @@ class AttendanceEventHandler {
             pageElements.$shiftDetailEle.html(`
                 <div class="col-5 text-muted">${$.fn.gettext('Shift')}:</div>
                 <div class="col-7">
-                    <span>${(attendanceData?.shift || {})?.title || '<span class="text-muted">N/A</span>'}</span>
+                    ${
+                        attendanceData?.shift?.title
+                        ? `<a href="/hrm/attendance/shift/list">${attendanceData?.shift?.title}</a>`
+                        : '<span class="text-muted">N/A</span>'
+                    }
                 </div>
             `);
             

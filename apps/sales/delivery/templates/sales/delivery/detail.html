@@ -52,7 +52,7 @@
 
 {% block pageContent %}
     {% include 'printer/print.html' %}
-    <form id="delivery_form" data-url="{% url 'OrderDeliveryDetailAPI' data.pk %}" data-method="GET" method="post"
+    <form id="delivery_form" data-url="{% url 'OrderDeliveryDetailAPI' data.pk %}" data-url-print="{% url 'OrderDeliveryDetailPrintAPI' data.pk %}" data-method="GET" method="post"
           novalidate data-url-redirect="{% url 'OrderDeliveryList' %}">
         <div class="row">
             <div class="col-12 text-right">

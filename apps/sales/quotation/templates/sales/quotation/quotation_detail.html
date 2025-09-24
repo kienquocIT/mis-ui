@@ -51,6 +51,7 @@
     <form
             data-url="{% url 'QuotationDetailAPI' pk=pk %}"
             data-url-redirect="{% url 'QuotationList' %}"
+            data-url-print="{% url "QuotationDetailPrintAPI" pk=pk %}"
             data-method="GET"
             id="frm_quotation_create"
             method="post"

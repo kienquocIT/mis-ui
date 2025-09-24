@@ -41,6 +41,7 @@ class ServiceOrderCreate(View):
         ctx = {
             'form_id': '',
             'app_id': '',
+            'list_from_app': 'serviceorder.serviceorder.create',
 
             'employee_current': employee_current,
             'task_config': task_config,

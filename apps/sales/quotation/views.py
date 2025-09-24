@@ -193,6 +193,18 @@ class QuotationDetailAPI(APIView):
         )
 
 
+# PRINT VIEW
+class QuotationDetailPrintAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.QUOTATION_DETAIL_PRINT.fill_key(pk=pk)).get()
+        return resp.auto_return()
+
+
 class QuotationExpenseListAPI(APIView):
     @mask_view(
         auth_require=True,

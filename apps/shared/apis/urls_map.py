@@ -417,6 +417,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # quotation
     QUOTATION_LIST = StringUrl('quotation/list')
     QUOTATION_DETAIL = StringUrl('quotation/{pk}')
+    QUOTATION_DETAIL_PRINT = StringUrl('quotation/print/{pk}')
     QUOTATION_EXPENSE_LIST = StringUrl('quotation/quotation-expense-list/lists')
     QUOTATION_CONFIG = StringUrl('quotation/config')
     QUOTATION_INDICATOR_LIST = StringUrl('quotation/indicators')
@@ -453,6 +454,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # sale order
     SALE_ORDER_LIST = StringUrl('saleorder/list')
     SALE_ORDER_DETAIL = StringUrl('saleorder/{pk}')
+    SALE_ORDER_DETAIL_PRINT = StringUrl('saleorder/print/{pk}')
     SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
     SALE_ORDER_CONFIG = StringUrl('saleorder/config')
     SALE_ORDER_INDICATOR_LIST = StringUrl('saleorder/indicators')
@@ -496,6 +498,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_LEASEORDER_CALL = StringUrl('delivery/lease-order/{pk}')
     DELIVERY_LIST = StringUrl('delivery')
     DELIVERY_SUB_LIST = StringUrl('delivery/sub/{pk}')
+    DELIVERY_SUB_PRINT_LIST = StringUrl('delivery/sub-print/{pk}')
     DELIVERY_FOR_RECOVERY_LIST = StringUrl('delivery/for-recovery')
     DELIVERY_PRODUCT_LEASE_LIST = StringUrl('delivery/product-lease')
 
@@ -1011,3 +1014,8 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SERVICE_ORDER_LIST = StringUrl('serviceorder/list')
     SERVICE_ORDER_DETAIL = StringUrl('serviceorder/detail/{pk}')
     SERVICE_ORDER_DETAIL_DASHBOARD = StringUrl('serviceorder/detail-dashboard/{pk}')
+
+    # service-quotation
+    SERVICE_QUOTATION_LIST = StringUrl('servicequotation/list')
+    SERVICE_QUOTATION_DETAIL = StringUrl('servicequotation/detail/{pk}')
+    SERVICE_QUOTATION_DETAIL_DASHBOARD = StringUrl('servicequotation/detail-dashboard/{pk}')

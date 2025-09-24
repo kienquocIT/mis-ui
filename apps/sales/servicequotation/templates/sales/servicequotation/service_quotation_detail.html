@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Service Order' %}{% endblock %}
+{% block title %}
+    {% trans 'Service Order Detail' %}
+{% endblock %}
 {% block cssHeader %}
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
@@ -15,21 +17,24 @@
     </style>
 {% endblock %}
 {% block pageAction %}
-    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='form-create-service-order' %}
+    {% url 'ServiceQuotationUpdate' pk=data.pk as edit_link %}
+    {% include 'extends/systems/page_actions.html' with is_edit=True edit_link=edit_link %}
 {% endblock %}
+
 {% block pageContent %}
-    <form data-method="POST" id="form-create-service-order"
-          data-url="{% url 'ServiceOrderListAPI' %}"
-          data-url-redirect="{% url 'ServiceOrderList' %}">
+    <form data-method="GET" id="form-detail-service-quotation"
+          data-url="{% url 'ServiceQuotationDetailAPI' data.pk %}">
         {% csrf_token %}
         {% include 'sales/serviceorder/common/common_data.html' %}
-        {% include 'sales/serviceorder/common/tab_data.html' %}
+        {% include 'sales/serviceorder/common/tab_data.html' with feature='service_quotation' %}
     </form>
 {% endblock %}
+
 {% block modalData %}
     {% include 'sales/serviceorder/common/modal_data.html' %}
     {% include 'sales/task/extend/task-form.html' with not_bastion=True custom_assignee=True %}
 {% endblock %}
+
 {% block dataHiddenGroup %}
     <script id="script-url"
             data-expense-item-list-url="{% url 'ExpenseItemListAPI' %}"
@@ -50,9 +55,7 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/service_order_common.js' %}"></script>
-    <script src="{% static 'assets/sales/serviceorder/js/service_order_create.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_shipment.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_expense.js' %}"></script>
-
-    <script src="{% static 'assets/js/extends/the-documents/auto-init-with-parameters.js' %}"></script>
+    <script src="{% static 'assets/sales/servicequotation/js/service_quotation_detail.js' %}"></script>
 {% endblock %}

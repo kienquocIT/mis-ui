@@ -170,7 +170,7 @@ class DetailDataHandler {
     }
 
     static loadDetailServiceOrder(isDetail) {
-        let $form = $('#form-update-service-order');
+        let $form = $('#form-update-service-quotation');
         const data_url = $form.attr('data-url');
         $.fn.callAjax2({
             url: data_url,
@@ -216,6 +216,7 @@ class DetailDataHandler {
                 //service detail
                 ServiceOrder.initServiceDetailDataTable(data.service_detail_data)
                 ServiceOrder.loadServiceDetailRelatedData(data.service_detail_data)
+                ServiceOrder.loadServiceDetailSummaryValue()
 
                 //work order
                 let workOrderData = data.work_order_data
@@ -231,7 +232,7 @@ class DetailDataHandler {
                         workOrder.end_date
                     )
                 })
-                ServiceOrder.initWorkOrderDataTable(workOrderData)
+                ServiceOrder.initQuotationWorkOrderDataTable(workOrderData)
                 ServiceOrder.loadWorkOrderRelatedData(workOrderData)
 
                 //payment
@@ -269,7 +270,7 @@ $(document).ready(function () {
     })
     ServiceOrder.adjustTableSizeWhenChangeTab()
 
-    WFRTControl.setWFInitialData('serviceorder')
+    WFRTControl.setWFInitialData('servicequotation')
 
     ServiceOrder.initDateTime()
     ServiceOrder.initPageSelect()
@@ -295,10 +296,5 @@ $(document).ready(function () {
     handlePaymentTabEvent()
     handleModalPaymentDetailEvent()
 
-    setUpFormSubmit($('#form-update-service-order'))
-
-    $('#view-dashboard').on('click', function () {
-        let url = $(this).attr('data-url') + '?service_order_id=' + $.fn.getPkDetail()
-        $(this).attr('href', url)
-    })
+    setUpFormSubmit($('#form-update-service-quotation'))
 })

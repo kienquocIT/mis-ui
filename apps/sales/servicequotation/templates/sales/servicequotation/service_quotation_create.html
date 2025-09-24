@@ -15,15 +15,15 @@
     </style>
 {% endblock %}
 {% block pageAction %}
-    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='form-create-service-order' %}
+    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='form-create-service-quotation' %}
 {% endblock %}
 {% block pageContent %}
-    <form data-method="POST" id="form-create-service-order"
-          data-url="{% url 'ServiceOrderListAPI' %}"
-          data-url-redirect="{% url 'ServiceOrderList' %}">
+    <form data-method="POST" id="form-create-service-quotation"
+          data-url="{% url 'ServiceQuotationListAPI' %}"
+          data-url-redirect="{% url 'ServiceQuotationList' %}">
         {% csrf_token %}
         {% include 'sales/serviceorder/common/common_data.html' %}
-        {% include 'sales/serviceorder/common/tab_data.html' %}
+        {% include 'sales/serviceorder/common/tab_data.html' with feature='service_quotation' %}
     </form>
 {% endblock %}
 {% block modalData %}
@@ -50,7 +50,7 @@
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/service_order_common.js' %}"></script>
-    <script src="{% static 'assets/sales/serviceorder/js/service_order_create.js' %}"></script>
+    <script src="{% static 'assets/sales/servicequotation/js/service_quotation_create.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_shipment.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_expense.js' %}"></script>
 

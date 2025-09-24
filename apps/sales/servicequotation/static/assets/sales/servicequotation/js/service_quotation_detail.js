@@ -122,7 +122,7 @@ class DetailDataHandler {
                         workOrder.end_date
                     )
                 })
-                ServiceOrder.initWorkOrderDataTable(workOrderData)
+                ServiceOrder.initQuotationWorkOrderDataTable(workOrderData)
                 ServiceOrder.loadWorkOrderRelatedData(workOrderData)
 
                 //payment
@@ -159,13 +159,7 @@ $(document).ready(function () {
         ServiceOrder.loadTaxData(),
     ]).then(() => {
         TabShipmentEventHandler.InitPageEvent();
-        DetailDataHandler.loadDetailServiceOrder($('#form-detail-service-order'), "detail");
-    })
-    ServiceOrder.pageElement.workOrder.$table.on('click', '.btn-open-task', function () {
-        TaskExtend.openAddTaskFromTblRow(this, ServiceOrder.pageElement.workOrder.$table);
-    })
-    ServiceOrder.pageElement.workOrder.$table.on('click', '.btn-list-task', function () {
-        TaskExtend.openListTaskFromTblRow(this, ServiceOrder.pageElement.workOrder.$table);
+        DetailDataHandler.loadDetailServiceOrder($('#form-detail-service-quotation'), "detail");
     })
     ServiceOrder.adjustTableSizeWhenChangeTab()
     ServiceOrder.handleClickOpenServiceDelivery()
@@ -175,8 +169,8 @@ $(document).ready(function () {
     ServiceOrder.handleOpenModalPackage()
     ServiceOrder.handleTogglePackageChildren()
 
-    $('#view-dashboard').on('click', function () {
-        let url = $(this).attr('data-url') + '?service_order_id=' + $.fn.getPkDetail()
-        $(this).attr('href', url)
-    })
+    // $('#view-dashboard').on('click', function () {
+    //     let url = $(this).attr('data-url') + '?service_order_id=' + $.fn.getPkDetail()
+    //     $(this).attr('href', url)
+    // })
 })

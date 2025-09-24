@@ -410,7 +410,7 @@ class OpportunityPageFunction {
                         UsualLoadPageFunction.LoadProductCategory({
                             element: $(ele).find('.box-select-product-category'),
                             data: data_list[index]?.['product_category'],
-                            data_url: `${$urlEle.data('url-product')}?id=${$productCategorySelectEle.val().join(',')}`
+                            data_url: `${$urlEle.data('url-product-category')}?id__in=${$productCategorySelectEle.val().join(',')}`,
                         })
                         UsualLoadPageFunction.LoadUOM({
                             element: $(ele).find('.box-select-uom'),
@@ -1702,7 +1702,7 @@ class OpportunityHandler {
         UsualLoadPageFunction.LoadProductCategory({
             element: $productCategorySelectEle,
             data: pageVariables.opp_detail_data?.['product_category'],
-            data_url: $urlEle.data('url-product')
+            data_url: $urlEle.data('url')
         })
         // f. Load sale person
         UsualLoadPageFunction.LoadEmployee({
@@ -1907,6 +1907,7 @@ class OpportunityEventHandler {
         $('#btn-add-select-product').on('click', function () {
             UsualLoadPageFunction.AddTableRow($table_product, {'product': {}})
             let row_added = $table_product.find('tbody tr:last-child')
+            row_added.find(`.box-select-product-category`).prop('disabled', true)
             UsualLoadPageFunction.LoadProduct({
                 element: row_added.find('.select-box-product'),
                 data_url: `${$urlEle.data('url-product')}?general_product_category_id__in=${$productCategorySelectEle.val().join(',')}`
@@ -1921,7 +1922,7 @@ class OpportunityEventHandler {
             let row_added = $table_product.find('tbody tr:last-child')
             UsualLoadPageFunction.LoadProductCategory({
                 element: row_added.find('.box-select-product-category'),
-                data_url: $productCategorySelectEle.val()
+                data_url: `${$urlEle.data('url-product-category')}?id__in=${$productCategorySelectEle.val().join(',')}`,
             });
             UsualLoadPageFunction.LoadUOM({
                 element: row_added.find('.box-select-uom'),
@@ -1934,7 +1935,7 @@ class OpportunityEventHandler {
         })
         $(document).on('change', '.select-box-product', function () {
             let ele_tr = $(this).closest('tr')
-            ele_tr.find(`.box-select-product-category`).empty().prop('disabled', true)
+            ele_tr.find(`.box-select-product-category`).empty()
             ele_tr.find(`.box-select-uom`).empty()
             ele_tr.find(`.box-select-tax`).empty()
 
@@ -1942,7 +1943,7 @@ class OpportunityEventHandler {
             UsualLoadPageFunction.LoadProductCategory({
                 element: ele_tr.find(`.box-select-product-category`),
                 data: product?.['general_information']?.['product_category'],
-                data_url: $productCategorySelectEle.val()
+                data_url: `${$urlEle.data('url-product-category')}?id__in=${$productCategorySelectEle.val().join(',')}`,
             })
             UsualLoadPageFunction.LoadUOM({
                 element: ele_tr.find(`.box-select-uom`),

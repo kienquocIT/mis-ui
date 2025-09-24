@@ -32,3 +32,7 @@ msgstr "Đang kiểm tra quyền tạo các Chức năng liên quan..."
 #
 msgid "Loading opportunity detail, opportunity config and opportunity stage..."
 msgstr "Đang tải dữ liệu chi tiết, cấu hình và giai đoạn của cơ hội kinh doanh..."
+
+#
+msgid "Invalid value"
+msgstr "Giá trị không đúng định dạng"

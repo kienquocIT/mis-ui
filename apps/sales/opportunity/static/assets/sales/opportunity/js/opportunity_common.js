@@ -2080,10 +2080,10 @@ class OpportunityEventHandler {
             }
         })
         $inputRateEle.on('change', function () {
-            let value = $(this).val();
+            let value = parseFloat($(this).val() || 0)
             if (value < 0 || value > 100) {
-                $.fn.notifyB({description: $('#limit-rate').text()}, 'failure');
-                $(this).val(0);
+                $.fn.notifyB({description: $.fn.gettext('Invalid value')}, 'failure')
+                $(this).val(0)
             } else {
                 $rangeInputEle.val($(this).val())
             }
@@ -2134,11 +2134,6 @@ class OpportunityEventHandler {
                 $(this).val('')
             }
         })
-        $inputRateEle.on('focus', function () {
-            if ($(this).val() === '0') {
-                $(this).val('');
-            }
-        });
         // $(document).on('click', '.btn-go-to-stage', function () {
         //     if (config_is_select_stage) {
         //         if ($('#input-close-deal').is(':checked')) {

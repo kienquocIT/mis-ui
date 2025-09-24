@@ -425,7 +425,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    className: 'w-10',
+                    className: 'w-5',
                     render: (data, type, row) => {
                         return `<input type="number" class="form-control service-quantity" value="${row?.['quantity'] || 1}" min="0">`
                     }
@@ -434,6 +434,12 @@ const ServiceOrder = (function($) {
                     className: 'w-10',
                     render: (data, type, row) => {
                         return `<span>${row?.['uom_title']}</span>`
+                    }
+                },
+                {
+                    className: 'w-5',
+                    render: (data, type, row) => {
+                        return ProductAttribute.renderProductAttributeButton()
                     }
                 },
                 {

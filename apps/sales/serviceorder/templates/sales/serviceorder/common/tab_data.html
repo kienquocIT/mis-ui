@@ -69,6 +69,7 @@
                                     <th style="min-width: 250px">{% trans 'Description' %}</th>
                                     <th style="min-width: 100px">{% trans 'Quantity' %}</th>
                                     <th style="min-width: 100px">{% trans 'UOM' %}</th>
+                                    <th style="min-width: 120px">{% trans 'Attribute' %}</th>
                                     <th style="min-width: 150px">{% trans 'Price' %}</th>
                                     <th style="min-width: 100px">{% trans 'Tax' %}</th>
                                     <th style="min-width: 150px">{% trans 'Total amount' %}</th>
@@ -114,7 +115,7 @@
                             </button>
                             <div class="dropdown-menu dropdown-bordered">
                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-product">
-                                    <span>{% trans 'Add item' %}</span>
+                                    <span>{% trans 'Add item' %}</span>modal
                                 </a>
                                 <a class="dropdown-item" href="#" id="btn-add-non-item">
                                     <span>{% trans 'Add non-item' %}</span>
@@ -168,6 +169,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="tab-pane fade" id="tab_expense">
                 <!-- main expense table -->
                 <table class="table nowrap w-100" id="table_expense">

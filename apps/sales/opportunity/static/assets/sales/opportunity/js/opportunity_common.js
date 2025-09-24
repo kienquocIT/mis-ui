@@ -1667,14 +1667,14 @@ class OpportunityHandler {
         $inputRateEle.val(pageVariables.opp_detail_data?.['win_rate'])
         if (pageVariables.opp_config_data?.['is_input_win_rate']) {
             $checkInputRateEle.prop('disabled', false);
-            $inputRateEle.prop('readonly', !$checkInputRateEle.prop('checked'));
+            $inputRateEle.prop('readonly', true);
         }
         else {
-            $checkInputRateEle.prop('checked', false).prop('disabled', true);
+            $checkInputRateEle.prop('disabled', true).prop('checked', false);
         }
         if (pageVariables.opp_detail_data?.['is_input_rate']) {
             $checkInputRateEle.prop('checked', true);
-            $inputRateEle.prop('disabled', false);
+            $inputRateEle.prop('readonly', false);
         }
         else {
             $checkInputRateEle.prop('checked', false);

@@ -305,6 +305,7 @@ function TemplateDOM(node, data, configData) {
         )
 
         if (maxLength > 0){
+            let lastInserted = nodeTr;
             for(let i = 0; i < maxLength ; i++){
                 let nodeTrNew = nodeTr.cloneNode(true);
                 for (let codeKey in dataList){
@@ -315,12 +316,19 @@ function TemplateDOM(node, data, configData) {
                             // check if data is path of img element
                             let inner = dataList[codeKey].length >= i ? dataList[codeKey][i] : '_';
                             if (inner.includes('/media')) {
-                                nodeMatch.innerHTML = `<img src="${inner}" class="img-fluid" alt="img" style="width: 150px; height: 150px">`;
+                                nodeMatch.innerHTML = `<img src="${inner}" class="img-fluid" alt="img" style="width: 100px; height: 100px">`;
                             }
                         }
                     )
                 }
-                nodeParentTr.appendChild(nodeTrNew);
+                // nodeParentTr.appendChild(nodeTrNew);
+                // luôn insert sau nodeTrNew cuối cùng đã thêm
+                if (lastInserted.nextSibling) {
+                    nodeParentTr.insertBefore(nodeTrNew, lastInserted.nextSibling);
+                } else {
+                    nodeParentTr.appendChild(nodeTrNew);
+                }
+                lastInserted = nodeTrNew;
             }
             nodeTr.style.visibility = "hidden";
             nodeTr.style.display = "none";

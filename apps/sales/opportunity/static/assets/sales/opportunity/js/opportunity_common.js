@@ -79,7 +79,7 @@ class OpportunityPageFunction {
                     <div class="dropdown dropend">
                         <a href="#" data-bs-toggle="dropdown"><span title="${item?.['indicator']} (${item?.['win_rate']}%): ${item?.['description']}">${item?.['indicator']} (${item?.['win_rate']}%)</span></a>
                         <div class="dropdown-menu position-absolute" style="z-index: 999;">
-                            <a class="dropdown-item btn-go-to-stage" href="#">Go to Stage</a>
+                            <a class="dropdown-item btn-go-to-stage" href="#">${$.fn.gettext('Go to stage')}</a>
                         </div>
                     </div>
                 </li>`)
@@ -102,7 +102,7 @@ class OpportunityPageFunction {
                     <div class="dropdown dropend">
                         <a href="#" data-bs-toggle="dropdown"><span title="${item?.['indicator']} (${item?.['win_rate']}%): ${item?.['description']}">${item?.['indicator']} (${item?.['win_rate']}%)</span></a>
                         <div class="dropdown-menu position-absolute" style="z-index: 999;">
-                            <a class="dropdown-item btn-go-to-stage" href="#">Go to Stage</a>
+                            <a class="dropdown-item btn-go-to-stage" href="#">${$.fn.gettext('Go to stage')}</a>
                         </div>
                     </div>
                 </li>`)
@@ -2137,27 +2137,46 @@ class OpportunityEventHandler {
             }
         })
         $(document).on('click', '.btn-go-to-stage', function () {
-            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
-            let ajax_opp_detail = $.fn.callAjax2({
-                url: $('#frm-detail').data('url'),
-                data: {'current_stage_id_manual_update': $(this).closest('li').attr('data-id')},
-                method: 'GET'
-            }).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data?.['opportunity']) {
-                        return data?.['opportunity'];
-                    }
-                    return {};
+            Swal.fire({
+                html:
+                `<h5 class="text-muted">${$.fn.gettext("If you want to update the stage of this Opportunity manually, the company’s automatic stage transition settings for this opportunity will be disabled.")}</h5>`,
+                customClass: {
+                    confirmButton: 'btn text-primary',
+                    cancelButton: 'btn text-secondary',
+                    container: 'custom-swal',
+                    htmlContainer: 'text-start',
+                    actions:'w-100'
                 },
-                (errs) => {
-                    $.fn.notifyB({description: errs.data.errors}, 'failure');
-                    WindowControl.hideLoading();
-                }
-            );
-            Promise.all([ajax_opp_detail]).then(([opp_detail_data]) => {
-                if (opp_detail_data) {
-                    location.reload()
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: $.fn.gettext('Confirm'),
+                cancelButtonText: $.fn.gettext('Cancel'),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
+                    let ajax_opp_detail = $.fn.callAjax2({
+                        url: $('#frm-detail').data('url'),
+                        data: {'current_stage_id_manual_update': $(this).closest('li').attr('data-id')},
+                        method: 'GET'
+                    }).then(
+                        (resp) => {
+                            let data = $.fn.switcherResp(resp);
+                            if (data?.['opportunity']) {
+                                return data?.['opportunity'];
+                            }
+                            return {};
+                        },
+                        (errs) => {
+                            $.fn.notifyB({description: errs.data.errors}, 'failure');
+                            WindowControl.hideLoading();
+                        }
+                    );
+                    Promise.all([ajax_opp_detail]).then(([opp_detail_data]) => {
+                        if (opp_detail_data) {
+                            location.reload()
+                        }
+                    })
                 }
             })
         })

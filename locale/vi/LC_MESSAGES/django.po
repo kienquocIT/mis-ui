@@ -12282,3 +12282,11 @@ msgstr "ĐV"
 #
 msgid "Duration UoM"
 msgstr "ĐV thời gian"
+
+#
+msgid "Edit attributes"
+msgstr "Chỉnh sửa thuộc tính"
+
+#
+msgid "Edit attributes of file"
+msgstr "Chỉnh sửa thuộc tính của tài liệu"

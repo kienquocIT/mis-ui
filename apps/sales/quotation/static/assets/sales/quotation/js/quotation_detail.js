@@ -48,20 +48,37 @@ $(function () {
                     // init delivery button
                     if (data?.['delivery_call'] === false) $('#btnDeliverySaleOrder').removeClass('hidden');
                     else $('#btnDeliverySaleOrder').addClass('hidden');
-
-                    // init print
-                    if ($form.attr('data-method').toLowerCase() === 'get') {
-                        if ($form[0].classList.contains('sale-order')) {  // sale order
-                            new PrintTinymceControl().render('a870e392-9ad2-4fe2-9baa-298a38691cf2', data, false);
-                        } else {  // quotation
-                            new PrintTinymceControl().render('b9650500-aba7-44e3-b6e0-2542622702a3', data, false);
-                        }
-                    }
                 }
             }
         )
         // mask money
         $.fn.initMaskMoney2();
+
+        function getDetailPrint() {
+            $.fn.callAjax2({
+                url: $form.data('url-print'),
+                method: 'GET',
+                isLoading: true,
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data) {
+                        if ($form.attr('data-method').toLowerCase() === 'get') {
+                            let appID = 'b9650500-aba7-44e3-b6e0-2542622702a3';
+                            if ($form[0].classList.contains('sale-order')) {
+                                appID = 'a870e392-9ad2-4fe2-9baa-298a38691cf2';
+                            }
+                            new PrintTinymceControl().render(appID, data, false);
+                        }
+                    }
+                }
+            )
+        }
+
+        $('#print-document').on('click', function () {
+            getDetailPrint();
+        });
+
 
     });
 });

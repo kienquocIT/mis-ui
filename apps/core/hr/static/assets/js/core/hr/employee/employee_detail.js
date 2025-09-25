@@ -24,7 +24,7 @@ $(function () {
             let avatarEle = $('#employee-avatar-img-input');
             if (employeeData.avatar_img) {
                 $(`
-                    <img src="${employeeData.avatar_img}" style="width: 90%; object-fit: cover;"/>
+                    <img src="${employeeData.avatar_img}" style="width: 50%; height: 50%; object-fit: cover;"/>
                 `).insertAfter(avatarEle);
             }
             avatarEle.remove();

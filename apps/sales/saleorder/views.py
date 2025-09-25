@@ -212,6 +212,18 @@ class SaleOrderDetailAPI(APIView):
         )
 
 
+# PRINT VIEW
+class SaleOrderDetailPrintAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.SALE_ORDER_DETAIL_PRINT.fill_key(pk=pk)).get()
+        return resp.auto_return()
+
+
 class SaleOrderExpenseListAPI(APIView):
     @mask_view(
         auth_require=True,

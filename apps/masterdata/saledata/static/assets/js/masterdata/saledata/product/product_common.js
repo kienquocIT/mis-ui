@@ -1288,7 +1288,7 @@ class ProductPageFunction {
         let avatarEle = $('#avatar-img-input');
         if (data?.['avatar_img']) {
             $(`
-                    <img src="${data?.['avatar_img']}" style="width: 90%; object-fit: cover;"/>
+                    <img src="${data?.['avatar_img']}" style="width: 50%; height: 50%; object-fit: cover;"/>
                 `).insertAfter(avatarEle);
         }
         avatarEle.remove();

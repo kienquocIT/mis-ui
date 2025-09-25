@@ -65,7 +65,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # files
     FILE_UPLOAD = StringUrl('attachment/upload')
     FILE_EDIT = StringUrl('attachment/edit')
-    FILE_UPDATE = StringUrl('attachment/update/{pk}')
+    FILE_DETAIL = StringUrl('attachment/detail/{pk}')
     PUBLIC_FILE_UPLOAD = StringUrl('attachment/public-upload')
     FILE_UNUSED = StringUrl('attachment/unused')
     FILE_UPLOAD_WEB_BUILDER = StringUrl('attachment/web-builder/upload')
@@ -417,6 +417,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # quotation
     QUOTATION_LIST = StringUrl('quotation/list')
     QUOTATION_DETAIL = StringUrl('quotation/{pk}')
+    QUOTATION_DETAIL_PRINT = StringUrl('quotation/print/{pk}')
     QUOTATION_EXPENSE_LIST = StringUrl('quotation/quotation-expense-list/lists')
     QUOTATION_CONFIG = StringUrl('quotation/config')
     QUOTATION_INDICATOR_LIST = StringUrl('quotation/indicators')
@@ -453,6 +454,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # sale order
     SALE_ORDER_LIST = StringUrl('saleorder/list')
     SALE_ORDER_DETAIL = StringUrl('saleorder/{pk}')
+    SALE_ORDER_DETAIL_PRINT = StringUrl('saleorder/print/{pk}')
     SALE_ORDER_EXPENSE_LIST = StringUrl('saleorder/saleorder-expense-list/lists')
     SALE_ORDER_CONFIG = StringUrl('saleorder/config')
     SALE_ORDER_INDICATOR_LIST = StringUrl('saleorder/indicators')
@@ -496,6 +498,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_LEASEORDER_CALL = StringUrl('delivery/lease-order/{pk}')
     DELIVERY_LIST = StringUrl('delivery')
     DELIVERY_SUB_LIST = StringUrl('delivery/sub/{pk}')
+    DELIVERY_SUB_PRINT_LIST = StringUrl('delivery/sub-print/{pk}')
     DELIVERY_FOR_RECOVERY_LIST = StringUrl('delivery/for-recovery')
     DELIVERY_PRODUCT_LEASE_LIST = StringUrl('delivery/product-lease')
 

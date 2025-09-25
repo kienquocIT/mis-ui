@@ -1611,6 +1611,19 @@ $(async function () {
         else $titleTable.html($('.case-03', $htmlElm).html())
     }
 
+    function getDetailPrint() {
+        $.fn.callAjax2({
+            'url': $form.attr('data-url-print'),
+            'method': 'GET'
+        })
+            .then((req) => {
+                const res = $.fn.switcherResp(req);
+                if ($('#delivery_form').attr('data-method') === 'GET') {
+                    new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
+                }
+            })
+    }
+
     function getPageDetail() {
         $.fn.callAjax2({
             'url': $form.attr('data-url'),
@@ -1622,9 +1635,6 @@ $(async function () {
                 prepareHTMLConfig(res?.['config_at_that_point'])
                 $x.fn.renderCodeBreadcrumb(res);
                 $.fn.compareStatusShowPageAction(res);
-                if ($('#delivery_form').attr('data-method') === 'GET') {
-                    new PrintTinymceControl().render('1373e903-909c-4b77-9957-8bcf97e8d6d3', res, false);
-                }
                 let formGroup = $eleSO[0].closest('.form-group');
                 if (formGroup) {
                     if (res?.['sale_order_data']?.['code']) {
@@ -1854,6 +1864,10 @@ $(async function () {
     prodTable.dataTableProductNew();
     prodTable.dataTablePW();
     // event
+    $('#print-document').on('click', function () {
+        getDetailPrint();
+    });
+
     $tableProductNew.on('click', '.table-row-checkbox', function () {
         let row = this.closest('tr');
         if (row) {

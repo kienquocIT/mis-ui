@@ -780,6 +780,7 @@ class OpportunityPageFunction {
             },
             allow_dismiss: false,
             showProgressbar: true,
+            delay: 1000
         });
 
         const quotation_check_perm = $.fn.callAjax2({
@@ -1773,6 +1774,7 @@ class OpportunityHandler {
             },
             allow_dismiss: false,
             showProgressbar: true,
+            delay: 1000
         });
 
         const pk = $.fn.getPkDetail();
@@ -2081,7 +2083,7 @@ class OpportunityEventHandler {
         })
         $inputRateEle.on('change', function () {
             let value = parseFloat($(this).val() || 0)
-            if (value < 0 || value > 100) {
+            if (value < 0 || value >= 100) {
                 $.fn.notifyB({description: $.fn.gettext('Invalid value')}, 'failure')
                 $(this).val(0)
             } else {
@@ -2134,37 +2136,31 @@ class OpportunityEventHandler {
                 $(this).val('')
             }
         })
-        // $(document).on('click', '.btn-go-to-stage', function () {
-        //     if (config_is_select_stage) {
-        //         if ($('#input-close-deal').is(':checked')) {
-        //             OpportunityPageFunction.CommonShowAlert($('#deal-closed').text());
-        //         } else {
-        //             if ($check_lost_reason.is(':checked') || $('.input-win-deal:checked').length > 0) {
-        //                 OpportunityPageFunction.CommonShowAlert($('#deal-close-lost').text());
-        //             } else {
-        //                 let stage = $(this).closest('.sub-stage');
-        //                 let index = stage.index();
-        //                 let ele_stage = $('#div-stage .sub-stage');
-        //                 $('.stage-lost').removeClass('stage-selected');
-        //                 for (let i = 0; i <= ele_stage.length; i++) {
-        //                     if (i <= index) {
-        //                         if (!ele_stage.eq(i).hasClass('stage-lost')) {
-        //                             ele_stage.eq(i).addClass('stage-selected');
-        //                         }
-        //                     } else {
-        //                         ele_stage.eq(i).removeClass('stage-selected');
-        //                     }
-        //                 }
-        //                 if (!$checkInputRateEle.prop('checked')) {
-        //                     $inputRateEle.val(30);
-        //                     $rangeInputEle.val(30)
-        //                 }
-        //             }
-        //         }
-        //     } else {
-        //         OpportunityPageFunction.CommonShowAlert($('#not-select-stage').text());
-        //     }
-        // })
+        $(document).on('click', '.btn-go-to-stage', function () {
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
+            let ajax_opp_detail = $.fn.callAjax2({
+                url: $('#frm-detail').data('url'),
+                data: {'current_stage_id_manual_update': $(this).closest('li').attr('data-id')},
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data?.['opportunity']) {
+                        return data?.['opportunity'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    WindowControl.hideLoading();
+                }
+            );
+            Promise.all([ajax_opp_detail]).then(([opp_detail_data]) => {
+                if (opp_detail_data) {
+                    location.reload()
+                }
+            })
+        })
         $(document).on('change', '#input-close-deal', function () {
             if ($(this).is(':checked')) {
                 $(this).closest('.sub-stage').addClass('stage-selected');

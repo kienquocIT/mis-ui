@@ -21,7 +21,7 @@ class ProductAttribute {
         return this
     }
 
-    // Sample attributes data - You can modify this based on your needs
+    // Sample attributes data - Modified to include duration requirements
     loadSampleAttributes() {
         this.productAttributes = [
             {
@@ -29,6 +29,8 @@ class ProductAttribute {
                 name: 'CPU',
                 type: 'list',
                 durationUnit: null,
+                mandatory: true,
+                requiresDuration: false, // List type doesn't require duration
                 options: [
                     { name: 'Intel Core i5', cost: 2000 },
                     { name: 'Intel Core i7', cost: 3000 },
@@ -40,6 +42,8 @@ class ProductAttribute {
                 name: 'RAM',
                 type: 'numeric',
                 durationUnit: 'GB',
+                mandatory: true,
+                requiresDuration: true, // Numeric type requires duration
                 min: 8,
                 max: 64,
                 increment: 8,
@@ -50,6 +54,8 @@ class ProductAttribute {
                 name: 'Graphics Card',
                 type: 'list',
                 durationUnit: null,
+                mandatory: true,
+                requiresDuration: false, // List type doesn't require duration
                 options: [
                     { name: 'NVIDIA RTX 3060', cost: 3500 },
                     { name: 'NVIDIA RTX 3070', cost: 5000 },
@@ -61,6 +67,8 @@ class ProductAttribute {
                 name: 'Storage',
                 type: 'numeric',
                 durationUnit: 'GB',
+                mandatory: true,
+                requiresDuration: true, // Numeric type requires duration
                 min: 256,
                 max: 2048,
                 increment: 256,
@@ -71,6 +79,8 @@ class ProductAttribute {
                 name: 'Extended Warranty',
                 type: 'list',
                 durationUnit: 'months',
+                mandatory: true,
+                requiresDuration: false, // List type doesn't require duration
                 options: [
                     { name: '12', cost: 500 },
                     { name: '24', cost: 900 },
@@ -78,6 +88,42 @@ class ProductAttribute {
                 ]
             }
         ];
+    }
+
+    // Initialize default selections for mandatory attributes
+    initializeDefaultSelections() {
+        this.productAttributes.forEach(attr => {
+            if (attr.mandatory && !this.selectedAttributes[attr.id]) {
+                if (attr.type === 'list') {
+                    // Select first option by default
+                    const firstOption = attr.options[0];
+                    const displayName = attr.durationUnit ?
+                        `${firstOption.name} ${attr.durationUnit}` :
+                        firstOption.name;
+
+                    this.selectedAttributes[attr.id] = {
+                        type: 'list',
+                        value: displayName,
+                        cost: firstOption.cost,
+                        index: 0,
+                        duration: 1, // Default duration for list (not used in calculation)
+                        requiresDuration: false
+                    };
+                } else if (attr.type === 'numeric') {
+                    // Select minimum value by default with duration
+                    const displayValue = `${attr.min}${attr.durationUnit || ''}`;
+                    this.selectedAttributes[attr.id] = {
+                        type: 'numeric',
+                        value: displayValue,
+                        cost: 0,
+                        baseCost: 0,
+                        rawValue: attr.min,
+                        duration: 1, // Default duration for numeric
+                        requiresDuration: true
+                    };
+                }
+            }
+        });
     }
 
     // Bind all events
@@ -109,19 +155,18 @@ class ProductAttribute {
                 self.selectedAttributes = {};
             }
 
+            // Initialize default selections for mandatory attributes
+            self.initializeDefaultSelections();
+
             // Render attributes in offcanvas
             self.renderAttributes();
         });
 
         // Handle save button click
         $(document).on('click', '#offcanvas-save-attribute-btn', function() {
-            self.saveAttributes();
-        });
-
-        // Handle attribute toggle
-        $(document).on('click', '.attribute-toggle', function() {
-            const attrId = $(this).data('attr-id');
-            self.toggleAttribute(attrId);
+            if (self.validateMandatoryAttributes()) {
+                self.saveAttributes();
+            }
         });
 
         // Handle list option selection
@@ -139,7 +184,9 @@ class ProductAttribute {
                 type: 'list',
                 value: displayName,
                 cost: option.cost,
-                index: parseInt(optionIndex)
+                index: parseInt(optionIndex),
+                duration: 1, // Duration not used for list types
+                requiresDuration: false
             };
 
             self.updateSummary();
@@ -151,9 +198,43 @@ class ProductAttribute {
             const attr = self.productAttributes.find(a => a.id === attrId);
             const sliderValue = parseInt($(this).val());
 
+            // Get duration value for this attribute
+            const duration = parseFloat($(`#duration-${attrId}`).val()) || 1;
+
             self.updateNumericValue(attrId, sliderValue, attr.min, attr.increment,
-                                   attr.costPerIncrement, attr.durationUnit || '');
+                                   attr.costPerIncrement, attr.durationUnit || '', duration);
         });
+
+        // Handle duration input change for numeric attributes
+        $(document).on('input', '.attribute-duration', function() {
+            const attrId = $(this).data('attr-id');
+            const duration = parseFloat($(this).val()) || 1;
+            const attr = self.productAttributes.find(a => a.id === attrId);
+
+            if (attr && attr.type === 'numeric' && self.selectedAttributes[attrId]) {
+                // Update the duration in selected attributes
+                self.selectedAttributes[attrId].duration = duration;
+
+                // Recalculate cost based on new duration
+                const sliderValue = parseInt($(`#slider-${attrId}`).val()) || 0;
+                self.updateNumericValue(attrId, sliderValue, attr.min, attr.increment,
+                                       attr.costPerIncrement, attr.durationUnit || '', duration);
+            }
+        });
+    }
+
+    // Validate that all mandatory attributes have been set
+    validateMandatoryAttributes() {
+        const mandatoryAttrs = this.productAttributes.filter(attr => attr.mandatory);
+        const missingAttrs = [];
+
+        mandatoryAttrs.forEach(attr => {
+            if (!this.selectedAttributes[attr.id]) {
+                missingAttrs.push(attr.name);
+            }
+        });
+
+        return missingAttrs.length === 0;
     }
 
     // Extract row data from HTML
@@ -169,6 +250,7 @@ class ProductAttribute {
 
         data.description = $row.find('.cost-description').val() || '';
         data.quantity = $row.find('.service-quantity').val() || 1;
+        data.duration = $row.find('.service-duration').val() || 1;
         data.price = $row.find('.mask-money').first().attr('data-init-money') || 0;
 
         return data;
@@ -183,11 +265,13 @@ class ProductAttribute {
         if (this.currentRowData) {
             const productInfo = `
                 <div class="col-12 mb-3">
-                    <div class="alert alert-info p-5 d-flex align-items-center">
-                        <span class="fs-5">
-                            ${this.currentRowData.title || 'Unknown Product'}
-                        </span>
-                        ${this.currentRowData.code ? `<span class="badge bg-secondary ms-2">${this.currentRowData.code}</span>` : ''}
+                    <div class="card">
+                        <div class="card-body d-flex align-items-center">
+                            <span class="fs-5">
+                                ${this.currentRowData.title || 'Unknown Product'}
+                            </span>
+                            ${this.currentRowData.code ? `<span class="badge bg-secondary ms-2">${this.currentRowData.code}</span>` : ''}
+                        </div>
                     </div>
                 </div>
             `;
@@ -203,17 +287,14 @@ class ProductAttribute {
         // Add summary section
         container.append(this.createSummarySection());
 
-        // Update summary immediately if there are selected attributes
-        if (Object.keys(this.selectedAttributes).length > 0) {
-            this.updateSummary();
-        }
+        // Update summary immediately
+        this.updateSummary();
     }
 
     // Create attribute card HTML
     createAttributeCard(attr) {
-        const isSelected = this.selectedAttributes[attr.id] ? true : false;
-        const isActive = isSelected ? 'checked' : '';
-        const showContent = isSelected ? 'show' : '';
+        // For mandatory attributes, always show as selected
+        const isSelected = attr.mandatory || this.selectedAttributes[attr.id];
         const cardSelected = isSelected ? 'selected' : '';
 
         let contentHtml = '';
@@ -233,15 +314,10 @@ class ProductAttribute {
                                 <span class="badge ${attr.type === 'list' ? 'bg-primary' : 'bg-purple'} badge-sm">
                                     ${attr.type.toUpperCase()}
                                 </span>
-                            </div>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input attribute-toggle" 
-                                       type="checkbox" 
-                                       data-attr-id="${attr.id}"
-                                       ${isActive}>
+                                ${attr.requiresDuration ? '<span class="badge bg-warning badge-sm ms-1">Duration Required</span>' : ''}
                             </div>
                         </div>
-                        <div class="attribute-content ${showContent}" id="content-${attr.id}">
+                        <div class="attribute-content show" id="content-${attr.id}">
                             ${contentHtml}
                         </div>
                     </div>
@@ -258,8 +334,13 @@ class ProductAttribute {
                 `${option.name} ${attr.durationUnit}` :
                 option.name;
 
-            const isChecked = this.selectedAttributes[attr.id] &&
-                             this.selectedAttributes[attr.id].index === index ? 'checked' : '';
+            // Check if this option is selected (default to first if mandatory and nothing selected)
+            let isChecked = false;
+            if (this.selectedAttributes[attr.id]) {
+                isChecked = this.selectedAttributes[attr.id].index === index;
+            } else if (attr.mandatory && index === 0) {
+                isChecked = true;
+            }
 
             optionsHtml += `
                 <div class="form-check list-option-item mb-2">
@@ -269,7 +350,7 @@ class ProductAttribute {
                            value="${index}"
                            data-attr-id="${attr.id}"
                            id="option-${attr.id}-${index}"
-                           ${isChecked}>
+                           ${isChecked ? 'checked' : ''}>
                     <label class="form-check-label d-flex justify-content-between align-items-center w-100" 
                            for="option-${attr.id}-${index}">
                         <span>${displayName}</span>
@@ -287,25 +368,42 @@ class ProductAttribute {
         return `<div class="list-options">${optionsHtml}</div>`;
     }
 
-    // Create numeric control HTML
+    // Create numeric control HTML with duration input
     createNumericControlHtml(attr) {
         const steps = (attr.max - attr.min) / attr.increment;
         let currentValue = 0;
         let displayValue = attr.min;
         let cost = 0;
+        let duration = 1;
 
         if (this.selectedAttributes[attr.id]) {
             const savedValue = this.selectedAttributes[attr.id].rawValue || attr.min;
             currentValue = (savedValue - attr.min) / attr.increment;
             displayValue = savedValue;
             cost = this.selectedAttributes[attr.id].cost || 0;
+            duration = this.selectedAttributes[attr.id].duration || 1;
         }
 
         return `
             <div class="numeric-control p-3 bg-light rounded">
-                <div class="d-flex justify-content-between mb-2">
-                    <small class="text-muted">Min: ${attr.min}${attr.durationUnit || ''}</small>
-                    <small class="text-muted">Max: ${attr.max}${attr.durationUnit || ''}</small>
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label class="form-label text-muted">Duration (months)</label>
+                        <input type="number" 
+                               class="form-control attribute-duration" 
+                               id="duration-${attr.id}"
+                               data-attr-id="${attr.id}"
+                               min="1" 
+                               value="${duration}"
+                               placeholder="Enter duration">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label text-muted">Range</label>
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">Min: ${attr.min}${attr.durationUnit || ''}</small>
+                            <small class="text-muted">Max: ${attr.max}${attr.durationUnit || ''}</small>
+                        </div>
+                    </div>
                 </div>
                 <input type="range" 
                        class="form-range attribute-range-slider" 
@@ -316,7 +414,10 @@ class ProductAttribute {
                        value="${currentValue}">
                 <div class="d-flex justify-content-between mt-3">
                     <span class="fw-bold fs-5" id="value-${attr.id}">${displayValue}${attr.durationUnit || ''}</span>
-                    <span class="text-primary fw-bold fs-5 mask-money" id="cost-${attr.id}" data-init-money="${cost}">${cost}</span>
+                    <div class="text-end">
+                        <small class="text-muted d-block">Total Cost (${duration} months)</small>
+                        <span class="text-primary fw-bold fs-5 mask-money" id="cost-${attr.id}" data-init-money="${cost}">${cost}</span>
+                    </div>
                 </div>
             </div>
         `;
@@ -326,10 +427,10 @@ class ProductAttribute {
     createSummarySection() {
         return `
             <div class="col-12 mt-3">
-                <div class="card border-primary" id="attribute-summary" style="display: none;">
+                <div class="card border-primary" id="attribute-summary">
                     <div class="card-body">
                         <h6 class="card-title text-primary mb-3">
-                            <i class="fa fa-check-circle me-2"></i>Selected Attributes
+                            <i class="fa fa-check-circle me-2"></i>Configuration Summary
                         </h6>
                         <div id="summary-content"></div>
                         <hr class="my-3">
@@ -343,54 +444,28 @@ class ProductAttribute {
         `;
     }
 
-    // Toggle attribute selection
-    toggleAttribute(attrId) {
-        const $toggle = $(`.attribute-toggle[data-attr-id="${attrId}"]`);
-        const $card = $(`#attr-${attrId}`);
-        const $content = $(`#content-${attrId}`);
-
-        if ($toggle.prop('checked')) {
-            $card.addClass('selected');
-            $content.addClass('show');
-        } else {
-            $card.removeClass('selected');
-            $content.removeClass('show');
-
-            // Remove from selected attributes
-            delete this.selectedAttributes[attrId];
-
-            // Reset the inputs
-            const attr = this.productAttributes.find(a => a.id === attrId);
-            if (attr.type === 'list') {
-                $card.find('input[type="radio"]').prop('checked', false);
-            } else if (attr.type === 'numeric') {
-                $(`#slider-${attrId}`).val(0);
-                $(`#value-${attrId}`).text(`${attr.min}${attr.durationUnit || ''}`);
-                $(`#cost-${attrId}`).attr('data-init-money', 0);
-            }
-        }
-
-        this.updateSummary();
-    }
-
-    // Update numeric value
-    updateNumericValue(attrId, sliderValue, min, increment, costPerIncrement, unit) {
+    // Update numeric value with duration
+    updateNumericValue(attrId, sliderValue, min, increment, costPerIncrement, unit, duration = 1) {
         const value = min + (sliderValue * increment);
-        const cost = sliderValue * costPerIncrement;
+        const baseCost = sliderValue * costPerIncrement;
+        const totalCost = baseCost * duration; // Multiply by duration
 
         $(`#value-${attrId}`).text(`${value}${unit}`);
-        $(`#cost-${attrId}`).attr('data-init-money', cost);
+        $(`#cost-${attrId}`).attr('data-init-money', totalCost);
 
-        if (sliderValue > 0) {
-            this.selectedAttributes[attrId] = {
-                type: 'numeric',
-                value: `${value}${unit}`,
-                cost: cost,
-                rawValue: value
-            };
-        } else {
-            delete this.selectedAttributes[attrId];
-        }
+        // Update the cost label to show duration
+        $(`#cost-${attrId}`).siblings('small').text(`Total Cost (${duration} months)`);
+
+        // Always save the value for mandatory attributes
+        this.selectedAttributes[attrId] = {
+            type: 'numeric',
+            value: `${value}${unit}`,
+            cost: totalCost,
+            baseCost: baseCost, // Store base cost separately
+            rawValue: value,
+            duration: duration,
+            requiresDuration: true
+        };
 
         // Initialize mask money if the function exists
         if ($.fn.initMaskMoney2) {
@@ -400,40 +475,56 @@ class ProductAttribute {
         this.updateSummary();
     }
 
-    // Update summary
+    // Update summary to show duration info
     updateSummary() {
         const $summary = $('#attribute-summary');
         const $content = $('#summary-content');
         const $totalCost = $('#total-attr-cost');
 
-        if (Object.keys(this.selectedAttributes).length === 0) {
-            $summary.hide();
-            return;
-        }
-
-        $summary.show();
         $content.empty();
 
         let totalCost = 0;
+        let hasAllMandatory = true;
 
-        for (const [attrId, data] of Object.entries(this.selectedAttributes)) {
-            const attr = this.productAttributes.find(a => a.id === attrId);
-            if (!attr) continue;
+        // Check all attributes (including mandatory ones)
+        this.productAttributes.forEach(attr => {
+            const data = this.selectedAttributes[attr.id];
 
-            const itemHtml = `
-                <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
-                    <span class="fw-semibold">${attr.name}:</span>
-                    <span>
-                        <span class="text-dark">${data.value}</span>
-                        <span class="text-primary fw-bold ms-2 mask-money" data-init-money="${data.cost}"></span>
-                    </span>
-                </div>
-            `;
-            $content.append(itemHtml);
-            totalCost += data.cost;
-        }
+            if (attr.mandatory && !data) {
+                hasAllMandatory = false;
+                // Show placeholder for missing mandatory attribute
+                const itemHtml = `
+                    <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded border-danger">
+                        <span class="fw-semibold text-danger">${attr.name}:</span>
+                        <span class="text-danger">Not configured</span>
+                    </div>
+                `;
+                $content.append(itemHtml);
+            } else if (data) {
+                const durationInfo = data.requiresDuration ? ` × ${data.duration} months` : '';
+                const itemHtml = `
+                    <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
+                        <span class="fw-semibold">${attr.name}:</span>
+                        <span>
+                            <span class="text-dark">${data.value}${durationInfo}</span>
+                            <span class="text-primary fw-bold ms-2 mask-money" data-init-money="${data.cost}"></span>
+                        </span>
+                    </div>
+                `;
+                $content.append(itemHtml);
+                totalCost += data.cost;
+            }
+        });
 
         $totalCost.attr('data-init-money', totalCost);
+
+        // Update save button state based on mandatory fields
+        const $saveBtn = $('#offcanvas-save-attribute-btn');
+        if (!hasAllMandatory) {
+            $saveBtn.addClass('disabled').attr('disabled', true);
+        } else {
+            $saveBtn.removeClass('disabled').attr('disabled', false);
+        }
 
         // Initialize mask money if the function exists
         if ($.fn.initMaskMoney2) {
@@ -443,11 +534,13 @@ class ProductAttribute {
 
     // Save attributes directly to row data
     saveAttributes() {
-        // Calculate total additional cost
-        let totalAttrCost = 0;
-        for (const [attrId, data] of Object.entries(this.selectedAttributes)) {
-            totalAttrCost += data.cost;
+        // Validate mandatory attributes one more time
+        if (!this.validateMandatoryAttributes()) {
+            return;
         }
+
+        // Calculate total additional cost
+        let totalAttrCost = this.calculateTotalAttributeCost();
 
         // Save directly to the DataTable row data
         if (this.currentTable && this.currentRowIndex !== null) {
@@ -458,7 +551,7 @@ class ProductAttribute {
             // Add attributes to the row data
             rowData.selected_attributes = {...this.selectedAttributes};
             rowData.attributes_total_cost = totalAttrCost;
-            rowData.has_attributes = Object.keys(this.selectedAttributes).length > 0;
+            rowData.has_attributes = true; // Always true now since attributes are mandatory
 
             // Update the row data in DataTable (without redrawing)
             row.data(rowData).invalidate('data');
@@ -468,7 +561,7 @@ class ProductAttribute {
 
             // If you need to update specific cells, you can do it here
             // For example, update the total value if needed
-            this.updateRowTotalValue(rowData, totalAttrCost);
+            // this.updateRowTotalValue(rowData, totalAttrCost);
 
         } else if (this.currentRowIndex !== null) {
             // Fallback: Store in DOM if DataTable is not available
@@ -494,7 +587,7 @@ class ProductAttribute {
         }
 
         // Trigger event for other parts of the application
-        $(document).trigger('attributesUpdated', {
+        $(document).trigger('productAttributeUpdate', {
             rowIndex: this.currentRowIndex,
             rowData: this.currentRowData,
             attributes: this.selectedAttributes,
@@ -518,16 +611,18 @@ class ProductAttribute {
 
         if ($tables.length) {
             const $row = $tables.first().find('tbody tr').eq(this.currentRowIndex);
+
+            // Get duration from the row (if it exists)
+            const duration = parseFloat($row.find('.service-duration').val()) || 1;
             const quantity = parseInt($row.find('.service-quantity').val()) || 1;
             const basePrice = parseFloat(rowData.price) || 0;
 
-            // Calculate new total with attributes
-            const newTotal = (basePrice * quantity) + attributesCost;
+            // Calculate new total with duration: duration * price * quantity + duration * attribute_price
+            const newTotal = (duration * basePrice * quantity) + (duration * attributesCost);
 
-            // Update the total value cell (usually the second to last column with mask-money)
+            // Update the total value cell
             const $totalCells = $row.find('.mask-money');
             if ($totalCells.length >= 2) {
-                // Assuming the total is in one of the last mask-money elements
                 const $totalCell = $totalCells.eq($totalCells.length - 1);
                 $totalCell.attr('data-init-money', newTotal);
 
@@ -539,6 +634,7 @@ class ProductAttribute {
 
             // Also update the row data
             rowData.total_value = newTotal;
+            rowData.duration = duration;
         }
     }
 
@@ -554,67 +650,218 @@ class ProductAttribute {
             const $btn = $row.find('.btn-open-product-attribute');
             const $icon = $btn.find('i');
 
-            if (Object.keys(this.selectedAttributes).length > 0) {
-                $btn.removeClass('btn-soft-primary').addClass('btn-soft-success');
-                $btn.attr('title', `${Object.keys(this.selectedAttributes).length} attributes selected`);
-                $icon.removeClass('fa-plus').addClass('fa-check');
+            // Calculate total attributes cost
+            let totalAttrCost = this.calculateTotalAttributeCost();
 
-                // Add or update badge
-                let $badge = $btn.parent().find('.attribute-badge');
+            // Check if all mandatory attributes are configured
+            const mandatoryCount = this.productAttributes.filter(attr => attr.mandatory).length;
+            const configuredMandatoryCount = this.productAttributes.filter(attr =>
+                attr.mandatory && this.selectedAttributes[attr.id]
+            ).length;
+
+            if (configuredMandatoryCount === mandatoryCount) {
+                // All mandatory attributes configured
+                $btn.removeClass('btn-soft-primary btn-soft-warning').addClass('btn-soft-success');
+                $btn.attr('title', `Attributes configured - Total: ${totalAttrCost.toLocaleString()}`);
+                $icon.removeClass('fa-plus fa-exclamation').addClass('fa-check');
+            } else {
+                // Some mandatory attributes missing
+                $btn.removeClass('btn-soft-primary btn-soft-success').addClass('btn-soft-warning');
+                $btn.attr('title', `Configure required attributes`);
+                $icon.removeClass('fa-plus fa-check').addClass('fa-exclamation');
+            }
+
+            // Update or add money badge
+            let $badge = $btn.parent().find('.attribute-badge');
+            if (totalAttrCost > 0) {
                 if (!$badge.length) {
                     $btn.parent().append(`
-                        <span class="attribute-badge badge bg-success ms-1">
-                            ${Object.keys(this.selectedAttributes).length}
+                        <span class="attribute-badge badge bg-info ms-1 mask-money" data-init-money="${totalAttrCost}">
+                            ${totalAttrCost.toLocaleString()}
                         </span>
                     `);
                 } else {
-                    $badge.text(Object.keys(this.selectedAttributes).length);
+                    $badge.attr('data-init-money', totalAttrCost);
+                    $badge.text(totalAttrCost.toLocaleString());
                 }
-            } else {
-                $btn.removeClass('btn-soft-success').addClass('btn-soft-primary');
-                $btn.attr('title', 'Add attributes');
-                $icon.removeClass('fa-check').addClass('fa-plus');
-                $btn.parent().find('.attribute-badge').remove();
+
+                // Initialize mask money if the function exists
+                if ($.fn.initMaskMoney2) {
+                    $.fn.initMaskMoney2();
+                }
+            } else if ($badge.length) {
+                $badge.remove();
             }
         }
     }
 
-    // Helper method to get row attributes from DataTable
-    getRowAttributes(rowIndex) {
+    // Calculate total attribute cost (with individual durations already applied)
+    calculateTotalAttributeCost() {
+        let totalCost = 0;
+
+        for (const [attrId, data] of Object.entries(this.selectedAttributes)) {
+            if (data && data.cost) {
+                // Cost already includes duration for numeric attributes
+                totalCost += data.cost;
+            }
+        }
+
+        return totalCost;
+    }
+
+    // Calculate attribute price with duration passed in
+    calculateAttributePriceWithDuration(duration = 1) {
+        let totalAttributePrice = 0;
+
+        // Iterate through all selected attributes
+        for (const [attrId, data] of Object.entries(this.selectedAttributes)) {
+            if (data && data.cost) {
+                totalAttributePrice += data.cost;
+            }
+        }
+
+        // Return total multiplied by duration
+        return totalAttributePrice * duration;
+    }
+
+    // Static method to calculate attribute price for a row
+    static calculateAttributePriceForRow(rowData, duration = 1) {
+        if (!rowData || !rowData.selected_attributes) {
+            return 0;
+        }
+
+        let totalAttributePrice = 0;
+
+        for (const [attrId, data] of Object.entries(rowData.selected_attributes)) {
+            if (data && data.cost) {
+                totalAttributePrice += data.cost;
+            }
+        }
+
+        return totalAttributePrice * duration;
+    }
+
+    // Get attributes cost breakdown by type
+    getAttributeCostBreakdown() {
+        const breakdown = {
+            listAttributes: [],
+            numericAttributes: [],
+            totalListCost: 0,
+            totalNumericCost: 0,
+            grandTotal: 0
+        };
+
+        for (const [attrId, data] of Object.entries(this.selectedAttributes)) {
+            if (data) {
+                const attrInfo = {
+                    id: attrId,
+                    value: data.value,
+                    cost: data.cost,
+                    duration: data.duration || 1
+                };
+
+                if (data.type === 'list') {
+                    breakdown.listAttributes.push(attrInfo);
+                    breakdown.totalListCost += data.cost;
+                } else if (data.type === 'numeric') {
+                    breakdown.numericAttributes.push(attrInfo);
+                    breakdown.totalNumericCost += data.cost;
+                }
+            }
+        }
+
+        breakdown.grandTotal = breakdown.totalListCost + breakdown.totalNumericCost;
+        return breakdown;
+    }
+
+    // Helper method to check if all mandatory attributes are configured for a row
+    hasAllMandatoryAttributes(rowIndex) {
+        const rowData = this.getRowData(rowIndex);
+        if (!rowData || !rowData.selected_attributes) {
+            return false;
+        }
+
+        const mandatoryAttrs = this.productAttributes.filter(attr => attr.mandatory);
+        return mandatoryAttrs.every(attr => rowData.selected_attributes[attr.id]);
+    }
+
+    // Helper method to get row data
+    getRowData(rowIndex) {
         if (this.currentTable) {
-            const rowData = this.currentTable.row(rowIndex).data();
-            return rowData ? rowData.selected_attributes : null;
+            return this.currentTable.row(rowIndex).data();
         }
         return null;
     }
 
+    // Helper method to get row attributes from DataTable
+    getRowAttributes(rowIndex) {
+        const rowData = this.getRowData(rowIndex);
+        return rowData ? rowData.selected_attributes : null;
+    }
+
     // Helper method to get total attributes cost for a row
     getRowAttributesTotalCost(rowIndex) {
-        if (this.currentTable) {
-            const rowData = this.currentTable.row(rowIndex).data();
-            return rowData ? (rowData.attributes_total_cost || 0) : 0;
+        const rowData = this.getRowData(rowIndex);
+        return rowData ? (rowData.attributes_total_cost || 0) : 0;
+    }
+
+    // Helper method to get total attribute cost with duration for a specific row
+    getTotalAttributeCostWithDuration(rowIndex, duration = 1) {
+        const rowData = this.getRowData(rowIndex);
+        if (!rowData || !rowData.selected_attributes) {
+            return 0;
         }
-        return 0;
+
+        let totalCost = 0;
+        for (const [attrId, data] of Object.entries(rowData.selected_attributes)) {
+            if (data && data.cost) {
+                totalCost += data.cost;
+            }
+        }
+
+        return totalCost * duration;
     }
 
     // Static method for rendering button (keeping your existing structure)
-    static renderProductAttributeButton() {
+    static renderProductAttributeButton(rowData) {
         // Check if an instance exists, if not create and initialize one
         if (!window.productAttributeInstance) {
             window.productAttributeInstance = new ProductAttribute()
             window.productAttributeInstance.init()
         }
 
-        return `<div class="d-flex align-items-center justify-content-between">
-                    <button 
-                        type="button" 
-                        class="btn btn-icon btn-rounded btn-soft-primary btn-xs btn-open-product-attribute"
-                        data-bs-toggle="offcanvas" 
-                        data-bs-target="#offcanvas-product-attribute" 
-                        title="Add attributes"
-                    >
-                        <span class="icon"><i class="fa-solid fa-plus"></i></span>
-                    </button>
-                </div>`;
+        // Check if attribute data exists
+        const hasAttributes = rowData && rowData.selected_attributes &&
+                            Object.keys(rowData.selected_attributes).length > 0;
+        const totalCost = rowData && rowData.attributes_total_cost ? rowData.attributes_total_cost : 0;
+
+        if (hasAttributes) {
+            // Button with configured attributes - show check icon and total cost
+            return `<div class="d-flex align-items-center justify-content-between">
+                        <button 
+                            type="button" 
+                            class="btn btn-icon btn-rounded btn-soft-success btn-xs btn-open-product-attribute"
+                            data-bs-toggle="offcanvas" 
+                            data-bs-target="#offcanvas-product-attribute" 
+                            title="Edit attributes - Total: ${totalCost.toLocaleString()}"
+                        >
+                            <span class="icon"><i class="fa-solid fa-check"></i></span>
+                        </button>
+                        ${totalCost > 0 ? `<span class="attribute-badge badge bg-info ms-1 mask-money" data-init-money="${totalCost}">${totalCost.toLocaleString()}</span>` : ''}
+                    </div>`;
+        } else {
+            // Button without configured attributes - show warning/add icon
+            return `<div class="d-flex align-items-center justify-content-between">
+                        <button 
+                            type="button" 
+                            class="btn btn-icon btn-rounded btn-soft-primary btn-xs btn-open-product-attribute"
+                            data-bs-toggle="offcanvas" 
+                            data-bs-target="#offcanvas-product-attribute" 
+                            title="Configure required attributes"
+                        >
+                            <span class="icon"><i class="fa-solid fa-exclamation"></i></span>
+                        </button>
+                    </div>`;
+        }
     }
 }

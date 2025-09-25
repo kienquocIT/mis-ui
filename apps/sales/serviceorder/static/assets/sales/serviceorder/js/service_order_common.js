@@ -58,6 +58,7 @@ const ServiceOrder = (function($) {
     const pageVariable = {
         currencyList: null,
         taxList: null,
+        durationList: null,
         modalProductContext: null,
         workOrderCostData: {},
 
@@ -172,6 +173,7 @@ const ServiceOrder = (function($) {
             quantity: 1,
             uom_title: rowData?.sale_default_uom?.title || '',
             uom_data: rowData?.sale_default_uom ?? {},
+            duration_unit_data: rowData?.duration_unit_data ?? {},
             id: uniqueStr
         }
 
@@ -324,6 +326,24 @@ const ServiceOrder = (function($) {
             },
             error: function (error) {
                 console.error('Failed to load currency:', error)
+            }
+        }).then(data => {})
+    }
+
+    function loadUoMData(){
+        const uomListUrl = pageElement.$urlScript.attr('data-uom-list-url')
+        return $.fn.callAjax2({
+            url: uomListUrl,
+            type: 'GET',
+            dataType: 'json',
+            success: function (resp) {
+                let data = $.fn.switcherResp(resp)
+                if (data && resp.data['unit_of_measure']) {
+                    pageVariable.uomList = resp.data['unit_of_measure']
+                }
+            },
+            error: function (error) {
+                console.error('Failed to load uom:', error)
             }
         }).then(data => {})
     }
@@ -486,7 +506,23 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-5',
                     render: (data, type, row) => {
-                        return ProductAttribute.renderProductAttributeButton()
+                        return `<input type="number" class="form-control service-duration" value="${row?.['duration'] || 1}" min="1" step="1">`
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        const uomListUrl = pageElement.$urlScript.attr('data-uom-list-url')
+                        return `<div class="input-group">
+                                    <select class="select2 form-select service-duration-select" data-url="${uomListUrl}" data-keyResp="unit_of_measure">
+                                    </select>
+                                </div>`
+                    }
+                },
+                {
+                    className: 'w-5',
+                    render: (data, type, row) => {
+                        return ProductAttribute.renderProductAttributeButton(row)
                     }
                 },
                 {
@@ -523,6 +559,32 @@ const ServiceOrder = (function($) {
             ],
             initComplete: function () {
                 pageElement.serviceDetail.$table.DataTable().columns.adjust();
+            },
+            rowCallback: function (row, data){
+                const $row = $(row)
+                const durationId = data.duration_id
+                $row.find('.service-duration-select').attr('data-duration-id', durationId)
+            },
+            drawCallback: function(settings) {
+                const $table = $(this)
+                const api = $table.DataTable()
+
+                const $durationUnitSelects = $(this).find('.service-duration-select')
+                $durationUnitSelects.each(function () {
+                    const durationId = $(this).attr('data-duration-id')
+                    const durationData = pageVariable.uomList.find(duration => duration.id === durationId)
+
+                    if(durationData) {
+                        initSelect($(this),{
+                            data:{
+                                id: durationId,
+                                title: durationData.title,
+                            }
+                        })
+                    } else {
+                        initSelect($(this))
+                    }
+                })
             }
         })
     }
@@ -1795,6 +1857,20 @@ const ServiceOrder = (function($) {
     }
 
     // ============ service detail =============
+
+    function handleChangeServiceDetail(){
+        pageElement.serviceDetail.$table.on('change', 'select.service-duration-select', function(e){
+            const $select = $(e.currentTarget)
+            const $row = $select.closest('tr')
+            const durationId = $select.val()
+
+            const tableServiceDetail = pageElement.serviceDetail.$table.DataTable()
+            const rowData = tableServiceDetail.row($row).data()
+
+            // Update the data
+            rowData.duration_id = durationId
+        })
+    }
 
     function handleChangeServiceDescription() {
         pageElement.serviceDetail.$table.on('change', 'textarea', function (e) {
@@ -4504,6 +4580,7 @@ const ServiceOrder = (function($) {
         initPageSelect,
         loadCurrencyRateData,
         loadTaxData,
+        loadUoMData,
         adjustTableSizeWhenChangeTab,
         initProductModalDataTable,
         initServiceDetailDataTable,
@@ -4515,6 +4592,8 @@ const ServiceOrder = (function($) {
 
         handleSaveProduct,
         handleSaveExchangeRate,
+
+        handleChangeServiceDetail,
         handleChangeServiceQuantity,
         handleChangeServicePrice,
         handleChangeServiceDescription,

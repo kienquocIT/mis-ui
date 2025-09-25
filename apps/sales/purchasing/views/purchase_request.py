@@ -6,6 +6,21 @@ from apps.shared import mask_view, ServerAPI, ApiURL, PermCheck, InputMappingPro
 from apps.shared.msg.purchasing import PurchasingMsg
 
 
+# main
+class PurchaseRequestList(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/purchasing/purchase_request/purchase_request_list.html',
+        menu_active='menu_purchase_request_list',
+        breadcrumb='PURCHASE_REQUEST_LIST_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_LIST, method='GET'),
+        icon_cls='fas fa-file-upload',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        return {}, status.HTTP_200_OK
+
+
 class PurchaseRequestCreate(View):
     @mask_view(
         auth_require=True,
@@ -22,18 +37,37 @@ class PurchaseRequestCreate(View):
         }, status.HTTP_200_OK
 
 
-class PurchaseRequestList(View):
+class PurchaseRequestDetail(View):
     @mask_view(
         auth_require=True,
-        template='sales/purchasing/purchase_request/purchase_request_list.html',
+        template='sales/purchasing/purchase_request/purchase_request_detail.html',
         menu_active='menu_purchase_request_list',
-        breadcrumb='PURCHASE_REQUEST_LIST_PAGE',
-        perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_LIST, method='GET'),
+        breadcrumb='PURCHASE_REQUEST_DETAIL_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_DETAIL, method='GET', fill_key=['pk']),
         icon_cls='fas fa-file-upload',
         icon_bg='bg-primary',
     )
     def get(self, request, *args, **kwargs):
         return {}, status.HTTP_200_OK
+
+
+class PurchaseRequestUpdate(View):
+    @mask_view(
+        auth_require=True,
+        template='sales/purchasing/purchase_request/purchase_request_update.html',
+        menu_active='menu_purchase_request_list',
+        breadcrumb='PURCHASE_REQUEST_UPDATE_PAGE',
+        perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_DETAIL, method='PUT', fill_key=['pk']),
+        icon_cls='fas fa-file-upload',
+        icon_bg='bg-primary',
+    )
+    def get(self, request, *args, **kwargs):
+        input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_REQUEST
+        return {
+            'data': {'employee_current': request.user.employee_current_data},
+            'input_mapping_properties': input_mapping_properties,
+            'form_id': 'frm-detail-pr'
+        }, status.HTTP_200_OK
 
 
 class PurchaseRequestListAPI(APIView):
@@ -58,20 +92,6 @@ class PurchaseRequestListAPI(APIView):
         return resp.auto_return()
 
 
-class PurchaseRequestDetail(View):
-    @mask_view(
-        auth_require=True,
-        template='sales/purchasing/purchase_request/purchase_request_detail.html',
-        menu_active='menu_purchase_request_list',
-        breadcrumb='PURCHASE_REQUEST_DETAIL_PAGE',
-        perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_DETAIL, method='GET', fill_key=['pk']),
-        icon_cls='fas fa-file-upload',
-        icon_bg='bg-primary',
-    )
-    def get(self, request, *args, **kwargs):
-        return {}, status.HTTP_200_OK
-
-
 class PurchaseRequestDetailAPI(APIView):
     @mask_view(
         auth_require=True,
@@ -87,34 +107,17 @@ class PurchaseRequestDetailAPI(APIView):
     )
     def put(self, request, pk, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_DETAIL.fill_key(pk=pk)).put(request.data)
+        if resp.state:
+            resp.result['message'] = PurchasingMsg.PURCHASE_REQUEST_UPDATE
+            return resp.result, status.HTTP_200_OK
         return resp.auto_return()
 
 
-class PurchaseRequestProductListAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        data = request.query_params.dict()
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PURCHASE_REQUEST_PRODUCT_LIST).get(data)
-        return resp.auto_return(key_success='purchase_request_product_list')
-
-
-class PurchaseRequestListForPQRAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST_FOR_PQR).get()
-        return resp.auto_return(key_success='purchase_request_list')
-
-
+# config
 class PurchaseRequestConfig(View):
     @mask_view(
         auth_require=True,
-        template='sales/purchasing/purchase_request/config.html',
+        template='sales/purchasing/purchase_request/purchase_request_config.html',
         menu_active='menu_purchase_request_config',
         breadcrumb='PURCHASE_REQUEST_CONFIG_PAGE',
         perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_CONFIG, method='GET'),
@@ -145,24 +148,39 @@ class PurchaseRequestConfigAPI(APIView):
         return resp.auto_return()
 
 
-class PurchaseRequestUpdate(View):
+# related
+class PurchaseRequestSaleOrderListAPI(APIView):
     @mask_view(
         auth_require=True,
-        template='sales/purchasing/purchase_request/purchase_request_update.html',
-        menu_active='menu_purchase_request_list',
-        breadcrumb='PURCHASE_REQUEST_UPDATE_PAGE',
-        perm_check=PermCheck(url=ApiURL.PURCHASE_REQUEST_DETAIL, method='PUT', fill_key=['pk']),
-        icon_cls='fas fa-file-upload',
-        icon_bg='bg-primary',
+        is_api=True,
     )
     def get(self, request, *args, **kwargs):
-        input_mapping_properties = InputMappingProperties.PURCHASING_PURCHASE_REQUEST
-        return {
-                   'input_mapping_properties': input_mapping_properties, 'form_id': 'frm-detail-pr'
-               }, status.HTTP_200_OK
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_SALE_ORDER_LIST).get(params)
+        return resp.auto_return(key_success='sale_order_list')
 
 
-# PR list use for other apps
+class PurchaseRequestProductListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PURCHASE_REQUEST_PRODUCT_LIST).get(data)
+        return resp.auto_return(key_success='purchase_request_product_list')
+
+
+class PurchaseRequestListForPQRAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST_FOR_PQR).get()
+        return resp.auto_return(key_success='purchase_request_list')
+
+
 class PurchaseRequestSaleListAPI(APIView):
     @mask_view(
         auth_require=True,

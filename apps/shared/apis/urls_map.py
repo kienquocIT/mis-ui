@@ -65,7 +65,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # files
     FILE_UPLOAD = StringUrl('attachment/upload')
     FILE_EDIT = StringUrl('attachment/edit')
-    FILE_UPDATE = StringUrl('attachment/update/{pk}')
+    FILE_DETAIL = StringUrl('attachment/detail/{pk}')
     PUBLIC_FILE_UPLOAD = StringUrl('attachment/public-upload')
     FILE_UNUSED = StringUrl('attachment/unused')
     FILE_UPLOAD_WEB_BUILDER = StringUrl('attachment/web-builder/upload')
@@ -611,7 +611,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GOODS_ISSUE_PRODUCT_LIST = StringUrl('inventory/goods-issue-product/list')
 
     # Sale Order List for Purchasing Staff
-    SALE_ORDER_LIST_FOR_PURCHASING_STAFF = StringUrl('saleorder/purchasing-staff/list')
+    PURCHASE_REQUEST_SALE_ORDER_LIST = StringUrl('purchasing/purchase-request-so-list')
 
     # Report
     REPORT_REVENUE_LIST = StringUrl('report/revenue/list')
@@ -673,6 +673,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Distribution plan
     DISTRIBUTION_PLAN_LIST = StringUrl('distribution-plans/list')
     DISTRIBUTION_PLAN_DETAIL = StringUrl('distribution-plans/detail/{pk}')
+    PRODUCT_LIST_DISTRIBUTION_PLAN = StringUrl('distribution-plans/product/list/{pk}')
 
     # Bill of material
     BOM_LIST = StringUrl('production/bom/list')

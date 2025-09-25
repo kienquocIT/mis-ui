@@ -94,7 +94,8 @@ class OpportunityDetailAPI(APIView):
         auth_require=True
     )
     def get(self, request, pk, *arg, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DETAIL.fill_key(pk=pk)).get()
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.OPPORTUNITY_DETAIL.fill_key(pk=pk)).get(data)
         return resp.auto_return(key_success='opportunity')
 
     @mask_view(

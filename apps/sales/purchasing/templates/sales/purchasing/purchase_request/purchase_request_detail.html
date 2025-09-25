@@ -36,11 +36,6 @@
             data-url-tax="{% url 'TaxListAPI' %}"
     ></script>
     <script id="script-trans"
-            data-trans-for-so="{% trans 'For Sale Order' %}"
-            data-trans-for-db="{% trans 'For Stock PLan' %}"
-            data-trans-for-sf="{% trans 'For Stock Free' %}"
-            data-trans-for-fa="{% trans 'For Fixed Asset' %}"
-            data-trans-description="{% trans 'Description' %}"
     ></script>
     <form id="frm-detail-pr"
           data-method="GET"
@@ -53,8 +48,10 @@
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
-    <script src="{% static 'assets/sales/purchasing/js/purchase_request/pr_common.js' %}"></script>
-    <script src="{% static 'assets/sales/purchasing/js/purchase_request/pr_detail.js' %}"></script>
+    <script src="{% static 'assets/js/haind-common-js.js' %}"></script>
+    <script src="{% static 'assets/js/shared/usual_load_page.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_common.js' %}"></script>
+    <script src="{% static 'assets/sales/purchasing/js/purchase_request/purchase_request_detail.js' %}"></script>
 
     <script src="{% static 'printer/print.js' %}"></script>
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>

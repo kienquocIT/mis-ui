@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 
 from requests_toolbelt import MultipartEncoder
 
-from apps.shared import mask_view, ServerAPI, ApiURL, TypeCheck
+from apps.shared import mask_view, ServerAPI, ApiURL, TypeCheck, BaseView
 from apps.shared.apis import RespData
 from apps.shared.msg import CoreMsg, KMSMsg
 
@@ -26,6 +26,8 @@ class AttachmentUpload(APIView):
                     'file': (uploaded_file.name, uploaded_file, uploaded_file.content_type),
                     'remarks': request.data.get('remarks', ''),
                     'folder': request.data.get('folder', ''),
+                    'document_type_id': request.data.get('document_type_id', None),
+                    'content_group_id': request.data.get('content_group_id', None),
                 }
             )
             resp = ServerAPI(
@@ -52,18 +54,25 @@ class AttachmentEditAPI(APIView):
         return RespData.resp_400(errors_data={'File': 'Data error'})
 
 
-class AttachmentUpdateAPI(APIView):
+class AttachmentDetailAPI(APIView):
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, pk, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.FILE_DETAIL.fill_key(pk=pk)).get()
+        return resp.auto_return()
 
     @mask_view(
         login_require=True,
         is_api=True
     )
     def put(self, request, *args, pk, **kwargs):
-        return update_common(
+        return BaseView.run_update(
             request=request,
-            url=ApiURL.FILE_UPDATE,
+            url=ApiURL.FILE_DETAIL,
             pk=pk,
-            msg=CoreMsg.FILE_UPDATE
         )
 
 

@@ -1044,7 +1044,6 @@ class ProductPageFunction {
                     let data = $.fn.switcherResp(resp);
                     if (data && typeof data === 'object' && data.hasOwnProperty('attribute_list')) {
                         pageVariables.raw_attribute_list = data?.['attribute_list'].filter(item => item?.['is_inventory'] === pageElements.$check_tab_inventory.is(':checked'))
-                        console.log(pageVariables.raw_attribute_list)
                         return pageVariables.raw_attribute_list.filter(item => item?.['is_category'] === true && Object.keys(item?.['parent_n']).length === 0);
                     }
                     return [];
@@ -1289,7 +1288,7 @@ class ProductPageFunction {
         let avatarEle = $('#avatar-img-input');
         if (data?.['avatar_img']) {
             $(`
-                    <img src="${data?.['avatar_img']}" style="width: 90%; object-fit: cover;"/>
+                    <img src="${data?.['avatar_img']}" style="width: 50%; height: 50%; object-fit: cover;"/>
                 `).insertAfter(avatarEle);
         }
         avatarEle.remove();

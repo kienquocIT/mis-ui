@@ -520,3 +520,15 @@ msgstr "Thêm Loại Kiện Hàng"
 #
 msgid "Update Package Type"
 msgstr "Cập nhật loại hàng"
+
+#
+msgid "Ordered"
+msgstr "Đã đặt hàng"
+
+#
+msgid "Requested"
+msgstr "Đã yêu cầu"
+
+#
+msgid "Remain"
+msgstr "Còn lại"

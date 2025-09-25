@@ -115,3 +115,15 @@ class DistributionPlanDetailAPI(APIView):
             resp.result['message'] = SaleMsg.DISTRIBUTION_PLAN_UPDATE
             return resp.result, status.HTTP_200_OK
         return resp.auto_return()
+
+
+# related
+class ProductListDistributionPlanAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_LIST_DISTRIBUTION_PLAN.fill_key(pk=pk)).get(params)
+        return resp.auto_return(key_success='dp_product_list')

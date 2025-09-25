@@ -14,7 +14,7 @@ $(document).ready(function () {
 
     let form_validator = $('#form-create-ar-invoice').validate({
         submitHandler: function (form) {
-            let form_data = ARInvoiceHandler.CombinesData(form, 'create');
+            let form_data = ARInvoiceHandler.CombinesData(form);
             if (form_data) {
                 WFRTControl.callWFSubmitForm(form_data);
             }

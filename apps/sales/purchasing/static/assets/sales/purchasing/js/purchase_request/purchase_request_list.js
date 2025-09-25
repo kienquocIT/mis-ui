@@ -1,9 +1,5 @@
 $(document).ready(function () {
-    const ele_url = $('#url-factory');
-    const url_detail = ele_url.data('url-detail');
-    const url_create = ele_url.data('url-create');
-
-    function loadDtb(url_detail) {
+    function LoadPurchaseRequestList() {
         if (!$.fn.DataTable.isDataTable('#datatable-purchase-request')) {
             let $table = $('#datatable-purchase-request')
             let frm = new SetupFormSubmit($table);
@@ -16,7 +12,7 @@ $(document).ready(function () {
                 reloadCurrency: true,
                 fixedColumns: {
                     leftColumns: 2,
-                    rightColumns: window.innerWidth <= 768 ? 0 : 1
+                    rightColumns: window.innerWidth <= 768 ? 0 : 2
                 },
                 ajax: {
                     url: frm.dataUrl,
@@ -39,19 +35,19 @@ $(document).ready(function () {
                     {
                         className: 'ellipsis-cell-xs w-5',
                         render: (data, type, row) => {
-                            let link = url_detail.format_url_with_uuid(row.id)+`?type=${row?.['request_for']}`;
+                            let link = $('#url-factory').data('url-detail').format_url_with_uuid(row?.['id'])+`?type=${row?.['request_for']}`;
                             return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
                         }
                     },
                     {
-                        className: 'ellipsis-cell-lg w-30',
+                        className: 'ellipsis-cell-lg w-20',
                         render: (data, type, row) => {
-                            let link = url_detail.format_url_with_uuid(row.id)+`?type=${row?.['request_for']}`;
+                            let link = $('#url-factory').data('url-detail').format_url_with_uuid(row?.['id'])+`?type=${row?.['request_for']}`;
                             return `<a href="${link}" class="link-primary underline_hover" title="${row?.['title']}">${row?.['title']}</a>`
                         }
                     },
                     {
-                        className: 'w-15',
+                        className: 'w-10',
                         render: (data, type, row) => {
                             let doc_code = ''
                             if (row?.['request_for'] === 0) {
@@ -76,7 +72,19 @@ $(document).ready(function () {
                         }
                     },
                     {
-                        className: 'w-10',
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return WFRTControl.displayEmployeeWithGroup(row?.['employee_created']);
+                        }
+                    },
+                    {
+                        className: 'ellipsis-cell-sm w-10',
+                        render: (data, type, row) => {
+                            return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
+                        }
+                    },
+                    {
+                        className: 'text-center w-5',
                         render: (data, type, row) => {
                             let status_data = {
                                 0: "text-blue",
@@ -97,43 +105,5 @@ $(document).ready(function () {
         }
     }
 
-    loadDtb(url_detail);
-
-    function changeHrefCreate(url_create, paramString) {
-        window.location.href = url_create + "?" + paramString;
-    }
-
-    $(document).on('click', '#btn-create-for-sale-order', function () {
-        let paramString = $.param({
-            'type': '0',
-        })
-        changeHrefCreate(url_create, paramString);
-    })
-
-    $(document).on('click', '#btn-create-for-stock-free', function () {
-        let paramString = $.param({
-            'type': '1',
-        })
-        changeHrefCreate(url_create, paramString);
-    })
-
-    $(document).on('click', '#btn-create-for-fixed-asset', function () {
-        let paramString = $.param({
-            'type': '2',
-        })
-        changeHrefCreate(url_create, paramString);
-    })
-
-    $(document).on('click', '#btn-create-for-stock-plan', function () {
-        let paramString = $.param({
-            'type': '3',
-        })
-        changeHrefCreate(url_create, paramString);
-    })
-
-    $('.select-pr-type').on('mouseenter', function () {
-        $(this).addClass('bg-secondary-light-5')
-    }).on('mouseleave', function () {
-        $(this).removeClass('bg-secondary-light-5')
-    })
+    LoadPurchaseRequestList();
 })

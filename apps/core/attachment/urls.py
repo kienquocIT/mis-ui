@@ -5,14 +5,14 @@ from .views import (
     ImageWebBuilderUpload, ImageWebBuilderList, FolderList, FolderListAPI, FolderDetailAPI,
     FolderUploadFileList, AttachmentDownload, AttachmentPreview, AttachmentInfo, PublicAttachmentUpload,
     FolderListSharedAPI, FolderMyFileListAPI, AttachmentEditAPI, FolderPermListAPI, FilePermListAPI,
-    AttachmentUpdateAPI, FolderDownloadAPI, FolderMyFileList
+    AttachmentDetailAPI, FolderDownloadAPI, FolderMyFileList
 )
 
 urlpatterns = [
     path('unused', FilesUnusedAPI.as_view(), name='FilesUnusedAPI'),
     path('upload', AttachmentUpload.as_view(), name='AttachmentUpload'),
     path('edit-api', AttachmentEditAPI.as_view(), name='AttachmentEditAPI'),
-    path('update-api/<str:pk>', AttachmentUpdateAPI.as_view(), name='AttachmentUpdateAPI'),
+    path('detail-api/<str:pk>', AttachmentDetailAPI.as_view(), name='AttachmentDetailAPI'),
     path('public-upload', PublicAttachmentUpload.as_view(), name='PublicAttachmentUpload'),
     path('download/<str:pk>', AttachmentDownload.as_view(), name='AttachmentDownload'),
     path('web-builder/upload', ImageWebBuilderUpload.as_view(), name='ImageWebBuilderUpload'),

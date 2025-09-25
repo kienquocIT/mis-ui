@@ -410,7 +410,7 @@ class OpportunityPageFunction {
                         UsualLoadPageFunction.LoadProductCategory({
                             element: $(ele).find('.box-select-product-category'),
                             data: data_list[index]?.['product_category'],
-                            data_url: `${$urlEle.data('url-product')}?id=${$productCategorySelectEle.val().join(',')}`
+                            data_url: `${$urlEle.data('url-product-category')}?id__in=${$productCategorySelectEle.val().join(',')}`,
                         })
                         UsualLoadPageFunction.LoadUOM({
                             element: $(ele).find('.box-select-uom'),
@@ -780,6 +780,7 @@ class OpportunityPageFunction {
             },
             allow_dismiss: false,
             showProgressbar: true,
+            delay: 1000
         });
 
         const quotation_check_perm = $.fn.callAjax2({
@@ -1153,8 +1154,8 @@ class OpportunityPageFunction {
         let total_pretax = 0;
         $table_product.find('tbody tr').each(function () {
             let tax_obj = SelectDDControl.get_data_from_idx($(this).find('.box-select-tax'), $(this).find('.box-select-tax').val())
-            let tax_rate = tax_obj?.['rate'] || 0
-            let sub_total = $(this).find('.input-subtotal').valCurrency()
+            let tax_rate = parseFloat(tax_obj?.['rate'] || 0)
+            let sub_total = parseFloat($(this).find('.input-subtotal').attr('value') || 0)
             let tax_price = sub_total * (tax_rate / 100)
             total_pretax += sub_total
             tax_value += tax_price
@@ -1667,14 +1668,14 @@ class OpportunityHandler {
         $inputRateEle.val(pageVariables.opp_detail_data?.['win_rate'])
         if (pageVariables.opp_config_data?.['is_input_win_rate']) {
             $checkInputRateEle.prop('disabled', false);
-            $inputRateEle.prop('readonly', !$checkInputRateEle.prop('checked'));
+            $inputRateEle.prop('readonly', true);
         }
         else {
-            $checkInputRateEle.prop('checked', false).prop('disabled', true);
+            $checkInputRateEle.prop('disabled', true).prop('checked', false);
         }
         if (pageVariables.opp_detail_data?.['is_input_rate']) {
             $checkInputRateEle.prop('checked', true);
-            $inputRateEle.prop('disabled', false);
+            $inputRateEle.prop('readonly', false);
         }
         else {
             $checkInputRateEle.prop('checked', false);
@@ -1702,7 +1703,7 @@ class OpportunityHandler {
         UsualLoadPageFunction.LoadProductCategory({
             element: $productCategorySelectEle,
             data: pageVariables.opp_detail_data?.['product_category'],
-            data_url: $urlEle.data('url-product')
+            data_url: $urlEle.data('url')
         })
         // f. Load sale person
         UsualLoadPageFunction.LoadEmployee({
@@ -1773,6 +1774,7 @@ class OpportunityHandler {
             },
             allow_dismiss: false,
             showProgressbar: true,
+            delay: 1000
         });
 
         const pk = $.fn.getPkDetail();
@@ -1907,6 +1909,7 @@ class OpportunityEventHandler {
         $('#btn-add-select-product').on('click', function () {
             UsualLoadPageFunction.AddTableRow($table_product, {'product': {}})
             let row_added = $table_product.find('tbody tr:last-child')
+            row_added.find(`.box-select-product-category`).prop('disabled', true)
             UsualLoadPageFunction.LoadProduct({
                 element: row_added.find('.select-box-product'),
                 data_url: `${$urlEle.data('url-product')}?general_product_category_id__in=${$productCategorySelectEle.val().join(',')}`
@@ -1921,7 +1924,7 @@ class OpportunityEventHandler {
             let row_added = $table_product.find('tbody tr:last-child')
             UsualLoadPageFunction.LoadProductCategory({
                 element: row_added.find('.box-select-product-category'),
-                data_url: $productCategorySelectEle.val()
+                data_url: `${$urlEle.data('url-product-category')}?id__in=${$productCategorySelectEle.val().join(',')}`,
             });
             UsualLoadPageFunction.LoadUOM({
                 element: row_added.find('.box-select-uom'),
@@ -1934,7 +1937,7 @@ class OpportunityEventHandler {
         })
         $(document).on('change', '.select-box-product', function () {
             let ele_tr = $(this).closest('tr')
-            ele_tr.find(`.box-select-product-category`).empty().prop('disabled', true)
+            ele_tr.find(`.box-select-product-category`).empty()
             ele_tr.find(`.box-select-uom`).empty()
             ele_tr.find(`.box-select-tax`).empty()
 
@@ -1942,10 +1945,10 @@ class OpportunityEventHandler {
             UsualLoadPageFunction.LoadProductCategory({
                 element: ele_tr.find(`.box-select-product-category`),
                 data: product?.['general_information']?.['product_category'],
-                data_url: $productCategorySelectEle.val()
+                data_url: `${$urlEle.data('url-product-category')}?id__in=${$productCategorySelectEle.val().join(',')}`,
             })
             UsualLoadPageFunction.LoadUOM({
-                element: ele_tr.find(`.box-select-uom`).find('.box-select-uom'),
+                element: ele_tr.find(`.box-select-uom`),
                 data: product?.['sale_information']?.['default_uom'],
                 data_params: {'group_id': product?.['general_information']?.['uom_group']?.['id']},
                 data_url: $urlEle.data('url-uom'),
@@ -2079,10 +2082,10 @@ class OpportunityEventHandler {
             }
         })
         $inputRateEle.on('change', function () {
-            let value = $(this).val();
-            if (value < 0 || value > 100) {
-                $.fn.notifyB({description: $('#limit-rate').text()}, 'failure');
-                $(this).val(0);
+            let value = parseFloat($(this).val() || 0)
+            if (value < 0 || value >= 100) {
+                $.fn.notifyB({description: $.fn.gettext('Invalid value')}, 'failure')
+                $(this).val(0)
             } else {
                 $rangeInputEle.val($(this).val())
             }
@@ -2133,42 +2136,31 @@ class OpportunityEventHandler {
                 $(this).val('')
             }
         })
-        $inputRateEle.on('focus', function () {
-            if ($(this).val() === '0') {
-                $(this).val('');
-            }
-        });
-        // $(document).on('click', '.btn-go-to-stage', function () {
-        //     if (config_is_select_stage) {
-        //         if ($('#input-close-deal').is(':checked')) {
-        //             OpportunityPageFunction.CommonShowAlert($('#deal-closed').text());
-        //         } else {
-        //             if ($check_lost_reason.is(':checked') || $('.input-win-deal:checked').length > 0) {
-        //                 OpportunityPageFunction.CommonShowAlert($('#deal-close-lost').text());
-        //             } else {
-        //                 let stage = $(this).closest('.sub-stage');
-        //                 let index = stage.index();
-        //                 let ele_stage = $('#div-stage .sub-stage');
-        //                 $('.stage-lost').removeClass('stage-selected');
-        //                 for (let i = 0; i <= ele_stage.length; i++) {
-        //                     if (i <= index) {
-        //                         if (!ele_stage.eq(i).hasClass('stage-lost')) {
-        //                             ele_stage.eq(i).addClass('stage-selected');
-        //                         }
-        //                     } else {
-        //                         ele_stage.eq(i).removeClass('stage-selected');
-        //                     }
-        //                 }
-        //                 if (!$checkInputRateEle.prop('checked')) {
-        //                     $inputRateEle.val(30);
-        //                     $rangeInputEle.val(30)
-        //                 }
-        //             }
-        //         }
-        //     } else {
-        //         OpportunityPageFunction.CommonShowAlert($('#not-select-stage').text());
-        //     }
-        // })
+        $(document).on('click', '.btn-go-to-stage', function () {
+            WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
+            let ajax_opp_detail = $.fn.callAjax2({
+                url: $('#frm-detail').data('url'),
+                data: {'current_stage_id_manual_update': $(this).closest('li').attr('data-id')},
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data?.['opportunity']) {
+                        return data?.['opportunity'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    $.fn.notifyB({description: errs.data.errors}, 'failure');
+                    WindowControl.hideLoading();
+                }
+            );
+            Promise.all([ajax_opp_detail]).then(([opp_detail_data]) => {
+                if (opp_detail_data) {
+                    location.reload()
+                }
+            })
+        })
         $(document).on('change', '#input-close-deal', function () {
             if ($(this).is(':checked')) {
                 $(this).closest('.sub-stage').addClass('stage-selected');

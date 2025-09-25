@@ -6,7 +6,7 @@ $(document).ready(function () {
 
     let form_validator = $('#form-detail-ar-invoice').validate({
         submitHandler: function (form) {
-            let form_data = ARInvoiceHandler.CombinesData(form, 'update');
+            let form_data = ARInvoiceHandler.CombinesData(form);
             if (form_data) {
                 WFRTControl.callWFSubmitForm(form_data);
             }

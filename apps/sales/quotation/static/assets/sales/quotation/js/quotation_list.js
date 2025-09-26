@@ -252,7 +252,7 @@ $(function () {
                 {"id": "<=", "title": "≤"},
             ], {}, null, true);
             // init date picker
-            $('.date-picker').each(function () {
+            $('.flat-picker').each(function () {
                 DateTimeControl.initFlatPickrDate(this);
             });
 

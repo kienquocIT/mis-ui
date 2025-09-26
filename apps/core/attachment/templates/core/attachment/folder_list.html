@@ -57,7 +57,10 @@
                 <div class="d-flex align-items-center mb-2 breadcrumb_file mt-4" id="folder-path">
                 </div>
                 <div class="clearfix"></div>
+                <div class="d-flex justify-content-between">
                 <h5 class="tit-crt mb-4"></h5>
+                {% include 'extends/files/file_filter.html' %}
+                </div>
                 <input type="hidden" id="current_folder" value="root">
                 <div class="w-100 card card-refresh">
                     <div class="refresh-container" style="display: block">
@@ -502,5 +505,6 @@
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
 
+    <script src="{% static 'assets/js/extends/files/file_filter.js' %}"></script>
     <script src="{% static 'assets/core/attachment/js/common.js' %}"></script>
 {% endblock %}

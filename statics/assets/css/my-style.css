@@ -1563,9 +1563,9 @@ table.dataTable tr.dtrg-group th {
 
 
 #dash_more li .nav-children {
-    left: auto;
-    right: auto;
-    margin-top: 30px;
+    left: 30%;
+    /*right: auto;*/
+    margin-top: 20px;
 }
 
 .sweet-alert-left-content {

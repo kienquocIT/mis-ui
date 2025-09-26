@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="offcanvas offcanvas-end w-60" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
+<div class="offcanvas offcanvas-end w-30" tabindex="-1" id="filterCanvas" aria-labelledby="offcanvasTopLabel">
     <div class="modal-header">
         <h5><b>{% trans 'Filter' %}</b></h5>
         <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="offcanvas"><span class="icon"><i class="far fa-window-close"></i></span></button>
@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12 col-md-2 col-lg-2">
+            <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="form-label" for="operator">{% trans 'operator' %}</label>
                     <select
@@ -46,7 +46,7 @@
                     ></select>
                 </div>
             </div>
-            <div class="col-12 col-md-4 col-lg-4">
+            <div class="col-12 col-md-6 col-lg-6">
                 <div class="form-group">
                     <label class="form-label" for="total">{% trans 'Quotation value' %}</label>
                     <input
@@ -61,24 +61,24 @@
         </div>
         <b>{% trans 'Date approved' %}</b>
         <div class="row">
-            <div class="col-12 col-md-3 col-lg-3">
+            <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="form-label" for="date_from">{% trans 'From' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="date_from" id="date_from"
-                               class="form-control date-picker" autocomplete="off">
+                               class="form-control flat-picker" autocomplete="off">
                         <div class="input-suffix">
                             <i class="fas fa-calendar-alt"></i>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-3 col-lg-3">
+            <div class="col-12 col-md-4 col-lg-4">
                 <div class="form-group">
                     <label class="form-label" for="date_to">{% trans 'To' %}</label>
                     <div class="input-affix-wrapper">
                         <input type="text" name="date_from" id="date_to"
-                               class="form-control date-picker" autocomplete="off">
+                               class="form-control flat-picker" autocomplete="off">
                         <div class="input-suffix">
                             <i class="fas fa-calendar-alt"></i>
                         </div>

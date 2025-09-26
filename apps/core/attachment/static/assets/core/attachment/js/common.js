@@ -755,6 +755,7 @@ class FilesHandle {
         $.fn.callAjax2({
             'url': this.$urlFact.attr('data-folder-detail').format_url_with_uuid(dataId),
             'method': 'GET',
+            'data': FileFilterHandle.getFilterData(),
             'sweetAlertOpts': {'allowOutsideClick': true}
         }).then((resp) => {
             let rep = $.fn.switcherResp(resp);
@@ -1196,5 +1197,14 @@ $(document).ready(function () {
         'element_folder': $('#current_folder'),
         'CB_after_upload': triggerAfterUpload,
         'maxFileSize': parseInt($('#max_upload_file').text()) || 20971520,
+    });
+
+    FileFilterHandle.$btnApply.on('click', function () {
+        let $currentFolder = $('#current_folder');
+        if ($currentFolder.length > 0) {
+            if ($currentFolder.val()) {
+                files.get_folder($currentFolder.val());
+            }
+        }
     });
 });

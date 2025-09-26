@@ -1570,3 +1570,10 @@ table.dataTable tr.dtrg-group th {
 .sweet-alert-left-content {
     text-align: left !important; /* or start */
 }
+
+/* tăng chiều rộng và căn giữa popup */
+.swal2-container.custom-swal .swal2-popup {
+  min-width: 30% !important;   /* hoặc 700px, tuỳ bạn */
+  max-width: 90% !important; /* tránh bị tràn màn hình */
+  border-radius: 12px;       /* bo góc đẹp hơn */
+}

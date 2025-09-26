@@ -8317,10 +8317,6 @@ msgid "Add new credit card"
 msgstr "Thêm thẻ tín dụng"
 
 #
-msgid "Go to Stage"
-msgstr "Nhảy đến trạng thái này"
-
-#
 msgid "Details"
 msgstr "Chi tiết"
 

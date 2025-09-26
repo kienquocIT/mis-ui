@@ -514,6 +514,7 @@ class FilesHandle {
                     const space = $('#folder-tree .btn-active').attr('data-space')
                     if (space === 'workspace') {
                         d.is_system = true
+                        d.parent_n__isnull=true
                     }
                     d.length = 50
                     if (data_tbl?.next) d.page = data_tbl.next
@@ -768,7 +769,7 @@ class FilesHandle {
                 _this.$folder.DataTable().clear().rows.add(list_new).draw()
 
                 // set new current folder
-                $('#current_folder').data('data-json', {id: rep.id, title: rep.title}).val(rep.id)
+                $('#current_folder').data('brc', {id: rep.id, title: rep.title}).val(rep.id)
 
                 // load new breadcrumb
                 _this.breadcrumb_handle({
@@ -872,9 +873,13 @@ class FilesHandle {
         if (Object.keys(data).length){
             const $listHtml = $('#folder-path');
             const hasItem = $('a', $listHtml).length;
-            $('a', $listHtml).each(function(e){
-                $(e).removeClass('brc-current')
-            })
+            const $ElmCrt = $('#current_folder')
+            let currentData = undefined
+            if ($ElmCrt.data('brc')){
+                currentData = $ElmCrt.data('brc')
+            }
+
+            $('a', $listHtml).removeClass('brc-current')
             const aTag = $('<a href="#" class="brc-item brc-current">');
             aTag.text(data.title)
             aTag.data('brc', data)
@@ -895,7 +900,7 @@ class FilesHandle {
                     if (rootData.id === 'shared') url = _this.$urlFact.attr('data-folder-shared-to-me-lst')
                     _this.loadTable({'url':url}, true)
                     $listHtml.add($('.tit-crt')).html('');
-                    $('#current_folder').val('')
+                    $ElmCrt.data('brc', undefined).val('')
                 })
             }
             if (hasItem) $listHtml.append('<span>/</span>');
@@ -903,12 +908,12 @@ class FilesHandle {
 
             aTag.on('click', function(){
                 const data = $(this).data('brc')
-                if (data.id === $('#current_folder').val()) return true
+                if (data.id === $ElmCrt.val() || $(this).hasClass('brc-current')) return true
                 else{
                     _this.get_folder(data.id)
                     $('.tit-crt').html(data.title)
                 }
-                $(this).nextAll().remove();
+                $(this).prev().prev().nextAll().remove();
                 // reset and uncheck table
                 $('.btn_cancel_slt').trigger('click');
             })

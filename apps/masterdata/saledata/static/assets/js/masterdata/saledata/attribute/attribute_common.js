@@ -556,7 +556,7 @@ class AttributeHandle {
                 let durationUnitEle = row.querySelector('.table-row-duration-unit');
                 let delEle = row.querySelector('.del-row');
                 if (durationUnitEle) {
-                    FormElementControl.loadInitS2($(durationUnitEle));
+                    FormElementControl.loadInitS2($(durationUnitEle), [], {'group__code': 'Time', 'group__is_default': true});
                     if (data?.['duration_unit_data']) {
                         FormElementControl.loadInitS2($(durationUnitEle), [data?.['duration_unit_data']], {'group__code': 'Time', 'group__is_default': true});
                     }

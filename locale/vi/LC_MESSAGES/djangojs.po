@@ -532,3 +532,7 @@ msgstr "Đã yêu cầu"
 #
 msgid "Remain"
 msgstr "Còn lại"
+
+#
+msgid "is inventory tracking"
+msgstr "có theo dõi tồn kho"

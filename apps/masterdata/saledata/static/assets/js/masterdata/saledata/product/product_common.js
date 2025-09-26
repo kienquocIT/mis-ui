@@ -1043,8 +1043,8 @@ class ProductPageFunction {
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
                     if (data && typeof data === 'object' && data.hasOwnProperty('attribute_list')) {
-                        pageVariables.raw_attribute_list = data?.['attribute_list'].filter(item => item?.['is_inventory'] === pageElements.$check_tab_inventory.is(':checked'))
-                        return pageVariables.raw_attribute_list.filter(item => item?.['is_category'] === true && Object.keys(item?.['parent_n']).length === 0);
+                        pageVariables.raw_attribute_list = data?.['attribute_list']
+                        return data?.['attribute_list'].filter(item => item?.['is_category'] === true && Object.keys(item?.['parent_n']).length === 0);
                     }
                     return [];
                 }
@@ -1265,7 +1265,6 @@ class ProductPageFunction {
             });
         }
     }
-
     // init upload image ele
     static initImgUpload(data) {
         let $avatarEle = $('#avatar-img-input');
@@ -1283,7 +1282,6 @@ class ProductPageFunction {
         })
         $avatarEle.fadeIn();
     }
-
     static loadImgDetail(data) {
         let avatarEle = $('#avatar-img-input');
         if (data?.['avatar_img']) {
@@ -1855,7 +1853,8 @@ class ProductHandler {
                     $.fn.initMaskMoney2();
 
                     UsualLoadPageFunction.DisablePage(
-                        option==='detail'
+                        option==='detail',
+                        ['.btn-show-child-selected-attribute']
                     )
 
                     // init and load avatar img
@@ -2318,7 +2317,7 @@ class ProductEventHandler {
                         child_row_html += `<tr data-parent-id="${$(this).attr('data-id')}" data-level="${childLevel}">
                                                 <td></td>
                                                 <td></td>
-                                                <td><span style="padding-left:${childLevel * 20}px"><i class="bi bi-box-seam"></i> ${this_child[i]?.['title']}</span></td>
+                                                <td><span style="padding-left:${childLevel * 20}px"><i class="bi bi-box-seam"></i> ${this_child[i]?.['title']}</span><span class="text-success ml-1">${this_child[i]?.['is_inventory'] ? '(' + $.fn.gettext('is inventory tracking') + ')' : ''}</span></td>
                                                 <td>
                                                     <button class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs btn-show-child-attribute" 
                                                             data-id="${this_child[i]?.['id']}" 
@@ -2338,8 +2337,8 @@ class ProductEventHandler {
                 }
                 else {
                     let child_row_html = '';
-                    let data_list_item = JSON.parse($(this).attr('data-list-item'));
-                    let data_duration_unit = JSON.parse($(this).attr('data-duration-unit'));
+                    let data_list_item = JSON.parse($(this).attr('data-list-item') || '[]');
+                    let data_duration_unit = JSON.parse($(this).attr('data-duration-unit') || '{}');
                     for (let i = 0; i < data_list_item.length; i++) {
                         child_row_html += `<tr data-parent-id="${$(this).attr('data-id')}" data-level="${childLevel}">
                                                 <td></td>
@@ -2369,31 +2368,33 @@ class ProductEventHandler {
                     for (let i = 0; i < this_child.length; i++) {
                         let list_item = JSON.stringify(this_child[i]?.['price_config_data']?.['list_item'] || []);
                         let duration_unit = JSON.stringify(this_child[i]?.['price_config_data']?.['duration_unit_data'] || {});
-                        child_row_html += `<tr data-parent-id="${$(this).attr('data-id')}" data-level="${childLevel}">
-                                                <td></td>
-                                                <td><span style="padding-left:${childLevel * 20}px"><i class="bi bi-box-seam"></i> ${this_child[i]?.['title']}</span></td>
-                                                <td class="text-right">
-                                                    <button type="button"
-                                                            class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs btn-child-collapse btn-show-child-selected-attribute" 
-                                                            data-id="${this_child[i]?.['id']}" 
-                                                            data-level="${childLevel}" 
-                                                            data-list-item='${list_item}' 
-                                                            data-duration-unit='${duration_unit}' 
-                                                            data-is-show="0"
-                                                            >
-                                                        <span class="icon">
-                                                            <i class="bi bi-caret-down-fill"></i>
-                                                        </span>
-                                                    </button>
-                                                </td>
-                                            </tr>`;
+                        if (this_child[i]?.['is_inventory'] === pageElements.$check_tab_inventory.is(':checked')) {
+                            child_row_html += `<tr data-parent-id="${$(this).attr('data-id')}" data-level="${childLevel}">
+                                                    <td></td>
+                                                    <td><span style="padding-left:${childLevel * 20}px"><i class="bi bi-box-seam"></i> ${this_child[i]?.['title']}</span></td>
+                                                    <td class="text-right">
+                                                        <button type="button"
+                                                                class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-xs btn-child-collapse btn-show-child-selected-attribute" 
+                                                                data-id="${this_child[i]?.['id']}" 
+                                                                data-level="${childLevel}" 
+                                                                data-list-item='${list_item}' 
+                                                                data-duration-unit='${duration_unit}' 
+                                                                data-is-show="0"
+                                                                >
+                                                            <span class="icon">
+                                                                <i class="bi bi-caret-down-fill"></i>
+                                                            </span>
+                                                        </button>
+                                                    </td>
+                                                </tr>`;
+                        }
                     }
                     this_row.after(child_row_html);
                 }
                 else {
                     let child_row_html = '';
-                    let data_list_item = JSON.parse($(this).attr('data-list-item'));
-                    let data_duration_unit = JSON.parse($(this).attr('data-duration-unit'));
+                    let data_list_item = JSON.parse($(this).attr('data-list-item') || '[]');
+                    let data_duration_unit = JSON.parse($(this).attr('data-duration-unit') || '{}');
                     for (let i = 0; i < data_list_item.length; i++) {
                         child_row_html += `<tr data-parent-id="${$(this).attr('data-id')}" data-level="${childLevel}">
                                                 <td></td>

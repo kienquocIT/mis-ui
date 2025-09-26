@@ -12290,3 +12290,7 @@ msgstr "Chỉnh sửa thuộc tính của tài liệu"
 #
 msgid "Filter by customer"
 msgstr "Lọc theo khách hàng"
+
+#
+msgid "Attributes with inventory tracking will be selected if the product has the 'Inventory' tab enabled, and vice versa."
+msgstr "Sẽ chọn những thuộc tính có theo dõi tồn kho nếu sản phẩm bật tab 'Inventory' và ngược lại."

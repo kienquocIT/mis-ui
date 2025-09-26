@@ -25,8 +25,8 @@ class AttributeHandle {
         AttributeHandle.loadDtbList();
         AttributeHandle.loadDtbWarranty();
         FormElementControl.loadInitS2(AttributeHandle.$boxParent, [], {'is_category': true}, null, true);
-        FormElementControl.loadInitS2($('#numeric_duration_unit'));
-        FormElementControl.loadInitS2($('#list_duration_unit'));
+        FormElementControl.loadInitS2($('#numeric_duration_unit'), [], {'group__code': 'Time', 'group__is_default': true});
+        FormElementControl.loadInitS2($('#list_duration_unit'), [], {'group__code': 'Time', 'group__is_default': true});
         // init date picker
         $('.flat-picker').each(function () {
             DateTimeControl.initFlatPickrDate(this);
@@ -403,7 +403,7 @@ class AttributeHandle {
                 {
                     targets: 1,
                     render: (data, type, row) => {
-                        return `<input type="text" class="form-control mask-money valid-num table-row-additional-cost" value="${row?.['additional_cost']}">`;
+                        return `<input type="text" class="form-control mask-money valid-num table-row-additional-cost" value="${row?.['additional_cost'] ? row?.['additional_cost'] : '0'}">`;
                     }
                 },
                 {
@@ -558,7 +558,7 @@ class AttributeHandle {
                 if (durationUnitEle) {
                     FormElementControl.loadInitS2($(durationUnitEle));
                     if (data?.['duration_unit_data']) {
-                        FormElementControl.loadInitS2($(durationUnitEle), [data?.['duration_unit_data']]);
+                        FormElementControl.loadInitS2($(durationUnitEle), [data?.['duration_unit_data']], {'group__code': 'Time', 'group__is_default': true});
                     }
                 }
                 if (delEle) {
@@ -764,7 +764,7 @@ $(document).ready(function () {
                 $isInventory[0].checked = dataRow?.['is_inventory'];
                 if (dataRow?.['price_config_type'] === 0) {
                     $('#numeric_attribute_unit').val(dataRow?.['price_config_data']?.['attribute_unit']);
-                    FormElementControl.loadInitS2($('#numeric_duration_unit'), [dataRow?.['price_config_data']?.['duration_unit_data']]);
+                    FormElementControl.loadInitS2($('#numeric_duration_unit'), [dataRow?.['price_config_data']?.['duration_unit_data']], {'group__code': 'Time', 'group__is_default': true});
                     $('#numeric_min').val(dataRow?.['price_config_data']?.['min_value']);
                     $('#numeric_max').val(dataRow?.['price_config_data']?.['max_value']);
                     $('#numeric_increment').val(dataRow?.['price_config_data']?.['increment']);
@@ -772,7 +772,7 @@ $(document).ready(function () {
                     $.fn.initMaskMoney2();
                 }
                 if (dataRow?.['price_config_type'] === 1) {
-                    FormElementControl.loadInitS2($('#list_duration_unit'), [dataRow?.['price_config_data']?.['duration_unit_data']]);
+                    FormElementControl.loadInitS2($('#list_duration_unit'), [dataRow?.['price_config_data']?.['duration_unit_data']], {'group__code': 'Time', 'group__is_default': true});
                     AttributeHandle.loadDtbList(dataRow?.['price_config_data']?.['list_item']);
                 }
                 if (dataRow?.['price_config_type'] === 2) {

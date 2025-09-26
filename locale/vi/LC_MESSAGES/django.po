@@ -12294,3 +12294,27 @@ msgstr "Chỉnh sửa thuộc tính của tài liệu"
 #
 msgid "Filter by customer"
 msgstr "Lọc theo khách hàng"
+
+#
+msgid "Price config"
+msgstr "Cấu hình giá"
+
+#
+msgid "Numeric"
+msgstr "Số"
+
+#
+msgid "Warranty"
+msgstr "Bảo hành"
+
+#
+msgid "Duration unit"
+msgstr "Đơn vị thời gian"
+
+#
+msgid "Increment"
+msgstr "Tăng"
+
+#
+msgid "Cost per increment"
+msgstr "Giá tăng"

@@ -58,8 +58,8 @@ const ServiceOrder = (function($) {
     const pageVariable = {
         currencyList: null,
         taxList: null,
-        durationList: null,
-        modalProductContext: null,
+        uomList: null,
+        modalContext: null,
         workOrderCostData: {},
 
         /**
@@ -174,6 +174,7 @@ const ServiceOrder = (function($) {
             uom_title: rowData?.sale_default_uom?.title || '',
             uom_data: rowData?.sale_default_uom ?? {},
             duration_unit_data: rowData?.duration_unit_data ?? {},
+            duration_id: rowData?.duration_unit_data ? rowData?.duration_unit_data?.id : null,
             id: uniqueStr
         }
 
@@ -182,6 +183,7 @@ const ServiceOrder = (function($) {
             const taxRate = (rowData?.sale_tax?.rate || 0) / 100
             const taxAmount = price * taxRate
             const total = taxAmount + price
+            const durationId = Object.keys(baseData.duration_unit_data).length > 0 ? baseData.duration_unit_data.id : null
 
             return {
                 ...baseData,
@@ -189,7 +191,8 @@ const ServiceOrder = (function($) {
                 tax_code: rowData?.sale_tax?.code || '',
                 tax_data: rowData?.sale_tax || {},
                 sub_total_value: price,
-                total_value: total
+                total_value: total,
+                duration_id: durationId
             }
         } else if (pageVariable.modalContext === 'workOrder') {
             return {
@@ -202,6 +205,7 @@ const ServiceOrder = (function($) {
                 status: WORK_ORDER_STATUS.pending
             }
         }
+
 
         return baseData
     }
@@ -255,17 +259,11 @@ const ServiceOrder = (function($) {
             const rowData = this.data()
             const $row = $(this.node())
 
-            // Get current quantity from input
-            const quantity = parseFloat($row.find('.service-quantity').val()) || rowData.quantity || 0
-
-            // Get current price from input (use the 'value' attribute for masked money inputs)
-            const price = parseFloat($row.find('.service-detail-price').attr('value')) || rowData.price || 0
-
-            // Calculate subtotal for this row
-            const subtotal = quantity * price
+            const subtotal = rowData.sub_total_value || 0
 
             // Calculate tax
             const taxRate = (rowData.tax_data?.rate || 0) / 100
+
             const taxAmount = subtotal * taxRate
 
             // Add to totals
@@ -506,23 +504,35 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-5',
                     render: (data, type, row) => {
-                        return `<input type="number" class="form-control service-duration" value="${row?.['duration'] || 1}" min="1" step="1">`
+                        const isDurationEnable = Object.keys(row?.['duration_unit_data']).length > 0
+                        if (isDurationEnable){
+                            return `<input type="number" class="form-control service-duration" value="${row?.['duration'] || 1}" min="1" step="1">`
+                        }
+                        else {
+                            return `<span>--</span>`
+                        }
                     }
                 },
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
                         const uomListUrl = pageElement.$urlScript.attr('data-uom-list-url')
-                        return `<div class="input-group">
-                                    <select class="select2 form-select service-duration-select" data-url="${uomListUrl}" data-keyResp="unit_of_measure">
+                        const isDurationEnable = Object.keys(row?.['duration_unit_data']).length > 0
+                        if (isDurationEnable){
+                            return `<div class="input-group">
+                                    <select readonly class="select2 form-select service-duration-select" data-url="${uomListUrl}" data-keyResp="unit_of_measure">
                                     </select>
                                 </div>`
+                        }
+                        else {
+                            return `<span>--</span>`
+                        }
                     }
                 },
                 {
                     className: 'w-5',
                     render: (data, type, row) => {
-                        return ProductAttribute.renderProductAttributeButton(row)
+                        return ProductAttribute.renderProductAttributeButton(row.has_attributes, row.attributes_total_cost, row, row.selected_attributes)
                     }
                 },
                 {
@@ -579,10 +589,13 @@ const ServiceOrder = (function($) {
                             data:{
                                 id: durationId,
                                 title: durationData.title,
-                            }
+                            },
+                            dataParams: {'group__code': 'Time', 'group__is_default': true}
                         })
                     } else {
-                        initSelect($(this))
+                        initSelect($(this), {
+                            dataParams: {'group__code': 'Time', 'group__is_default': true}
+                        })
                     }
                 })
             }
@@ -1859,6 +1872,43 @@ const ServiceOrder = (function($) {
     // ============ service detail =============
 
     function handleChangeServiceDetail(){
+        pageElement.serviceDetail.$table.on('change', '.service-duration', function(e){
+            const $ele = $(e.currentTarget)
+            const $row = $ele.closest('tr')
+
+            const tableServiceDetail = pageElement.serviceDetail.$table.DataTable()
+            const rowData = tableServiceDetail.row($row).data()
+
+            const newDuration = Number($ele.val())
+
+            // Update the data
+            rowData.duration = newDuration
+
+            // Calculate new total (quantity * price)
+            const quantity = rowData.quantity || 1
+            const price = parseFloat(rowData.price) || 0;
+            const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
+            const subtotal = newDuration * price * quantity
+            const taxAmount = subtotal * taxRate
+            rowData.sub_total_value = subtotal
+            rowData.total_value = subtotal + taxAmount
+
+            if (window.productAttributeInstance) {
+                if(window.productAttributeInstance.hasAttributes()){
+                    $(document).trigger('changeDuration', Number($ele.val()))
+                } else {
+                    //update total
+                    const $totalMoney = $row.find('.service-detail-total')
+                    $totalMoney.attr('data-init-money', subtotal + taxAmount)
+                    $.fn.initMaskMoney2();
+
+                    // Update the summary values
+                    loadServiceDetailSummaryValue();
+                }
+                window.productAttributeInstance.setRowData(JSON.parse(JSON.stringify(rowData)))
+            }
+        })
+
         pageElement.serviceDetail.$table.on('change', 'select.service-duration-select', function(e){
             const $select = $(e.currentTarget)
             const $row = $select.closest('tr')
@@ -1870,6 +1920,57 @@ const ServiceOrder = (function($) {
             // Update the data
             rowData.duration_id = durationId
         })
+
+        // Add this handler inside handleChangeServiceDetail function
+        $(document).on('productAttributeUpdate', function (e, data) {
+            // data contains: rowIndex, rowData, attributes, totalCost, table
+
+            const table = pageElement.serviceDetail.$table.DataTable();
+            const rowIndex = data.rowIndex;
+
+            // Get the row by index
+            const row = table.row(rowIndex);
+            const currentRowData = row.data();
+
+            if (currentRowData) {
+                const oldAttrTotalCost = currentRowData.attributes_total_cost || 0
+
+                // Update the row data with new attribute information
+                currentRowData.selected_attributes = data.attributes;
+                currentRowData.attributes_total_cost = data.totalCost
+                currentRowData.has_attributes = true;
+
+                const baseSubtotal = currentRowData.sub_total_value || 0;
+                const newSubtotal = baseSubtotal + data.totalCost - oldAttrTotalCost
+
+                // Update price-related fields
+                currentRowData.sub_total_value = newSubtotal;
+
+                // Recalculate totals
+                const taxRate = (currentRowData.tax_data?.rate || 0) / 100;
+                const taxAmount = newSubtotal * taxRate;
+
+                currentRowData.total_value = newSubtotal + taxAmount;
+
+                // Update the row data in the table
+                row.data(currentRowData);
+
+                // Update the displayed values in the DOM
+                const $rowNode = $(row.node());
+
+                // Update the total display
+                $rowNode.find('.service-detail-total').attr('data-init-money', newSubtotal + taxAmount);
+
+                // Reinitialize money formatting
+                $.fn.initMaskMoney2();
+
+                // Update the summary values
+                loadServiceDetailSummaryValue();
+
+                // Optionally, redraw the row to ensure all renders are updated
+                table.row(rowIndex).invalidate().draw(false);
+            }
+        });
     }
 
     function handleChangeServiceDescription() {
@@ -1892,126 +1993,155 @@ const ServiceOrder = (function($) {
             const table = pageElement.serviceDetail.$table.DataTable()
             const rowData = table.row($row).data()
 
-            const confirmTitle = $.fn.gettext('Change service quantity')
-            const confirmText = $.fn.gettext('This will reset the contribution and payment data')
-            Swal.fire({
-                html: `
-                    <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
-                    <h5 class="text-danger">${confirmTitle}</h5>
-                    <p>${confirmText}</p>`,
-                customClass: {
-                    confirmButton: 'btn btn-outline-secondary text-danger',
-                    cancelButton: 'btn btn-outline-secondary text-gray',
-                    container: 'swal2-has-bg',
-                    actions: 'w-100'
-                },
-                showCancelButton: true,
-                buttonsStyling: false,
-                confirmButtonText: $.fn.gettext('Yes'),
-                cancelButtonText: $.fn.gettext('Cancel'),
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    if (rowData) {
-                        const newQuantity = parseFloat($input.val()) || 0
-                        const serviceId = rowData.id
+            const dataWorkOrder = pageElement.workOrder.$table.DataTable().data().toArray()
+            const dataPayment = pageElement.payment.$table.DataTable().data()
 
-                        // Update row data
-                        rowData.quantity = newQuantity
+            if(dataWorkOrder.length > 0 || dataPayment.length > 0){
+                const confirmTitle = $.fn.gettext('Change service quantity')
+                const confirmText = $.fn.gettext('This will reset the contribution and payment data')
+                Swal.fire({
+                    html: `
+                        <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
+                        <h5 class="text-danger">${confirmTitle}</h5>
+                        <p>${confirmText}</p>`,
+                    customClass: {
+                        confirmButton: 'btn btn-outline-secondary text-danger',
+                        cancelButton: 'btn btn-outline-secondary text-gray',
+                        container: 'swal2-has-bg',
+                        actions: 'w-100'
+                    },
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: $.fn.gettext('Yes'),
+                    cancelButtonText: $.fn.gettext('Cancel'),
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        if (rowData) {
+                            const newQuantity = parseFloat($input.val()) || 0
+                            const serviceId = rowData.id
 
-                        // Calculate new total (quantity * price)
-                        const price = parseFloat(rowData.price) || 0;
-                        const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
-                        const subtotal = newQuantity * price
-                        const taxAmount = subtotal * taxRate
-                        rowData.sub_total_value = subtotal
-                        rowData.total_value = subtotal + taxAmount
+                            // Update row data
+                            rowData.quantity = newQuantity
 
-                        //update total
-                        const $totalMoney = $row.find('.service-detail-total')
-                        $totalMoney.attr('data-init-money', subtotal + taxAmount)
+                            // Calculate new total (quantity * price)
+                            const attrTotalCost = rowData.attributes_total_cost
+                            const duration = rowData.duration
+                            const price = parseFloat(rowData.price) || 0;
+                            const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
+                            const subtotal = newQuantity * price * duration + attrTotalCost
+                            const taxAmount = subtotal * taxRate
+                            rowData.sub_total_value = subtotal
+                            rowData.total_value = subtotal + taxAmount
 
-                        // 1. Reset serviceDetailTotalContributionData
-                        if (pageVariable.serviceDetailTotalContributionData[serviceId]) {
-                            delete pageVariable.serviceDetailTotalContributionData[serviceId]
-                        }
+                            //update total
+                            const $totalMoney = $row.find('.service-detail-total')
+                            $totalMoney.attr('data-init-money', subtotal + taxAmount)
 
-                        // 2. Reset product contribution data for this service
-                        Object.keys(pageVariable.productContributionData).forEach(workOrderId => {
-                            const contributions = pageVariable.productContributionData[workOrderId]
-                            if (contributions) {
-                                pageVariable.productContributionData[workOrderId] = contributions.map(contribution => {
-                                    if (contribution.service_id === serviceId) {
-                                        return {
-                                            ...contribution,
-                                            quantity: newQuantity,
-                                            balance_quantity: newQuantity,
-                                            contribution_percent: 0,
-                                            delivered_quantity: 0,
-                                            is_selected: false,
-                                            total_contribution_percent: 0,
-                                            unit_cost: 0,
-                                            total_cost: 0
-                                        }
-                                    }
-                                    return contribution
-                                })
+                            // 1. Reset serviceDetailTotalContributionData
+                            if (pageVariable.serviceDetailTotalContributionData[serviceId]) {
+                                delete pageVariable.serviceDetailTotalContributionData[serviceId]
                             }
-                        })
 
-                        // 3. Reset serviceDetailTotalPaymentData
-                        if (pageVariable.serviceDetailTotalPaymentData[serviceId]) {
-                            delete pageVariable.serviceDetailTotalPaymentData[serviceId]
-                        }
-
-                        // 4. Reset payment detail data for this service
-                        Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
-                            const paymentDetails = pageVariable.paymentDetailData[paymentId]
-                            if (paymentDetails) {
-                                pageVariable.paymentDetailData[paymentId] = paymentDetails.map(detail => {
-                                    if (detail.service_id === serviceId) {
-                                        // Reset payment detail for this service
-                                        const resetDetail = {
-                                            ...detail,
-                                            sub_total_value: subtotal,
-                                            payment_percent: 0,
-                                            payment_value: 0,
-                                            is_selected: false,
-
+                            // 2. Reset product contribution data for this service
+                            Object.keys(pageVariable.productContributionData).forEach(workOrderId => {
+                                const contributions = pageVariable.productContributionData[workOrderId]
+                                if (contributions) {
+                                    pageVariable.productContributionData[workOrderId] = contributions.map(contribution => {
+                                        if (contribution.service_id === serviceId) {
+                                            return {
+                                                ...contribution,
+                                                quantity: newQuantity,
+                                                balance_quantity: newQuantity,
+                                                contribution_percent: 0,
+                                                delivered_quantity: 0,
+                                                is_selected: false,
+                                                total_contribution_percent: 0,
+                                                unit_cost: 0,
+                                                total_cost: 0
+                                            }
                                         }
+                                        return contribution
+                                    })
+                                }
+                            })
 
-                                        // For each advance and invoiced payments, also reset additional fields
-                                        if (detail.tax_data !== undefined) {
-                                            resetDetail.tax_value = 0
-                                            resetDetail.issued_value = 0
-                                            resetDetail.balance_value = subtotal
-                                            resetDetail.reconcile_value = 0
-                                            resetDetail.receivable_value = 0
-                                        }
-                                        else {
-                                            resetDetail.total_reconciled_value = 0
-                                        }
-
-                                        // Remove reconcile data for this payment detail
-                                        if (pageVariable.reconcileData[detail.id]) {
-                                            delete pageVariable.reconcileData[detail.id]
-                                        }
-
-                                        return resetDetail
-                                    }
-                                    return detail
-                                })
+                            // 3. Reset serviceDetailTotalPaymentData
+                            if (pageVariable.serviceDetailTotalPaymentData[serviceId]) {
+                                delete pageVariable.serviceDetailTotalPaymentData[serviceId]
                             }
-                            updatePaymentRowAfterReset(paymentId)
-                        })
-                        $.fn.initMaskMoney2()
-                        loadServiceDetailSummaryValue()
+
+                            // 4. Reset payment detail data for this service
+                            Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
+                                const paymentDetails = pageVariable.paymentDetailData[paymentId]
+                                if (paymentDetails) {
+                                    pageVariable.paymentDetailData[paymentId] = paymentDetails.map(detail => {
+                                        if (detail.service_id === serviceId) {
+                                            // Reset payment detail for this service
+                                            const resetDetail = {
+                                                ...detail,
+                                                sub_total_value: subtotal,
+                                                payment_percent: 0,
+                                                payment_value: 0,
+                                                is_selected: false,
+
+                                            }
+
+                                            // For each advance and invoiced payments, also reset additional fields
+                                            if (detail.tax_data !== undefined) {
+                                                resetDetail.tax_value = 0
+                                                resetDetail.issued_value = 0
+                                                resetDetail.balance_value = subtotal
+                                                resetDetail.reconcile_value = 0
+                                                resetDetail.receivable_value = 0
+                                            }
+                                            else {
+                                                resetDetail.total_reconciled_value = 0
+                                            }
+
+                                            // Remove reconcile data for this payment detail
+                                            if (pageVariable.reconcileData[detail.id]) {
+                                                delete pageVariable.reconcileData[detail.id]
+                                            }
+
+                                            return resetDetail
+                                        }
+                                        return detail
+                                    })
+                                }
+                                updatePaymentRowAfterReset(paymentId)
+                            })
+                            $.fn.initMaskMoney2()
+                            loadServiceDetailSummaryValue()
+                        }
                     }
-                }
-                else {
-                    $input.val(rowData.quantity)
-                }
-            });
+                    else {
+                        $input.val(rowData.quantity)
+                    }
+                });
+            }
+            else {
+                const newQuantity = parseFloat($input.val()) || 0
+
+                // Update row data
+                rowData.quantity = newQuantity
+
+                // Calculate new total (quantity * price)
+                const attrTotalCost = rowData.attributes_total_cost
+                const duration = rowData.duration || 1
+                const price = parseFloat(rowData.price) || 0;
+                const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
+                const subtotal = newQuantity * price * duration + attrTotalCost
+                const taxAmount = subtotal * taxRate
+                rowData.sub_total_value = subtotal
+                rowData.total_value = subtotal + taxAmount
+
+                //update total
+                const $totalMoney = $row.find('.service-detail-total')
+                $totalMoney.attr('data-init-money', subtotal + taxAmount)
+                $.fn.initMaskMoney2()
+                loadServiceDetailSummaryValue()
+            }
         })
     }
 

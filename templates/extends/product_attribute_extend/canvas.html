@@ -141,7 +141,7 @@
     }
 </style>
 
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas-product-attribute" aria-labelledby="offcanvasRightLabel">
+<div data-uom-list-url='{% url 'UnitOfMeasureListAPI' %}' data-product-attribute="{% url 'ProductAttributeListAPI' pk=0 %}" class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas-product-attribute" aria-labelledby="offcanvasRightLabel">
     <div class="offcanvas-header">
         <h5 id="offcanvasRightLabel">
             {% trans 'Product Attributes Configuration' %}
@@ -157,3 +157,4 @@
         <i class="fa fa-save me-2"></i>{% trans 'Save Configuration' %}
     </button>
 </div>
+

@@ -1666,19 +1666,41 @@ class OpportunityHandler {
         // b. Load winrate
         $rangeInputEle.val(pageVariables.opp_detail_data?.['win_rate'])
         $inputRateEle.val(pageVariables.opp_detail_data?.['win_rate'])
+        $checkInputRateEle.prop('disabled', !pageVariables.opp_detail_data?.['is_input_rate']).prop('checked', pageVariables.opp_detail_data?.['is_input_rate']);
         if (pageVariables.opp_config_data?.['is_input_win_rate']) {
-            $checkInputRateEle.prop('disabled', false);
-            $inputRateEle.prop('readonly', true);
+            // Nếu cấu hình cho check: mở ô check + check hay không tùy theo data
+            $checkInputRateEle.prop('disabled', false).prop('checked', pageVariables.opp_detail_data?.['is_input_rate']);
+            // Mở ô nhập nếu có check
+            $inputRateEle.prop('readonly', !pageVariables.opp_detail_data?.['is_input_rate']);
         }
         else {
-            $checkInputRateEle.prop('disabled', true).prop('checked', false);
-        }
-        if (pageVariables.opp_detail_data?.['is_input_rate']) {
-            $checkInputRateEle.prop('checked', true);
-            $inputRateEle.prop('readonly', false);
-        }
-        else {
-            $checkInputRateEle.prop('checked', false);
+            // Nếu OPP có check
+            if (pageVariables.opp_detail_data?.['is_input_rate']) {
+                // Nếu data có check thì thông báo
+                Swal.fire({
+                    html:
+                    `<h4 class="text-danger">${$.fn.gettext("The configuration that allows manually entering the win rate has been disabled. The current win rate will now be updated according to the current stage of this Opportunity.")}</h4>`,
+                    customClass: {
+                        confirmButton: 'btn text-primary',
+                        container: 'custom-swal',
+                        htmlContainer: 'text-start',
+                        actions:'w-100'
+                    },
+                    allowOutsideClick: false, // không cho đóng khi click ra ngoài
+                    allowEscapeKey: false,
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: $.fn.gettext('Confirm'),
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        // Sau đó disabled ô tự nhập và gán lại winrate theo stage hiện tại
+                        $checkInputRateEle.prop('disabled', true).prop('checked', false);
+                        $inputRateEle.prop('readonly', true).val(pageVariables.opp_detail_data?.['current_stage_data']?.['win_rate']);
+                        $rangeInputEle.val(pageVariables.opp_detail_data?.['current_stage_data']?.['win_rate'])
+                    }
+                })
+            }
         }
         // c. Load customer
         UsualLoadPageFunction.LoadCustomer({
@@ -1852,9 +1874,6 @@ class OpportunityHandler {
                                         },
                                         1000
                                     )
-
-                                    // OpportunityPageFunction.reloadMemberList(pk);
-                                    // $('#modalAddMember').modal('hide');
                                 }
                                 $x.fn.hideLoadingPage();
                             },
@@ -2137,48 +2156,75 @@ class OpportunityEventHandler {
             }
         })
         $(document).on('click', '.btn-go-to-stage', function () {
-            Swal.fire({
-                html:
-                `<h5 class="text-muted">${$.fn.gettext("If you want to update the stage of this Opportunity manually, the company’s automatic stage transition settings for this opportunity will be disabled.")}</h5>`,
-                customClass: {
-                    confirmButton: 'btn text-primary',
-                    cancelButton: 'btn text-secondary',
-                    container: 'custom-swal',
-                    htmlContainer: 'text-start',
-                    actions:'w-100'
-                },
-                showCancelButton: true,
-                buttonsStyling: false,
-                confirmButtonText: $.fn.gettext('Confirm'),
-                cancelButtonText: $.fn.gettext('Cancel'),
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
-                    let ajax_opp_detail = $.fn.callAjax2({
-                        url: $('#frm-detail').data('url'),
-                        data: {'current_stage_id_manual_update': $(this).closest('li').attr('data-id')},
-                        method: 'GET'
-                    }).then(
-                        (resp) => {
-                            let data = $.fn.switcherResp(resp);
-                            if (data?.['opportunity']) {
-                                return data?.['opportunity'];
+            if (pageVariables.opp_detail_data?.['active_go_to_stage']) {
+                WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
+                let ajax_opp_detail = $.fn.callAjax2({
+                    url: $('#frm-detail').data('url'),
+                    data: {'current_stage_id_manual_update': $(this).closest('li').attr('data-id')},
+                    method: 'GET'
+                }).then(
+                    (resp) => {
+                        let data = $.fn.switcherResp(resp);
+                        if (data?.['opportunity']) {
+                            return data?.['opportunity'];
+                        }
+                        return {};
+                    },
+                    (errs) => {
+                        $.fn.notifyB({description: errs.data.errors}, 'failure');
+                        WindowControl.hideLoading();
+                    }
+                );
+                Promise.all([ajax_opp_detail]).then(([opp_detail_data]) => {
+                    if (opp_detail_data) {
+                        location.reload()
+                    }
+                })
+            }
+            else {
+                Swal.fire({
+                    html:
+                        `<h4 class="text-danger">${$.fn.gettext("If you want to update the stage of this Opportunity manually, the company’s automatic stage transition settings for this opportunity will be disabled.")}</h4>`,
+                    customClass: {
+                        confirmButton: 'btn text-primary',
+                        cancelButton: 'btn text-secondary',
+                        container: 'custom-swal',
+                        htmlContainer: 'text-start',
+                        actions: 'w-100'
+                    },
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: $.fn.gettext('Confirm'),
+                    cancelButtonText: $.fn.gettext('Cancel'),
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        WindowControl.showLoading({'loadingTitleAction': 'UPDATE'});
+                        let ajax_opp_detail = $.fn.callAjax2({
+                            url: $('#frm-detail').data('url'),
+                            data: {'current_stage_id_manual_update': $(this).closest('li').attr('data-id')},
+                            method: 'GET'
+                        }).then(
+                            (resp) => {
+                                let data = $.fn.switcherResp(resp);
+                                if (data?.['opportunity']) {
+                                    return data?.['opportunity'];
+                                }
+                                return {};
+                            },
+                            (errs) => {
+                                $.fn.notifyB({description: errs.data.errors}, 'failure');
+                                WindowControl.hideLoading();
                             }
-                            return {};
-                        },
-                        (errs) => {
-                            $.fn.notifyB({description: errs.data.errors}, 'failure');
-                            WindowControl.hideLoading();
-                        }
-                    );
-                    Promise.all([ajax_opp_detail]).then(([opp_detail_data]) => {
-                        if (opp_detail_data) {
-                            location.reload()
-                        }
-                    })
-                }
-            })
+                        );
+                        Promise.all([ajax_opp_detail]).then(([opp_detail_data]) => {
+                            if (opp_detail_data) {
+                                location.reload()
+                            }
+                        })
+                    }
+                })
+            }
         })
         $(document).on('change', '#input-close-deal', function () {
             if ($(this).is(':checked')) {

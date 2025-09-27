@@ -12,14 +12,16 @@ $(function () {
     const $oppElm = $('#opportunity_id')
     const $empElm = $('#employee_inherit_id')
     const $prjElm = $('#project_id')
-    const $filterElm = $('.form-group-filter')
     let $contentElm = $('#idxPageContent');
 
     // lấy danh sách status và render
     function getSttAndRender() {
-        const config = JSON.parse($('#task_config').text());
+        let $taskConfig =  $('#task_config').text()
+        const config = $taskConfig ? JSON.parse($taskConfig) : {};
+        if (!config?.['list_status']) return false
         // to do item
-        for (const item of config.list_status) {
+
+        for (const item of config?.list_status) {
             let stt_template = $($('.card-parent_template').html());
             // for kanban main task
             stt_template.find('.btn-add-newtask').attr('data-id', item.id)
@@ -413,108 +415,7 @@ $(function () {
                     .then((req) => {
                         let data = $.fn.switcherResp(req);
                         if (data?.['status'] === 200) {
-                            const offCanvasTaskElm = $('.btn-create-todo');
-                            offCanvasTaskElm.trigger('click');
-                            const titCreate = $('.title-create');
-                            const titEdit = $('.title-detail');
-                            titCreate.addClass("hidden")
-                            titEdit.removeClass("hidden")
-                            const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
-                            $formElm.append(taskIDElm);
-
-                            $formElm.attr('data-id-loaded', data.id);
-
-                            $('#inputTextTitle').val(data.title)
-                            $('#inputTextCode').val(data.code)
-                            const stt = data.task_status
-                            $('#selectStatus').attr('data-onload',
-                                JSON.stringify(stt)).initSelect2().val(stt.id).trigger('change')
-                            $('#inputTextStartDate')[0]._flatpickr.setDate(data.start_date)
-                            $('#inputTextEndDate')[0]._flatpickr.setDate(data.end_date)
-                            $('#inputTextEstimate').val(data.estimate)
-
-                            $('#selectPriority').val(data.priority).trigger('change')
-                            $('#rangeValue').text(data['percent_completed'])
-                            $('#percent_completed').val(data['percent_completed'])
-                            window.formLabel.renderLabel(data.label)
-                            $('#inputLabel').attr('value', JSON.stringify(data.label))
-
-                            $('#inputAssigner')
-                                .val(data.employee_created.full_name)
-                                .attr('data-name', data.employee_created.full_name)
-                                .attr('value', data.employee_created.id)
-                                .attr('data-value-id', data.employee_created.id)
-                            if ($('#employee_inherit_id')[0].closest('#formOpportunityTask')) {
-                                const runComponent = (elm, data) => {
-                                    data.selected = true;
-                                    elm.attr('data-onload', JSON.stringify(data))
-                                        .html(`<option value="${data.id}" selected>${data.title}</option>`)
-                                        .trigger('change')
-                                }
-                                if (data?.['process'] && data?.['process']?.['id']) {
-                                    const {process} = data;
-                                    runComponent($('#process_id'), process)
-                                } else if (data['opportunity'] && Object.keys(data["opportunity"]).length > 0) {
-                                    const {opportunity} = data
-                                    $prjElm.attr('disabled', true)
-                                    runComponent($oppElm, opportunity)
-                                } else if (data['project'] && Object.keys(data["project"]).length > 0) {
-                                    const {project} = data;
-                                    $oppElm.attr('disabled', true);
-                                    runComponent($prjElm, project)
-                                }
-                                if (Object.keys(data.employee_inherit).length > 0) {
-                                    data.employee_inherit.selected = true
-                                    $empElm.html(`<option value="${data.employee_inherit.id}">${data.employee_inherit.full_name}</option>`)
-                                        .attr('data-onload', JSON.stringify(data.employee_inherit))
-                                    $empElm.trigger("change", BastionFieldControl.skipBastionChange)
-                                }
-                            }
-                            const $agElm = $('#assignee_group')
-                            if (data?.['group_assignee'] && $agElm.length && Object.keys(data?.['group_assignee']).length) {
-                                data.group_assignee.selected = true
-                                FormElementControl.loadInitS2($agElm, [data.group_assignee]);
-                            }
-                            let $customAssignee = $('#custom_assignee');
-                            if ($customAssignee.length > 0) {
-                                FormElementControl.loadInitS2($customAssignee, [data?.['employee_inherit']]);
-                            }
-                            window.editor.setData(data.remark)
-                            window.checklist.setDataList = data.checklist
-                            window.checklist.render()
-                            $formElm.addClass('task_edit')
-                            if (Object.keys(data.parent_n).length <= 0) $('.create-subtask').removeClass('hidden')
-                            else $('.create-subtask').addClass('hidden')
-                            initCommon.initTableLogWork(data?.['task_log_work'])
-                            initCommon.renderSubtask(data.id, _this.getTaskList, data['sub_task_list'])
-
-                            if (data.attach) {
-                                let $elmAttAssign = $('#assigner_attachment'),
-                                    _lstAssigner = data.attach.filter(function (item) {
-                                        return item['is_assignee_file'] === false;
-                                    }),
-                                    _lstAssignee = data.attach.filter(function (item) {
-                                        return item['is_assignee_file'] === true;
-                                    });
-                                // load attachments of assigner
-                                $elmAttAssign.find('.dm-uploader').dmUploader("destroy")
-                                new $x.cls.file(
-                                    $elmAttAssign
-                                ).init({
-                                    enable_edit: true,
-                                    data: _lstAssigner,
-                                })
-
-                                // load attachment if assignee
-                                let $elmAttachAssignee = $('#assignee_attachment')
-                                $elmAttachAssignee.find('.dm-uploader').dmUploader("destroy")
-                                new $x.cls.file(
-                                    $elmAttachAssignee
-                                ).init({
-                                    enable_edit: true,
-                                    data: _lstAssignee,
-                                })
-                            }
+                            typeof loadDetailTask !== 'function' || loadDetailTask(data, initCommon, _this)
                         }
                     })
             })
@@ -788,7 +689,7 @@ $(function () {
                 $this.getAndRenderTask($this.getTaskList)
             })
 
-            $('#idxPageContent').on('scroll', function () {
+            $contentElm.on('scroll', function () {
                 let $kanbanEle = $('#tab_kanban');
                 let kanbanTop = $kanbanEle.offset().top;
                 if (kanbanTop > 0) {
@@ -952,38 +853,8 @@ $(function () {
                 (req) => {
                     const data = $.fn.switcherResp(req)
                     if (data.status === 200) {
-                        $('#inputTextTitle', $form).val(data.title)
-                        $('#inputTextCode', $form).val(data.code)
-                        listViewTask.selfInitSelect2($('#selectStatus', $form), data.task_status)
-                        const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
-                        $formElm.append(taskIDElm).addClass('task_edit')
-                        $('#inputTextStartDate', $form)[0]._flatpickr.setDate(data.start_date)
-                        $('#inputTextEndDate', $form)[0]._flatpickr.setDate(data.end_date)
-                        $('#inputTextEstimate', $form).val(data.estimate)
-
-                        $('#selectPriority', $form).val(data.priority).trigger('change')
-                        $('#rangeValue').text(data['percent_completed'])
-                        $('#percent_completed').val(data['percent_completed'])
-
-                        $('#inputAssigner', $form).val(data.employee_created.full_name)
-                            .attr('data-value-id', data.employee_created.id)
-                            .attr('value', data.employee_created.id)
-                        if (data?.['opportunity']?.id)
-                            listViewTask.selfInitSelect2($($oppElm, $form), data['opportunity'],)
-                        listViewTask.selfInitSelect2($('#employee_inherit_id', $form), data.employee_inherit, 'full_name')
-                        window.formLabel.renderLabel(data.label)
-                        window.editor.setData(data.remark)
-                        window.checklist.setDataList = data.checklist
-                        window.checklist.render()
-
-                        if (data.attach) {
-                            const fileDetail = data.attach[0]?.['files']
-                            FileUtils.init($(`[name="attach"]`).siblings('button'), fileDetail);
-                        }
-                        initCommon.initTableLogWork(data?.['task_log_work'])
-                        initCommon.renderSubtask(data.id, cls.getTaskList, data?.['sub_task_list'])
+                        typeof loadDetailTask !== 'function' || loadDetailTask(data, initCommon, cls)
                     }
-
                 },
                 (errs) => {
                     $.fn.notifyB({description: errs.data.errors}, 'failure')
@@ -1006,7 +877,6 @@ $(function () {
                         item.edited = false
                     }
                 )
-                $('#offCanvasRightTask').offcanvas('show')
                 allData[index].edited = true
                 cls.setTaskList = allData
                 if (typeof infoOld === 'number') // case click task khác mà chưa đóng task cũ
@@ -1571,45 +1441,64 @@ $(function () {
     const $fSttElm = $('#filter_task_status')
     const $fEmpElm = $('#filter_employee_id')
     const $fPriority = $('#filter_priority_id')
+    const $fServiceOrder = $('#filter_so_id')
     const $clearElm = $('.clear-all-btn')
     const $sGrpElm = $('#sort_by_group_assignee')
-    const listElm = [$fOppElm, $fSttElm, $fEmpElm]
+    const $ElmDateRange = $('#iptDateRange')
+    const listElm = [$fOppElm, $fSttElm, $fEmpElm, $fServiceOrder]
     listElm.forEach(function (elm) {
         $(elm).initSelect2().on('select2:select', function () {
             let params = {}
             if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
             if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
             if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
+            if ($fServiceOrder.val() !== null) params.service_order = $fServiceOrder.val()
+            if ($ElmDateRange.val() !== null){
+                const dateLst = $ElmDateRange.val().split(' ')
+                params.date_range__gte = dateLst[0]
+                params.date_range__lte = dateLst[2]
+            }
+
             callDataTaskList(kanbanTask, listTask, params)
             GanttViewTask.CallFilter(params)
-            $clearElm.addClass('d-block')
+            $clearElm.addClass('d-inline-block')
+            $(elm).addClass('isSelected')
         })
     })
-    $fPriority.on('change', function () {
+
+    // load select priority filter
+    $fPriority.initSelect2().on('change', function () {
         let params = {}
         if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
         if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
         if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
-        if (this.value)
+        if (this.value){
             params.priority = this.value
+            $clearElm.addClass('d-inline-block')
+        }
         if (Object.keys(params).length > 0) {
             callDataTaskList(kanbanTask, listTask, params)
             GanttViewTask.CallFilter(params)
-            $clearElm.addClass('d-block')
+            $clearElm.addClass('d-inline-block')
+            $fPriority.addClass('isSelected')
         } else {
             callDataTaskList(kanbanTask, listTask)
             GanttViewTask.CallFilter({})
-            $clearElm.removeClass('d-block')
+            $clearElm.removeClass('d-inline-block')
+            $fPriority.removeClass('isSelected')
         }
 
     })
     $clearElm.off().on('click', () => {
         listElm.forEach(function (elm) {
-            $(elm).val('').trigger('change')
+            $(elm).val('').trigger('change').removeClass('isSelected')
         })
+        $ElmDateRange.removeClass('isSelected')
+        $ElmDateRange[0]._flatpickr.clear()
         callDataTaskList(kanbanTask, listTask)
         GanttViewTask.CallFilter({})
-        $clearElm.removeClass('d-block')
+        $clearElm.removeClass('d-inline-block')
+        $ElmDateRange.prop('checked', false)
     })
     $sGrpElm.on('change', function (e) {
         e.preventDefault()
@@ -1620,25 +1509,11 @@ $(function () {
                 if($(this).hasClass('has_group'))
                    $(this).removeClass('hidden')
             })
+
         } else {
             $taskItemElm.removeClass('hidden')
         }
     });
-
-    // button filter on click show hide dropdown filter
-    $('.leave-filter-wrap button.sp-btn').off().on('click', function () {
-        $('.leave-filter-wrap .form-group-filter').slideToggle()
-    })
-    $('.leave-filter-wrap button.desktop-btn').off().on('click', function () {
-        // $(this).parents('.leave-filter-wrap').toggleClass('desktop-show')
-        $('.form-group-filter').slideToggle()
-    })
-
-    $contentElm.click(function (event) {
-        var $target = $(event.target);
-        if (!$target.closest('.form-group-filter').length && $filterElm.is(":visible") && !$target.closest('.leave-filter-wrap button').length)
-            $filterElm.slideToggle(200)
-    })
 
     // load more button
     $('#btn_load-more').on('click', function () {
@@ -1667,8 +1542,6 @@ $(function () {
 
         })
     });
-    // handle show/hide btn load more when scroll down
-    // let contentElm = $('#idxPageContent .simplebar-content-wrapper');
 
     const loadMoreBtn = $('.btn-task-bar')
     $contentElm.scroll(function () {
@@ -1758,4 +1631,39 @@ $(function () {
             $('.wrap-filter').addClass('show-less')
         }else $('.wrap-filter').removeClass('show-less')
     })
+
+    // init flat pick
+    $ElmDateRange.flatpickr({
+        'allowInput': true,
+        'altInput': true,
+        'altFormat': 'd/m/Y',
+        'dateFormat': 'Y-m-d',
+        'locale': globeLanguage === 'vi' ? 'vn' : 'default',
+        'shorthandCurrentMonth': true,
+        'mode': 'range',
+        onReady: function (dObj, dStr, fp) {
+            $(fp.element.nextSibling).attr('aria-label', $ElmDateRange.attr('name') + '_hidden')
+                .attr('id', $ElmDateRange.attr('name') + '_hidden')
+        },
+    })
+    $ElmDateRange.on('change', function () {
+        const dateLst = $(this).val().split(' ')
+        if (dateLst && dateLst.length === 3) {
+            $clearElm.addClass('d-inline-block')
+            $ElmDateRange.addClass('isSelected')
+            let params = {}
+            if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
+            if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
+            if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
+            if ($fServiceOrder.val() !== null) params.service_order = $fServiceOrder.val()
+            params.end_date__gte = dateLst[0]
+            params.end_date__lte = dateLst[2]
+            callDataTaskList(kanbanTask, listTask, params)
+            GanttViewTask.CallFilter(params)
+        } else {
+            $clearElm.removeClass('d-inline-block')
+            $ElmDateRange.removeClass('isSelected')
+        }
+    })
+
 }, jQuery);

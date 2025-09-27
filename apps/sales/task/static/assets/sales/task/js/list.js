@@ -11,7 +11,6 @@ $(function () {
     const $formElm = $('#formOpportunityTask')
     const $oppElm = $('#opportunity_id')
     const $empElm = $('#employee_inherit_id')
-    const $prjElm = $('#project_id')
     let $contentElm = $('#idxPageContent');
 
     // lấy danh sách status và render
@@ -1140,12 +1139,11 @@ $(function () {
                 }
             }
             GanttViewTask.bk_taskList = bk_list
-            let sortNew = Object.values(bk_list).sort((a, b) => {
+            return Object.values(bk_list).sort((a, b) => {
                 const cA = a.values[0].dataObj.end_date.split(' ')[0];
                 const cB = b.values[0].dataObj.end_date.split(' ')[0];
                 return cA.localeCompare(cB);
             })
-            return sortNew
         }
 
         static loadTaskInfo(dataID) {
@@ -1265,10 +1263,6 @@ $(function () {
                             delete temp['task_list'];
                             $('.gantt_table').data('api_info', temp)
                             $(e).prop("disabled", temp.page_next > 0)
-                            // clone old data
-                            // convert new data to object and merge with oldData
-                            // convert to array and reload new data
-                            const oldData = $.extend(true, {}, GanttViewTask.bk_taskList)
                             const newObjData = GanttViewTask.saveTaskList(data['task_list'])
                             $('#gantt_reload').data('data', newObjData).trigger('click')
                         }

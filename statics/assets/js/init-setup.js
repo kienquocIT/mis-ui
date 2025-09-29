@@ -7472,7 +7472,7 @@ class FileControl {
     }
 
     static call_ajax_detail_attribute(fileID) {
-        let $modalFileAttr = $('#fileAttributeModal');
+        let $modalFileAttr = $('.modal.modal-file-attribute');
         if (fileID && $modalFileAttr.length > 0) {
             // call ajax get detail of file
             WindowControl.showLoading();
@@ -7530,15 +7530,17 @@ class FileControl {
 
     static call_ajax_edit_attribute(fileID) {
         let dataSubmit = {};
-        let $modalFileAttr = $('#fileAttributeModal');
+        let $modalFileAttr = $('.modal.modal-file-attribute');
         if (fileID && $modalFileAttr.length > 0) {
             let docTypeEle = $modalFileAttr[0].querySelector('.file_attr_document_type');
             let contentGrEle = $modalFileAttr[0].querySelector('.file_attr_content_group');
             let remarkEle = $modalFileAttr[0].querySelector('.file_attr_remark');
             if (docTypeEle && contentGrEle && remarkEle) {
+                dataSubmit['document_type_id'] = null;
                 if ($(docTypeEle).val()) {
                     dataSubmit['document_type_id'] = $(docTypeEle).val();
                 }
+                dataSubmit['content_group_id'] = null;
                 if ($(contentGrEle).val()) {
                     dataSubmit['content_group_id'] = $(contentGrEle).val();
                 }

@@ -5,7 +5,8 @@ from apps.core.hr.views import (
     EmployeeDetailAPI, EmployeeDetail, EmployeeUpdate, EmployeeCompanyListAPI, EmployeeUploadAvatarAPI,
     GroupLevelDetailAPI, RoleUpdateView, RoleUpdateAPI,
     PlanAppGetAppListAPI, PlanSummaryListAPI, ApplicationSummaryListAPI, PermissionSummaryListAPI, EmployeeListAllAPI,
-    EmployeeAdminCompanyAPI, TestEmailConnection, EmployeeUpdateEmailAPIKeyAPI, GroupDDListAPI,
+    # EmployeeUpdateEmailAPIKeyAPI,
+    EmployeeAdminCompanyAPI, TestEmailConnection, GroupDDListAPI,
 )
 from apps.core.hr.views import (
     RoleList, RoleListAPI, RoleCreate, RoleDetail, RoleDetailAPI,
@@ -30,7 +31,7 @@ urlpatterns = [
     ),
     path('employee/update/<str:pk>', EmployeeUpdate.as_view(), name='EmployeeUpdate'),
     path('employee/<str:pk>', EmployeeDetailAPI.as_view(), name='EmployeeDetailAPI'),
-    path('employee-email-api-key/<str:pk>', EmployeeUpdateEmailAPIKeyAPI.as_view(), name='EmployeeUpdateEmailAPIKeyAPI'),
+    # path('employee-email-api-key/<str:pk>', EmployeeUpdateEmailAPIKeyAPI.as_view(), name='EmployeeUpdateEmailAPIKeyAPI'),
     # path('employee/company/<str:company_id>', EmployeeCompanyListAPI.as_view(), name='EmployeeCompanyListAPI'),
     path('employee-company', EmployeeCompanyListAPI.as_view(), name='EmployeeCompanyListAPI'),
     path('employee-admin-company', EmployeeAdminCompanyAPI.as_view(), name='EmployeeAdminCompanyAPI'),

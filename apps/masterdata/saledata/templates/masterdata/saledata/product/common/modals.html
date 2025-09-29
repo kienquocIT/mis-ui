@@ -131,6 +131,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12">
+                        <span class="text-danger">{% trans "Attributes with inventory tracking will be selected if the product has the 'Inventory' tab enabled, and vice versa." %}</span>
                         <table class="table nowrap w-100" id="table-select-attribute" data-method="GET" data-url="{% url 'AttributeListAPI' %}">
                             <thead class="bg-secondary-light-5">
                             <tr>

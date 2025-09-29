@@ -153,6 +153,111 @@ function logworkSubmit() {
     });
 }
 
+function loadDetailTask(data, initCommon, _this){
+    const $canvasElm = $('#offCanvasRightTask');
+    const $prjElm = $('form #project_id', $canvasElm)
+    const $oppElm = $('form #opportunity_id', $canvasElm)
+    const $empElm = $('form #employee_inherit_id', $canvasElm)
+
+    $canvasElm.offcanvas('show');
+    const titCreate = $('.title-create');
+    const titEdit = $('.title-detail');
+    titCreate.addClass("hidden")
+    titEdit.removeClass("hidden")
+    const taskIDElm = $(`<input type="hidden" name="id" value="${data.id}"/>`)
+    $('form', $canvasElm).append(taskIDElm).attr('data-id-loaded', data.id).addClass('task_edit');
+    $('#inputTextTitle').val(data.title)
+    $('#inputTextCode').val(data.code)
+    $('#selectStatus').attr('data-onload',
+        JSON.stringify(data.task_status)).initSelect2().val(data.task_status?.id).trigger('change')
+    $('#inputTextStartDate')[0]._flatpickr.setDate(data.start_date)
+    $('#inputTextEndDate')[0]._flatpickr.setDate(data.end_date)
+    $('#inputTextEstimate').val(data.estimate)
+    $('#selectPriority').val(data.priority).trigger('change')
+    $('#rangeValue').text(data['percent_completed'])
+    $('#percent_completed').val(data['percent_completed'])
+    window.formLabel.renderLabel(data.label)
+    $('#inputLabel').attr('value', JSON.stringify(data.label))
+    $('#inputAssigner')
+        .val(data.employee_created.full_name)
+        .attr('data-name', data.employee_created.full_name)
+        .attr('value', data.employee_created.id)
+        .attr('data-value-id', data.employee_created.id)
+    if ($('#employee_inherit_id')[0].closest('#formOpportunityTask')) {
+        const runComponent = (elm, data) => {
+            data.selected = true;
+            elm.attr('data-onload', JSON.stringify(data))
+                .html(`<option value="${data.id}" selected>${data.title}</option>`)
+                .trigger('change')
+        }
+        if (data?.['process'] && data?.['process']?.['id']) {
+            const {process} = data;
+            runComponent($('#process_id'), process)
+        }
+        else if (data['opportunity'] && Object.keys(data["opportunity"]).length > 0) {
+            const {opportunity} = data
+            $prjElm.attr('disabled', true)
+            runComponent($oppElm, opportunity)
+        }
+        else if (data['project'] && Object.keys(data["project"]).length > 0) {
+            const {project} = data;
+            $oppElm.attr('disabled', true);
+            runComponent($prjElm, project)
+        }
+        if (Object.keys(data.employee_inherit).length > 0) {
+            data.employee_inherit.selected = true
+            $empElm.html(`<option value="${data.employee_inherit.id}">${data.employee_inherit.full_name}</option>`)
+                .attr('data-onload', JSON.stringify(data.employee_inherit))
+            $empElm.trigger("change", BastionFieldControl.skipBastionChange)
+        }
+    }
+    const $agElm = $('#assignee_group')
+    if (data?.['group_assignee'] && $agElm.length && Object.keys(data?.['group_assignee']).length) {
+        data.group_assignee.selected = true
+        FormElementControl.loadInitS2($agElm, [data.group_assignee]);
+    }
+    let $customAssignee = $('#custom_assignee');
+    if ($customAssignee.length > 0) {
+        FormElementControl.loadInitS2($customAssignee, [data?.['employee_inherit']]);
+    }
+    window.editor.setData(data.remark)
+    window.checklist.setDataList = data.checklist
+    window.checklist.render()
+    if (Object.keys(data.parent_n).length <= 0)
+        $('.create-subtask').removeClass('hidden')
+    else
+        $('.create-subtask').addClass('hidden')
+    initCommon.initTableLogWork(data?.['task_log_work'])
+    initCommon.renderSubtask(data.id, _this.getTaskList, data['sub_task_list'])
+
+    if (data.attach) {
+        let $elmAttAssign = $('#assigner_attachment'),
+            _lstAssigner = data.attach.filter(function (item) {
+                return item['is_assignee_file'] === false;
+            }),
+            _lstAssignee = data.attach.filter(function (item) {
+                return item['is_assignee_file'] === true;
+            });
+        // load attachments of assigner
+        $elmAttAssign.find('.dm-uploader').dmUploader("destroy")
+        new $x.cls.file(
+            $elmAttAssign
+        ).init({
+            enable_edit: true,
+            data: _lstAssigner,
+        })
+
+        // load attachment if assignee
+        let $elmAttachAssignee = $('#assignee_attachment')
+        $elmAttachAssignee.find('.dm-uploader').dmUploader("destroy")
+        new $x.cls.file(
+            $elmAttachAssignee
+        ).init({
+            enable_edit: true,
+            data: _lstAssignee,
+        })
+    }
+}
 // logic of task extend to other apps
 class TaskExtend {
 

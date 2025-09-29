@@ -55,3 +55,196 @@
     right: -10px;
     height: 30px;
 }
+
+:root {
+    --primary-color: #3b82f6;
+    --secondary-color: #64748b;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --info-color: #06b6d4;
+    --light-color: #f8fafc;
+    --dark-color: #1e293b;
+    --border-radius: 12px;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    --gradient-info: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+}
+
+#my-task-summary-report {
+    border: none;
+    border-radius: 12px;
+}
+
+#my-task-summary-report > p {
+    display: none;
+}
+
+.summary-item .summary-title {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.summary-item .summary-value {
+    font-size: 42px;
+    font-weight: bold
+}
+
+/* animate increment number */
+@property --num {
+    syntax: "<integer>";
+    initial-value: 0;
+    inherits: false;
+}
+
+.summary-value {
+    transition: --num 0.7s;
+    counter-set: num var(--num);
+}
+
+.summary-value::after {
+    content: counter(num);
+}
+
+#event-at-day {
+    padding: 5px;
+}
+
+#event-at-day .event-at-item {
+    background-color: #eef6ff;
+    color: #00585f;
+    border: 1px solid #c7e2e5;
+    margin-bottom: 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.event-at-item .event-at-head {
+    display: flex;
+}
+
+.event-at-head .event-at-title {
+    {#font-weight: bold;}
+    {#flex-basis: 45%;}
+    flex-basis: 60%;
+}
+
+.event-at-item .event-at-head .event-at-date-group-in-title {
+    display: inline-block;
+    flex-basis: 45%;
+}
+
+.event-at-item.active .event-at-head .event-at-date-group-in-title {
+    display: none;
+}
+
+.event-at-head .event-at-show-more-group {
+    margin-left: auto;
+}
+
+.event-at-head .event-at-show-more i {
+    transition: transform 0.2s;
+}
+
+.event-at-head .event-at-show-more.active i {
+    transform: rotate(180deg);
+}
+
+.event-at-item .event-at-body-more {
+    display: none;
+}
+
+.event-at-item .event-at-body-icon {
+    margin-right: 5px;
+}
+
+.event-at-btn-all {
+    color: #007d88;
+    padding: 0 10px;
+}
+
+#event-at-day-base {
+    display: none;
+}
+
+#event-at-empty {
+    width: 100%;
+    text-align: center;
+    color: #003eb3;
+}
+
+#event-at-day-selected-date {
+    color: #55717c;
+    padding: 0 5px;
+    font-size: 0.9rem;
+}
+
+.event-item-holiday {
+    background: linear-gradient(135deg, #ff0000, #ffd800);
+    background-size: 100% 100%;
+    border: 0 !important;
+    color: #fff !important;
+}
+
+.event-item-birthday {
+    background: linear-gradient(235deg, #e92990, #ffc400, #008cff, #ba00ff);
+    background-size: 100% 100%;
+    border: 0 !important;
+    color: #fff !important;
+}
+
+#setting-home {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1054;
+    width: 2rem;
+    height: 2rem;
+    background-color: #88a328;
+    color: #fff;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0 0 0 10px;
+    transition: background-color 1s, opacity 1s, transform 0.5s;
+    cursor: pointer;
+    opacity: 0.6;
+}
+#setting-home .icon {
+    transition: transform 0.5s;
+}
+#setting-home:hover {
+    opacity: 1;
+    transform: scale(1.4);
+}
+#setting-home:hover .icon {
+    transform: rotate(90deg);
+}
+
+/* Enhanced Cards */
+.transparent-card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    padding: 5px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: rgba(255, 255, 255, 0.7)
+}
+
+.transparent-main-card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    padding: 15px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: rgba(255, 255, 255, 0.7)
+}

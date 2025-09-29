@@ -554,7 +554,7 @@ class FilesHandle {
                 },
                 {
                     data: 'title',
-                    width: '38%',
+                    width: '30%',
                     render: (row, index, data) => {
                         const type = convertKeyIconMap(data);
                         const icon = icon_map[type]
@@ -577,7 +577,7 @@ class FilesHandle {
                 },
                 {
                     data: 'employee_inherit',
-                    width: '20%',
+                    width: '15%',
                     render: (row, index, data) => {
                         return row?.full_name ? row.full_name : data?.employee_created ?
                             data.employee_created.full_name : data?.['is_system'] ? $.fn.gettext('System') : '--';
@@ -593,7 +593,7 @@ class FilesHandle {
                 },
                 {
                     data: 'file_size',
-                    width: '10%',
+                    width: '8%',
                     render: (row) => {
                         return row ? formatBytes(row) : '--';
                     }
@@ -608,6 +608,18 @@ class FilesHandle {
                         return file_type;
                     }
                 },
+                {
+                    width: '15%',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['document_type']?.['title'] ? row?.['document_type']?.['title'] : '--'}</span>`;
+                    }
+                },
+                // {
+                //     width: '10%',
+                //     render: (data, type, row) => {
+                //         return `<span>${row?.['content_group']?.['title'] ? row?.['content_group']?.['title'] : ''}</span>`;
+                //     }
+                // },
                 {
                     data: 'id',
                     width: '10%',
@@ -755,6 +767,7 @@ class FilesHandle {
         $.fn.callAjax2({
             'url': this.$urlFact.attr('data-folder-detail').format_url_with_uuid(dataId),
             'method': 'GET',
+            'data': FileFilterHandle.getFilterData(),
             'sweetAlertOpts': {'allowOutsideClick': true}
         }).then((resp) => {
             let rep = $.fn.switcherResp(resp);
@@ -1196,5 +1209,14 @@ $(document).ready(function () {
         'element_folder': $('#current_folder'),
         'CB_after_upload': triggerAfterUpload,
         'maxFileSize': parseInt($('#max_upload_file').text()) || 20971520,
+    });
+
+    FileFilterHandle.$btnApply.on('click', function () {
+        let $currentFolder = $('#current_folder');
+        if ($currentFolder.length > 0) {
+            if ($currentFolder.val()) {
+                files.get_folder($currentFolder.val());
+            }
+        }
     });
 });

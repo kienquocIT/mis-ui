@@ -5,10 +5,13 @@ const script_trans = $('#script-trans')
 const urlParams = new URLSearchParams(window.location.search);
 const $request_for = $('#request-for')
 const $transaction_code = $('#transaction-code')
+const title = $('#title')
+const supplier = $('#supplier')
+const contact = $('#contact')
+const note = $('#note')
+const pr_status = $('#pr-status')
+const deliveryDate = $('#date-delivery')
 // for so
-const supplier_so = $('#supplier-so')
-const contact_so = $('#contact-so')
-const deliveryDate_so = $('#date-delivery-so')
 const lineDetailTable_so = $('#datatable-pr-product-so')
 const modalSelectSaleOrder = $('#modal-select-sale-order')
 const tableSaleOrder = $('#datatable-sale-order')
@@ -17,51 +20,42 @@ const btnSelectSOProduct = $('#btn-select-so-product')
 const $so_filter_by_customer = $('#so-filter-by-customer')
 const $btn_change_sale_order = $('#btn-change-sale-order')
 // for sf
-const supplier_sf = $('#supplier-sf')
-const contact_sf = $('#contact-sf')
-const deliveryDate_sf = $('#date-delivery-sf')
 const lineDetailTable_sf = $('#datatable-pr-product-stock-free')
 const btnAddSFProduct = $('#btn-add-stock-free-product')
 // for fa
-const supplier_fa = $('#supplier-fa')
-const contact_fa = $('#contact-fa')
-const deliveryDate_fa = $('#date-delivery-fa')
 const lineDetailTable_fa = $('#datatable-pr-product-fixed-asset')
 const btnAddFAProduct = $('#btn-add-fixed-asset-product')
 // for dp
-const supplier_dp = $('#supplier-dp')
-const contact_dp = $('#contact-dp')
-const deliveryDate_dp = $('#date-delivery-dp')
 const lineDetailTable_dp = $('#datatable-pr-product-distribution')
 const modalSelectDistribution = $('#modal-select-distribution')
 const tableDistribution = $('#datatable-distribution')
 const tableDistributionProduct = $('#datatable-product-of-distribution')
 const btnSelectDPProduct = $('#btn-select-distribution-product')
 const $btn_change_distribution = $('#btn-change-distribution')
+// for svo
+const tableServiceOrderProduct = $('#datatable-pr-product-svo')
+const $btn_change_svo = $('#btn-change-service-order')
+
 // variable
 let is_all_so = false
 let current_so_id = null
 let current_dp_id = null
 
 $request_for.on('change', function () {
-    $('.for-sale-order-request, .for-stock-free-request, .for-fixed-asset-request, .for-distribution-request').prop('hidden', true)
+    $('.for-sale-order-request, .for-stock-free-request, .for-fixed-asset-request, .for-distribution-request, .for-service-order-request').prop('hidden', true)
     $transaction_code.val('')
+    UsualLoadPageFunction.LoadSupplier({
+        element: supplier,
+        data_url: supplier.attr('data-url')
+    })
+    UsualLoadPageFunction.LoadContact({
+        element: contact,
+        data_url: contact.attr('data-url')
+    })
+    UsualLoadPageFunction.LoadDate({element: deliveryDate})
     if ($request_for.val() === '0') {
         $('.for-sale-order-request').prop('hidden', false)
-        UsualLoadPageFunction.LoadDate({element: deliveryDate_so})
-        UsualLoadPageFunction.LoadSupplier({
-            element: supplier_so,
-            data_url: supplier_so.attr('data-url')
-        })
         LoadLineDetailTable(lineDetailTable_so, [])
-        UsualLoadPageFunction.LoadCustomer({
-            element: $so_filter_by_customer,
-            data_url: $so_filter_by_customer.attr('data-url')
-        })
-        UsualLoadPageFunction.LoadContact({
-            element: contact_so,
-            data_url: contact_so.attr('data-url')
-        })
 
         let dataParam = {}
         let pr_config = $.fn.callAjax2({
@@ -86,95 +80,40 @@ $request_for.on('change', function () {
                 is_all_so = (results[0] || []).some(emp => emp?.['employee']?.['id'] === emp_current_id)
                 LoadSaleOrderTable()
                 LoadSaleOrderProductTable()
+                UsualLoadPageFunction.LoadCustomer({
+                    element: $so_filter_by_customer,
+                    data_url: $so_filter_by_customer.attr('data-url')
+                })
             })
     }
     else if ($request_for.val() === '1') {
         $('.for-stock-free-request').prop('hidden', false)
-        UsualLoadPageFunction.LoadDate({element: deliveryDate_sf})
-        UsualLoadPageFunction.LoadSupplier({
-            element: supplier_sf,
-            data_url: supplier_sf.attr('data-url')
-        })
-        UsualLoadPageFunction.LoadContact({
-            element: contact_sf,
-            data_url: contact_sf.attr('data-url')
-        })
         LoadLineDetailTableAddRow(lineDetailTable_sf, [])
     }
     else if ($request_for.val() === '2') {
         $('.for-fixed-asset-request').prop('hidden', false)
-        UsualLoadPageFunction.LoadDate({element: deliveryDate_fa})
-        UsualLoadPageFunction.LoadSupplier({
-            element: supplier_fa,
-            data_url: supplier_fa.attr('data-url')
-        })
-        UsualLoadPageFunction.LoadContact({
-            element: contact_fa,
-            data_url: contact_fa.attr('data-url')
-        })
         LoadLineDetailTableAddRow(lineDetailTable_fa, [])
     }
     else if ($request_for.val() === '3') {
         $('.for-distribution-request').prop('hidden', false)
-        UsualLoadPageFunction.LoadDate({element: deliveryDate_dp})
-        UsualLoadPageFunction.LoadSupplier({
-            element: supplier_dp,
-            data_url: supplier_dp.attr('data-url')
-        })
-        UsualLoadPageFunction.LoadContact({
-            element: contact_dp,
-            data_url: contact_dp.attr('data-url')
-        })
         LoadLineDetailTable(lineDetailTable_dp, [])
         LoadDistributionTable()
         LoadDistributionProductTable()
     }
-})
-
-supplier_so.on('change', function () {
-    let selected = SelectDDControl.get_data_from_idx(supplier_so, supplier_so.val())
-    if (selected) {
-        contact_so.empty()
-        UsualLoadPageFunction.LoadContact({
-            element: contact_so,
-            data: selected?.['owner'],
-            data_url: contact_so.attr('data-url')
-        })
+    else if ($request_for.val() === '4') {
+        $('.for-service-order-request').prop('hidden', false)
+        LoadLineDetailTable(tableServiceOrderProduct, [])
     }
 })
 
-supplier_sf.on('change', function () {
-    let selected = SelectDDControl.get_data_from_idx(supplier_sf, supplier_sf.val())
+supplier.on('change', function () {
+    let selected = SelectDDControl.get_data_from_idx(supplier, supplier.val())
     if (selected) {
-        contact_sf.empty()
+        contact.empty()
         UsualLoadPageFunction.LoadContact({
-            element: contact_sf,
+            element: contact,
             data: selected?.['owner'],
-            data_url: contact_sf.attr('data-url')
-        })
-    }
-})
-
-supplier_fa.on('change', function () {
-    let selected = SelectDDControl.get_data_from_idx(supplier_fa, supplier_fa.val())
-    if (selected) {
-        contact_fa.empty()
-        UsualLoadPageFunction.LoadContact({
-            element: contact_fa,
-            data: selected?.['owner'],
-            data_url: contact_fa.attr('data-url')
-        })
-    }
-})
-
-supplier_dp.on('change', function () {
-    let selected = SelectDDControl.get_data_from_idx(supplier_dp, supplier_dp.val())
-    if (selected) {
-        contact_dp.empty()
-        UsualLoadPageFunction.LoadContact({
-            element: contact_dp,
-            data: selected?.['owner'],
-            data_url: contact_dp.attr('data-url')
+            data_url: contact.attr('data-url')
         })
     }
 })
@@ -277,7 +216,7 @@ function LoadLineDetailTableAddRow($table, data_list=[], option='create') {
             {
                 className: 'w-10',
                 render: (data, type, row) => {
-                    return `<input ${option === 'detail' ? 'disabled' : ''} type="number" class="form-control request-number" value="${row?.['request_number'] || 0}">`
+                    return `<input ${option === 'detail' ? 'disabled' : ''} type="number" class="form-control request-number" value="${row?.['quantity'] || 0}">`
                 }
             },
             {
@@ -617,18 +556,18 @@ function CalculateSumLineDetail(row) {
 class PurchaseRequestHandler {
     static CombinesData(frmEle) {
         let frm = new SetupFormSubmit($(frmEle))
+        frm.dataForm['request_for'] = $request_for.val()
+        frm.dataForm['title'] = title.val()
+        frm.dataForm['delivered_date'] = moment(deliveryDate.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
+        frm.dataForm['supplier'] = supplier.val() || null
+        frm.dataForm['contact'] = contact.val() || null
+        frm.dataForm['note'] = note.val()
+        frm.dataForm['pretax_amount'] = parseFloat($('#input-product-pretax-amount').attr('value') || 0)
+        frm.dataForm['taxes'] = parseFloat($('#input-product-taxes').attr('value') || 0)
+        frm.dataForm['total_price'] = parseFloat($('#input-product-total').attr('value') || 0)
+        let purchase_request_product_datas = []
         if ($request_for.val() === '0') {
-            frm.dataForm['title'] = $('#title-so').val()
-            frm.dataForm['delivered_date'] = moment(deliveryDate_so.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
-            frm.dataForm['supplier'] = supplier_so.val()
-            frm.dataForm['contact'] = contact_so.val()
-            frm.dataForm['request_for'] = $request_for.val()
             frm.dataForm['sale_order'] = current_so_id || null
-            frm.dataForm['note'] = $('#note-so').val()
-            frm.dataForm['pretax_amount'] = parseFloat($('#input-product-pretax-amount').attr('value') || 0)
-            frm.dataForm['taxes'] = parseFloat($('#input-product-taxes').attr('value') || 0)
-            frm.dataForm['total_price'] = parseFloat($('#input-product-total').attr('value') || 0)
-            let purchase_request_product_datas = []
             lineDetailTable_so.find('tbody tr').each(function () {
                 purchase_request_product_datas.push({
                     'sale_order_product': $(this).find('.product-detail').attr('data-so-product-id'),
@@ -640,19 +579,8 @@ class PurchaseRequestHandler {
                     'sub_total_price': parseFloat($(this).find('.subtotal-price').attr('value') || 0),
                 })
             })
-            frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
         }
         else if ($request_for.val() === '1') {
-            frm.dataForm['title'] = $('#title-sf').val()
-            frm.dataForm['delivered_date'] = moment(deliveryDate_sf.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
-            frm.dataForm['supplier'] = supplier_sf.val() || null
-            frm.dataForm['contact'] = contact_sf.val() || null
-            frm.dataForm['request_for'] = $('#request-for-sf').attr('data-type')
-            frm.dataForm['note'] = $('#note-sf').val()
-            frm.dataForm['pretax_amount'] = parseFloat($('#input-product-pretax-amount').attr('value') || 0)
-            frm.dataForm['taxes'] = parseFloat($('#input-product-taxes').attr('value') || 0)
-            frm.dataForm['total_price'] = parseFloat($('#input-product-total').attr('value') || 0)
-            let purchase_request_product_datas = []
             $('#datatable-pr-product-stock-free tbody tr').each(function () {
                 purchase_request_product_datas.push({
                     'sale_order_product': null,
@@ -664,19 +592,8 @@ class PurchaseRequestHandler {
                     'sub_total_price': parseFloat($(this).find('.subtotal-price').attr('value') || 0),
                 })
             })
-            frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
         }
         else if ($request_for.val() === '2') {
-            frm.dataForm['title'] = $('#title-fa').val()
-            frm.dataForm['delivered_date'] = moment(deliveryDate_fa.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
-            frm.dataForm['supplier'] = supplier_fa.val() || null
-            frm.dataForm['contact'] = contact_fa.val() || null
-            frm.dataForm['request_for'] = $('#request-for-fa').attr('data-type')
-            frm.dataForm['note'] = $('#note-fa').val()
-            frm.dataForm['pretax_amount'] = parseFloat($('#input-product-pretax-amount').attr('value') || 0)
-            frm.dataForm['taxes'] = parseFloat($('#input-product-taxes').attr('value') || 0)
-            frm.dataForm['total_price'] = parseFloat($('#input-product-total').attr('value') || 0)
-            let purchase_request_product_datas = []
             $('#datatable-pr-product-fixed-asset tbody tr').each(function () {
                 purchase_request_product_datas.push({
                     'sale_order_product': null,
@@ -688,20 +605,9 @@ class PurchaseRequestHandler {
                     'sub_total_price': parseFloat($(this).find('.subtotal-price').attr('value') || 0),
                 })
             })
-            frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
         }
         else if ($request_for.val() === '3') {
-            frm.dataForm['title'] = $('#title-dp').val()
-            frm.dataForm['delivered_date'] = moment(deliveryDate_dp.val(), "DD/MM/YYYY").format('YYYY-MM-DD')
-            frm.dataForm['supplier'] = supplier_dp.val() || null
-            frm.dataForm['contact'] = contact_dp.val() || null
-            frm.dataForm['request_for'] = $request_for.val()
             frm.dataForm['distribution_plan'] = current_dp_id || null
-            frm.dataForm['note'] = $('#note-dp').val()
-            frm.dataForm['pretax_amount'] = parseFloat($('#input-product-pretax-amount').attr('value') || 0)
-            frm.dataForm['taxes'] = parseFloat($('#input-product-taxes').attr('value') || 0)
-            frm.dataForm['total_price'] = parseFloat($('#input-product-total').attr('value') || 0)
-            let purchase_request_product_datas = []
             $('#datatable-pr-product-distribution tbody tr').each(function () {
                 purchase_request_product_datas.push({
                     'sale_order_product': null,
@@ -713,8 +619,8 @@ class PurchaseRequestHandler {
                     'sub_total_price': parseFloat($(this).find('.subtotal-price').attr('value') || 0),
                 })
             })
-            frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
         }
+        frm.dataForm['purchase_request_product_datas'] = purchase_request_product_datas
         frm.dataForm['attachment'] = frm.dataForm?.['attachment'] ? $x.cls.file.get_val(frm.dataForm?.['attachment'], []) : []
         return frm
     }
@@ -730,146 +636,43 @@ function LoadDetailPR(option) {
                 $.fn.compareStatusShowPageAction(data);
                 $x.fn.renderCodeBreadcrumb(data);
 
+                $request_for.val(data?.['request_for'])
+                title.val(data?.['title'])
+                UsualLoadPageFunction.LoadSupplier({
+                    element: supplier,
+                    data: data?.['supplier'] || null,
+                    data_url: supplier.attr('data-url')
+                })
+                UsualLoadPageFunction.LoadContact({
+                    element: contact,
+                    data: data?.['contact'] || null,
+                    data_url: contact.attr('data-url')
+                })
+                note.val(data?.['note'])
+                deliveryDate.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
+                pr_status.val(data?.['purchase_status'])
+                $('#input-product-pretax-amount').attr('value', data?.['pretax_amount'] || 0)
+                $('#input-product-taxes').attr('value', data?.['taxes'] || 0)
+                $('#input-product-total').attr('value', data?.['total_price'] || 0)
                 if (data?.['request_for'] === 0) {
                     $('.for-sale-order-request').prop('hidden', false)
-                    $request_for.val(0)
-                    $('#title-so').val(data?.['title'])
-                    deliveryDate_so.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
-                    $('#pr-status-so').val(data?.['purchase_status'])
-                    UsualLoadPageFunction.LoadSupplier({
-                        element: supplier_so,
-                        data: data?.['supplier'],
-                        data_url: supplier_so.attr('data-url')
-                    })
-                    contact_so.empty()
-                    UsualLoadPageFunction.LoadContact({
-                        element: contact_so,
-                        data: data?.['contact'],
-                        data_url: contact_so.attr('data-url')
-                    })
-                    $('#code-so').val(data?.['sale_order']?.['code'])
-                    $('#note-so').val(data?.['note'])
                     current_so_id = data?.['sale_order']?.['id']
                     $transaction_code.val(data?.['sale_order']?.['code'])
-
                     LoadLineDetailTable(lineDetailTable_so, data?.['purchase_request_product_datas'] || [], option)
-                    $('#input-product-pretax-amount').attr('value', data?.['pretax_amount'])
-                    $('#input-product-taxes').attr('value', data?.['taxes'])
-                    $('#input-product-total').attr('value', data?.['total_price'])
-                    $.fn.initMaskMoney2()
                 }
                 else if (data?.['request_for'] === 1) {
                     $('.for-stock-free-request').prop('hidden', false)
-                    $request_for.val(1)
-                    $('#title-sf').val(data?.['title'])
-                    deliveryDate_sf.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
-                    $('#pr-status-sf').val(data?.['purchase_status'])
-                    UsualLoadPageFunction.LoadSupplier({
-                        element: supplier_sf,
-                        data: data?.['supplier'],
-                        data_url: supplier_sf.attr('data-url')
-                    })
-                    contact_sf.empty()
-                    UsualLoadPageFunction.LoadContact({
-                        element: contact_sf,
-                        data: data?.['contact'],
-                        data_url: contact_sf.attr('data-url')
-                    })
-                    $('#note-sf').val(data?.['note'])
-
-                    let request_product_data = []
-                    for (let i = 0; i < data?.['purchase_request_product_datas'].length; i++) {
-                        let item = data?.['purchase_request_product_datas'][i]
-                        request_product_data.push({
-                            'sale_order_product_id': item?.['sale_order_product'],
-                            'id': item?.['product']?.['id'],
-                            'code': item?.['product']?.['code'],
-                            'title': item?.['product']?.['title'],
-                            'description': item?.['product']?.['description'],
-                            'uom_group_id': item?.['uom']?.['group_id'],
-                            'uom_title': item?.['uom']?.['title'],
-                            'uom_id': item?.['uom']?.['id'],
-                            'request_number': item?.['quantity'],
-                            'tax': item?.['tax'],
-                            'unit_price': item?.['unit_price'],
-                            'sub_total_price': item?.['sub_total_price']
-                        })
-                    }
-                    LoadLineDetailTableAddRow(lineDetailTable_sf, request_product_data, option)
-                    $('#input-product-pretax-amount').attr('value', data?.['pretax_amount'])
-                    $('#input-product-taxes').attr('value', data?.['taxes'])
-                    $('#input-product-total').attr('value', data?.['total_price'])
-                    $.fn.initMaskMoney2()
+                    LoadLineDetailTableAddRow(lineDetailTable_sf, data?.['purchase_request_product_datas'] || [], option)
                 }
                 else if (data?.['request_for'] === 2) {
                     $('.for-fixed-asset-request').prop('hidden', false)
-                    $request_for.val(2)
-                    $('#title-fa').val(data?.['title'])
-                    deliveryDate_fa.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
-                    $('#pr-status-fa').val(data?.['purchase_status'])
-                    UsualLoadPageFunction.LoadSupplier({
-                        element: supplier_fa,
-                        data: data?.['supplier'],
-                        data_url: supplier_fa.attr('data-url')
-                    })
-                    contact_fa.empty()
-                    UsualLoadPageFunction.LoadContact({
-                        element: contact_fa,
-                        data: data?.['contact'],
-                        data_url: contact_fa.attr('data-url')
-                    })
-                    $('#note-fa').val(data?.['note'])
-
-                    let request_product_data = []
-                    for (let i = 0; i < data?.['purchase_request_product_datas'].length; i++) {
-                        let item = data?.['purchase_request_product_datas'][i]
-                        request_product_data.push({
-                            'sale_order_product_id': item?.['sale_order_product'],
-                            'id': item?.['product']?.['id'],
-                            'code': item?.['product']?.['code'],
-                            'title': item?.['product']?.['title'],
-                            'description': item?.['product']?.['description'],
-                            'uom_group_id': item?.['uom']?.['group_id'],
-                            'uom_title': item?.['uom']?.['title'],
-                            'uom_id': item?.['uom']?.['id'],
-                            'request_number': item?.['quantity'],
-                            'tax': item?.['tax'],
-                            'unit_price': item?.['unit_price'],
-                            'sub_total_price': item?.['sub_total_price']
-                        })
-                    }
-                    LoadLineDetailTableAddRow(lineDetailTable_fa, request_product_data, option)
-                    $('#input-product-pretax-amount').attr('value', data?.['pretax_amount'])
-                    $('#input-product-taxes').attr('value', data?.['taxes'])
-                    $('#input-product-total').attr('value', data?.['total_price'])
-                    $.fn.initMaskMoney2()
+                    LoadLineDetailTableAddRow(lineDetailTable_fa, data?.['purchase_request_product_datas'] || [], option)
                 }
                 else if (data?.['request_for'] === 3) {
                     $('.for-distribution-request').prop('hidden', false)
-                    $request_for.val(3)
-                    $('#title-dp').val(data?.['title'])
-                    deliveryDate_dp.val(moment(data?.['delivered_date'], 'YYYY-MM-DD').format('DD/MM/YYYY'))
-                    $('#pr-status-dp').val(data?.['purchase_status'])
-                    UsualLoadPageFunction.LoadSupplier({
-                        element: supplier_dp,
-                        data: data?.['supplier'],
-                        data_url: supplier_dp.attr('data-url')
-                    })
-                    contact_dp.empty()
-                    UsualLoadPageFunction.LoadContact({
-                        element: contact_dp,
-                        data: data?.['contact'],
-                        data_url: contact_dp.attr('data-url')
-                    })
-                    $('#note-dp').val(data?.['note'])
                     current_dp_id = data?.['distribution_plan']?.['id']
                     $transaction_code.val(data?.['distribution_plan']?.['code'])
-
                     LoadLineDetailTable(lineDetailTable_dp, data?.['purchase_request_product_datas'] || [], option)
-                    $('#input-product-pretax-amount').attr('value', data?.['pretax_amount'])
-                    $('#input-product-taxes').attr('value', data?.['taxes'])
-                    $('#input-product-total').attr('value', data?.['total_price'])
-                    $.fn.initMaskMoney2()
                 }
 
                 new $x.cls.file($('#attachment')).init({
@@ -881,13 +684,15 @@ function LoadDetailPR(option) {
 
                 UsualLoadPageFunction.DisablePage(option === 'detail')
 
+                $.fn.initMaskMoney2()
+
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id']);
             }
         })
 }
 
 $btn_change_sale_order.on('click', function () {
-    $('.for-sale-order-request, .for-stock-free-request, .for-fixed-asset-request, .for-distribution-request').prop('hidden', true)
+    $('.for-sale-order-request, .for-stock-free-request, .for-fixed-asset-request, .for-distribution-request, .for-service-order-request').prop('hidden', true)
     $('.for-sale-order-request').prop('hidden', false)
     let dataParam = {}
     let pr_config = $.fn.callAjax2({
@@ -916,7 +721,7 @@ $btn_change_sale_order.on('click', function () {
 })
 
 $btn_change_distribution.on('click', function () {
-    $('.for-sale-order-request, .for-stock-free-request, .for-fixed-asset-request, .for-distribution-request').prop('hidden', true)
+    $('.for-sale-order-request, .for-stock-free-request, .for-fixed-asset-request, .for-distribution-request, .for-service-order-request').prop('hidden', true)
     $('.for-distribution-request').prop('hidden', false)
     LoadDistributionTable()
     LoadDistributionProductTable()

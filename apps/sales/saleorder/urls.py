@@ -1,10 +1,9 @@
 from django.urls import path
-
 from apps.sales.saleorder.views import (
     SaleOrderCreate, SaleOrderList, SaleOrderListAPI, SaleOrderDetail,
     SaleOrderDetailAPI, SaleOrderExpenseListAPI, SaleOrderDetailDeliveryAPI, SaleOrderConfigDetail,
     SaleOrderConfigDetailAPI, SaleOrderIndicatorListAPI, SaleOrderIndicatorDetailAPI, SaleOrderIndicatorRestoreAPI,
-    ProductListSaleOrderAPI, SaleOrderUpdate, SOProductWOListAPI, SORecurrenceListAPI,
+    SaleOrderUpdate, SOProductWOListAPI, SORecurrenceListAPI,
     SaleOrderDDListAPI, SaleOrderDetailPrintAPI
 )
 
@@ -24,7 +23,6 @@ urlpatterns = [
     path('update/<str:pk>', SaleOrderUpdate.as_view(), name='SaleOrderUpdate'),
     path('sale-order-expense-list', SaleOrderExpenseListAPI.as_view(), name='SaleOrderExpenseListAPI'),
     path('detail-api/<str:pk>/delivery', SaleOrderDetailDeliveryAPI.as_view(), name='SaleOrderDetailDeliveryAPI'),
-    path('product/list/api/<str:pk>', ProductListSaleOrderAPI.as_view(), name='ProductListSaleOrderAPI'),
     path('sale-order-product-wo/list', SOProductWOListAPI.as_view(), name='SOProductWOListAPI'),
     path('sale-order-recurrence/list', SORecurrenceListAPI.as_view(), name='SORecurrenceListAPI'),
     path('dropdown/api/list', SaleOrderDDListAPI.as_view(), name='SaleOrderDDListAPI'),

@@ -637,7 +637,7 @@ class JSPlumbsHandle {
         return this._ASSOCIATION
     }
     convertAssociateToOrder(){
-        let temp =  [];
+        let temp = [];
         let assoc = this._ASSOCIATION
         for (let a in assoc){
             a = a.split('_')

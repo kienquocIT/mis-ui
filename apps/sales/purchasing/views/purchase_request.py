@@ -149,44 +149,78 @@ class PurchaseRequestConfigAPI(APIView):
 
 
 # related
-class PurchaseRequestSaleOrderListAPI(APIView):
+class SaleOrderListForPRAPI(APIView):
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         params = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_SALE_ORDER_LIST).get(params)
+        resp = ServerAPI(user=request.user, url=ApiURL.PR_SO_LIST).get(params)
         return resp.auto_return(key_success='sale_order_list')
 
 
+class SaleOrderProductListForPRAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PR_SO_PRD_LIST.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='so_product_list')
+
+
+class DistributionPlanListForPRAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PR_DP_LIST).get(params)
+        return resp.auto_return(key_success='distribution_plan_list')
+
+
+class DistributionPlanProductListForPRAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PR_DP_PRD_LIST.fill_key(pk=pk)).get(params)
+        return resp.auto_return(key_success='dp_product_list')
+
+
+class ServiceOrderListForPRAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PR_SVO_LIST).get(params)
+        return resp.auto_return(key_success='service_order_list')
+
+
+class ServiceOrderProductListForPRAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PR_SVO_PRD_LIST.fill_key(pk=pk)).get(params)
+        return resp.auto_return(key_success='svo_product_list')
+
+
 class PurchaseRequestProductListAPI(APIView):
+    """ Lấy sản phẩm trong Purchase Request """
     @mask_view(
         auth_require=True,
         is_api=True,
     )
     def get(self, request, *args, **kwargs):
         data = request.query_params.dict()
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PURCHASE_REQUEST_PRODUCT_LIST).get(data)
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PR_PRD_LIST).get(data)
         return resp.auto_return(key_success='purchase_request_product_list')
-
-
-class PurchaseRequestListForPQRAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST_FOR_PQR).get()
-        return resp.auto_return(key_success='purchase_request_list')
-
-
-class PurchaseRequestSaleListAPI(APIView):
-    @mask_view(
-        auth_require=True,
-        is_api=True,
-    )
-    def get(self, request, *args, **kwargs):
-        data = request.query_params.dict()
-        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_SALE_LIST).get(data)
-        return resp.auto_return(key_success='purchase_request_sale_list')

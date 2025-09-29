@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="modal fade" id="modal-select-sale-order" tabindex="-1" role="dialog" aria-labelledby="modal-select-sale-order">
+<div class="modal fade" id="modal-select-so-product" tabindex="-1" role="dialog" aria-labelledby="modal-select-so-product">
     <div class="modal-dialog modal-lg" style="min-width: 90%" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -25,9 +25,9 @@
                             <span class="text-danger" hidden id="self-so">({% trans 'Only create Purchase request your own Sale order' %})</span>
                             <span class="text-danger" hidden id="all-so">({% trans 'Configured to create Purchase request for all Sale order' %})</span>
                         </h6>
-                        <table id="datatable-sale-order"
+                        <table id="table-so"
                                class="table nowrap w-100"
-                               data-url="{% url "PurchaseRequestSaleOrderListAPI" %}"
+                               data-url="{% url "SaleOrderListForPRAPI" %}"
                                data-method="GET">
                             <thead class="bg-secondary-light-5">
                                 <tr>
@@ -41,10 +41,10 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <h6 class="fw-bold">2. {% trans 'Select products' %}</h6>
-                        <table id="datatable-product-of-so"
+                        <table id="table-so-product"
                                class="table nowrap w-100"
                                data-method="GET"
-                               data-url="{% url 'ProductListSaleOrderAPI' pk=0 %}">
+                               data-url="{% url 'SaleOrderProductListForPRAPI' pk=0 %}">
                             <thead class="bg-secondary-light-5">
                                 <tr>
                                     <th style="min-width: 30px"></th>
@@ -68,7 +68,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal-select-distribution" tabindex="-1" role="dialog" aria-labelledby="modal-select-distribution">
+<div class="modal fade" id="modal-select-dp-product" tabindex="-1" role="dialog" aria-labelledby="modal-select-dp-product">
     <div class="modal-dialog modal-lg" style="min-width: 90%;" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -81,9 +81,9 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6 border-right">
                         <h6 class="fw-bold">1. {% trans 'Select Distribution plan' %}</h6>
-                        <table id="datatable-distribution"
+                        <table id="table-dp"
                                class="table nowrap w-100"
-                               data-url="{% url 'DistributionPlanListAPI' %}"
+                               data-url="{% url 'DistributionPlanListForPRAPI' %}"
                                data-method="GET">
                             <thead>
                                 <tr>
@@ -97,10 +97,10 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
                         <h6 class="fw-bold">2. {% trans 'Select products' %}</h6>
-                        <table id="datatable-product-of-distribution"
+                        <table id="table-dp-product"
                                class="table nowrap w-100"
                                data-method="GET"
-                               data-url="{% url 'ProductListDistributionPlanAPI' pk=0 %}">
+                               data-url="{% url 'DistributionPlanProductListForPRAPI' pk=0 %}">
                             <thead>
                                 <tr>
                                     <th style="min-width: 30px"></th>
@@ -118,7 +118,71 @@
                 <button type="button" class="btn btn-secondary"
                         data-bs-dismiss="modal">{% trans "Cancel" %}</button>
                 <button type="button" class="btn btn-primary"
-                        id="btn-select-distribution-product">{% trans 'Next' %}</button>
+                        id="btn-select-dp-product">{% trans 'Next' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-select-svo-product" tabindex="-1" role="dialog" aria-labelledby="modal-select-svo-product">
+    <div class="modal-dialog modal-lg" style="min-width: 90%;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Purchase request for Service order' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="svo-filter-by-customer" class="form-label">{% trans 'Filter by customer' %}</label>
+                            <select class="form-select select2" id="svo-filter-by-customer" data-url="{% url "CustomerListAPI" %}"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6 border-right">
+                        <h6 class="fw-bold">1. {% trans 'Select Service order' %}</h6>
+                        <table id="table-svo"
+                               class="table nowrap w-100"
+                               data-url="{% url 'ServiceOrderListForPRAPI' %}"
+                               data-method="GET">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 250px">{% trans "Service order" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <h6 class="fw-bold">2. {% trans 'Select products' %}</h6>
+                        <table id="table-svo-product"
+                               class="table nowrap w-100"
+                               data-method="GET"
+                               data-url="{% url 'ServiceOrderProductListForPRAPI' pk=0 %}">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 30px"></th>
+                                    <th style="min-width: 100px">{% trans "Product" %}</th>
+                                    <th style="min-width: 200px">{% trans "Quantity" %}</th>
+                                    <th style="min-width: 150px">{% trans "This time" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                <button type="button" class="btn btn-primary"
+                        id="btn-select-svo-product">{% trans 'Next' %}</button>
             </div>
         </div>
     </div>

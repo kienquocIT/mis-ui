@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    PurchaseRequestEventHandler.InitPageEven()
+
     new $x.cls.file($('#attachment')).init({'name': 'attachment'});
 
     WFRTControl.setWFInitialData('purchaserequest');
@@ -13,5 +15,5 @@ $(document).ready(function () {
     })
     AutoValidator.CustomValidator(form_validator)
 
-    $request_for.trigger('change')
+    pageElements.$request_for.trigger('change')
 })

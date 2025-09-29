@@ -1,5 +1,6 @@
 $(document).ready(function () {
-    LoadDetailPR('update');
+    PurchaseRequestEventHandler.InitPageEven()
+    PurchaseRequestHandler.LoadDetailPR('update');
 
     WFRTControl.setWFInitialData('purchaserequest');
 

@@ -460,7 +460,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     SALE_ORDER_INDICATOR_LIST = StringUrl('saleorder/indicators')
     SALE_ORDER_INDICATOR_DETAIL = StringUrl('saleorder/indicator/{pk}')
     SALE_ORDER_INDICATOR_RESTORE = StringUrl('saleorder/indicator-restore/{pk}')
-    PRODUCT_LIST_SALE_ORDER = StringUrl('saleorder/product/list/{pk}')
     SALE_ORDER_PRODUCT_WO_LIST = StringUrl('saleorder/sale-order-product-wo/list')
     SALE_ORDER_RECURRENCE_LIST = StringUrl('saleorder/sale-order-recurrence/list')
     SALE_ORDER_DROPDOWN_LIST = StringUrl('saleorder/dropdown/list')
@@ -503,18 +502,26 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_PRODUCT_LEASE_LIST = StringUrl('delivery/product-lease')
 
     # Purchase
-    PURCHASE_REQUEST_LIST = StringUrl('purchasing/purchase-request/list')
-    PURCHASE_REQUEST_DETAIL = StringUrl('purchasing/purchase-request/{pk}')
     PURCHASE_ORDER_LIST = StringUrl('purchasing/purchase-order/list')
     PURCHASE_ORDER_DETAIL = StringUrl('purchasing/purchase-order/{pk}')
     PURCHASE_ORDER_DETAIL_PK = StringUrl('purchasing/purchase-order/{pk}')
     PURCHASE_REQUEST_LIST_FOR_PQR = StringUrl('purchasing/purchase-request-for-pqr/list')
-    PURCHASE_REQUEST_PRODUCT_LIST = StringUrl('purchasing/purchase-request-product/list')
     PURCHASE_ORDER_PRODUCT_GR_LIST = StringUrl('purchasing/purchase-order-product-gr/list')
     PURCHASE_ORDER_SALE_LIST = StringUrl('purchasing/purchase-order/list-sale')
     PURCHASE_REQUEST_SALE_LIST = StringUrl('purchasing/purchase-request/list-sale')
     PURCHASE_QUOTATION_SALE_LIST = StringUrl('purchasing/purchase-quotation/list-sale')
     PURCHASE_ORDER_DROPDOWN_LIST = StringUrl('purchasing/purchase-order-dropdown/list')
+
+    # Purchase request
+    PURCHASE_REQUEST_LIST = StringUrl('purchasing/purchase-request/list')
+    PURCHASE_REQUEST_DETAIL = StringUrl('purchasing/purchase-request/{pk}')
+    PR_PRD_LIST = StringUrl('purchasing/pr-product-list')
+    PR_SO_LIST = StringUrl('purchasing/pr-so-list')
+    PR_SO_PRD_LIST = StringUrl('purchasing/pr-so-product-list/{pk}')
+    PR_DP_LIST = StringUrl('purchasing/pr-dp-list')
+    PR_DP_PRD_LIST = StringUrl('purchasing/pr-dp-product-list/{pk}')
+    PR_SVO_LIST = StringUrl('purchasing/pr-svo-list')
+    PR_SVO_PRD_LIST = StringUrl('purchasing/pr-svo-product-list/{pk}')
 
     # Purchasing
     PURCHASE_QUOTATION_REQUEST_LIST = StringUrl('purchasing/purchase-quotation-request/list')
@@ -610,9 +617,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     GIS_SERIAL_LIST = StringUrl('inventory/serial-list-for-gis/list')
     GOODS_ISSUE_PRODUCT_LIST = StringUrl('inventory/goods-issue-product/list')
 
-    # Sale Order List for Purchasing Staff
-    PURCHASE_REQUEST_SALE_ORDER_LIST = StringUrl('purchasing/purchase-request-so-list')
-
     # Report
     REPORT_REVENUE_LIST = StringUrl('report/revenue/list')
     REPORT_PRODUCT_LIST = StringUrl('report/product/list')
@@ -673,7 +677,6 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     # Distribution plan
     DISTRIBUTION_PLAN_LIST = StringUrl('distribution-plans/list')
     DISTRIBUTION_PLAN_DETAIL = StringUrl('distribution-plans/detail/{pk}')
-    PRODUCT_LIST_DISTRIBUTION_PLAN = StringUrl('distribution-plans/product/list/{pk}')
 
     # Bill of material
     BOM_LIST = StringUrl('production/bom/list')

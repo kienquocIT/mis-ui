@@ -20,7 +20,7 @@
             <div class="tab-pane fade show active" id="tab_line_detail">
                 <div class="row">
                     <div class="col-12 for-sale-order-request" hidden>
-                        <table id="datatable-pr-product-so" class="table nowrap w-100 mb-5">
+                        <table id="table-so-product-line-detail" class="table nowrap w-100 mb-5">
                             <thead>
                             <tr class="bg-secondary-light-5">
                                 <th style="min-width: 50px"></th>
@@ -36,7 +36,7 @@
                         </table>
                     </div>
                     <div class="col-12 for-distribution-request" hidden>
-                        <table id="datatable-pr-product-distribution" class="table nowrap w-100 mb-5">
+                        <table id="table-dp-product-line-detail" class="table nowrap w-100 mb-5">
                             <thead>
                             <tr class="bg-secondary-light-5">
                                 <th style="min-width: 50px"></th>
@@ -52,7 +52,7 @@
                         </table>
                     </div>
                     <div class="col-12 for-stock-free-request" hidden>
-                        <table id="datatable-pr-product-stock-free" class="table nowrap w-100 mb-5">
+                        <table id="table-product-stock-free-line-detail" class="table nowrap w-100 mb-5">
                             <thead>
                             <tr class="bg-secondary-light-5">
                                 <th style="min-width: 50px"></th>
@@ -70,7 +70,7 @@
                         </table>
                     </div>
                     <div class="col-12 for-fixed-asset-request" hidden>
-                        <table id="datatable-pr-product-fixed-asset" class="table nowrap w-100 mb-5">
+                        <table id="table-product-fixed-asset-line-detail" class="table nowrap w-100 mb-5">
                             <thead>
                             <tr class="bg-secondary-light-5">
                                 <th style="min-width: 50px"></th>
@@ -88,7 +88,7 @@
                         </table>
                     </div>
                     <div class="col-12 for-service-order-request" hidden>
-                        <table id="datatable-pr-product-svo" class="table nowrap w-100 mb-5">
+                        <table id="table-svo-product-line-detail" class="table nowrap w-100 mb-5">
                             <thead>
                             <tr class="bg-secondary-light-5">
                                 <th style="min-width: 50px"></th>
@@ -107,19 +107,19 @@
                 <div class="row">
                     <div class="col-12 col-lg-7 mt-2 for-sale-order-request" hidden>
                         <button type="button"
-                                id="btn-change-sale-order"
+                                id="btn-change-so"
                                 class="btn btn-primary btn-sm"
                                 data-bs-toggle="modal"
-                                data-bs-target="#modal-select-sale-order">
+                                data-bs-target="#modal-select-so-product">
                             {% trans 'Select' %} {% trans 'Sale order' %}
                         </button>
                     </div>
                     <div class="col-12 col-lg-7 mt-2 for-distribution-request" hidden>
                         <button type="button"
-                                id="btn-change-distribution"
+                                id="btn-change-dp"
                                 class="btn btn-primary btn-sm"
                                 data-bs-toggle="modal"
-                                data-bs-target="#modal-select-distribution">
+                                data-bs-target="#modal-select-dp-product">
                             {% trans 'Select' %} {% trans 'Stock plan' %}
                         </button>
                     </div>
@@ -139,8 +139,10 @@
                     </div>
                     <div class="col-12 col-lg-7 mt-2 for-service-order-request" hidden>
                         <button type="button"
-                                id="btn-change-service-order"
-                                class="btn btn-primary btn-sm">
+                                id="btn-change-svo"
+                                class="btn btn-primary btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-select-svo-product">
                             {% trans "Select" %} {% trans 'Service order' %}
                         </button>
                     </div>

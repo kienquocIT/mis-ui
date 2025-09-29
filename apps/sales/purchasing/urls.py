@@ -15,7 +15,9 @@ from apps.sales.purchasing.views import (
 
     PurchaseQuotationList, PurchaseQuotationListAPI, PurchaseQuotationCreate, PurchaseQuotationDetail,
     PurchaseQuotationDetailAPI, PurchaseQuotationProductListAPI, PurchaseRequestSaleListAPI,
-    PurchaseQuotationSaleListAPI, PurchaseOrderDDListAPI, PurchaseRequestSaleOrderListAPI,
+    PurchaseQuotationSaleListAPI, PurchaseOrderDDListAPI, SaleOrderListForPRAPI, ServiceOrderProductListForPRAPI,
+    DistributionPlanProductListForPRAPI, SaleOrderProductListForPRAPI, DistributionPlanListForPRAPI,
+    ServiceOrderListForPRAPI,
 )
 
 urlpatterns = [
@@ -30,21 +32,26 @@ urlpatterns = [
     path('purchase-request/config', PurchaseRequestConfig.as_view(), name='PurchaseRequestConfig'),
     path('purchase-request/config/api', PurchaseRequestConfigAPI.as_view(), name='PurchaseRequestConfigAPI'),
     # related
-    path('purchasing-request-so-list/api', PurchaseRequestSaleOrderListAPI.as_view(), name='PurchaseRequestSaleOrderListAPI'),
-    path('purchase-request-product/list', PurchaseRequestProductListAPI.as_view(), name='PurchaseRequestProductListAPI'),
-    path('purchase-request/list-for-pqr/api', PurchaseRequestListForPQRAPI.as_view(), name='PurchaseRequestListForPQRAPI'),
-    path('purchase-request/list-sale/api', PurchaseRequestSaleListAPI.as_view(), name='PurchaseRequestSaleListAPI'),
+    path('pr-so-list/api', SaleOrderListForPRAPI.as_view(), name='SaleOrderListForPRAPI'),
+    path('pr-so-product-list/api/<str:pk>', SaleOrderProductListForPRAPI.as_view(), name='SaleOrderProductListForPRAPI'),
+    path('pr-dp-list/api', DistributionPlanListForPRAPI.as_view(), name='DistributionPlanListForPRAPI'),
+    path('pr-dp-product-list/api/<str:pk>', DistributionPlanProductListForPRAPI.as_view(), name='DistributionPlanProductListForPRAPI'),
+    path('pr-svo-list/api', ServiceOrderListForPRAPI.as_view(), name='ServiceOrderListForPRAPI'),
+    path('pr-svo-product-list/api/<str:pk>', ServiceOrderProductListForPRAPI.as_view(), name='ServiceOrderProductListForPRAPI'),
+    path('pr-product-list', PurchaseRequestProductListAPI.as_view(), name='PurchaseRequestProductListAPI'),
 ] + [
     # purchase order
     path('purchase-order/list', PurchaseOrderList.as_view(), name='PurchaseOrderList'),
     path('purchase-order/api/lists', PurchaseOrderListAPI.as_view(), name='PurchaseOrderListAPI'),
-    path('purchase-order/api/lists-sale', PurchaseOrderSaleListAPI.as_view(), name='PurchaseOrderSaleListAPI'),
     path('purchase-order/create', PurchaseOrderCreate.as_view(), name='PurchaseOrderCreate'),
     path('purchase-order/detail/<str:pk>', PurchaseOrderDetail.as_view(), name='PurchaseOrderDetail'),
     path('purchase-order/detail-api/<str:pk>', PurchaseOrderDetailAPI.as_view(), name='PurchaseOrderDetailAPI'),
     path('purchase-order/update/<str:pk>', PurchaseOrderUpdate.as_view(), name='PurchaseOrderUpdate'),
+    # related
+    path('purchase-order/api/lists-sale', PurchaseOrderSaleListAPI.as_view(), name='PurchaseOrderSaleListAPI'),
     path('purchase-order-product-gr/list', PurchaseOrderProductGRListAPI.as_view(), name='PurchaseOrderProductGRListAPI'),
     path('purchase-order-dropdown/api/list', PurchaseOrderDDListAPI.as_view(), name='PurchaseOrderDDListAPI'),
+    path('purchase-request/list-sale/api', PurchaseRequestSaleListAPI.as_view(), name='PurchaseRequestSaleListAPI'),
 ] + [
     # purchase quotation request
     path('purchase-quotation-request/lists', PurchaseQuotationRequestList.as_view(), name='PurchaseQuotationRequestList'),
@@ -54,6 +61,8 @@ urlpatterns = [
     path('purchase-quotation-request/update/<str:pk>', PurchaseQuotationRequestUpdate.as_view(), name='PurchaseQuotationRequestUpdate'),
     path('purchase-quotation-request/list/api', PurchaseQuotationRequestListAPI.as_view(), name='PurchaseQuotationRequestListAPI'),
     path('purchase-quotation-request/api/<str:pk>', PurchaseQuotationRequestDetailAPI.as_view(), name='PurchaseQuotationRequestDetailAPI'),
+    # related
+    path('purchase-request/list-for-pqr/api', PurchaseRequestListForPQRAPI.as_view(), name='PurchaseRequestListForPQRAPI'),
 ] + [
     # purchase quotation
     path('purchase-quotation/lists', PurchaseQuotationList.as_view(), name='PurchaseQuotationList'),

@@ -152,3 +152,15 @@ class PurchaseOrderSaleListAPI(APIView):
         data = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_ORDER_SALE_LIST).get(data)
         return resp.auto_return(key_success='purchase_order_sale_list')
+
+
+# related
+class PurchaseRequestSaleListAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        data = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_REQUEST_SALE_LIST).get(data)
+        return resp.auto_return(key_success='purchase_request_sale_list')

@@ -5,242 +5,83 @@
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'assets/css/core_home/home.css' %}" rel="stylesheet" type="text/css">
-    <style>
-        #my-task-summary-report {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            {#color: #00717a;#}
-            border-radius: 10px;
-            border: 1px solid #c7e2e5;
-        }
-
-        #my-task-summary-report .summary-item {
-            flex: 1 1 auto;
-            padding: 10px;
-            text-align: center;
-            flex-wrap: wrap;
-            text-overflow: ellipsis;
-        }
-
-        .summary-item .summary-title {
-            font-size: 1rem;
-        }
-
-        .summary-item .summary-value {
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        /* animate increment number */
-        @property --num {
-            syntax: "<integer>";
-            initial-value: 0;
-            inherits: false;
-        }
-
-        .summary-value {
-            transition: --num 0.7s;
-            counter-set: num var(--num);
-        }
-
-        .summary-value::after {
-            content: counter(num);
-        }
-    </style>
-    <style>
-        #my-task-summary-report > p {
-            display: none;
-            color: #ff9100;
-        }
-
-        #my-task-summary-report.collecting > .summary-item {
-            display: none;
-        }
-
-        #my-task-summary-report.collecting > p {
-            display: block;
-        }
-    </style>
-    <style>
-        #idxPageContent {
-            {#background-color: #A7C1E1;#}
-            background-image: url("{% static 'assets/js/home_4.jpg' %}");
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: cover;
-        }
-    </style>
-    <style>
-        #event-at-day {
-            padding: 5px;
-        }
-
-        #event-at-day .event-at-item {
-            background-color: #eef6ff;
-            color: #00585f;
-            border: 1px solid #c7e2e5;
-            margin-bottom: 5px;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        .event-at-item .event-at-head {
-            display: flex;
-        }
-
-        .event-at-head .event-at-title {
-            {#font-weight: bold;#}
-            {#flex-basis: 45%;#}
-            flex-basis: 60%;
-        }
-
-        .event-at-item .event-at-head .event-at-date-group-in-title {
-            display: inline-block;
-            flex-basis: 45%;
-        }
-
-        .event-at-item.active .event-at-head .event-at-date-group-in-title {
-            display: none;
-        }
-
-        .event-at-head .event-at-show-more-group {
-            margin-left: auto;
-        }
-
-        .event-at-head .event-at-show-more i {
-            transition: transform 0.2s;
-        }
-
-        .event-at-head .event-at-show-more.active i {
-            transform: rotate(180deg);
-        }
-
-        .event-at-item .event-at-body-more {
-            display: none;
-        }
-
-        .event-at-item .event-at-body-icon {
-            margin-right: 5px;
-        }
-
-        .event-at-btn-all {
-            color: #007d88;
-            padding: 0 10px;
-        }
-
-        #event-at-day-base {
-            display: none;
-        }
-
-        #event-at-empty {
-            width: 100%;
-            text-align: center;
-            color: #003eb3;
-        }
-
-        #event-at-day-selected-date {
-            color: #55717c;
-            padding: 0 5px;
-            font-size: 0.9rem;
-        }
-
-        .event-item-holiday {
-            background: linear-gradient(135deg, #ff0000, #ffd800);
-            background-size: 100% 100%;
-            border: 0 !important;
-            color: #fff !important;
-        }
-
-        .event-item-birthday {
-            background: linear-gradient(235deg, #e92990, #ffc400, #008cff, #ba00ff);
-            background-size: 100% 100%;
-            border: 0 !important;
-            color: #fff !important;
-        }
-    </style>
-
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/themes/themes.light.min.css' %}">
-
     <style>
-        #idxPageContent {
-            position: relative;
-        }
-
-        #setting-home {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1054;
-            width: 2rem;
-            height: 2rem;
-            background-color: #88a328;
-            color: #fff;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 0 0 10px 0;
-            transition: background-color 1s, opacity 1s, transform 0.5s;
-            cursor: pointer;
-            opacity: 0.6;
-        }
-        #setting-home .icon {
-            transition: transform 0.5s;
-        }
-        #setting-home:hover {
-            opacity: 1;
-            transform: scale(1.4);
-        }
-        #setting-home:hover .icon {
-            transform: rotate(90deg);
-        }
+    #idxPageContent {
+        background-color: #A7C1E1;
+        background-image: url("{% static 'assets/js/home_4.jpg' %}");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        padding: 1rem;
+    }
     </style>
 {% endblock %}
-
 {% block pageAction %}{% endblock %}
-
 {% block pageContent %}
+    {{ data.employee_current_data | json_script:"employee_current_data" }}
+    {{ data.company_current_data | json_script:"company_current_data" }}
+
     <div id="setting-home" data-bs-toggle="tooltip" title="{% trans 'Home UI config' %}">
         <span class="icon">
             <i class="fa-solid fa-gear"></i>
         </span>
     </div>
-    <div class="row mb-3" style="display: none;">
-        <div class="col col-sm-12 col-md-6 col-lg-6 col-xl-9 mb-3">
-            <div
-                    id="my-task-summary-report"
-                    class="w-100 mb-3 p-3"
-                    data-url="{% url 'MyTaskSummaryReport' %}"
-                    style="background-color: #ffffff;"
-            >
-                <div class="w-100 d-flex justify-content-center align-items-start">
-                    <div class="summary-item" data-item="actives">
-                        <p class="summary-value text-primary"></p>
-                        <p class="summary-title">{% trans 'Actives Task' %}</p>
+    <div class="row mb-5" style="display: none;">
+        <div class="col-12 mb-3">
+            <h1 class="text-white fw-bold" id="employee-current-fullname"></h1>
+            <h5 class="text-white fw-bold" id="employee-current-company"></h5>
+        </div>
+        <div class="col col-sm-12 col-md-6 col-lg-6 col-xl-9">
+            <div class="row" id="my-task-summary-report" data-url="{% url 'MyTaskSummaryReport' %}">
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="card transparent-card">
+                        <div class="card-body p-2">
+                            <div class="summary-item" data-item="actives">
+                                <p class="summary-value"></p>
+                                <p class="summary-title">{% trans 'Actives Task' %}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="summary-item" data-item="overdue">
-                        <p class="summary-value text-light"></p>
-                        <p class="summary-title">{% trans 'Overdue Task' %}</p>
+                </div>
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="card transparent-card">
+                        <div class="card-body p-2">
+                            <div class="summary-item" data-item="overdue">
+                                <p class="summary-value"></p>
+                                <p class="summary-title">{% trans 'Overdue Task' %}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="summary-item" data-item="upcoming_today">
-                        <p class="summary-value text-light"></p>
-                        <p class="summary-title">{% trans 'Upcoming Today Task' %}</p>
+                </div>
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="card transparent-card">
+                        <div class="card-body p-2">
+                            <div class="summary-item" data-item="upcoming_today">
+                                <p class="summary-value"></p>
+                                <p class="summary-title">{% trans 'Upcoming Today Task' %}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="summary-item" data-item="upcoming_soon">
-                        <p class="summary-value text-light"></p>
-                        <p class="summary-title">{% trans 'Upcoming 3 days Task' %}</p>
+                </div>
+                <div class="col-12 col-md-3 col-lg-3">
+                    <div class="card transparent-card">
+                        <div class="card-body p-2">
+                            <div class="summary-item" data-item="upcoming_soon">
+                                <p class="summary-value"></p>
+                                <p class="summary-title">{% trans 'Upcoming 3 days Task' %}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <p>{% trans "Current task data is being collected." %}</p>
             </div>
-            <div class="row mb-3" style="display: none;" id="task-list-group">
-                <div class="col-12 mb-3">
-                    <div class="card card-border mb-0 h-100">
-                        <div class="card-header card-header-action">
-                            <ul class="nav nav-light nav-tabs nav-segmented-tabs">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card transparent-main-card w-100">
+                        <div class="card-body p-2" id="task-list-group">
+                            <ul class="nav nav-pills-bfl">
                                 <li class="nav-item">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab-task">
                                         <span class="nav-link-text">{% trans 'To do' %}</span>
@@ -256,33 +97,22 @@
                                         <span class="nav-link-text">{% trans 'Pined' %}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#tab-draft">
-                                        <span class="nav-link-text">{% trans 'Draft' %}</span>
-                                    </a>
-                                </li>
                             </ul>
-                        </div>
-                        <div class="card-body">
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="tab-task">
                                     <div class="row">
                                         <div class="col-12">
-                                            <table
-                                                    class="table nowrap w-100"
-                                                    id="tbl_my_task"
-                                                    data-url="{% url 'FlowRuntimeTaskListAPI' %}"
-                                                    data-method="GET"
-                                            >
+                                            <table class="table nowrap w-100" id="tbl_my_task" data-url="{% url 'FlowRuntimeTaskListAPI' %}" data-method="GET">
                                                 <thead>
-                                                <tr class="bg-light">
-                                                    <th style="min-width: 150px">{% trans 'Title' %}</th>
-                                                    <th style="min-width: 100px">{% trans 'Application' %}</th>
-                                                    <th style="min-width: 100px">{% trans 'Node' %}</th>
-                                                    <th style="min-width: 150px">{% trans 'Assignee' %}</th>
-                                                    <th style="min-width: 100px">{% trans 'Date receive' %}</th>
-                                                    <th style="min-width: 150px">{% trans 'Actions' %}</th>
-                                                </tr>
+                                                    <tr>
+                                                        <th style="min-width: 50px"></th>
+                                                        <th style="min-width: 150px">{% trans 'Application' %}</th>
+                                                        <th style="min-width: 200px">{% trans 'Title' %}</th>
+                                                        <th style="min-width: 100px">{% trans 'Node' %}</th>
+                                                        <th style="min-width: 150px">{% trans 'Assignee' %}</th>
+                                                        <th style="min-width: 150px">{% trans 'Date receive' %}</th>
+                                                        <th style="min-width: 100px"></th>
+                                                    </tr>
                                                 </thead>
                                                 <tbody></tbody>
                                             </table>
@@ -292,20 +122,16 @@
                                 <div class="tab-pane fade" id="tab-owner">
                                     <div class="row">
                                         <div class="col-12">
-                                            <table
-                                                    id="tbl_following_data"
-                                                    class="table nowrap table-advance w-100"
-                                                    data-url="{% url 'FlowRuntimeMeListAPI' %}"
-                                                    data-method="GET"
-                                            >
+                                            <table id="tbl_following_data" class="table nowrap w-100" data-url="{% url 'FlowRuntimeMeListAPI' %}" data-method="GET">
                                                 <thead>
-                                                <tr class="bg-light">
-                                                    <th>{% trans 'Title' %}</th>
-                                                    <th>{% trans 'Application' %}</th>
-                                                    <th>{% trans 'Current node' %}</th>
-                                                    <th>{% trans 'Collaborator' %}</th>
-                                                    <th>{% trans 'Date Created' %}</th>
-                                                    <th>{% trans 'Actions' %}</th>
+                                                <tr>
+                                                    <th style="min-width: 50px"></th>
+                                                    <th style="min-width: 150px">{% trans 'Application' %}</th>
+                                                    <th style="min-width: 200px">{% trans 'Title' %}</th>
+                                                    <th style="min-width: 150px">{% trans 'Current node' %}</th>
+                                                    <th style="min-width: 150px">{% trans 'Collaborator' %}</th>
+                                                    <th style="min-width: 150px">{% trans 'Date Created' %}</th>
+                                                    <th style="min-width: 100px"></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody></tbody>
@@ -316,15 +142,10 @@
                                 <div class="tab-pane fade" id="tab-pined">
                                     <div class="row">
                                         <div class="col-12">
-                                            <table
-                                                    class="table nowrap table- w-100"
-                                                    id="tbl_block_doc_pined"
-                                                    data-url="{% url 'DocPinedListAPI' %}"
-                                                    data-url-detail="{% url 'DocPinedDetailAPI' pk=1 %}"
-                                                    data-method="GET"
-                                            >
+                                            <table class="table nowrap w-100" id="tbl_block_doc_pined" data-url="{% url 'DocPinedListAPI' %}" data-url-detail="{% url 'DocPinedDetailAPI' pk=1 %}" data-method="GET">
                                                 <thead>
-                                                <tr class="bg-light">
+                                                <tr>
+                                                    <th style="min-width: 50px"></th>
                                                     <th>{% trans 'Title' %}</th>
                                                     <th>{% trans 'Application' %}</th>
                                                     <th>{% trans 'Current node' %}</th>
@@ -338,20 +159,114 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="tab-draft">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <table id="datable_my_draft_list" class="table table-advance nowrap w-100 mb-5">
-                                                <thead>
-                                                <tr>
-                                                    <th>{% trans 'Title' %}</th>
-                                                    <th>{% trans 'Application' %}</th>
-                                                    <th>{% trans 'Date Created' %}</th>
-                                                    <th></th>
-                                                </tr>
-                                                </thead>
-                                                <tbody></tbody>
-                                            </table>
+                            </div>
+                        </div>
+                    </div>
+
+        {#            <div class="row p-0">#}
+        {#                <div class="col-lg-12 col-xl-4 mb-3">#}
+        {#                    <div#}
+        {#                            class="w-100 d-flex justify-content-center align-items-center"#}
+        {#                            id="my-task-by-status"#}
+        {#                            style="background-color: #fff"#}
+        {#                    >#}
+        {#                        <div#}
+        {#                                class="w-100 h-100"#}
+        {#                                style="padding: 10px 20px;height: 300px;display: flex; justify-content: center;min-height: 200px;max-height: 400px;"#}
+        {#                        >#}
+        {#                            <canvas style="width: 100%;"></canvas>#}
+        {#                            <p>{% trans "Current task data is being collected." %}</p>#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#                <div class="col-lg-12 col-xl-8 mb-3">#}
+        {#                    <div#}
+        {#                            class="w-100"#}
+        {#                            style="border: 1px solid #f1f1f1; border-radius: 10px; padding: 10px 20px;background-color: #fff;min-height: 200px;"#}
+        {#                    >#}
+        {#                        <canvas#}
+        {#                                id="my-task-report-by-date"#}
+        {#                                data-url="{% url 'MyTaskReportAPI' %}"#}
+        {#                                style="width: 100%;"#}
+        {#                        ></canvas>#}
+        {#                        <div class="w-100 mt-3 mb-3 d-flex justify-content-center">#}
+        {#                            <select id="inp-range-day-report-task-status" class="d-none">#}
+        {#                                <option value="7" selected>{% trans '7 days' %}</option>#}
+        {#                                <option value="14">{% trans '14 days' %}</option>#}
+        {#                                <option value="30">{% trans '30 days' %}</option>#}
+        {#                            </select>#}
+        {#                            <div id="group-range-day-report-task-status"></div>#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#            </div>#}
+                </div>
+            </div>
+        </div>
+        <div class="col col-sm-12 col-md-6 col-lg-6 col-xl-3 mb-3">
+            <div class="row calendar-group">
+                <div class="col-12">
+                    <div class="card transparent-card">
+                        <div class="card-body p-2">
+                            <div id="calendar" class="w-100"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card transparent-card">
+                        <div class="card-body p-2">
+                            <div class="w-100 pt-2">
+                                <div class="d-flex">
+                                    <div id="event-at-day-selected-date" data-text-today="{% trans 'Today' %}" data-bs-toggle="tooltip"
+                                         title="{% trans 'There is a delay in updating the data with new changes. Estimated within 5 minutes of change.' %}"
+                                    ></div>
+                                    <div style="margin-left: auto;display: flex; align-items: start;">
+                                        <button class="btn btn-xs btn-soft-primary event-at-btn-all mr-1" id="event-at-expand-all" data-bs-toggle="tooltip" title="{% trans 'Expand all' %}">
+                                            <i class="fa-solid fa-chevron-down fa-xs"></i>
+                                        </button>
+                                        <button class="btn btn-xs btn-soft-primary event-at-btn-all" id="event-at-collapse-all" data-bs-toggle="tooltip" title="{% trans 'Collapse all' %}">
+                                            <i class="fa-solid fa-chevron-up fa-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="event-at-day" data-url="{% url 'HomeCalendarAPI' %}">
+                                    <div id="event-at-empty">{% trans 'A quiet day!' %}</div>
+                                    <div class="event-at-item" id="event-at-day-base">
+                                        <div class="event-at-head">
+                                            <span class="event-at-title"></span>
+                                            <div class="event-at-date-group-in-title ml-3">
+                                                <span class="event-at-body-icon"><i class="fa-solid fa-flag"></i></span>
+                                                <span class="event-at-date-start"></span>
+                                                <span class="ml-1 mr-1"><i class="fa-solid fa-arrow-right-long"></i></span>
+                                                <span class="event-at-date-end"></span>
+                                            </div>
+                                            <div class="event-at-show-more-group">
+                                                <button class="btn btn-xs btn-soft-primary event-at-show-more" data-bs-toggle="tooltip" title="{% trans 'Expand / Collapse' %}">
+                                                    <i class="fa-solid fa-chevron-down fa-2xs"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="event-at-body">
+                                            <div class="event-at-body-more">
+                                                <div>
+                                                    <span class="event-at-body-icon"><i class="fa-solid fa-tag"></i></span>
+                                                    <span class="event-at-category-title"></span>
+                                                </div>
+                                                <div>
+                                                    <span class="event-at-body-icon"><i class="fa-solid fa-location-dot"></i></span>
+                                                    <span class="event-at-location"></span>
+                                                </div>
+                                                <div>
+                                                    <span class="event-at-body-icon"><i class="fa-solid fa-circle-info"></i></span>
+                                                    <span class="event-at-remark"></span>
+                                                </div>
+                                                <div class="event-at-date-group-in-body">
+                                                    <span class="event-at-body-icon"><i class="fa-solid fa-flag"></i></span>
+                                                    <span class="event-at-date-start"></span>
+                                                    <span class="ml-1 mr-1"><i class="fa-solid fa-arrow-right-long"></i></span>
+                                                    <span class="event-at-date-end"></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -360,147 +275,23 @@
                     </div>
                 </div>
             </div>
-
-
-{#            <div class="row p-0">#}
-{#                <div class="col-lg-12 col-xl-4 mb-3">#}
-{#                    <div#}
-{#                            class="w-100 d-flex justify-content-center align-items-center"#}
-{#                            id="my-task-by-status"#}
-{#                            style="background-color: #fff"#}
-{#                    >#}
-{#                        <div#}
-{#                                class="w-100 h-100"#}
-{#                                style="padding: 10px 20px;height: 300px;display: flex; justify-content: center;min-height: 200px;max-height: 400px;"#}
-{#                        >#}
-{#                            <canvas style="width: 100%;"></canvas>#}
-{#                            <p>{% trans "Current task data is being collected." %}</p>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-{#                <div class="col-lg-12 col-xl-8 mb-3">#}
-{#                    <div#}
-{#                            class="w-100"#}
-{#                            style="border: 1px solid #f1f1f1; border-radius: 10px; padding: 10px 20px;background-color: #fff;min-height: 200px;"#}
-{#                    >#}
-{#                        <canvas#}
-{#                                id="my-task-report-by-date"#}
-{#                                data-url="{% url 'MyTaskReportAPI' %}"#}
-{#                                style="width: 100%;"#}
-{#                        ></canvas>#}
-{#                        <div class="w-100 mt-3 mb-3 d-flex justify-content-center">#}
-{#                            <select id="inp-range-day-report-task-status" class="d-none">#}
-{#                                <option value="7" selected>{% trans '7 days' %}</option>#}
-{#                                <option value="14">{% trans '14 days' %}</option>#}
-{#                                <option value="30">{% trans '30 days' %}</option>#}
-{#                            </select>#}
-{#                            <div id="group-range-day-report-task-status"></div>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-        </div>
-        <div class="col col-sm-12 col-md-6 col-lg-6 col-xl-3 mb-3">
-            <div
-                    class="w-100 p-3 mb-3 calendar-group"
-                    style="padding: 5px;border-radius: 10px;border: 1px solid #f1f1f1;background-color: #fff;"
-            >
-                <div class="w-100 d-flex justify-content-center mb-1 overflow-hidden">
-                    <div id="calendar" class="w-100 p-0"></div>
-                </div>
-                <div class="w-100 pt-2" style="border-top: 1px solid #f1f1f1;">
-                    <div class="d-flex">
-                        <div
-                                id="event-at-day-selected-date"
-                                data-text-today="{% trans 'Today' %}"
-                                data-bs-toggle="tooltip"
-                                title="{% trans 'There is a delay in updating the data with new changes. Estimated within 5 minutes of change.' %}"
-                        ></div>
-                        <div style="margin-left: auto;display: flex; align-items: start;">
-                            <button
-                                    class="btn btn-xs btn-soft-primary event-at-btn-all mr-1"
-                                    id="event-at-expand-all"
-                                    data-bs-toggle="tooltip"
-                                    title="{% trans 'Expand all' %}"
-                            >
-                                <i class="fa-solid fa-chevron-down fa-xs"></i>
-                            </button>
-                            <button
-                                    class="btn btn-xs btn-soft-primary event-at-btn-all"
-                                    id="event-at-collapse-all"
-                                    data-bs-toggle="tooltip"
-                                    title="{% trans 'Collapse all' %}"
-                            >
-                                <i class="fa-solid fa-chevron-up fa-xs"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div id="event-at-day" data-url="{% url 'HomeCalendarAPI' %}">
-                        <div id="event-at-empty">{% trans 'A quiet day!' %}</div>
-                        <div class="event-at-item" id="event-at-day-base">
-                            <div class="event-at-head">
-                                <span class="event-at-title"></span>
-                                <div class="event-at-date-group-in-title ml-3">
-                                    <span class="event-at-body-icon"><i class="fa-solid fa-flag"></i></span>
-                                    <span class="event-at-date-start"></span>
-                                    <span class="ml-1 mr-1"><i class="fa-solid fa-arrow-right-long"></i></span>
-                                    <span class="event-at-date-end"></span>
-                                </div>
-                                <div class="event-at-show-more-group">
-                                    <button
-                                            class="btn btn-xs btn-soft-primary event-at-show-more"
-                                            data-bs-toggle="tooltip"
-                                            title="{% trans 'Expand / Collapse' %}"
-                                    >
-                                        <i class="fa-solid fa-chevron-down fa-2xs"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="event-at-body">
-                                <div class="event-at-body-more">
-                                    <div>
-                                        <span class="event-at-body-icon"><i class="fa-solid fa-tag"></i></span>
-                                        <span class="event-at-category-title"></span>
-                                    </div>
-                                    <div>
-                                        <span class="event-at-body-icon"><i class="fa-solid fa-location-dot"></i></span>
-                                        <span class="event-at-location"></span>
-                                    </div>
-                                    <div>
-                                        <span class="event-at-body-icon"><i class="fa-solid fa-circle-info"></i></span>
-                                        <span class="event-at-remark"></span>
-                                    </div>
-                                    <div class="event-at-date-group-in-body">
-                                        <span class="event-at-body-icon"><i class="fa-solid fa-flag"></i></span>
-                                        <span class="event-at-date-start"></span>
-                                        <span class="ml-1 mr-1"><i class="fa-solid fa-arrow-right-long"></i></span>
-                                        <span class="event-at-date-end"></span>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card transparent-card">
+                        <div class="card-body p-2">
+                            <div class="w-100 bookmark-group">
+                                <h6>{% trans 'Bookmarks' %}</h6>
+                                <div id="boxBookmarkDisplay" data-url="{% url 'BookMarkListAPI' %}" data-url-delete="{% url 'BookMarkDetailAPI' pk=1 %}">
+                                    <div class="row d-flex justify-content-start flex-wrap" id="boxBookmarkDisplayData">
+                                        <div id="boxBtnAddNewBM" class="bookmark-item d-15 m-2" data-bs-toggle="modal" data-bs-target="#modalAddBookMark">
+                                            <div class="bg-blue-light-4 text-light rounded-5 d-10 d-flex flex-column justify-content-center align-items-center overflow-hidden">
+                                                <span class="mb-1">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div
-                    class="w-100 bookmark-group"
-                    style="padding: 15px;border-radius: 10px;border: 1px solid #f1f1f1;background-color: #fff;"
-            >
-                <h6>{% trans 'Bookmarks' %}</h6>
-                <div
-                        id="boxBookmarkDisplay"
-                        data-url="{% url 'BookMarkListAPI' %}"
-                        data-url-delete="{% url 'BookMarkDetailAPI' pk=1 %}"
-                >
-                    <div class="row d-flex justify-content-start flex-wrap" id="boxBookmarkDisplayData">
-                        <div
-                                id="boxBtnAddNewBM" class="bookmark-item d-15 m-2" data-bs-toggle="modal"
-                                data-bs-target="#modalAddBookMark"
-                        >
-                            <div class="bg-blue-light-4 text-light rounded-5 d-10 d-flex flex-column justify-content-center align-items-center overflow-hidden">
-                                <span class="mb-1">
-                                    <i class="fa-solid fa-plus"></i>
-                                </span>
                             </div>
                         </div>
                     </div>
@@ -509,14 +300,9 @@
         </div>
     </div>
 {% endblock %}
-
 {% block modalData %}
-    <div
-            class="modal fade" id="modalAddBookMark" tabindex="-1" role="dialog" aria-labelledby="modalAddBookMark"
-            data-bs-backdrop="static"
-            aria-hidden="true"
-    >
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal fade" id="modalAddBookMark" tabindex="-1" role="dialog" aria-labelledby="modalAddBookMark" data-bs-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     {% trans 'New Book Mark' as titleModalBM %}
@@ -659,7 +445,7 @@
     </div>
 
     <div class="modal fade" id="modalHomeSetupUI" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form id="formHomeSetupUI" data-url="/" data-method="POST">
                     <div class="modal-header">
@@ -699,9 +485,7 @@
         </div>
     </div>
 {% endblock %}
-
 {% block dataHiddenGroup %}
-    {{ data.app_name_list|json_script:'app_list' }}
     <input
         type="text"
         id="home-urls-factory"
@@ -720,8 +504,6 @@
         const msgTitleErrLinked = "{% trans 'Some apps will not work correctly' %}"
         const msgTextErrLinked = `{% trans "Hasn't been link to the employee!" %}`;
         const msgTextErrLinked2 = "{% trans 'Please switch the current company to the one that already has an employee link or contact the administrator to add an employee to the account.' %}"
-        let employeeCurrentData = "{{ data.employee_current_data }}";
-        let dataHihi = "{{ data }}";
     </script>
     <script src="{% static 'assets/js/core_home/home.js' %}"></script>
 

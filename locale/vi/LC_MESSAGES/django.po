@@ -3333,7 +3333,7 @@ msgstr "Không có thông tin ngân hàng"
 
 #
 msgid "Sale Order/Quotation is not selected!"
-msgstr "Sale Order/Quotation chưa được chọn"
+msgstr "Đơn bán hàng/Báo giá chưa được chọn"
 
 #
 msgid "Quotation config update successfully"
@@ -7890,11 +7890,11 @@ msgstr "không theo PR"
 
 #
 msgid "None-project products if sale order is null"
-msgstr "Lấy sản phẩm không thuộc về dự án nào nếu không chọn Đơn hàng"
+msgstr "Lấy sản phẩm không thuộc về dự án nào nếu không chọn Đơn bán hàng"
 
 #
 msgid "Project sale order"
-msgstr "Đơn hàng dự án"
+msgstr "Đơn bán hàng dự án"
 
 #
 msgid "IN"
@@ -7926,7 +7926,7 @@ msgstr "Từ kho chung"
 
 #
 msgid "Other sale order"
-msgstr "Từ dự án khác"
+msgstr "Từ đơn bán hàng khác"
 
 #
 msgid "Reserve"
@@ -7994,7 +7994,7 @@ msgstr "Chọn sản phẩm"
 
 #
 msgid "Employees who create a Purchase Request can reference the entire Sale Order"
-msgstr "Nhân viên tạo Yêu Cầu Mua Hàng có thể tham chiếu toàn bộ Đơn Hàng"
+msgstr "Nhân viên tạo Yêu Cầu Mua Hàng có thể tham chiếu toàn bộ Đơn bán hàng"
 
 #
 msgid "had been added compared to when creating the Budget plan, update it ?"
@@ -8317,10 +8317,6 @@ msgid "Add new credit card"
 msgstr "Thêm thẻ tín dụng"
 
 #
-msgid "Go to Stage"
-msgstr "Nhảy đến trạng thái này"
-
-#
 msgid "Details"
 msgstr "Chi tiết"
 
@@ -8334,7 +8330,7 @@ msgstr "Xem Báo giá"
 
 #
 msgid "View Sale Order"
-msgstr "Xem Đơn hàng"
+msgstr "Xem Đơn bán hàng"
 
 #
 msgid "Project config"
@@ -8502,7 +8498,7 @@ msgstr "Kho chung"
 
 #
 msgid "For Sale Order"
-msgstr "Cho Đơn hàng"
+msgstr "Cho Đơn bán hàng"
 
 #
 msgid "For Other"
@@ -8515,6 +8511,10 @@ msgstr "Cho Kế hoạch Nhập hàng"
 #
 msgid "For Stock Free"
 msgstr "Cho Nhập hàng Tự do"
+
+#
+msgid "For Service Order"
+msgstr "Cho Đơn dịch vụ"
 
 #
 msgid "Company code"
@@ -12294,6 +12294,10 @@ msgstr "Chỉnh sửa thuộc tính của tài liệu"
 #
 msgid "Filter by customer"
 msgstr "Lọc theo khách hàng"
+
+#
+msgid "Attributes with inventory tracking will be selected if the product has the 'Inventory' tab enabled, and vice versa."
+msgstr "Sẽ chọn những thuộc tính có theo dõi tồn kho nếu sản phẩm bật tab 'Inventory' và ngược lại."
 
 #
 msgid "Price config"

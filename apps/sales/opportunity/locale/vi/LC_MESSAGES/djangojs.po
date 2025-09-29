@@ -36,3 +36,15 @@ msgstr "Đang tải dữ liệu chi tiết, cấu hình và giai đoạn của c
 #
 msgid "Invalid value"
 msgstr "Giá trị không đúng định dạng"
+
+#
+msgid "Go to stage"
+msgstr "Đến trạng thái này"
+
+#
+msgid "If you want to update the stage of this Opportunity manually, the company’s automatic stage transition settings for this opportunity will be disabled."
+msgstr "Nếu bạn muốn tự cập nhập trạng thái cho CHKD này, cấu hình tự chuyển trạng thái theo thiết lập của công ty của CHKD này sẽ bị tắt."
+
+#
+msgid "The configuration that allows manually entering the win rate has been disabled. The current win rate will now be updated according to the current stage of this Opportunity."
+msgstr "Cấu hình cho phép tự nhập xác suất thắng thủ công đã bị tắt, xác suất thắng hiện tại sẽ được cập nhập lại theo giai đoạn hiện tại của CHKD này."

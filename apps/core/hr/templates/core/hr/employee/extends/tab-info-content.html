@@ -68,18 +68,18 @@
                                 <div class="col-6">
                                     <label for="employee-email" class="form-label required" for="email">{% trans 'Email' %}</label>
                                 </div>
-                                <div class="col-6 text-right">
-                                    <a href="#">
-                                        <span hidden id="span-verified" class="badge badge-soft-success badge-sm" data-bs-toggle="modal" data-bs-target="#update-email-api-key-modal">
-                                            {% trans 'Verified' %}&nbsp;<i class="bi bi-check2-all"></i>
-                                        </span>
-                                    </a>
-                                    <a href="#">
-                                        <span hidden id="span-not-verified" class="badge badge-soft-danger badge-sm" data-bs-toggle="modal" data-bs-target="#update-email-api-key-modal">
-                                            {% trans 'Need verify' %}&nbsp;<i class="bi bi-exclamation-triangle-fill"></i>
-                                        </span>
-                                    </a>
-                                </div>
+{#                                <div class="col-6 text-right">#}
+{#                                    <a href="#">#}
+{#                                        <span hidden id="span-verified" class="badge badge-soft-success badge-sm" data-bs-toggle="modal" data-bs-target="#update-email-api-key-modal">#}
+{#                                            {% trans 'Verified' %}&nbsp;<i class="bi bi-check2-all"></i>#}
+{#                                        </span>#}
+{#                                    </a>#}
+{#                                    <a href="#">#}
+{#                                        <span hidden id="span-not-verified" class="badge badge-soft-danger badge-sm" data-bs-toggle="modal" data-bs-target="#update-email-api-key-modal">#}
+{#                                            {% trans 'Need verify' %}&nbsp;<i class="bi bi-exclamation-triangle-fill"></i>#}
+{#                                        </span>#}
+{#                                    </a>#}
+{#                                </div>#}
                             </div>
                             <input type="email" class="form-control" name="email" id="employee-email" {% if li_content_head_disabled == True %} disabled readonly {% endif %} required>
                         </div>

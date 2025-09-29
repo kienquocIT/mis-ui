@@ -25,13 +25,14 @@ class HomeView(View):
         next_url = request.GET.get('next', '')
         if request.user:
             employee_current_data = getattr(request.user, 'employee_current_data', {})
+            company_current_data = getattr(request.user, 'company_current_data', {})
             resp = ServerAPI(request=request, user=request.user, url=ApiURL.ALIVE_CHECK).get()
             if resp.state is True:
                 if next_url:
                     return redirect(next_url)
                 ctx = {
                     'employee_current_data': employee_current_data,
-                    'app_name_list': AppsCodeToList.get_data()
+                    'company_current_data': company_current_data,
                 }
                 return ctx, status.HTTP_200_OK
             elif resp.status == 401:

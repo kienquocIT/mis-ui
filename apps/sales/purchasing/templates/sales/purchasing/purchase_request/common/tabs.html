@@ -1,8 +1,8 @@
 {% load i18n %}
 
-<div class="row mt-5">
+<div class="row my-5">
     <div class="col-12">
-        <ul class="nav nav-pills-bfl quotation-tabs">
+        <ul class="nav nav-pills-bfl">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_line_detail">
                     <span class="nav-icon-wrap"><span class="feather-icon"><i class="bi bi-list"></i></span></span>
@@ -21,8 +21,8 @@
                 <div class="row">
                     <div class="col-12 for-sale-order-request" hidden>
                         <table id="datatable-pr-product-so" class="table nowrap w-100 mb-5">
-                            <thead class="bg-secondary-light-5">
-                            <tr>
+                            <thead>
+                            <tr class="bg-secondary-light-5">
                                 <th style="min-width: 50px"></th>
                                 <th style="min-width: 250px">{% trans "Product" %}</th>
                                 <th style="min-width: 100px">{% trans "Request quantity" %}</th>
@@ -87,6 +87,22 @@
                             <tbody></tbody>
                         </table>
                     </div>
+                    <div class="col-12 for-service-order-request" hidden>
+                        <table id="datatable-pr-product-svo" class="table nowrap w-100 mb-5">
+                            <thead>
+                            <tr class="bg-secondary-light-5">
+                                <th style="min-width: 50px"></th>
+                                <th style="min-width: 250px">{% trans "Product" %}</th>
+                                <th style="min-width: 100px">{% trans "Request quantity" %}</th>
+                                <th style="min-width: 100px">{% trans "UoM" %}</th>
+                                <th style="min-width: 150px">{% trans "Unit Price" %}</th>
+                                <th style="min-width: 100px">{% trans "Tax" %}</th>
+                                <th style="min-width: 150px">{% trans "Subtotal Price" %}</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-12 col-lg-7 mt-2 for-sale-order-request" hidden>
@@ -119,6 +135,13 @@
                                 id="btn-add-fixed-asset-product"
                                 class="btn btn-primary btn-sm">
                             {% trans "New product" %}
+                        </button>
+                    </div>
+                    <div class="col-12 col-lg-7 mt-2 for-service-order-request" hidden>
+                        <button type="button"
+                                id="btn-change-service-order"
+                                class="btn btn-primary btn-sm">
+                            {% trans "Select" %} {% trans 'Service order' %}
                         </button>
                     </div>
                     <div class="col-12 col-lg-5 mt-2 text-right ms-auto">

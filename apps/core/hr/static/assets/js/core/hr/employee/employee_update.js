@@ -1,9 +1,9 @@
 $(function () {
     let avatarFiles = null;
-    const $span_not_verified = $('#span-not-verified')
-    const $span_verified = $('#span-verified')
-    const $email_app_password = $('#email-app-password')
-    const $btn_test_email_connection = $("#btn-test-email-connection")
+    // const $span_not_verified = $('#span-not-verified')
+    // const $span_verified = $('#span-verified')
+    // const $email_app_password = $('#email-app-password')
+    // const $btn_test_email_connection = $("#btn-test-email-connection")
     const frmEmployeeUpdate = $('#frm_employee_update')
 
     function renderDetailForUpdate(employeeData) {
@@ -16,8 +16,8 @@ $(function () {
             EmployeeLoadPage.firstNameEle.val(employeeData.first_name);
             EmployeeLoadPage.lastNameEle.val(employeeData.last_name);
             EmployeeLoadPage.emailEle.val(employeeData.email);
-            $span_verified.prop('hidden', !employeeData.email_app_password_status)
-            $span_not_verified.prop('hidden', employeeData.email_app_password_status)
+            // $span_verified.prop('hidden', !employeeData.email_app_password_status)
+            // $span_not_verified.prop('hidden', employeeData.email_app_password_status)
             EmployeeLoadPage.phoneEle.val(employeeData.phone);
             EmployeeLoadPage.loadUserList(employeeData?.user);
             EmployeeLoadPage.loadGroupList(employeeData.group);
@@ -163,91 +163,91 @@ $(function () {
 
     // for verify email
 
-    function combinesDataTestEmailConnection() {
-        let data = {}
-        data['email'] = $('#employee-email').val();
-        data['email_app_password'] = $email_app_password.attr('data-value');
-        if (data['email'] && data['email_app_password']) {
-            return {
-                url: $btn_test_email_connection.attr('data-url'),
-                method: 'GET',
-                data: data,
-            };
-        }
-        else {
-            $.fn.notifyB({description: "Missing email or App Password"}, 'warning')
-        }
-    }
+    // function combinesDataTestEmailConnection() {
+    //     let data = {}
+    //     data['email'] = $('#employee-email').val();
+    //     data['email_app_password'] = $email_app_password.attr('data-value');
+    //     if (data['email'] && data['email_app_password']) {
+    //         return {
+    //             url: $btn_test_email_connection.attr('data-url'),
+    //             method: 'GET',
+    //             data: data,
+    //         };
+    //     }
+    //     else {
+    //         $.fn.notifyB({description: "Missing email or App Password"}, 'warning')
+    //     }
+    // }
 
-    $span_verified.on('click', function () {
-        $email_app_password.val('')
-    })
+    // $span_verified.on('click', function () {
+    //     $email_app_password.val('')
+    // })
 
-    $span_not_verified.on('click', function () {
-        $email_app_password.val('')
-    })
+    // $span_not_verified.on('click', function () {
+    //     $email_app_password.val('')
+    // })
 
-    const $form_update_email_api_key = $('#form-update-email-api-key')
-    function CallAPIUpdateEmailAPIKey() {
-        $.fn.callAjax2({
-            url: $form_update_email_api_key.attr('data-url').replace('/0', `/${$.fn.getPkDetail()}`),
-            method: 'PUT',
-            data: {'email_app_password': $email_app_password.attr('data-value')},
-        }).then(
-            (resp) => {
-                let data = $.fn.switcherResp(resp);
-                if (data) {
-                    WindowControl.hideLoading()
-                    setTimeout(() => window.location.reload(), 1000)
-                }
-            },
-            (errs) => {
-                WindowControl.hideLoading()
-                $.fn.switcherResp(errs)
-            },
-        )
-    }
+    // const $form_update_email_api_key = $('#form-update-email-api-key')
+    // function CallAPIUpdateEmailAPIKey() {
+    //     $.fn.callAjax2({
+    //         url: $form_update_email_api_key.attr('data-url').replace('/0', `/${$.fn.getPkDetail()}`),
+    //         method: 'PUT',
+    //         data: {'email_app_password': $email_app_password.attr('data-value')},
+    //     }).then(
+    //         (resp) => {
+    //             let data = $.fn.switcherResp(resp);
+    //             if (data) {
+    //                 WindowControl.hideLoading()
+    //                 setTimeout(() => window.location.reload(), 1000)
+    //             }
+    //         },
+    //         (errs) => {
+    //             WindowControl.hideLoading()
+    //             $.fn.switcherResp(errs)
+    //         },
+    //     )
+    // }
 
-    $btn_test_email_connection.on('click', function (event) {
-        WindowControl.showLoading()
-        event.preventDefault();
-        $email_app_password.attr('data-value', $email_app_password.val())
-        let combinesData = combinesDataTestEmailConnection();
-        if (combinesData) {
-            $.fn.callAjax2(combinesData)
-                .then(
-                    (resp) => {
-                        let data = $.fn.switcherResp(resp);
-                        if (data) {
-                            let timerInterval
-                            Swal.fire({
-                                title: '',
-                                html: `<span class="text-success">${$form_update_email_api_key.attr('data-trans-update-success')}</span>`,
-                                timer: 2000,
-                                timerProgressBar: true,
-                                onClose: () => {
-                                    clearInterval(timerInterval)
-                                }
-                            }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    window.location.reload()
-                                }
-                            })
-                            CallAPIUpdateEmailAPIKey()
-                        }
-                    },
-                    (errs) => {
-                        let timerInterval
-                        Swal.fire({
-                            title: '',
-                            html: `<span class="text-danger">${$form_update_email_api_key.attr('data-trans-update-fail')}</span>`,
-                            onClose: () => {
-                                clearInterval(timerInterval)
-                            }
-                        })
-                        WindowControl.hideLoading()
-                    }
-                )
-        }
-    })
+    // $btn_test_email_connection.on('click', function (event) {
+    //     WindowControl.showLoading()
+    //     event.preventDefault();
+    //     $email_app_password.attr('data-value', $email_app_password.val())
+    //     let combinesData = combinesDataTestEmailConnection();
+    //     if (combinesData) {
+    //         $.fn.callAjax2(combinesData)
+    //             .then(
+    //                 (resp) => {
+    //                     let data = $.fn.switcherResp(resp);
+    //                     if (data) {
+    //                         let timerInterval
+    //                         Swal.fire({
+    //                             title: '',
+    //                             html: `<span class="text-success">${$form_update_email_api_key.attr('data-trans-update-success')}</span>`,
+    //                             timer: 2000,
+    //                             timerProgressBar: true,
+    //                             onClose: () => {
+    //                                 clearInterval(timerInterval)
+    //                             }
+    //                         }).then((result) => {
+    //                             if (result.dismiss === Swal.DismissReason.timer) {
+    //                                 window.location.reload()
+    //                             }
+    //                         })
+    //                         CallAPIUpdateEmailAPIKey()
+    //                     }
+    //                 },
+    //                 (errs) => {
+    //                     let timerInterval
+    //                     Swal.fire({
+    //                         title: '',
+    //                         html: `<span class="text-danger">${$form_update_email_api_key.attr('data-trans-update-fail')}</span>`,
+    //                         onClose: () => {
+    //                             clearInterval(timerInterval)
+    //                         }
+    //                     })
+    //                     WindowControl.hideLoading()
+    //                 }
+    //             )
+    //     }
+    // })
 })

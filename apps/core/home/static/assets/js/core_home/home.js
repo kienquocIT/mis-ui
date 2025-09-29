@@ -23,8 +23,8 @@ function renderCollaborationHTML(data) {
 
 function renderActions(doc_pin_id, runtime_id, doc_id, is_diagram = true, is_mute = true, is_pin = true, btn_unpin = false) {
     let empty = $(``);
-    // let box = $(`<div class="d-flex align-items-center justify-content-end"></div>`);
-    let box = $(`<div></div>`);
+    let box = $(`<div class="d-flex align-items-center justify-content-end"></div>`);
+    // let box = $(`<div></div>`);
     let btnViewDiagram = is_diagram && doc_id && runtime_id ? $(`
                 <button
                     data-drawer-target="#drawer_log_data"
@@ -96,8 +96,8 @@ function selectStatusAvatar(performAction) {
 }
 
 function loadBookmarkList() {
+    WindowControl.showLoading();
     let boxBMDisplayData = $('#boxBookmarkDisplayData');
-    WindowControl.showLoadingWaitResponse(boxBMDisplay);
     $.fn.callAjax(boxBMDisplay.attr('data-url'), 'GET',).then((resp) => {
         boxBMDisplayData.children(':not(#boxBtnAddNewBM)').remove();
         boxBMDisplayData.prop('data-loaded', true);
@@ -158,20 +158,20 @@ function loadBookmarkList() {
                 boxBMDisplayData.prepend(itemHTML);
             })
         }
-        WindowControl.hideLoadingWaitResponse(boxBMDisplay);
+        WindowControl.hideLoading()
     },)
 }
 
 function loadTabTodo() {
     let tbl = $("#tbl_my_task");
     let dataLoaded = tbl.attr('data-loaded');
-    let appList = JSON.parse($('#app_list').text())
     if (!dataLoaded) {
+        WindowControl.showLoading();
         tbl.attr('data-loaded', true);
         let frm = new SetupFormSubmit(tbl);
         tbl.DataTableDefault({
+            rowIdx: true,
             pageLength: 5,
-            rowIdx: false,
             scrollX: true,
             scrollCollapse: true,
             ajax: {
@@ -190,8 +190,21 @@ function loadTabTodo() {
             },
             columns: [
                 {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-15',
+                    data: 'app_code_parsed',
+                    render: (data, type, row) => {
+                        return data;
+                    }
+                },
+                {
                     data: 'doc_title',
-                    className: 'wrap-text',
+                    className: 'w-25',
                     render: (data, type, row) => {
                         let stage__runtime = row['stage__runtime'];
                         let urlData = UrlGatewayReverse.get_url(
@@ -203,76 +216,59 @@ function loadTabTodo() {
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    data: 'app_code',
-                    render: (data, type, row) => {
-                        let temp = data.toLowerCase().split('.')
-                        let txtTran = appList?.[temp[0]]?.[temp[1]]?.['title'] || data
-                        return data ? `<span>${txtTran}</span>` : '';
-                    }
-                }, {
-                    className: 'wrap-text',
+                    className: 'w-10',
                     data: 'stage',
                     render: (data, type, row) => {
                         return data ? `<span>${data['title']}</span>` : '';
                     }
-                }, {
-                    className: 'wrap-text',
+                },
+                {
+                    className: 'w-15',
                     data: 'employee',
                     render: (data, type, row) => {
                         return $x.fn.renderAvatar(data);
                     }
-                }, {
-                    className: 'wrap-text',
+                },
+                {
+                    className: 'w-15',
                     data: "date_created",
                     render: (data, type, row)=>{
                         return $x.fn.displayRelativeTime(data, {'outputFormat': 'DD/MM/YYYY'});
                     }
-                }, {
-                    className: 'text-center',
+                },
+                {
+                    className: 'w-15 text-right',
                     data: 'stage__runtime',
                     render: (data, type, row) => {
                         return renderActions(data?.['doc_pined_id'], data?.['id'], data?.['doc_id']);
                     }
                 },
             ],
-            drawCallback: function () {
-                dtbMyTaskHDCustom();
-            },
-        });
-    }
-}
-
-function dtbMyTaskHDCustom() {
-    let $table = $("#tbl_my_task");
-    let wrapper$ = $table.closest('.dataTables_wrapper');
-    let $theadEle = wrapper$.find('thead');
-    if ($theadEle.length > 0) {
-        for (let thEle of $theadEle[0].querySelectorAll('th')) {
-            if (!$(thEle).hasClass('border-right')) {
-                $(thEle).addClass('border-right');
+            initComplete: function () {
+                WindowControl.hideLoading();
             }
-        }
+        });
     }
 }
 
 function loadTabFollowing() {
     let tbl = $('#tbl_following_data');
     let dataLoaded = tbl.attr('data-loaded');
-    let appList = JSON.parse($('#app_list').text())
     if (!dataLoaded) {
+        WindowControl.showLoading();
         tbl.attr('data-loaded', true);
-        WindowControl.showLoadingWaitResponse(tbl);
         let frm = new SetupFormSubmit(tbl);
         tbl.DataTableDefault({
+            rowIdx: true,
             pageLength: 5,
-            rowIdx: false,
+            scrollX: true,
+            scrollCollapse: true,
             ajax: {
                 url: frm.dataUrl,
                 type: frm.dataMethod,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    WindowControl.hideLoadingWaitResponse(tbl);
+                    WindowControl.hideLoading()
                     if (data && data.hasOwnProperty('runtime_list')) {
                         return resp.data['runtime_list'] ? resp.data['runtime_list'] : [];
                     }
@@ -281,8 +277,21 @@ function loadTabFollowing() {
             },
             columns: [
                 {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-15',
+                    data: 'app_code_parsed',
+                    render: (data, type, row) => {
+                        return data;
+                    }
+                },
+                {
+                    className: 'w-25',
                     data: 'doc_title',
-                    width: "25%",
                     render: (data, type, row) => {
                         let urlData = UrlGatewayReverse.get_url(
                             row?.['doc_id'],
@@ -293,81 +302,57 @@ function loadTabFollowing() {
                     }
                 },
                 {
-                    data: 'app_code',
-                    width: "10%",
-                    render: (data, type, row) => {
-                        let temp = data.toLowerCase().split('.')
-                        let txtTran = appList?.[temp[0]]?.[temp[1]]?.['title'] || data
-                        return data ? `<span>${txtTran ? txtTran : ''}</span>` : '';
-                    }
-                },
-                {
-                    width: "15%",
+                    className: 'w-10',
                     data: 'stage_currents',
                     render: (data, type, row) => {
                         return data?.['title'] ? `<span>${data?.['title']}</span>` : '';
                     }
                 },
                 {
+                    className: 'w-15',
                     data: 'assignees',
-                    width: "20%",
                     render: (data, type, row) => {
                         return renderCollaborationHTML(data);
                     }
                 },
                 {
+                    className: 'w-15',
                     data: 'date_created',
-                    width: "15%",
                     render: (data, type, row) => {
-                        return $x.fn.displayRelativeTime(data);
+                        return $x.fn.displayRelativeTime(data, {'outputFormat': 'DD/MM/YYYY'});
                     }
                 },
                 {
-                    width: "15%",
+                    className: 'w-15 text-right',
                     data: 'doc_pined_id',
                     render: (data, type, row) => {
                         return renderActions(data, row['id'], row['doc_id']);
                     }
                 },
             ],
-            drawCallback: function () {
-                dtbFollowingHDCustom();
-            },
-        }).on('draw.dt', function () {
-            tbl.find('tbody').find('tr').each(function () {
-                $(this).after('<tr class="table-row-gap"><td></td></tr>');
-            });
-        });
-    }
-}
-
-function dtbFollowingHDCustom() {
-    let $table = $('#tbl_following_data');
-    let wrapper$ = $table.closest('.dataTables_wrapper');
-    let $theadEle = wrapper$.find('thead');
-    if ($theadEle.length > 0) {
-        for (let thEle of $theadEle[0].querySelectorAll('th')) {
-            if (!$(thEle).hasClass('border-right')) {
-                $(thEle).addClass('border-right');
+            initComplete: function () {
+                WindowControl.hideLoading();
             }
-        }
+        })
     }
 }
 
 function loadTabPined() {
     let dataLoaded = tbl_pined.attr('data-loaded');
     if (!dataLoaded) {
+        WindowControl.showLoading();
         tbl_pined.attr('data-loaded', true);
-        WindowControl.showLoadingWaitResponse(tbl_pined);
         tbl_pined.DataTableDefault({
+            rowIdx: true,
             pageLength: 5,
-            rowIdx: false,
+            scrollX: true,
+            scrollCollapse: true,
             ajax: {
                 url: frm_pined.dataUrl,
                 type: frm_pined.dataMethod,
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
-                    WindowControl.hideLoadingWaitResponse(tbl_pined);
+                    WindowControl.hideLoading()
                     if (data && data.hasOwnProperty('pin_doc_list')) {
                         return resp.data['pin_doc_list'] ? resp.data['pin_doc_list'] : [];
                     }
@@ -375,6 +360,12 @@ function loadTabPined() {
                 },
             },
             columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
                 {
                     className: 'wrap-text',
                     width: "20%",
@@ -388,7 +379,8 @@ function loadTabPined() {
                         );
                         return `<a href="${urlData}">${data ? data : "_"}</a>`;
                     }
-                }, {
+                },
+                {
                     className: 'wrap-text',
                     width: "20%",
                     data: 'runtime',
@@ -401,7 +393,8 @@ function loadTabPined() {
                         }
                         return '';
                     }
-                }, {
+                },
+                {
                     className: 'wrap-text',
                     width: "20%",
                     data: 'runtime',
@@ -412,7 +405,8 @@ function loadTabPined() {
                         }
                         return '';
                     }
-                }, {
+                },
+                {
                     className: 'wrap-text',
                     width: "20%",
                     data: 'runtime',
@@ -423,14 +417,16 @@ function loadTabPined() {
                         }
                         return '';
                     }
-                }, {
+                },
+                {
                     className: 'wrap-text',
                     width: "15%",
                     data: 'date_created',
                     render: (data, type, row) => {
                         return $x.fn.displayRelativeTime(data);
                     }
-                }, {
+                },
+                {
                     className: 'wrap-text',
                     width: "5%",
                     data: 'id',
@@ -447,32 +443,11 @@ function loadTabPined() {
                     }
                 },
             ],
-            drawCallback: function () {
-                dtbPinedHDCustom();
-            },
-        }).on('draw.dt', function () {
-            tbl_pined.find('tbody').find('tr').each(function () {
-                $(this).after('<tr class="table-row-gap"><td></td></tr>');
-            });
-        });
-    }
-}
-
-function dtbPinedHDCustom() {
-    let $table = tbl_pined;
-    let wrapper$ = $table.closest('.dataTables_wrapper');
-    let $theadEle = wrapper$.find('thead');
-    if ($theadEle.length > 0) {
-        for (let thEle of $theadEle[0].querySelectorAll('th')) {
-            if (!$(thEle).hasClass('border-right')) {
-                $(thEle).addClass('border-right');
+            initComplete: function () {
+                WindowControl.hideLoading();
             }
-        }
+        })
     }
-}
-
-function loadTabDraft() {
-
 }
 
 function initEventElement() {
@@ -620,9 +595,6 @@ function initEventElement() {
                         window.location.reload()
                     }, 1000);
                 }
-                setTimeout(() => {
-                    WindowControl.hideLoading();
-                }, 1000)
             }, (errs) => {
                 setTimeout(() => {
                     WindowControl.hideLoading();
@@ -644,9 +616,6 @@ function initEventElement() {
                         window.location.reload();
                     }, 1000)
                 }
-                setTimeout(() => {
-                    WindowControl.hideLoading();
-                }, 1000)
             }, (errs) => {
                 setTimeout(() => {
                     WindowControl.hideLoading();
@@ -676,34 +645,15 @@ function initEventElement() {
             loadTabFollowing();
         } else if (targetTab === '#tab-pined') {
             loadTabPined();
-        } else if (targetTab === '#tab-draft') {
-            loadTabDraft();
         }
     });
 }
 
 $(document).ready(function () {
-    try {
-        employeeCurrentData = JSON.parse(employeeCurrentData);
-        // if (!employeeCurrentData || !employeeCurrentData?.['id']) {
-        //     Swal.fire({
-        //         title: msgTitleErrLinked,
-        //         html: `<p><b>${msgTextErrLinked}</b></p><br/><p>${msgTextErrLinked2}</p>`,
-        //         icon: 'warning',
-        //         showConfirmButton: true,
-        //         confirmButtonText: msgChangeCompany,
-        //         showDenyButton: true,
-        //         denyButtonText: $.fn.transEle.attr('data-cancel'),
-        //     }).then((result)=>{
-        //         if (result.isConfirmed) {
-        //             $('#btnChangeCurrentCompany').trigger('click');
-        //         }
-        //     })
-        // }
-    } catch (e) {
-    }
-
-
+    let emp = JSON.parse($('#employee_current_data').text() || '{}')
+    let cpn = JSON.parse($('#company_current_data').text() || '{}')
+    $('#employee-current-fullname').text(emp?.['full_name'])
+    $('#employee-current-company').text(cpn?.['title'])
     initEventElement();
     loadTabTodo();
     loadBookmarkList();

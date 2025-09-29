@@ -81,78 +81,69 @@
         {#  li.item with plain text      #}
         <script type="text/html" class="pattern-file-text-plain">
             <li
-                    class="media dm-uploader-result-item d-flex align-items-center p-2 state-f-wait"
+                    class="dm-uploader-result-item align-items-center p-2 state-f-wait"
                     data-file-id="%%fileid%%"
                     data-file="%%filedata%%"
             >
-                <img
-                        class="mr-3 mw-50p mh-50p img-filter-opacity-50" src="%%filecapture%%"
-                        alt="Preview"
-                >
-                <div class="media-body mb-1">
-                    <div class="row">
-                        <div class="col-12 col-md-4 col-lg-4">
-{#                            <b>{% trans 'Name' %}</b>#}
-                            <div class="d-flex">
-                                <p class="f-item-name">%%filename%%</p>
-                                <a
-                                        class="file-preview-link ml-2"
-                                        href="{% url 'AttachmentPreview' pk='__pk__' %}"
-                                        target="_blank"
-                                >
-                                    <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i>
-                                </a>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6 d-flex justify-content-start">
+                        <img
+                                class="mr-3 mw-50p mh-50p img-filter-opacity-50" src="%%filecapture%%"
+                                alt="Preview"
+                        >
+                        <div class="media-body mb-1">
+                            <div class="row">
+                                <div class="col-12 col-md-4 col-lg-4">
+                                    <div class="d-flex">
+                                        <p class="f-item-name">%%filename%%</p>
+                                        <a
+                                                class="file-preview-link ml-2"
+                                                href="{% url 'AttachmentPreview' pk='__pk__' %}"
+                                                target="_blank"
+                                        >
+                                            <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i>
+                                        </a>
+                                    </div>
+                                    <span class="badge badge-sm text-dark-10 fs-8 bg-yellow-light-4 f-item-info">%%fileinfo%%</span>
+                                </div>
                             </div>
-                            <span class="badge badge-sm text-dark-10 fs-8 bg-yellow-light-4 f-item-info">%%fileinfo%%</span>
                         </div>
-{#                        <div class="col-12 col-md-2 col-lg-2">#}
-{#                            <b>{% trans 'Description' %}</b>#}
-{#                            <input type="text" class="form-control-plaintext file-txt-remark" placeholder="" value="%%fileremark%%" readonly disabled>#}
-{#                        </div>#}
-{#                        <div class="col-12 col-md-2 col-lg-2">#}
-{#                            <b>{% trans 'Document type' %}</b>#}
-{#                            <div><span class="badge badge-sm text-dark-10 fs-8 bg-green-light-4 file-txt-document-type">%%filedoctype%%</span></div>#}
-{#                        </div>#}
-{#                        <div class="col-12 col-md-2 col-lg-2">#}
-{#                            <b>{% trans 'Content group' %}</b>#}
-{#                            <div><span class="badge badge-sm text-dark-10 fs-8 bg-green-light-4 file-txt-content-group">%%filecontentgroup%%</span></div>#}
-{#                        </div>#}
                     </div>
-
-
-                </div>
-                <button
-                        type="button"
-                        class="ml-auto btn btn-rounded btn-icon btn-percent-upload mr-1" disabled
-                ></button>
-                <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
-                <button
-                        type="button"
-                        class="btn nav-link btn-download-file"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="bottom"
-                        title="{% trans 'Download' %}"
-                >
-                    <i class="fa-solid fa-download"></i>
-                </button>
-                <button
-                        type="button"
-                        class="btn nav-link btn-edit-attribute"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="bottom"
-                        title="{% trans 'Edit attributes' %}"
-                >
-                    <i class="fa-solid fa-pen"></i>
-                </button>
-                <button
-                        type="button"
-                        class="btn nav-link btn-destroy-file"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="bottom"
-                        title="{% trans 'Delete' %}"
-                >
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+                    <div class="col-12 col-md-6 col-lg-6 d-flex justify-content-end align-items-center">
+                        <button
+                                type="button"
+                                class="ml-auto btn btn-rounded btn-icon btn-percent-upload mr-1" disabled
+                        ></button>
+                        <div class="nav-pills-bfl d-inline-block" role="group" aria-label="Button group with nested dropdown">
+                        <button
+                                type="button"
+                                class="btn nav-link btn-download-file"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                title="{% trans 'Download' %}"
+                        >
+                            <i class="fa-solid fa-download"></i>
+                        </button>
+                        <button
+                                type="button"
+                                class="btn nav-link btn-edit-attribute"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                title="{% trans 'Edit attributes' %}"
+                        >
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button
+                                type="button"
+                                class="btn nav-link btn-destroy-file"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                title="{% trans 'Delete' %}"
+                        >
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                        </div>
+                    </div>
                 </div>
             </li>
         </script>
@@ -206,5 +197,3 @@
         </div>
     </div>
 </div>
-
-{% include 'extends/files/file_attribute.html' %}

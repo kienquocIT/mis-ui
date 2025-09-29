@@ -542,6 +542,8 @@ class FilesHandle {
             searching: false,
             autoWidth: true,
             scrollX: true,
+            ordering: true,
+            order: [1, 'asc' ],
             columns: [
                 {
                     data: 'id',
@@ -554,7 +556,7 @@ class FilesHandle {
                 },
                 {
                     data: 'title',
-                    width: '38%',
+                    width: '30%',
                     render: (row, index, data) => {
                         const type = convertKeyIconMap(data);
                         const icon = icon_map[type]
@@ -577,7 +579,7 @@ class FilesHandle {
                 },
                 {
                     data: 'employee_inherit',
-                    width: '20%',
+                    width: '15%',
                     render: (row, index, data) => {
                         return row?.full_name ? row.full_name : data?.employee_created ?
                             data.employee_created.full_name : data?.['is_system'] ? $.fn.gettext('System') : '--';
@@ -593,7 +595,7 @@ class FilesHandle {
                 },
                 {
                     data: 'file_size',
-                    width: '10%',
+                    width: '8%',
                     render: (row) => {
                         return row ? formatBytes(row) : '--';
                     }
@@ -608,6 +610,18 @@ class FilesHandle {
                         return file_type;
                     }
                 },
+                {
+                    width: '15%',
+                    render: (data, type, row) => {
+                        return `<span>${row?.['document_type']?.['title'] ? row?.['document_type']?.['title'] : '--'}</span>`;
+                    }
+                },
+                // {
+                //     width: '10%',
+                //     render: (data, type, row) => {
+                //         return `<span>${row?.['content_group']?.['title'] ? row?.['content_group']?.['title'] : ''}</span>`;
+                //     }
+                // },
                 {
                     data: 'id',
                     width: '10%',
@@ -707,12 +721,32 @@ class FilesHandle {
             },
             drawCallback: function () {
                 _this.$loading.hide();
+                _this.customDtbHeader();
             },
             initComplete: function () {
                 _this.infinityLoading()
             }
         })
 
+    }
+
+    customDtbHeader() {
+        let wrapper$ = $('#main-files-info').closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        if (headerToolbar$.length > 0) {
+            if (!$('#open-file-filter').length) {
+                let $group = $(`<div class="btn-filter">
+                                        <button type="button" class="btn btn-light btn-sm ml-1" id="open-file-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                            <span><span class="icon"><i class="fas fa-filter"></i></span><span>${$.fn.transEle.attr('data-filter')}</span></span>
+                                        </button>
+                                    </div>`);
+                headerToolbar$.append($group);
+                $('#open-file-filter').on('click', function () {
+                    FileFilterHandle.initCanvas();
+                    FileFilterHandle.$canvas.offcanvas('show');
+                });
+            }
+        }
     }
 
     infinityLoading(){
@@ -755,6 +789,7 @@ class FilesHandle {
         $.fn.callAjax2({
             'url': this.$urlFact.attr('data-folder-detail').format_url_with_uuid(dataId),
             'method': 'GET',
+            'data': FileFilterHandle.getFilterData(),
             'sweetAlertOpts': {'allowOutsideClick': true}
         }).then((resp) => {
             let rep = $.fn.switcherResp(resp);
@@ -768,8 +803,10 @@ class FilesHandle {
                 }
                 _this.$folder.DataTable().clear().rows.add(list_new).draw()
 
+                let $currentFolderEle = $('#current_folder');
+                if ($currentFolderEle.val() !== rep.id) {
                 // set new current folder
-                $('#current_folder').data('brc', {id: rep.id, title: rep.title}).val(rep.id)
+                $currentFolderEle.data('brc', {id: rep.id, title: rep.title}).val(rep.id)
 
                 // load new breadcrumb
                 _this.breadcrumb_handle({
@@ -777,6 +814,7 @@ class FilesHandle {
                     'title': rep.title
                 })
                 $('.tit-crt').html(rep.title)
+                }
             }
         })
     }
@@ -1196,5 +1234,14 @@ $(document).ready(function () {
         'element_folder': $('#current_folder'),
         'CB_after_upload': triggerAfterUpload,
         'maxFileSize': parseInt($('#max_upload_file').text()) || 20971520,
+    });
+
+    FileFilterHandle.$btnApply.on('click', function () {
+        let $currentFolder = $('#current_folder');
+        if ($currentFolder.length > 0) {
+            if ($currentFolder.val()) {
+                files.get_folder($currentFolder.val());
+            }
+        }
     });
 });

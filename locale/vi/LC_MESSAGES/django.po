@@ -12298,3 +12298,31 @@ msgstr "Lọc theo khách hàng"
 #
 msgid "Attributes with inventory tracking will be selected if the product has the 'Inventory' tab enabled, and vice versa."
 msgstr "Sẽ chọn những thuộc tính có theo dõi tồn kho nếu sản phẩm bật tab 'Inventory' và ngược lại."
+
+#
+msgid "Price config"
+msgstr "Cấu hình giá"
+
+#
+msgid "Numeric"
+msgstr "Số"
+
+#
+msgid "Warranty"
+msgstr "Bảo hành"
+
+#
+msgid "Duration unit"
+msgstr "Đơn vị thời gian"
+
+#
+msgid "Increment"
+msgstr "Tăng"
+
+#
+msgid "Cost per increment"
+msgstr "Giá tăng"
+
+#
+msgid "Valid until"
+msgstr "Hiệu lực đến"

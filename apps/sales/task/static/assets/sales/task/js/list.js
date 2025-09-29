@@ -1441,6 +1441,7 @@ $(function () {
     const $ElmDateRange = $('#iptDateRange')
     const listElm = [$fOppElm, $fSttElm, $fEmpElm, $fServiceOrder]
     listElm.forEach(function (elm) {
+        if (elm.length > 0) {
         $(elm).initSelect2().on('select2:select', function () {
             let params = {}
             if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
@@ -1458,6 +1459,7 @@ $(function () {
             $clearElm.addClass('d-inline-block')
             $(elm).addClass('isSelected')
         })
+        }
     })
 
     // load select priority filter

@@ -3,7 +3,7 @@
 {% random_str 10 True as id_modal %}
 
 <div
-        class="modal fade" id="fileAttributeModal" tabindex="-1"
+        class="modal fade modal-file-attribute" tabindex="-1"
         role="dialog" aria-labelledby="fileAttributeModal"
         data-url-detail="{% url 'AttachmentDetailAPI' 1 %}"
 >
@@ -20,7 +20,7 @@
             <div class="modal-body">
                 <div class="mb-4"><i class="fas fa-cube mr-2"></i><b class="file-name"></b></div>
                 <div class="form-group">
-                    <label class="form-label float-left">{% trans 'Document type' %}</label>
+                    <label class="form-label">{% trans 'Document type' %}</label>
                     <select
                             class="form-select file_attr_document_type"
                             data-url="{% url 'DocumentTypeConfigListAPI' %}"
@@ -29,7 +29,7 @@
                     ></select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label float-left">{% trans 'Content group' %}</label>
+                    <label class="form-label">{% trans 'Content group' %}</label>
                     <select
                             class="form-select file_attr_content_group"
                             data-url="{% url 'ContentGroupListAPI' %}"
@@ -38,7 +38,7 @@
                     ></select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label float-left">{% trans 'Description' %}</label>
+                    <label class="form-label">{% trans 'Description' %}</label>
                     <textarea class="form-control file_attr_remark" rows="4"></textarea>
                 </div>
             </div>

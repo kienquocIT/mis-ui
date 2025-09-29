@@ -467,7 +467,7 @@ var navheadMenu = function () {
             var visibleLi = parseInt(navbarMenuRect.width / (liTotalWidth / liCount));
             if ((visibleLi -= extraLiHide) < liCount) for (
                 var navWrapper = function (navbarMenu) {
-                    navbarMenu.children("ul").append("<li class='nav-item more-nav-item'><a class='nav-link' href='javascript:void(0);' data-bs-toggle='collapse' data-bs-target='#dash_more'><span class='nav-icon-wrap'><span class='feather-icon'><i data-feather='more-horizontal'></i></span></span></a><ul id='dash_more' class='nav flex-column collapse nav-children mh-500p overflow-y-scroll overflow-x-hidden'></ul></li>");
+                    navbarMenu.children("ul").append("<li class='nav-item more-nav-item'><a class='nav-link' href='javascript:void(0);' data-bs-toggle='collapse' data-bs-target='#dash_more'><span class='nav-icon-wrap'><span class='feather-icon'><i data-feather='more-horizontal'></i></span></span></a><ul id='dash_more' class='nav flex-column collapse nav-children mh-500p w-30 overflow-y-scroll overflow-x-hidden'></ul></li>");
                     return navbarMenu.children("ul").children("li.more-nav-item")
                 }(navbarMenu), i = visibleLi; i < liCount; i++
             ) {

@@ -631,7 +631,7 @@ class PurchaseRequestHandler {
             frm.dataForm['sale_order'] = pageVariables.current_so_id || null
             pageElements.$table_so_product_line_detail.find('tbody tr').each(function () {
                 purchase_request_product_datas.push({
-                    'sale_order_product': $(this).find('.product-detail').attr('data-so-product-id'),
+                    'sale_order_product': $(this).find('.product-detail').attr('data-so-product-id') || null,
                     'product': $(this).find('.product-detail').attr('data-product-id') || null,
                     'uom': $(this).find('.product-uom').attr('data-uom-id') || null,
                     'tax': $(this).find('.tax').val() || null,
@@ -644,7 +644,6 @@ class PurchaseRequestHandler {
         else if (pageElements.$request_for.val() === '1') {
             $('#table-product-stock-free-line-detail tbody tr').each(function () {
                 purchase_request_product_datas.push({
-                    'sale_order_product': null,
                     'product': $(this).find('.product-detail').val() || null,
                     'uom': $(this).find('.product-uom').val() || null,
                     'tax': $(this).find('.tax').val() || null,
@@ -657,7 +656,6 @@ class PurchaseRequestHandler {
         else if (pageElements.$request_for.val() === '2') {
             $('#table-product-fixed-asset-line-detail tbody tr').each(function () {
                 purchase_request_product_datas.push({
-                    'sale_order_product': null,
                     'product': $(this).find('.product-detail').val() || null,
                     'uom': $(this).find('.product-uom').val() || null,
                     'tax': $(this).find('.tax').val() || null,
@@ -671,7 +669,6 @@ class PurchaseRequestHandler {
             frm.dataForm['distribution_plan'] = pageVariables.current_dp_id || null
             $('#table-dp-product-line-detail tbody tr').each(function () {
                 purchase_request_product_datas.push({
-                    'sale_order_product': null,
                     'product': $(this).find('.product-detail').attr('data-product-id') || null,
                     'uom': $(this).find('.product-uom').attr('data-uom-id') || null,
                     'tax': $(this).find('.tax').val() || null,
@@ -685,7 +682,7 @@ class PurchaseRequestHandler {
             frm.dataForm['service_order'] = pageVariables.current_svo_id || null
             $('#table-svo-product-line-detail tbody tr').each(function () {
                 purchase_request_product_datas.push({
-                    'service_order_product': $(this).find('.product-detail').attr('data-svo-product-id'),
+                    'service_order_product': $(this).find('.product-detail').attr('data-svo-product-id') || null,
                     'product': $(this).find('.product-detail').attr('data-product-id') || null,
                     'uom': $(this).find('.product-uom').attr('data-uom-id') || null,
                     'tax': $(this).find('.tax').val() || null,

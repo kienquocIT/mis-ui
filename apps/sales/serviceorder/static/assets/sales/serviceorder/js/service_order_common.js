@@ -1933,24 +1933,29 @@ const ServiceOrder = (function($) {
             const currentRowData = row.data();
 
             if (currentRowData) {
-                const oldAttrTotalCost = currentRowData.attributes_total_cost || 0
-
                 // Update the row data with new attribute information
                 currentRowData.selected_attributes = data.attributes;
                 currentRowData.attributes_total_cost = data.totalCost
                 currentRowData.has_attributes = true;
 
-                const baseSubtotal = currentRowData.sub_total_value || 0;
-                const newSubtotal = baseSubtotal + data.totalCost - oldAttrTotalCost
+                const quantity = currentRowData.quantity || 1;
+                const duration = currentRowData.duration || 1;
+                const basePrice = parseFloat(currentRowData.price) || 0;
+
+                // Base subtotal (without attributes)
+                const baseSubtotal = duration * basePrice * quantity;
+
+                // Add the new attribute total cost
+                const subtotal = baseSubtotal + data.totalCost;
 
                 // Update price-related fields
-                currentRowData.sub_total_value = newSubtotal;
+                currentRowData.sub_total_value = subtotal;
 
-                // Recalculate totals
+                // Recalculate tax
                 const taxRate = (currentRowData.tax_data?.rate || 0) / 100;
-                const taxAmount = newSubtotal * taxRate;
+                const taxAmount = subtotal * taxRate;
 
-                currentRowData.total_value = newSubtotal + taxAmount;
+                currentRowData.total_value = subtotal + taxAmount;
 
                 // Update the row data in the table
                 row.data(currentRowData);
@@ -1959,7 +1964,7 @@ const ServiceOrder = (function($) {
                 const $rowNode = $(row.node());
 
                 // Update the total display
-                $rowNode.find('.service-detail-total').attr('data-init-money', newSubtotal + taxAmount);
+                $rowNode.find('.service-detail-total').attr('data-init-money', subtotal + taxAmount);
 
                 // Reinitialize money formatting
                 $.fn.initMaskMoney2();

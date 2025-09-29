@@ -214,7 +214,7 @@ class ProductAttribute {
             if (isMandatory && !this.selectedAttributes[attr.id]) {
                 if (attr.price_config_type === 1) { // list type
                     const firstOption = attr.price_config_data.list_item[0];
-                    const convertedCost = this.getEffectivePrice(attr, firstOption.additional_cost);
+                    const convertedCost = firstOption.additional_cost
 
                     this.selectedAttributes[attr.id] = {
                         type: 'list',
@@ -285,7 +285,7 @@ class ProductAttribute {
             const option = attr.price_config_data.list_item[optionIndex];
 
             // Convert the price to target duration unit
-            const convertedBaseCost = self.getEffectivePrice(attr, option.additional_cost);
+            const convertedBaseCost = option.additional_cost
 
             self.selectedAttributes[attrId] = {
                 type: 'list',
@@ -443,8 +443,8 @@ class ProductAttribute {
             `;
         } else if (attr.price_config_type === 1) { // List type
             const optionCount = configData.list_item ? configData.list_item.length : 0;
-            const minPrice = configData.list_item ? Math.min(...configData.list_item.map(item => this.getEffectivePrice(attr, item.additional_cost))) : 0;
-            const maxPrice = configData.list_item ? Math.max(...configData.list_item.map(item => this.getEffectivePrice(attr, item.additional_cost))) : 0;
+            const minPrice = configData.list_item ? Math.min(...configData.list_item.map(item => item.additional_cost)) : 0
+            const maxPrice = configData.list_item ? Math.max(...configData.list_item.map(item => item.additional_cost)) : 0
 
             infoHtml += `
                 <div class="row small">
@@ -458,15 +458,13 @@ class ProductAttribute {
                             <span class="mask-money" data-init-money="${minPrice}"></span> -
                             <span class="mask-money" data-init-money="${maxPrice}"></span>
                         </strong>
-                        ${this.targetDuration && configData.duration_unit_data && configData.duration_unit_data.id !== this.targetDuration.id ? 
-                            `<small class="text-info d-block">(Converted to ${this.targetDuration.title})</small>` : ''}
                     </div>
                 </div>
                 ${configData.duration_unit_data ? `
                 <div class="row small mt-1">
                     <div class="col-12">
                         <span class="text-muted">Duration unit:</span>
-                        <strong>${this.targetDuration ? this.targetDuration.title : configData.duration_unit_data.title}</strong>
+                        <strong>${configData?.duration_unit_data?.title}</strong>
                     </div>
                 </div>
                 ` : ''}
@@ -493,7 +491,7 @@ class ProductAttribute {
             }
 
             // Get converted price
-            const convertedPrice = this.getEffectivePrice(attr, option.additional_cost);
+            const price = option.additional_cost
 
             optionsHtml += `
                 <div class="form-check list-option-item mb-2">
@@ -507,7 +505,7 @@ class ProductAttribute {
                     <label class="form-check-label d-flex justify-content-between align-items-center w-100"
                            for="option-${attr.id}-${index}">
                         <span>${option.title}</span>
-                        <span class="text-primary fw-bold mask-money option-cost" data-init-money="${convertedPrice}"></span>
+                        <span class="text-primary fw-bold mask-money option-cost" data-init-money="${price}"></span>
                     </label>
                 </div>
             `;

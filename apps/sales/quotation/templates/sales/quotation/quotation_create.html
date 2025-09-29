@@ -91,7 +91,19 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-3 col-lg-3">
+                        <div class="col-12 col-md-2 col-lg-2">
+                            <div class="form-group">
+                                <label class="form-label" for="quotation-create-valid-until">{% trans 'Valid until' %}</label>
+                                <div class="input-affix-wrapper">
+                                    <input type="text" name="valid_until" id="quotation-create-valid-until"
+                                           class="form-control flat-picker" autocomplete="off">
+                                    <div class="input-suffix">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-2 col-lg-2">
                             <div class="form-check form-check-lg mt-5">
                                 <input type="checkbox" class="form-check-input" id="is_customer_confirm" name="is_customer_confirm">
                                 <label class="form-check-label fw-bold" for="is_customer_confirm">{% trans 'Customer Confirm' %}</label>

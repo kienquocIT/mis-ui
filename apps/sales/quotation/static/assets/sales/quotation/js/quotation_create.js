@@ -975,6 +975,7 @@ $(function () {
                 'currency_exchange_data',
                 'currency_exchange_rate',
                 'date_created',
+                'valid_until',
             ]
             if (is_sale_order === true) {
                 submitFields = [

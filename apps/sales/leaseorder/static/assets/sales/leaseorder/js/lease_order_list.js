@@ -47,6 +47,8 @@ $(function () {
                     {
                         targets: 1,
                         width: '5%',
+                        orderable: true,
+                        data: 'code',
                         render: (data, type, row) => {
                             let link = urlsEle.data('link-detail').format_url_with_uuid(row?.['id']);
                             if (row?.['code']) {
@@ -72,6 +74,8 @@ $(function () {
                     {
                         targets: 2,
                         width: '15%',
+                        orderable: true,
+                        data: 'title',
                         render: (data, type, row) => {
                             const link = urlsEle.data('link-detail').format_url_with_uuid(row?.['id'])
                             return `<a href="${link}" class="link-primary underline_hover">${row?.['title']}</a>`

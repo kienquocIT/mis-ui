@@ -721,12 +721,32 @@ class FilesHandle {
             },
             drawCallback: function () {
                 _this.$loading.hide();
+                _this.customDtbHeader();
             },
             initComplete: function () {
                 _this.infinityLoading()
             }
         })
 
+    }
+
+    customDtbHeader() {
+        let wrapper$ = $('#main-files-info').closest('.dataTables_wrapper');
+        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
+        if (headerToolbar$.length > 0) {
+            if (!$('#open-file-filter').length) {
+                let $group = $(`<div class="btn-filter">
+                                        <button type="button" class="btn btn-light btn-sm ml-1" id="open-file-filter" data-bs-toggle="offcanvas" data-bs-target="#filterCanvas">
+                                            <span><span class="icon"><i class="fas fa-filter"></i></span><span>${$.fn.transEle.attr('data-filter')}</span></span>
+                                        </button>
+                                    </div>`);
+                headerToolbar$.append($group);
+                $('#open-file-filter').on('click', function () {
+                    FileFilterHandle.initCanvas();
+                    FileFilterHandle.$canvas.offcanvas('show');
+                });
+            }
+        }
     }
 
     infinityLoading(){
@@ -783,8 +803,10 @@ class FilesHandle {
                 }
                 _this.$folder.DataTable().clear().rows.add(list_new).draw()
 
+                let $currentFolderEle = $('#current_folder');
+                if ($currentFolderEle.val() !== rep.id) {
                 // set new current folder
-                $('#current_folder').data('brc', {id: rep.id, title: rep.title}).val(rep.id)
+                $currentFolderEle.data('brc', {id: rep.id, title: rep.title}).val(rep.id)
 
                 // load new breadcrumb
                 _this.breadcrumb_handle({
@@ -792,6 +814,7 @@ class FilesHandle {
                     'title': rep.title
                 })
                 $('.tit-crt').html(rep.title)
+                }
             }
         })
     }

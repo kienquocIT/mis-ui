@@ -2539,6 +2539,9 @@ class QuotationLoadDataHandle {
         if (data?.['date_created']) {
             $('#quotation-create-date-created').val(moment(data?.['date_created']).format('DD/MM/YYYY'));
         }
+        if (data?.['valid_until']) {
+            $('#quotation-create-valid-until').val(moment(data?.['valid_until']).format('DD/MM/YYYY'));
+        }
         if (data?.['is_customer_confirm'] && is_copy === false) {
             $('#is_customer_confirm')[0].checked = data?.['is_customer_confirm'];
         }
@@ -8128,8 +8131,18 @@ class QuotationSubmitHandle {
 
         // date created
         let $dateCreatedEle = $('#quotation-create-date-created');
-        if ($dateCreatedEle.val()) {
-            _form.dataForm['date_created'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD hh:mm:ss', $dateCreatedEle.val());
+        if ($dateCreatedEle.length > 0) {
+            if ($dateCreatedEle.val()) {
+                _form.dataForm['date_created'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD hh:mm:ss', $dateCreatedEle.val());
+            }
+        }
+
+        // valid until
+        let $validUntilEle = $('#quotation-create-valid-until');
+        if ($validUntilEle.length > 0) {
+            if ($validUntilEle.val()) {
+                _form.dataForm['valid_until'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD hh:mm:ss', $validUntilEle.val());
+            }
         }
         return _form.dataForm;
     };

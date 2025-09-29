@@ -542,6 +542,8 @@ class FilesHandle {
             searching: false,
             autoWidth: true,
             scrollX: true,
+            ordering: true,
+            order: [1, 'asc' ],
             columns: [
                 {
                     data: 'id',

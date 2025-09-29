@@ -12322,3 +12322,7 @@ msgstr "Tăng"
 #
 msgid "Cost per increment"
 msgstr "Giá tăng"
+
+#
+msgid "Valid until"
+msgstr "Hiệu lực đến"

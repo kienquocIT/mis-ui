@@ -8139,6 +8139,9 @@ class QuotationSubmitHandle {
 
         // valid until
         let $validUntilEle = $('#quotation-create-valid-until');
+        if ( _form.dataForm.hasOwnProperty('valid_until')) {
+            delete _form.dataForm['valid_until'];
+        }
         if ($validUntilEle.length > 0) {
             if ($validUntilEle.val()) {
                 _form.dataForm['valid_until'] = DateTimeControl.formatDateType('DD/MM/YYYY', 'YYYY-MM-DD hh:mm:ss', $validUntilEle.val());

@@ -173,16 +173,14 @@
     margin-right: 15px;
 }
 .max-w-180p{
-    max-width: 180px;
+    width: 180px;
+    display: inline-block;
 }
 .max-w-375p{
     max-width: 375px;
 }
 .filter-label{
     display: inline-block;
-    text-transform: uppercase;
-    font-size: 12px;
-    font-weight: 500;
     letter-spacing: 0.24px;
     color:#232323;
 }
@@ -199,28 +197,39 @@
     background: #ffffff;
 }
 .clear-all-btn{display: none}
-.desktop-btn,
-.leave-filter-wrap .sp-btn{
-    display: none;
+.row-filter{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
 }
-.wrap-filter{
-    padding: 10px;
-    background: #f7f7f7;
-}
-.wrap-filter .row-filter h6{
-    font-size: 1.25rem;
-    color: var(--primary);
-    margin-bottom:10px;
+.row-filter .heading {
+    width: 100%;
 }
 .item-filter{
     display: inline-block;
     background: #fff;
     border:solid 1px #cdcdcd;
-    padding: 5px 15px;
-    border-radius: 20px;
+    padding: 5px 15px 0;
+    border-radius: 10px;
+    white-space: normal;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+.item-filter label.filter-label{
+    vertical-align: top;
+    margin-top: 6px;
+    margin-right: 10px;
+}
+.item-filter:has(.form-check){
+    padding: 11px 15px 9px;
+    vertical-align: top;
 }
 .item-filter .form-check-input{
     margin-top: .4rem;
+}
+.item-filter .form-group{
+    margin-bottom: 6px;
 }
 .wrap-filter{
     padding: 10px;
@@ -230,18 +239,7 @@
 }
 .wrap-filter .row-filter h6{
     font-size: 1.25rem;
-    color: var(--primary);
     margin-bottom:10px;
-}
-.item-filter{
-    display: inline-block;
-    background: #fff;
-    border:solid 1px #cdcdcd;
-    padding: 5px 15px;
-    border-radius: 20px;
-}
-.item-filter .form-check-input{
-    margin-top: .4rem;
 }
 .close-filter{
     position: absolute;
@@ -281,13 +279,18 @@
     overflow: hidden;
     height: 38px;
 }
-.item-filter:has(input:checked){
+.item-filter:has(input:checked),
+.item-filter:has(.isSelected) input,
+.item-filter:has(.isSelected) span.select2-selection,
+.item-filter:has(.isSelected){
     border-color: #007D88;
     background: rgb(0 125 136 / 6%);
 }
-.item-filter:has(input:checked) label{
+.item-filter:has(input:checked) label,
+.item-filter:has(.isSelected) input,
+.item-filter:has(.isSelected) span.select2-selection,
+.item-filter:has(.isSelected) label{
     color: #007D88!important;
-
 }
 /*custom task not employee and has group assignee*/
 @keyframes pulse-border {
@@ -404,26 +407,12 @@
     background: #ff6b6b;
 }
 @media screen and (min-width:1025px){
-    .leave-filter-wrap{
-        position: relative;
-    }
     .desktop-btn{
         display: block;
         position: absolute;
         z-index: 1;
     }
-    .form-group-filter{
-        position: absolute;
-        overflow: hidden;
-        right: 122px;
-        background: #fff;
-        z-index: 111;
-        width: calc(100% - 122px);
-        border-radius: 5px;
-        height: auto;
-        padding: 10px;
-        box-shadow: 2px 2px 10px 4px rgb(205 205 205 / 40%);
-    }
+
     .desktop-btn{right: 0}
 
     .scroll_active .tasklist {
@@ -439,16 +428,5 @@
     }
 }
 @media screen and (max-width: 1024px) {
-    .leave-filter-wrap .sp-btn{
-        display: block;
-    }
-    .form-group-filter{
-        flex-direction: column;
-    }
-    .form-group-filter > div,
-    .form-group-filter > label,
-    .clear-all-btn{width: 100%;}
-    .form-group-filter > div{display: block;margin-bottom: 18px;}
-    .form-group-filter > span:first-child{display: none}
     .max-w-280{margin-right: 0;min-width: 100%;}
 }

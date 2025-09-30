@@ -80,9 +80,9 @@ class ProductModificationPageFunction {
                                     <a data-bs-toggle="collapse" href=".d1_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d1_${row?.['id']}">
                                         <i class="bi bi-info-circle"></i>
                                     </a>
-                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code'] || ''}</span>
-                                    <span class="ml-1">${row?.['title'] || ''}</span>
+                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code'] || ''}</span><br>
                                 </div>
+                                <span>${row?.['title'] || ''}</span>
                                 <div class="collapse d1_${row?.['id']}"><span class="small">${new_description || row?.['description'] || ''}</span></div>`
                     }
                 },
@@ -164,9 +164,9 @@ class ProductModificationPageFunction {
                                     <a data-bs-toggle="collapse" href=".d2_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['id']}">
                                         <i class="bi bi-info-circle"></i>
                                     </a>
-                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span>
-                                    <span class="ml-1">${row?.['title']}</span>
+                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span><br>
                                 </div>
+                                <span>${row?.['title']}</span>
                                 <div class="collapse d2_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 }
@@ -242,9 +242,9 @@ class ProductModificationPageFunction {
                                     <a data-bs-toggle="collapse" href=".d2_${row?.['modified_number']}" role="button" aria-expanded="false" aria-controls=".d2_${row?.['modified_number']}">
                                         <i class="bi bi-info-circle"></i>
                                     </a>
-                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span>
-                                    <span class="ml-1">${row?.['title']}</span>
+                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span><br>
                                 </div>
+                                <span>${row?.['title']}</span>
                                 <div class="collapse d2_${row?.['modified_number']}"><span class="small">${row?.['new_description'] || row?.['description'] || ''}</span></div>`
                     }
                 },
@@ -349,25 +349,25 @@ class ProductModificationPageFunction {
             {
                 className: 'w-25',
                 render: (data, type, row) => {
-                    return `<span class="lot-number">${row?.['lot_number']}</span>`
+                    return `<span class="lot-number">${row?.['lot_number'] || ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span class="quantity-import">${row?.['quantity_import']}</span>`
+                    return `<span class="quantity-import">${row?.['quantity_import'] || 0}</span>`
                 }
             },
             {
                 className: 'w-25',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['expire_date'] ? moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
                 className: 'w-25',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['manufacture_date'] ? moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
         ]
@@ -431,37 +431,37 @@ class ProductModificationPageFunction {
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${row?.['vendor_serial_number']}</span>`
+                    return `<span>${row?.['vendor_serial_number'] || ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span class="serial-number">${row?.['serial_number']}</span>`
+                    return `<span class="serial-number">${row?.['serial_number'] || ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['expire_date'] ? moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['manufacture_date'] ? moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['warranty_start'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['warranty_start'] ? moment(row?.['warranty_start'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['warranty_end'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['warranty_end'] ? moment(row?.['warranty_end'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
         ]
@@ -572,14 +572,14 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-70',
                     render: (data, type, row) => {
-                        let product_code = `<span class="badge badge-sm badge-soft-secondary ml-1">${row?.['component_code'] || ''}</span>`;
+                        let product_code = `<span class="badge badge-sm badge-soft-secondary ml-1">${row?.['component_code'] || ''}</span><br>`;
                         return `<div class="d-flex align-items-center">
                                     <a data-bs-toggle="collapse" href=".d3_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d3_${row?.['component_id']}">
                                         <i class="bi bi-info-circle"></i>
                                     </a>
                                     ${product_code}
-                                    <span class="component-title ml-1" data-row-type="${row?.['row_type'] || ''}" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
                                 </div>
+                                <span class="component-title" data-row-type="${row?.['row_type'] || ''}" data-component-id="${row?.['component_id'] || ''}">${row?.['component_name'] || ''}</span>
                                 <div class="collapse d3_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
                     }
                 },
@@ -670,14 +670,14 @@ class ProductModificationPageFunction {
                 {
                     className: 'w-65',
                     render: (data, type, row) => {
-                        let product_code = `<span class="badge badge-sm badge-soft-secondary ml-1">${row?.['component_code'] || ''}</span>`;
+                        let product_code = `<span class="badge badge-sm badge-soft-secondary ml-1">${row?.['component_code'] || ''}</span><br>`;
                         return `<div class="d-flex align-items-center">
                                     <a data-bs-toggle="collapse" href=".d4_${row?.['component_id']}" role="button" aria-expanded="false" aria-controls=".d4_${row?.['component_id']}">
                                         <i class="bi bi-info-circle"></i>
                                     </a>
                                     ${product_code}
-                                    <span class="component-title ml-1" data-component-id="${row?.['component_id']}">${row?.['component_name'] || ''}</span>
                                 </div>
+                                <span class="component-title" data-component-id="${row?.['component_id']}">${row?.['component_name'] || ''}</span>
                                 <div class="collapse d4_${row?.['component_id']}"><span class="small component-des">${row?.['component_des'] || ''}</span></div>`
                     }
                 },
@@ -769,9 +769,9 @@ class ProductModificationPageFunction {
                                     <a data-bs-toggle="collapse" href=".d6_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d6_${row?.['id']}">
                                         <i class="bi bi-info-circle"></i>
                                     </a>
-                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span>
-                                    <span class="ml-1">${row?.['title']}</span>
+                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span><br>
                                 </div>
+                                <span>${row?.['title']}</span>
                                 <div class="collapse d6_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 }
@@ -938,34 +938,33 @@ class ProductModificationPageFunction {
             {
                 className: 'w-20',
                 render: (data, type, row) => {
-                    return `<span>${row?.['lot_number']}</span>`
+                    return `<span>${row?.['lot_number'] || ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span class="quantity-import">${row?.['quantity_import']}</span>`
+                    return `<span class="quantity-import">${row?.['quantity_import'] || 0}</span>`
                 }
             },
             {
                 className: 'w-20',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['expire_date'] ? moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
                 className: 'w-20',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['manufacture_date'] ? moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<input disabled readonly type="number" min="0" max="${row?.['quantity_import'] || ''}" class="form-control lot-picked-quantity" value="0">`
+                    return `<input disabled readonly type="number" min="0" max="${row?.['quantity_import'] || 0}" class="form-control lot-picked-quantity" value="0">`
                 }
             },
-
         ]
         pageElements.$table_select_component_lot.DataTable().clear().destroy()
         if (url) {
@@ -1035,37 +1034,37 @@ class ProductModificationPageFunction {
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${row?.['vendor_serial_number']}</span>`
+                    return `<span>${row?.['vendor_serial_number'] || ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${row?.['serial_number']}</span>`
+                    return `<span>${row?.['serial_number'] || ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['expire_date'] ? moment(row?.['expire_date'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['manufacture_date'] ? moment(row?.['manufacture_date'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['warranty_start'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['warranty_start'] ? moment(row?.['warranty_start'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
             {
                 className: 'w-15',
                 render: (data, type, row) => {
-                    return `<span>${moment(row?.['warranty_end'], 'YYYY-MM-DD').format('DD/MM/YYYY')}</span>`
+                    return `<span>${row?.['warranty_end'] ? moment(row?.['warranty_end'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                 }
             },
         ]
@@ -1233,9 +1232,9 @@ class ProductModificationPageFunction {
                                     <a data-bs-toggle="collapse" href=".d5_${row?.['id']}" role="button" aria-expanded="false" aria-controls=".d5_${row?.['id']}">
                                         <i class="bi bi-info-circle"></i>
                                     </a>
-                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span>
-                                    <span class="ml-1">${row?.['title']}</span>
+                                    <span class="badge badge-sm badge-soft-secondary ml-1">${row?.['code']}</span><br>
                                 </div>
+                                <span>${row?.['title']}</span>
                                 <div class="collapse d5_${row?.['id']}"><span class="small">${row?.['description'] || ''}</span></div>`
                     }
                 }
@@ -1500,7 +1499,7 @@ class ProductModificationEventHandler {
             pageElements.$table_select_lot.closest('.table-serial-space').prop('hidden', true)
             pageElements.$table_select_serial.closest('.table-lot-space').prop('hidden', true)
             let product_id = pageVariables.current_product_modified?.['id']
-            let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}&product_id=${product_id}`
+            let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}?product_id=${product_id}`
             ProductModificationPageFunction.LoadTableWarehouseByProduct(url)
             ProductModificationPageFunction.LoadTableLotListByWarehouse()
             ProductModificationPageFunction.LoadTableSerialListByWarehouse()
@@ -1734,7 +1733,7 @@ class ProductModificationEventHandler {
                 'general_traceability_method': $(this).attr('data-product-general-traceability-method'),
             }
             let product_id = $(this).attr('data-product-id')
-            let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}&product_id=${product_id}`
+            let url = `${pageElements.$script_url.attr('data-url-warehouse-list-by-product')}?product_id=${product_id}`
             ProductModificationPageFunction.LoadTableComponentWarehouseByProduct(url, $(this).attr('data-product-general-traceability-method'))
 
             if ($(this).attr('data-product-general-traceability-method') === '0') {

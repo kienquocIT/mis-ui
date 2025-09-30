@@ -295,7 +295,7 @@ class ARInvoicePageFunction {
                         return `<div class="input-group">
                             <span class="input-affix-wrapper">
                                 <span class="input-prefix product-des" data-bs-toggle="tooltip" title="${product_data?.['description']}"><i class="bi bi-info-circle"></i></span>
-                                <select ${option==='detail' ? 'disabled' : ''} ${from_delivery} data-product='${JSON.stringify(product_data)}' class="form-select select-2 product-select"></select>
+                                <select ${option==='detail' ? 'disabled' : ''} ${from_delivery} data-product="${JSON.stringify(product_data).replace(/"/g, "&quot;")}" class="form-select select-2 product-select"></select>
                             </span>
                         </div>`
                     }
@@ -303,7 +303,7 @@ class ARInvoicePageFunction {
                 {
                     render: (data, type, row) => {
                         let product_uom_data = row?.['product_uom_data'] || {}
-                        return `<select ${option==='detail' ? 'disabled' : ''} ${from_delivery} data-product-uom='${JSON.stringify(product_uom_data)}' class="form-select select-2 uom-select"></select>`
+                        return `<select ${option==='detail' ? 'disabled' : ''} ${from_delivery} data-product-uom="${JSON.stringify(product_uom_data).replace(/"/g, "&quot;")}" class="form-select select-2 uom-select"></select>`
                     }
                 },
                 {
@@ -336,7 +336,7 @@ class ARInvoicePageFunction {
                         let product_tax_data = row?.['product_tax_data'] || {}
                         return `<select ${option==='detail' ? 'disabled' : ''}
                                         ${from_delivery}
-                                        data-tax='${JSON.stringify(product_tax_data)}'
+                                        data-tax="${JSON.stringify(product_tax_data).replace(/"/g, "&quot;")}"
                                         data-tax-value="${row?.['product_tax_value'] || 0}"
                                         class="form-select select2 product_taxes recalculate-field"></select>`
                     }
@@ -438,7 +438,7 @@ class ARInvoicePageFunction {
                     render: (data, type, row) => {
                         return `<select ${option==='detail' ? 'disabled' : ''}
                                         class="recalculate-field form-select select2 product_taxes"
-                                        data-tax='${JSON.stringify(row?.['product_tax_data'] || {})}'
+                                        data-tax="${JSON.stringify(row?.['product_tax_data'] || {}).replace(/"/g, "&quot;")}"
                                         data-tax-value="${row?.['product_tax_value'] || 0}"
                                 ></select>`
                     }

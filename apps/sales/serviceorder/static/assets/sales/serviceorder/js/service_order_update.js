@@ -2,6 +2,8 @@ function handleServiceDetailTabEvent(){
     ServiceOrder.handleChangeServiceDescription()
     ServiceOrder.handleChangeServiceQuantity()
     ServiceOrder.handleDeleteServiceDetailRow()
+    ServiceOrder.handleChangeServicePrice()
+    ServiceOrder.handleChangeServiceDetail()
 }
 
 function handleWorkOrderDetailTabEvent(){
@@ -216,6 +218,7 @@ class DetailDataHandler {
                 //service detail
                 ServiceOrder.initServiceDetailDataTable(data.service_detail_data)
                 ServiceOrder.loadServiceDetailRelatedData(data.service_detail_data)
+                ServiceOrder.loadServiceDetailSummaryValue()
 
                 //work order
                 let workOrderData = data.work_order_data

@@ -2186,8 +2186,10 @@ const ServiceOrder = (function($) {
 
                         // Calculate new total (quantity * price)
                         const quantity = parseFloat(rowData.quantity) || 0;
+                        const duration = parseFloat(rowData.duration) || 1;
+                        const attrTotalCost = rowData.attributes_total_cost || 0;
                         const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
-                        const subtotal = newPrice * quantity
+                        const subtotal = newPrice * quantity * duration  + attrTotalCost
                         const taxAmount = subtotal * taxRate
                         rowData.sub_total_value = subtotal
                         rowData.total_value = subtotal + taxAmount
@@ -3845,7 +3847,7 @@ const ServiceOrder = (function($) {
 
             const price = parseFloat(rowData.price) || 0
             const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
-            const subtotal = currentQuantity * price
+            const subtotal = rowData.sub_total_value || 0
             const taxAmount = subtotal * taxRate
             const currentTotal = subtotal + taxAmount
 
@@ -3869,7 +3871,12 @@ const ServiceOrder = (function($) {
                 total_contribution_percent: pageVariable.serviceDetailTotalContributionData?.[rowData.id]?.total_contribution_percent || 0,
                 delivery_balance_value: deliveryBalanceValue,
                 total_payment_percent: pageVariable.serviceDetailTotalPaymentData?.[rowData.id]?.total_payment_percent || 0,
-                total_payment_value: pageVariable.serviceDetailTotalPaymentData?.[rowData.id]?.total_payment_value || 0
+                total_payment_value: pageVariable.serviceDetailTotalPaymentData?.[rowData.id]?.total_payment_value || 0,
+                //data for attribute
+                attributes_total_cost: rowData.attributes_total_cost || 0,
+                duration_id: rowData.duration_id || null,
+                duration_unit_data: rowData.duration_unit_data || {},
+                selected_attributes: rowData.selected_attributes || {},
             }
 
             serviceDetailData.push(serviceDetail)

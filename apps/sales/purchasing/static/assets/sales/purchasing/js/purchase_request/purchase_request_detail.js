@@ -1,5 +1,6 @@
 $(document).ready(function () {
-    LoadDetailPR('detail');
+    PurchaseRequestEventHandler.InitPageEven()
+    PurchaseRequestHandler.LoadDetailPR('detail');
 
     const urlParams = new URLSearchParams(window.location.search);
     const type= urlParams.get('type');

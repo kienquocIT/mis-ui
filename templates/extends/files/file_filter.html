@@ -2,15 +2,15 @@
 
 {% random_str 10 True as id_modal %}
 
-<div class="d-flex justify-content-end">
-    <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
-            <button
-                    type="button" class="btn nav-link" id="open-file-filter"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom" title="{% trans 'Filter' %}"
-            ><span class="icon"><i class="fas fa-filter"></i></span></button>
-    </div>
-</div>
+{#<div class="d-flex justify-content-end">#}
+{#    <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">#}
+{#            <button#}
+{#                    type="button" class="btn nav-link" id="open-file-filter"#}
+{#                    data-bs-toggle="tooltip"#}
+{#                    data-bs-placement="bottom" title="{% trans 'Filter' %}"#}
+{#            ><span class="icon"><i class="fas fa-filter"></i></span></button>#}
+{#    </div>#}
+{#</div>#}
 
 <div class="offcanvas offcanvas-end w-30" tabindex="-1" id="fileFilterCanvas" aria-labelledby="offcanvasTopLabel">
     <div class="modal-header">

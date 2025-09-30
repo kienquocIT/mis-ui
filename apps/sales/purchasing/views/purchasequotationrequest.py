@@ -143,3 +143,14 @@ class PurchaseQuotationRequestDetailAPI(APIView):
     def put(self, request, pk, *arg, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.PURCHASE_QUOTATION_REQUEST_DETAIL.fill_key(pk=pk)).put(request.data)
         return resp.auto_return()
+
+
+# related
+class PurchaseRequestListForPQRAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        resp = ServerAPI(request=request, user=request.user, url=ApiURL.PURCHASE_REQUEST_LIST_FOR_PQR).get()
+        return resp.auto_return(key_success='purchase_request_list')

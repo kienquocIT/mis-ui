@@ -56,13 +56,16 @@ $(document).ready(function () {
                             else if (row?.['request_for'] === 3) {
                                 doc_code = row?.['distribution_plan']?.['code'];
                             }
+                            else if (row?.['request_for'] === 4) {
+                                doc_code = row?.['service_order']?.['code'];
+                            }
                             return `<span>${row?.['request_for_string']}&nbsp;<span class="fw-bold">${doc_code}</span></span>`
                         }
                     },
                     {
                         className: 'ellipsis-cell-lg w-15',
                         render: (data, type, row) => {
-                            return `<p class="text-muted">${row?.['supplier']?.['title']}</p>`
+                            return `<p class="text-muted">${row?.['supplier']?.['name']}</p>`
                         }
                     },
                     {

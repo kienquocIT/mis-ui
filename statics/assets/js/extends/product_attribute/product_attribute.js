@@ -6,7 +6,7 @@ class ProductAttribute {
         this.currentRowIndex = null;
         this.currentTable = null;
         this.isInitialized = false;
-        this.targetDuration = options.rowData?.duration_unit_data
+        this.targetDuration =  options.rowData?.duration_unit_data
         this.uomTimeList = []
     }
 
@@ -54,7 +54,7 @@ class ProductAttribute {
     }
 
     getEffectivePrice(attr, basePrice) {
-        if (!this.targetDuration || !attr.price_config_data.duration_unit_data) {
+        if (Object.keys(this.targetDuration).length === 0 || !attr.price_config_data.duration_unit_data) {
             return basePrice;
         }
 
@@ -259,7 +259,16 @@ class ProductAttribute {
             // Get product ID AFTER setting currentRowData
             const productId = self.appendProductId($row);
 
-            self.loadSampleAttributes();
+            // self.loadSampleAttributes();
+
+    // Load product attributes from server
+    if (productId) {
+        await self.loadProductAttributes(productId);
+    } else {
+        // Fall back to sample attributes if no product ID
+        self.loadSampleAttributes();
+    }
+
 
             await self.loadTimeUom()
 
@@ -322,7 +331,7 @@ class ProductAttribute {
 
         if (attr && selectedData) {
             const duration = selectedData.duration || 1;
-            const durationUnit = this.targetDuration ? this.targetDuration.title :
+            const durationUnit = Object.keys(this.targetDuration).length > 0 ? this.targetDuration.title :
                                (attr.price_config_data.duration_unit_data?.title || '');
 
             // Update all option displays
@@ -419,28 +428,52 @@ class ProductAttribute {
             const originalPricePerUnit = parseFloat(configData.price_per_unit);
             const convertedPricePerUnit = this.getEffectivePrice(attr, originalPricePerUnit);
 
-            infoHtml += `
-                <div class="row small">
-                    <div class="col-6">
-                        <span class="text-muted">Range:</span>
-                        <strong>${configData.min_value} - ${configData.max_value} ${configData.attribute_unit || ''}</strong>
+            // Show different info based on whether we have targetDuration
+            if (Object.keys(this.targetDuration).length > 0) {
+                infoHtml += `
+                    <div class="row small">
+                        <div class="col-6">
+                            <span class="text-muted">Range:</span>
+                            <strong>${configData.min_value} - ${configData.max_value} ${configData.attribute_unit || ''}</strong>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted">Increment:</span>
+                            <strong>${configData.increment} ${configData.attribute_unit || ''}</strong>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <span class="text-muted">Increment:</span>
-                        <strong>${configData.increment} ${configData.attribute_unit || ''}</strong>
+                    <div class="row small mt-1">
+                        <div class="col-6">
+                            <span class="text-muted">Price per ${this.targetDuration.title}:</span>
+                            <strong><span class="mask-money" data-init-money="${convertedPricePerUnit}"></span></strong>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted">Original price per ${configData?.duration_unit_data?.title}:</span>
+                            <strong><span class="mask-money" data-init-money="${originalPricePerUnit}"></span></strong>
+                        </div>
                     </div>
-                </div>
-                <div class="row small mt-1">
-                    <div class="col-6">
-                        <span class="text-muted">Price per ${this.targetDuration?.title}:</span>
-                        <strong><span class="mask-money" data-init-money="${convertedPricePerUnit}"></span></strong>
+                `;
+            }
+            else {
+                // No conversion - show original price only
+                infoHtml += `
+                    <div class="row small">
+                        <div class="col-6">
+                            <span class="text-muted">Range:</span>
+                            <strong>${configData.min_value} - ${configData.max_value} ${configData.attribute_unit || ''}</strong>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted">Increment:</span>
+                            <strong>${configData.increment} ${configData.attribute_unit || ''}</strong>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <span class="text-muted">Price per ${configData?.duration_unit_data?.title}:</span>
-                        <strong><span class="mask-money" data-init-money="${originalPricePerUnit}"></span></strong>
+                    <div class="row small mt-1">
+                        <div class="col-12">
+                            <span class="text-muted">Price per unit${configData?.duration_unit_data ? ` (${configData.duration_unit_data.title})` : ''}:</span>
+                            <strong><span class="mask-money" data-init-money="${originalPricePerUnit}"></span></strong>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
         } else if (attr.price_config_type === 1) { // List type
             const optionCount = configData.list_item ? configData.list_item.length : 0;
             const minPrice = configData.list_item ? Math.min(...configData.list_item.map(item => item.additional_cost)) : 0
@@ -565,7 +598,7 @@ class ProductAttribute {
         const attr = this.productAttributes.find(a => a.id === attrId);
         const convertedPricePerUnit = this.getEffectivePrice(attr, pricePerUnit);
 
-        const durationUnit = this.targetDuration ? this.targetDuration.title :
+        const durationUnit = Object.keys(this.targetDuration).length > 0 ? this.targetDuration.title :
                            (configData.duration_unit_data?.title || '');
 
         const value = min + (sliderValue * increment);
@@ -638,16 +671,29 @@ class ProductAttribute {
                 $content.append(itemHtml);
             } else if (data) {
                 let detailInfo = '';
-                const durationUnit = this.targetDuration ? this.targetDuration.title :
+                const durationUnit = Object.keys(this.targetDuration).length > 0 ? this.targetDuration?.title :
                                    (configData.duration_unit_data?.title || 'months');
 
                 if (data.type === 'numeric' && data.requiresDuration) {
                     const convertedPricePerUnit = this.getEffectivePrice(attr, parseFloat(configData.price_per_unit));
-                    detailInfo = `
-                        <small class="text-muted d-block">
-                            ${data.rawValue} units × <span class="mask-money" data-init-money="${convertedPricePerUnit}"></span>/unit × ${durationUnit}
-                        </small>
-                    `;
+                    // detailInfo = `
+                    //     <small class="text-muted d-block">
+                    //         ${data.rawValue} units × <span class="mask-money" data-init-money="${convertedPricePerUnit}"></span>/unit × ${durationUnit}
+                    //     </small>
+                    // `;
+                    if (Object.keys(this.targetDuration).length > 0) {
+                        detailInfo = `
+                            <small class="text-muted d-block">
+                                ${data.rawValue} units × <span class="mask-money" data-init-money="${convertedPricePerUnit}"></span>/unit (converted to ${durationUnit})
+                            </small>
+                        `;
+                    } else {
+                        detailInfo = `
+                            <small class="text-muted d-block">
+                                ${data.rawValue} units × <span class="mask-money" data-init-money="${convertedPricePerUnit}"></span>/unit
+                            </small>
+                        `;
+                    }
                 } else if (data.type === 'list' && data.hasDuration && data.duration > 1) {
                     detailInfo = `
                         <small class="text-muted d-block">

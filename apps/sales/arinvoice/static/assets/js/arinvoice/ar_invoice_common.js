@@ -207,7 +207,7 @@ class ARInvoicePageFunction {
                     render: (data, type, row) => {
                         return `${row?.['already'] ? `<i class="fas fa-check-circle text-success mr-1"></i>` + $.fn.gettext('Invoiced') : ''}
                                 <div class="form-check" ${row?.['already'] ? 'hidden' : ''}>
-                                    <input data-detail='${JSON.stringify(row?.['details'] || [])}' data-already="${row?.['already'] ? 1 : 0}" data-id="${row?.['id']}" type="checkbox" name="selected-delivery" class="form-check-input selected-delivery" ${row?.['already'] ? 'checked' : ''}>
+                                    <input data-detail="${JSON.stringify(row?.['details'] || []).replace(/"/g, "&quot;")}" data-already="${row?.['already'] ? 1 : 0}" data-id="${row?.['id']}" type="checkbox" name="selected-delivery" class="form-check-input selected-delivery" ${row?.['already'] ? 'checked' : ''}>
                                     <label class="form-check-label"></label>
                                 </div>`
                     }

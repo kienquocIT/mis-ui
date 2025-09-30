@@ -12,7 +12,8 @@ from apps.masterdata.saledata.views.accounts import (
     AccountDetail, AccountGroupListAPI, AccountGroupCreateAPI, AccountGroupDetailAPI, AccountForSaleListAPI,
     CustomerListAPI, SupplierListAPI, AccountDDListAPI
 )
-from apps.masterdata.saledata.views.attribute import AttributeListAPI, AttributeList, AttributeDetailAPI
+from apps.masterdata.saledata.views.attribute import AttributeListAPI, AttributeList, AttributeDetailAPI, \
+    ProductAttributeListAPI
 from apps.masterdata.saledata.views.balance_init import BalanceInitList, BalanceInitListAPI, \
     ImportBalanceInitDBAPIViews, BalanceInitializationListImportDBAPI
 from apps.masterdata.saledata.views.bank import BankMasterDataListAPI, BankMasterDataDetailAPI, \
@@ -424,6 +425,7 @@ urlpatterns += [
     path('attribute/list', AttributeList.as_view(), name='AttributeList'),
     path('attribute/list/api', AttributeListAPI.as_view(), name='AttributeListAPI'),
     path('attribute/detail/api/<str:pk>', AttributeDetailAPI.as_view(), name='AttributeDetailAPI'),
+    path('product-attribute/detail/api/<str:pk>', ProductAttributeListAPI.as_view(), name='ProductAttributeListAPI'),
 ]
 
 urlpatterns += [

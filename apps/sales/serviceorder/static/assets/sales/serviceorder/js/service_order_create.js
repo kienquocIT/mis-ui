@@ -3,6 +3,7 @@ function handleServiceDetailTabEvent(){
     ServiceOrder.handleChangeServiceQuantity()
     ServiceOrder.handleDeleteServiceDetailRow()
     ServiceOrder.handleChangeServicePrice()
+    ServiceOrder.handleChangeServiceDetail()
 }
 
 function handleWorkOrderDetailTabEvent(){
@@ -138,6 +139,7 @@ $(document).ready(function () {
     ServiceOrder.initPageSelect()
     ServiceOrder.loadCurrencyRateData()
     ServiceOrder.loadTaxData()
+    ServiceOrder.loadUoMData()
 
     ServiceOrder.initProductModalDataTable()
     ServiceOrder.initServiceDetailDataTable()

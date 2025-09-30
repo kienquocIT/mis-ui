@@ -7498,7 +7498,12 @@ class FileControl {
                             if (fileData?.['document_type']) {
                                 dataS2 = [fileData?.['document_type']];
                             }
-                            FormElementControl.loadInitS2($(docTypeEle), dataS2, {}, $modalFileAttr, true);
+                            let $appIDCurrentEle = $('#app_id_current');
+                            let appIDCurrent = null;
+                            if ($appIDCurrentEle.length > 0) {
+                                appIDCurrent = JSON.parse($appIDCurrentEle.text());
+                            }
+                            FormElementControl.loadInitS2($(docTypeEle), dataS2, {'applications__id': appIDCurrent}, $modalFileAttr, true);
                         }
                         if (contentGrEle) {
                             let dataS2 = [];

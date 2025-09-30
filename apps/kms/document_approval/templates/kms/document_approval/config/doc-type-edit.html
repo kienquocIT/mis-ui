@@ -52,6 +52,21 @@
                 </select>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="form-label" for="box_applications">{% trans 'Application applied' %}</label>
+                    <select
+                            class="form-select"
+                            id="box_applications"
+                            data-url="{% url "TenantApplicationListAPI" %}"
+                            data-keyResp="tenant_application_list"
+                            data-keyText="title_i18n"
+                            multiple
+                    ></select>
+                </div>
+            </div>
+        </div>
     </form>
 {% endblock %}
 {% block dataHiddenGroup %}

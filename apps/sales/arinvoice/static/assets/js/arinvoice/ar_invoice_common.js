@@ -1128,7 +1128,7 @@ class ARInvoiceEventHandler {
             data_product = Object.values(merged_data_product)
 
             ARInvoicePageFunction.LoadDeliveryProductTable(data_product)
-            pageElements.$delivery_product_data_script.text(JSON.stringify(data_product).replace(/"/g, "&quot;"))
+            pageElements.$delivery_product_data_script.text(JSON.stringify(data_product))
         })
     }
 }

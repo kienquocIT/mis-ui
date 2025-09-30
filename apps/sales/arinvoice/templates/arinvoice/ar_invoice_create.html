@@ -6,6 +6,11 @@
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'vendors/sweetalert2/sweetalert2.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" />
+    <style>
+        table .select2-selection__rendered {
+            max-width: 250px;
+        }
+    </style>
 {% endblock %}
 {% block jsHeader %}
 {% endblock %}

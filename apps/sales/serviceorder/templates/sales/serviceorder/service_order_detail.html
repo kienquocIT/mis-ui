@@ -43,6 +43,7 @@
 {% block modalData %}
     {% include 'sales/serviceorder/common/modal_data.html' %}
     {% include 'sales/task/extend/task-form.html' with not_bastion=True custom_assignee=True %}
+    {% include 'extends/files/file_attribute.html' %}
 {% endblock %}
 
 {% block dataHiddenGroup %}

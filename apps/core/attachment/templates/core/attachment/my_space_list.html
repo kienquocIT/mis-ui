@@ -115,6 +115,7 @@
                             <th>{% trans 'Date modified' %}</th>
                             <th>{% trans 'Size' %}</th>
                             <th>{% trans 'Type' %}</th>
+                            <th>{% trans 'Document type' %}</th>
                             <th>{% trans 'Action' %}</th>
                         </tr>
                         </thead>
@@ -488,7 +489,6 @@
         id="url-factory" aria-label="url-factory"
 {#######  FILE API ###}
         data-file-edit="{% url 'AttachmentEditAPI' %}"
-        data-file-detail="{% url 'AttachmentUpdateAPI' 1 %}"
         data-file-review="{% url 'AttachmentPreview' 1 %}"
 {#######  FOLDER API #}
         data-folder-api="{% url 'FolderMyFileListAPI' %}"
@@ -541,6 +541,6 @@
     {% if base.language %}
         <script src="{% static 'vendors/flatpickr/i18n/vn.js' %}"></script>
     {% endif %}
-
+    <script src="{% static 'assets/js/extends/files/file_filter.js' %}"></script>
     <script src="{% static 'assets/core/attachment/js/common.js' %}"></script>
 {% endblock %}

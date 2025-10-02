@@ -326,10 +326,9 @@ class TaskExtend {
     static storeData(formData, row) {
         let taskDataEle = row.querySelector('.table-row-task-data');
         let avaGrTaskEle = row.querySelector('.avatar-group-task');
-
+        let taskData = [];
         // update task data
         if (taskDataEle) {
-            let taskData = [];
             if ($(taskDataEle).val()) {
                 taskData = JSON.parse($(taskDataEle).val());
             }
@@ -348,7 +347,7 @@ class TaskExtend {
                 $(avaGrTaskEle).append(avatarEle);
             }
         }
-        return true;
+        return taskData;
     };
 
     static calculatePercentCompletedAll(taskDatas) {

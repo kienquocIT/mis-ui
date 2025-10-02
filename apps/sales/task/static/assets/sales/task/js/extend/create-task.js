@@ -424,7 +424,12 @@ $(document).ready(function () {
                                     let rowIdx = $canvasEle.attr('data-row-idx');
                                     let rowApi = $table.DataTable().row(rowIdx);
                                     let row = rowApi.node();
-                                    TaskExtend.storeData(formData, row);
+                                    let taskData = TaskExtend.storeData(formData, row);
+                                    // update data for row
+                                    let rowIndex = $table.DataTable().row(row).index();
+                                    let $row = $table.DataTable().row(rowIndex);
+                                    let dataRow = $row.data();
+                                    dataRow['task_data'] = taskData;
                                 }
                                 if (!data?.id && data?.status === 200) {
                                     let tasksDataEle = document.querySelectorAll('.table-row-task-data');

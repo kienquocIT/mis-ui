@@ -56,3 +56,15 @@ class AttributeDetailAPI(APIView):
             url=ApiURL.ATTRIBUTE_DETAIL,
             pk=pk,
         )
+
+
+class ProductAttributeListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, pk, *args, **kwargs):
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_ATTRIBUTE_LIST.fill_key(pk=pk)).get()
+        return resp.auto_return(key_success='product_attribute_list')

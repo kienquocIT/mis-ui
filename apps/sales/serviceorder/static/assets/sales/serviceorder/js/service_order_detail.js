@@ -147,7 +147,8 @@ class DetailDataHandler {
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
                 UsualLoadPageFunction.DisablePage(isDisablePage,
                     ['.btn-close', '.modal-header button', '#view-dashboard', '#btn-open-exchange-modal', '.btn-list-task',
-                            '.btn-open-service-delivery', '.btn-open-work-order-cost', '.btn-open-contribution-package'])
+                            '.btn-open-service-delivery', '.btn-open-work-order-cost', '.btn-open-contribution-package',
+                            'btn-open-product-attribute'])
             }
         )
     }

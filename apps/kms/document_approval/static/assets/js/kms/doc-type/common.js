@@ -11,6 +11,12 @@ $(document).ready(function(){
                     const item = serializerArray[key]
                     if (item) data[key] = item
                 }
+                let $applicationsEle = $('#box_applications');
+                let appData = [];
+                for (let appID of $applicationsEle.val() || []) {
+                    appData.push(SelectDDControl.get_data_from_idx($applicationsEle, appID));
+                }
+                data['applications_data'] = appData;
                 let method = 'post'
                 if (data?.id) method = 'put'
                 $.fn.callAjax2({
@@ -32,4 +38,10 @@ $(document).ready(function(){
                 })
             }
         })
+
+    function init() {
+        FormElementControl.loadInitS2($('#box_applications'), [], {}, null, true);
+    }
+    init();
+
 });

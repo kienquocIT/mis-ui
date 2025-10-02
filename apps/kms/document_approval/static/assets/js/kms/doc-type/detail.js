@@ -10,6 +10,8 @@ $(document).ready(function(){
             $('#txt_title').val(data.title)
             if (data?.folder && Object.keys(data.folder).length > 0)
                 $('#select-box-folder').html(`<option selected value="${data.folder.id}">${data.folder.title}</option>`)
+
+            FormElementControl.loadInitS2($('#box_applications'), data?.['applications_data'] || [], {}, null, true);
         }
     })
 })

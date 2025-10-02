@@ -26,11 +26,14 @@
         {% include 'sales/serviceorder/common/tab_data.html' %}
     </form>
 {% endblock %}
+
 {% block modalData %}
     {% include 'sales/serviceorder/common/modal_data.html' %}
     {% include 'sales/task/extend/task-form.html' with not_bastion=True custom_assignee=True %}
+    {% include 'extends/product_attribute_extend/canvas.html' %}
     {% include 'extends/files/file_attribute.html' %}
 {% endblock %}
+
 {% block dataHiddenGroup %}
     <script id="script-url"
             data-expense-item-list-url="{% url 'ExpenseItemListAPI' %}"
@@ -45,11 +48,13 @@
             data-tax-url='{% url 'TaxListAPI' %}'
     ></script>
 {% endblock %}
+
 {% block jsFooter %}
     <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'vendors/select2/dist/js/init-select2.js' %}"></script>
     <script src="{% static "assets/js/shared/usual_load_page.js" %}"></script>
+    <script src="{% static "assets/js/extends/product_attribute/product_attribute.js" %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/service_order_common.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/service_order_create.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_shipment.js' %}"></script>

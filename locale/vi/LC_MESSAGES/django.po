@@ -12326,3 +12326,7 @@ msgstr "Giá tăng"
 #
 msgid "Valid until"
 msgstr "Hiệu lực đến"
+
+#
+msgid "Application applied"
+msgstr "Chức năng áp dụng"

@@ -114,6 +114,18 @@ $(document).ready(function () {
         $empElm.parents('.form-group').append($assignBtnElm)
     }
 
+    if (!$empElm[0].closest('#formOpportunityTask')) {
+        $('.btn-create-todo').each(function () {
+            $(this).attr('hidden', true);
+        });
+        $('.sp-btn').each(function () {
+            $(this).attr('hidden', true);
+        });
+        $('.desktop-btn').each(function () {
+            $(this).attr('hidden', true);
+        });
+    }
+
     $assignBtnElm.off().on('click', function () {
         if ($(this).hasClass('disabled')) return false
         const employee = JSON.parse($('#employee_info').text())

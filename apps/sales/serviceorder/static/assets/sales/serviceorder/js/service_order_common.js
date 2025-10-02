@@ -538,11 +538,7 @@ const ServiceOrder = (function($) {
                 {
                     className: 'w-10',
                     render: (data, type, row) => {
-                        return `<input
-                            type="text"
-                            class="form-control mask-money service-detail-price"
-                            value="${row?.['price'] || 0}"
-                        />`
+                        return `<input type="text" class="form-control mask-money service-detail-price" value="${row?.['price'] || 0}">`
                     }
                 },
                 {
@@ -2133,7 +2129,7 @@ const ServiceOrder = (function($) {
                 rowData.quantity = newQuantity
 
                 // Calculate new total (quantity * price)
-                const attrTotalCost = rowData.attributes_total_cost
+                const attrTotalCost = rowData?.['attributes_total_cost'] || 0
                 const duration = rowData.duration || 1
                 const price = parseFloat(rowData.price) || 0;
                 const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
@@ -2158,7 +2154,7 @@ const ServiceOrder = (function($) {
             const table = pageElement.serviceDetail.$table.DataTable()
             const rowData = table.row($row).data()
 
-            const confirmTitle = $.fn.gettext('Change service quantity')
+            const confirmTitle = $.fn.gettext('Change service detail price')
             const confirmText = $.fn.gettext('This will reset the payment data')
             Swal.fire({
                 html: `
@@ -4180,32 +4176,6 @@ const ServiceOrder = (function($) {
         for (const payment of paymentData) {
             addPaymentDetailData(payment)
         }
-    }
-
-    function disableTableFields(){
-        ServiceOrder.pageElement.serviceDetail.$table.on('draw.dt', function() {
-            $(this).find('button, select, input, textarea').each(function () {
-                $(this).attr('disabled', true).attr('readonly', true)
-            })
-        })
-        ServiceOrder.pageElement.workOrder.$table.on('draw.dt', function() {
-            $(this).find('button, select, input, textarea').each(function () {
-                if(!$(this).hasClass('btn-open-task')
-                    && !$(this).hasClass('btn-open-service-delivery')
-                    && !$(this).hasClass('btn-open-work-order-cost')
-                    && !$(this).hasClass('btn-list-task'))
-                {
-                    $(this).attr('disabled', true).attr('readonly', true)
-                }
-            })
-        })
-        ServiceOrder.pageElement.payment.$table.on('draw.dt', function() {
-            $(this).find('button, select, input, textarea').each(function () {
-                if(!$(this).hasClass('btn-open-payment-detail')){
-                    $(this).attr('disabled', true).attr('readonly', true)
-                }
-            })
-        })
     }
 
     function loadExchangeRateData(exchangeRateData=[]){

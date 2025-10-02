@@ -95,11 +95,11 @@ msgstr "Sản phẩm/Dịch vụ"
 
 #
 msgid "Add item"
-msgstr "Thêm sản phẩm/dịch vụ"
+msgstr "Thêm sản phẩm / dịch vụ"
 
 #
 msgid "Add non-item"
-msgstr "Thêm sản phẩm/dịch vụ bên ngoài"
+msgstr "Thêm sản phẩm / dịch vụ (bên ngoài)"
 
 #
 msgid "Shipment"
@@ -186,8 +186,8 @@ msgid "Is Service Delivery"
 msgstr "TT giao hàng"
 
 #
-msgid "Unit Cost"
-msgstr "Chi phí đơn vị"
+msgid "Service Cost"
+msgstr "Chi phí dịch vụ"
 
 #
 msgid "Progress"
@@ -196,3 +196,15 @@ msgstr "Tiến độ"
 #
 msgid "View dashboard"
 msgstr "Xem Dashboard"
+
+#
+msgid "Contribution of Product/Service"
+msgstr "Mức độ đóng góp của sản phẩm/dịch vụ"
+
+#
+msgid "Duration Unit"
+msgstr "ĐV Thời Lượng"
+
+#
+msgid "Work Order Cost"
+msgstr "Chi phí sản xuất"

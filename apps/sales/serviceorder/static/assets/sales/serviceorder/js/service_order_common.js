@@ -716,6 +716,7 @@ const ServiceOrder = (function($) {
                     for (let taskData of data?.['task_data']) {
                         TaskExtend.storeData(taskData, row);
                     }
+                    TaskExtend.renderTaskAvatarTblRow(data?.['task_data'], row);
                     let percentCompletedEle = row.querySelector('.table-row-percent-completed');
                     if (percentCompletedEle) {
                         let percent = TaskExtend.calculatePercentCompletedAll(data?.['task_data']);
@@ -3937,7 +3938,7 @@ const ServiceOrder = (function($) {
                 }
             })
 
-            // task_id & task data
+            // task data
             let taskData = [];
             let taskDataEle = $row[0].querySelector('.table-row-task-data');
             if (taskDataEle) {

@@ -325,29 +325,44 @@ class TaskExtend {
 
     static storeData(formData, row) {
         let taskDataEle = row.querySelector('.table-row-task-data');
-        let avaGrTaskEle = row.querySelector('.avatar-group-task');
         let taskData = [];
+        let taskCheck = [];
         // update task data
         if (taskDataEle) {
             if ($(taskDataEle).val()) {
                 taskData = JSON.parse($(taskDataEle).val());
+                for (let task of taskData) {
+                    taskCheck.push(task?.['id']);
+                }
             }
-            taskData.push(formData);
-            $(taskDataEle).val(JSON.stringify(taskData));
-        }
-
-        // append avatar
-        let color = ['red', 'blue', 'yellow', 'green', 'pink', 'purple', 'violet', 'indigo', 'sky', 'cyan', 'teal', 'neon', 'lime', 'sun', 'orange'];
-        let randomColor = color[Math.floor(Math.random() * color.length)];
-        let avatarEle = `<div class="avatar avatar-xs avatar-${randomColor} avatar-rounded" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${formData?.['employee_inherit']?.['full_name']}">
-                                <span class="initial-wrap text-white">${formData?.['employee_inherit']?.['first_name'].charAt(0).toUpperCase()}</span>
-                            </div>`;
-        if (avaGrTaskEle) {
-            if (avaGrTaskEle.querySelectorAll('.avatar').length < 3) {
-                $(avaGrTaskEle).append(avatarEle);
+            if (!taskCheck.includes(formData?.['id'])) {
+                taskData.push(formData);
+                $(taskDataEle).val(JSON.stringify(taskData));
             }
         }
         return taskData;
+    };
+
+    static renderTaskAvatarTblRow(taskData, row) {
+        let avaGrTaskEle = row.querySelector('.avatar-group-task');
+        if (avaGrTaskEle && taskData) {
+            let avatarsEle = ``;
+            let count = 0;
+            let color = ['red', 'blue', 'yellow', 'green', 'pink', 'purple', 'violet', 'indigo', 'sky', 'cyan', 'teal', 'neon', 'lime', 'sun', 'orange'];
+            for (let task of taskData) {
+                let randomColor = color[Math.floor(Math.random() * color.length)];
+                avatarsEle += `<div class="avatar avatar-xs avatar-${randomColor} avatar-rounded" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${task?.['employee_inherit']?.['full_name']}">
+                                    <span class="initial-wrap text-white">${task?.['employee_inherit']?.['first_name'].charAt(0).toUpperCase()}</span>
+                                </div>`;
+                count++;
+                if (count === 3) {
+                    break;
+                }
+            }
+            $(avaGrTaskEle).empty();
+            $(avaGrTaskEle).html(avatarsEle);
+        }
+        return true;
     };
 
     static calculatePercentCompletedAll(taskDatas) {

@@ -425,6 +425,7 @@ $(document).ready(function () {
                                     let rowApi = $table.DataTable().row(rowIdx);
                                     let row = rowApi.node();
                                     let taskData = TaskExtend.storeData(formData, row);
+                                    TaskExtend.renderTaskAvatarTblRow(taskData, row);
                                     // update data for row
                                     let rowIndex = $table.DataTable().row(row).index();
                                     let $row = $table.DataTable().row(rowIndex);

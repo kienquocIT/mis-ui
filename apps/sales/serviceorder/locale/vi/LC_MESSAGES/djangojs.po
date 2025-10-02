@@ -136,3 +136,11 @@ msgstr "Tổng chi phí"
 #
 msgid "Order"
 msgstr "STT"
+
+#
+msgid "This will reset the payment data"
+msgstr "Điều này ảnh hưởng đến chức năng Phương thức thanh toán"
+
+#
+msgid "Change service detail price"
+msgstr "Thay đổi giá tr chi tiết dịch vụ"

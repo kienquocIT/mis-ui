@@ -108,3 +108,31 @@ msgstr "Thao tác này sẽ xóa container và tất cả các kiện hàng bên
 #
 msgid "Delete Package ?"
 msgstr "Xóa kiện hàng ?"
+
+#
+msgid "Contribution"
+msgstr "Mức độ đóng góp"
+
+#
+msgid "Total Balance"
+msgstr "Tổng còn lại"
+
+#
+msgid "No of Service Delivered"
+msgstr "Dịch vụ không giao hàng"
+
+#
+msgid "Package"
+msgstr "Kiện"
+
+#
+msgid "Unit Cost"
+msgstr "Chi phí dịch vụ"
+
+#
+msgid "Total Cost"
+msgstr "Tổng chi phí"
+
+#
+msgid "Order"
+msgstr "STT"

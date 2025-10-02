@@ -536,3 +536,15 @@ msgstr "Còn lại"
 #
 msgid "is inventory tracking"
 msgstr "có theo dõi tồn kho"
+
+#
+msgid "Currency"
+msgstr "Loại tiền tệ"
+
+#
+msgid "Total Amount"
+msgstr "Tổng giá trị"
+
+#
+msgid "Action"
+msgstr "Thao tác"

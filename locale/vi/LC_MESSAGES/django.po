@@ -12330,3 +12330,7 @@ msgstr "Hiệu lực đến"
 #
 msgid "Application applied"
 msgstr "Chức năng áp dụng"
+
+#
+msgid "List task assigned"
+msgstr "Danh sách nhiệm vụ được giao"

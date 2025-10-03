@@ -603,32 +603,34 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab_block_2">
-                <div class="row">
-                    <table
-                            id="datable-quotation-create-indicator"
-                            class="table nowrap w-100 mb-5 sale-order"
+                <div class="container-fluid">
+                    <div class="row">
+                        <table
+                                id="datable-quotation-create-indicator"
+                                class="table nowrap w-100 mb-5 sale-order"
+                        >
+                            <thead>
+                            <tr class="bg-light">
+                                <th class="w-5"></th>
+                                <th class="w-25">{% trans 'Indicator name' %}</th>
+                                <th class="w-20">{% trans 'Quotation value' %}</th>
+                                <th class="w-20">{% trans 'Sale order value' %}</th>
+                                <th class="w-15">{% trans 'Difference value' %}</th>
+                                <th class="w-15">{% trans 'Indicator rate' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <input
+                            type="text"
+                            id="quotation-indicator-data"
+                            data-url="{% url 'QuotationIndicatorListAPI' %}"
+                            data-method="get"
+                            hidden
                     >
-                        <thead>
-                        <tr class="bg-light">
-                            <th class="w-5"></th>
-                            <th class="w-25">{% trans 'Indicator name' %}</th>
-                            <th class="w-20">{% trans 'Quotation value' %}</th>
-                            <th class="w-20">{% trans 'Sale order value' %}</th>
-                            <th class="w-15">{% trans 'Difference value' %}</th>
-                            <th class="w-15">{% trans 'Indicator rate' %}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
                 </div>
-                <input
-                        type="text"
-                        id="quotation-indicator-data"
-                        data-url="{% url 'QuotationIndicatorListAPI' %}"
-                        data-method="get"
-                        hidden
-                >
             </div>
         </div>
 

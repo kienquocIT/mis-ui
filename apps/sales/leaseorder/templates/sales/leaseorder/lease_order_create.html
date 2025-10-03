@@ -646,32 +646,34 @@
 
             </div>
             <div class="tab-pane fade" id="tab_block_2">
-                <div class="row">
-                    <table
-                            id="datable-quotation-create-indicator"
-                            class="table nowrap w-100 mb-5 sale-order"
+                <div class="container-fluid">
+                    <div class="row">
+                        <table
+                                id="datable-quotation-create-indicator"
+                                class="table nowrap w-100 mb-5 sale-order"
+                        >
+                            <thead>
+                            <tr class="bg-light">
+                                <th></th>
+                                <th>{% trans 'Indicator name' %}</th>
+                                <th>{% trans 'Quotation value' %}</th>
+                                <th>{% trans 'Lease order value' %}</th>
+                                <th>{% trans 'Difference value' %}</th>
+                                <th>{% trans 'Indicator rate' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <input
+                            type="text"
+                            id="quotation-indicator-data"
+                            data-url="{% url 'QuotationIndicatorListAPI' %}"
+                            data-method="get"
+                            hidden
                     >
-                        <thead>
-                        <tr class="bg-light">
-                            <th></th>
-                            <th>{% trans 'Indicator name' %}</th>
-                            <th>{% trans 'Quotation value' %}</th>
-                            <th>{% trans 'Lease order value' %}</th>
-                            <th>{% trans 'Difference value' %}</th>
-                            <th>{% trans 'Indicator rate' %}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
                 </div>
-                <input
-                        type="text"
-                        id="quotation-indicator-data"
-                        data-url="{% url 'QuotationIndicatorListAPI' %}"
-                        data-method="get"
-                        hidden
-                >
             </div>
         </div>
 

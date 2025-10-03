@@ -8862,7 +8862,7 @@ msgstr "Kế hoạch"
 
 #
 msgid "Work order"
-msgstr "Yêu cầu sản xuất"
+msgstr "Yêu cầu công việc"
 
 #
 msgid "Goods receipt for"
@@ -8878,7 +8878,7 @@ msgstr "Cho lệnh sản xuất"
 
 #
 msgid "For work order"
-msgstr "Cho yêu cầu sản xuất"
+msgstr "Cho yêu cầu công việc"
 
 #
 msgid "Finished quantity is required"
@@ -8998,7 +8998,7 @@ msgstr "Đóng/ mở lệnh sản xuất"
 
 #
 msgid "Close/ open work order"
-msgstr "Đóng/ mở yêu cầu sản xuất"
+msgstr "Đóng/ mở yêu cầu công vệc"
 
 #
 msgid "Status close/ open"

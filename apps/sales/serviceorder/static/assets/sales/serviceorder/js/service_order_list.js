@@ -26,7 +26,7 @@ $('document').ready(function () {
                         }
                     },
                     {
-                        className: "ellipsis-cell-lg w-10",
+                        className: "ellipsis-cell-lg w-5",
                         render: (data, type, row) => {
                             const link = $tb.attr('data-url-detail').replace('0', row?.['id']);
                             return `<a title="${row?.['code'] || '--'}" href="${link}" class="link-primary underline_hover fw-bold">${row?.['code'] || '--'}</a>`;
@@ -51,7 +51,7 @@ $('document').ready(function () {
                         }
                     },
                     {
-                        className: 'ellipsis-cell-sm w-5',
+                        className: 'ellipsis-cell-sm w-10',
                         render: (data, type, row) => {
                             return $x.fn.displayRelativeTime(row?.['date_created'], {'outputFormat': 'DD/MM/YYYY'});
                         }
@@ -63,9 +63,21 @@ $('document').ready(function () {
                         }
                     },
                     {
-                        className: 'text-center w-10',
+                        className: 'text-center w-5',
                         render: (data, type, row) => {
-                            return `<a href="${$tb.attr('data-url-dashboard')}?service_order_id=${row?.['id']}" class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm"><span class="icon"><i class="bi bi-clipboard-data"></i></span></a>`;
+                            return `<a href="${$tb.attr('data-url-dashboard')}?service_order_id=${row?.['id']}" 
+                                         class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm">
+                                        <span class="icon"> <i class="bi bi-clipboard-data"></i></span>
+                                      </a>`;
+                        }
+                    },
+                    {
+                        className: 'text-center w-5',
+                        render: (data, type, row) => {
+                            return `<a href="${$tb.attr('data-url-dashboard')}?service_order_id=${row?.['id']}" 
+                                         class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm">
+                                        <span class="icon"><i class="fas fa-truck"></i></span>
+                                      </a>`;
                         }
                     }
                 ],

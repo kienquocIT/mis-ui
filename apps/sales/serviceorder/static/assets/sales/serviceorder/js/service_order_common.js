@@ -2153,101 +2153,174 @@ const ServiceOrder = (function($) {
             const $row = $input.closest('tr')
             const table = pageElement.serviceDetail.$table.DataTable()
             const rowData = table.row($row).data()
+            const dataWorkOrder = pageElement.workOrder.$table.DataTable().data().toArray()
+            const dataPayment = pageElement.payment.$table.DataTable().data()
 
-            const confirmTitle = $.fn.gettext('Change service detail price')
-            const confirmText = $.fn.gettext('This will reset the payment data')
-            Swal.fire({
-                html: `
-                    <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
-                    <h5 class="text-danger">${confirmTitle}</h5>
-                    <p>${confirmText}</p>`,
-                customClass: {
-                    confirmButton: 'btn btn-outline-secondary text-danger',
-                    cancelButton: 'btn btn-outline-secondary text-gray',
-                    container: 'swal2-has-bg',
-                    actions: 'w-100'
-                },
-                showCancelButton: true,
-                buttonsStyling: false,
-                confirmButtonText: $.fn.gettext('Yes'),
-                cancelButtonText: $.fn.gettext('Cancel'),
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    if (rowData) {
-                        const newPrice = parseFloat($input.attr('value')) || 0
-                        const serviceId = rowData.id
+            if(dataWorkOrder.length > 0 || dataPayment.length > 0){
+                const confirmTitle = $.fn.gettext('Change service detail price')
+                const confirmText = $.fn.gettext('This will reset the payment data')
+                Swal.fire({
+                    html: `
+                        <div class="mb-3"><i class="ri-delete-bin-6-line fs-5 text-danger"></i></div>
+                        <h5 class="text-danger">${confirmTitle}</h5>
+                        <p>${confirmText}</p>`,
+                    customClass: {
+                        confirmButton: 'btn btn-outline-secondary text-danger',
+                        cancelButton: 'btn btn-outline-secondary text-gray',
+                        container: 'swal2-has-bg',
+                        actions: 'w-100'
+                    },
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: $.fn.gettext('Yes'),
+                    cancelButtonText: $.fn.gettext('Cancel'),
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        if (rowData) {
+                            const newPrice = parseFloat($input.attr('value')) || 0
+                            const serviceId = rowData.id
 
-                        // Update row data
-                        rowData.price = newPrice
+                            // Update row data
+                            rowData.price = newPrice
 
-                        // Calculate new total (quantity * price)
-                        const quantity = parseFloat(rowData.quantity) || 0;
-                        const duration = parseFloat(rowData.duration) || 1;
-                        const attrTotalCost = rowData.attributes_total_cost || 0;
-                        const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
-                        const subtotal = newPrice * quantity * duration  + attrTotalCost
-                        const taxAmount = subtotal * taxRate
-                        rowData.sub_total_value = subtotal
-                        rowData.total_value = subtotal + taxAmount
+                            // Calculate new total (quantity * price)
+                            const quantity = parseFloat(rowData.quantity) || 0;
+                            const duration = parseFloat(rowData.duration) || 1;
+                            const attrTotalCost = rowData.attributes_total_cost || 0;
+                            const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
+                            const subtotal = newPrice * quantity * duration  + attrTotalCost
+                            const taxAmount = subtotal * taxRate
+                            rowData.sub_total_value = subtotal
+                            rowData.total_value = subtotal + taxAmount
 
-                        //update total
-                        const $totalMoney = $row.find('.service-detail-total')
-                        $totalMoney.attr('data-init-money', subtotal + taxAmount)
+                            //update total
+                            const $totalMoney = $row.find('.service-detail-total')
+                            $totalMoney.attr('data-init-money', subtotal + taxAmount)
 
-                        // 3. Reset serviceDetailTotalPaymentData
-                        if (pageVariable.serviceDetailTotalPaymentData[serviceId]) {
-                            delete pageVariable.serviceDetailTotalPaymentData[serviceId]
-                        }
-
-                        // 4. Reset payment detail data for this service
-                        Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
-                            const paymentDetails = pageVariable.paymentDetailData[paymentId]
-                            if (paymentDetails) {
-                                pageVariable.paymentDetailData[paymentId] = paymentDetails.map(detail => {
-                                    if (detail.service_id === serviceId) {
-                                        // Reset payment detail for this service
-                                        const resetDetail = {
-                                            ...detail,
-                                            sub_total_value: subtotal,
-                                            payment_percent: 0,
-                                            payment_value: 0,
-                                            is_selected: false,
-
-                                        }
-
-                                        // For each advance and invoiced payments, also reset additional fields
-                                        if (detail.tax_data !== undefined) {
-                                            resetDetail.tax_value = 0
-                                            resetDetail.issued_value = 0
-                                            resetDetail.balance_value = subtotal
-                                            resetDetail.reconcile_value = 0
-                                            resetDetail.receivable_value = 0
-                                        }
-                                        else {
-                                            resetDetail.total_reconciled_value = 0
-                                        }
-
-                                        // Remove reconcile data for this payment detail
-                                        if (pageVariable.reconcileData[detail.id]) {
-                                            delete pageVariable.reconcileData[detail.id]
-                                        }
-
-                                        return resetDetail
-                                    }
-                                    return detail
-                                })
+                            // 3. Reset serviceDetailTotalPaymentData
+                            if (pageVariable.serviceDetailTotalPaymentData[serviceId]) {
+                                delete pageVariable.serviceDetailTotalPaymentData[serviceId]
                             }
-                            updatePaymentRowAfterReset(paymentId)
-                        })
-                        $.fn.initMaskMoney2()
-                        loadServiceDetailSummaryValue()
+
+                            // 4. Reset payment detail data for this service
+                            Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
+                                const paymentDetails = pageVariable.paymentDetailData[paymentId]
+                                if (paymentDetails) {
+                                    pageVariable.paymentDetailData[paymentId] = paymentDetails.map(detail => {
+                                        if (detail.service_id === serviceId) {
+                                            // Reset payment detail for this service
+                                            const resetDetail = {
+                                                ...detail,
+                                                sub_total_value: subtotal,
+                                                payment_percent: 0,
+                                                payment_value: 0,
+                                                is_selected: false,
+
+                                            }
+
+                                            // For each advance and invoiced payments, also reset additional fields
+                                            if (detail.tax_data !== undefined) {
+                                                resetDetail.tax_value = 0
+                                                resetDetail.issued_value = 0
+                                                resetDetail.balance_value = subtotal
+                                                resetDetail.reconcile_value = 0
+                                                resetDetail.receivable_value = 0
+                                            }
+                                            else {
+                                                resetDetail.total_reconciled_value = 0
+                                            }
+
+                                            // Remove reconcile data for this payment detail
+                                            if (pageVariable.reconcileData[detail.id]) {
+                                                delete pageVariable.reconcileData[detail.id]
+                                            }
+
+                                            return resetDetail
+                                        }
+                                        return detail
+                                    })
+                                }
+                                updatePaymentRowAfterReset(paymentId)
+                            })
+                            $.fn.initMaskMoney2()
+                            loadServiceDetailSummaryValue()
+                        }
                     }
-                }
-                else {
-                    $input.val(rowData.quantity)
-                }
-            });
+                    else {
+                        $input.val(rowData.quantity)
+                    }
+                });
+            }
+            else {
+                 const newPrice = parseFloat($input.attr('value')) || 0
+                    const serviceId = rowData.id
+
+                    // Update row data
+                    rowData.price = newPrice
+
+                    // Calculate new total (quantity * price)
+                    const quantity = parseFloat(rowData.quantity) || 0;
+                    const duration = parseFloat(rowData.duration) || 1;
+                    const attrTotalCost = rowData.attributes_total_cost || 0;
+                    const taxRate = parseFloat(rowData.tax_data?.rate || 0) / 100
+                    const subtotal = newPrice * quantity * duration  + attrTotalCost
+                    const taxAmount = subtotal * taxRate
+                    rowData.sub_total_value = subtotal
+                    rowData.total_value = subtotal + taxAmount
+
+                    //update total
+                    const $totalMoney = $row.find('.service-detail-total')
+                    $totalMoney.attr('data-init-money', subtotal + taxAmount)
+
+                    // 3. Reset serviceDetailTotalPaymentData
+                    if (pageVariable.serviceDetailTotalPaymentData[serviceId]) {
+                        delete pageVariable.serviceDetailTotalPaymentData[serviceId]
+                    }
+
+                    // 4. Reset payment detail data for this service
+                    Object.keys(pageVariable.paymentDetailData).forEach(paymentId => {
+                        const paymentDetails = pageVariable.paymentDetailData[paymentId]
+                        if (paymentDetails) {
+                            pageVariable.paymentDetailData[paymentId] = paymentDetails.map(detail => {
+                                if (detail.service_id === serviceId) {
+                                    // Reset payment detail for this service
+                                    const resetDetail = {
+                                        ...detail,
+                                        sub_total_value: subtotal,
+                                        payment_percent: 0,
+                                        payment_value: 0,
+                                        is_selected: false,
+
+                                    }
+
+                                    // For each advance and invoiced payments, also reset additional fields
+                                    if (detail.tax_data !== undefined) {
+                                        resetDetail.tax_value = 0
+                                        resetDetail.issued_value = 0
+                                        resetDetail.balance_value = subtotal
+                                        resetDetail.reconcile_value = 0
+                                        resetDetail.receivable_value = 0
+                                    }
+                                    else {
+                                        resetDetail.total_reconciled_value = 0
+                                    }
+
+                                    // Remove reconcile data for this payment detail
+                                    if (pageVariable.reconcileData[detail.id]) {
+                                        delete pageVariable.reconcileData[detail.id]
+                                    }
+
+                                    return resetDetail
+                                }
+                                return detail
+                            })
+                        }
+                        updatePaymentRowAfterReset(paymentId)
+                    })
+                    $.fn.initMaskMoney2()
+                    loadServiceDetailSummaryValue()
+            }
         })
     }
 

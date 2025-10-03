@@ -1,5 +1,5 @@
-$('document').ready(function () {
-    function loadServiceOrderList() {
+class loadServiceOrderInfo {
+    static loadServiceOrderList() {
         if (!$.fn.DataTable.isDataTable('#table-service-order')) {
             const $tb = $('#table-service-order');
             $tb.DataTableDefault({
@@ -86,5 +86,35 @@ $('document').ready(function () {
         }
     }
 
-    loadServiceOrderList();
+    static loadDeliveryWorkOrderList() {
+        if (!$.fn.DataTable.isDataTable('#delivery_work_order_list')) {
+            const $tb = ('#delivery_work_order_list');
+            $tb.DataTableDefault({
+                useDataServer: true,
+                rowIdx: true,
+                scrollX: true,
+                scrollY: '50vh',
+                scrollCollapse: true,
+                reloadCurrency: true,
+                ajax: {
+                    url: $tb.attr('data-url'),
+                    type: 'GET',
+                    dataSrc: 'data.svo_work_order_detail'
+                },
+                columns: [
+                    {
+                        className: "w-5",
+                        render: () => {
+                            return ""
+                        }
+                    },
+                ]
+            })
+        }
+    }
+}
+
+$('document').ready(function () {
+    loadServiceOrderInfo.loadServiceOrderList();
 });
+

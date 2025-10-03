@@ -182,3 +182,15 @@ class ServiceOrderDetailDashboardAPI(APIView):
     def get(self, request, pk, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.SERVICE_ORDER_DETAIL_DASHBOARD.fill_key(pk=pk)).get()
         return resp.auto_return(key_success='service_order_detail_dashboard')
+
+
+class SVOWorkOrderDetailAPI(APIView):
+    @mask_view(
+        login_require=True,
+        auth_require=False,
+        is_api=True
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.SO_WORK_ORDER_DETAIL).get(params)
+        return resp.auto_return(key_success='svo_work_order_detail')

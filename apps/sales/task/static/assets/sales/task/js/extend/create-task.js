@@ -114,6 +114,18 @@ $(document).ready(function () {
         $empElm.parents('.form-group').append($assignBtnElm)
     }
 
+    if (!$empElm[0].closest('#formOpportunityTask')) {
+        $('.btn-create-todo').each(function () {
+            $(this).attr('hidden', true);
+        });
+        $('.sp-btn').each(function () {
+            $(this).attr('hidden', true);
+        });
+        $('.desktop-btn').each(function () {
+            $(this).attr('hidden', true);
+        });
+    }
+
     $assignBtnElm.off().on('click', function () {
         if ($(this).hasClass('disabled')) return false
         const employee = JSON.parse($('#employee_info').text())
@@ -412,7 +424,13 @@ $(document).ready(function () {
                                     let rowIdx = $canvasEle.attr('data-row-idx');
                                     let rowApi = $table.DataTable().row(rowIdx);
                                     let row = rowApi.node();
-                                    TaskExtend.storeData(formData, row);
+                                    let taskData = TaskExtend.storeData(formData, row);
+                                    TaskExtend.renderTaskAvatarTblRow(taskData, row);
+                                    // update data for row
+                                    let rowIndex = $table.DataTable().row(row).index();
+                                    let $row = $table.DataTable().row(rowIndex);
+                                    let dataRow = $row.data();
+                                    dataRow['task_data'] = taskData;
                                 }
                                 if (!data?.id && data?.status === 200) {
                                     let tasksDataEle = document.querySelectorAll('.table-row-task-data');

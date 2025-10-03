@@ -101,6 +101,7 @@ $(function () {
 
     function callDataTaskList(kanban, list, params = {}, isReturn = false) {
         if (!$empElm[0].closest('#formOpportunityTask') && Object.keys(params).length === 0) {
+            $createBtn.off().on('click', () => initCommon.awaitFormSubmit(kanban, list));
             return true;
         }
         let callData = $.fn.callAjax2({
@@ -285,11 +286,13 @@ $(function () {
                     // kanban handle new task created
                     kanban.waitDataCreated(strData)
 
+                    if ($empElm[0].closest('#formOpportunityTask')) {
                     // list view handle new task create
                     listViewTask.addNewData(list, strData)
 
                     // update gantt
                     GanttViewTask.afterUpdate(strData, true)
+                    }
 
                 } else if (elmUpdate.length) {
                     // parse data

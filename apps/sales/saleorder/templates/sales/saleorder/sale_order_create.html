@@ -1224,6 +1224,7 @@
     {{ data.payment_term_stage|json_script:'payment_term_stage' }}
     {{ data.payment_date_type|json_script:'payment_date_type' }}
     {{ data.employee_current|json_script:'employee_current' }}
+    {{ data.app_id|json_script:'app_id_current' }}
 {% endblock %}
 
 {% block jsFooter %}

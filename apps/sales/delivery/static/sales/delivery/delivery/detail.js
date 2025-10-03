@@ -385,9 +385,12 @@ $(async function () {
                                     description: $trans.attr('data-error-picked-quantity')
                                 },
                                 'failure')
-                            return false
+                            this.value = 0;
                         }
                         data.picked_quantity = parseFloat(this.value)
+                        let tableTargetData = _this.getProdList;
+                        tableTargetData[index]['picked_quantity'] = parseFloat(this.value);
+                        _this.setProdList = tableTargetData;
                         return true
                     })
                 }

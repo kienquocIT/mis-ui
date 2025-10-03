@@ -67,6 +67,22 @@ function setUpFormData(formInstance) {
     formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
     formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData()
     formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData()
+
+    // total fields
+    let $pretaxPrdEle = $('#service-detail-pretax-value');
+    let $taxPrdEle = $('#service-detail-taxes-value');
+    let $totalPrdEle = $('#service-detail-total-value');
+    if ($pretaxPrdEle.length > 0 && $taxPrdEle.length > 0 && $totalPrdEle.length > 0) {
+        if ($pretaxPrdEle.valCurrency()) {
+            formInstance.dataForm['total_product_pretax_amount'] = parseFloat($pretaxPrdEle.valCurrency());
+        }
+        if ($taxPrdEle.valCurrency()) {
+            formInstance.dataForm['total_product_tax'] = parseFloat($taxPrdEle.valCurrency());
+        }
+        if ($totalPrdEle.valCurrency()) {
+            formInstance.dataForm['total_product'] = parseFloat($totalPrdEle.valCurrency());
+        }
+    }
 }
 
 function setUpFormSubmit($form) {

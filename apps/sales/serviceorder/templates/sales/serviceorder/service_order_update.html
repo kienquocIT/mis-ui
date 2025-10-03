@@ -33,14 +33,68 @@
     </button>
 {% endblock %}
 {% block pageContent %}
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-6">
+            <ul class="nav nav-pills-bfl quotation-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab_block_1">
+                        <span class="nav-icon-wrap mr-1"><i class="fa-solid fa-tag"></i></span>
+                        <span class="nav-link-text">{% trans 'Service order' %}</span>
+                    </a>
+                </li>
+                <li class="nav-item" id="tab-indicator" data-zone="service_order_indicators_data">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
+                        <span class="nav-icon-wrap mr-1"><i class="fa-solid fa-square-poll-horizontal"></i></span>
+                        <span class="nav-link-text">{% trans 'Indicator' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <form data-method="PUT" id="form-update-service-order"
           data-url="{% url 'ServiceOrderDetailAPI' data.pk %}"
           data-url-redirect="{% url 'ServiceOrderList' %}"
           data-url-cr="{% url 'ServiceOrderListAPI' %}"
     >
         {% csrf_token %}
-        {% include 'sales/serviceorder/common/common_data.html' %}
-        {% include 'sales/serviceorder/common/tab_data.html' %}
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_block_1">
+                <div class="container-fluid">
+                    {% include 'sales/serviceorder/common/common_data.html' %}
+                    {% include 'sales/serviceorder/common/tab_data.html' %}
+                </div>
+            </div>
+            <div class="tab-pane fade show active" id="tab_block_2">
+                <div class="container-fluid">
+                    <div class="row">
+                        <table
+                                id="dtb-indicator"
+                                class="table nowrap w-100 mb-5"
+                        >
+                            <thead>
+                            <tr class="bg-light">
+                                <th>#</th>
+                                <th>{% trans 'Indicator name' %}</th>
+                                <th>{% trans 'Indicator value' %}</th>
+                                <th>{% trans 'Indicator rate' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <input
+                            type="text"
+                            id="indicator-data"
+                            data-url="{% url 'QuotationIndicatorListAPI' %}"
+                            data-trans-refresh="{% trans "Refresh" %}"
+                            data-trans-refreshed="{% trans 'Data is refreshed.' %}"
+                            hidden
+                    >
+                </div>
+            </div>
+        </div>
     </form>
 {% endblock %}
 {% block modalData %}
@@ -73,4 +127,6 @@
     <script src="{% static 'assets/sales/serviceorder/js/service_order_update.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_shipment.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_expense.js' %}"></script>
+
+    <script src="{% static 'assets/js/extends/indicator/indicator_common.js' %}"></script>
 {% endblock %}

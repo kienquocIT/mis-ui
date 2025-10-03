@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static i18n %}
-{% block title %}{% trans 'Consulting list' %}{% endblock %}
+{% block title %}{% trans 'Service Order list' %}{% endblock %}
 {% block pageAction %}
     {% url 'ServiceOrderCreate' as create_link %}
     {% include 'extends/systems/page_actions.html' with is_create=True create_link=create_link create_idx="create_service_order_button" %}
@@ -23,9 +23,11 @@
                 <th style="min-width: 80px">{% trans "Delivery" %}</th>
             </tr>
         </thead>
-        <tbody>
-        </tbody>
+        <tbody></tbody>
     </table>
+{% endblock %}
+{% block modalData %}
+    {% include 'sales/serviceorder/common/modal_data.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
 {% endblock %}

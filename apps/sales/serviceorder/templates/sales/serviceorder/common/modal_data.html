@@ -395,3 +395,61 @@
 </div>
 
 <!--Delivery Work Order Modal-->
+<div class="modal fade" id="delivery_work_order_modal" tabindex="-1"
+     role="dialog" aria-labelledby="delivery_work_order_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Select Work Order with Delivery" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="overflow: auto; max-height: 80vh">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6 border-right">
+                        <div class="row">
+                            <div class="col-12">
+                                <table id="delivery_work_order_list"  class="table nowrap w-100 mb-5"
+                                        data-method="GET" data-url="{% url 'ARInvoiceListAPI' %}">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>{% trans "Code" %}</th>
+                                            <th>{% trans "Start Date" %}</th>
+                                            <th>{% trans "End Date" %}</th>
+                                            <th>{% trans "Name" %}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-12">
+                                <table id="total_delivery_work_order"  class="table nowrap w-100 mb-5"
+                                        data-method="GET" data-url="{% url 'ARInvoiceListAPI' %}">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>{% trans "Code" %}</th>
+                                            <th>{% trans "Name" %}</th>
+                                            <th>{% trans "No of service delivered" %}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn_apply_delivery" class="btn btn-primary"
+                        data-bs-dismiss="modal">{% trans 'Save' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

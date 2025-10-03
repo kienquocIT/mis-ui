@@ -74,8 +74,9 @@ $('document').ready(function () {
                     {
                         className: 'text-center w-5',
                         render: (data, type, row) => {
-                            return `<a href="${$tb.attr('data-url-dashboard')}?service_order_id=${row?.['id']}" 
-                                         class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm">
+                            return `<a href="javascript:void(0);"  
+                                        class="btn btn-icon btn-rounded btn-flush-primary flush-soft-hover btn-sm open-delivery-modal"
+                                        data-id="${row?.['id']}" data-bs-toggle="modal" data-bs-target="#delivery_work_order_modal">
                                         <span class="icon"><i class="fas fa-truck"></i></span>
                                       </a>`;
                         }

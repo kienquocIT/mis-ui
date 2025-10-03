@@ -986,7 +986,10 @@ class NodeDataTableHandle {
     };
 
     static dataTableCollabInWFExitCon(data) {
-        NodeDataTableHandle.$tableInWFExitCon.not('.dataTable').DataTableDefault({
+        if ($.fn.dataTable.isDataTable(NodeDataTableHandle.$tableInWFExitCon)) {
+            NodeDataTableHandle.$tableInWFExitCon.DataTable().destroy();
+        }
+        NodeDataTableHandle.$tableInWFExitCon.DataTableDefault({
             data: data ? data : [],
             ordering: false,
             searching: false,

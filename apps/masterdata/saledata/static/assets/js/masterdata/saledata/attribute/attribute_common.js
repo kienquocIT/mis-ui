@@ -750,7 +750,7 @@ $(document).ready(function () {
                 }
             }
             $('#title').val(dataRow?.['title']);
-            FormElementControl.loadInitS2(AttributeHandle.$boxParent, [dataRow?.['parent_n']], {'parent_n_id__isnull': true}, null, true);
+            FormElementControl.loadInitS2(AttributeHandle.$boxParent, [dataRow?.['parent_n']], {'is_category': true, 'exclude_id': dataRow?.['id']}, null, true);
             if (dataRow?.['is_category'] === false) {
                 for (let navEle of AttributeHandle.$tabBlock1[0].querySelectorAll('.nav-link')) {
                     $(navEle).removeClass('active');

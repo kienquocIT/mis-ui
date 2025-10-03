@@ -971,6 +971,9 @@ class ProductAttribute {
     }
 
     static renderProductAttributeButton(has_attributes=false, attributes_total_cost=0, rowData, selectedAttributes= {}) {
+        if (rowData.duration_unit_data === undefined || rowData.duration_unit_data === null) {
+            rowData.duration_unit_data = {}
+        }
         if (!window.productAttributeInstance) {
             window.productAttributeInstance = new ProductAttribute({rowData, selectedAttributes});
             window.productAttributeInstance.init();

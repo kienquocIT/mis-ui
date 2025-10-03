@@ -39,7 +39,7 @@ class ServiceOrderCreate(View):
         if resp.state:
             task_config = resp.result
         ctx = {
-            'form_id': '',
+            'form_id': 'form-create-service-order',
             'app_id': '',
             'list_from_app': 'serviceorder.serviceorder.create',
 
@@ -98,7 +98,7 @@ class ServiceOrderUpdate(View):
         ctx = {
             'pk': pk,
             'data': {'doc_id': pk},
-            'form_id': 'form-detail-service-order',
+            'form_id': 'form-update-service-order',
 
             'employee_current': employee_current,
             'task_config': task_config,

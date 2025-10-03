@@ -37,6 +37,9 @@ $(document).ready(function () {
     let PERIODIC_CLOSED = false
     let load_tour = [false, false, false]
 
+    let detail_lot_tbl = $('#view-wh-available-prd-detail-table-lot')
+    let detail_sn_tbl = $('#view-wh-available-prd-detail-table-serial')
+
     function LoadItemsSelectBox(ele, data) {
         ele.initSelect2({
             placeholder: trans_script.attr('data-trans-all'),
@@ -133,16 +136,21 @@ $(document).ready(function () {
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
                             if (row?.['warehouse_title']) {
-                                return `<button type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-available-product-list" data-wh-id="${row?.['warehouse_id']}" class="see-detail-wh btn btn-primary btn-sm btn-rounded w-25">
-                                            <span>${row?.['warehouse_code']}</span>
+                                return `<button type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-available-product-list" data-wh-id="${row?.['warehouse_id']}" class="see-detail-wh btn btn-primary btn-xs btn-rounded">
+                                            <span>${row?.['warehouse_code']}&nbsp;<i class="fa-solid fa-square-arrow-up-right"></i></span>
                                         </button>
                                         <span data-id="${row?.['warehouse_id']}" class="fw-bold text-primary ${row?.['type']}">${row?.['warehouse_title']}</span>`
                             }
                         }
                         if (row?.['type'] === 'product_row') {
-                            let dot = row?.['vm'] === 0 ? `<span class="badge bg-blue-light-2 badge-indicator"></span>` : `<span class="badge bg-secondary-light-3 badge-indicator"></span>`
+                            let dot = [
+                                '<span class="badge bg-blue badge-indicator"></span>',
+                                '<span class="badge bg-success badge-indicator"></span>',
+                                '<span class="badge bg-danger badge-indicator"></span>'
+                            ][parseInt(row?.['vm'])]
                             let html = `
                                 ${dot}
+                                <span class="badge badge-sm badge-soft-secondary">${row?.['product_code']}</span><br>
                                 <span class="${row?.['type']}" data-product-vm="${row?.['vm']}" data-product-code="${row?.['product_code']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
                             `
                             if (row?.['product_lot_number']) {
@@ -402,11 +410,13 @@ $(document).ready(function () {
                 if (textFilter$.length > 0) {
                     textFilter$.css('display', 'flex');
                     textFilter$.append(
-                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span>${trans_script.attr('data-trans-vm')}</span>`)
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="text-muted">${trans_script.attr('data-trans-vm')}</span>`)
                     ).append(
-                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-blue-light-2 badge-indicator"></span><span>${trans_script.attr('data-trans-fifo')}</span>`)
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-blue badge-indicator"></span><span class="text-muted">${trans_script.attr('data-trans-fifo')}</span>`)
                     ).append(
-                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-secondary-light-3 badge-indicator"></span><span>${trans_script.attr('data-trans-we')}</span>`)
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-success badge-indicator"></span><span class="text-muted">${trans_script.attr('data-trans-we')}</span>`)
+                    ).append(
+                        $(`<div class="d-inline-block mr-3"></div>`).append(`<span class="badge bg-danger badge-indicator"></span><span class="text-muted">${trans_script.attr('data-trans-si')}</span>`)
                     )
                 }
             },
@@ -421,7 +431,7 @@ $(document).ready(function () {
             rowIdx: true,
             ordering: false,
             scrollX: true,
-            scrollY: '65vh',
+            scrollY: '70vh',
             scrollCollapse: true,
             columns: [
                 {
@@ -433,11 +443,12 @@ $(document).ready(function () {
                 {
                     className: 'w-55',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-secondary">${row?.['product']?.['code']}</span><span class="ml-1 prd-title text-muted fw-bold">${row?.['product']?.['title']}</span>`
+                        return `<span class="badge badge-sm badge-light">${row?.['product']?.['code']}</span><br>
+                                <span class="prd-title">${row?.['product']?.['title']}</span>`
                     }
                 },
                 {
-                    className: 'w-20',
+                    className: 'w-20 text-right',
                     render: (data, type, row) => {
                         return `<span class="text-muted">${row?.['stock_amount']}</span><span class="ml-1 text-muted">${row?.['product']?.['uom']?.['title']}</span>`
                     }
@@ -446,13 +457,13 @@ $(document).ready(function () {
                     className: 'w-20 text-right',
                     render: (data, type, row) => {
                         if (row?.['product']?.['general_traceability_method'] === 0) {
-                            return '-'
+                            return $.fn.gettext('None')
                         }
                         else if (row?.['product']?.['general_traceability_method'] === 1) {
-                            return `<button data-prd-id="${row?.['product']?.['id']}" type="button" data-bs-toggle="modal" data-bs-target="#modal-available-product-detail" class="see-detail-prd btn btn-soft-danger btn-animated btn-xs">Batch/Lot</button>`
+                            return `<button data-prd-id="${row?.['product']?.['id']}" type="button" data-bs-toggle="modal" data-bs-target="#modal-available-product-detail-lot" class="see-detail-prd btn btn-soft-danger btn-animated btn-xs">Batch/Lot</button>`
                         }
                         else if (row?.['product']?.['general_traceability_method'] === 2) {
-                            return `<button data-prd-id="${row?.['product']?.['id']}" type="button" data-bs-toggle="modal" data-bs-target="#modal-available-product-detail" class="see-detail-prd btn btn-soft-primary btn-animated btn-xs">Serial</button>`
+                            return `<button data-prd-id="${row?.['product']?.['id']}" type="button" data-bs-toggle="modal" data-bs-target="#modal-available-product-detail-serial" class="see-detail-prd btn btn-soft-primary btn-animated btn-xs">Serial</button>`
                         }
                         return ''
                     }
@@ -482,15 +493,15 @@ $(document).ready(function () {
         });
     }
 
-    function RenderWarehouseAvailableProductDetailTable(table, data_list=[]) {
-        table.DataTable().clear().destroy()
-        table.DataTableDefault({
+    function RenderWarehouseAvailableProductDetailLotTable(data_list=[]) {
+        detail_lot_tbl.DataTable().clear().destroy()
+        detail_lot_tbl.DataTableDefault({
             reloadCurrency: true,
             data: data_list,
             rowIdx: true,
             ordering: false,
             scrollX: true,
-            scrollY: '65vh',
+            scrollY: '70vh',
             scrollCollapse: true,
             columns: [
                 {
@@ -503,10 +514,10 @@ $(document).ready(function () {
                     className: 'w-45',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'lot_row') {
-                            return `<span class="text-muted">${row?.['lot_number']}</span>`
+                            return `<span class="text-muted">${row?.['lot_number'] || ''}</span>`
                         }
                         else if (row?.['row_type'] === 'sn_row') {
-                            return `<span class="text-muted">${row?.['vendor_serial_number']}</span>`
+                            return `<span class="text-muted">${row?.['vendor_serial_number'] || ''}</span>`
                         }
                         return ''
                     }
@@ -515,14 +526,15 @@ $(document).ready(function () {
                     className: 'w-45',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'lot_row') {
-                            return `<span class="text-muted">${row?.['quantity_import']}</span>`
+                            return `<span class="text-muted">${row?.['quantity_import'] || 0}</span>`
                         }
                         else if (row?.['row_type'] === 'sn_row') {
-                            return `<span class="text-muted">${row?.['serial_number']}</span>`
+                            return `<span class="text-muted">${row?.['serial_number'] || ''}</span>`
                         }
                         return ''
                     },
-                }, {
+                },
+                {
                     className: 'w-5 text-right',
                     render: (data, type, row) => {
                         if (row?.['row_type'] === 'lot_row') {
@@ -539,7 +551,105 @@ $(document).ready(function () {
                                     </span></a>`
                         }
                         else if (row?.['row_type'] === 'sn_row') {
-                            return `<a href="#" class="scan_qr"><span class="text-blue fw-bold qr-code-sn-info"
+                            return `<a href="#" class="scan_qr"><span class="text-muted fw-bold qr-code-sn-info"
+                                          data-product-id="${row?.['product']?.['id']}"
+                                          data-product-code="${row?.['product']?.['code']}"
+                                          data-product-title="${row?.['product']?.['title']}"
+                                          data-product-description="${row?.['product']?.['description']}"
+                                          data-serial-number="${row?.['serial_number']}"
+                                          data-vendor-serial-number="${row?.['vendor_serial_number']}"
+                                          data-goods-receipt-date="${row?.['goods_receipt_date']}"
+                                    >
+                                        <i class="fa-solid fa-qrcode"></i>
+                                    </span></a>`
+                        }
+                        return ''
+                    }
+                }
+            ],
+            initComplete: function () {
+                if (!load_tour[2]) {
+                    // Start the tour!
+                    let tour = {
+                        id: "hopscotch-light",
+                        steps: [
+                            {
+                                target: document.querySelector(".scan_qr"),
+                                placement: 'left',
+                                title: trans_script.attr('data-trans-instruction'),
+                                content: trans_script.attr('data-trans-product-qr'),
+                            },
+                        ],
+                        showNextButton: false,
+                        showPrevButton: false,
+                        showCloseButton: true
+                    };
+                    hopscotch.startTour(tour);
+                    load_tour[2] = true
+                }
+            }
+        });
+    }
+
+    function RenderWarehouseAvailableProductDetailSerialTable(data_list=[]) {
+        detail_sn_tbl.DataTable().clear().destroy()
+        detail_sn_tbl.DataTableDefault({
+            reloadCurrency: true,
+            data: data_list,
+            rowIdx: true,
+            ordering: false,
+            scrollX: true,
+            scrollY: '70vh',
+            scrollCollapse: true,
+            columns: [
+                {
+                    className: 'w-5',
+                    render: (data, type, row) => {
+                        return ``
+                    }
+                },
+                {
+                    className: 'w-45',
+                    render: (data, type, row) => {
+                        if (row?.['row_type'] === 'lot_row') {
+                            return `<span class="text-muted">${row?.['lot_number'] || ''}</span>`
+                        }
+                        else if (row?.['row_type'] === 'sn_row') {
+                            return `<span class="text-muted">${row?.['vendor_serial_number'] || ''}</span>`
+                        }
+                        return ''
+                    }
+                },
+                {
+                    className: 'w-45',
+                    render: (data, type, row) => {
+                        if (row?.['row_type'] === 'lot_row') {
+                            return `<span class="text-muted">${row?.['quantity_import'] || 0}</span>`
+                        }
+                        else if (row?.['row_type'] === 'sn_row') {
+                            return `<span class="text-muted">${row?.['serial_number'] || ''}</span>`
+                        }
+                        return ''
+                    },
+                },
+                {
+                    className: 'w-5 text-right',
+                    render: (data, type, row) => {
+                        if (row?.['row_type'] === 'lot_row') {
+                            return `<a href="#" class="scan_qr"><span class="text-blue fw-bold qr-code-lot-info"
+                                          data-product-id="${row?.['product']?.['id']}"
+                                          data-product-code="${row?.['product']?.['code']}"
+                                          data-product-title="${row?.['product']?.['title']}"
+                                          data-product-description="${row?.['product']?.['description']}"
+                                          data-lot-number="${row?.['lot_number']}"
+                                          data-expire-date="${row?.['expire_date']}"
+                                          data-goods-receipt-date="${row?.['goods_receipt_date']}"
+                                    >
+                                        <i class="fa-solid fa-qrcode"></i>
+                                    </span></a>`
+                        }
+                        else if (row?.['row_type'] === 'sn_row') {
+                            return `<a href="#" class="scan_qr"><span class="text-muted fw-bold qr-code-sn-info"
                                           data-product-id="${row?.['product']?.['id']}"
                                           data-product-code="${row?.['product']?.['code']}"
                                           data-product-title="${row?.['product']?.['title']}"
@@ -1306,18 +1416,8 @@ $(document).ready(function () {
                     }
                 }
 
-                let detail_lot_tbl = $('#view-wh-available-prd-detail-table-lot')
-                let detail_sn_tbl = $('#view-wh-available-prd-detail-table-serial')
-                detail_lot_tbl.DataTable().clear().destroy()
-                detail_sn_tbl.DataTable().clear().destroy()
-                detail_lot_tbl.prop('hidden', data_view_list_sn.length > 0)
-                detail_sn_tbl.prop('hidden', data_view_list_lot.length > 0)
-                if (data_view_list_lot.length > 0) {
-                    RenderWarehouseAvailableProductDetailTable(detail_lot_tbl, data_view_list_lot)
-                }
-                else if (data_view_list_sn.length > 0) {
-                    RenderWarehouseAvailableProductDetailTable(detail_sn_tbl, data_view_list_sn)
-                }
+                RenderWarehouseAvailableProductDetailLotTable(data_view_list_lot)
+                RenderWarehouseAvailableProductDetailSerialTable(data_view_list_sn)
             })
     })
 

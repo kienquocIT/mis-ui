@@ -5754,7 +5754,7 @@ msgid "Weighted average"
 msgstr "Bình quân gia quyền"
 
 #
-msgid "Specific identification method"
+msgid "Specific identification"
 msgstr "Thực tế đích danh"
 
 msgid "Business trip"

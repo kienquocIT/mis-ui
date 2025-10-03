@@ -283,11 +283,10 @@
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="valuation-method" class="form-label required">{% trans "Valuation method" %}</label>
-                    <select id="valuation-method"
-                            class="form-select required">
+                    <select id="valuation-method" class="form-select required">
                         <option value="0">{% trans 'FIFO' %}</option>
                         <option value="1">{% trans 'Weighted average' %}</option>
-{#                        <option value="2" disabled>{% trans 'Specific identification method' %}</option>#}
+                        <option value="2">{% trans 'Specific identification' %}</option>
                     </select>
                 </div>
             </div>

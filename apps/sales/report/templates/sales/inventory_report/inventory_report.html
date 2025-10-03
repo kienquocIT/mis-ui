@@ -36,6 +36,7 @@
             data-trans-code="{% trans 'Product Code' %}"
             data-trans-we="{% trans 'Weighted average' %}"
             data-trans-fifo="{% trans 'FIFO' %}"
+            data-trans-si="{% trans 'Specific identification' %}"
             data-trans-all="{% trans 'Default all' %}"
             data-trans-no-response="{% trans 'Tôi chưa hiểu bạn cần gì. Hãy đặt câu hỏi rõ hơn nhé!' %}"
             data-trans-filter="{% trans 'Filter' %}"
@@ -65,7 +66,7 @@
                 <thead>
                     <tr class="bg-primary">
                         <th class="border-1" style="color: white; min-width: 80px; border-top-left-radius: calc(0.5rem - 1px);">{% trans 'SALE ORDER' %}</th>
-                        <th class="border-1" style="color: white; min-width: 250px" id="product-col">{% trans 'PRODUCT' %}</th>
+                        <th class="border-1" style="color: white; min-width: 400px" id="product-col">{% trans 'PRODUCT' %}</th>
                         <th class="border-1" style="color: white; min-width: 50px">{% trans 'INVENTORY UOM' %}</th>
                         <th class="border-1" style="color: white; min-width: 100px">{% trans 'SYSTEM DATE' %}</th>
                         <th class="border-1" style="color: white; min-width: 100px">{% trans 'LOT' %}</th>
@@ -198,7 +199,7 @@
             </div>
         </div>
     </div>
-    <div class="offcanvas offcanvas-end w-40" data-bs-scroll="true" tabindex="-1" id="offcanvas-available-product-list">
+    <div class="offcanvas offcanvas-end w-50" data-bs-scroll="true" tabindex="-1" id="offcanvas-available-product-list">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="view-warehouse-title"></h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -207,14 +208,12 @@
             <div class="row">
                 <div class="col-12">
                     <table class="table w-100 nowrap" id="view-wh-available-prd-list-table">
-                        <thead>
+                        <thead class="bg-secondary-light-5">
                         <tr>
-                            <th></th>
-                            <th>{% trans 'Product' %}</th>
-                            <th>{% trans 'Stock quantity' %}</th>
-                            <th>{% trans 'Traceability method' %}</th>
-{#                                    <th>{% trans 'Lot number' %} ({% trans 'Lot quantity' %}) ({% trans 'Expired date' %})#}
-{#                                    <th>{% trans 'Serial no.' %} ({% trans 'Vendor serial no.' %})</th>#}
+                            <th style="min-width: 50px"></th>
+                            <th style="min-width: 250px">{% trans 'Product' %}</th>
+                            <th style="min-width: 150px">{% trans 'Stock quantity' %}</th>
+                            <th style="min-width: 150px">{% trans 'Traceability method' %}</th>
                         </tr>
                         </thead>
                         <tbody></tbody>
@@ -223,7 +222,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modal-available-product-detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal-available-product-detail-lot" tabindex="-1" role="dialog" aria-labelledby="modal-available-product-detail-lot" aria-hidden="true">
         <div class="modal-dialog" style="min-width: 40%" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -235,24 +234,43 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
-                            <table hidden class="table w-100 nowrap" id="view-wh-available-prd-detail-table-lot">
-                                <thead>
+                            <table class="table w-100 nowrap" id="view-wh-available-prd-detail-table-lot">
+                                <thead class="bg-secondary-light-5">
                                 <tr>
-                                    <th></th>
-                                    <th>{% trans 'Lot number' %}</th>
-                                    <th>{% trans 'Lot quantity' %}</th>
-                                    <th></th>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 200px">{% trans 'Lot number' %}</th>
+                                    <th style="min-width: 150px">{% trans 'Lot quantity' %}</th>
+                                    <th style="min-width: 50px"></th>
                                 </tr>
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            <table hidden class="table w-100 nowrap" id="view-wh-available-prd-detail-table-serial">
-                                <thead>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-available-product-detail-serial" tabindex="-1" role="dialog" aria-labelledby="modal-available-product-detail-serial" aria-hidden="true">
+        <div class="modal-dialog" style="min-width: 40%" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="view-product-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table w-100 nowrap" id="view-wh-available-prd-detail-table-serial">
+                                <thead class="bg-secondary-light-5">
                                 <tr>
-                                    <th></th>
-                                    <th>{% trans 'Vendor serial no.' %}</th>
-                                    <th>{% trans 'Serial number' %}</th>
-                                    <th></th>
+                                    <th style="min-width: 50px"></th>
+                                    <th style="min-width: 200px">{% trans 'Vendor serial no.' %}</th>
+                                    <th style="min-width: 200px">{% trans 'Serial number' %}</th>
+                                    <th style="min-width: 50px"></th>
                                 </tr>
                                 </thead>
                                 <tbody></tbody>

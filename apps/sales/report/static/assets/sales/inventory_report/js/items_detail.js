@@ -65,25 +65,13 @@ $(document).ready(function () {
             data: data_list,
             columns: [
                 {
-                        render: (data, type, row) => {
+                    render: (data, type, row) => {
                         if (row?.['row_type'] === 'prd') {
                             let html = `
-                                <a tabindex="0" href="#"
-                                    data-bs-placement="top"
-                                    data-bs-toggle="popover"
-                                    data-bs-trigger="hover focus"
-                                    data-bs-html="true"
-                                    data-bs-content="
-                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-code')}</span>: <span class='badge badge-primary badge-sm'>${row?.['product_code']}</span>
-                                    <br>
-                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-uom')}</span>: <span class='text-primary'>${row?.['product_uom']}</span>
-                                    <br>
-                                    <span class='text-decoration-underline'>${trans_script.attr('data-trans-vm')}</span>: <span class='text-primary'>${row?.['vm'] === 0 ? trans_script.attr('data-trans-fifo') : row?.['vm'] === 1 ? trans_script.attr('data-trans-we') : ''}<span>
-                                    "
-                                    class="popover-prd">
-                                    <i class="fas fa-info-circle"></i>
-                                </a>
-                                <span data-product-id="${row?.['product_id']}" class="product-td text-primary fw-bold">${row?.['product_title']}</span>`
+                                <span class="badge badge-sm badge-primary">${row?.['product_code']}</span><br>
+                                <span data-product-id="${row?.['product_id']}" class="product-td text-primary fw-bold">${row?.['product_title']}</span><br>
+                                <span class="small text-muted text-decoration-underline mr-1">${trans_script.attr('data-trans-uom')}:</span><span class="small text-muted">${row?.['product_uom']}</span><br>
+                                <span class="small text-muted text-decoration-underline mr-1">${trans_script.attr('data-trans-vm')}:</span><span class="small text-muted">${[trans_script.attr('data-trans-fifo'), trans_script.attr('data-trans-we'), trans_script.attr('data-trans-si')][parseInt(row?.['vm'])]}<span>`
                             if (row?.['product_lot_number']) {
                                 html += `<span class="ml-1 text-blue small fw-bold">${row?.['product_lot_number']}</span>`
                             }
@@ -98,23 +86,21 @@ $(document).ready(function () {
                         else if (row?.['row_type'] === 'open') {
                             return `--`
                         }
+                        else if (row?.['row_type'] === 'wh') {
+                            return `<span class="badge badge-sm badge-secondary ml-1">${row?.['warehouse_code']}</span>
+                                    <span class="warehouse-td text-secondary fw-bold wh-of-${row?.['product_id']}">${row?.['warehouse_title']}</span>`
+                        }
                         return ''
                     }
                 },
                 {
-                        render: (data, type, row) => {
+                    render: (data, type, row) => {
                         if (row?.['row_type'] === 'open') {
                             return `<label class="text-center text-secondary">${row?.['ob_label']}</label>`
                         }
                         else if (row?.['row_type'] === 'log') {
                             return `<label class="text-${row?.['text_color']}">${row?.['trans_title']}</label>&nbsp;
                                     <span class="badge badge-sm badge-${row?.['text_color']}">${row?.['trans_code']}</span>`
-                        }
-                        else if (row?.['row_type'] === 'wh') {
-                            return `<span class="text-secondary fw-bold wh-of-${row?.['product_id']}">${row?.['warehouse_title']}</span>
-                                    <span class="badge badge-sm badge-soft-secondary badge-pill fw-bold">
-                                        ${row?.['warehouse_code']}
-                                    </span>`
                         }
                         return ``
                     }
@@ -227,6 +213,16 @@ $(document).ready(function () {
                     table.find(`.sum-current-quantity-${product_id}-${sale_order_id}`).text(sum_current_quantity)
                     table.find(`.sum-current-cost-${product_id}-${sale_order_id}`).attr('data-init-money', sum_current_value/sum_current_quantity)
                     table.find(`.sum-current-value-${product_id}-${sale_order_id}`).attr('data-init-money', sum_current_value)
+                })
+
+                table.find('.warehouse-td').each(function () {
+                    $(this).closest('tr').addClass('bg-secondary-light-5')
+                    $(this).closest('tr').addClass('fixed-row')
+                    $(this).closest('td').attr('colspan', 5)
+                    $(this).closest('tr').find('td:eq(1)').remove()
+                    $(this).closest('tr').find('td:eq(1)').remove()
+                    $(this).closest('tr').find('td:eq(1)').remove()
+                    $(this).closest('tr').find('td:eq(1)').remove()
                 })
 
                 const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')

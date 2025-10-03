@@ -83,20 +83,12 @@ function LoadTableLineDetail(data_list=[], option='create') {
                 }
             }, {
                 render: (data, type, row) => {
-                    return `<span class="uom"></span>`;
+                    return `<input disabled readonly class="form-control uom">`;
                 }
 
             }, {
                 render: (data, type, row) => {
                     return `<select ${option === 'detail' ? 'disabled' : ''} class="to-wh form-select select2"></select>`;
-                }
-            }, {
-                render: (data, type, row) => {
-                    return `<input ${option === 'detail' ? 'disabled readonly' : ''} class="unit-price form-control mask-money">`;
-                }
-            }, {
-                render: (data, type, row) => {
-                    return `<input disabled readonly class="subtotal-price form-control mask-money">`;
                 }
             }, {
                 className: 'text-right',
@@ -113,17 +105,15 @@ function LoadTableLineDetail(data_list=[], option='create') {
                     LoadSaleOrder($(ele).find('.row_sale_order'), data_list[index]?.['sale_order'])
                     LoadSourceWarehouse($(ele).find('.from-wh'), data_list[index]?.['product_warehouse']?.['from_warehouse_mapped'])
                     LoadProductWarehouse($(ele).find('.prd'), data_list[index]?.['product_warehouse'])
-                    $(ele).find('.uom').text(data_list[index]?.['product_warehouse']?.['uom']?.['title'])
+                    $(ele).find('.uom').val(data_list[index]?.['product_warehouse']?.['uom']?.['title'])
                     $(ele).find('.quantity').val(data_list[index]?.['quantity'])
                     $(ele).find('.selected-lot').text(JSON.stringify(data_list[index]?.['lot_data']))
                     $(ele).find('.selected-serial').text(JSON.stringify(data_list[index]?.['sn_data']))
                     LoadDestinationWarehouse($(ele).find('.to-wh'), data_list[index]?.['product_warehouse']?.['end_warehouse_mapped'])
-                    $(ele).find('.unit-price').attr('value', data_list[index]?.['unit_cost'])
-                    $(ele).find('.subtotal-price').attr('value', data_list[index]?.['subtotal'])
 
                     // load product_warehouse data (lot/sn)
                     let selected = SelectDDControl.get_data_from_idx($(ele).find('.prd'), $(ele).find('.prd').val())?.['product']
-                    $(ele).find('.uom').text(selected?.['uom']?.['title'])
+                    $(ele).find('.uom').val(selected?.['uom']?.['title'])
                     $(ele).find('.quantity').attr('data-quantity-limit', selected?.['stock_amount'])
                     $(ele).find('.btn-select-detail').attr('data-product-type', selected?.['general_traceability_method'])
                     if (selected?.['general_traceability_method'] === 0) {
@@ -190,10 +180,9 @@ function LoadProductWarehouse(ele, data) {
                 CallProjectProductList(NOW_ROW.find('.row_sale_order').val())
             }
             let selected = SelectDDControl.get_data_from_idx(ele, ele.val())
-            ele.closest('tr').find('.uom').text(selected?.['uom']?.['title'])
+            ele.closest('tr').find('.uom').val(selected?.['uom']?.['title'])
             ele.closest('tr').find('.quantity').attr('data-quantity-limit', selected?.['stock_amount'])
             ele.closest('tr').find('.btn-select-detail').attr('data-product-type', selected?.['product']?.['general_traceability_method'])
-            ele.closest('tr').find('.unit-price').attr('value', selected?.['unit_cost'])
             if (selected?.['product']?.['general_traceability_method'] === 0) {
                 ele.closest('tr').find('.btn-select-detail').prop('hidden', true)
                 ele.closest('tr').find('.btn-select-detail').attr('data-bs-toggle', '')
@@ -220,13 +209,11 @@ function LoadProductWarehouse(ele, data) {
             }
         }
         else {
-            ele.closest('tr').find('.uom').text('')
+            ele.closest('tr').find('.uom').val('')
             ele.closest('tr').find('.quantity').val('').prop('disabled', false).prop('readonly', false)
             ele.closest('tr').find('.btn-select-detail').prop('hidden', true)
             ele.closest('tr').find('.btn-select-detail').attr('data-bs-toggle', '')
             ele.closest('tr').find('.btn-select-detail').attr('data-bs-target', '')
-            ele.closest('tr').find('.unit-price').attr('value', 0)
-            ele.closest('tr').find('.subtotal-price').attr('value', 0)
         }
         $.fn.initMaskMoney2()
     })
@@ -302,11 +289,6 @@ $(document).on("change", '.quantity', function () {
         if (parseFloat($(this).val()) > parseFloat($(this).attr('data-quantity-limit'))) {
             $(this).val(0)
             $.fn.notifyB({description: `Input quantity > stock quantity (${$(this).attr('data-quantity-limit')})`}, 'warning')
-        } else {
-            let unit_price = parseFloat($(this).closest('tr').find('.unit-price').attr('value'))
-            let new_subtotal_price = parseFloat($(this).val()) * unit_price
-            $(this).closest('tr').find('.subtotal-price').attr('value', new_subtotal_price)
-            $.fn.initMaskMoney2()
         }
     }
 
@@ -327,21 +309,6 @@ $(document).on("change", '.quantity_get', function () {
     else {
         $(this).removeClass('is-invalid')
     }
-});
-
-$(document).on("change", '.unit-price', function () {
-    if ($(this).val()) {
-        let unit_price = $(this).attr('value')
-        let quantity = $(this).closest('tr').find('.quantity').val()
-        $(this).closest('tr').find('.subtotal-price').attr(
-            'value',
-            parseFloat(unit_price) * parseFloat(quantity)
-        )
-    }
-    else {
-        $(this).val(0)
-    }
-    $.fn.initMaskMoney2()
 });
 
 function LoadSerialTable(data, serial_selected=[]) {
@@ -781,10 +748,6 @@ $('#ok-btn-modal-serial').on('click', function () {
     NOW_ROW.find('.quantity').val(selected_serial.length).removeClass('is-invalid')
     NOW_ROW.find('.btn-select-detail .selected-serial').text(JSON.stringify(selected_serial))
     $modal_serial.modal('hide')
-    let unit_price = parseFloat(NOW_ROW.find('.unit-price').attr('value'))
-    let new_subtotal_price = parseFloat(NOW_ROW.find('.quantity').val()) * unit_price
-    NOW_ROW.find('.subtotal-price').attr('value', new_subtotal_price)
-    $.fn.initMaskMoney2()
 });
 
 $('#ok-btn-modal-lot').on('click', function () {
@@ -809,10 +772,6 @@ $('#ok-btn-modal-lot').on('click', function () {
         NOW_ROW.find('.quantity').val(sum).removeClass('is-invalid')
         NOW_ROW.find('.btn-select-detail .selected-lot').text(JSON.stringify(selected_lot))
         $modal_lot.modal('hide')
-        let unit_price = parseFloat(NOW_ROW.find('.unit-price').attr('value'))
-        let new_subtotal_price = parseFloat(NOW_ROW.find('.quantity').val()) * unit_price
-        NOW_ROW.find('.subtotal-price').attr('value', new_subtotal_price)
-        $.fn.initMaskMoney2()
     }
 });
 
@@ -884,12 +843,7 @@ class GoodsTransferHandle {
                     }
                 }
 
-                if (
-                    prd_wh?.['id'] && wh?.['id'] && target_wh?.['id']
-                    && prd_wh?.['uom']?.['id'] && parseFloat(quantity)
-                    && parseFloat(row.find('.unit-price').attr('value'))
-                    && parseFloat(row.find('.subtotal-price').attr('value'))
-                ) {
+                if (prd_wh?.['id'] && wh?.['id'] && target_wh?.['id'] && prd_wh?.['uom']?.['id'] && parseFloat(quantity)) {
                     data_line_detail.push({
                         'product_warehouse': prd_wh?.['id'],
                         'warehouse': wh?.['id'],
@@ -899,9 +853,7 @@ class GoodsTransferHandle {
                         'uom': prd_wh?.['uom']?.['id'],
                         'lot_data': lot_changes,
                         'sn_data': sn_changes,
-                        'quantity': parseFloat(quantity),
-                        'unit_cost': parseFloat(row.find('.unit-price').attr('value')),
-                        'subtotal': parseFloat(row.find('.subtotal-price').attr('value')),
+                        'quantity': parseFloat(quantity)
                     })
                 }
                 else {

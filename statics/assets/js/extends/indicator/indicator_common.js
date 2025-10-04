@@ -112,7 +112,10 @@ class IndicatorControl {
     };
 
     static dtbIndicator(data) {
-        IndicatorControl.$table.not('.dataTable').DataTableDefault({
+        if ($.fn.dataTable.isDataTable(IndicatorControl.$table)) {
+            IndicatorControl.$table.DataTable().destroy();
+        }
+        IndicatorControl.$table.DataTableDefault({
             data: data ? data : [],
             paging: false,
             info: false,

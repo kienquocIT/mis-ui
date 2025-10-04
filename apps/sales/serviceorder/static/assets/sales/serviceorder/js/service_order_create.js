@@ -75,6 +75,7 @@ function setUpFormData(formInstance) {
     if ($pretaxPrdEle.length > 0 && $taxPrdEle.length > 0 && $totalPrdEle.length > 0) {
         if ($pretaxPrdEle.valCurrency()) {
             formInstance.dataForm['total_product_pretax_amount'] = parseFloat($pretaxPrdEle.valCurrency());
+            formInstance.dataForm['total_product_revenue_before_tax'] = parseFloat($pretaxPrdEle.valCurrency());
         }
         if ($taxPrdEle.valCurrency()) {
             formInstance.dataForm['total_product_tax'] = parseFloat($taxPrdEle.valCurrency());

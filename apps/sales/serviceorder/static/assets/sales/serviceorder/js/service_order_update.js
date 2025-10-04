@@ -66,6 +66,23 @@ function setUpFormData(formInstance) {
     formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
     formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData()
     formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData()
+
+    // total fields
+    let $pretaxPrdEle = $('#service-detail-pretax-value');
+    let $taxPrdEle = $('#service-detail-taxes-value');
+    let $totalPrdEle = $('#service-detail-total-value');
+    if ($pretaxPrdEle.length > 0 && $taxPrdEle.length > 0 && $totalPrdEle.length > 0) {
+        if ($pretaxPrdEle.valCurrency()) {
+            formInstance.dataForm['total_product_pretax_amount'] = parseFloat($pretaxPrdEle.valCurrency());
+            formInstance.dataForm['total_product_revenue_before_tax'] = parseFloat($pretaxPrdEle.valCurrency());
+        }
+        if ($taxPrdEle.valCurrency()) {
+            formInstance.dataForm['total_product_tax'] = parseFloat($taxPrdEle.valCurrency());
+        }
+        if ($totalPrdEle.valCurrency()) {
+            formInstance.dataForm['total_product'] = parseFloat($totalPrdEle.valCurrency());
+        }
+    }
 }
 
 function setUpFormSubmit($form) {
@@ -304,4 +321,19 @@ $(document).ready(function () {
         let url = $(this).attr('data-url') + '?service_order_id=' + $.fn.getPkDetail()
         $(this).attr('href', url)
     })
+
+    $('#tab-indicator').on('click', function () {
+        let formInstance = new SetupFormSubmit($('#form-update-service-order'))
+        if (formInstance.dataForm.hasOwnProperty('attachment')) {
+            formInstance.dataForm['attachment'] = $x.cls.file.get_val(
+                formInstance.dataForm?.['attachment'],
+                []
+            )
+        } else {
+            formInstance.dataForm['attachment'] = []
+        }
+        setUpFormData(formInstance);
+        IndicatorControl.loadIndicator(formInstance?.['dataForm']);
+    });
+
 })

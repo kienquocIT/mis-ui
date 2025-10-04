@@ -1,14 +1,37 @@
 class IndicatorControl {
+    static isOrder = $('#is_order').text();
     static $table = $('#dtb-indicator');
     static $indicatorDataEle = $('#indicator-data');
 
-    static dtbIndicator(data) {
-        IndicatorControl.$table.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
-            columnDefs: [],
-            columns: [
+    static renderTbl() {
+        let trCustomEle = IndicatorControl.$table[0].querySelector('.tr-custom');
+        if (trCustomEle) {
+            let th1 = IndicatorControl.$indicatorDataEle.attr('data-trans-th1');
+            let th2 = IndicatorControl.$indicatorDataEle.attr('data-trans-th2');
+            let th3 = IndicatorControl.$indicatorDataEle.attr('data-trans-th3');
+            let th4 = IndicatorControl.$indicatorDataEle.attr('data-trans-th4');
+            let th5 = IndicatorControl.$indicatorDataEle.attr('data-trans-th5');
+            if (th1 && th2 && th3 && th4 && th5) {
+                if (IndicatorControl.isOrder === 'false') {
+                    $(trCustomEle).append(`<th>${th1}</th>`);
+                    $(trCustomEle).append(`<th>${th2}</th>`);
+                    $(trCustomEle).append(`<th>${th5}</th>`);
+                }
+                if (IndicatorControl.isOrder === 'true') {
+                    $(trCustomEle).append(`<th>${th1}</th>`);
+                    $(trCustomEle).append(`<th>${th2}</th>`);
+                    $(trCustomEle).append(`<th>${th3}</th>`);
+                    $(trCustomEle).append(`<th>${th4}</th>`);
+                    $(trCustomEle).append(`<th>${th5}</th>`);
+                }
+            }
+        }
+    };
+
+    static renderDtbColumns() {
+        let columns = [];
+        if (IndicatorControl.isOrder === 'false') {
+            columns = [
                 {
                     targets: 0,
                     width: '1%',
@@ -37,7 +60,64 @@ class IndicatorControl {
                         return `<span class="table-row-rate" data-value="${row?.['indicator_rate']}">${row?.['indicator_rate']} %</span>`
                     }
                 }
-            ],
+            ];
+        }
+        if (IndicatorControl.isOrder === 'true') {
+            columns = [
+                {
+                    targets: 0,
+                    width: '1%',
+                    render: (data, type, row, meta) => {
+                        return `<span class="table-row-order" data-value="${(meta.row + 1)}">${(meta.row + 1)}</span>`
+                    }
+                },
+                {
+                    targets: 1,
+                    width: '20%',
+                    render: (data, type, row) => {
+                        return `<b class="table-row-title" data-id="${row?.['quotation_indicator_data']?.['id']}">${row?.['quotation_indicator_data']?.['title']}</b>`
+                    }
+                },
+                {
+                    targets: 2,
+                    width: '20%',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money table-row-quotation-value" data-init-money="${parseFloat(row?.['quotation_indicator_value'])}" data-value="${row?.['quotation_indicator_value']}"></span>`
+                    }
+                },
+                {
+                    targets: 3,
+                    width: '20%',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['indicator_value'])}" data-value="${row?.['indicator_value']}"></span>`
+                    }
+                },
+                {
+                    targets: 4,
+                    width: '20%',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money table-row-difference-value" data-init-money="${parseFloat(row?.['difference_indicator_value'])}" data-value="${row?.['difference_indicator_value']}"></span>`
+                    }
+                },
+                {
+                    targets: 5,
+                    width: '15%',
+                    render: (data, type, row) => {
+                        return `<span class="table-row-rate" data-value="${row?.['indicator_rate']}">${row?.['indicator_rate']} %</span>`
+                    }
+                }
+            ]
+        }
+        return columns;
+    };
+
+    static dtbIndicator(data) {
+        IndicatorControl.$table.not('.dataTable').DataTableDefault({
+            data: data ? data : [],
+            paging: false,
+            info: false,
+            columnDefs: [],
+            columns: IndicatorControl.renderDtbColumns(),
             drawCallback: function () {
                 $.fn.initMaskMoney2();
                 IndicatorControl.dtbCustomHeader(IndicatorControl.$table);
@@ -81,7 +161,7 @@ class IndicatorControl {
     };
 
     // handle calculate
-    static loadIndicator() {
+    static loadIndicator(dataForm) {
         if (!IndicatorControl.$indicatorDataEle.val()) {
             $.fn.callAjax2({
                     'url': IndicatorControl.$indicatorDataEle.attr('data-url'),
@@ -94,18 +174,20 @@ class IndicatorControl {
                     if (data) {
                         if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
                             IndicatorControl.$indicatorDataEle.val(JSON.stringify(data.quotation_indicator_list));
-                            IndicatorControl.calculateIndicator(data.quotation_indicator_list);
+                            let indicatorList = data.quotation_indicator_list;
+                            IndicatorControl.calculateIndicator(indicatorList, dataForm);
                         }
                     }
                 }
             )
         } else {
-            let dataParse = JSON.parse(IndicatorControl.$indicatorDataEle.val());
-            IndicatorControl.calculateIndicator(dataParse);
+            let indicatorList = JSON.parse(IndicatorControl.$indicatorDataEle.val());
+            IndicatorControl.calculateIndicator(indicatorList, dataForm);
         }
     };
 
-    static calculateIndicator(indicatorList, dataForm, isOrder = false) {
+    static calculateIndicator(indicatorList, dataForm) {
+        let isOrder = IndicatorControl.isOrder;
         let result_list = [];
         let result_json = {};
         let revenueValue = 0;
@@ -247,11 +329,7 @@ class IndicatorControl {
                 'indicator_rate': rateValue
             }
         }
-        if (isOrder === true) {
-            IndicatorControl.dtbIndicator(result_list);
-        } else {
-            IndicatorControl.dtbIndicator(result_list);
-        }
+        IndicatorControl.dtbIndicator(result_list);
         $.fn.initMaskMoney2();
     };
 
@@ -434,6 +512,7 @@ class IndicatorControl {
 
     // init page
     static initPage() {
+        IndicatorControl.renderTbl();
         IndicatorControl.dtbIndicator();
     };
 
@@ -443,8 +522,8 @@ $(document).ready(function () {
 
     IndicatorControl.initPage();
 
-    $('#tab-indicator').on('click', function () {
-        IndicatorControl.loadIndicator();
-    });
+    // $('#tab-indicator').on('click', function () {
+    //     IndicatorControl.loadIndicator();
+    // });
 
 });

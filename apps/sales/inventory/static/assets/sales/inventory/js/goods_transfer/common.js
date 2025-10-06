@@ -48,18 +48,25 @@ function LoadTableLineDetail(data_list=[], option='create') {
         data: data_list,
         columns: [
             {
+                className: 'w-5',
                 render: (data, type, row) => {
                     return ``;
                 }
-            }, {
+            },
+            {
+                className: 'w-20',
                 render: (data, type, row) => {
                     return `<select ${option === 'detail' ? 'disabled' : ''} class="from-wh form-select select2"></select>`;
                 }
-            }, {
+            },
+            {
+                className: 'w-20',
                 render: (data, type, row) => {
                     return `<select ${option === 'detail' ? 'disabled' : ''} class="prd form-select select2"></select>`;
                 }
-            }, {
+            },
+            {
+                className: 'w-20',
                 render: (data, type, row) => {
                     return `<select ${is_project ? '' : 'disabled'}
                                     ${option === 'detail' ? 'disabled' : ''}
@@ -68,7 +75,9 @@ function LoadTableLineDetail(data_list=[], option='create') {
                                     data-url="${$url_script.attr('data-url-so-list')}">
                             </select>`;
                 }
-            }, {
+            },
+            {
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<div class="input-group">
                                 <input ${option === 'detail' ? 'disabled readonly' : ''} class="quantity form-control" type="number" min="0">
@@ -81,19 +90,23 @@ function LoadTableLineDetail(data_list=[], option='create') {
                                 </span>
                             </div>`;
                 }
-            }, {
+            },
+            {
+                className: 'w-10',
                 render: (data, type, row) => {
                     return `<input disabled readonly class="form-control uom">`;
                 }
-
-            }, {
+            },
+            {
+                className: 'w-20',
                 render: (data, type, row) => {
                     return `<select ${option === 'detail' ? 'disabled' : ''} class="to-wh form-select select2"></select>`;
                 }
-            }, {
-                className: 'text-right',
+            },
+            {
+                className: 'w-5 text-right',
                 render: (data, type, row) => {
-                    return `<button ${option === 'detail' ? 'disabled' : ''} type="button" class="btn-delete btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover btn-xs">
+                    return `<button ${option === 'detail' ? 'disabled' : ''} type="button" class="btn-delete btn btn-icon btn-rounded btn-flush-secondary flush-soft-hover">
                                 <span class="icon"><i class="bi bi-trash"></i></span>
                             </button>`;
                 }

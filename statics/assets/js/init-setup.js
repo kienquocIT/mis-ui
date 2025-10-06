@@ -2971,6 +2971,7 @@ class WFRTControl {
                                         "leaseorder.leaseorder",
                                         "purchasing.purchaserequest",
                                         "purchasing.purchaseorder",
+                                        "serviceorder.serviceorder",
                                     ];
                                     if (appAllowChange.includes(runtimeData?.['app_code']) && appAllowCancel.includes(runtimeData?.['app_code'])) {
                                         WFRTControl.setBtnWFAfterFinishDetail('all');

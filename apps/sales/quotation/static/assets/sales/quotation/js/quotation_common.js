@@ -2302,7 +2302,7 @@ class QuotationLoadDataHandle {
         // Check promotion -> re calculate
         QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
         // Load indicator
-        indicatorHandle.loadIndicator();
+        // indicatorHandle.loadIndicator();
         // Set form novalidate
         QuotationLoadDataHandle.$form[0].setAttribute('novalidate', 'novalidate');
         QuotationLoadDataHandle.loadCheckDataCopy();
@@ -2861,6 +2861,38 @@ class QuotationLoadDataHandle {
                 }
             }
         }
+    };
+
+    static loadGetDatasDetail() {
+        let dataQuotationIndicator = [];
+        let dataDetail = {};
+        let dataDetailCopy = {};
+        let $dataCopyEle = $('#data-copy-quotation-detail');
+        if ($dataCopyEle && $dataCopyEle.length > 0) {
+            if ($dataCopyEle.val()) {
+                dataDetailCopy = JSON.parse($dataCopyEle.val());
+            }
+        }
+        let $dataDetailEle = $('#quotation-detail-data');
+        if ($dataDetailEle && $dataDetailEle.length > 0) {
+            if ($dataDetailEle.val()) {
+                dataDetail = JSON.parse($dataDetailEle.val());
+            }
+        }
+        if (Object.keys(dataDetailCopy).length !== 0) {
+            if (dataDetailCopy?.['quotation_indicators_data']) {
+                dataQuotationIndicator = dataDetailCopy?.['quotation_indicators_data'];
+            }
+        }
+        if (Object.keys(dataDetail).length !== 0) {
+            if (dataDetail?.['quotation_data']?.['quotation_indicators_data']) {
+                dataQuotationIndicator = dataDetail?.['quotation_data']?.['quotation_indicators_data'];
+            }
+        }
+        return {
+            'dataDetail': dataDetail,
+            'dataQuotationIndicator': dataQuotationIndicator,
+        };
     };
 
 }
@@ -3851,6 +3883,7 @@ class QuotationDataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
+            scrollY: "50vh",
             columns: [
                 {
                     targets: 0,
@@ -5078,7 +5111,7 @@ class QuotationDataTableHandle {
                 $('#btn-add-product-quotation-create').on('click', function () {
                     QuotationLoadDataHandle.loadModalSProduct();
                     QuotationLoadDataHandle.loadChangePaymentTerm();
-                    indicatorHandle.loadIndicator();
+                    // indicatorHandle.loadIndicator();
                 });
                 $('#btn-add-product-group-quotation').on('click', function () {
                     QuotationLoadDataHandle.loadAddRowProductGr();
@@ -7708,41 +7741,29 @@ class QuotationSubmitHandle {
         }
     };
 
-    static setupDataIndicator() {
-        let result = [];
-        let $table = $('#datable-quotation-create-indicator');
-        $table.DataTable().rows().every(function () {
-            let row = this.node();
-            let rowIndex = $table.DataTable().row(row).index();
-            let $row = $table.DataTable().row(rowIndex);
-            let dataRow = $row.data();
-
-            let indicator = row.querySelector('.table-row-title').getAttribute('data-id');
-            let indicator_value = row.querySelector('.table-row-value').getAttribute('data-value');
-            let indicator_rate = row.querySelector('.table-row-rate').getAttribute('data-value');
-            let order = row.querySelector('.table-row-order').getAttribute('data-value');
-            if (!$table.hasClass('sale-order')) { // QUOTATION INDICATOR
-                result.push({
-                    'indicator': indicator,
-                    'indicator_data': dataRow?.['indicator_data'],
-                    'indicator_value': parseFloat(indicator_value),
-                    'indicator_rate': parseFloat(indicator_rate),
-                    'order': parseInt(order),
-                })
-            } else { // SALE ORDER INDICATOR
-                let quotation_indicator_value = row.querySelector('.table-row-quotation-value').getAttribute('data-value');
-                let difference_indicator_rate = row.querySelector('.table-row-difference-value').getAttribute('data-value');
-                result.push({
-                    'quotation_indicator': indicator,
-                    'quotation_indicator_data': dataRow?.['quotation_indicator_data'],
-                    'indicator_value': parseFloat(indicator_value),
-                    'indicator_rate': parseFloat(indicator_rate),
-                    'quotation_indicator_value': parseFloat(quotation_indicator_value),
-                    'difference_indicator_value': parseFloat(difference_indicator_rate) ? difference_indicator_rate : 0,
-                    'order': parseInt(order),
-                })
+    static setupDataIndicator(result) {
+        let quotation_indicators_data = 'quotation_indicators_data';
+        let keyInd = "indicator_data";
+        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+            quotation_indicators_data = 'sale_order_indicators_data';
+            keyInd = "quotation_indicator_data";
+        }
+        let datasDetail = QuotationLoadDataHandle.loadGetDatasDetail();
+        let quotation_indicators_data_setup = IndicatorControl.loadIndicator(result, datasDetail);
+        if (quotation_indicators_data_setup.length > 0) {
+            result[quotation_indicators_data] = quotation_indicators_data_setup;
+            for (let indicator of quotation_indicators_data_setup) {
+                if (indicator?.[keyInd]?.['code'] === "IN0001") {
+                    result['indicator_revenue'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                }
+                if (indicator?.[keyInd]?.['code'] === "IN0003") {
+                    result['indicator_gross_profit'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                }
+                if (indicator?.[keyInd]?.['code'] === "IN0006") {
+                    result['indicator_net_income'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                }
             }
-        });
+        }
         return result;
     };
 
@@ -7909,13 +7930,11 @@ class QuotationSubmitHandle {
         let quotation_costs_data = 'quotation_costs_data';
         let quotation_expenses_data = 'quotation_expenses_data';
         let quotation_logistic_data = 'quotation_logistic_data';
-        let quotation_indicators_data = 'quotation_indicators_data';
         if (is_sale_order === true) {
             quotation_products_data = 'sale_order_products_data';
             quotation_costs_data = 'sale_order_costs_data';
             quotation_expenses_data = 'sale_order_expenses_data';
             quotation_logistic_data = 'sale_order_logistic_data';
-            quotation_indicators_data = 'sale_order_indicators_data';
 
             _form.dataForm['quotation_id'] = null;
             if (QuotationLoadDataHandle.quotationSelectEle && QuotationLoadDataHandle.quotationSelectEle.length > 0) {
@@ -8076,27 +8095,6 @@ class QuotationSubmitHandle {
                 }
             }
         }
-        // indicator
-        let quotation_indicators_data_setup = QuotationSubmitHandle.setupDataIndicator();
-        if (quotation_indicators_data_setup.length > 0) {
-            _form.dataForm[quotation_indicators_data] = quotation_indicators_data_setup;
-            let keyInd = "indicator_data";
-            if (is_sale_order === true) {
-                keyInd = "quotation_indicator_data";
-            }
-            for (let indicator of quotation_indicators_data_setup) {
-                if (indicator?.[keyInd]?.['code'] === "IN0001") {
-                    _form.dataForm['indicator_revenue'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
-                }
-                if (indicator?.[keyInd]?.['code'] === "IN0003") {
-                    _form.dataForm['indicator_gross_profit'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
-                }
-                if (indicator?.[keyInd]?.['code'] === "IN0006") {
-                    _form.dataForm['indicator_net_income'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
-                }
-            }
-        }
-
         // payment stage
         if (is_sale_order === true) {
             _form.dataForm['sale_order_payment_stage'] = QuotationSubmitHandle.setupDataPaymentStage();

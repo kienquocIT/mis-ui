@@ -28,7 +28,7 @@
                         <span class="nav-link-text">{% trans 'Sale Order' %}</span>
                     </a>
                 </li>
-                <li class="nav-item quotation-tab-item" id="tab-indicator" data-zone="sale_order_indicators_data">
+                <li class="nav-item quotation-tab-item" id="tab_indicator" data-zone="sale_order_indicators_data">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_block_2">
                         <span class="nav-icon-wrap mr-1"><i class="fa-solid fa-square-poll-horizontal"></i></span>
                         <span class="nav-link-text">{% trans 'Indicator' %}</span>
@@ -631,32 +631,7 @@
             </div>
             <div class="tab-pane fade" id="tab_block_2">
                 <div class="container-fluid">
-                    <div class="row">
-                        <table
-                                id="datable-quotation-create-indicator"
-                                class="table nowrap w-100 mb-5 sale-order"
-                        >
-                            <thead>
-                            <tr class="bg-light">
-                                <th></th>
-                                <th>{% trans 'Indicator name' %}</th>
-                                <th>{% trans 'Quotation value' %}</th>
-                                <th>{% trans 'Sale order value' %}</th>
-                                <th>{% trans 'Difference value' %}</th>
-                                <th>{% trans 'Indicator rate' %}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                    <input
-                            type="text"
-                            id="quotation-indicator-data"
-                            data-url="{% url 'QuotationIndicatorListAPI' %}"
-                            data-method="get"
-                            hidden
-                    >
+                    {% include 'extends/indicator/all.html' with is_order=True %}
                 </div>
             </div>
         </div>
@@ -1242,4 +1217,5 @@
 
     <script src="{% static 'assets/js/direct-btn-group.js' %}"></script>
     <script src="{% static 'assets/js/extends/the-documents/auto-init-with-parameters.js' %}"></script>
+    <script src="{% static 'assets/js/extends/indicator/indicator_common.js' %}"></script>
 {% endblock %}

@@ -163,8 +163,29 @@ class IndicatorControl {
         }
     };
 
+    static callAjaxInitIndicator() {
+        $.fn.callAjax2({
+                'url': IndicatorControl.$indicatorDataEle.attr('data-url'),
+                'method': 'GET',
+                'isDropdown': true,
+            }
+        ).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data) {
+                    if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
+                        IndicatorControl.$indicatorDataEle.val(JSON.stringify(data.quotation_indicator_list));
+                    }
+                }
+            }
+        )
+    };
+
     // handle calculate
-    static loadIndicator(dataForm) {
+    static loadIndicator(dataForm, opts = {}) {
+        if (window.location.href.includes('/detail/')) {
+            return true;
+        }
         if (!IndicatorControl.$indicatorDataEle.val()) {
             $.fn.callAjax2({
                     'url': IndicatorControl.$indicatorDataEle.attr('data-url'),
@@ -178,53 +199,31 @@ class IndicatorControl {
                         if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
                             IndicatorControl.$indicatorDataEle.val(JSON.stringify(data.quotation_indicator_list));
                             let indicatorList = data.quotation_indicator_list;
-                            IndicatorControl.calculateIndicator(indicatorList, dataForm);
+                            IndicatorControl.calculateIndicator(indicatorList, dataForm, opts);
+                            // return data submit
+                            return IndicatorControl.setupDataSubmit();
                         }
                     }
                 }
             )
         } else {
             let indicatorList = JSON.parse(IndicatorControl.$indicatorDataEle.val());
-            IndicatorControl.calculateIndicator(indicatorList, dataForm);
+            IndicatorControl.calculateIndicator(indicatorList, dataForm, opts);
+            // return data submit
+            return IndicatorControl.setupDataSubmit();
         }
     };
 
-    static calculateIndicator(indicatorList, dataForm) {
+    static calculateIndicator(indicatorList, dataForm, opts = {}) {
         let isOrder = IndicatorControl.isOrder;
         let result_list = [];
         let result_json = {};
         let revenueValue = 0;
         let data_form = dataForm ? dataForm : {};
-        let dataDetailCopy = {};
-        let eleDetailCopy = $('#data-copy-quotation-detail');
-        if (eleDetailCopy && eleDetailCopy.length > 0) {
-            if (eleDetailCopy.val()) {
-                dataDetailCopy = JSON.parse(eleDetailCopy.val());
-            }
-        }
-        let dataDetail = {};
-        let eleDetail = $('#quotation-detail-data');
-        if (eleDetail && eleDetail.length > 0) {
-            if (eleDetail.val()) {
-                dataDetail = JSON.parse(eleDetail.val());
-            }
-        }
-        // Replace zones hidden with data in detail
-        let keyHidden = WFRTControl.getZoneHiddenKeyData();
-        if (keyHidden) {
-            if (keyHidden.length > 0) {
-                let keyHiddenRelated = WFRTControl.getZoneHiddenKeyRelatedData();
-                keyHidden = keyHidden.concat(keyHiddenRelated);
-                // set data detail to zones hidden
-                if (data_form && dataDetail) {
-                    for (let key of keyHidden) {
-                        if (dataDetail.hasOwnProperty(key)) {
-                            data_form[key] = dataDetail[key];
-                        }
-                    }
-                }
-            }
-        }
+        let data_detail = opts?.['dataDetail'] ? opts?.['dataDetail'] : {};
+        let data_quotation_indicator = opts?.['dataQuotationIndicator'] ? opts?.['dataQuotationIndicator'] : [];
+        // Find data zone hidden in detail data
+        WFRTControl.findDataZoneHidden(data_form, data_detail);
         // Check special case
         IndicatorControl.checkSpecialCaseIndicator(data_form);
         for (let indicator of indicatorList) {
@@ -272,7 +271,6 @@ class IndicatorControl {
                     rateValue = ((value / revenueValue) * 100).toFixed(0);
                 }
             }
-
             // check if indicator is_negative_set_zero is True
             if (indicator?.['is_negative_set_zero'] === true) {
                 if (value < 0) {
@@ -280,25 +278,12 @@ class IndicatorControl {
                     rateValue = 0;
                 }
             }
-
             // quotation value
             let quotationValue = 0;
             let differenceValue = value;
-
             // check if order then get quotation value
-            if (isOrder === true) {
-                let dataQuotationIndicator = [];
-                if (Object.keys(dataDetailCopy).length !== 0) {
-                    if (dataDetailCopy?.['quotation_indicators_data']) {
-                        dataQuotationIndicator = dataDetailCopy?.['quotation_indicators_data'];
-                    }
-                }
-                if (Object.keys(dataDetail).length !== 0) {
-                    if (dataDetail?.['quotation_data']?.['quotation_indicators_data']) {
-                        dataQuotationIndicator = dataDetail?.['quotation_data']?.['quotation_indicators_data'];
-                    }
-                }
-                for (let quotation_indicator of dataQuotationIndicator) {
+            if (isOrder === 'true') {
+                for (let quotation_indicator of data_quotation_indicator) {
                     if (indicator?.['title'] === quotation_indicator?.['indicator']?.['title']) {
                         quotationValue = quotation_indicator?.['indicator_value'];
                         differenceValue = (value - quotation_indicator?.['indicator_value']);
@@ -306,7 +291,6 @@ class IndicatorControl {
                     }
                 }
             }
-
             // append result
             result_list.push({
                 'indicator': indicator?.['id'],
@@ -513,10 +497,61 @@ class IndicatorControl {
         }, data);
     };
 
+    // handle data
+    static setupDataSubmit() {
+        let result = [];
+        let isOrder = IndicatorControl.isOrder;
+        IndicatorControl.$table.DataTable().rows().every(function () {
+            let row = this.node();
+            let rowIndex = IndicatorControl.$table.DataTable().row(row).index();
+            let $row = IndicatorControl.$table.DataTable().row(rowIndex);
+            let dataRow = $row.data();
+
+            let indicatorEle = row.querySelector('.table-row-title');
+            let indicatorValEle = row.querySelector('.table-row-value');
+            let indicatorRateEle = row.querySelector('.table-row-rate');
+            let orderEle = row.querySelector('.table-row-order');
+            if (indicatorEle && indicatorValEle && indicatorRateEle && orderEle) {
+                let indicator = indicatorEle.getAttribute('data-id');
+                let indicator_value = indicatorValEle.getAttribute('data-value');
+                let indicator_rate = indicatorRateEle.getAttribute('data-value');
+                let order = orderEle.getAttribute('data-value');
+                if (isOrder === 'false') {
+                    result.push({
+                        'indicator': indicator,
+                        'indicator_data': dataRow?.['indicator_data'],
+                        'indicator_value': parseFloat(indicator_value),
+                        'indicator_rate': parseFloat(indicator_rate),
+                        'order': parseInt(order),
+                    })
+                }
+                if (isOrder === 'true') {
+                    let quotationEle = row.querySelector('.table-row-quotation-value');
+                    let differEle = row.querySelector('.table-row-difference-value');
+                    if (quotationEle && differEle) {
+                        let quotation_indicator_value = quotationEle.getAttribute('data-value');
+                        let difference_indicator_rate = differEle.getAttribute('data-value');
+                        result.push({
+                            'quotation_indicator': indicator,
+                            'quotation_indicator_data': dataRow?.['quotation_indicator_data'],
+                            'indicator_value': parseFloat(indicator_value),
+                            'indicator_rate': parseFloat(indicator_rate),
+                            'quotation_indicator_value': parseFloat(quotation_indicator_value),
+                            'difference_indicator_value': parseFloat(difference_indicator_rate) ? difference_indicator_rate : 0,
+                            'order': parseInt(order),
+                        })
+                    }
+                }
+            }
+        });
+        return result;
+    };
+
     // init page
     static initPage() {
         IndicatorControl.renderTbl();
         IndicatorControl.dtbIndicator();
+        IndicatorControl.callAjaxInitIndicator();
     };
 
 }

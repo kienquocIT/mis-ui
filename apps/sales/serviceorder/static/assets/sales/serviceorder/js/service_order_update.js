@@ -322,7 +322,7 @@ $(document).ready(function () {
         $(this).attr('href', url)
     })
 
-    $('#tab-indicator').on('click', function () {
+    $('#tab_indicator').on('click', function () {
         let formInstance = new SetupFormSubmit($('#form-update-service-order'))
         if (formInstance.dataForm.hasOwnProperty('attachment')) {
             formInstance.dataForm['attachment'] = $x.cls.file.get_val(

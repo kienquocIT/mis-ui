@@ -3873,6 +3873,25 @@ class WFRTControl {
             {'id': 4, 'title': $.fn.transEle.attr('data-cancel')},
         ]
     }
+
+    static findDataZoneHidden(dataForm, dataDetail) {
+        let keyHidden = WFRTControl.getZoneHiddenKeyData();
+        if (keyHidden) {
+            if (keyHidden.length > 0) {
+                let keyHiddenRelated = WFRTControl.getZoneHiddenKeyRelatedData();
+                keyHidden = keyHidden.concat(keyHiddenRelated);
+                // set data detail to zones hidden
+                if (dataForm && dataDetail) {
+                    for (let key of keyHidden) {
+                        if (dataDetail.hasOwnProperty(key)) {
+                            dataForm[key] = dataDetail[key];
+                        }
+                    }
+                }
+            }
+        }
+        return dataForm;
+    }
 }
 
 class WFAssociateControl {

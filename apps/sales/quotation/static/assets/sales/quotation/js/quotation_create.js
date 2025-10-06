@@ -692,6 +692,24 @@ $(function () {
             }
         });
 
+        $('#tab_indicator').on('click', function () {
+            let datasDetail = QuotationLoadDataHandle.loadGetDatasDetail();
+            if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
+                let _form = new SetupFormSubmit(QuotationLoadDataHandle.$form);
+                let dataForm = QuotationSubmitHandle.setupDataSubmit(_form);
+                IndicatorControl.loadIndicator(dataForm, datasDetail);
+                QuotationLoadDataHandle.loadSetWFRuntimeZone();
+            }
+            if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
+                let dataDetail = datasDetail?.['dataDetail'];
+                let indicatorsData = dataDetail?.['quotation_indicators_data'];
+                if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                    indicatorsData = dataDetail?.['sale_order_indicators_data'];
+                }
+                IndicatorControl.dtbIndicator(indicatorsData);
+            }
+        });
+
 // PAYMENT STAGE
         $quotationTabs.on('click', '.tab-payment', function () {
             QuotationStoreDataHandle.storeDtbData(1);
@@ -912,12 +930,13 @@ $(function () {
              }
              let _form = new SetupFormSubmit(QuotationLoadDataHandle.$form);
              // Load again indicator when Submit
-             indicatorHandle.loadIndicator();
+             // indicatorHandle.loadIndicator();
              QuotationLoadDataHandle.loadDataTableCost();
              let result = QuotationSubmitHandle.setupDataSubmit(_form);
              if (result === false) {
                  return false;
              }
+             QuotationSubmitHandle.setupDataIndicator(result);
             let submitFields = [
                 // process
                 'process',

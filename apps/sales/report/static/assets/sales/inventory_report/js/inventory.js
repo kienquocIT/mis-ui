@@ -108,10 +108,10 @@ $(document).ready(function () {
 
     function RenderMainTable(table, data_list=[], data_wh=[], table_detail=false) {
         table.DataTable().clear().destroy()
-        let sale_order_code_list = []
+        let order_code_list = []
         table.DataTableDefault({
             styleDom: 'hide-foot',
-            scrollY: '60vh',
+            scrollY: '65vh',
             scrollX: true,
             scrollCollapse: true,
             ordering: false,
@@ -122,17 +122,16 @@ $(document).ready(function () {
                 {
                     className: 'text-center',
                     render: (data, type, row) => {
-                        if (row?.['sale_order_code']) {
-                            if (!sale_order_code_list.includes(`${row?.['warehouse_code']}-so-code-${row?.['sale_order_code']}`)) {
-                                sale_order_code_list.push(`${row?.['warehouse_code']}-so-code-${row?.['sale_order_code']}`)
+                        if (row?.['order_code']) {
+                            if (!order_code_list.includes(`${row?.['warehouse_code']}-so-code-${row?.['order_code']}`)) {
+                                order_code_list.push(`${row?.['warehouse_code']}-so-code-${row?.['order_code']}`)
                             }
-                            return `<span class="${row?.['warehouse_code']}-so-code-${row?.['sale_order_code']}">${row?.['sale_order_code']}</span>`
+                            return `<span class="${row?.['warehouse_code']}-so-code-${row?.['order_code']}">${row?.['order_code']}</span>`
                         }
                         return ``
                     }
                 },
                 {
-
                     render: (data, type, row) => {
                         if (row?.['type'] === 'warehouse_row') {
                             if (row?.['warehouse_title']) {
@@ -143,20 +142,24 @@ $(document).ready(function () {
                             }
                         }
                         if (row?.['type'] === 'product_row') {
+                            let lot_number = ''
+                            let serial_number = ''
+                            if (row?.['product_lot_number']) {
+                                lot_number = `<br><span class="text-blue mr-1">${$.fn.gettext('Lot')}:</span><span class="text-blue">${row?.['product_lot_number']}</span><br>`
+                            }
+                            if (row?.['product_serial_number']) {
+                                serial_number = `<br><span class="text-danger mr-1">${$.fn.gettext('Specific serial number')}:</span><span class="text-danger">${row?.['product_serial_number']}</span>`
+                            }
                             let dot = [
                                 '<span class="badge bg-blue badge-indicator"></span>',
                                 '<span class="badge bg-success badge-indicator"></span>',
                                 '<span class="badge bg-danger badge-indicator"></span>'
                             ][parseInt(row?.['vm'])]
-                            let html = `
+                            return `
                                 ${dot}
-                                <span class="badge badge-sm badge-soft-secondary">${row?.['product_code']}</span><br>
-                                <span class="${row?.['type']}" data-product-vm="${row?.['vm']}" data-product-code="${row?.['product_code']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>&nbsp;
+                                <span class="badge badge-sm badge-soft-secondary badge-outline">${row?.['product_code']}</span><br>
+                                <span class="${row?.['type']} fw-bold" data-product-vm="${row?.['vm']}" data-product-code="${row?.['product_code']}" data-wh-title="${row?.['warehouse_title']}">${row?.['product_title']}</span>${lot_number}${serial_number}
                             `
-                            if (row?.['product_lot_number']) {
-                                html += `<span class="text-blue fw-bold">${row?.['product_lot_number']}</span>`
-                            }
-                            return html
                         }
                         if (row?.['type'] === 'detail_row') {
                             return `<span class="detail_row ${row?.['product_code']} ${row?.['bg_in']} ${row?.['bg_out']}"></span>&nbsp;<span class="badge badge-sm ${row?.['bg_in'].replace('text', 'badge')} ${row?.['bg_out'].replace('text', 'badge')}">${row?.['trans_code']}</span>`
@@ -185,23 +188,16 @@ $(document).ready(function () {
                 {
                     className: 'text-center',
                     render: (data, type, row) => {
+                        let lot_info_html = ''
                         if (row?.['type'] === 'detail_row') {
                             if (row?.['lot_number']) {
-                                return `<span class="text-blue">${row?.['lot_number']}</span>`
+                                lot_info_html += `<span class="text-blue">${row?.['lot_number']}</span>`
                             }
-                        }
-                        return ``
-                    }
-                },
-                {
-
-                    render: (data, type, row) => {
-                        if (row?.['type'] === 'detail_row') {
                             if (row?.['expired_date']) {
-                                return `<span class="text-danger">${row?.['expired_date']}</span>`
+                                lot_info_html += `<br><span class="text-danger">${row?.['expired_date'] ? moment(row?.['expired_date'], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''}</span>`
                             }
                         }
-                        return ``
+                        return lot_info_html
                     }
                 },
                 {
@@ -286,8 +282,8 @@ $(document).ready(function () {
             initComplete: function(settings, json) {
                 table.find('tbody tr').each(function () {
                     if ($(this).find('.see-detail-wh').length > 0) {
-                        $(this).addClass('bg-primary-light-5')
-                        $(this).addClass('fixed-row')
+                        $(this).closest('tr').addClass('bg-primary-light-5')
+                        $(this).closest('tr').addClass('fixed-row')
                     }
                     if ($(this).find('.product_row').length > 0) {
                         $(this).attr('data-bs-toggle', 'tooltip')
@@ -352,17 +348,13 @@ $(document).ready(function () {
 
                     table.DataTable().column(3).visible(false)
                     table.DataTable().column(4).visible(false)
-                    table.DataTable().column(5).visible(false)
                 }
 
-                if (sale_order_code_list.length === 0) {
+                if (order_code_list.length === 0) {
                     table.DataTable().column(0).visible(false)
-                    $('#product-col').css({
-                        'border-top-left-radius': 'calc(0.5rem - 1px)'
-                    })
                 }
 
-                for (const so_code_class of sale_order_code_list) {
+                for (const so_code_class of order_code_list) {
                     let number_row = table.find(`.${so_code_class}`).length + 1
                     table.find(`.${so_code_class}:eq(0)`).closest('tr').before(`
                         <tr>
@@ -750,51 +742,53 @@ $(document).ready(function () {
                                 }
                                 table_inventory_report_data.push({
                                     'type': 'warehouse_row',
-                                    'warehouse_id': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : '',
-                                    'warehouse_code': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : '',
-                                    'warehouse_title': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : '',
+                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'] || '',
+                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'] || '',
                                 })
                                 table_inventory_report_data.push({
                                     'type': 'product_row',
-                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
-                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
-                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
-                                    'product_code': warehouse_activities?.['product']?.['code'],
-                                    'product_title': warehouse_activities?.['product']?.['title'],
-                                    'vm': warehouse_activities?.['product']?.['valuation_method'],
-                                    'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
-                                    'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
-                                    'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
-                                    'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
-                                    'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
-                                    'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
-                                    'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
-                                    'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
-                                    'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
-                                    'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
-                                    'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'],
+                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'] || '',
+                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'] || '',
+                                    'product_code': warehouse_activities?.['product']?.['code'] || '',
+                                    'product_title': warehouse_activities?.['product']?.['title'] || '',
+                                    'vm': warehouse_activities?.['product']?.['valuation_method'] || 0,
+                                    'product_lot_number': warehouse_activities?.['product']?.['lot_number'] || '',
+                                    'product_serial_number': warehouse_activities?.['product']?.['serial_number'] || '',
+                                    'order_code': warehouse_activities?.['product']?.['order_code'] || '',
+                                    'uom_title': warehouse_activities?.['product']?.['uom']?.['title'] || '',
+                                    'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'] || 0,
+                                    'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'] || 0,
+                                    'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'] || 0,
+                                    'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'] || 0,
+                                    'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'] || 0,
+                                    'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'] || 0,
+                                    'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'] || 0,
+                                    'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'] || 0,
                                 })
                             }
                             else {
                                 table_inventory_report_data.push({
                                     'type': 'product_row',
-                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
-                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
-                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
-                                    'product_code': warehouse_activities?.['product']?.['code'],
-                                    'product_title': warehouse_activities?.['product']?.['title'],
-                                    'vm': warehouse_activities?.['product']?.['valuation_method'],
-                                    'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
-                                    'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
-                                    'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
-                                    'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
-                                    'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
-                                    'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
-                                    'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
-                                    'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
-                                    'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
-                                    'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
-                                    'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'],
+                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'] || '',
+                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'] || '',
+                                    'product_code': warehouse_activities?.['product']?.['code'] || '',
+                                    'product_title': warehouse_activities?.['product']?.['title'] || '',
+                                    'vm': warehouse_activities?.['product']?.['valuation_method'] || 0,
+                                    'product_lot_number': warehouse_activities?.['product']?.['lot_number'] || '',
+                                    'product_serial_number': warehouse_activities?.['product']?.['serial_number'] || '',
+                                    'order_code': warehouse_activities?.['product']?.['order_code'] || '',
+                                    'uom_title': warehouse_activities?.['product']?.['uom']?.['title'] || '',
+                                    'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'] || 0,
+                                    'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'] || 0,
+                                    'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'] || 0,
+                                    'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'] || 0,
+                                    'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'] || 0,
+                                    'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'] || 0,
+                                    'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'] || 0,
+                                    'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'] || 0,
                                 })
                             }
                         }
@@ -806,50 +800,52 @@ $(document).ready(function () {
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'warehouse_row',
-                                        'warehouse_id': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : '',
-                                        'warehouse_code': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : '',
-                                        'warehouse_title': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : '',
+                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'] || '',
+                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'] || '',
                                     })
                                     table_inventory_report_data.push({
                                         'type': 'product_row',
-                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
-                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
-                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
-                                        'product_code': warehouse_activities?.['product']?.['code'],
-                                        'product_title': warehouse_activities?.['product']?.['title'],
-                                        'vm': warehouse_activities?.['product']?.['valuation_method'],
-                                        'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
-                                        'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
-                                        'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
-                                        'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
-                                        'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
-                                        'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
-                                        'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
-                                        'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
-                                        'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
-                                        'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
-                                        'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value']
+                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'] || '',
+                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'] || '',
+                                        'product_code': warehouse_activities?.['product']?.['code'] || '',
+                                        'product_title': warehouse_activities?.['product']?.['title'] || '',
+                                        'vm': warehouse_activities?.['product']?.['valuation_method'] || 0,
+                                        'product_lot_number': warehouse_activities?.['product']?.['lot_number'] || '',
+                                        'product_serial_number': warehouse_activities?.['product']?.['serial_number'] || '',
+                                        'order_code': warehouse_activities?.['product']?.['order_code'] || '',
+                                        'uom_title': warehouse_activities?.['product']?.['uom']?.['title'] || '',
+                                        'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'] || 0,
+                                        'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'] || 0,
+                                        'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'] || 0,
+                                        'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'] || 0,
+                                        'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'] || 0,
+                                        'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'] || 0,
+                                        'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'] || 0,
+                                        'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'] || 0
                                     })
                                 } else {
                                     table_inventory_report_data.push({
                                         'type': 'product_row',
-                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
-                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
-                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
-                                        'product_code': warehouse_activities?.['product']?.['code'],
-                                        'product_title': warehouse_activities?.['product']?.['title'],
-                                        'vm': warehouse_activities?.['product']?.['valuation_method'],
-                                        'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
-                                        'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
-                                        'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
-                                        'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
-                                        'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
-                                        'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
-                                        'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
-                                        'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
-                                        'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
-                                        'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
-                                        'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value']
+                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'] || '',
+                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'] || '',
+                                        'product_code': warehouse_activities?.['product']?.['code'] || '',
+                                        'product_title': warehouse_activities?.['product']?.['title'] || '',
+                                        'vm': warehouse_activities?.['product']?.['valuation_method'] || 0,
+                                        'product_lot_number': warehouse_activities?.['product']?.['lot_number'] || '',
+                                        'product_serial_number': warehouse_activities?.['product']?.['serial_number'] || '',
+                                        'order_code': warehouse_activities?.['product']?.['order_code'] || '',
+                                        'uom_title': warehouse_activities?.['product']?.['uom']?.['title'] || '',
+                                        'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'] || 0,
+                                        'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'] || 0,
+                                        'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'] || 0,
+                                        'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'] || 0,
+                                        'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'] || 0,
+                                        'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'] || 0,
+                                        'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'] || 0,
+                                        'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'] || 0
                                     })
                                 }
                             }
@@ -948,29 +944,30 @@ $(document).ready(function () {
                                 }
                                 table_inventory_report_data.push({
                                     'type': 'warehouse_row',
-                                    'warehouse_id': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : '',
-                                    'warehouse_code': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : '',
-                                    'warehouse_title': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : '',
+                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'] || '',
+                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'] || '',
                                 })
                                 table_inventory_report_data.push({
                                     'type': 'product_row',
-                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
-                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
-                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
-                                    'product_code': warehouse_activities?.['product']?.['code'],
-                                    'product_title': warehouse_activities?.['product']?.['title'],
-                                    'vm': warehouse_activities?.['product']?.['valuation_method'],
-                                    'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
-                                    'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
-                                    'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
-                                    'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
-                                    'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
-                                    'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
-                                    'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
-                                    'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
-                                    'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
-                                    'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
-                                    'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'],
+                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'] || '',
+                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'] || '',
+                                    'product_code': warehouse_activities?.['product']?.['code'] || '',
+                                    'product_title': warehouse_activities?.['product']?.['title'] || '',
+                                    'vm': warehouse_activities?.['product']?.['valuation_method'] || 0,
+                                    'product_lot_number': warehouse_activities?.['product']?.['lot_number'] || '',
+                                    'product_serial_number': warehouse_activities?.['product']?.['serial_number'] || '',
+                                    'order_code': warehouse_activities?.['product']?.['order_code'] || '',
+                                    'uom_title': warehouse_activities?.['product']?.['uom']?.['title'] || '',
+                                    'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'] || 0,
+                                    'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'] || 0,
+                                    'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'] || 0,
+                                    'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'] || 0,
+                                    'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'] || 0,
+                                    'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'] || 0,
+                                    'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'] || 0,
+                                    'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'] || 0,
                                 })
                                 for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                     let bg_in = ''
@@ -1004,42 +1001,44 @@ $(document).ready(function () {
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'detail_row',
-                                        'trans_code': activity?.['trans_code'],
-                                        'product_code': warehouse_activities?.['product']?.['code'],
-                                        'date': moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm"),
-                                        'lot_number': activity?.['lot_number'],
+                                        'trans_code': activity?.['trans_code'] || '',
+                                        'product_code': warehouse_activities?.['product']?.['code'] || '',
+                                        'date': activity?.['system_date'] ? moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm") : '',
+                                        'lot_number': activity?.['lot_number'] || '',
+                                        'serial_number': activity?.['serial_number'] || '',
                                         'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
                                         'bg_in': bg_in,
-                                        'in_quantity': activity?.['in_quantity'],
-                                        'in_value': activity?.['in_value'],
+                                        'in_quantity': activity?.['in_quantity'] || 0,
+                                        'in_value': activity?.['in_value'] || 0,
                                         'bg_out': bg_out,
-                                        'out_quantity': activity?.['out_quantity'],
-                                        'out_value': activity?.['out_value'],
-                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                        'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
+                                        'out_quantity': activity?.['out_quantity'] || 0,
+                                        'out_value': activity?.['out_value'] || 0,
+                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                        'order_code': warehouse_activities?.['product']?.['order_code'] || '',
                                     })
                                 }
                             }
                             else {
                                 table_inventory_report_data.push({
                                     'type': 'product_row',
-                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
-                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
-                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
-                                    'product_code': warehouse_activities?.['product']?.['code'],
-                                    'product_title': warehouse_activities?.['product']?.['title'],
-                                    'vm': warehouse_activities?.['product']?.['valuation_method'],
-                                    'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
-                                    'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
-                                    'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
-                                    'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
-                                    'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
-                                    'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
-                                    'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
-                                    'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
-                                    'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
-                                    'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
-                                    'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'],
+                                    'warehouse_id': warehouse_activities?.['warehouse']?.['id'] || '',
+                                    'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                    'warehouse_title': warehouse_activities?.['warehouse']?.['title'] || '',
+                                    'product_code': warehouse_activities?.['product']?.['code'] || '',
+                                    'product_title': warehouse_activities?.['product']?.['title'] || '',
+                                    'vm': warehouse_activities?.['product']?.['valuation_method'] || 0,
+                                    'product_lot_number': warehouse_activities?.['product']?.['lot_number'] || '',
+                                    'product_serial_number': warehouse_activities?.['product']?.['serial_number'] || '',
+                                    'order_code': warehouse_activities?.['product']?.['order_code'] || '',
+                                    'uom_title': warehouse_activities?.['product']?.['uom']?.['title'] || '',
+                                    'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'] || 0,
+                                    'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'] || 0,
+                                    'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'] || 0,
+                                    'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'] || 0,
+                                    'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'] || 0,
+                                    'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'] || 0,
+                                    'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'] || 0,
+                                    'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'] || 0,
                                 })
                                 for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                     let bg_in = ''
@@ -1073,19 +1072,20 @@ $(document).ready(function () {
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'detail_row',
-                                        'trans_code': activity?.['trans_code'],
-                                        'product_code': warehouse_activities?.['product']?.['code'],
-                                        'date': moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm"),
-                                        'lot_number': activity?.['lot_number'],
+                                        'trans_code': activity?.['trans_code'] || '',
+                                        'product_code': warehouse_activities?.['product']?.['code'] || '',
+                                        'date': activity?.['system_date'] ? moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm") : '',
+                                        'lot_number': activity?.['lot_number'] || '',
+                                        'serial_number': activity?.['serial_number'] || '',
                                         'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
                                         'bg_in': bg_in,
-                                        'in_quantity': activity?.['in_quantity'],
-                                        'in_value': activity?.['in_value'],
+                                        'in_quantity': activity?.['in_quantity'] || 0,
+                                        'in_value': activity?.['in_value'] || 0,
                                         'bg_out': bg_out,
-                                        'out_quantity': activity?.['out_quantity'],
-                                        'out_value': activity?.['out_value'],
-                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                        'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
+                                        'out_quantity': activity?.['out_quantity'] || 0,
+                                        'out_value': activity?.['out_value'] || 0,
+                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                        'order_code': warehouse_activities?.['product']?.['order_code'] || '',
                                     })
                                 }
                             }
@@ -1098,29 +1098,30 @@ $(document).ready(function () {
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'warehouse_row',
-                                        'warehouse_id': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['id'] : '',
-                                        'warehouse_code': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['code'] : '',
-                                        'warehouse_title': Object.keys(warehouse_activities?.['warehouse']).length !== 0 ? warehouse_activities?.['warehouse']?.['title'] : '',
+                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'] || '',
+                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'] || '',
                                     })
                                     table_inventory_report_data.push({
                                         'type': 'product_row',
-                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
-                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
-                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
-                                        'product_code': warehouse_activities?.['product']?.['code'],
-                                        'product_title': warehouse_activities?.['product']?.['title'],
-                                        'vm': warehouse_activities?.['product']?.['valuation_method'],
-                                        'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
-                                        'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
-                                        'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
-                                        'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
-                                        'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
-                                        'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
-                                        'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
-                                        'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
-                                        'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
-                                        'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
-                                        'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value']
+                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'] || '',
+                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'] || '',
+                                        'product_code': warehouse_activities?.['product']?.['code'] || '',
+                                        'product_title': warehouse_activities?.['product']?.['title'] || '',
+                                        'vm': warehouse_activities?.['product']?.['valuation_method'] || 0,
+                                        'product_lot_number': warehouse_activities?.['product']?.['lot_number'] || '',
+                                        'product_serial_number': warehouse_activities?.['product']?.['serial_number'] || '',
+                                        'order_code': warehouse_activities?.['product']?.['order_code'] || '',
+                                        'uom_title': warehouse_activities?.['product']?.['uom']?.['title'] || '',
+                                        'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'] || 0,
+                                        'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'] || 0,
+                                        'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'] || 0,
+                                        'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'] || 0,
+                                        'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'] || 0,
+                                        'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'] || 0,
+                                        'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'] || 0,
+                                        'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'] || 0
                                     })
                                     for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                     let bg_in = ''
@@ -1154,41 +1155,43 @@ $(document).ready(function () {
                                     }
                                     table_inventory_report_data.push({
                                         'type': 'detail_row',
-                                        'trans_code': activity?.['trans_code'],
-                                        'product_code': warehouse_activities?.['product']?.['code'],
-                                        'date': moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm"),
-                                        'lot_number': activity?.['lot_number'],
+                                        'trans_code': activity?.['trans_code'] || '',
+                                        'product_code': warehouse_activities?.['product']?.['code'] || '',
+                                        'date': activity?.['system_date'] ? moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm") : '',
+                                        'lot_number': activity?.['lot_number'] || '',
+                                        'serial_number': activity?.['serial_number'] || '',
                                         'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
                                         'bg_in': bg_in,
-                                        'in_quantity': activity?.['in_quantity'],
-                                        'in_value': activity?.['in_value'],
+                                        'in_quantity': activity?.['in_quantity'] || 0,
+                                        'in_value': activity?.['in_value'] || 0,
                                         'bg_out': bg_out,
-                                        'out_quantity': activity?.['out_quantity'],
-                                        'out_value': activity?.['out_value'],
-                                        'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                        'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
+                                        'out_quantity': activity?.['out_quantity'] || 0,
+                                        'out_value': activity?.['out_value'] || 0,
+                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                        'order_code': warehouse_activities?.['product']?.['order_code'] || '',
                                     })
                                 }
                                 } else {
                                     table_inventory_report_data.push({
                                         'type': 'product_row',
-                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'],
-                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'],
-                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'],
-                                        'product_code': warehouse_activities?.['product']?.['code'],
-                                        'product_title': warehouse_activities?.['product']?.['title'],
-                                        'vm': warehouse_activities?.['product']?.['valuation_method'],
-                                        'product_lot_number': warehouse_activities?.['product']?.['lot_number'],
-                                        'sale_order_code': warehouse_activities?.['product']?.['sale_order_code'],
-                                        'uom_title': warehouse_activities?.['product']?.['uom']?.['title'],
-                                        'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'],
-                                        'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'],
-                                        'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'],
-                                        'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'],
-                                        'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'],
-                                        'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'],
-                                        'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'],
-                                        'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value']
+                                        'warehouse_id': warehouse_activities?.['warehouse']?.['id'] || '',
+                                        'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || '',
+                                        'warehouse_title': warehouse_activities?.['warehouse']?.['title'] || '',
+                                        'product_code': warehouse_activities?.['product']?.['code'] || '',
+                                        'product_title': warehouse_activities?.['product']?.['title'] || '',
+                                        'vm': warehouse_activities?.['product']?.['valuation_method'] || 0,
+                                        'product_lot_number': warehouse_activities?.['product']?.['lot_number'] || '',
+                                        'product_serial_number': warehouse_activities?.['product']?.['serial_number'] || '',
+                                        'order_code': warehouse_activities?.['product']?.['order_code'] || '',
+                                        'uom_title': warehouse_activities?.['product']?.['uom']?.['title'] || '',
+                                        'prd_open_quantity': warehouse_activities?.['stock_activities']?.['opening_balance_quantity'] || 0,
+                                        'prd_open_value': warehouse_activities?.['stock_activities']?.['opening_balance_value'] || 0,
+                                        'prd_in_quantity': warehouse_activities?.['stock_activities']?.['sum_in_quantity'] || 0,
+                                        'prd_in_value': warehouse_activities?.['stock_activities']?.['sum_in_value'] || 0,
+                                        'prd_out_quantity': warehouse_activities?.['stock_activities']?.['sum_out_quantity'] || 0,
+                                        'prd_out_value': warehouse_activities?.['stock_activities']?.['sum_out_value'] || 0,
+                                        'prd_end_quantity': warehouse_activities?.['stock_activities']?.['ending_balance_quantity'] || 0,
+                                        'prd_end_value': warehouse_activities?.['stock_activities']?.['ending_balance_value'] || 0
                                     })
                                     for (const activity of warehouse_activities?.['stock_activities']?.['data_stock_activity']) {
                                         let bg_in = ''
@@ -1222,19 +1225,20 @@ $(document).ready(function () {
                                         }
                                         table_inventory_report_data.push({
                                             'type': 'detail_row',
-                                            'trans_code': activity?.['trans_code'],
-                                            'product_code': warehouse_activities?.['product']?.['code'],
-                                            'date': moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm"),
-                                            'lot_number': activity?.['lot_number'],
+                                            'trans_code': activity?.['trans_code'] || '',
+                                            'product_code': warehouse_activities?.['product']?.['code'] || '',
+                                            'date': activity?.['system_date'] ? moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm") : '',
+                                            'lot_number': activity?.['lot_number'] || '',
+                                            'serial_number': activity?.['serial_number'] || '',
                                             'expired_date': activity?.['expire_date'] ? moment(activity?.['expire_date']).format("DD/MM/YYYY") : '',
                                             'bg_in': bg_in,
-                                            'in_quantity': activity?.['in_quantity'],
-                                            'in_value': activity?.['in_value'],
+                                            'in_quantity': activity?.['in_quantity'] || 0,
+                                            'in_value': activity?.['in_value'] || 0,
                                             'bg_out': bg_out,
-                                            'out_quantity': activity?.['out_quantity'],
-                                            'out_value': activity?.['out_value'],
-                                            'warehouse_code': `${warehouse_activities?.['warehouse']?.['code']}`,
-                                            'sale_order_code': `${warehouse_activities?.['product']?.['sale_order_code']}`,
+                                            'out_quantity': activity?.['out_quantity'] || 0,
+                                            'out_value': activity?.['out_value'] || 0,
+                                            'warehouse_code': warehouse_activities?.['warehouse']?.['code'] || 0,
+                                            'order_code': warehouse_activities?.['product']?.['order_code'] || 0,
                                         })
                                     }
                                 }
@@ -1399,6 +1403,7 @@ $(document).ready(function () {
                             'product': data?.['product'],
                             'id': lot?.['id'],
                             'lot_number': lot?.['lot_number'],
+                            'serial_number': activity?.['serial_number'],
                             'expire_date': lot?.['expire_date'] ? moment(lot?.['expire_date'].split('T')[0], 'YYYY-MM-DD').format('DD/MM/YYYY') : '',
                             'quantity_import': lot?.['quantity_import'],
                             'goods_receipt_date': lot?.['goods_receipt_date'] ? moment(lot?.['goods_receipt_date'].split('T')[0], 'YYYY-MM-DD').format('DD/MM/YYYY') : ''

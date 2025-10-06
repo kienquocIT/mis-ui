@@ -552,3 +552,7 @@ msgstr "Tổng giá trị"
 #
 msgid "Action"
 msgstr "Thao tác"
+
+#
+msgid "Specific serial number"
+msgstr "Serial đích danh"

@@ -5,8 +5,11 @@
     <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css">
     <style>
-        .detail-row {
-            background-color: #f6f6f6 !important;
+        .fixed-row {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
         }
     </style>
 {% endblock %}
@@ -64,13 +67,12 @@
         <div class="col-12">
             <table class="table nowrap w-100" id="table-inventory-report">
                 <thead>
-                    <tr class="bg-primary">
-                        <th class="border-1" style="color: white; min-width: 80px; border-top-left-radius: calc(0.5rem - 1px);">{% trans 'SALE ORDER' %}</th>
-                        <th class="border-1" style="color: white; min-width: 400px" id="product-col">{% trans 'PRODUCT' %}</th>
-                        <th class="border-1" style="color: white; min-width: 50px">{% trans 'INVENTORY UOM' %}</th>
-                        <th class="border-1" style="color: white; min-width: 100px">{% trans 'SYSTEM DATE' %}</th>
-                        <th class="border-1" style="color: white; min-width: 100px">{% trans 'LOT' %}</th>
-                        <th class="border-1" style="color: white; min-width: 100px">{% trans 'EXP DATE' %}</th>
+                    <tr class="bg-primary text-white">
+                        <th class="border-1" style="color: white; min-width: 100px">{% trans 'SALE ORDER' %}</th>
+                        <th class="border-1" style="color: white; min-width: 350px" id="product-col">{% trans 'PRODUCT' %}</th>
+                        <th class="border-1" style="color: white; min-width: 100px">{% trans 'INVENTORY UOM' %}</th>
+                        <th class="border-1" style="color: white; min-width: 150px">{% trans 'SYSTEM DATE' %}</th>
+                        <th class="border-1" style="color: white; min-width: 150px">{% trans 'LOT' %} - {% trans 'EXP DATE' %}</th>
                         <th class="border-1 text-center" style="color: white; min-width: 220px">
                             <div class="row">
                                 <div class="col-12 text-right">{% trans 'OPENING' %}</div>
@@ -98,7 +100,7 @@
                                 <div class="col-8 text-right">{% trans 'Value' %}</div>
                             </div>
                         </th>
-                        <th class="border-1 text-center" style="color: white; min-width: 220px; border-top-right-radius: calc(0.5rem - 1px);">
+                        <th class="border-1 text-center" style="color: white; min-width: 220px">
                             <div class="row">
                                 <div class="col-12 text-right">{% trans 'ENDING' %}</div>
                             </div>
@@ -111,10 +113,10 @@
                 </thead>
                 <tbody></tbody>
                 <tfoot>
-                    <tr class="bg-secondary-light-5" id="thead-value">
-                        <td class="fw-bold" style="border-bottom-left-radius: calc(0.5rem - 1px);"></td>
+                    <tr class="bg-primary text-white" id="thead-value">
+                        <td class="fw-bold"></td>
                         <td class="fw-bold">{% trans 'TOTAL' %}</td>
-                        <td class="fw-bold" colspan="4"></td>
+                        <td class="fw-bold" colspan="3"></td>
                         <td class="fw-bold">
                             <div class="row">
                                 <div class="col-4 text-right">--</div>
@@ -133,7 +135,7 @@
                                 <div class="col-8 text-right"><span class="mask-money out-total-value" data-init-money="0"></span></div>
                             </div>
                         </td>
-                        <td class="fw-bold" style="border-bottom-right-radius: calc(0.5rem - 1px);">
+                        <td class="fw-bold">
                             <div class="row">
                                 <div class="col-4 text-right">--</div>
                                 <div class="col-8 text-right"><span class="mask-money ending-total-value" data-init-money="0"></span></div>
@@ -177,22 +179,27 @@
                         ></select>
                     </div>
                 </div>
-                <div class="col-12 mt-3">
-                    <div class="btn-group dropup w-100" role="group">
-                        <button type="button" class="btn btn-social btn-social-facebook btn-sm rounded" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {% trans 'Apply' %}
+                <div class="col-12 mt-2">
+                    <div class="hstack flex-gap-3">
+                        <button type="button" class="btn btn-blue" id="btn-view">
+                            <span>
+                                <span class="icon"><i class="far fa-window-maximize"></i></span>
+                                <span>{% trans 'General' %}</span>
+                            </span>
                         </button>
-                        <div class="dropdown-menu" aria-labelledby="btn-action">
-                            <a class="dropdown-item" id="btn-view" href="#"><i class="far fa-window-maximize"></i> <span>{% trans 'General' %}</span></a>
-                            <a class="dropdown-item" id="btn-view-detail" href="#"><i class="fas fa-list-ul"></i> <span>{% trans 'Detail' %}</span></a>
-                        </div>
-                    </div>
-                    <div hidden class="btn-group dropend w-100" role="group">
-                        <button id="btn-action" type="button" class="btn btn-gradient-dark btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {% trans 'Action' %}
+                        <button type="button" class="btn btn-blue" id="btn-view-detail">
+                            <span>
+                                <span class="icon"><i class="fas fa-list-ul"></i></span>
+                                <span>{% trans 'Detail' %}</span>
+                            </span>
                         </button>
-                        <div class="dropdown-menu" aria-labelledby="btn-action">
-                            <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
+                        <div hidden class="btn-group dropend w-100" role="group">
+                            <button id="btn-action" type="button" class="btn btn-gradient-dark btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% trans 'Action' %}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btn-action">
+                                <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -162,10 +162,59 @@ class loadServiceOrderInfo {
     }
 
     static loadTotalDeliveryProduct() {
+        // get all product list from selected work order
+        let data_list = loadServiceOrderInfo.combineDeliveryProductData()
+
+        // init DataTable
         const $tb = $('#total_delivery_product');
         $tb.DataTable().clear().destroy();
+        $tb.DataTableDefault({
+            scrollY: '50vh',
+            scrollX: true,
+            scrollCollapse: true,
+            rowIndex: true,
+            paging: false,
+            data: data_list,
+            columns: [
+                {
+                    className: "w-5",
+                    render: () => {
+                        return "";
+                    }
+                },
+                {
+                    className: "w-30",
+                    render: () => {
+                        return "";
+                    }
+                },
+                {
+                    className: "w-45",
+                    render: () => {
+                        return "";
+                    }
+                },
+                {
+                    className: "w-20",
+                    render: () => {
+                        return "";
+                    }
+                }
+            ],
+            initComplete: function () {
+                if (data_list.length > 0) {
+                    $tb.find('tbody tr').each(function (index, ele) {
+                        $(ele).find('td:eq(0)').html(index + 1);
+                        $(ele).find('td:eq(1)').html(`${data_list[index]?.['code']}`);
+                        $(ele).find('td:eq(2)').html(`${data_list[index]?.['title']}`);
+                        $(ele).find('td:eq(3)').html(`${data_list[index]?.['delivered_quantity']}`);
+                    })
+                }
+            }
+        })
+    }
 
-        // get all product list from selected work order
+    static combineDeliveryProductData() {
         let allProducts = [];
         loadServiceOrderInfo.selectedWorkOrders.forEach(workOrder => {
             if (workOrder.product_list && workOrder.product_list.length > 0) {
@@ -187,51 +236,24 @@ class loadServiceOrderInfo {
                 }
             }
         });
-
         const consolidatedProducts = Object.values(productMap); // convert to array
-
-        $tb.DataTable({
-            data: consolidatedProducts,
-            scrollX: true,
-            scrollY: '50vh',
-            rowIdx: true,
-            columns: [
-                {
-                    className: "w-10",
-                    render: (data, type, row, meta) => {
-                        return meta.row + 1
-                    }
-                },
-                {
-                    className: "w-30",
-                    data: 'code',
-                    render: (data) => {
-                        return data || '--';
-                    }
-                },
-                {
-                    className: "w-40",
-                    data: 'title',
-                    render: (data) => {
-                        return data || '--';
-                    }
-                },
-                {
-                    className: "w-20 text-center",
-                    data: 'delivered_quantity',
-                    render: (data) => {
-                        return data || 0;
-                    }
-                }
-            ]
-        });
+        return consolidatedProducts
     }
 }
 
 $('document').ready(function () {
     loadServiceOrderInfo.loadServiceOrderList();
+
+    // event when click delivery service button
     $(document).on("click", '.open-delivery-modal', function () {
+        loadServiceOrderInfo.selectedWorkOrders = [];
+        $('#delivery_work_order_list').find('.row-checkbox').prop('checked', false);
         let service_order_row_id = $(this).attr('data-id');
         loadServiceOrderInfo.loadDeliveryWorkOrderList(service_order_row_id);
+    });
+
+    // event when save delivery service button
+    $(document).on("click", "#btn_apply_delivery", function (){
+        loadServiceOrderInfo.combineDeliveryProductData();
     })
 });

@@ -218,7 +218,6 @@ class loadServiceOrderInfo {
                 }
             }
         });
-
         return Object.values(productMap);   // convert to array
     }
 }

@@ -1,5 +1,5 @@
 class loadServiceOrderInfo {
-    static selectedWorkOrderIds = [];
+    static selectedWorkOrders = [];
 
     static loadServiceOrderList() {
         if (!$.fn.DataTable.isDataTable('#table-service-order')) {
@@ -113,7 +113,10 @@ class loadServiceOrderInfo {
                 {
                     className: "w-10",
                     render: (data, type, row) => {
-                        let checked = loadServiceOrderInfo.selectedWorkOrderIds.includes(row?.id) ? 'checked' : '';
+                        if (!loadServiceOrderInfo.selectedWorkOrders) {
+                            loadServiceOrderInfo.selectedWorkOrders = [];
+                        }
+                        let checked = loadServiceOrderInfo.selectedWorkOrders.some(wo => wo.id === row?.id) ? 'checked' : '';
                         return `<div class="form-check form-check-lg">
                                     <input type="checkbox" id="checkbox_${row?.id}" class="form-check-input row-checkbox"
                                             value="${row?.id}" ${checked}>
@@ -145,65 +148,82 @@ class loadServiceOrderInfo {
                 const $checkbox = $(row).find('.row-checkbox');
 
                 $checkbox.off("change").on("change", function () {
-                    let work_order_id = parseInt($(this).val());
                     if ($(this).is(":checked")) {
-                        if (!loadServiceOrderInfo.selectedWorkOrderIds.includes(work_order_id)) {
-                            loadServiceOrderInfo.selectedWorkOrderIds.push(work_order_id);
-                        } else {
-                            loadServiceOrderInfo.selectedWorkOrderIds = loadServiceOrderInfo.selectedWorkOrderIds.filter(x => x !== work_order_id);
+                        if (!loadServiceOrderInfo.selectedWorkOrders.some(wo => wo.id === data.id)) {
+                            loadServiceOrderInfo.selectedWorkOrders.push(data);
                         }
+                    } else {
+                        loadServiceOrderInfo.selectedWorkOrders = loadServiceOrderInfo.selectedWorkOrders.filter(wo => wo.id !== data.id);
                     }
+                    loadServiceOrderInfo.loadTotalDeliveryProduct();
                 });
             }
         });
     }
 
-    static loadTotalDeliveryProduct(service_order_id) {
+    static loadTotalDeliveryProduct() {
         const $tb = $('#total_delivery_product');
         $tb.DataTable().clear().destroy();
-        $tb.DataTableDefault({
-            useDataServer: true,
-            rowIdx: true,
+
+        // get all product list from selected work order
+        let allProducts = [];
+        loadServiceOrderInfo.selectedWorkOrders.forEach(workOrder => {
+            if (workOrder.product_list && workOrder.product_list.length > 0) {
+                allProducts = allProducts.concat(workOrder.product_list);
+            }
+        });
+
+        // merge similar products (same code) and add the quantity
+        const productMap = {};
+        allProducts.forEach(product => {
+            if (productMap[product.code]) {
+                productMap[product.code].delivered_quantity += product?.delivered_quantity || 0;
+            } else {
+                productMap[product.code] = {
+                    id: product.id,
+                    code: product.code,
+                    title: product.title,
+                    delivered_quantity: product.delivered_quantity
+                }
+            }
+        });
+
+        const consolidatedProducts = Object.values(productMap); // convert to array
+
+        $tb.DataTable({
+            data: consolidatedProducts,
             scrollX: true,
             scrollY: '50vh',
-            scrollCollapse: true,
-            reloadCurrency: true,
-            ajax: {
-                url: $tb.attr('data-url') + `?service_order_id=${service_order_id}`,
-                type: 'GET',
-                dataSrc: 'data.svo_work_order_detail'
-            },
+            rowIdx: true,
             columns: [
                 {
                     className: "w-10",
-                    render: () => {
-                        return "";
-                    }
-                },
-                {
-                    className: "w-10",
-                    render: (data, type, row) => {
-                        let checked = loadServiceOrderInfo.selectedWorkOrderIds.includes(row?.id) ? 'checked' : '';
-                        return `<div class="form-check form-check-lg">
-                                    <input type="checkbox" id="checkbox_${row?.id}" class="form-check-input row-checkbox"
-                                            value="${row?.id}" ${checked}>
-                                </div>`;
-                    }
-                },
-                {
-                    className: "w-50",
-                    render: (data, type, row) => {
-                        return row?.['title'] || '--';
+                    render: (data, type, row, meta) => {
+                        return meta.row + 1
                     }
                 },
                 {
                     className: "w-30",
-                    render: (data, type, row) => {
-                        let startDate = DateTimeControl.formatDateType('YYYY-MM-DD','DD/MM/YYYY', row?.['start_date'] || '--');
-                        return startDate;
+                    data: 'code',
+                    render: (data) => {
+                        return data || '--';
                     }
                 },
-            ],
+                {
+                    className: "w-40",
+                    data: 'title',
+                    render: (data) => {
+                        return data || '--';
+                    }
+                },
+                {
+                    className: "w-20 text-center",
+                    data: 'delivered_quantity',
+                    render: (data) => {
+                        return data || 0;
+                    }
+                }
+            ]
         });
     }
 }
@@ -213,6 +233,5 @@ $('document').ready(function () {
     $(document).on("click", '.open-delivery-modal', function () {
         let service_order_row_id = $(this).attr('data-id');
         loadServiceOrderInfo.loadDeliveryWorkOrderList(service_order_row_id);
-        loadServiceOrderInfo.loadTotalDeliveryProduct(service_order_row_id);
     })
 });

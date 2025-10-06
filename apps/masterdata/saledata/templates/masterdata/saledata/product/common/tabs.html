@@ -294,7 +294,7 @@
         <div hidden class="row">
             <div class="col-12 mt-5">
                 <div class="row">
-                    <div class="col-12 col-md-9 col-lg-6">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <span class="text-muted">{% trans 'Product overview' %}</span>
                         <table id="datatable-warehouse-overview" class="table nowrap w-100">
                             <thead>
@@ -309,17 +309,28 @@
                             <tbody></tbody>
                         </table>
                     </div>
-                    <div class="col-12 col-md-9 col-lg-6">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <span class="text-muted">{% trans 'Product warehouse detail' %}</span>
                         <table id="datatable-warehouse-list" class="table nowrap w-100"
                                data-url="{% url "WareHouseListAPI" %}"
                                data-method="GET">
                             <thead>
                                 <tr class="bg-secondary-light-5">
-                                    <th>{% trans "WH Code" %}</th>
-                                    <th>{% trans "WH Name" %}</th>
-                                    <th>{% trans "Stock" %}</th>
-                                    <th>{% trans "Cost" %}</th>
+                                    <th>{% trans "Warehouse" %}</th>
+                                    <th>{% trans "Stock quantity" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <span class="text-muted">{% trans 'Specific serial number' %}</span>
+                        <table id="datatable-specific-serial-number-list" class="table nowrap w-100">
+                            <thead>
+                                <tr class="bg-secondary-light-5">
+                                    <th></th>
+                                    <th>{% trans "Serial number" %}</th>
+                                    <th>{% trans "Value" %}</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>

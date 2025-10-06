@@ -12318,3 +12318,7 @@ msgstr "Chức năng áp dụng"
 #
 msgid "List task assigned"
 msgstr "Danh sách nhiệm vụ được giao"
+
+#
+msgid "Specific serial number"
+msgstr "Serial đích danh"

@@ -434,6 +434,7 @@ class ProductPageFunction {
         })
     }
     static LoadSpecificSerialList(data_list=[]) {
+        $('#specific-modal-btn').prop('hidden', data_list.length === 0)
         pageElements.$datatable_specific_serial_number_list.DataTableDefault({
             dom: 't',
             paging: false,
@@ -1812,7 +1813,7 @@ class ProductHandler {
 
                     UsualLoadPageFunction.DisablePage(
                         option==='detail',
-                        ['.btn-show-child-selected-attribute']
+                        ['.btn-show-child-selected-attribute', '#specific-modal-btn']
                     )
 
                     // init and load avatar img

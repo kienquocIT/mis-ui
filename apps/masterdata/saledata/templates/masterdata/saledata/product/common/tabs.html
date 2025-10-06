@@ -323,18 +323,8 @@
                             <tbody></tbody>
                         </table>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <span class="text-muted">{% trans 'Specific serial number' %}</span>
-                        <table id="datatable-specific-serial-number-list" class="table nowrap w-100">
-                            <thead>
-                                <tr class="bg-secondary-light-5">
-                                    <th></th>
-                                    <th>{% trans "Serial number" %}</th>
-                                    <th>{% trans "Value" %}</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                    <div class="col-12">
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#modal-specific-serial" class="btn btn-soft-danger" id="specific-modal-btn" hidden>{% trans 'Specific serial number' %}</button>
                     </div>
                 </div>
             </div>

@@ -50,19 +50,18 @@
     {% include 'extends/systems/page_actions.html' with is_edit=True edit_link=edit_link %}
 {% endblock %}
 
+{% block pageSubAction %}
+    <div class="d-flex justify-content-end">
+        <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn nav-link" id="print-document" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Print' %}" hidden><i class="fas fa-print"></i></button>
+        </div>
+    </div>
+{% endblock %}
+
 {% block pageContent %}
     {% include 'printer/print.html' %}
     <form id="delivery_form" data-url="{% url 'OrderDeliveryDetailAPI' data.pk %}" data-url-print="{% url 'OrderDeliveryDetailPrintAPI' data.pk %}" data-method="GET" method="post"
           novalidate data-url-redirect="{% url 'OrderDeliveryList' %}">
-        <div class="row">
-            <div class="col-12 text-right">
-                <div class="d-flex justify-content-end">
-                    <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
-                        <button type="button" class="btn nav-link" id="print-document" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Print' %}" hidden><i class="fas fa-print"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row mb-3">
             {% csrf_token %}
             <div class="col-12 col-md-6 col-lg-6">

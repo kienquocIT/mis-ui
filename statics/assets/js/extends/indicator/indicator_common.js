@@ -159,7 +159,7 @@ class IndicatorControl {
                 // Select the appended button from the DOM and attach the event listener
                 $('#btn-refresh-indicator').on('click', function () {
                     IndicatorControl.$indicatorDataEle.val("");
-                    IndicatorControl.loadIndicator();
+                    IndicatorControl.$openCanvas.trigger('click');
                     $.fn.notifyB({description: IndicatorControl.$indicatorDataEle.attr('data-trans-refreshed')}, 'success');
                 });
             }

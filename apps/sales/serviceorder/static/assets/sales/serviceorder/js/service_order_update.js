@@ -63,7 +63,7 @@ function setUpFormData(formInstance) {
     formInstance.dataForm['exchange_rate_data'] = ServiceOrder.getExchangeRate()
     formInstance.dataForm['service_detail_data'] = ServiceOrder.getServiceDetailData()
     formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData()
-    // formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
+    formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
     formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData()
     formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData()
 
@@ -193,7 +193,8 @@ class DetailDataHandler {
         const data_url = $form.attr('data-url');
         $.fn.callAjax2({
             url: data_url,
-            method: 'GET'
+            method: 'GET',
+            isLoading: true,
         }).then(
             (resp) => {
                 const data = $.fn.switcherResp(resp);

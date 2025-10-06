@@ -236,6 +236,7 @@
                                         style="display: flex; align-items: center;"
                                 >
 {#                                    {% include 'extends/direct_btn_group.html' %}#}
+                                    <div class="mr-2">{% block pageSubAction %}{% endblock %}</div>
                                     <div class="{% if pk %}hidden{% endif %} mr-2" id="idxRealAction">
                                         {% block pageAction %}{% endblock %}
                                     </div>

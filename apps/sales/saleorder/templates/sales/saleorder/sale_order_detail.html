@@ -14,6 +14,16 @@
     {% include 'extends/systems/page_actions.html' with is_edit=True edit_link=edit_link %}
 {% endblock %}
 
+{% block pageSubAction %}
+    <div class="d-flex justify-content-end">
+        <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn nav-link" id="open_indicator" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Indicator' %}"><span class="icon"><i class="fa-solid fa-arrow-trend-up"></i></span></button>
+            <button type="button" class="btn nav-link" id="delivery-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Delivery' %}" hidden><span class="icon"><i class="fas fa-truck"></i></span></button>
+            <button type="button" class="btn nav-link" id="print-document" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Print' %}" hidden><span class="icon"><i class="fas fa-print"></i></span></button>
+        </div>
+    </div>
+{% endblock %}
+
 {% block pageContent %}
     <script hidden id="direct-btn-group-url"
         data-url-list-api="{% url 'SaleOrderListAPI' %}"
@@ -22,16 +32,6 @@
         data-key-return="sale_order_list"
     ></script>
     {% include 'printer/print.html' %}
-
-    <div class="row">
-        <div class="d-flex justify-content-end">
-            <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
-                <button type="button" class="btn nav-link" id="open_indicator" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Indicator' %}"><span class="icon"><i class="fa-solid fa-square-poll-horizontal"></i></span></button>
-                <button type="button" class="btn nav-link" id="delivery-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Delivery' %}" hidden><span class="icon"><i class="fas fa-truck"></i></span></button>
-                <button type="button" class="btn nav-link" id="print-document" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Print' %}" hidden><span class="icon"><i class="fas fa-print"></i></span></button>
-            </div>
-        </div>
-    </div>
 
     <form
             data-url="{% url 'SaleOrderDetailAPI' pk=pk %}"

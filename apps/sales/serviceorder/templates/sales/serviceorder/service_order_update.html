@@ -32,15 +32,16 @@
         </span>
     </button>
 {% endblock %}
-{% block pageContent %}
-    <div class="row">
-        <div class="d-flex justify-content-end">
-            <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
-                <button type="button" class="btn nav-link" id="open_indicator" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Indicator' %}"><span class="icon"><i class="fa-solid fa-square-poll-horizontal"></i></span></button>
-            </div>
+
+{% block pageSubAction %}
+    <div class="d-flex justify-content-end">
+        <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn nav-link" id="open_indicator" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Indicator' %}"><span class="icon"><i class="fa-solid fa-arrow-trend-up"></i></span></button>
         </div>
     </div>
+{% endblock %}
 
+{% block pageContent %}
     <form data-method="PUT" id="form-update-service-order"
           data-url="{% url 'ServiceOrderDetailAPI' data.pk %}"
           data-url-redirect="{% url 'ServiceOrderList' %}"

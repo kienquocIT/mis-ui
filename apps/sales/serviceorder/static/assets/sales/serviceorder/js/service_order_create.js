@@ -186,4 +186,20 @@ $(document).ready(function () {
     handleModalPaymentDetailEvent()
 
     setUpFormSubmit($('#form-create-service-order'))
+
+    IndicatorControl.$openCanvas.on('click', function () {
+        let formInstance = new SetupFormSubmit($('#form-create-service-order'))
+        if (formInstance.dataForm.hasOwnProperty('attachment')) {
+            formInstance.dataForm['attachment'] = $x.cls.file.get_val(
+                formInstance.dataForm?.['attachment'],
+                []
+            )
+        } else {
+            formInstance.dataForm['attachment'] = []
+        }
+        setUpFormData(formInstance);
+        IndicatorControl.loadIndicator(formInstance?.['dataForm']);
+        IndicatorControl.$canvas.offcanvas('show');
+    });
+
 })

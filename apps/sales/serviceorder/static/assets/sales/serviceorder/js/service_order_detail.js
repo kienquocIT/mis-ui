@@ -63,7 +63,8 @@ class DetailDataHandler {
         const data_url = $form.attr('data-url');
         $.fn.callAjax2({
             url: data_url,
-            method: 'GET'
+            method: 'GET',
+            isLoading: true,
         }).then(
             (resp) => {
                 const data = $.fn.switcherResp(resp);

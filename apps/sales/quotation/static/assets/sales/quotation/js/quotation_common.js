@@ -2914,7 +2914,7 @@ class QuotationDataTableHandle {
         QuotationDataTableHandle.$tableProduct.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
-            buttons: DTBControl.customExportExel(),
+            // buttons: DTBControl.customExportExel(),
             ordering: false,
             paging: false,
             info: false,
@@ -3343,7 +3343,7 @@ class QuotationDataTableHandle {
             },
             initComplete: function () {
                 // add buttons
-                DTBControl.pushButtonsToDtb("datable-quotation-create-product");
+                // DTBControl.pushButtonsToDtb("datable-quotation-create-product");
             },
         });
     };

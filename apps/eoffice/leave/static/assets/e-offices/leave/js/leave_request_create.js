@@ -1,4 +1,3 @@
-const $FormElm = $('#leave_create')
 
 $(document).ready(function () {
     const $EmpElm = $('#selectEmployeeInherit')
@@ -35,7 +34,7 @@ $(document).ready(function () {
     }, 200)
 
     // form submit
-    SetupFormSubmit.validate($FormElm,{
+    SetupFormSubmit.validate($('#leave_form'),{
         rules: {
             title: {
                 required: true,

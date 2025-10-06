@@ -138,6 +138,7 @@ $(document).ready(function () {
     ServiceOrder.initPageSelect()
     ServiceOrder.loadCurrencyRateData()
     ServiceOrder.loadTaxData()
+    ServiceOrder.loadUoMData()
 
     ServiceOrder.initProductModalDataTable()
     ServiceOrder.initServiceDetailDataTable()

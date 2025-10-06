@@ -23,10 +23,7 @@ $(function () {
         QuotationDataTableHandle.dataTableProduct();
         QuotationDataTableHandle.dataTableCost();
         QuotationDataTableHandle.dataTableExpense();
-        if (!QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {  // quotation
-            QuotationDataTableHandle.dataTableQuotationIndicator();
-        } else {  // sale order
-            QuotationDataTableHandle.dataTableSaleOrderIndicator();
+        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {  // sale order
             QuotationDataTableHandle.dataTablePaymentStage();
             QuotationDataTableHandle.dataTableInvoice();
             QuotationDataTableHandle.dataTableSelectTerm();
@@ -685,13 +682,6 @@ $(function () {
         });
 
 // INDICATORS
-        $('#tab-indicator').on('click', function () {
-            if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
-                indicatorHandle.loadIndicator();
-                QuotationLoadDataHandle.loadSetWFRuntimeZone();
-            }
-        });
-
         IndicatorControl.$openCanvas.on('click', function () {
             let datasDetail = QuotationLoadDataHandle.loadGetDatasDetail();
             if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
@@ -930,15 +920,13 @@ $(function () {
                  is_sale_order = true;
              }
              let _form = new SetupFormSubmit(QuotationLoadDataHandle.$form);
-             // Load again indicator when Submit
-             // indicatorHandle.loadIndicator();
              QuotationLoadDataHandle.loadDataTableCost();
              let result = QuotationSubmitHandle.setupDataSubmit(_form);
              if (result === false) {
                  return false;
              }
              QuotationSubmitHandle.setupDataIndicator(result);
-            let submitFields = [
+             let submitFields = [
                 // process
                 'process',
                 'process_stage_app',

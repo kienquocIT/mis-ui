@@ -63,7 +63,7 @@ function setUpFormData(formInstance) {
     formInstance.dataForm['exchange_rate_data'] = ServiceOrder.getExchangeRate()
     formInstance.dataForm['service_detail_data'] = ServiceOrder.getServiceDetailData()
     formInstance.dataForm['work_order_data'] = ServiceOrder.getWorkOrderData()
-    formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
+    // formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
     formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData()
     formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData()
 
@@ -322,7 +322,7 @@ $(document).ready(function () {
         $(this).attr('href', url)
     })
 
-    $('#tab_indicator').on('click', function () {
+    IndicatorControl.$openCanvas.on('click', function () {
         let formInstance = new SetupFormSubmit($('#form-update-service-order'))
         if (formInstance.dataForm.hasOwnProperty('attachment')) {
             formInstance.dataForm['attachment'] = $x.cls.file.get_val(
@@ -334,6 +334,7 @@ $(document).ready(function () {
         }
         setUpFormData(formInstance);
         IndicatorControl.loadIndicator(formInstance?.['dataForm']);
+        IndicatorControl.$canvas.offcanvas('show');
     });
 
 })

@@ -16,8 +16,6 @@ $(function () {
                     LeaseOrderLoadDataHandle.$eleStoreDetail.val(JSON.stringify(data));
                     LeaseOrderLoadDataHandle.loadDetailQuotation(data);
                     LeaseOrderLoadDataHandle.loadDataTablesAndDropDowns(data);
-                    LeaseOrderIndicatorHandle.loadIndicator();
-
                     // attachment
                     let enable_edit = true;
                     if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {

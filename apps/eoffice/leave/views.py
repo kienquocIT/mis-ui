@@ -9,7 +9,7 @@ from apps.shared.constant import SYSTEM_STATUS, LEAVE_ACTION
 from apps.shared.msg import LeaveMsg
 
 __all__ = ['LeaveConfigDetail', 'LeaveTypeConfigAPI', 'WorkingCalendarConfig', 'WorkingYearConfig',
-           'WorkingHolidayConfig', 'WorkingCalendarConfigAPI', 'LeaveRequestList', 'LeaveRequestListAPI',
+           'WorkingHolidayConfig', 'LeaveRequestList', 'LeaveRequestListAPI',
            'LeaveRequestCreate', 'LeaveRequestCreateAPI', 'LeaveAvailableList', 'LeaveAvailableListAPI',
            'LeaveRequestDetail', 'LeaveRequestDetailAPI', 'LeaveRequestEdit', 'LeaveRequestEditAPI',
            'LeaveAvailableHistoryAPI', 'LeaveRequestCalendarListAPI', 'LeaveAvailableDDListAPI'
@@ -85,20 +85,6 @@ class WorkingCalendarConfig(View):
     def get(self, request, *args, **kwargs):
         resp = ServerAPI(user=request.user, url=ApiURL.WORKING_CALENDAR_CONFIG).get()
         return resp.auto_return(key_success="wc_cfg")
-
-
-class WorkingCalendarConfigAPI(APIView):
-    @mask_view(
-        login_require=True,
-        auth_require=True,
-        is_api=True,
-    )
-    def put(self, request, *args, **kwargs):
-        resp = ServerAPI(user=request.user, url=ApiURL.WORKING_CALENDAR_CONFIG).put(request.data)
-        if resp.state:
-            resp.result['message'] = LeaveMsg.WORKING_CALENDAR_UPDATE
-            return resp.result, status.HTTP_200_OK
-        return resp.auto_return()
 
 
 class WorkingYearConfig(APIView):

@@ -29,18 +29,39 @@ $(document).ready(function () {
                     },
                     {
                         data: 'date_from',
-                        width: '20%',
+                        width: '25%',
                         render: (row, type, data, meta) => {
+                            let dateFrom = row
+                            if (dateFrom !== '') dateFrom = moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')
                             let html = $(`${$('.date_from').html()}`)
-                            html.find('.f_mor').attr('id', `f_mor_${meta.row}`).attr('name', `morning_shift_f_${
-                                meta.row}`).next('label').attr('for', `f_mor_${meta.row}`)
-                            html.find('.f_aft').attr('id', `f_aft_${meta.row}`).attr('name', `morning_shift_f_${
-                                meta.row}`).next('label').attr('for', `f_aft_${meta.row}`)
-                            html.find('.date-picker').attr('name', `date_from_${meta.row
-                            }`).attr('value', moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')).attr('id', `InputDateFrom_${
-                                meta.row}`).attr('readonly', true)
-                            html.find(`[name="morning_shift_f_${meta.row}"][value="${data.morning_shift_f
-                            }"]`).attr('checked', true)
+                            html.find('.all_day')
+                                .attr('id', `all_${meta.row}`)
+                                .attr('name', `day_shift_${meta.row}`)
+                                .attr('data-zone', 'detail_data')
+                                .next('label').attr('for', `all_${meta.row}`)
+
+                            html.find('.first_half')
+                                .attr('id', `first_${meta.row}`)
+                                .attr('name', `day_shift_${meta.row}`)
+                                .attr('data-zone', 'detail_data')
+                                .next('label').attr('for', `first_${meta.row}`)
+
+                            html.find('.second_half')
+                                .attr('id', `second_${meta.row}`)
+                                .attr('name', `day_shift_${meta.row}`)
+                                .attr('data-zone', 'detail_data')
+                                .next('label').attr('for', `second_${meta.row}`)
+
+                            html.find('.date-picker')
+                                .attr('name', `date_from_${meta.row}`)
+                                .attr('value', dateFrom)
+                                .attr('id', `InputDateFrom_${meta.row}`)
+                                .attr('data-zone', 'detail_data')
+                            let nameIptTrue = `.all_day`
+                            if (data?.['first_half']) nameIptTrue = `.first_half`
+                            if (data?.['second_half']) nameIptTrue = `.second_half`
+                            html.find(`${nameIptTrue}[name="day_shift_${meta.row}"]`)
+                                .attr('checked', true)
                             return html.prop('outerHTML')
                         }
                     },
@@ -48,17 +69,14 @@ $(document).ready(function () {
                         data: 'date_to',
                         width: '20%',
                         render: (row, type, data, meta) => {
-                            let html = $(`${$('.date_from').html()}`)
-                            let _date_row = moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')
-                            html.find('.f_mor').attr('id', `t_mor_${meta.row}`).attr('name', `morning_shift_t_${
-                                meta.row}`).next('label').attr('for', `t_mor_${meta.row}`)
-                            html.find('.f_aft').attr('id', `t_aft_${meta.row}`).attr('name', `morning_shift_t_${
-                                meta.row}`).next('label').attr('for', `t_aft_${meta.row}`)
-                            html.find('.date-picker').attr('name', `date_to_${meta.row}`).attr('id', `InputDateTo_${
-                                meta.row}`).attr('value', _date_row).attr('readonly', true)
-                            html.find('.spec-date-layout > span').remove()
-                            html.find(`[name="morning_shift_t_${meta.row}"][value="${data.morning_shift_t}"]`).attr('checked', true)
-                            return html.prop('outerHTML')
+                            let dateTo = row
+                            if (dateTo !== '') dateTo = moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')
+                            let html = `<div class="form-group spec-date-layout mb-0">`
+                                + `<div class="input-affix-wrapper">`
+                                + `<input type="text" name="date_to_${meta.row}" value="${dateTo}" id="InputDateFrom_$${
+                                    meta.row}" class="form-control date-picker" autocomplete="off" data-zone="detail_data">`
+                                + `<span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span></div></div>`
+                            return html
                         }
                     },
                     {
@@ -204,8 +222,7 @@ $(document).ready(function () {
             const LType = item.leave_available
             if (LType.check_balance && item.subtotal > LType.available) {
                 let noti = $(`<span class="text-red">`)
-                noti.text($trans.attr('data-out-of-stock'))
-
+                noti.text($.fn.gettext('Not enough leave or no leave available'))
                 let setITerval = setInterval(() => {
                     const $btn = $('.btnAddFilter')
                     if ($btn.length) {

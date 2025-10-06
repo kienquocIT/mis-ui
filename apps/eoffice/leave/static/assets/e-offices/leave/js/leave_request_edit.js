@@ -1,13 +1,10 @@
-const $FormElm = $('#leave_edit')
-
 function validApproved(dataList) {
-    let $trans = $('#trans-factory')
     if (!dataList.length) return true
     for (let item of dataList) {
         const LType = item.leave_available
         if (LType.check_balance && item.subtotal > LType.available) {
             let noti = $(`<span class="text-red">`)
-            noti.text($trans.attr('data-out-of-stock'))
+            noti.text($.fn.gettext('Not enough leave or no leave available'))
 
             let setITerval = setInterval(() => {
                 const $btn = $('.btnAddFilter')
@@ -22,10 +19,11 @@ function validApproved(dataList) {
 }
 
 $(document).ready(function () {
+    const $EmpElm = $('#selectEmployeeInherit')
 
     // get detail request info
     $.fn.callAjax2({
-        'url': $urlElm.attr('data-leave-detail'),
+        'url': $('#url-factory').attr('data-leave-detail'),
         'method': 'GET',
     }).then(
         (resp) => {
@@ -71,7 +69,7 @@ $(document).ready(function () {
     )
 
     // form submit
-    SetupFormSubmit.validate($FormElm, {
+    SetupFormSubmit.validate($('#leave_form'), {
         rules: {
             title: {
                 required: true,

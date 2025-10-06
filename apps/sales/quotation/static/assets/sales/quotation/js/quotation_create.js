@@ -692,11 +692,11 @@ $(function () {
             }
         });
 
-        $('#tab_indicator').on('click', function () {
+        IndicatorControl.$openCanvas.on('click', function () {
             let datasDetail = QuotationLoadDataHandle.loadGetDatasDetail();
             if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
                 let _form = new SetupFormSubmit(QuotationLoadDataHandle.$form);
-                let dataForm = QuotationSubmitHandle.setupDataSubmit(_form);
+                let dataForm = QuotationSubmitHandle.setupDataSubmit(_form, 1);
                 IndicatorControl.loadIndicator(dataForm, datasDetail);
                 QuotationLoadDataHandle.loadSetWFRuntimeZone();
             }
@@ -708,6 +708,7 @@ $(function () {
                 }
                 IndicatorControl.dtbIndicator(indicatorsData);
             }
+            IndicatorControl.$canvas.offcanvas('show');
         });
 
 // PAYMENT STAGE

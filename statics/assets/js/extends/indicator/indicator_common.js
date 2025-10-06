@@ -1,7 +1,9 @@
 class IndicatorControl {
     static isOrder = $('#is_order').text();
-    static $table = $('#dtb-indicator');
-    static $indicatorDataEle = $('#indicator-data');
+    static $canvas = $('#indicatorCanvas');
+    static $openCanvas = $('#open_indicator');
+    static $table = $('#dtb_indicator');
+    static $indicatorDataEle = $('#indicator_data');
 
     static renderTbl() {
         let trCustomEle = IndicatorControl.$table[0].querySelector('.tr-custom');
@@ -119,6 +121,7 @@ class IndicatorControl {
             data: data ? data : [],
             paging: false,
             info: false,
+            searching: false,
             columnDefs: [],
             columns: IndicatorControl.renderDtbColumns(),
             drawCallback: function () {

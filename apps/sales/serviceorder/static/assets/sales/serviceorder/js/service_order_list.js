@@ -132,15 +132,13 @@ class loadServiceOrderInfo {
                 {
                     className: "w-20",
                     render: (data, type, row) => {
-                        let startDate = DateTimeControl.formatDateType('YYYY-MM-DD','DD/MM/YYYY', row?.['start_date'] || '--');
-                        return startDate;
+                        return DateTimeControl.formatDateType('YYYY-MM-DD', 'DD/MM/YYYY', row?.['start_date'] || '--');
                     }
                 },
                 {
                     className: "w-20",
                     render: (data, type, row) => {
-                        let endDate = DateTimeControl.formatDateType('YYYY-MM-DD','DD/MM/YYYY', row?.['end_date'] || '--');
-                        return endDate;
+                        return DateTimeControl.formatDateType('YYYY-MM-DD', 'DD/MM/YYYY', row?.['end_date'] || '--');
                     }
                 },
             ],
@@ -163,7 +161,7 @@ class loadServiceOrderInfo {
 
     static loadTotalDeliveryProduct() {
         // get all product list from selected work order
-        let data_list = loadServiceOrderInfo.combineDeliveryProductData()
+        let data_list = loadServiceOrderInfo.combineDeliveryProductData();
 
         // init DataTable
         const $tb = $('#total_delivery_product');
@@ -173,44 +171,28 @@ class loadServiceOrderInfo {
             scrollX: true,
             scrollCollapse: true,
             rowIndex: true,
-            paging: false,
             data: data_list,
             columns: [
                 {
                     className: "w-5",
-                    render: () => {
-                        return "";
+                    render: (data, type, row, meta) => {
+                        return meta.row + 1;
                     }
                 },
                 {
-                    className: "w-30",
-                    render: () => {
-                        return "";
+                    className: "w-70",
+                    render: (data, type, row) => {
+                        return `<span class="badge badge-sm badge-light">${row?.['code'] || ''}</span><br><span>${row?.['title'] || ''}</span>`;
                     }
                 },
                 {
-                    className: "w-45",
-                    render: () => {
-                        return "";
-                    }
-                },
-                {
-                    className: "w-20",
-                    render: () => {
-                        return "";
+                    className: "w-25 text-center",
+                    data: 'delivered_quantity',
+                    render: (data) => {
+                        return data || 0;
                     }
                 }
-            ],
-            initComplete: function () {
-                if (data_list.length > 0) {
-                    $tb.find('tbody tr').each(function (index, ele) {
-                        $(ele).find('td:eq(0)').html(index + 1);
-                        $(ele).find('td:eq(1)').html(`${data_list[index]?.['code']}`);
-                        $(ele).find('td:eq(2)').html(`${data_list[index]?.['title']}`);
-                        $(ele).find('td:eq(3)').html(`${data_list[index]?.['delivered_quantity']}`);
-                    })
-                }
-            }
+            ]
         })
     }
 
@@ -236,8 +218,8 @@ class loadServiceOrderInfo {
                 }
             }
         });
-        const consolidatedProducts = Object.values(productMap); // convert to array
-        return consolidatedProducts
+
+        return Object.values(productMap);   // convert to array
     }
 }
 
@@ -250,6 +232,7 @@ $('document').ready(function () {
         $('#delivery_work_order_list').find('.row-checkbox').prop('checked', false);
         let service_order_row_id = $(this).attr('data-id');
         loadServiceOrderInfo.loadDeliveryWorkOrderList(service_order_row_id);
+        loadServiceOrderInfo.loadTotalDeliveryProduct();
     });
 
     // event when save delivery service button

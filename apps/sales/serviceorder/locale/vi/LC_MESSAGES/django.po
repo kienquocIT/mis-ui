@@ -215,4 +215,4 @@ msgstr "Chọn Phiếu Công Việc Có Giao Hàng"
 
 #
 msgid "No of service delivered"
-msgstr "Số sản phẩm chưa được giao"
+msgstr "Số SP chưa được giao"

@@ -175,7 +175,8 @@ const ServiceOrder = (function($) {
             uom_data: rowData?.sale_default_uom ?? {},
             duration_unit_data: rowData?.duration_unit_data ?? {},
             duration_id: rowData?.duration_unit_data ? rowData?.duration_unit_data?.id : null,
-            id: uniqueStr
+            id: uniqueStr,
+            service_percent: 0
         }
 
         if (pageVariable.modalContext === 'serviceDetail') {
@@ -487,6 +488,16 @@ const ServiceOrder = (function($) {
                     className: 'w-15',
                     render: (data, type, row) => {
                         return `<textarea class="form-control cost-description" rows="2">${row?.['description'] || ''}</textarea>`
+                    }
+                },
+                {
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        const percentage = row?.['service_percent'] || 0
+                        return `<div class="input-group">
+                                    <input type="number" class="form-control service-percentage" value="${percentage}" min="0" max="100" step="0.01">
+                                    <span class="input-group-text">%</span>
+                                </div>`
                     }
                 },
                 {
@@ -869,24 +880,19 @@ const ServiceOrder = (function($) {
             scrollCollapse: true,
             columns: [
                 {
-                    width: '5%',
-                    title: $.fn.gettext(''),
-                    className: 'text-center',
+                    className: 'text-center w-3',
                     render: (data, type, row, meta) => {
                         return `<div class="btn-add-cost-area"></div>`
                     }
                 },
                 {
-                    width: '4%',
-                    title: $.fn.gettext('Order'),
-                    className: 'text-center',
+                    className: 'text-center w-2',
                     render: (data, type, row, meta) => {
                         return Number(meta.row) + 1
                     }
                 },
                 {
-                    width: '15%',
-                    title: $.fn.gettext('Title'),
+                    className: 'w-15',
                     render: (data, type, row) => {
                         const title = row.title || ''
                         return `<div class="input-group">
@@ -899,8 +905,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '15%',
-                    title: $.fn.gettext('Description'),
+                    className: 'w-10',
                     render: (data, type, row) => {
                         const description = row.description || ''
                         return `<div class="input-group">
@@ -912,8 +917,15 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '6%',
-                    title: $.fn.gettext('Quantity'),
+                    className: 'w-10',
+                    render: (data, type, row) => {
+                        const expenseListUrl = pageElement.$urlScript.attr('data-expense-item-list-url')
+
+                        return `<select class="form-select select2 work-order-cost-expense-select" data-url="${expenseListUrl}" data-keyResp="expense_item_list"/>`
+                    }
+                },
+                {
+                    className: 'w-5',
                     render: (data, type, row) => {
                         const quantity = row.quantity || 0
                         return `<div class="input-group">
@@ -927,8 +939,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '10%',
-                    title: $.fn.gettext('Unit Cost'),
+                    className: 'w-10',
                     render: (data, type, row) => {
                         const unitCost = row.unit_cost || 0
                         const selectedCurrency = row.currency_id || ''
@@ -947,8 +958,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '8%',
-                    title: $.fn.gettext('Currency'),
+                    className: 'w-5',
                     render: (data, type, row) => {
                         const selectedCurrency = row.currency_id || ''
                         let options = '<option value="">Select</option>'
@@ -970,8 +980,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '8%',
-                    title: $.fn.gettext('Tax'),
+                    className: 'w-5',
                     render: (data, type, row) => {
                         const taxListUrl = pageElement.$urlScript.attr('data-tax-list-url')
                         const selectedTax = row.tax_id || ''
@@ -982,8 +991,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '12%',
-                    title: $.fn.gettext('Total Amount'),
+                    className: 'w-15',
                     render: (data, type, row) => {
                         const total = row.total_value || 0
                         const selectedCurrency = row.currency_id || ''
@@ -996,8 +1004,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '12%',
-                    title: $.fn.gettext('Total'),
+                    className: 'w-15',
                     render: (data, type, row) => {
                         const exchangedTotal = row.exchanged_total_value || 0
                         return `<div>
@@ -1006,9 +1013,7 @@ const ServiceOrder = (function($) {
                     }
                 },
                 {
-                    width: '5%',
-                    title: $.fn.gettext('Action'),
-                    className: 'text-center',
+                    className: 'text-center w-5',
                     render: (data, type, row) => {
                         return `<button
                                     type="button"
@@ -1059,6 +1064,24 @@ const ServiceOrder = (function($) {
                             data:{
                                 id: taxId,
                                 title: taxData.title,
+                            }
+                        })
+                    } else {
+                        initSelect($(this))
+                    }
+                })
+
+                const $expenseSelects = $table.find('.work-order-cost-expense-select')
+                $expenseSelects.each(function() {
+                    const $row = $(this).closest('tr')
+                    const rowData = $table.DataTable().row($row).data()
+                    const expenseData = rowData.expense_data || {}
+
+                    if(Object.keys(expenseData).length > 0) {
+                        initSelect($(this), {
+                            data: {
+                                id: expenseData?.id,
+                                title: expenseData?.title,
                             }
                         })
                     } else {
@@ -1133,6 +1156,30 @@ const ServiceOrder = (function($) {
                                     />
                                     <span class="input-group-text">%</span>
                                 </div>`
+                    }
+                },
+                {
+                    width: '10%',
+                    title: $.fn.gettext('Remaining'),
+                    render: (data, type, row) => {
+                        // Calculate remaining percentage
+                        const contribution = row.contribution_percent || 0
+                        const totalContribution = row.total_contribution_percent || 0
+                        const remaining = 100 - totalContribution
+
+                        // Color code based on remaining value
+                        let badgeClass = 'badge-soft-success'
+                        if (remaining < 0) {
+                            badgeClass = 'badge-soft-danger'  // Over-allocated
+                        } else if (remaining > 0) {
+                            badgeClass = 'badge-soft-warning'  // Under-allocated
+                        }
+
+                        const displayNumber = remaining + contribution
+
+                        return `<span class="badge ${badgeClass} remaining-contribution"  data-remaining-contribution="${remaining}">
+                                    ${displayNumber.toFixed(2)}%
+                                </span>`
                     }
                 },
                 {
@@ -2324,6 +2371,78 @@ const ServiceOrder = (function($) {
         })
     }
 
+    function handleChangeServicePercentage() {
+        pageElement.serviceDetail.$table.on('change', '.service-percentage', function(e) {
+            const $input = $(this)
+            const $row = $input.closest('tr')
+            const table = pageElement.serviceDetail.$table.DataTable()
+            const rowData = table.row($row).data()
+
+            const newPercentage = parseFloat($input.val()) || 0
+
+            // Validate individual percentage
+            if (newPercentage < 0 || newPercentage > 100) {
+                $.fn.notifyB({
+                    description: $.fn.gettext('Percentage must be between 0 and 100')
+                }, 'failure')
+                $input.val(rowData.service_percent || 0)
+                return
+            }
+
+            // Calculate total percentage across all rows
+            let totalPercentage = 0
+            table.rows().every(function() {
+                const data = this.data()
+                const $currentRow = $(this.node())
+
+                if ($currentRow[0] === $row[0]) {
+                    // Use the new value for the current row
+                    totalPercentage += newPercentage
+                } else {
+                    // Use existing values for other rows
+                    const existingPercentage = parseFloat(data.service_percent) || 0
+                    totalPercentage += existingPercentage
+                }
+            })
+
+            // Check if total exceeds 100%
+            if (totalPercentage > 100) {
+                $.fn.notifyB({
+                    description: $.fn.gettext(`Total percentage cannot exceed 100%. Current total would be ${totalPercentage.toFixed(2)}%`)
+                }, 'failure')
+                $input.val(rowData.service_percent || 0)
+                return
+            }
+
+            // Update the row data
+            rowData.service_percent = newPercentage
+
+            // Update percentage display in footer or summary area
+            updateServicePercentageSummary()
+        })
+    }
+
+    function updateServicePercentageSummary() {
+        const table = pageElement.serviceDetail.$table.DataTable()
+        let totalPercentage = 0
+
+        table.rows().every(function() {
+            const rowData = this.data()
+            totalPercentage += parseFloat(rowData.service_percent) || 0
+        })
+
+        // You can display this somewhere in your UI
+        const remaining = 100 - totalPercentage
+
+        // Optional: Add a visual indicator for the total
+        if (Math.abs(totalPercentage - 100) < 0.01) {
+            // Total is 100% (allowing for floating point precision)
+            console.log('Total percentage is 100%')
+        } else if (totalPercentage < 100) {
+            console.log(`Remaining: ${remaining.toFixed(2)}%`)
+        }
+    }
+
     // Helper function to update payment row totals after reset
     function updatePaymentRowAfterReset(paymentId) {
         const paymentTable = pageElement.payment.$table.DataTable()
@@ -2400,10 +2519,6 @@ const ServiceOrder = (function($) {
             const rowData = table.row($row).data()
             const oldEndDate = rowData.end_date
             rowData.end_date = moment(picker.endDate).format('DD/MM/YYYY')
-            // if (!validateDates(rowData)) {
-            //     rowData.end_date = oldEndDate
-            //     $input.val(oldEndDate || '')
-            // }
         })
         pageElement.workOrder.$table.on('click', '.btn-open-task', function () {
             TaskExtend.openAddTaskFromTblRow(this, pageElement.workOrder.$table);
@@ -2490,6 +2605,23 @@ const ServiceOrder = (function($) {
             rowData.exchanged_total_value = exchangedTotal
             $.fn.initMaskMoney2()
             // tableWorkOrderCost.row($row).data(rowData).draw(false)
+        })
+    }
+
+    function handleSelectWorkOrderCostExpense(){
+        pageElement.modalData.$tableWorkOrderCost.on('change', 'select.work-order-cost-expense-select', function(e){
+            const $select = $(e.currentTarget)
+            const $row = $select.closest('tr')
+
+            const expenseId = $select.val()
+            const expenseData = SelectDDControl.get_data_from_idx($select, expenseId)
+
+            const rowData = pageElement.modalData.$tableWorkOrderCost.DataTable().row($row).data()
+            rowData.expense_item_id = expenseData?.id
+            rowData.expense_data = {
+                id: expenseData?.id,
+                title: expenseData?.title
+            }
         })
     }
 
@@ -3090,6 +3222,48 @@ const ServiceOrder = (function($) {
                 });
             }
         });
+    }
+
+    function handleChangeProductContributionPercentage(){
+        pageElement.modalData.$tableProductContribution.on('input change', '.pc-contribution', function(e) {
+            updateRemainingContributionDisplay()
+        })
+    }
+
+    function updateRemainingContributionDisplay() {
+        const table = pageElement.modalData.$tableProductContribution.DataTable()
+
+        table.rows().every(function() {
+            const rowData = this.data()
+            const $row = $(this.node())
+
+            // Get current contribution value from input
+            const currentContribution = parseFloat($row.find('.pc-contribution').val()) || 0
+
+            // Old contribution from work order
+            const oldContribution = rowData.contribution_percent || 0
+
+            // Get the badge
+            const $remainingBadge = $row.find('.remaining-contribution')
+
+            // Remaining contribution doesn't include current contribution value
+            let remainingContribution = Number($remainingBadge.attr('data-remaining-contribution')) || 0
+            let displayNumber = remainingContribution - currentContribution + oldContribution
+
+            // Update badge class based on value
+            $remainingBadge
+                .removeClass('badge-soft-success badge-soft-warning badge-soft-danger')
+                .addClass(() => {
+                    if (Math.abs(displayNumber) < 0.01) {
+                        return 'badge-soft-success'  // Fully allocated (0%)
+                    } else if (displayNumber < 0) {
+                        return 'badge-soft-danger'   // Over-allocated (negative)
+                    } else {
+                        return 'badge-soft-warning'  // Under-allocated (positive)
+                    }
+                })
+                .text(`${displayNumber.toFixed(2)}%`)
+        })
     }
 
     // ============ payment =============
@@ -3933,6 +4107,7 @@ const ServiceOrder = (function($) {
                 quantity: currentQuantity,
                 uom: rowData.uom_data?.id || null,
                 uom_data: rowData.uom_data,
+                service_percent: parseFloat(rowData.service_percent) || 0,
                 price: price,
                 tax: rowData.tax_data?.id || null,
                 tax_data: rowData.tax_data || {},
@@ -4158,6 +4333,26 @@ const ServiceOrder = (function($) {
         })
 
         return !hasError
+    }
+
+    function validateTotalServiceDetailPercent() {
+        // Validate service detail
+        const serviceDetailTable = ServiceOrder.pageElement.serviceDetail.$table.DataTable()
+
+        let totalPercentage = 0
+        serviceDetailTable.rows().every(function() {
+            const rowData = this.data()
+            totalPercentage += rowData.service_percent
+        })
+
+        if (totalPercentage !== 100){
+            $.fn.notifyB({
+                description: $.fn.gettext(`Total Service Detail Percentage must equal 100`)
+            }, 'failure')
+            return false
+        }
+
+        return true
     }
 
     // ============ detail handler ==============
@@ -4784,6 +4979,7 @@ const ServiceOrder = (function($) {
         handleChangeServicePrice,
         handleChangeServiceDescription,
         loadServiceDetailSummaryValue,
+        handleChangeServicePercentage,
 
         handleChangeWorkOrderDetail,
         handleClickOpenWorkOrderCost,
@@ -4794,6 +4990,7 @@ const ServiceOrder = (function($) {
         handleChangeWorkOrderCostQuantityAndUnitCost,
         handleSaveWorkOrderCost,
         handleChangeWorkOrderCostTitleAndDescription,
+        handleSelectWorkOrderCostExpense,
         handleClickOpenServiceDelivery,
         handleSaveProductContribution,
         handleCheckDelivery,
@@ -4804,7 +5001,7 @@ const ServiceOrder = (function($) {
         handleSaveModalPackage,
         handleTogglePackageChildren,
         handleSelectContainer,
-
+        handleChangeProductContributionPercentage,
 
         handleChangePaymentDate,
         handleAddPaymentRow,
@@ -4821,6 +5018,7 @@ const ServiceOrder = (function($) {
         getWorkOrderData,
         getPaymentData,
         validateDates,
+        validateTotalServiceDetailPercent,
 
         loadExchangeRateData,
         loadServiceDetailRelatedData,

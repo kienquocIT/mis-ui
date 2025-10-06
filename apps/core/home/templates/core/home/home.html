@@ -5,23 +5,35 @@
 {% endblock %}
 {% block cssHeader %}
     <link href="{% static 'assets/css/core_home/home.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css/core_home/day_flow_homepage.css' %}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/themes/themes.light.min.css' %}">
-    <style>
-    #idxPageContent {
-        background-color: #A7C1E1;
-        background-image: url("{% static 'assets/js/home_4.jpg' %}");
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: cover;
-        padding: 1rem;
-    }
-    </style>
+{#    <style>#}
+{#        #idxPageContent {#}
+            {#background-color: #A7C1E1;#}
+{#            background-image: url("{% static 'assets/js/home_4.jpg' %}");#}
+{#            background-repeat: no-repeat;#}
+{#            background-position: center;#}
+{#            background-size: cover;#}
+{#            padding: 1rem;#}
+{#        }#}
+{#    </style>#}
 {% endblock %}
 {% block pageAction %}{% endblock %}
 {% block pageContent %}
     {{ data.employee_current_data | json_script:"employee_current_data" }}
     {{ data.company_current_data | json_script:"company_current_data" }}
+
+    <div id="sun"></div>
+    <div id="moon"></div>
+
+    <div style="position:absolute; top:10px; left:10px; z-index:1000; background:rgba(255,255,255,0.7); padding:5px; border-radius:6px;">
+        <div style="margin-top:8px;">
+            <label for="timeSlider">Giờ trong ngày:</label>
+            <input type="range" id="timeSlider" min="0" max="24" step="0.25" value="12">
+            <span id="sliderVal">12:00</span>
+        </div>
+    </div>
 
     <div id="setting-home" data-bs-toggle="tooltip" title="{% trans 'Home UI config' %}">
         <span class="icon">
@@ -30,8 +42,8 @@
     </div>
     <div class="row mb-5" style="display: none;">
         <div class="col-12 mb-3">
-            <h1 class="text-white fw-bold" id="employee-current-fullname"></h1>
-            <h5 class="text-white fw-bold" id="employee-current-company"></h5>
+            <h1 class="fw-bold text-primary" id="employee-current-fullname"></h1>
+            <h6 class="fw-bold text-primary" id="employee-current-company"></h6>
         </div>
         <div class="col col-sm-12 col-md-6 col-lg-6 col-xl-9">
             <div class="row" id="my-task-summary-report" data-url="{% url 'MyTaskSummaryReport' %}">
@@ -39,8 +51,8 @@
                     <div class="card transparent-card">
                         <div class="card-body p-2">
                             <div class="summary-item" data-item="actives">
-                                <p class="summary-value"></p>
-                                <p class="summary-title">{% trans 'Actives Task' %}</p>
+                                <p class="summary-value text-muted"></p>
+                                <p class="summary-title text-muted">{% trans 'Actives Task' %}</p>
                             </div>
                         </div>
                     </div>
@@ -49,8 +61,8 @@
                     <div class="card transparent-card">
                         <div class="card-body p-2">
                             <div class="summary-item" data-item="overdue">
-                                <p class="summary-value"></p>
-                                <p class="summary-title">{% trans 'Overdue Task' %}</p>
+                                <p class="summary-value text-muted"></p>
+                                <p class="summary-title text-muted">{% trans 'Overdue Task' %}</p>
                             </div>
                         </div>
                     </div>
@@ -59,8 +71,8 @@
                     <div class="card transparent-card">
                         <div class="card-body p-2">
                             <div class="summary-item" data-item="upcoming_today">
-                                <p class="summary-value"></p>
-                                <p class="summary-title">{% trans 'Upcoming Today Task' %}</p>
+                                <p class="summary-value text-muted"></p>
+                                <p class="summary-title text-muted">{% trans 'Upcoming Today Task' %}</p>
                             </div>
                         </div>
                     </div>
@@ -69,8 +81,8 @@
                     <div class="card transparent-card">
                         <div class="card-body p-2">
                             <div class="summary-item" data-item="upcoming_soon">
-                                <p class="summary-value"></p>
-                                <p class="summary-title">{% trans 'Upcoming 3 days Task' %}</p>
+                                <p class="summary-value text-muted"></p>
+                                <p class="summary-title text-muted">{% trans 'Upcoming 3 days Task' %}</p>
                             </div>
                         </div>
                     </div>
@@ -505,6 +517,7 @@
         const msgTextErrLinked = `{% trans "Hasn't been link to the employee!" %}`;
         const msgTextErrLinked2 = "{% trans 'Please switch the current company to the one that already has an employee link or contact the administrator to add an employee to the account.' %}"
     </script>
+    <script src="{% static 'assets/js/core_home/day_flow_homepage.js' %}"></script>
     <script src="{% static 'assets/js/core_home/home.js' %}"></script>
 
     <script src="{% static 'vendors/chartjs/chart.umd.min.js' %}"></script>

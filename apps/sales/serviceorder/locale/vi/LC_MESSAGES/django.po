@@ -208,3 +208,11 @@ msgstr "ĐV Thời Lượng"
 #
 msgid "Work Order Cost"
 msgstr "Chi phí sản xuất"
+
+#
+msgid "Select Work Order with Delivery"
+msgstr "Chọn Phiếu Công Việc Có Giao Hàng"
+
+#
+msgid "No of service delivered"
+msgstr "Số SP chưa được giao"

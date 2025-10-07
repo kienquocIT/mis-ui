@@ -102,13 +102,9 @@ class TabExpenseFunction {
                     render: () => {
                         return `
                           <button ${option === 'detail' ? 'disabled' : ''}
-                           type="button" 
-                                  class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row">
-                            <span class="icon">
-                              <i class="far fa-trash-alt"></i>
-                            </span>
-                          </button>
-                        `;
+                               type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover del-row">
+                               <span class="icon"><i class="far fa-trash-alt"></i></span>
+                          </button>`;
                     }
                 },
             ],

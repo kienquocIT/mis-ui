@@ -20,6 +20,5 @@ logs/*
 *.pyd
 build/
 dist/
+
 __pycache__/
-.venv/
-venv/

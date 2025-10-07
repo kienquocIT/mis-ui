@@ -1829,7 +1829,6 @@ $(document).ready(function () {
     }
 
     $(document).on('click', '.see-detail-wh', function () {
-        hopscotch.endTour()
         WindowControl.showLoading()
         $('#view-warehouse-title').text($(this).closest('td').find('.warehouse_row').text())
         $('#view-warehouse-title').attr('data-wh-id', $(this).closest('td').find('.warehouse_row').attr('data-id'))
@@ -1871,7 +1870,6 @@ $(document).ready(function () {
     })
 
     $(document).on('click', '.see-detail-prd', function () {
-        hopscotch.endTour()
         WindowControl.showLoading()
         $('#view-product-title').text($(this).closest('tr').find('.prd-title').text())
         let dataParam = {}
@@ -1932,7 +1930,6 @@ $(document).ready(function () {
     })
 
     $(document).on('click', '.qr-code-sn-info', function () {
-        hopscotch.endTour()
         let dataParam = {}
         dataParam['product_id'] = $(this).attr('data-product-id')
         dataParam['product_code'] = $(this).attr('data-product-code')
@@ -1981,7 +1978,6 @@ $(document).ready(function () {
     })
 
     $(document).on('click', '.qr-code-lot-info', function () {
-        hopscotch.endTour()
         let dataParam = {}
         dataParam['product_id'] = $(this).attr('data-product-id')
         dataParam['product_code'] = $(this).attr('data-product-code')

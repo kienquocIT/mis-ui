@@ -5841,8 +5841,8 @@ msgid "Cost per warehouse management"
 msgstr "Tính giá cost theo từng kho"
 
 #
-msgid "Cost per project (sale order in Opp)"
-msgstr "Tính giá cost theo dự án (đơn bán hàng trong CHKD)"
+msgid "Cost per project (order in Opp)"
+msgstr "Tính giá cost theo dự án (đơn hàng trong CHKD)"
 
 #
 msgid "Cost per Lot/batch"
@@ -12322,3 +12322,7 @@ msgstr "Danh sách nhiệm vụ được giao"
 #
 msgid "Specific serial number"
 msgstr "Serial đích danh"
+
+#
+msgid "Not available yet"
+msgstr "Chưa hỗ trợ"

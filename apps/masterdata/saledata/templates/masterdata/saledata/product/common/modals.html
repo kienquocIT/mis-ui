@@ -152,3 +152,32 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-specific-serial" tabindex="-1" role="dialog" aria-labelledby="modal-specific-serial" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="min-width: 50%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Specific serial number' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <table id="datatable-specific-serial-number-list" class="table nowrap w-100">
+                            <thead>
+                                <tr class="bg-secondary-light-5">
+                                    <th></th>
+                                    <th>{% trans "Serial number" %}</th>
+                                    <th>{% trans "Value" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

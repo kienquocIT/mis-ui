@@ -62,7 +62,8 @@
         {% include 'sales/inventory/inventory_adjustment/common/information.html' %}
         {% include 'sales/inventory/inventory_adjustment/common/tabs.html' %}
     </form>
-
+{% endblock %}
+{% block modalData %}
     <div class="offcanvas offcanvas-end w-65" tabindex="-1" id="select-items-modal" aria-labelledby="offcanvasTopLabel">
         <div class="offcanvas-header row">
             <div class="col-9"><h5 id="offcanvasRightLabel">{% trans 'Select products from warehouses' %}</h5></div>
@@ -81,7 +82,7 @@
                                             <div class="form-check">
                                                 <input type="checkbox" class="form-check-input" id="selected_all_product">
                                                 <label class="form-check-label"></label>
-                                            </span>
+                                            </div>
                                         </th>
                                         <th class="w-40">{% trans 'Warehouse' %}</th>
                                         <th class="w-50">{% trans 'Product' %}</th>
@@ -97,8 +98,6 @@
             <button id="btn-select-product" type="button" class="btn btn-primary mt-3" data-bs-dismiss="offcanvas">{% trans 'Select' %}</button>
         </div>
     </div>
-{% endblock %}
-{% block modalData %}
     {% include 'printer/print.html' %}
 {% endblock %}
 {% block jsFooter %}

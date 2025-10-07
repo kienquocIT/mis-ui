@@ -196,15 +196,7 @@ function loadTabTodo() {
                     }
                 },
                 {
-                    className: 'w-15',
-                    data: 'app_code_parsed',
-                    render: (data, type, row) => {
-                        return data;
-                    }
-                },
-                {
-                    data: 'doc_title',
-                    className: 'w-25',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         let stage__runtime = row['stage__runtime'];
                         let urlData = UrlGatewayReverse.get_url(
@@ -212,14 +204,14 @@ function loadTabTodo() {
                             stage__runtime?.['app_code'],
                             {'redirect': true},
                         );
-                        return `<a href="${urlData}">${data ? data : "_"}</a>`;
+                        return `<span>${row?.['app_code_parsed']}</span><br><a href="${urlData}">${row?.['doc_title'] || "_"}</a>`;
                     }
                 },
                 {
-                    className: 'w-10',
+                    className: 'w-25',
                     data: 'stage',
                     render: (data, type, row) => {
-                        return data ? `<span>${data['title']}</span>` : '';
+                        return data ? `<span style="max-width: 300px" class="text-truncate d-inline-block">${data['title']}</span>` : '';
                     }
                 },
                 {
@@ -237,7 +229,7 @@ function loadTabTodo() {
                     }
                 },
                 {
-                    className: 'w-15 text-right',
+                    className: 'w-10 text-right',
                     data: 'stage__runtime',
                     render: (data, type, row) => {
                         return renderActions(data?.['doc_pined_id'], data?.['id'], data?.['doc_id']);
@@ -283,29 +275,21 @@ function loadTabFollowing() {
                     }
                 },
                 {
-                    className: 'w-15',
-                    data: 'app_code_parsed',
-                    render: (data, type, row) => {
-                        return data;
-                    }
-                },
-                {
-                    className: 'w-25',
-                    data: 'doc_title',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         let urlData = UrlGatewayReverse.get_url(
                             row?.['doc_id'],
                             row?.['app_code'],
                             {'redirect': true},
                         );
-                        return `<a href="${urlData}">${data ? data : "_"}</a>`;
+                        return `<span>${row?.['app_code_parsed']}</span><br><a href="${urlData}">${row?.['doc_title'] || "_"}</a>`;
                     }
                 },
                 {
-                    className: 'w-10',
+                    className: 'w-25',
                     data: 'stage_currents',
                     render: (data, type, row) => {
-                        return data?.['title'] ? `<span>${data?.['title']}</span>` : '';
+                        return data?.['title'] ? `<span style="max-width: 200px" class="text-truncate d-inline-block">${data?.['title']}</span>` : '';
                     }
                 },
                 {
@@ -323,7 +307,7 @@ function loadTabFollowing() {
                     }
                 },
                 {
-                    className: 'w-15 text-right',
+                    className: 'w-10 text-right',
                     data: 'doc_pined_id',
                     render: (data, type, row) => {
                         return renderActions(data, row['id'], row['doc_id']);
@@ -367,9 +351,7 @@ function loadTabPined() {
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    width: "20%",
-                    data: 'title',
+                    className: 'wrap-text w-30',
                     render: (data, type, row) => {
                         let runtime = row['runtime'];
                         let urlData = UrlGatewayReverse.get_url(
@@ -377,26 +359,11 @@ function loadTabPined() {
                             runtime?.['app_code'],
                             {'redirect': true},
                         );
-                        return `<a href="${urlData}">${data ? data : "_"}</a>`;
+                        return `<span>${runtime?.['app_title']}</span><br><a href="${urlData}">${row?.['title'] || "_"}</a>`;
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    width: "20%",
-                    data: 'runtime',
-                    render: (data, type, row) => {
-                        if (data) {
-                            let app_code = data['app_code'];
-                            if (app_code) {
-                                return `<span class="badge badge-light">${app_code}</span>`;
-                            }
-                        }
-                        return '';
-                    }
-                },
-                {
-                    className: 'wrap-text',
-                    width: "20%",
+                    className: 'wrap-text w-25',
                     data: 'runtime',
                     render: (data, type, row) => {
                         let stage_currents = data?.['stage_currents'];
@@ -407,8 +374,7 @@ function loadTabPined() {
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    width: "20%",
+                    className: 'wrap-text w-15',
                     data: 'runtime',
                     render: (data, type, row) => {
                         let assignees = data?.['assignees'];
@@ -419,16 +385,14 @@ function loadTabPined() {
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    width: "15%",
+                    className: 'wrap-text w-15',
                     data: 'date_created',
                     render: (data, type, row) => {
-                        return $x.fn.displayRelativeTime(data);
+                        return $x.fn.displayRelativeTime(data, {'outputFormat': 'DD/MM/YYYY'});
                     }
                 },
                 {
-                    className: 'wrap-text',
-                    width: "5%",
+                    className: 'wrap-text w-10',
                     data: 'id',
                     render: (data, type, row) => {
                         return renderActions(
@@ -650,6 +614,7 @@ function initEventElement() {
 }
 
 $(document).ready(function () {
+    $('header').prop('hidden', true)
     let emp = JSON.parse($('#employee_current_data').text() || '{}')
     let cpn = JSON.parse($('#company_current_data').text() || '{}')
     $('#employee-current-fullname').text(emp?.['full_name'])

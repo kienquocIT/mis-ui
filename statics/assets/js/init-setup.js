@@ -2888,6 +2888,10 @@ class WFRTControl {
     static setWFRuntimeID(runtime_id) {
         if (runtime_id) {
             WFRTControl.setRuntimeWF(runtime_id);
+            let $pageLog = $('#idxPageLog');
+            if ($pageLog.length > 0) {
+                $pageLog.removeClass('hidden');
+            }
             let btn = $('#btnLogShow');
             btn.removeClass('hidden');
             let url = SetupFormSubmit.getUrlDetailWithID(btn.attr('data-url-runtime-detail'), runtime_id);

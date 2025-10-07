@@ -53,9 +53,16 @@
             data-url-inventory-detail-list="{% url 'ReportInventoryDetailListAPI' %}"
     ></script>
 
-    <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilter">
-        <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
-    </button>
+    <div class="row">
+        <div class="col-12">
+            <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilter">
+                <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
+            </button>
+            <button type="button" class="btn btn-sm border-success bg-success-light-5 text-success" id="btn-refresh">
+                <i class="fa-solid fa-rotate"></i>&nbsp;{% trans 'Refresh' %}
+            </button>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-12">

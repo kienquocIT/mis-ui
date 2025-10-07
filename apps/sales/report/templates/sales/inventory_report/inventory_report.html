@@ -43,11 +43,6 @@
             data-trans-all="{% trans 'Default all' %}"
             data-trans-no-response="{% trans 'Tôi chưa hiểu bạn cần gì. Hãy đặt câu hỏi rõ hơn nhé!' %}"
             data-trans-filter="{% trans 'Filter' %}"
-            data-trans-instruction="{% trans 'Instruction' %}"
-            data-trans-warehouse-detail="{% trans 'Click on the warehouse code for more details on stock' %}"
-            data-trans-scroll-row="{% trans 'Hover the mouse pointer over rows to see the header information of that row when scroll horizontally' %}"
-            data-trans-product-detail="{% trans 'Click here for more details on product serials or batches/lots' %}"
-            data-trans-product-qr="{% trans 'Click here and scan the QR code to look up product information' %}"
     ></script>
 
     <script id="url-script"
@@ -59,9 +54,16 @@
             data-url-company-config-detail="{% url 'CompanyConfigDetailAPI' %}"
     ></script>
 
-    <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilter">
-        <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
-    </button>
+    <div class="row">
+        <div class="col-12">
+            <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilter">
+                <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
+            </button>
+            <button type="button" class="btn btn-sm border-success bg-success-light-5 text-success" id="btn-refresh">
+                <i class="fa-solid fa-rotate"></i>&nbsp;{% trans 'Refresh' %}
+            </button>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-12">

@@ -525,6 +525,264 @@ $(document).ready(function () {
     })
     $('#btn-view').trigger('click')
 
+    $('#btn-refresh').on('click', function () {
+        if (periodMonthEle.val()) {
+            WindowControl.showLoading();
+            let dataParam = {}
+            dataParam['sub_period_order'] = periodMonthEle.val() ? parseInt(periodMonthEle.val()) : null
+            dataParam['period_mapped'] = periodEle.val() ? periodEle.val() : null
+            dataParam['product_id_list'] = items_select_Ele.val().join(',')
+            let inventory_detail_list_ajax = $.fn.callAjax2({
+                url: url_script.attr('data-url-inventory-detail-list'),
+                data: dataParam,
+                method: 'GET'
+            }).then(
+                (resp) => {
+                    let data = $.fn.switcherResp(resp);
+                    if (data && typeof data === 'object' && data.hasOwnProperty('report_inventory_stock_list')) {
+                        // console.log(data?.['report_inventory_stock_list'])
+                        return data?.['report_inventory_stock_list'];
+                    }
+                    return {};
+                },
+                (errs) => {
+                    console.log(errs);
+                }
+            )
+
+            Promise.all([inventory_detail_list_ajax]).then(
+                (results) => {
+                    items_detail_report_table_Ele.DataTable().clear().destroy()
+                    items_detail_report_table_Ele.find('tbody').html('')
+                    let table_inventory_report_data = []
+                    for (const item of results[0]) {
+                        table_inventory_report_data.push({
+                            'row_type': 'prd',
+                            'product_id': item?.['product']?.['id'] || '',
+                            'product_code': item?.['product']?.['code'] || '',
+                            'product_title': item?.['product']?.['title'] || '',
+                            'product_uom': item?.['product']?.['uom']?.['title'] || '',
+                            'product_lot_number': item?.['product']?.['lot_number'] || '',
+                            'product_serial_number': item?.['product']?.['serial_number'] || '',
+                            'order_code': item?.['product']?.['order_code'] || '',
+                            'order_id': item?.['product']?.['order_id'] || '',
+                            'vm': item?.['product']?.['valuation_method'] || 0
+                        })
+                        for (const stock_activity of item?.['stock_activities']) {
+                            if (warehouses_select_Ele.val().length > 0) {
+                                if (warehouses_select_Ele.val().includes(stock_activity?.['warehouse_id'])) {
+                                    table_inventory_report_data.push({
+                                        'row_type': 'wh',
+                                        'product_id': item?.['product']?.['id'] || '',
+                                        'product_lot_number': item?.['product']?.['lot_number'] || '',
+                                        'product_serial_number': item?.['product']?.['serial_number'] || '',
+                                        'order_code': item?.['product']?.['order_code'],
+                                        'warehouse_id': stock_activity?.['warehouse_id'] || '',
+                                        'warehouse_code': stock_activity?.['warehouse_code'] || '',
+                                        'warehouse_title': stock_activity?.['warehouse_title'] || '',
+                                        'ending_balance_quantity': stock_activity?.['ending_balance_quantity'] || 0,
+                                        'ending_balance_cost': stock_activity?.['ending_balance_cost'] || 0,
+                                        'ending_balance_value': stock_activity?.['ending_balance_value'] || 0,
+                                        'order_id': item?.['product']?.['order_id'] || '',
+                                    })
+                                    table_inventory_report_data.push({
+                                        'row_type': 'open',
+                                        'product_id': item?.['product']?.['id'] || '',
+                                        'product_lot_number': item?.['product']?.['lot_number'] || '',
+                                        'product_serial_number': item?.['product']?.['serial_number'] || '',
+                                        'order_code': item?.['product']?.['order_code'],
+                                        'ob_label': trans_script.attr('data-trans-ob'),
+                                        'opening_balance_quantity': stock_activity?.['opening_balance_quantity'] || 0,
+                                        'opening_balance_cost': stock_activity?.['opening_balance_cost'] || 0,
+                                        'opening_balance_value': stock_activity?.['opening_balance_value'] || 0,
+                                        'order_id': item?.['product']?.['order_id'] || '',
+                                    })
+                                    for (const activity of stock_activity?.['data_stock_activity']) {
+                                        let text_color = ''
+                                        if (activity?.['trans_title'] === 'Goods receipt') {
+                                            text_color = 'primary'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods receipt (IA)') {
+                                            text_color = 'green'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods return') {
+                                            text_color = 'blue'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods transfer (in)') {
+                                            text_color = 'purple'
+                                        }
+                                        if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)') {
+                                            text_color = 'danger'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods issue') {
+                                            text_color = 'orange'
+                                        }
+                                        if (activity?.['trans_title'] === 'Goods transfer (out)') {
+                                            text_color = 'purple'
+                                        }
+                                        if (activity?.['trans_title'] === 'Balance init input')  {
+                                            text_color = 'muted'
+                                        }
+                                        let trans_title_sub = {
+                                            'Goods receipt': trans_script.attr('data-trans-grc'),
+                                            'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
+                                            'Goods return': trans_script.attr('data-trans-grt'),
+                                            'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
+                                            'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
+                                            'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                            'Goods issue': trans_script.attr('data-trans-gis'),
+                                            'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
+                                        }
+
+                                        table_inventory_report_data.push({
+                                            'row_type': 'log',
+                                            'product_id': item?.['product']?.['id'] || '',
+                                            'product_lot_number': item?.['product']?.['lot_number'] || '',
+                                            'product_serial_number': item?.['product']?.['serial_number'] || '',
+                                            'order_code': item?.['product']?.['order_code'] || '',
+                                            'text_color': text_color,
+                                            'stock_type': activity?.['stock_type'] || '',
+                                            'trans_code': activity?.['trans_code'] || '',
+                                            'trans_title': trans_title_sub?.[activity?.['trans_title']] || '',
+                                            'system_date': activity?.['system_date'] ? moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm") : '',
+                                            'quantity': activity?.['quantity'] || 0,
+                                            'cost': activity?.['cost'] || 0,
+                                            'value': activity?.['value'] || 0,
+                                            'current_quantity': activity?.['current_quantity'] || 0,
+                                            'current_cost': activity?.['current_cost'] || 0,
+                                            'current_value': activity?.['current_value'] || 0,
+                                            'order_id': item?.['product']?.['order_id'] || '',
+                                        })
+                                    }
+                                }
+                            }
+                            else {
+                                table_inventory_report_data.push({
+                                    'row_type': 'wh',
+                                    'product_id': item?.['product']?.['id'] || '',
+                                    'product_lot_number': item?.['product']?.['lot_number'] || '',
+                                    'product_serial_number': item?.['product']?.['serial_number'] || '',
+                                    'order_code': item?.['product']?.['order_code'] || '',
+                                    'warehouse_id': stock_activity?.['warehouse_id'] || '',
+                                    'warehouse_code': stock_activity?.['warehouse_code'] || '',
+                                    'warehouse_title': stock_activity?.['warehouse_title'] || '',
+                                    'ending_balance_quantity': stock_activity?.['ending_balance_quantity'] || 0,
+                                    'ending_balance_cost': stock_activity?.['ending_balance_cost'] || 0,
+                                    'ending_balance_value': stock_activity?.['ending_balance_value'] || 0,
+                                    'order_id': item?.['product']?.['order_id'] || '',
+                                })
+                                table_inventory_report_data.push({
+                                    'row_type': 'open',
+                                    'product_id': item?.['product']?.['id'] || '',
+                                    'product_lot_number': item?.['product']?.['lot_number'] || '',
+                                    'product_serial_number': item?.['product']?.['serial_number'] || '',
+                                    'order_code': item?.['product']?.['order_code'] || '',
+                                    'ob_label': trans_script.attr('data-trans-ob'),
+                                    'opening_balance_quantity': stock_activity?.['opening_balance_quantity'] || 0,
+                                    'opening_balance_cost': stock_activity?.['opening_balance_cost'] || 0,
+                                    'opening_balance_value': stock_activity?.['opening_balance_value'] || 0,
+                                    'order_id': item?.['product']?.['order_id'] || '',
+                                })
+                                for (const activity of stock_activity?.['data_stock_activity']) {
+                                    let text_color = ''
+                                    if (activity?.['trans_title'] === 'Goods receipt') {
+                                        text_color = 'primary'
+                                    }
+                                    if (activity?.['trans_title'] === 'Goods receipt (IA)') {
+                                        text_color = 'green'
+                                    }
+                                    if (activity?.['trans_title'] === 'Goods return') {
+                                        text_color = 'blue'
+                                    }
+                                    if (activity?.['trans_title'] === 'Goods transfer (in)') {
+                                        text_color = 'purple'
+                                    }
+                                    if (activity?.['trans_title'] === 'Delivery (sale)' || activity?.['trans_title'] === 'Delivery (lease)') {
+                                        text_color = 'danger'
+                                    }
+                                    if (activity?.['trans_title'] === 'Goods issue') {
+                                        text_color = 'orange'
+                                    }
+                                    if (activity?.['trans_title'] === 'Goods transfer (out)') {
+                                            text_color = 'purple'
+                                        }
+                                    if (activity?.['trans_title'] === 'Balance init input') {
+                                        text_color = 'muted'
+                                    }
+                                    let trans_title_sub = {
+                                        'Goods receipt': trans_script.attr('data-trans-grc'),
+                                        'Goods receipt (IA)': trans_script.attr('data-trans-grc') + ' (IA)',
+                                        'Goods return': trans_script.attr('data-trans-grt'),
+                                        'Goods transfer (in)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-in')})`,
+                                        'Delivery (sale)': trans_script.attr('data-trans-dlvr-sale'),
+                                        'Delivery (lease)': trans_script.attr('data-trans-dlvr-lease'),
+                                        'Goods issue': trans_script.attr('data-trans-gis'),
+                                        'Goods transfer (out)': trans_script.attr('data-trans-gtf') + ` (${trans_script.attr('data-trans-gtf-out')})`,
+                                        'Balance init input': trans_script.attr('data-trans-bii'),
+                                    }
+
+                                    table_inventory_report_data.push({
+                                        'row_type': 'log',
+                                        'product_id': item?.['product']?.['id'] || '',
+                                        'product_lot_number': item?.['product']?.['lot_number'] || '',
+                                        'product_serial_number': item?.['product']?.['serial_number'] || '',
+                                        'order_code': item?.['product']?.['order_code'] || '',
+                                        'text_color': text_color,
+                                        'stock_type': activity?.['stock_type'] || '',
+                                        'trans_code': activity?.['trans_code'] || '',
+                                        'trans_title': trans_title_sub?.[activity?.['trans_title']] || '',
+                                        'system_date': activity?.['system_date'] ? moment(activity?.['system_date']).format("DD/MM/YYYY HH:mm") : '',
+                                        'quantity': activity?.['quantity'] || 0,
+                                        'cost': activity?.['cost'] || 0,
+                                        'value': activity?.['value'] || 0,
+                                        'current_quantity': activity?.['current_quantity'] || 0,
+                                        'current_cost': activity?.['current_cost'] || 0,
+                                        'current_value': activity?.['current_value'] || 0,
+                                        'order_id': item?.['product']?.['order_id'] || '',
+                                    })
+                                }
+                            }
+                        }
+                    }
+                    RenderTableWithParameter(items_detail_report_table_Ele, table_inventory_report_data)
+                    setTimeout(
+                        () => {
+                            WindowControl.hideLoading();
+                            if ($definition_inventory_valuation === '1') {
+                                let condition1 = $definition_inventory_valuation === '1' && PERIODIC_CLOSED === false
+                                let condition2 = $definition_inventory_valuation === '1'
+                                let condition3 = $definition_inventory_valuation === '0'
+
+                                items_detail_report_table_Ele.find('tbody .main-row').each(function () {
+                                    $(this).find('td:eq(15) span').prop('hidden', condition1)
+                                    $(this).find('td:eq(16) span').prop('hidden', condition1)
+                                })
+                                items_detail_report_table_Ele.find('tbody .eb-row').prop('hidden', condition1)
+
+                                items_detail_report_table_Ele.find('tbody .detail-in').each(function () {
+                                    $(this).find('td:eq(15) span').prop('hidden', condition2)
+                                    $(this).find('td:eq(16) span').prop('hidden', condition2)
+                                })
+                                items_detail_report_table_Ele.find('tbody .detail-out').each(function () {
+                                    $(this).find('td:eq(12) span').prop('hidden', condition2)
+                                    $(this).find('td:eq(13) span').prop('hidden', condition2)
+                                    $(this).find('td:eq(15) span').prop('hidden', condition2)
+                                    $(this).find('td:eq(16) span').prop('hidden', condition2)
+                                })
+
+                                items_detail_report_table_Ele.find('tbody .eb-row').prop('hidden', condition3)
+                            }
+                            items_detail_report_table_Ele.prop('hidden', false)
+                        },
+                        500
+                    )
+                })
+        }
+        else {
+            $.fn.notifyB({"description": 'No sub period selected.', "timeout": 3500}, 'warning')
+        }
+    })
+
     $('#btn-calculate').on('click', function () {
         Swal.fire({
             html:

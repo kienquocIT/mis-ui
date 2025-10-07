@@ -248,14 +248,3 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     background: rgb(255, 255, 255)
 }
-
-@keyframes animatedGradient {
-    0% { background: linear-gradient(135deg, #f2d7c2, #e8bfae); }
-    50% { background: linear-gradient(135deg, #d6a5c0, #bfa0d5); }
-    100% { background: linear-gradient(135deg, #f2d7c2, #e8bfae); }
-}
-
-#idxPageContent.day {
-    animation: animatedGradient 5s ease infinite;
-}
-

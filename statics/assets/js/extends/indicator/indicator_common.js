@@ -563,8 +563,4 @@ $(document).ready(function () {
 
     IndicatorControl.initPage();
 
-    // $('#tab-indicator').on('click', function () {
-    //     IndicatorControl.loadIndicator();
-    // });
-
 });

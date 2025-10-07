@@ -104,6 +104,23 @@ function setUpFormSubmit($form) {
                 formInstance.dataForm['attachment'] = []
             }
             setUpFormData(formInstance)
+            // append indicator
+            let keyInd = "quotation_indicator_data";
+            let indicators_data_setup = IndicatorControl.loadIndicator(formInstance?.['dataForm']);
+            if (indicators_data_setup.length > 0) {
+                formInstance.dataForm['service_order_indicators_data'] = indicators_data_setup;
+                for (let indicator of indicators_data_setup) {
+                    if (indicator?.[keyInd]?.['code'] === "IN0001") {
+                        formInstance.dataForm['indicator_revenue'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                    }
+                    if (indicator?.[keyInd]?.['code'] === "IN0003") {
+                        formInstance.dataForm['indicator_gross_profit'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                    }
+                    if (indicator?.[keyInd]?.['code'] === "IN0006") {
+                        formInstance.dataForm['indicator_net_income'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                    }
+                }
+            }
             WFRTControl.callWFSubmitForm(formInstance)
         },
     })

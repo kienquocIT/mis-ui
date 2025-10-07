@@ -690,14 +690,6 @@ $(function () {
                 IndicatorControl.loadIndicator(dataForm, datasDetail);
                 QuotationLoadDataHandle.loadSetWFRuntimeZone();
             }
-            if (QuotationLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-                let dataDetail = datasDetail?.['dataDetail'];
-                let indicatorsData = dataDetail?.['quotation_indicators_data'];
-                if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
-                    indicatorsData = dataDetail?.['sale_order_indicators_data'];
-                }
-                IndicatorControl.dtbIndicator(indicatorsData);
-            }
             IndicatorControl.$canvas.offcanvas('show');
         });
 

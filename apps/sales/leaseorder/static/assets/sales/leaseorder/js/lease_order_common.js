@@ -8823,10 +8823,10 @@ class LeaseOrderSubmitHandle {
         let quotation_indicators_data = 'lease_indicators_data';
         let keyInd = "quotation_indicator_data";
         let datasDetail = LeaseOrderLoadDataHandle.loadGetDatasDetail();
-        let quotation_indicators_data_setup = IndicatorControl.loadIndicator(result, datasDetail);
-        if (quotation_indicators_data_setup.length > 0) {
-            result[quotation_indicators_data] = quotation_indicators_data_setup;
-            for (let indicator of quotation_indicators_data_setup) {
+        let indicators_data_setup = IndicatorControl.loadIndicator(result, datasDetail);
+        if (indicators_data_setup.length > 0) {
+            result[quotation_indicators_data] = indicators_data_setup;
+            for (let indicator of indicators_data_setup) {
                 if (indicator?.[keyInd]?.['code'] === "IN0001") {
                     result['indicator_revenue'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
                 }

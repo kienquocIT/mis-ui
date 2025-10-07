@@ -19,6 +19,12 @@ $(function () {
                     QuotationLoadDataHandle.$eleStoreDetail.val(JSON.stringify(data));
                     QuotationLoadDataHandle.loadDetailQuotation(data);
                     QuotationLoadDataHandle.loadDataTablesAndDropDowns(data);
+                    // indicator
+                    let indicatorsData = data?.['quotation_indicators_data'];
+                    if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+                        indicatorsData = data?.['sale_order_indicators_data'];
+                    }
+                    IndicatorControl.dtbIndicator(indicatorsData);
                     // prepare for copy quotation to sale order
                     if (!$form.hasClass('sale-order')) { // QUOTATION PAGES
                         $('#data-copy-quotation-detail').val(JSON.stringify(data));

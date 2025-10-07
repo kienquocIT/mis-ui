@@ -863,11 +863,6 @@ $(function () {
                 IndicatorControl.loadIndicator(dataForm, datasDetail);
                 LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
             }
-            if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() === 'get') {
-                let dataDetail = datasDetail?.['dataDetail'];
-                let indicatorsData = dataDetail?.['lease_indicators_data'];
-                IndicatorControl.dtbIndicator(indicatorsData);
-            }
             IndicatorControl.$canvas.offcanvas('show');
         });
 

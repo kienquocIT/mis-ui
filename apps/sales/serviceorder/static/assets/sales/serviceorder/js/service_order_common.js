@@ -1866,6 +1866,28 @@ const ServiceOrder = (function($) {
         })
     }
 
+    function handleOpportunityChange() {
+        $(document).on('change', '#opportunity_id', function (e) {
+            const $select = $(e.currentTarget);
+            let oppData = SelectDDControl.get_data_from_idx($select, $select.val());
+            let customerName = oppData?.customer?.name || '';
+            let customerId = oppData?.customer?.id || '';
+            const $customerSelect = pageElement.commonData.$customer;
+
+            if (customerId && customerName) {
+                if ($customerSelect.find(`option[value="${customerId}"]`).length === 0) {
+                    const newOption = new Option(customerName, customerId, true, true);
+                    $customerSelect.append(newOption);
+                } else {
+                    $customerSelect.val(customerId);
+                }
+                $customerSelect.trigger('change');
+            } else {
+                $customerSelect.val(null).trigger('change');
+            }
+        });
+    }
+
     // ============ service detail =============
 
     function handleChangeServiceDetail(){
@@ -4778,6 +4800,7 @@ const ServiceOrder = (function($) {
 
         handleSaveProduct,
         handleSaveExchangeRate,
+        handleOpportunityChange,
 
         handleChangeServiceDetail,
         handleChangeServiceQuantity,

@@ -12,17 +12,15 @@
 {% endblock %}
 
 {% block pageSubAction %}
-    <div class="d-flex justify-content-end">
-        <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
-            <button type="button" class="btn nav-link text-green" id="open_indicator" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Indicator' %}"><span class="icon"><i class="fa-solid fa-arrow-trend-up"></i></span></button>
-            <button
-                    type="button" class="btn nav-link text-blue" id="btn-copy-quotation"
-                    data-bs-toggle="modal" data-bs-target="#quotationModalCenter" data-copy-type="copy-from"
-                    data-zone="title"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom" title="{% trans 'Copy Quotation' %}"
-            ><span class="icon"><i class="far fa-copy"></i></span></button>
-        </div>
+    <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
+        <button type="button" class="btn nav-link text-green" id="open_indicator" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Indicator' %}"><span class="icon"><i class="fa-solid fa-arrow-trend-up"></i></span></button>
+        <button
+                type="button" class="btn nav-link text-blue" id="btn-copy-quotation"
+                data-bs-toggle="modal" data-bs-target="#quotationModalCenter" data-copy-type="copy-from"
+                data-zone="title"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom" title="{% trans 'Copy Quotation' %}"
+        ><span class="icon"><i class="far fa-copy"></i></span></button>
     </div>
 {% endblock %}
 

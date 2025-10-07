@@ -5164,39 +5164,6 @@ class QuotationDataTableHandle {
         }
     };
 
-    static dtbIndicatorHDCustom($table) {
-        let wrapper$ = $table.closest('.dataTables_wrapper');
-        let $theadEle = wrapper$.find('thead');
-        if ($theadEle.length > 0) {
-            for (let thEle of $theadEle[0].querySelectorAll('th')) {
-                if (!$(thEle).hasClass('border-right')) {
-                    $(thEle).addClass('border-right');
-                }
-            }
-        }
-        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-        headerToolbar$.prepend(textFilter$);
-
-        if (textFilter$.length > 0) {
-            textFilter$.css('display', 'flex');
-            // Check if the button already exists before appending
-            if (!$('#btn-refresh-indicator').length) {
-                let html1 = `<button type="button" class="btn btn-primary" id="btn-refresh-indicator">${QuotationLoadDataHandle.transEle.attr('data-refresh')}</button>`;
-                let $group = $(`<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                ${html1}
-                            </div>`);
-                textFilter$.append(
-                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
-                );
-                // Select the appended button from the DOM and attach the event listener
-                $('#btn-refresh-indicator').on('click', function () {
-                    document.getElementById('quotation-indicator-data').value = "";
-                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-refreshed')}, 'success');
-                });
-            }
-        }
-    };
 }
 
 // Calculate

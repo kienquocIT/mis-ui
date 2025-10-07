@@ -237,6 +237,25 @@
                                 >
 {#                                    {% include 'extends/direct_btn_group.html' %}#}
                                     <div class="mr-2">{% block pageSubAction %}{% endblock %}</div>
+                                    <div class="nav-pills-bfl mr-2" role="group">
+                                        <button
+                                                id="btnLogShow"
+                                                class="hidden btn nav-link ntt-drawer-toggle-link"
+                                                data-drawer-target="#drawer_log_data"
+                                                data-drawer-active="false"
+                                                href="#"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="bottom"
+                                                data-bs-original-title="{% trans 'Log' %}"
+                                                data-url-runtime-detail="{% url 'FlowRuntimeDetailAPI' pk=1 %}"
+                                                data-url-current-wf="{% url 'WorkflowCurrentOfAppListAPI' %}"
+                                                data-url-app-emp-config="{% url 'AppEmpConfigListAPI' %}"
+                                        >
+                                            <span class="icon icon-xs">
+                                                <i class="fas fa-history fa-sm"></i>
+                                            </span>
+                                        </button>
+                                    </div>
                                     <div class="{% if pk %}hidden{% endif %} mr-2" id="idxRealAction">
                                         {% block pageAction %}{% endblock %}
                                     </div>
@@ -313,23 +332,6 @@
                                             {% csrf_token %}
                                         {% endif %}
                                     </div>
-                                    <button
-                                            id="btnLogShow"
-                                            class="hidden btn btn-icon btn-rounded bg-dark-hover mr-1 ntt-drawer-toggle-link"
-                                            data-drawer-target="#drawer_log_data"
-                                            data-drawer-active="false"
-                                            href="#"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="bottom"
-                                            data-bs-original-title="{% trans 'Log' %}"
-                                            data-url-runtime-detail="{% url 'FlowRuntimeDetailAPI' pk=1 %}"
-                                            data-url-current-wf="{% url 'WorkflowCurrentOfAppListAPI' %}"
-                                            data-url-app-emp-config="{% url 'AppEmpConfigListAPI' %}"
-                                    >
-                                        <span class="icon icon-xs">
-                                            <i class="fas fa-history fa-sm"></i>
-                                        </span>
-                                    </button>
                                 </div>
 								<div class="hk-sidebar-togglable"></div>
 							</header>

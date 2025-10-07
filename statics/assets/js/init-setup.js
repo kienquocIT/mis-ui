@@ -2888,6 +2888,10 @@ class WFRTControl {
     static setWFRuntimeID(runtime_id) {
         if (runtime_id) {
             WFRTControl.setRuntimeWF(runtime_id);
+            let $pageLog = $('#idxPageLog');
+            if ($pageLog.length > 0) {
+                $pageLog.removeClass('hidden');
+            }
             let btn = $('#btnLogShow');
             btn.removeClass('hidden');
             let url = SetupFormSubmit.getUrlDetailWithID(btn.attr('data-url-runtime-detail'), runtime_id);
@@ -3872,6 +3876,25 @@ class WFRTControl {
             {'id': 3, 'title': $.fn.transEle.attr('data-approved')},
             {'id': 4, 'title': $.fn.transEle.attr('data-cancel')},
         ]
+    }
+
+    static findDataZoneHidden(dataForm, dataDetail) {
+        let keyHidden = WFRTControl.getZoneHiddenKeyData();
+        if (keyHidden) {
+            if (keyHidden.length > 0) {
+                let keyHiddenRelated = WFRTControl.getZoneHiddenKeyRelatedData();
+                keyHidden = keyHidden.concat(keyHiddenRelated);
+                // set data detail to zones hidden
+                if (dataForm && dataDetail) {
+                    for (let key of keyHidden) {
+                        if (dataDetail.hasOwnProperty(key)) {
+                            dataForm[key] = dataDetail[key];
+                        }
+                    }
+                }
+            }
+        }
+        return dataForm;
     }
 }
 
@@ -9549,10 +9572,11 @@ class DiagramControl {
     static setBtnDiagram(appCode) {
         if (window.location.href.includes('/detail/') && ["saleorder.saleorder"].includes(appCode)) {
             let $btnLog = $('#btnLogShow');
+            let $modalBlock = $('.idxModalData');
             let urlDiagram = globeDiagramList;
-            if ($btnLog && $btnLog.length > 0) {
-                let htmlBase = `<button class="btn btn-icon btn-rounded bg-dark-hover" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>
-                                <div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
+            if ($btnLog.length > 0 && $modalBlock.length > 0) {
+                let htmlBtn = `<button class="btn nav-link" type="button" id="btnDiagram" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDiagram" aria-controls="offcanvasExample" data-url="${urlDiagram}" data-method="GET"><span class="icon"><i class="fas fa-network-wired"></i></span></button>`;
+                let htmlCanvas = `<div class="offcanvas offcanvas-end w-95" tabindex="-1" id="offcanvasDiagram" aria-labelledby="offcanvasTopLabel">
                                     <div class="modal-header">
                                         <h5><b>Diagram</b></h5>
                                         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
@@ -9566,7 +9590,8 @@ class DiagramControl {
                                         </div>
                                     </div>
                                 </div>`;
-                $btnLog.after(htmlBase);
+                $btnLog.after(htmlBtn);
+                $modalBlock.after(htmlCanvas);
                 // set event
                 $('#btnDiagram, #btnRefreshDiagram').on('click', function () {
                     if (window.location.href.includes('/detail/')) {

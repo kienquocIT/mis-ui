@@ -63,7 +63,8 @@ class DetailDataHandler {
         const data_url = $form.attr('data-url');
         $.fn.callAjax2({
             url: data_url,
-            method: 'GET'
+            method: 'GET',
+            isLoading: true,
         }).then(
             (resp) => {
                 const data = $.fn.switcherResp(resp);
@@ -143,6 +144,10 @@ class DetailDataHandler {
                 tabExpenseElements.$totalValueEle.attr('value', data?.expense_total_value || 0)
                 TabExpenseFunction.initExpenseTable(data?.expense || [], isDetail)
 
+                // indicator
+                let indicatorsData = data?.['service_order_indicators_data'];
+                IndicatorControl.dtbIndicator(indicatorsData);
+
                 $.fn.initMaskMoney2()
                 WFRTControl.setWFRuntimeID(data?.['workflow_runtime_id'])
                 UsualLoadPageFunction.DisablePage(isDisablePage,
@@ -180,4 +185,9 @@ $(document).ready(function () {
         let url = $(this).attr('data-url') + '?service_order_id=' + $.fn.getPkDetail()
         $(this).attr('href', url)
     })
+
+    IndicatorControl.$openCanvas.on('click', function () {
+        IndicatorControl.$canvas.offcanvas('show');
+    });
+
 })

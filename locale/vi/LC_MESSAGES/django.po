@@ -5742,7 +5742,7 @@ msgid "Weighted average"
 msgstr "Bình quân gia quyền"
 
 #
-msgid "Specific identification method"
+msgid "Specific identification"
 msgstr "Thực tế đích danh"
 
 msgid "Business trip"
@@ -5841,8 +5841,8 @@ msgid "Cost per warehouse management"
 msgstr "Tính giá cost theo từng kho"
 
 #
-msgid "Cost per project (sale order in Opp)"
-msgstr "Tính giá cost theo dự án (đơn bán hàng trong CHKD)"
+msgid "Cost per project (order in Opp)"
+msgstr "Tính giá cost theo dự án (đơn hàng trong CHKD)"
 
 #
 msgid "Cost per Lot/batch"
@@ -11176,22 +11176,6 @@ msgid "Short name"
 msgstr "Tên viết tắt"
 
 #
-msgid "Click on the warehouse code for more details on stock"
-msgstr "Nhấp vào mã kho để biết thêm chi tiết về tình trạng tồn kho"
-
-#
-msgid "Hover the mouse pointer over rows to see the header information of that row when scroll horizontally"
-msgstr "Rê con trỏ chuột lên các hàng để xem thông tin tiêu đề của hàng đó khi cuộn ngang"
-
-#
-msgid "Click here for more details on product serials or batches/lots"
-msgstr "Nhấp vào đây để biết thêm chi tiết về số serial hoặc lô sản phẩm"
-
-#
-msgid "Click here and scan the QR code to look up product information"
-msgstr "Nhấp vào đây và quét mã QR code để tra cứu thông tin sản phẩm"
-
-#
 msgid "Financial config"
 msgstr "Cấu hình tài chính"
 
@@ -12318,3 +12302,11 @@ msgstr "Chức năng áp dụng"
 #
 msgid "List task assigned"
 msgstr "Danh sách nhiệm vụ được giao"
+
+#
+msgid "Specific serial number"
+msgstr "Serial đích danh"
+
+#
+msgid "Not available yet"
+msgstr "Chưa hỗ trợ"

@@ -21,7 +21,6 @@ $(function () {
         LeaseOrderDataTableHandle.dataTableCost();
         LeaseOrderDataTableHandle.dataTableDepreciationDetail();
         LeaseOrderDataTableHandle.dataTableExpense();
-        LeaseOrderDataTableHandle.dataTableSaleOrderIndicator();
         LeaseOrderDataTableHandle.dataTablePaymentStage();
         LeaseOrderDataTableHandle.dataTableInvoice();
         LeaseOrderDataTableHandle.dataTableSelectTerm();
@@ -856,11 +855,15 @@ $(function () {
         });
 
 // INDICATORS
-        $('#tab-indicator').on('click', function () {
+        IndicatorControl.$openCanvas.on('click', function () {
+            let datasDetail = LeaseOrderLoadDataHandle.loadGetDatasDetail();
             if (LeaseOrderLoadDataHandle.$form.attr('data-method').toLowerCase() !== 'get') {
-                LeaseOrderIndicatorHandle.loadIndicator();
+                let _form = new SetupFormSubmit(LeaseOrderLoadDataHandle.$form);
+                let dataForm = LeaseOrderSubmitHandle.setupDataSubmit(_form, 1);
+                IndicatorControl.loadIndicator(dataForm, datasDetail);
                 LeaseOrderLoadDataHandle.loadSetWFRuntimeZone();
             }
+            IndicatorControl.$canvas.offcanvas('show');
         });
 
 // PAYMENT STAGE
@@ -1074,13 +1077,12 @@ $(function () {
 
         function submitForm() {
             let _form = new SetupFormSubmit(LeaseOrderLoadDataHandle.$form);
-            // Load again indicator when Submit
-            LeaseOrderIndicatorHandle.loadIndicator();
             LeaseOrderLoadDataHandle.loadDataTableCost();
             let result = LeaseOrderSubmitHandle.setupDataSubmit(_form);
             if (result === false) {
                 return false;
             }
+            LeaseOrderSubmitHandle.setupDataIndicator(result);
             let submitFields = [
                 // process
                 'process',

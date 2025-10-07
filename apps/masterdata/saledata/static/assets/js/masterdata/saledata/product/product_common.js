@@ -39,6 +39,7 @@ class ProductPageElements {
         this.$valuation_method = $('#valuation-method')
         this.$notify_inventory = $('#notify-inventory')
         this.$datatable_warehouse_list = $('#datatable-warehouse-list')
+        this.$datatable_specific_serial_number_list = $('#datatable-specific-serial-number-list')
         this.$datatable_warehouse_overview = $('#datatable-warehouse-overview')
         // purchase tab
         this.$check_tab_purchase = $('#check-tab-purchase')
@@ -366,7 +367,7 @@ class ProductPageFunction {
             },
             columns: [
                 {
-                    className: 'w-5 text-center',
+                    className: 'w-5',
                     'render': () => {
                         return ``;
                     }
@@ -432,6 +433,36 @@ class ProductPageFunction {
             keyText: 'title',
         })
     }
+    static LoadSpecificSerialList(data_list=[]) {
+        $('#specific-modal-btn').prop('hidden', data_list.length === 0)
+        pageElements.$datatable_specific_serial_number_list.DataTableDefault({
+            dom: 't',
+            paging: false,
+            rowIdx: true,
+            reloadCurrency: true,
+            data: data_list,
+            columns: [
+                {
+                    className: 'w-5',
+                    'render': () => {
+                        return ``;
+                    }
+                },
+                {
+                    className: 'w-70',
+                    render: (data, type, row) => {
+                        return `<span class="text-danger">${row?.['serial_number']}</span>`
+                    }
+                },
+                {
+                    className: 'w-30',
+                    render: (data, type, row) => {
+                        return `<span class="mask-money" data-init-money="${row?.['specific_value'] || 0}"></span>`;
+                    }
+                },
+            ]
+        });
+    }
     static LoadWareHouseListDetail(data_list=[]) {
         pageElements.$datatable_warehouse_list.DataTableDefault({
             dom: 't',
@@ -439,92 +470,18 @@ class ProductPageFunction {
             data: data_list,
             columns: [
                 {
-                    data: 'code',
-                    className: 'text-center w-15',
+                    className: 'w-70',
                     render: (data, type, row) => {
-                        return `<span class="badge badge-soft-blue badge-outline table-row-code" data-id="${row.warehouse.id}">${row.warehouse.code}</span>`;
+                        return `<span class="badge badge-blue badge-sm table-row-code mr-1" data-id="${row?.['warehouse']?.['id']}">${row?.['warehouse']?.['code']}</span><span>${row?.['warehouse']?.['title']}</span>`
                     }
                 },
                 {
-                    data: 'title',
-                    className: 'text-center w-35',
-                    render: (data, type, row) => {
-                        return `<span class="text-secondary"><b>${row.warehouse.title}</b></span>`
-                    }
-                },
-                {
-                    data: '',
-                    className: 'text-center w-15',
+                    className: 'w-30',
                     render: (data, type, row) => {
                         return `<span class="fw-bold">${row?.['stock_amount']}</span>`;
                     }
                 },
-                {
-                    data: '',
-                    className: 'text-center w-35',
-                    render: (data, type, row) => {
-                        return `<span class="mask-money text-primary" data-init-money="${row?.['cost']}"></span>`;
-                    }
-                },
-            ],
-            rowCallback(row) {
-                $(`button.btn-detail`, row).on('click', function () {
-                    let $tableLot = $('#datable-lot');
-                    let $tableSerial = $('#datable-serial');
-                    let idProduct = $.fn.getPkDetail();
-                    let idWH = row?.querySelector('.table-row-code')?.getAttribute('data-id');
-                    let eleDetail = $('#data-detail-page');
-                    if (eleDetail.val()) {
-                        let dataDetail = JSON.parse(eleDetail.val());
-                        if (dataDetail?.['general_information']?.['traceability_method'] === 1) {
-                            $('#table-lot-area')[0].removeAttribute('hidden');
-                            $.fn.callAjax2({
-                                    'url': $tableLot.attr('data-url'),
-                                    'method': $tableLot.attr('data-method'),
-                                    'data': {
-                                        'product_warehouse__product_id': idProduct,
-                                        'product_warehouse__warehouse_id': idWH,
-                                    },
-                                    'isDropdown': true,
-                                }
-                            ).then(
-                                (resp) => {
-                                    let dataLot = $.fn.switcherResp(resp);
-                                    if (dataLot) {
-                                        if (dataLot.hasOwnProperty('warehouse_lot_list') && Array.isArray(dataLot.warehouse_lot_list)) {
-                                            $tableLot.DataTable().clear().draw();
-                                            $tableLot.DataTable().rows.add(dataLot.warehouse_lot_list).draw();
-                                        }
-                                    }
-                                }
-                            )
-                        } else if (dataDetail?.['general_information']?.['traceability_method'] === 2) {
-                            $('#table-serial-area')[0].removeAttribute('hidden');
-                            $.fn.callAjax2({
-                                    'url': $tableSerial.attr('data-url'),
-                                    'method': $tableSerial.attr('data-method'),
-                                    'data': {
-                                        'product_warehouse__product_id': idProduct,
-                                        'product_warehouse__warehouse_id': idWH,
-                                        'is_delete': false
-                                    },
-                                    'isDropdown': true,
-                                }
-                            ).then(
-                                (resp) => {
-                                    let dataSerial = $.fn.switcherResp(resp);
-                                    if (dataSerial) {
-                                        if (dataSerial.hasOwnProperty('warehouse_serial_list') && Array.isArray(dataSerial.warehouse_serial_list)) {
-                                            $tableSerial.DataTable().clear().draw();
-                                            $tableSerial.DataTable().rows.add(dataSerial.warehouse_serial_list).draw();
-                                        }
-                                    }
-                                }
-                            )
-                        }
-                    }
-                });
-            }
+            ]
         });
     }
     static LoadWareHouseOverViewDetail(data_list=[]) {
@@ -1684,6 +1641,8 @@ class ProductHandler {
                             'sum_available_value': sum_available_value
                         })
                         ProductPageFunction.LoadWareHouseOverViewDetail(data_overview);
+
+                        ProductPageFunction.LoadSpecificSerialList(inventory_information?.['data_specific_serial'] || [])
                     }
 
                     if (Object.keys(product_detail?.['purchase_information']).length !== 0) {
@@ -1854,7 +1813,7 @@ class ProductHandler {
 
                     UsualLoadPageFunction.DisablePage(
                         option==='detail',
-                        ['.btn-show-child-selected-attribute']
+                        ['.btn-show-child-selected-attribute', '#specific-modal-btn']
                     )
 
                     // init and load avatar img

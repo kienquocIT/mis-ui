@@ -21,7 +21,7 @@
                 <div class="row">
                     <div class="col-12">
                         <table id="tab_line_detail_datatable" class="table nowrap w-100">
-                            <thead>
+                            <thead class="bg-secondary-light-5">
                                 <tr>
                                     <th style="min-width: 50px"></th>
                                     <th style="min-width: 250px">{% trans 'Source warehouse' %}</th>
@@ -33,7 +33,6 @@
                                            data-bs-placement="right"
                                            data-bs-original-title="{% trans 'None-project products if sale order is null' %}"></i>
                                     </th>
-
                                     <th style="min-width: 150px">
                                         {% trans 'Quantity' %}
                                         <i class="fas fa-info-circle icon-info"
@@ -41,10 +40,8 @@
                                            data-bs-placement="right"
                                            data-bs-original-title="{% trans 'Click the button besides input element to select (for serial/lot product) of enter number for default product.' %}"></i>
                                     </th>
-                                    <th style="min-width: 100px">{% trans 'UOM' %}</th>
+                                    <th style="min-width: 150px">{% trans 'UOM' %}</th>
                                     <th style="min-width: 250px">{% trans 'Destination warehouse' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Cost' %}</th>
-                                    <th style="min-width: 200px">{% trans 'Subtotal price' %}</th>
                                     <th style="min-width: 50px"></th>
                                 </tr>
                             </thead>

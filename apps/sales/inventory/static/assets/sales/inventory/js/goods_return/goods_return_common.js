@@ -256,7 +256,6 @@ $('#add-product-btn').on('click', function () {
                     let serial_data = $(this).find('.serial-data-span')
                     let delivery_id = serial_data.attr('data-delivery-id')
                     let delivery_code = serial_data.attr('data-delivery-code')
-                    let is_return = $(this).find('.return-check').prop('checked')
                     let is_redelivery = $(this).find('.redelivery-check').prop('checked')
                     let serial_number = serial_data.attr('data-serial-number')
                     let vendor_serial_number = serial_data.attr('data-vendor-serial-number')
@@ -267,7 +266,7 @@ $('#add-product-btn').on('click', function () {
                     let uom_id = serial_data.attr('data-uom-id')
                     let uom_title = serial_data.attr('data-uom-title')
                     let product_unit_price = serial_data.attr('data-unit-price')
-                    if (is_return) {
+                    if ($(this).find('.return-check').prop('checked')) {
                         data_line_detail_table.push({
                             'type': 2,
                             'delivery_id': delivery_id,
@@ -286,7 +285,6 @@ $('#add-product-btn').on('click', function () {
                             'uom_id': uom_id,
                             'uom_title': uom_title,
                             'product_unit_price': product_unit_price,
-                            'is_return': is_return,
                             'is_redelivery': is_redelivery
                         })
                     }
@@ -312,7 +310,7 @@ $('#add-product-btn').on('click', function () {
                             'uom_id': item.uom_id,
                             'uom_title': item.uom_title,
                             'vendor_serial_number_with_serial_number': [`${item.vendor_serial_number} (serial: ${item.serial_number})`],
-                            'is_return': [item.is_return],
+                            'is_return': [true],
                             'is_redelivery': [item.is_redelivery],
                             'product_unit_price': parseFloat(item.product_unit_price),
                         }
@@ -406,7 +404,7 @@ function loadTableLineDetail(data_source=[], detail='create') {
                     else if (row?.['type'] === 2) {
                         let html = ``
                         for (let i = 0; i < row?.['is_return'].length; i++) {
-                            html += `<span class="text-success">${row?.['is_return'][i] ? '<i class="fas fa-check"></i>' : ''}</span><br>`
+                            html += `<span class="text-success"><i class="fas fa-check"></i></span><br>`
                         }
                         return html
                     }

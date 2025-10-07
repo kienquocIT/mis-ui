@@ -41,10 +41,14 @@
             width: calc(100% - 75px);
             white-space: nowrap;
         }
+
+        .form-check-sm .form-check-input {
+            margin-top: 0.4em;
+        }
     </style>
 {% endblock %}
 {% block pageAction %}
-    <button class="btn btn-outline-primary" type="submit" form="leave_edit">
+    <button class="btn btn-outline-primary" type="submit" form="leave_form">
             <span>
                 <span>{% trans 'Save' %}</span>
                 <span class="icon">
@@ -55,7 +59,7 @@
 {% endblock %}
 
 {% block pageContent %}
-    <form class="container-fluid mt-4" id="leave_edit" method="post" data-method="PUT" autocomplete="off"
+    <form class="container-fluid mt-4" id="leave_form" method="post" data-method="PUT" autocomplete="off"
     data-url-redirect="{% url 'LeaveRequestList' %}" data-url="{% url 'LeaveRequestEditAPI' data.pk %}">
         {% csrf_token %}
         <div class="row">
@@ -164,16 +168,14 @@
     {{ data.employee|json_script:'employee_current' }}
     {{ data.sys_status|json_script:'sys_stt' }}
     {{ data.working_shift|json_script:'ws_data' }}
-    <input type="text" id="url-factory"
+    <input type="text" id="url-factory"  aria-label="url factory"
            data-leave-available="{% url 'LeaveAvailableDDListAPI' %}"
            data-leave-detail="{% url 'LeaveRequestDetailAPI' data.pk %}"
+           data-shift-assignment="{% url 'ShiftAssignmentListAPI' %}"
     >
     <input type="text" id="trans-factory"
-           data-detail-tab="{% trans 'Total day off is 0 please verify again' %}"
            data-err-date="{% trans 'Date To need large then Date From' %}"
            data-dayoff-error="{% trans 'Please choose an available day off' %}"
-           data-out-of-stock="{% trans 'Not enough leave or no leave available' %}"
-           data-err-date-setup="{% trans 'Ordinal date in detail tab is in complex setup' %}"
            data-empty_leave="{% trans 'Leave type is required' %}"
     >
     <div class="wrap-template">
@@ -187,21 +189,24 @@
         <div class="date_from">
             <div class="date_from_wrap">
                 <div class="form-check form-check-sm form-check-inline">
-                    <input type="radio" id="example01" name="customRadio" class="form-check-input f_mor" value="true">
-                    <label class="form-check-label" for="example01">{% trans 'Morning' %}</label>
+                    <input type="radio" id="example01" name="customRadio" class="form-check-input all_day" value="all">
+                    <label class="form-check-label" for="example01">{% trans 'All day' %}</label>
                 </div>
                 <div class="form-check form-check-sm form-check-inline">
-                    <input type="radio" id="example02" name="customRadio" class="form-check-input f_aft" value="false">
-                    <label class="form-check-label" for="example02">{% trans 'Afternoon' %}</label>
+                    <input type="radio" id="example02" name="customRadio" class="form-check-input first_half" value="first">
+                    <label class="form-check-label" for="example02">{% trans 'First half shift' %}</label>
+                </div>
+                <div class="form-check form-check-sm form-check-inline">
+                    <input type="radio" id="example03" name="customRadio" class="form-check-input second_half" value="second">
+                    <label class="form-check-label" for="example03">{% trans 'Second half shift' %}</label>
                 </div>
                 <div class="form-group spec-date-layout">
                     <div class="input-affix-wrapper">
-                        <input type="text" name="" id="" class="form-control date-picker" autocomplete="off">
+                        <input type="text" class="form-control date-picker" autocomplete="off" aria-label="date from">
                         <span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span>
                     </div>
                     <span>{% trans 'to' %}</span>
                 </div>
-
             </div>
         </div>
     </div>

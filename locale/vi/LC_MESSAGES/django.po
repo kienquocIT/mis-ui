@@ -4860,10 +4860,6 @@ msgid "Working calendar"
 msgstr "Lịch làm việc"
 
 #
-msgid "Weekly working days"
-msgstr "Ngày làm việc trong tuần"
-
-#
 msgid "Holidays"
 msgstr "Ngày lễ"
 
@@ -5222,14 +5218,6 @@ msgstr "Nhấn vào để tải lên"
 #
 msgid "Clear canvas"
 msgstr "Làm trống soạn thảo"
-
-#
-msgid "Not enough leave or no leave available"
-msgstr "Không đủ ngày phép hoặc hết ngày phép"
-
-#
-msgid "Ordinal date in detail tab is in complex setup"
-msgstr "Thứ tự ngày tháng không đúng"
 
 #
 msgid "Leave available list"
@@ -6379,10 +6367,6 @@ msgstr "Danh sách phiếu yêu cầu rỗng"
 #
 msgid "Asset, Tools delivery list"
 msgstr "Danh sách phiếu bàn giao"
-
-#
-msgid "Total day off is 0 please verify again"
-msgstr "Tổng ngày nghỉ là 0, vui lòng kiểm tra lại"
 
 #
 msgid "Date To need large then Date From"

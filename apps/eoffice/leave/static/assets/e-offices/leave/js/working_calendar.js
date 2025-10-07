@@ -168,7 +168,6 @@ $(document).ready(function () {
         e.preventDefault();
         let _form = new SetupFormSubmit($formYear);
         let dataBody = _form.dataForm
-        dataBody.working_calendar = $('#config_id').val()
         $.fn.callAjax2({
             'url': $urlElm.attr('data-year'),
             'method': 'post',
@@ -218,64 +217,4 @@ $(document).ready(function () {
         $('#formHoliday')[0].reset()
         $('[name="id"], [name="idx"]', $formHld).remove()
     })
-
-    // click tab hidden btn
-    const $btnSH = $('button[form="working_calendar"]')
-    $('a[href="#holidays"]').on('shown.bs.tab', () => $btnSH.hide())
-        .on('hidden.bs.tab', ()=> $btnSH.show())
-
-    $('#working_calendar').on('submit', function(e){
-        e.preventDefault()
-        let _form = new SetupFormSubmit($(this));
-        let harshDataBody = _form.dataForm;
-        let dataBody = {
-            working_days:{
-                0: {
-                    "work": harshDataBody.sun_work,
-                    "mor": {"from": harshDataBody.sun_mor_from, "to": harshDataBody.sun_mor_to},
-                    "aft": {"from": harshDataBody.sun_aft_from, "to": harshDataBody.sun_aft_to}
-                },
-                1: {
-                    "work": harshDataBody.mon_work,
-                    "mor": {"from": harshDataBody.mon_mor_from, "to": harshDataBody.mon_mor_to},
-                    "aft": {"from": harshDataBody.mon_aft_from, "to": harshDataBody.mon_aft_to}
-                },
-                2: {
-                    "work": harshDataBody.tue_work,
-                    "mor": {"from": harshDataBody.tue_mor_from, "to": harshDataBody.tue_mor_to},
-                    "aft": {"from": harshDataBody.tue_aft_from, "to": harshDataBody.tue_aft_to}
-                },
-                3: {
-                    "work": harshDataBody.wed_work,
-                    "mor": {"from": harshDataBody.wed_mor_from, "to": harshDataBody.wed_mor_to},
-                    "aft": {"from": harshDataBody.wed_aft_from, "to": harshDataBody.wed_aft_to}
-                },
-                4: {
-                    "work": harshDataBody.thu_work,
-                    "mor": {"from": harshDataBody.thu_mor_from, "to": harshDataBody.thu_mor_to},
-                    "aft": {"from": harshDataBody.thu_aft_from, "to": harshDataBody.thu_aft_to}
-                },
-                5: {
-                    "work": harshDataBody.fri_work,
-                    "mor": {"from": harshDataBody.fri_mor_from, "to": harshDataBody.fri_mor_to},
-                    "aft": {"from": harshDataBody.fri_aft_from, "to": harshDataBody.fri_aft_to}
-                },
-                6: {
-                    "work": harshDataBody.sat_work,
-                    "mor": {"from": harshDataBody.sat_mor_from, "to": harshDataBody.sat_mor_to},
-                    "aft": {"from": harshDataBody.sat_aft_from, "to": harshDataBody.sat_aft_to}
-                },
-            }
-        }
-        $.fn.callAjax2({
-            'url': $urlElm.attr('data-update'),
-            'method':'put',
-            'data': dataBody
-        })
-            .then((resp) => {
-                    if (resp.status === 200) $.fn.notifyB({description: resp.data.message}, 'success')
-                },
-                (errs) => $.fn.notifyB({description: errs.data.errors.detail}, 'failure')
-            )
-    });
 });

@@ -27,6 +27,7 @@
             data-trans-gross-profit="{% trans 'Gross profit' %}"
             data-trans-we="{% trans 'Weighted average' %}"
             data-trans-fifo="{% trans 'FIFO' %}"
+            data-trans-si="{% trans 'Specific identification' %}"
             data-trans-ob="{% trans 'Opening balance' %}"
             data-trans-eb="{% trans 'Ending balance' %}"
             data-trans-grc="{% trans 'Goods receipt' %}"
@@ -42,7 +43,7 @@
             data-trans-sure="{% trans 'Sure' %}"
             data-trans-cancel="{% trans 'Cancel' %}"
             data-trans-vm="{% trans 'Valuation method' %}"
-            data-trans-uom="{% trans 'Inventory UoM' %}"
+            data-trans-uom="{% trans 'Inventory UOM' %}"
             data-trans-code="{% trans 'Product Code' %}"
             data-trans-all="{% trans 'Default all' %}"
             data-trans-filter="{% trans 'Filter' %}"
@@ -52,23 +53,30 @@
             data-url-inventory-detail-list="{% url 'ReportInventoryDetailListAPI' %}"
     ></script>
 
-    <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilter">
-        <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
-    </button>
+    <div class="row">
+        <div class="col-12">
+            <button id="btn-filter" class="btn btn-sm border-secondary bg-secondary-light-5 text-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilter">
+                <i class="fas fa-sliders-h"></i>&nbsp;{% trans 'Filter' %}
+            </button>
+            <button type="button" class="btn btn-sm border-success bg-success-light-5 text-success" id="btn-refresh">
+                <i class="fa-solid fa-rotate"></i>&nbsp;{% trans 'Refresh' %}
+            </button>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-12">
             <table class="table nowrap w-100" id="items_detail_report_table">
-                <thead class="bg-primary">
+                <thead class="bg-secondary">
                     <tr>
-                        <th style="min-width: 120px; border-top-left-radius: calc(0.5rem - 1px);">{% trans 'System date' %}</th>
+                        <th style="min-width: 120px">{% trans 'System date' %}</th>
                         <th style="min-width: 200px">{% trans 'Trans information' %}</th>
                         <th style="min-width: 100px">{% trans 'I/O quantity' %}</th>
                         <th style="min-width: 150px">{% trans 'I/O cost' %}</th>
                         <th style="min-width: 150px">{% trans 'I/O value' %}</th>
                         <th style="min-width: 100px">{% trans 'Cumulative quantity' %}</th>
                         <th style="min-width: 150px">{% trans 'Cumulative cost' %}</th>
-                        <th style="min-width: 150px; border-top-right-radius: calc(0.5rem - 1px);">{% trans 'Cumulative value' %}</th>
+                        <th style="min-width: 150px">{% trans 'Cumulative value' %}</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -99,17 +107,22 @@
                                 data-url="{% url 'WareHouseListAPI' %}" data-method="GET"></select>
                     </div>
                 </div>
-                <div class="col-12 mt-3">
-                    <button type="button" class="btn btn-social btn-social-facebook btn-sm w-100" id="btn-view">
-                        {% trans 'Apply' %}
-                    </button>
-                    <div hidden class="btn-group w-100" role="group">
-                        <button id="btn-action" type="button" class="btn btn-gradient-dark btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {% trans 'Action' %}
+                <div class="col-12 mt-2">
+                    <div class="hstack flex-gap-3">
+                        <button type="button" class="btn btn-blue" id="btn-view">
+                            <span>
+                                <span class="icon"><i class="far fa-window-maximize"></i></span>
+                                <span>{% trans 'Apply' %}</span>
+                            </span>
                         </button>
-                        <div class="dropdown-menu" aria-labelledby="btn-action">
-                            <a class="dropdown-item" id="btn-calculate" href="#"><i class="bi bi-calculator"></i> <span>{% trans 'Calculate ending cumulative value' %}</span></a>
-                            <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
+                        <div hidden class="btn-group w-100" role="group">
+                            <button id="btn-action" type="button" class="btn btn-gradient-dark btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% trans 'Action' %}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btn-action">
+                                <a class="dropdown-item" id="btn-calculate" href="#"><i class="bi bi-calculator"></i> <span>{% trans 'Calculate ending cumulative value' %}</span></a>
+                                <a class="dropdown-item disabled" id="btn-export" href="#"><i class="bi bi-file-earmark-spreadsheet"></i> <span>{% trans 'Export to excel' %}</span></a>
+                            </div>
                         </div>
                     </div>
                 </div>

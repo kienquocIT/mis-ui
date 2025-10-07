@@ -649,14 +649,14 @@ COLUMNS_SALEDATA_PRODUCT.add_column(
         'data_list': [
                 (0, _('FIFO')),
                 (1, _('weighted average')),
-                # (2, _('Serial number'))
+                (2, _('specific identification'))
         ],
         'select2_config': {
             'allowClear': True,
         },
         'remarks': [
             _(
-                "Valuation method selection, chosen from: 0 (FIFO), 1 (weighted average), 2 (Specific identification method)"
+                "Valuation method selection, chosen from: 0 (FIFO), 1 (weighted average), 2 (specific identification)"
             ),],
         'input_attrs': {
             'args': ['required'],

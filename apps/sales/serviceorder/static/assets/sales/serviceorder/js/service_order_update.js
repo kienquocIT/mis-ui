@@ -70,6 +70,23 @@ function setUpFormData(formInstance) {
     formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
     formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData()
     formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData()
+
+    // total fields
+    let $pretaxPrdEle = $('#service-detail-pretax-value');
+    let $taxPrdEle = $('#service-detail-taxes-value');
+    let $totalPrdEle = $('#service-detail-total-value');
+    if ($pretaxPrdEle.length > 0 && $taxPrdEle.length > 0 && $totalPrdEle.length > 0) {
+        if ($pretaxPrdEle.valCurrency()) {
+            formInstance.dataForm['total_product_pretax_amount'] = parseFloat($pretaxPrdEle.valCurrency());
+            formInstance.dataForm['total_product_revenue_before_tax'] = parseFloat($pretaxPrdEle.valCurrency());
+        }
+        if ($taxPrdEle.valCurrency()) {
+            formInstance.dataForm['total_product_tax'] = parseFloat($taxPrdEle.valCurrency());
+        }
+        if ($totalPrdEle.valCurrency()) {
+            formInstance.dataForm['total_product'] = parseFloat($totalPrdEle.valCurrency());
+        }
+    }
 }
 
 function setUpFormSubmit($form) {
@@ -90,6 +107,23 @@ function setUpFormSubmit($form) {
                 formInstance.dataForm['attachment'] = []
             }
             setUpFormData(formInstance)
+            // append indicator
+            let keyInd = "quotation_indicator_data";
+            let indicators_data_setup = IndicatorControl.loadIndicator(formInstance?.['dataForm']);
+            if (indicators_data_setup.length > 0) {
+                formInstance.dataForm['service_order_indicators_data'] = indicators_data_setup;
+                for (let indicator of indicators_data_setup) {
+                    if (indicator?.[keyInd]?.['code'] === "IN0001") {
+                        formInstance.dataForm['indicator_revenue'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                    }
+                    if (indicator?.[keyInd]?.['code'] === "IN0003") {
+                        formInstance.dataForm['indicator_gross_profit'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                    }
+                    if (indicator?.[keyInd]?.['code'] === "IN0006") {
+                        formInstance.dataForm['indicator_net_income'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                    }
+                }
+            }
             WFRTControl.callWFSubmitForm(formInstance)
         },
     })
@@ -180,7 +214,8 @@ class DetailDataHandler {
         const data_url = $form.attr('data-url');
         $.fn.callAjax2({
             url: data_url,
-            method: 'GET'
+            method: 'GET',
+            isLoading: true,
         }).then(
             (resp) => {
                 const data = $.fn.switcherResp(resp);
@@ -309,4 +344,20 @@ $(document).ready(function () {
         let url = $(this).attr('data-url') + '?service_order_id=' + $.fn.getPkDetail()
         $(this).attr('href', url)
     })
+
+    IndicatorControl.$openCanvas.on('click', function () {
+        let formInstance = new SetupFormSubmit($('#form-update-service-order'))
+        if (formInstance.dataForm.hasOwnProperty('attachment')) {
+            formInstance.dataForm['attachment'] = $x.cls.file.get_val(
+                formInstance.dataForm?.['attachment'],
+                []
+            )
+        } else {
+            formInstance.dataForm['attachment'] = []
+        }
+        setUpFormData(formInstance);
+        IndicatorControl.loadIndicator(formInstance?.['dataForm']);
+        IndicatorControl.$canvas.offcanvas('show');
+    });
+
 })

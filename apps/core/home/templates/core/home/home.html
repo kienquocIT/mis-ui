@@ -8,13 +8,18 @@
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/vanilla-calendar.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/vanilla-calendar-pro/themes/themes.light.min.css' %}">
     <style>
+{#        #idxPageContent {#}
+            {#background-color: #A7C1E1;#}
+{#            background-image: url("{% static 'assets/js/home_4.jpg' %}");#}
+{#            background-repeat: no-repeat;#}
+{#            background-position: center;#}
+{#            background-size: cover;#}
+{#            padding: 1rem;#}
+{#        }#}
     #idxPageContent {
-        background-color: #A7C1E1;
-        background-image: url("{% static 'assets/js/home_4.jpg' %}");
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: cover;
-        padding: 1rem;
+        /* Thêm dòng này để tạo hiệu ứng chuyển màu mượt mà */
+        transition: background 1.5s ease-in-out;
+        background-size: 100% 100%;
     }
     </style>
 {% endblock %}
@@ -30,8 +35,8 @@
     </div>
     <div class="row mb-5" style="display: none;">
         <div class="col-12 mb-3">
-            <h1 class="text-white fw-bold" id="employee-current-fullname"></h1>
-            <h5 class="text-white fw-bold" id="employee-current-company"></h5>
+            <h1 class="fw-bold text-black" id="employee-current-fullname"></h1>
+            <h6 class="fw-bold text-black" id="employee-current-company"></h6>
         </div>
         <div class="col col-sm-12 col-md-6 col-lg-6 col-xl-9">
             <div class="row" id="my-task-summary-report" data-url="{% url 'MyTaskSummaryReport' %}">
@@ -39,8 +44,8 @@
                     <div class="card transparent-card">
                         <div class="card-body p-2">
                             <div class="summary-item" data-item="actives">
-                                <p class="summary-value"></p>
-                                <p class="summary-title">{% trans 'Actives Task' %}</p>
+                                <p class="summary-value text-black"></p>
+                                <p class="summary-title text-black">{% trans 'Actives Task' %}</p>
                             </div>
                         </div>
                     </div>
@@ -49,8 +54,8 @@
                     <div class="card transparent-card">
                         <div class="card-body p-2">
                             <div class="summary-item" data-item="overdue">
-                                <p class="summary-value"></p>
-                                <p class="summary-title">{% trans 'Overdue Task' %}</p>
+                                <p class="summary-value text-black"></p>
+                                <p class="summary-title text-black">{% trans 'Overdue Task' %}</p>
                             </div>
                         </div>
                     </div>
@@ -59,8 +64,8 @@
                     <div class="card transparent-card">
                         <div class="card-body p-2">
                             <div class="summary-item" data-item="upcoming_today">
-                                <p class="summary-value"></p>
-                                <p class="summary-title">{% trans 'Upcoming Today Task' %}</p>
+                                <p class="summary-value text-black"></p>
+                                <p class="summary-title text-black">{% trans 'Upcoming Today Task' %}</p>
                             </div>
                         </div>
                     </div>
@@ -69,8 +74,8 @@
                     <div class="card transparent-card">
                         <div class="card-body p-2">
                             <div class="summary-item" data-item="upcoming_soon">
-                                <p class="summary-value"></p>
-                                <p class="summary-title">{% trans 'Upcoming 3 days Task' %}</p>
+                                <p class="summary-value text-black"></p>
+                                <p class="summary-title text-black">{% trans 'Upcoming 3 days Task' %}</p>
                             </div>
                         </div>
                     </div>
@@ -103,15 +108,14 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <table class="table nowrap w-100" id="tbl_my_task" data-url="{% url 'FlowRuntimeTaskListAPI' %}" data-method="GET">
-                                                <thead>
+                                                <thead class="bg-secondary-light-5">
                                                     <tr>
                                                         <th style="min-width: 50px"></th>
-                                                        <th style="min-width: 150px">{% trans 'Application' %}</th>
-                                                        <th style="min-width: 200px">{% trans 'Title' %}</th>
-                                                        <th style="min-width: 100px">{% trans 'Node' %}</th>
-                                                        <th style="min-width: 150px">{% trans 'Assignee' %}</th>
-                                                        <th style="min-width: 150px">{% trans 'Date receive' %}</th>
-                                                        <th style="min-width: 100px"></th>
+                                                        <th style="min-width: 300px">{% trans 'Application' %}</th>
+                                                        <th style="min-width: 250px">{% trans 'Current node' %}</th>
+                                                        <th style="min-width: 100px">{% trans 'Assignee' %}</th>
+                                                        <th style="min-width: 200px">{% trans 'Date receive' %}</th>
+                                                        <th style="min-width: 150px"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>
@@ -123,15 +127,14 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <table id="tbl_following_data" class="table nowrap w-100" data-url="{% url 'FlowRuntimeMeListAPI' %}" data-method="GET">
-                                                <thead>
+                                                <thead class="bg-secondary-light-5">
                                                 <tr>
                                                     <th style="min-width: 50px"></th>
-                                                    <th style="min-width: 150px">{% trans 'Application' %}</th>
-                                                    <th style="min-width: 200px">{% trans 'Title' %}</th>
-                                                    <th style="min-width: 150px">{% trans 'Current node' %}</th>
-                                                    <th style="min-width: 150px">{% trans 'Collaborator' %}</th>
-                                                    <th style="min-width: 150px">{% trans 'Date Created' %}</th>
-                                                    <th style="min-width: 100px"></th>
+                                                    <th style="min-width: 300px">{% trans 'Application' %}</th>
+                                                    <th style="min-width: 250px">{% trans 'Current node' %}</th>
+                                                    <th style="min-width: 100px">{% trans 'Collaborator' %}</th>
+                                                    <th style="min-width: 200px">{% trans 'Date Created' %}</th>
+                                                    <th style="min-width: 150px"></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody></tbody>
@@ -143,15 +146,14 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <table class="table nowrap w-100" id="tbl_block_doc_pined" data-url="{% url 'DocPinedListAPI' %}" data-url-detail="{% url 'DocPinedDetailAPI' pk=1 %}" data-method="GET">
-                                                <thead>
+                                                <thead class="bg-secondary-light-5">
                                                 <tr>
                                                     <th style="min-width: 50px"></th>
-                                                    <th>{% trans 'Title' %}</th>
-                                                    <th>{% trans 'Application' %}</th>
-                                                    <th>{% trans 'Current node' %}</th>
-                                                    <th>{% trans 'Collaborator' %}</th>
-                                                    <th>{% trans 'Date Created' %}</th>
-                                                    <th></th>
+                                                    <th style="min-width: 300px">{% trans 'Application' %}</th>
+                                                    <th style="min-width: 250px">{% trans 'Current node' %}</th>
+                                                    <th style="min-width: 100px">{% trans 'Collaborator' %}</th>
+                                                    <th style="min-width: 200px">{% trans 'Date Created' %}</th>
+                                                    <th style="min-width: 150px"></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody></tbody>
@@ -505,6 +507,7 @@
         const msgTextErrLinked = `{% trans "Hasn't been link to the employee!" %}`;
         const msgTextErrLinked2 = "{% trans 'Please switch the current company to the one that already has an employee link or contact the administrator to add an employee to the account.' %}"
     </script>
+    <script src="{% static 'assets/js/core_home/day_flow_homepage.js' %}"></script>
     <script src="{% static 'assets/js/core_home/home.js' %}"></script>
 
     <script src="{% static 'vendors/chartjs/chart.umd.min.js' %}"></script>

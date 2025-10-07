@@ -538,6 +538,10 @@ msgid "is inventory tracking"
 msgstr "có theo dõi tồn kho"
 
 #
+msgid "None"
+msgstr "Không"
+
+#
 msgid "Currency"
 msgstr "Loại tiền tệ"
 
@@ -548,3 +552,7 @@ msgstr "Tổng giá trị"
 #
 msgid "Action"
 msgstr "Thao tác"
+
+#
+msgid "Specific serial number"
+msgstr "Serial đích danh"

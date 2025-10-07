@@ -283,11 +283,10 @@
             <div class="col-12 col-md-3 col-lg-2">
                 <div class="form-group">
                     <label for="valuation-method" class="form-label required">{% trans "Valuation method" %}</label>
-                    <select id="valuation-method"
-                            class="form-select required">
+                    <select id="valuation-method" class="form-select required">
                         <option value="0">{% trans 'FIFO' %}</option>
                         <option value="1">{% trans 'Weighted average' %}</option>
-{#                        <option value="2" disabled>{% trans 'Specific identification method' %}</option>#}
+                        <option value="2">{% trans 'Specific identification' %}</option>
                     </select>
                 </div>
             </div>
@@ -295,7 +294,7 @@
         <div hidden class="row">
             <div class="col-12 mt-5">
                 <div class="row">
-                    <div class="col-12 col-md-9 col-lg-6">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <span class="text-muted">{% trans 'Product overview' %}</span>
                         <table id="datatable-warehouse-overview" class="table nowrap w-100">
                             <thead>
@@ -310,21 +309,22 @@
                             <tbody></tbody>
                         </table>
                     </div>
-                    <div class="col-12 col-md-9 col-lg-6">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <span class="text-muted">{% trans 'Product warehouse detail' %}</span>
                         <table id="datatable-warehouse-list" class="table nowrap w-100"
                                data-url="{% url "WareHouseListAPI" %}"
                                data-method="GET">
                             <thead>
                                 <tr class="bg-secondary-light-5">
-                                    <th>{% trans "WH Code" %}</th>
-                                    <th>{% trans "WH Name" %}</th>
-                                    <th>{% trans "Stock" %}</th>
-                                    <th>{% trans "Cost" %}</th>
+                                    <th>{% trans "Warehouse" %}</th>
+                                    <th>{% trans "Stock quantity" %}</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
+                    </div>
+                    <div class="col-12 mt-5">
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#modal-specific-serial" class="btn btn-soft-danger" id="specific-modal-btn" hidden>{% trans 'Specific serial number' %}</button>
                     </div>
                 </div>
             </div>

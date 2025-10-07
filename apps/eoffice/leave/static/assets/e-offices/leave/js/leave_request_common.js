@@ -1,8 +1,3 @@
-// declare global scope element
-const $transElm = $('#trans-factory')
-const $urlElm = $('#url-factory')
-const $EmpElm = $('#selectEmployeeInherit')
-
 // return template html dropdown for select2 [FIELD LEAVE_TYPE]
 function renderTemplateResult(state) {
     if (!state.id) return state.text
@@ -30,19 +25,60 @@ function ConvertToTotal(data){
     ) + 1 // cộng 1 cho kết quả vì, khi cộng, phép toán ko tính ngày bắt đầu.
     return tempTotal
 }
-function filterWorkingDay(){
-    const $elmWs = $('#ws_data')
-    const ws = $elmWs.text().length ? JSON.parse($elmWs.text())?.['working_days'] : {}
-    // ds ngày ko làm or làm nửa buồi
-    let convert_list = []
-    for (let key in ws){
-        const item = ws[key]
-        item.work = !!item?.['work']
-        if ( !item?.work || (!item?.aft.to || !item?.aft.from || !item?.mor.to || !item?.mor.from))
-            convert_list[key] = item
+
+async function filterWorkingDay(data, dateRequest){
+    const params = {
+        'employee_id': $('#selectEmployeeInherit').val(),
     }
-    // trả về danh sách ngày ko làm ( ví dụ: ngày chủ nhật "0" or làm nửa buổi thứ bảy "6")
-    return convert_list
+    if (data.date_from === data.date_to)
+        params['date'] = data.date_from
+    else {
+        params['date__gte'] = data.date_from
+        params['date__lte'] = data.date_to
+    }
+    const getData = await $.fn.callAjax2({
+        url: $('#url-factory').attr('data-shift-assignment'),
+        data: params,
+    })
+    let ws = []
+    let res = $.fn.switcherResp(getData)
+    if ([200, 201].indexOf(res.status) !== -1) {
+        ws = res?.['shift_assignment_list']
+    }
+    let work_shift = {}
+    for (const key in ws) {
+        const item = ws[key]
+        const date_shift = item.shift
+        work_shift[item.date] = {
+            ...item,
+            'work': true,
+            'only_all_day': false,
+        }
+        if (!date_shift?.['break_in_time'] && !date_shift?.['break_out_time']) {
+            work_shift[item.date]['only_all_day'] = true
+        }
+    }
+    if (Object.keys(work_shift).length !== dateRequest.length){
+        const tempNew = {}
+        for (const dateStr of dateRequest){
+            if (!work_shift?.[dateStr]) tempNew[dateStr] = {'work': false}
+        }
+        work_shift = {...work_shift, ...tempNew}
+    }
+    // trả về danh sách full ngày nào làm nửa buổi thì need_all = true
+    return work_shift
+}
+
+function yearList(){
+    let lsYear = {};
+    const $elmWs = $('#ws_data')
+    const ws = $elmWs.text().length ? JSON.parse($elmWs.text())?.['years'] : []
+    if (ws && ws.length)
+        for (let item of ws) {
+            lsYear[item["config_year"]] = item["list_holiday"]
+        }
+    else $.fn.notifyB({'description': $.fn.gettext('Oops, some data is missing. Please reload the page and try again.')}, 'failure')
+    return lsYear
 }
 
 function dateRangeToList(data){
@@ -56,93 +92,79 @@ function dateRangeToList(data){
     }
     return dateList
 }
-function yearList(){
-    let lsYear = {};
-    const $elmWs = $('#ws_data')
-    const ws = $elmWs.text().length ? JSON.parse($elmWs.text())?.['years'] : []
-    if (ws && ws.length)
-        for (let item of ws) {
-            lsYear[item["config_year"]] = item["list_holiday"]
-        }
-    else $.fn.notifyB({'description': $.fn.gettext('Oops, some data is missing. Please reload the page and try again.')}, 'failure')
-    return lsYear
-}
-function checkHalfDay(item, data, dayMapWs, total){
-    if (item === data.date_from){
-        if (dayMapWs){
-            if (dayMapWs?.['work'])
-                if (dayMapWs.mor.to && dayMapWs.mor.from) //nếu làm buổi sáng
-                    total -= !data.morning_shift_f ?  1 : 0.5
-                else // làm buổi chiều
-                    total -= 0.5
-            return total
-        }
-        else if (!data.morning_shift_f) total -= 0.5
-        if (item === data.date_to && data.morning_shift_t) total -= 0.5
-    }
-    else // case date_to
-        if (dayMapWs){
-            if (dayMapWs?.['work'])
-                if (data.morning_shift_t) //nếu làm buổi sáng
-                    total -= dayMapWs.mor.to ? 0.5 : 1
-                else // làm buổi chiều
-                    total -= dayMapWs.mor.to && dayMapWs.aft.to ? 1 : 0.5
-            return total
-        }
-    return total
-}
-class detailTab {
-    static $tableElm = $('#leave_detail_tbl')
 
-    static PrepareReturn(data) {
-        let tempTotal = 0
+class detailTab {
+    constructor(data) {
+        this.user_data = {};
+        this.$tableElm = $('#leave_detail_tbl');
+        this.$transElm = $('#trans-factory')
+        this.load_table(data)
+    }
+
+    async PrepareReturn(data) {
+        let tempTotal = 0;
         if (data.date_from === "Invalid date" || data.date_to === "Invalid date") return tempTotal
-        const wsLsConvert = filterWorkingDay()
         const wsLsyear = yearList()
 
         // quy đổi date range thành tồng ngày
         tempTotal = ConvertToTotal(data)
-
         // quy đổi date range thành list ngày
         const dateList = dateRangeToList(data)
 
+        const wsLsConvert = await filterWorkingDay(data, dateList)
+
         for (let item of dateList){
-            const day = new Date(item).getDay()
-            const dayMapWs = wsLsConvert?.[day];
-            // check range ngày nghỉ trong ngày làm việc, nếu ngày dk nghỉ trùng ngày ko làm => trừ 1 trong tổng ngày
-            if (dayMapWs && !dayMapWs?.['work']) tempTotal -= 1
+            const dayMapWs = wsLsConvert?.[item] || null;
+            // nếu ngày nghỉ ko có ca => trừ 1 trong tổng ngày
+            if (!dayMapWs.work){
+                tempTotal -= 1
+                continue
+            }
 
             // check range ngày nghỉ trong ngày holidays
             const year = moment(item).year()
             let isHoliday = false
-            if (wsLsyear[year])
+            if (wsLsyear[year]){
                 for (let holiday of wsLsyear[year]){
-                    // nếu ngày lễ ko trùng ngày nghỉ thì trừ 1 ngày
                     if (item === holiday.holiday_date_to) {
-                        if (dayMapWs){
-                            if (dayMapWs?.['work']) tempTotal -= 1
-                        }else tempTotal -= 1
+                        tempTotal -= 1
                         isHoliday = !isHoliday
                         break;
                     }
-                    // trừ phép ngày làm nữa buổi và ko phải start/end day
-                    if (item !== holiday.holiday_date_to && item !== data.date_from && item !== data.date_to){
-                        if (dayMapWs){
-                             if (dayMapWs?.['work'] && (!dayMapWs.aft.to || !dayMapWs.aft.from || !dayMapWs.mor.to || !dayMapWs.aft.from)){
-                                tempTotal -= 0.5
-                                break;
-                             }
-                        }
-                    }
                 }
-            // check nghỉ nữa ngày
-            if ((item === data.date_from || item === data.date_to) && !isHoliday)
-                tempTotal = checkHalfDay(item, data, dayMapWs, tempTotal)
+            }
+            // ngày nghỉ ko phải ngày lễ và có ca
+            if (!isHoliday && dayMapWs.work){
+                // nghỉ nửa buổi và ngày bắt đầu và ngày kết thúc bằng nhau
+                if((data?.['first_half'] || data?.['second_half']) && data.date_from === data.date_to){
+                    tempTotal -= 0.5
+                    continue
+                }
+                else if ((data?.['first_half'] || data?.['second_half']) && data.date_from !== data.date_to){
+                    let mess = $.fn.gettext('Please select All day')
+                    if(data.date_from !== data.date_to)
+                        mess = $.fn.gettext('Please ensure the start and end dates match')
+                    $.fn.notifyB({
+                        'description': mess
+                    }, 'failure')
+                    return false
+                }
+            }
+        }
+
+        if (!data.all_day
+            && (new Date(data.date_to) !== new Date(data.date_from))
+            && wsLsConvert[data.date_to]?.['only_all_day']
+        ) { // nếu ko chọn all day và ngày bắt đầu ko bằng ngày kết thúc và ngày này chỉ có thể nghỉ nguyên ngày
+            $.fn.notifyB({
+                description: $.fn.gettext('Please select All day or ensure the start and end dates match')
+            }, 'failure')
+            return false
         }
         return tempTotal
     }
 
-    static checkIsExp(data) {
+    checkIsExp(data) {
         // check available của phép đặc biệt FF, MC, MY
         let code = data['leave_available']?.['leave_type']?.['code']
         let IsExp = true
@@ -154,27 +176,33 @@ class detailTab {
         }
         return IsExp
     }
-    static validDate(data, row){
+
+    async validDate(data, row){
+        const _this = this;
         if (data.date_from && data.date_to && data.date_from !== 'Invalid date' &&
             data.date_to !== 'Invalid date') {
             const leave_available = data['leave_available']
             if (!leave_available){
-                $.fn.notifyB({description: $transElm.attr('data-empty_leave')}, 'failure')
+                $.fn.notifyB({description: this.$transElm.attr('data-empty_leave')}, 'failure')
                 return false
             }
 
-            data.subtotal = detailTab.PrepareReturn(data)
-            if ((leave_available.check_balance && data.subtotal > leave_available.available) || !detailTab.checkIsExp(data)
-                || (['FF', 'MY', 'MC'].includes(leave_available.leave_type.code) && data.subtotal > data['leave_available'].total))
-                $.fn.notifyB({description: $transElm.attr('data-out-of-stock')}, 'failure')
+            data.subtotal = await _this.PrepareReturn(data)
+            if ((leave_available.check_balance && data.subtotal > leave_available.available)
+                || !_this.checkIsExp(data)
+                || (['FF', 'MY', 'MC'].includes(leave_available.leave_type.code) && data.subtotal > data['leave_available'].total)
+            )
+                $.fn.notifyB({description: this.$transElm.attr('data-out-of-stock')}, 'failure')
 
+            if  (!data.subtotal) data.subtotal = 0
             $('input[name*="subtotal_"]', row).val(data.subtotal)
             $(document).trigger("footerCallback");
         }
     }
 
-    static load_table(datalist=[]) {
-        detailTab.$tableElm.DataTableDefault({
+    load_table(datalist=[]) {
+        const _this = this;
+        const _tbl = this.$tableElm.DataTableDefault({
             data: datalist,
             ordering: false,
             paginate: false,
@@ -184,7 +212,7 @@ class detailTab {
             columns: [
                 {
                     data: 'leave_available',
-                    width: '35%',
+                    width: '30%',
                     class: 'child-mt',
                     render: (row, type, data, meta) => {
                         let dataLoad = []
@@ -198,34 +226,55 @@ class detailTab {
                 },
                 {
                     data: 'date_from',
-                    width: '20%',
+                    width: '25%',
                     render: (row, type, data, meta) => {
                         let dateFrom = row
                         if (dateFrom !== '') dateFrom = moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')
                         let html = $(`${$('.date_from').html()}`)
-                        html.find('.f_mor').attr('id', `f_mor_${meta.row}`).attr('name', `morning_shift_f_${
-                            meta.row}`).attr('data-zone', 'detail_data').next('label').attr('for', `f_mor_${meta.row}`)
-                        html.find('.f_aft').attr('id', `f_aft_${meta.row}`).attr('name', `morning_shift_f_${
-                            meta.row}`).attr('data-zone', 'detail_data').next('label').attr('for', `f_aft_${meta.row}`)
-                        html.find('.date-picker').attr('name', `date_from_${meta.row}`).attr('value', dateFrom).attr('id', `InputDateFrom_${meta.row}`).attr('data-zone', 'detail_data')
-                        html.find(`[name="morning_shift_f_${meta.row}"][value="${data.morning_shift_f}"]`).attr('checked', true).attr('data-zone', 'detail_data')
+                        html.find('.all_day')
+                            .attr('id', `all_${meta.row}`)
+                            .attr('name', `day_shift_${meta.row}`)
+                            .attr('data-zone', 'detail_data')
+                            .next('label').attr('for', `all_${meta.row}`)
+
+                        html.find('.first_half')
+                            .attr('id', `first_${meta.row}`)
+                            .attr('name', `day_shift_${meta.row}`)
+                            .attr('data-zone', 'detail_data')
+                            .next('label').attr('for', `first_${meta.row}`)
+
+                        html.find('.second_half')
+                            .attr('id', `second_${meta.row}`)
+                            .attr('name', `day_shift_${meta.row}`)
+                            .attr('data-zone', 'detail_data')
+                            .next('label').attr('for', `second_${meta.row}`)
+
+                        html.find('.date-picker')
+                            .attr('name', `date_from_${meta.row}`)
+                            .attr('value', dateFrom)
+                            .attr('id', `InputDateFrom_${meta.row}`)
+                            .attr('data-zone', 'detail_data')
+                        let nameIptTrue = `.all_day`
+                        if (data?.['first_half']) nameIptTrue = `.first_half`
+                        if (data?.['second_half']) nameIptTrue = `.second_half`
+                        html.find(`${nameIptTrue}[name="day_shift_${meta.row}"]`)
+                            .attr('checked', true)
                         return html.prop('outerHTML')
                     }
                 },
                 {
                     data: 'date_to',
                     width: '20%',
+                    class: 'child-mt',
                     render: (row, type, data, meta) => {
                         let dateTo = row
                         if (dateTo !== '') dateTo = moment(row, 'YYYY-MM-DD').format('DD/MM/YYYY')
-                        let html = $(`${$('.date_from').html()}`)
-                        html.find('.f_mor').attr('id', `t_mor_${meta.row}`).attr('name', `morning_shift_t_${
-                            meta.row}`).attr('data-zone', 'detail_data').next('label').attr('for', `t_mor_${meta.row}`)
-                        html.find('.f_aft').attr('data-zone', 'detail_data').attr('id', `t_aft_${meta.row}`).attr('name', `morning_shift_t_${meta.row}`).next('label').attr('for', `t_aft_${meta.row}`)
-                        html.find('.date-picker').attr('name', `date_to_${meta.row}`).attr('id', `InputDateTo_${meta.row}`).attr('value', dateTo).attr('data-zone', 'detail_data')
-                        html.find('.spec-date-layout > span').remove()
-                        html.find(`[name="morning_shift_t_${meta.row}"][value="${data.morning_shift_t}"]`).attr('checked', true).attr('data-zone', 'detail_data')
-                        return html.prop('outerHTML')
+                        let html = `<div class="form-group spec-date-layout mb-0">`
+                            + `<div class="input-affix-wrapper">`
+                            + `<input type="text" name="date_to_${meta.row}" value="${dateTo}" id="InputDateFrom_$${
+                                meta.row}" class="form-control date-picker" autocomplete="off" data-zone="detail_data">`
+                            + `<span class="input-suffix"><i class="fa-solid fa-calendar-days"></i></span></div></div>`
+                        return html
                     }
                 },
                 {
@@ -266,43 +315,16 @@ class detailTab {
                     },
                     maxYear: parseInt(moment().format('YYYY'), 10),
                 })
-                    .on('change', function () {
-                        // valid và add vào data table
-                        if ($(this).attr('name').indexOf('date_from_') > -1) {
-                            data.date_from = moment(this.value, 'DD/MM/YYYY').format('YYYY-MM-DD')
-                            data.morning_shift_f = JSON.parse($('input[name*="morning_shift_f_"]:checked', row).val())
-                        }
-                        // valid và add vào data table
-                        if ($(this).attr('name').indexOf('date_to_') > -1) {
-                            data.date_to = moment(this.value, 'DD/MM/YYYY').format('YYYY-MM-DD')
-                            data.morning_shift_t = JSON.parse($('input[name*="morning_shift_t_"]:checked', row).val())
-                        }
-                        // valid ngày kết thúc lớn hơn ngày bắt đầu
-                        if (data.date_from && data.date_to && (new Date(data.date_to) < new Date(data.date_from))) {
-                            $.fn.notifyB({description: $transElm.attr('data-err-date')}, 'failure')
-                            return false
-                        }
-                        detailTab.validDate(data, row)
-                    })
                 if (!data.date_from || !data.date_to) $('.date-picker', row).val('').trigger('change')
 
-                // trigger shift follow by date pick
-                $('input[name*="morning_shift_"]', row).on('change', function () {
-                    if ($(this).attr('name').indexOf('morning_shift_f_') > -1)
-                        data.morning_shift_f = JSON.parse($('input[name*="morning_shift_f_"]:checked', row).val())
-                    else
-                        data.morning_shift_t = JSON.parse($('input[name*="morning_shift_t_"]:checked', row).val())
-                    detailTab.validDate(data, row)
-                })
-
                 // load leave type with employee filter
-                $('.row_leave-available', row).attr('data-url', $urlElm.attr('data-leave-available'))
+                $('.row_leave-available', row).attr('data-url', $('#url-factory').attr('data-leave-available'))
                     .attr('data-keyResp', "leave_available")
                     .attr('data-keyText', "leave_type.title")
                     .attr('data-keyId', "id")
                     .initSelect2({
                         "dropdownAutoWidth": true,
-                        'dataParams': {employee: $EmpElm.val()},
+                        'dataParams': {employee: $('#selectEmployeeInherit').val()},
                         'templateResult': renderTemplateResult,
                         'templateSelection': renderTemplateSelected,
                         callbackDataResp(resp, keyResp) {
@@ -315,10 +337,6 @@ class detailTab {
                             return list_result
                         },
                     })
-                    .on('select2:select', function (e) {
-                        data.leave_available = e.params.data.data
-                        detailTab.validDate(data, row)
-                    })
 
                 // remark trigger on change
                 $('input[name*="remark_"]', row).on('blur', function () {
@@ -330,7 +348,7 @@ class detailTab {
 
                 // delete btn
                 $('.btn-remove-row', row).off().on('click', ()=>{
-                    detailTab.$tableElm.DataTable().row(row).remove().draw(false)
+                    _this.$tableElm.DataTable().row(row).remove().draw(false)
                 })
             },
             footerCallback: function () {
@@ -355,25 +373,66 @@ class detailTab {
                 })
             },
         })
+
+        _tbl.on('change', 'tbody input.date-picker', async function() {
+            let td = _tbl.cell($(this).closest('td'));
+            let data = _tbl.row(td[0][0].row).data();
+            // valid và add vào data table
+            if ($(this).attr('name').indexOf('date_from_') > -1) {
+                data.date_from = moment(this.value, 'DD/MM/YYYY').format('YYYY-MM-DD')
+            }
+            // valid và add vào data table
+            if ($(this).attr('name').indexOf('date_to_') > -1) {
+                data.date_to = moment(this.value, 'DD/MM/YYYY').format('YYYY-MM-DD')
+            }
+            const elmChecked = $(`input[name="day_shift_${td[0][0].row}"]:checked`).val()
+            data.all_day = elmChecked === 'all';
+            data.first_half = elmChecked === 'first';
+            data.second_half = elmChecked !== 'all' && elmChecked !== 'first';
+            // valid ngày kết thúc lớn hơn ngày bắt đầu
+            if (data.date_from && data.date_to && (new Date(data.date_to) < new Date(data.date_from))) {
+                $.fn.notifyB({description: _this.$transElm.attr('data-err-date')}, 'failure')
+                return false
+            }
+            if (data.date_to && data.date_from && data.leave_available)
+                await _this.validDate(data, _tbl.row(td[0][0].row).node())
+        })
+
+        _tbl.on('select2:select', 'tbody select[name*="leave_available_"]', async function(e){
+            let td = _tbl.cell($(this).closest('td'));
+            let data = _tbl.row(td[0][0].row).data();
+            data.leave_available = e.params.data.data
+            if (data.date_to && data.date_from && data.leave_available)
+                await _this.validDate(data, _tbl.row(td[0][0].row).node())
+        })
+
+        _tbl.on('change', 'input[name*="day_shift_"]', async function () {
+            let td = _tbl.cell($(this).closest('td'));
+            let data = _tbl.row(td[0][0].row).data();
+            // valid và add vào data table
+            const elmChecked = this.value
+            data.all_day = elmChecked === 'all';
+            data.first_half = elmChecked === 'first';
+            data.second_half = elmChecked !== 'all' && elmChecked !== 'first';
+            if (data.date_to && data.date_from && data.leave_available)
+                await _this.validDate(data, _tbl.row(td[0][0].row).node())
+        })
     }
 
-    static add() {
+    add() {
         let temp = [
             {
                 'leave_type': {},
                 'date_from': '',
-                'morning_shift_f': true,
+                'all_day': true,
+                'first_half': false,
                 'date_to': '',
-                'morning_shift_t': false,
+                'second_half': false,
                 'subtotal': 0,
                 'remark': ''
             }
         ]
-        detailTab.$tableElm.DataTable().rows.add(temp).draw()
-    }
-
-    static get_data() {
-        return detailTab.$tableElm.DataTable().data().toArray() || []
+        this.$tableElm.DataTable().rows.add(temp).draw()
     }
 }
 
@@ -383,7 +442,7 @@ class TabAvailable {
     static load_table() {
         TabAvailable.$tableElm.DataTableDefault({
             ajax: {
-                url: $urlElm.attr('data-leave-available'),
+                url: $('#url-factory').attr('data-leave-available'),
                 type: "GET",
                 dataSrc: function (resp) {
                     let data = $.fn.switcherResp(resp);
@@ -403,7 +462,6 @@ class TabAvailable {
                 },
                 data: function (a) {
                     a.employee = $('#selectEmployeeInherit').val()
-                    // a.check_balance = true
                     return a
                 }
             },
@@ -472,31 +530,30 @@ class TabAvailable {
 // - enable button add date
 // - trigger button add date
 $(document).on('Employee.Loaded', function () {
-
     // run table when page loaded
-    let tempData = $('#temp_data_detail')
+    let tempData = $('#temp_data_detail')  // get data task
     const temp = tempData?.text() ? JSON.parse(tempData.text()) : [];
-    detailTab.load_table(temp)
+    let dtTab = new detailTab(temp)
 
     // button click Add Date
     const $AddBtn = $('#add_new_line')
     $AddBtn.prop('disabled', false)
-    $AddBtn.off().on('click', () => detailTab.add())
+    $AddBtn.off().on('click', () => dtTab.add())
 
     // after load employee inherit load table leave available
     TabAvailable.load_table();
 });
 
 function submitHandleFunc() {
-    // WindowControl.showLoading();
-    const frm = new SetupFormSubmit($FormElm);
+    const frm = new SetupFormSubmit($('#leave_form'));
     let formData = frm.dataForm;
     if (frm.dataMethod.toLowerCase() === 'post') formData.system_status = 1
-    formData.employee_inherit_id = $EmpElm.val()
-    formData.detail_data = detailTab.get_data()
+    formData.employee_inherit_id = formData.employee_inherit
+    formData.detail_data = $('#leave_detail_tbl').DataTable().data().toArray()
     formData.total = 0
     let isError = false
     let errorRequest = false
+    let errorRow = false
     let specialStock = {'FF':0, 'MY':0, 'MC':0}
     for (let idx = 0; idx < formData.detail_data.length; idx++){
         const value = formData.detail_data[idx],
@@ -517,17 +574,16 @@ function submitHandleFunc() {
 
         if (!formData.start_day || _dateForm < new Date(formData.start_day).getTime())
             formData.start_day = value.date_from
+        if (value.subtotal === 0){
+            errorRow = true
+            break
+        }
         formData.total += value.subtotal
         let nextVal = formData.detail_data[idx + 1]
         if (nextVal) {
-            // 1. nếu ngày bắt đầu tiếp theo bé hơn ngày kết thúc hiện tại
-            // 2. nếu ngày bắt đầu tiếp theo bằng ngày kết thúc hiện tại, và ca kết thúc hiện tại là chiều,
-            // và ca bắt đầu tiếp theo là sáng, và ngày bắt đầu ca chiều trùng ngày kết thúc ca sáng.
-
-            if (new Date(nextVal.date_from).getTime() < _dateTo ||
-                (new Date(nextVal.date_from).getTime() === _dateTo && !value.morning_shift_t && nextVal.morning_shift_f) ||
-                (_dateForm === _dateTo & !value.morning_shift_f && value.morning_shift_t)
-            ){
+            // 1. nếu ngày bắt đầu tiếp theo bé hơn ngày kết thúc trả về lỗi
+            const _nextFrom = new Date(nextVal.date_from).getTime()
+            if (_nextFrom < _dateTo) {
                 errorRequest = true
                 break
             }
@@ -535,7 +591,7 @@ function submitHandleFunc() {
     }
     formData.request_date = moment($('#inputRequestDate').val(), 'DD/MM/YYYY').format('YYYY-MM-DD')
 
-    if (isError || errorRequest){
+    if (isError || errorRequest || errorRow){
         let turnOffAlert = setInterval(() => {
             if($('.swal2-container').length){
                 swal.close();
@@ -543,12 +599,15 @@ function submitHandleFunc() {
             }
         }, 500);
         if (isError)
-            $.fn.notifyB({description: $transElm.attr('data-out-of-stock')}, 'failure');
-        else $.fn.notifyB({description: $transElm.attr('data-err-date-setup')}, 'failure');
+            $.fn.notifyB({description: $.fn.gettext('Not enough leave or no leave available')}, 'failure');
+        else if (errorRequest)
+            $.fn.notifyB({description: $.fn.gettext('Ordinal date in detail tab is in complex setup')}, 'failure');
+        else
+            $.fn.notifyB({description: $.fn.gettext('The date list has a row with missing details')}, 'failure');
         return false
     }
     if (formData.total === 0){
-        $.fn.notifyB({description: $transElm.attr('data-detail-tab')}, 'failure');
+        $.fn.notifyB({description: $.fn.gettext('Total day off is 0 please verify again')}, 'failure');
         return false
     }
     frm.dataForm = formData

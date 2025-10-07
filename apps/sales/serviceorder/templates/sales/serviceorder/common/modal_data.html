@@ -1,5 +1,6 @@
 {% load i18n %}
 
+<!-- Currency Rates Modal -->
 <div class="modal fade" id="modal-exchange-rate" tabindex="-1" role="dialog" aria-labelledby="modal-exchange-rate">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -23,15 +24,12 @@
                                 <th>{% trans 'Rate' %}</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    {% trans 'Close' %}
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                 <button type="button" id="btn-save-exchange-rate" class="btn btn-primary" data-bs-dismiss="modal">
                     {% trans 'Save' %}
                 </button>
@@ -40,6 +38,7 @@
     </div>
 </div>
 
+<!-- Select Product Modal -->
 <div class="modal fade" id="modal-product" tabindex="-1" role="dialog" aria-labelledby="modal-product">
     <div class="modal-dialog modal-lg" style="min-width: 70%" role="document">
         <div class="modal-content">
@@ -67,12 +66,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    {% trans 'Close' %}
-                </button>
-                <button type="button" id="btn-save-product" class="btn btn-primary" data-bs-dismiss="modal">
-                    {% trans 'Save' %}
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn-save-product" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Save' %}</button>
             </div>
         </div>
     </div>
@@ -167,8 +162,7 @@
                         <div class="form-group">
                             <label class="form-label" for="package_type">{% trans 'Package type' %}</label>
                             <select class="form-select select2" id="package_type"
-                                    data-url="{% url 'PackageMasterDataListAPI' %}"
-                                    name="package_type">
+                                    data-url="{% url 'PackageMasterDataListAPI' %}"  name="package_type">
                             </select>
                         </div>
                     </div>
@@ -212,15 +206,14 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    {% trans 'Close' %}
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                 <button type="button" id="btn_apply_package" class="btn btn-primary">{% trans 'Save' %}</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Work Order Cost Modal -->
 <div class="modal fade" id="modal-work-order-cost" tabindex="-1" role="dialog" aria-labelledby="modal-work-order-cost" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 95%" role="document">
         <div class="modal-content">
@@ -270,6 +263,7 @@
     </div>
 </div>
 
+<!-- Product Contribution Modal -->
 <div class="modal fade" id="modal-product-contribution" tabindex="-1" role="dialog" aria-labelledby="modal-product-contribution" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg" role="document" style="min-width: 85%">
         <div class="modal-content">
@@ -301,6 +295,7 @@
     </div>
 </div>
 
+<!-- Payment Detail Modal -->
 <div class="modal fade" id="modal-payment-detail" tabindex="-1" role="dialog" aria-labelledby="modal-payment-detail" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 95%" role="document">
         <div class="modal-content">
@@ -313,26 +308,22 @@
             <div class="modal-body" style="max-height: 70vh; overflow: auto">
                 <div class="nicescroll-bar">
                     <table class="table nowrap w-100 min-w-1200p" id="modal-table-payment-detail">
-                        <thead class="bg-secondary-light-5">
-                        </thead>
-                        <tbody>
-                        </tbody>
+                        <thead class="bg-secondary-light-5"></thead>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    {% trans 'Close' %}
-                </button>
-                <button type="button" id="btn-save-payment" class="btn btn-primary" data-bs-dismiss="modal">
-                    {% trans 'Save' %}
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn-save-payment" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Save' %}</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modal-payment-detail-no-invoice" tabindex="-1" role="dialog" aria-labelledby="modal-payment-detail-no-invoice" data-bs-backdrop="static">
+<!-- Payment Detail without Invoice Modal -->
+<div class="modal fade" id="modal-payment-detail-no-invoice" tabindex="-1" role="dialog"
+     aria-labelledby="modal-payment-detail-no-invoice" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -363,7 +354,9 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal-payment-reconcile" tabindex="-1" role="dialog" aria-labelledby="modal-payment-reconcile" data-bs-backdrop="static">
+<!--Advance Payment Modal -->
+<div class="modal fade" id="modal-payment-reconcile" tabindex="-1" role="dialog"
+        aria-labelledby="modal-payment-reconcile" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -375,17 +368,13 @@
             <div class="modal-body" style="max-height: 70vh; overflow: auto">
                 <div class="nicescroll-bar">
                     <table class="table nowrap w-100" id="modal-table-payment-reconcile">
-                        <thead class="bg-secondary-light-5">
-                        </thead>
-                        <tbody>
-                        </tbody>
+                        <thead class="bg-secondary-light-5"></thead>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    {% trans 'Close' %}
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                 <button type="button" id="btn-save-payment-reconcile" class="btn btn-primary" data-bs-dismiss="modal">
                     {% trans 'Save' %}
                 </button>
@@ -394,7 +383,9 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal-contribution-package" tabindex="-1" role="dialog" aria-labelledby="modal-contribution-package" data-bs-backdrop="static">
+<!--Select Transportion Modal-->
+<div class="modal fade" id="modal-contribution-package" tabindex="-1" role="dialog"
+        aria-labelledby="modal-contribution-package" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -406,19 +397,72 @@
             <div class="modal-body" style="max-height: 70vh; overflow: auto">
                 <div class="nicescroll-bar">
                     <table class="table nowrap w-100" id="modal-table-contribution-package">
-                        <thead class="bg-secondary-light-5">
-                        </thead>
-                        <tbody>
-                        </tbody>
+                        <thead class="bg-secondary-light-5"></thead>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    {% trans 'Close' %}
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                 <button type="button" id="btn-save-contribution-package" class="btn btn-primary" data-bs-dismiss="modal">
                     {% trans 'Save' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Delivery Work Order Modal-->
+<div class="modal fade" id="delivery_work_order_modal" tabindex="-1"
+     role="dialog" aria-labelledby="delivery_work_order_modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="min-width: 80%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Select Work Order with Delivery" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="overflow: auto; max-height: 80vh">
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-6 border-right">
+                        <div class="row">
+                            <div class="col-12">
+                                <table id="delivery_work_order_list" class="table nowrap w-100 mb-5" data-method="GET" data-url="{% url 'SVOWorkOrderDetailAPI' %}">
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width: 50px"></th>
+                                            <th style="min-width: 50px"></th>
+                                            <th style="min-width: 250px">{% trans "Work order" %}</th>
+                                            <th style="min-width: 150px">{% trans "Start Date" %}</th>
+                                            <th style="min-width: 150px">{% trans "End Date" %}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="row">
+                            <div class="col-12">
+                                <table id="total_delivery_product" class="table nowrap w-100 mb-5">
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width: 50px"></th>
+                                            <th style="min-width: 250px">{% trans "Product" %}</th>
+                                            <th style="min-width: 150px">{% trans "No of service delivered" %}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button type="button" id="btn_apply_delivery" class="btn btn-primary"
+                        data-bs-dismiss="modal">{% trans 'Save' %}
                 </button>
             </div>
         </div>

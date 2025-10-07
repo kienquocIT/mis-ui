@@ -620,7 +620,7 @@ const ServiceOrder = (function($) {
             reloadCurrency: true,
             rowIdx: true,
             scrollX: true,
-            scrollY: '50vh',
+            scrollY: '60vh',
             scrollCollapse: true,
             columns: [
                 {

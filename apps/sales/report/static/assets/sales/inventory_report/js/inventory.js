@@ -1190,7 +1190,7 @@ $(document).ready(function () {
     })
 
     $('#btn-refresh').on('click', function () {
-        if (current_view_mode = 'general') {
+        if (current_view_mode === 'general') {
             $('#thead-value').find('span').text('0')
             $('#thead-value').find('span').attr('data-init-money', 0)
             if (periodMonthEle.val()) {

@@ -500,6 +500,7 @@ class ApiURL:  # pylint: disable=too-few-public-methods
     DELIVERY_SUB_PRINT_LIST = StringUrl('delivery/sub-print/{pk}')
     DELIVERY_FOR_RECOVERY_LIST = StringUrl('delivery/for-recovery')
     DELIVERY_PRODUCT_LEASE_LIST = StringUrl('delivery/product-lease')
+    DELIVERY_SERVICEORDER_CALL = StringUrl('delivery/create-delivery-service-order')
 
     # Purchase
     PURCHASE_ORDER_LIST = StringUrl('purchasing/purchase-order/list')

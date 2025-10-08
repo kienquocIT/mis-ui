@@ -453,3 +453,16 @@ class ProductUploadAvatarAPI(APIView):
         if resp.state:
             return {'detail': resp.result}, status.HTTP_200_OK
         return resp.auto_return()
+
+
+class ProductSpecificIdentificationSerialNumberListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def get(self, request, *args, **kwargs):
+        params = request.query_params.dict()
+        resp = ServerAPI(user=request.user, url=ApiURL.PRODUCT_SI_SERIAL_NUMBER_LIST).get(params)
+        return resp.auto_return(key_success='product_si_serial_number_list')

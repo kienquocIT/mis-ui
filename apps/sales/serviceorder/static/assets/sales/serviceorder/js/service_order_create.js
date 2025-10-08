@@ -197,6 +197,7 @@ $(document).ready(function () {
 
     ServiceOrder.handleSaveProduct()
     ServiceOrder.handleSaveExchangeRate()
+    ServiceOrder.handleOpportunityChange()
 
     handleServiceDetailTabEvent()
     handleWorkOrderDetailTabEvent()

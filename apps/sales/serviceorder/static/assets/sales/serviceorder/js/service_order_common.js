@@ -1913,6 +1913,14 @@ const ServiceOrder = (function($) {
         })
     }
 
+    function handleOpportunityChange() {
+        $(document).on('change', '#opportunity_id', function (e) {
+            const $select = $(e.currentTarget);
+            let oppData = SelectDDControl.get_data_from_idx($select, $select.val());
+            FormElementControl.loadInitS2(pageElement.commonData.$customer, [oppData?.customer]);
+        });
+    }
+
     // ============ service detail =============
 
     function handleChangeServiceDetail(){
@@ -4973,6 +4981,7 @@ const ServiceOrder = (function($) {
 
         handleSaveProduct,
         handleSaveExchangeRate,
+        handleOpportunityChange,
 
         handleChangeServiceDetail,
         handleChangeServiceQuantity,

@@ -138,13 +138,42 @@
     </div>
 </div>
 <div class="row mt-5 employee-space" hidden>
-    <div class="col-12">
+{#    <div class="col-12">#}
+{#        <div class="form-group">#}
+{#            <label for="advance_for_employee_value" class="form-label fw-bold h5">#}
+{#                {% trans "Advance payment to employee" %}#}
+{#            </label>#}
+{#            <input class="form-control mask-money" value="0" id="advance_for_employee_value">#}
+{#        </div>#}
+{#    </div>#}
+    <div class="col-12 col-md-3 col-lg-3">
         <div class="form-group">
-            <label for="advance_for_employee_value" class="form-label fw-bold h5">
-                {% trans "Advance payment to employee" %}
-            </label>
-            <input class="form-control mask-money" value="0" id="advance_for_employee_value">
+            <label for="employee-budget" class="form-label">{% trans "Select budget" %}</label>
+            <div style="display: flex;">
+                <select class="form-select" id="employee-budget">
+                    <option value="0">{% trans 'Orders' %}</option>
+                    <option value="1" disabled>{% trans 'Budget plan' %}</option>
+                </select>
+                <button type="button" class="btn btn-xs btn-soft-secondary btn-animated ml-1" id="budget-change-btn" data-bs-toggle="modal" data-bs-target="#budget-change-modal">
+                    <span><span class="icon"><span class="feather-icon"><i class="bi bi-check2-circle"></i></span></span><span>{% trans 'Change budget' %}</span></span>
+                </button>
+            </div>
         </div>
+    </div>
+    <div class="col-12 mt-5">
+        <table id="employee-budget-table" class="table nowrap w-100" data-method="GET" data-url="{% url 'AdvanceForSupplierListForCashOutflowAPI' %}">
+            <thead class="bg-secondary-light-5">
+            <tr>
+                <th style="min-width: 30px"></th>
+                <th style="min-width: 30px"></th>
+                <th style="min-width: 250px">{% trans 'Cost' %}/{% trans 'Expense name' %}</th>
+                <th style="min-width: 200px">{% trans 'Total' %}</th>
+                <th style="min-width: 200px">{% trans 'Balance value' %}</th>
+                <th style="min-width: 200px">{% trans 'This time' %}</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 </div>
 <div class="row mt-5 account-space" hidden>

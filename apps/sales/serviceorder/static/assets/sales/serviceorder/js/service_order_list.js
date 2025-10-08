@@ -263,6 +263,18 @@ $('document').ready(function () {
     $('#table-service-order').on('click', '.btn-view-baseline', function () {
         let targetID = $(this).attr('data-id');
         let targetRow = this.closest('tr');
+        let cls = `cl-${targetID.replace(/-/g, "")}`;
+        let count = $('#table-service-order')[0].querySelectorAll(`.${cls}`).length;
+        if (count > 0) {
+            $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
+            if ($(this).find('i').hasClass('fa-chevron-right')) {
+                // remove show
+                $('#table-service-order')[0].querySelectorAll(`.${cls}`).forEach(el => {
+                    el.classList.remove('show');
+                });
+            }
+            return true;
+        }
         WindowControl.showLoading();
         $.fn.callAjax2({
                 'url': $('#table-service-order').attr('data-url'),
@@ -276,23 +288,11 @@ $('document').ready(function () {
                 if (data) {
                     if (data.hasOwnProperty('service_order_list') && Array.isArray(data.service_order_list)) {
                         $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
-
-                        let cls = `cl-${targetID.replace(/-/g, "")}`;
-                        let count = $('#table-service-order')[0].querySelectorAll(`.${cls}`).length;
-                        if (count !== data.service_order_list.length) {
-                            // append new row
-                            for (let dataSO of data?.['service_order_list']) {
-                                let newRow = $('#table-service-order').DataTable().row.add(dataSO).node();
-                                $(newRow).addClass(`${cls} collapse show bg-light`);
-                                $(newRow).detach().insertAfter(targetRow);
-                            }
-                        } else {
-                            if ($(this).find('i').hasClass('fa-chevron-right')) {
-                                // remove show
-                                $('#table-service-order')[0].querySelectorAll(`.${cls}`).forEach(el => {
-                                    el.classList.remove('show');
-                                });
-                            }
+                        // append new row
+                        for (let dataSO of data?.['service_order_list']) {
+                            let newRow = $('#table-service-order').DataTable().row.add(dataSO).node();
+                            $(newRow).addClass(`${cls} collapse show bg-light`);
+                            $(newRow).detach().insertAfter(targetRow);
                         }
                         WindowControl.hideLoading();
                     }

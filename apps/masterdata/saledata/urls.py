@@ -39,7 +39,7 @@ from apps.masterdata.saledata.views.product import (
     UnitOfMeasureGroupDetailAPI, ProductList, ProductCreate, ProductListAPI, ProductDetailAPI, ProductDetail,
     ProductForSaleListAPI, ProductUpdate, UnitOfMeasureOfGroupLaborListAPI, ProductForSaleDetailAPI,
     ProductQuickCreateAPI, ProductQuotationListLoadDBAPI, BaseUnitListAPI, ManufacturerListAPI, ManufacturerDetailAPI,
-    ProductUploadAvatarAPI
+    ProductUploadAvatarAPI, ProductSpecificIdentificationSerialNumberListAPI
 )
 from apps.masterdata.saledata.views.price import (
     PriceMasterDataList, TaxCategoryListAPI, TaxListAPI, TaxDetailAPI, TaxCategoryDetailAPI, CurrencyListAPI,
@@ -48,10 +48,14 @@ from apps.masterdata.saledata.views.price import (
     PriceDeleteAPI, PriceListUpdate, PriceListItemListImportDBAPI
 )
 from apps.masterdata.saledata.views.revenue_plan_config import RevenuePlanConfigList, RevenuePlanConfigListAPI
-from apps.masterdata.saledata.views.shipment import ShipmentMasterDataList, ContainerMasterDataListAPI, \
+from apps.masterdata.saledata.views.shipment import (
+    ShipmentMasterDataList, ContainerMasterDataListAPI,
     ContainerMasterDataDetailAPI, PackageMasterDataListAPI, PackageMasterDataDetailAPI
-from apps.masterdata.saledata.views.shipping import ShippingList, ShippingCreate, ShippingListAPI, ShippingDetail, \
-    ShippingDetailAPI, ShippingCheckListAPI, ShippingUpdate
+)
+from apps.masterdata.saledata.views.shipping import (
+    ShippingList, ShippingCreate, ShippingListAPI, ShippingDetail, ShippingDetailAPI, ShippingCheckListAPI,
+    ShippingUpdate
+)
 from apps.masterdata.saledata.views.warehouse import (
     WareHouseList, WareHouseListAPI, WareHouseDetailAPI, WarehouseProductAPI, WareHouseListForInventoryAdjustmentAPI,
     WareHouseCreate, WareHouseDetail, WareHouseUpdate, WarehouseGetProductsListAPI, WarehouseLotListAPI,
@@ -210,6 +214,11 @@ urlpatterns = [
     path('product/api/<str:pk>', ProductDetailAPI.as_view(), name='ProductDetailAPI'),
     path(
         'product/api/<str:pk>/upload-avatar', ProductUploadAvatarAPI.as_view(), name='ProductUploadAvatarAPI'
+    ),
+    path(
+        'product-si-serial-number-list/api',
+        ProductSpecificIdentificationSerialNumberListAPI.as_view(),
+        name='ProductSpecificIdentificationSerialNumberListAPI'
     ),
     path('products-sale/api/list', ProductForSaleListAPI.as_view(), name='ProductForSaleListAPI'),
     path('products-sale/detail-api/<str:pk>', ProductForSaleDetailAPI.as_view(), name='ProductForSaleDetailAPI'),

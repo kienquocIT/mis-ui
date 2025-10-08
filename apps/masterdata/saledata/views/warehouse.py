@@ -3,10 +3,14 @@ from rest_framework import status
 from rest_framework.views import APIView
 from apps.shared import mask_view, ApiURL, ServerAPI
 
+
 __all__ = [
     'WareHouseList', 'WareHouseListAPI', 'WareHouseDetailAPI',
     'WarehouseProductAPI', 'WareHouseListForInventoryAdjustmentAPI',
-    'WareHouseCreate', 'WareHouseDetail', 'WareHouseUpdate', 'ProductWarehouseAssetList'
+    'WareHouseCreate', 'WareHouseDetail', 'WareHouseUpdate', 'ProductWarehouseAssetList',
+    'WarehouseGetProductsListAPI', 'WarehouseLotListAPI',
+    'WarehouseSerialListAPI', 'WarehouseGetProductsListAPIForGoodsTransfer',
+    'WareHouseForInventoryListAPI',
 ]
 
 

@@ -433,7 +433,7 @@ class ProductPageFunction {
             keyText: 'title',
         })
     }
-    static LoadSpecificSerialList(data_list=[]) {
+    static LoadSpecificSerialNumberList(data_list=[]) {
         $('#specific-modal-btn').prop('hidden', data_list.length === 0)
         pageElements.$datatable_specific_serial_number_list.DataTableDefault({
             dom: 't',
@@ -449,15 +449,27 @@ class ProductPageFunction {
                     }
                 },
                 {
-                    className: 'w-70',
+                    className: 'w-25',
+                    render: (data, type, row) => {
+                        return `<span class="text-danger">${row?.['vendor_serial_number']}</span>`
+                    }
+                },
+                {
+                    className: 'w-25',
                     render: (data, type, row) => {
                         return `<span class="text-danger">${row?.['serial_number']}</span>`
                     }
                 },
                 {
-                    className: 'w-30',
+                    className: 'w-25',
                     render: (data, type, row) => {
-                        return `<span class="mask-money" data-init-money="${row?.['specific_value'] || 0}"></span>`;
+                        return `<span class="mask-money text-danger" data-init-money="${row?.['specific_value'] || 0}"></span>`;
+                    }
+                },
+                {
+                    className: 'w-20 text-center',
+                    render: (data, type, row) => {
+                        return row?.['serial_status'] ? `<span class="text-secondary">${$.fn.gettext('Not available')}</span>` : `<span class="text-success">${$.fn.gettext('Available')}</span>`;
                     }
                 },
             ]
@@ -1642,7 +1654,7 @@ class ProductHandler {
                         })
                         ProductPageFunction.LoadWareHouseOverViewDetail(data_overview);
 
-                        ProductPageFunction.LoadSpecificSerialList(inventory_information?.['data_specific_serial'] || [])
+                        ProductPageFunction.LoadSpecificSerialNumberList(inventory_information?.['data_specific_serial_number'] || [])
                     }
 
                     if (Object.keys(product_detail?.['purchase_information']).length !== 0) {

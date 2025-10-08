@@ -108,7 +108,6 @@ $(function () {
             'url': $urlFact.attr('data-task-list'),
             'method': 'GET',
             'data': params,
-            'isLoading': true
         })
         if (isReturn) return callData
         // in this case, we will call all tasks, that belong to employee groups
@@ -116,7 +115,6 @@ $(function () {
             'url': $urlFact.attr('data-task-has-group'),
             'method': 'GET',
             'data': params,
-            'isLoading': false
         })
         $.when(callData, callGAssign).then(
             (reqCall, reqGA) => {
@@ -479,14 +477,12 @@ $(function () {
                 if (Object.keys(assign_to).length > 0) {
                     if (assign_to?.['avatar']) childHTML.find('img').attr('src', assign_to?.['avatar'])
                     else {
-                        let avClass = 'avatar-xs avatar-' + $x.fn.randomColor()
+                        // let avClass = 'avatar-xs avatar-' + $x.fn.randomColor() 'light'
+                        let avClass = 'avatar-xs avatar-' + 'light'
                         const nameHTML = $x.fn.renderAvatar(assign_to, avClass, "", "full_name")
                         childHTML.find('.avatar').replaceWith(nameHTML)
                     }
                 }
-                // else{
-                //     childHTML.find('.avatar').addClass('visible-hidden')
-                // }
                 if (newData.checklist) {
                     let done = newData.checklist.reduce((acc, obj) => acc + (obj.done ? 1 : 0), 0);
                     const total = newData.checklist.length
@@ -517,6 +513,19 @@ $(function () {
                         + `<div class="received-task"><a href="#" class="w-100" data-id="${newData.id}">${$.fn.gettext('Assign to me')}</a></div>`
                     );
                     childHTML.append($HTMLGroup)
+                }
+                if (Object.keys(newData?.opportunity).length > 0){
+                    childHTML.find('.card-body').append('<span class="float-right active-sales" data-bs-toggle="tooltip"'
+                        + 'title="'+newData.opportunity.code +' - '+ newData.opportunity.title+'"><i class="fas far fa-lightbulb"></i></span>')
+                }
+                if (Object.keys(newData?.service_order).length > 0){
+                    const serviceOrder = newData.service_order
+                    childHTML.find('.card-body').append('<span class="float-right is-so" data-bs-toggle="tooltip" '
+                        +'title="'+serviceOrder.code+' - '+serviceOrder.title+'"><i class="fas fa-concierge-bell"></i></span>')
+                    if (Object.keys(serviceOrder?.opportunity).length > 0) {
+                        childHTML.find('.card-body').append('<span class="float-right active-sales" data-bs-toggle="tooltip"'
+                            +'title="'+serviceOrder.opportunity.code+' - '+serviceOrder.opportunity.title+'"><i class="fas far fa-lightbulb"></i></span>')
+                    }
                 }
 
                 if (isReturn) return childHTML
@@ -943,20 +952,20 @@ $(function () {
                         },
                         {
                             "data": "employee_inherit",
-                            "class": "col-2 text-right",
+                            "class": "w-15 text-right",
                             render: (row, type, data) => {
                                 let html = ''
                                 if (!data.employee_created?.full_name)
                                     data.employee_created.full_name = data.employee_created.last_name +
                                         ' ' + data.employee_created.first_name
                                 const assigner = $x.fn.renderAvatar(data.employee_created).replace(
-                                    'avatar-primary', 'avatar-' + $x.fn.randomColor())
+                                    'avatar-primary', 'avatar-blue')
                                 let assignee = ''
                                 if (row) {
                                     if (!row.full_name && row.last_name && row.first_name)
                                         row.full_name = row.last_name + ' ' + row.first_name
                                     assignee = $x.fn.renderAvatar(row).replace(
-                                        'avatar-primary', 'avatar-soft-' + $x.fn.randomColor())
+                                        'avatar-primary', 'avatar-soft-light')
                                 }
                                 html += assigner + '<supper>»</supper>' + assignee
                                 return html
@@ -973,9 +982,15 @@ $(function () {
                         {
                             "data": "opportunity",
                             "class": "col-1",
-                            render: (row) => {
+                            render: (row, type, data) => {
                                 let html = '--';
                                 if (row?.code) html = `<span>${row.code}</span>`
+                                if (Object.keys(data?.service_order).length){
+                                    const ser = data.service_order;
+                                    const opp = ser?.opportunity
+                                    html = `<span class="font-3">${ser.code ? ser.code : ser.title
+                                    }</span><hr class="line-1"><span class="txt-2">${Object.keys(opp).length > 0 ? opp.code : '--'}</span>`
+                                }
                                 return html
                             }
                         },
@@ -1015,6 +1030,7 @@ $(function () {
                             $($(this).attr('href')).modal('show')
                             elmTaskID.val(data.id)
                         })
+                        $('[data-bs-toggle="tooltip"]', row).tooltip({placement: 'top'})
                     }
                 }).on('draw.dt', function () {
                     $tblElm.find('tbody').find('tr').each(function () {
@@ -1442,52 +1458,34 @@ $(function () {
     const $clearElm = $('.clear-all-btn')
     const $sGrpElm = $('#sort_by_group_assignee')
     const $ElmDateRange = $('#iptDateRange')
-    const listElm = [$fOppElm, $fSttElm, $fEmpElm, $fServiceOrder]
-    listElm.forEach(function (elm) {
-        if (elm.length > 0) {
-        $(elm).initSelect2().on('select2:select', function () {
-            let params = {}
-            if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
-            if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
-            if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
-            if ($fServiceOrder.val() !== null) params.service_order = $fServiceOrder.val()
-            if ($ElmDateRange.val() !== null){
-                const dateLst = $ElmDateRange.val().split(' ')
-                params.date_range__gte = dateLst[0]
-                params.date_range__lte = dateLst[2]
-            }
-
-            callDataTaskList(kanbanTask, listTask, params)
-            GanttViewTask.CallFilter(params)
-            $clearElm.addClass('d-inline-block')
-            $(elm).addClass('isSelected')
-        })
-        }
-    })
-
-    // load select priority filter
-    $fPriority.initSelect2().on('change', function () {
+    const listElm = [$fOppElm, $fSttElm, $fEmpElm, $fServiceOrder, $fPriority];
+    function rtParams (){
         let params = {}
         if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
         if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
         if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
-        if (this.value){
-            params.priority = this.value
-            $clearElm.addClass('d-inline-block')
+        if ($fServiceOrder.val() !== null) params.service_order = $fServiceOrder.val()
+        if ($fPriority.val()) params.priority = $fPriority.val()
+        const dateLst = $ElmDateRange.val().split(' ')
+        if (dateLst && dateLst.length === 3) {
+            if (dateLst[0] !== dateLst[2]) {
+                params.end_date__range = dateLst[0] + ',' + dateLst[2]
+            } else params.end_date = dateLst[0]
         }
-        if (Object.keys(params).length > 0) {
+        return params
+    }
+    listElm.forEach(function (elm) {
+        $(elm).initSelect2().on('change.select2', function () {
+            const params = rtParams()
             callDataTaskList(kanbanTask, listTask, params)
             GanttViewTask.CallFilter(params)
             $clearElm.addClass('d-inline-block')
-            $fPriority.addClass('isSelected')
-        } else {
-            callDataTaskList(kanbanTask, listTask)
-            GanttViewTask.CallFilter({})
-            $clearElm.removeClass('d-inline-block')
-            $fPriority.removeClass('isSelected')
-        }
-
+            if ($(this).select2('data').length > 0)
+                $(elm).addClass('isSelected')
+            else $(elm).removeClass('isSelected')
+        })
     })
+
     $clearElm.off().on('click', () => {
         listElm.forEach(function (elm) {
             $(elm).val('').trigger('change').removeClass('isSelected')
@@ -1638,31 +1636,27 @@ $(function () {
         'altFormat': 'd/m/Y',
         'dateFormat': 'Y-m-d',
         'locale': globeLanguage === 'vi' ? 'vn' : 'default',
-        'shorthandCurrentMonth': true,
         'mode': 'range',
+        'position': 'auto',
         onReady: function (dObj, dStr, fp) {
             $(fp.element.nextSibling).attr('aria-label', $ElmDateRange.attr('name') + '_hidden')
                 .attr('id', $ElmDateRange.attr('name') + '_hidden')
+                .attr('tabindex', '-1')
         },
-    })
-    $ElmDateRange.on('change', function () {
-        const dateLst = $(this).val().split(' ')
-        if (dateLst && dateLst.length === 3) {
-            $clearElm.addClass('d-inline-block')
-            $ElmDateRange.addClass('isSelected')
-            let params = {}
-            if ($fOppElm.val() !== null) params.opportunity = $fOppElm.val()
-            if ($fSttElm.val() !== null) params.task_status = $fSttElm.val()
-            if ($fEmpElm.val() !== null) params.employee_inherit = $fEmpElm.val()
-            if ($fServiceOrder.val() !== null) params.service_order = $fServiceOrder.val()
-            params.end_date__gte = dateLst[0]
-            params.end_date__lte = dateLst[2]
-            callDataTaskList(kanbanTask, listTask, params)
+        onChange: function(selectedDates, dateStr) {
+            const params = rtParams()
+            const dateLst = dateStr.split(' ')
+            if (dateLst && dateLst.length === 3) {
+                $clearElm.addClass('d-inline-block')
+                $ElmDateRange.addClass('isSelected')
+            }
+            else {
+                $clearElm.removeClass('d-inline-block')
+                $ElmDateRange.removeClass('isSelected')
+            }
             GanttViewTask.CallFilter(params)
-        } else {
-            $clearElm.removeClass('d-inline-block')
-            $ElmDateRange.removeClass('isSelected')
-        }
+            callDataTaskList(kanbanTask, listTask, params)
+        },
     })
 
 }, jQuery);

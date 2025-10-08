@@ -430,3 +430,65 @@
 @media screen and (max-width: 1024px) {
     .max-w-280{margin-right: 0;min-width: 100%;}
 }
+
+.active-sales{
+    width: 28px;
+    height: 28px;
+    text-align: center;
+    border-radius: 14px;
+    color: #fff;
+    font-size: 13px;
+    line-height: 28px;
+    background: linear-gradient(135deg, #ffeb3b 0%, #ff9800 100%);
+    display: inline-block;
+}
+.is-so{
+    width: 28px;
+    height: 28px;
+    text-align: center;
+    border-radius: 14px;
+    color: #fff;
+    font-size: 13px;
+    line-height: 28px;
+    background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+    display: inline-block;
+}
+.is-so + .active-sales{margin-right: 18px;}
+td .is-so{margin-right: 10px;}
+td .is-so + .active-sales{margin-right: 0;}
+
+.active-sales:hover{
+    animation: glow 1.5s ease-in-out infinite alternate;
+}
+.is-so:hover{
+    animation: glowBlue 1.5s ease-in-out infinite alternate;
+}
+@keyframes glow {
+    from {
+        box-shadow: 0 0 5px #ffeb3b, 0 0 10px #ffeb3b, 0 0 15px #ffeb3b;
+    }
+    to {
+        box-shadow: 0 0 10px #ff9800, 0 0 15px #ff9800, 0 0 15px #ff9800;
+    }
+}
+@keyframes glowBlue {
+    from {
+        box-shadow: 0 0 5px #3B82F6, 0 0 10px #60A5FA, 0 0 15px #3B82F6;
+    }
+    to {
+        box-shadow: 0 0 10px #60A5FA, 0 0 15px #3B82F6, 0 0 15px #60A5FA;
+    }
+}
+.line-1{
+    width: 35px;
+    height: 1px;
+    background: #1e1e1e;
+    display: block;
+    margin: 0;
+}
+.txt-2{
+    font-size: 12px;
+}
+.item-filter{
+    position: relative;
+}

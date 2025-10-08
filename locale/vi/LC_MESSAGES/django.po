@@ -7117,6 +7117,10 @@ msgid "Back"
 msgstr "Quay lại"
 
 #
+msgid "Save document"
+msgstr "Lưu phiếu"
+
+#
 msgid "Run the approval workflow"
 msgstr "Chạy quy trình phê duyệt"
 

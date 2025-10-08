@@ -2506,6 +2506,14 @@ class WFRTControl {
                                     WFRTControl.callAjaxWFCreate(_form);
                                 }
                                 if (_form.dataForm['system_status'] === 1) {  // WF
+                                    // check submit baseline
+                                    if ($formEle.attr('data-baseline') === 'true' && docData?.['id']) {
+                                        let docRootID = docData?.['id'];
+                                        _form.dataMethod = 'POST';
+                                        _form.dataUrl = $formEle.attr('data-url-cr');
+                                        _form.dataForm['is_baseline'] = true;
+                                        _form.dataForm['document_root_id'] = docRootID;
+                                    }
                                     WFRTControl.submitCheckAssociation(_form, associationData, 0);
                                 }
                             }

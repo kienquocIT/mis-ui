@@ -25,3 +25,11 @@ table.dataTable tbody th, table.dataTable tbody td, table.dataTable thead th, ta
 .dataTable td {
     white-space: normal !important;
 }
+
+.w-2 {
+    width: 2% !important;
+}
+
+.w-3{
+    width: 3% !important;
+}

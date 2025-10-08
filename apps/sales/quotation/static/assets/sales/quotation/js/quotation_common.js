@@ -2301,8 +2301,6 @@ class QuotationLoadDataHandle {
         QuotationCalculateCaseHandle.calculateAllRowsTableProduct();
         // Check promotion -> re calculate
         QuotationLoadDataHandle.loadReApplyPromotion(dataCopy, tableProduct);
-        // Load indicator
-        indicatorHandle.loadIndicator();
         // Set form novalidate
         QuotationLoadDataHandle.$form[0].setAttribute('novalidate', 'novalidate');
         QuotationLoadDataHandle.loadCheckDataCopy();
@@ -2373,8 +2371,6 @@ class QuotationLoadDataHandle {
                     if (data) {
                         QuotationLoadDataHandle.loadDetailQuotation(data);
                         QuotationLoadDataHandle.loadDataTablesAndDropDowns(data);
-                        indicatorHandle.loadIndicator();
-
                         //
                         const processData = data?.['process'] || {};
                         const oppData = data?.['opportunity'] || {};
@@ -2863,6 +2859,38 @@ class QuotationLoadDataHandle {
         }
     };
 
+    static loadGetDatasDetail() {
+        let dataQuotationIndicator = [];
+        let dataDetail = {};
+        let dataDetailCopy = {};
+        let $dataCopyEle = $('#data-copy-quotation-detail');
+        if ($dataCopyEle && $dataCopyEle.length > 0) {
+            if ($dataCopyEle.val()) {
+                dataDetailCopy = JSON.parse($dataCopyEle.val());
+            }
+        }
+        let $dataDetailEle = $('#quotation-detail-data');
+        if ($dataDetailEle && $dataDetailEle.length > 0) {
+            if ($dataDetailEle.val()) {
+                dataDetail = JSON.parse($dataDetailEle.val());
+            }
+        }
+        if (Object.keys(dataDetailCopy).length !== 0) {
+            if (dataDetailCopy?.['quotation_indicators_data']) {
+                dataQuotationIndicator = dataDetailCopy?.['quotation_indicators_data'];
+            }
+        }
+        if (Object.keys(dataDetail).length !== 0) {
+            if (dataDetail?.['quotation_data']?.['quotation_indicators_data']) {
+                dataQuotationIndicator = dataDetail?.['quotation_data']?.['quotation_indicators_data'];
+            }
+        }
+        return {
+            'dataDetail': dataDetail,
+            'dataQuotationIndicator': dataQuotationIndicator,
+        };
+    };
+
 }
 
 // DataTable
@@ -2886,7 +2914,7 @@ class QuotationDataTableHandle {
         QuotationDataTableHandle.$tableProduct.DataTableDefault({
             styleDom: 'hide-foot',
             data: data ? data : [],
-            buttons: DTBControl.customExportExel(),
+            // buttons: DTBControl.customExportExel(),
             ordering: false,
             paging: false,
             info: false,
@@ -3315,7 +3343,7 @@ class QuotationDataTableHandle {
             },
             initComplete: function () {
                 // add buttons
-                DTBControl.pushButtonsToDtb("datable-quotation-create-product");
+                // DTBControl.pushButtonsToDtb("datable-quotation-create-product");
             },
         });
     };
@@ -3851,6 +3879,7 @@ class QuotationDataTableHandle {
             },
             autoWidth: true,
             scrollX: true,
+            scrollY: "50vh",
             columns: [
                 {
                     targets: 0,
@@ -4052,118 +4081,6 @@ class QuotationDataTableHandle {
                 }
             }
         )
-    };
-
-    static dataTableQuotationIndicator(data) {
-        let $tables = $('#datable-quotation-create-indicator');
-        $tables.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
-            columnDefs: [],
-            columns: [
-                {
-                    targets: 0,
-                    width: '1%',
-                    render: (data, type, row, meta) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" data-value="${(meta.row + 1)}" data-zone="quotation_indicators_data">${(meta.row + 1)}</span>`
-                    }
-                },
-                {
-                    targets: 1,
-                    width: '40%',
-                    render: (data, type, row) => {
-                        return `<b class="table-row-title" data-id="${row?.['indicator_data']?.['id']}" data-zone="quotation_indicators_data">${row?.['indicator_data']?.['title']}</b>`
-                    }
-                },
-                {
-                    targets: 2,
-                    width: '30%',
-                    render: (data, type, row) => {
-                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['indicator_value'])}" data-value="${row?.['indicator_value']}" data-zone="quotation_indicators_data"></span>`
-                    }
-                },
-                {
-                    targets: 3,
-                    width: '20%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-rate" data-value="${row?.['indicator_rate']}" data-zone="quotation_indicators_data">${row?.['indicator_rate']} %</span>`
-                    }
-                }
-            ],
-            drawCallback: function () {
-                $.fn.initMaskMoney2();
-                QuotationDataTableHandle.dtbIndicatorHDCustom($tables);
-            },
-        });
-        if ($tables.hasClass('dataTable')) {
-            $tables.DataTable().clear().draw();
-            $tables.DataTable().rows.add(data ? data : []).draw();
-        }
-    };
-
-    static dataTableSaleOrderIndicator(data) {
-        let $tables = $('#datable-quotation-create-indicator');
-        $tables.not('.dataTable').DataTableDefault({
-            data: data ? data : [],
-            paging: false,
-            info: false,
-            columnDefs: [],
-            columns: [
-                {
-                    targets: 0,
-                    width: '1%',
-                    render: (data, type, row, meta) => {
-                        let dataRow = JSON.stringify(row).replace(/"/g, "&quot;");
-                        return `<span class="table-row-order" data-value="${(meta.row + 1)}" data-zone="sale_order_indicators_data">${(meta.row + 1)}</span>`
-                    }
-                },
-                {
-                    targets: 1,
-                    width: '20%',
-                    render: (data, type, row) => {
-                        return `<b class="table-row-title" data-id="${row?.['quotation_indicator_data']?.['id']}" data-zone="sale_order_indicators_data">${row?.['quotation_indicator_data']?.['title']}</b>`
-                    }
-                },
-                {
-                    targets: 2,
-                    width: '20%',
-                    render: (data, type, row) => {
-                        return `<span class="mask-money table-row-quotation-value" data-init-money="${parseFloat(row?.['quotation_indicator_value'])}" data-value="${row?.['quotation_indicator_value']}" data-zone="sale_order_indicators_data"></span>`
-                    }
-                },
-                {
-                    targets: 3,
-                    width: '20%',
-                    render: (data, type, row) => {
-                        return `<span class="mask-money table-row-value" data-init-money="${parseFloat(row?.['indicator_value'])}" data-value="${row?.['indicator_value']}" data-zone="sale_order_indicators_data"></span>`
-                    }
-                },
-                {
-                    targets: 4,
-                    width: '20%',
-                    render: (data, type, row) => {
-                        return `<span class="mask-money table-row-difference-value" data-init-money="${parseFloat(row?.['difference_indicator_value'])}" data-value="${row?.['difference_indicator_value']}" data-zone="sale_order_indicators_data"></span>`
-                    }
-                },
-                {
-                    targets: 5,
-                    width: '15%',
-                    render: (data, type, row) => {
-                        return `<span class="table-row-rate" data-value="${row?.['indicator_rate']}" data-zone="sale_order_indicators_data">${row?.['indicator_rate']} %</span>`
-                    }
-                }
-            ],
-            drawCallback: function () {
-                $.fn.initMaskMoney2();
-                QuotationDataTableHandle.dtbIndicatorHDCustom($tables);
-            },
-        });
-        if ($tables.hasClass('dataTable')) {
-            $tables.DataTable().clear().draw();
-            $tables.DataTable().rows.add(data ? data : []).draw();
-        }
     };
 
     static dataTablePaymentStage(data) {
@@ -5078,7 +4995,6 @@ class QuotationDataTableHandle {
                 $('#btn-add-product-quotation-create').on('click', function () {
                     QuotationLoadDataHandle.loadModalSProduct();
                     QuotationLoadDataHandle.loadChangePaymentTerm();
-                    indicatorHandle.loadIndicator();
                 });
                 $('#btn-add-product-group-quotation').on('click', function () {
                     QuotationLoadDataHandle.loadAddRowProductGr();
@@ -5248,40 +5164,6 @@ class QuotationDataTableHandle {
         }
     };
 
-    static dtbIndicatorHDCustom($table) {
-        let wrapper$ = $table.closest('.dataTables_wrapper');
-        let $theadEle = wrapper$.find('thead');
-        if ($theadEle.length > 0) {
-            for (let thEle of $theadEle[0].querySelectorAll('th')) {
-                if (!$(thEle).hasClass('border-right')) {
-                    $(thEle).addClass('border-right');
-                }
-            }
-        }
-        let headerToolbar$ = wrapper$.find('.dtb-header-toolbar');
-        let textFilter$ = $('<div class="d-flex overflow-x-auto overflow-y-hidden"></div>');
-        headerToolbar$.prepend(textFilter$);
-
-        if (textFilter$.length > 0) {
-            textFilter$.css('display', 'flex');
-            // Check if the button already exists before appending
-            if (!$('#btn-refresh-indicator').length) {
-                let html1 = `<button type="button" class="btn btn-primary" id="btn-refresh-indicator">${QuotationLoadDataHandle.transEle.attr('data-refresh')}</button>`;
-                let $group = $(`<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                ${html1}
-                            </div>`);
-                textFilter$.append(
-                    $(`<div class="d-inline-block min-w-150p mr-1"></div>`).append($group)
-                );
-                // Select the appended button from the DOM and attach the event listener
-                $('#btn-refresh-indicator').on('click', function () {
-                    document.getElementById('quotation-indicator-data').value = "";
-                    indicatorHandle.loadIndicator();
-                    $.fn.notifyB({description: QuotationLoadDataHandle.transEle.attr('data-refreshed')}, 'success');
-                });
-            }
-        }
-    };
 }
 
 // Calculate
@@ -5802,370 +5684,6 @@ class QuotationCheckConfigHandle {
             }
         }
         return true;
-    };
-
-}
-
-// Indicator
-class indicatorHandle {
-    static loadIndicator() {
-        let $ele = $('#quotation-indicator-data');
-        if (!$ele.val()) {
-            let url = $ele.attr('data-url');
-            let method = $ele.attr('data-method');
-            $.fn.callAjax2({
-                    'url': url,
-                    'method': method,
-                    'isDropdown': true,
-                }
-            ).then(
-                (resp) => {
-                    let data = $.fn.switcherResp(resp);
-                    if (data) {
-                        if (data.hasOwnProperty('quotation_indicator_list') && Array.isArray(data.quotation_indicator_list)) {
-                            $ele.val(JSON.stringify(data.quotation_indicator_list));
-                            indicatorHandle.calculateIndicator(data.quotation_indicator_list);
-                        }
-                    }
-                }
-            )
-        } else {
-            let data_list = JSON.parse($ele.val());
-            indicatorHandle.calculateIndicator(data_list);
-        }
-    };
-
-    static calculateIndicator(indicator_list) {
-        let result_list = [];
-        let result_json = {};
-        let revenueValue = 0;
-        let formSubmit = $('#frm_quotation_create');
-        let _form = new SetupFormSubmit(formSubmit);
-        QuotationSubmitHandle.setupDataSubmit(_form, 1);
-        let data_form = _form.dataForm;
-        let dataDetailCopy = {};
-        let eleDetailCopy = $('#data-copy-quotation-detail');
-        if (eleDetailCopy && eleDetailCopy.length > 0) {
-            if (eleDetailCopy.val()) {
-                dataDetailCopy = JSON.parse(eleDetailCopy.val());
-            }
-        }
-        let dataDetail = {};
-        let eleDetail = $('#quotation-detail-data');
-        if (eleDetail && eleDetail.length > 0) {
-            if (eleDetail.val()) {
-                dataDetail = JSON.parse(eleDetail.val());
-            }
-        }
-        // Replace zones hidden with data in detail
-        let keyHidden = WFRTControl.getZoneHiddenKeyData();
-        if (keyHidden) {
-            if (keyHidden.length > 0) {
-                let keyHiddenRelated = WFRTControl.getZoneHiddenKeyRelatedData();
-                keyHidden = keyHidden.concat(keyHiddenRelated);
-                // set data detail to zones hidden
-                if (data_form && dataDetail) {
-                    for (let key of keyHidden) {
-                        if (dataDetail.hasOwnProperty(key)) {
-                            data_form[key] = dataDetail[key];
-                        }
-                    }
-                }
-            }
-        }
-        // Check special case
-        indicatorHandle.checkSpecialCaseIndicator(data_form);
-        for (let indicator of indicator_list) {
-            let rateValue = 0;
-            let parse_formula = "";
-            let formula_data = indicator?.['formula_data'];
-            for (let item of formula_data) {
-                if (typeof item === 'object' && item !== null) {
-                    if (item.hasOwnProperty('is_property')) {
-                        if (data_form.hasOwnProperty(item?.['code'])) {
-                            parse_formula += data_form[item?.['code']];
-                        }
-                    } else if (item.hasOwnProperty('is_indicator')) {
-                        if (result_json.hasOwnProperty(item?.['order'])) {
-                            if (item?.['order'] < indicator?.['order']) {
-                                parse_formula += result_json[item?.['order']]?.['indicator_value'];
-                            }
-                        }
-                    } else if (item.hasOwnProperty('param_type')) {
-                        if (item?.['param_type'] === 2) { // FUNCTION
-                            if (item?.['code'] === 'max' || item?.['code'] === 'min') {
-                                let functionData = indicatorHandle.functionMaxMin(item, data_form, result_json);
-                                parse_formula += functionData;
-                            } else if (item?.['code'] === 'sumItemIf') {
-                                let functionData = indicatorHandle.functionSumItemIf(item, data_form);
-                                parse_formula += functionData;
-                            }
-                        }
-                    }
-                } else if (typeof item === 'string') {
-                    parse_formula += item;
-                }
-            }
-            // begin calculate
-            // format
-            parse_formula = indicatorHandle.formatExpression(parse_formula);
-            // value
-            let value = indicatorHandle.evaluateFormula(parse_formula);
-            // rate value
-            if (indicator?.['code'] === "IN0001") {
-                revenueValue = value;
-            }
-            if (value && revenueValue) {
-                if (revenueValue !== 0) {
-                    rateValue = ((value / revenueValue) * 100).toFixed(0);
-                }
-            }
-
-            // check if indicator is_negative_set_zero is True
-            if (indicator?.['is_negative_set_zero'] === true) {
-                if (value < 0) {
-                    value = 0;
-                    rateValue = 0;
-                }
-            }
-
-            // quotation value
-            let quotationValue = 0;
-            let differenceValue = value;
-
-            // check if sale order then get quotation value
-            if (formSubmit[0].classList.contains('sale-order')) {
-                if (formSubmit.attr('data-method') === 'POST') {
-                    if (dataDetailCopy?.['quotation_indicators_data']) {
-                        for (let quotation_indicator of dataDetailCopy?.['quotation_indicators_data']) {
-                            if (indicator?.['title'] === quotation_indicator?.['indicator']?.['title']) {
-                                quotationValue = quotation_indicator?.['indicator_value'];
-                                differenceValue = (value - quotation_indicator?.['indicator_value']);
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    if (dataDetail?.['quotation_data']?.['quotation_indicators_data']) {
-                        for (let quotation_indicator of dataDetail?.['quotation_data']?.['quotation_indicators_data']) {
-                            if (indicator?.['title'] === quotation_indicator?.['indicator']?.['title']) {
-                                quotationValue = quotation_indicator?.['indicator_value'];
-                                differenceValue = (value - quotation_indicator?.['indicator_value']);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // append result
-            result_list.push({
-                'indicator': indicator?.['id'],
-                'indicator_data': {
-                    'id': indicator?.['id'],
-                    'title': indicator?.['title'],
-                    'code': indicator?.['code'],
-                },
-                'quotation_indicator': indicator?.['id'],
-                'quotation_indicator_data': {
-                    'id': indicator?.['id'],
-                    'title': indicator?.['title'],
-                    'code': indicator?.['code'],
-                },
-                'order': indicator?.['order'],
-                'indicator_value': value ? value : 0,
-                'indicator_rate': rateValue,
-                'quotation_indicator_value': quotationValue,
-                'difference_indicator_value': differenceValue ? differenceValue : 0,
-            });
-            result_json[indicator?.['order']] = {
-                'indicator_value': value ? value : 0,
-                'indicator_rate': rateValue
-            }
-        }
-        if (!formSubmit.hasClass('sale-order')) {
-            QuotationDataTableHandle.dataTableQuotationIndicator(result_list);
-        } else {
-            QuotationDataTableHandle.dataTableSaleOrderIndicator(result_list);
-        }
-        $.fn.initMaskMoney2();
-    };
-
-    static evaluateFormula(formulaText) {
-        try {
-            return eval(formulaText);
-            // return evaluated;
-        } catch (error) {
-            return null;
-        }
-    };
-
-    static functionMaxMin(item, data_form, result_json) {
-        let functionBody = "[";
-        let idx = 0;
-        for (let function_child of item?.['function_data']) {
-            idx++;
-            if (typeof function_child === 'object' && function_child !== null) {
-                if (function_child.hasOwnProperty('is_property')) {
-                    if (data_form.hasOwnProperty(function_child?.['code'])) {
-                        functionBody += data_form[function_child?.['code']];
-                        if (idx < item?.['function_data'].length) {
-                            functionBody += ",";
-                        }
-                    }
-                } else if (function_child.hasOwnProperty('is_indicator')) {
-                    if (result_json.hasOwnProperty(function_child?.['order'])) {
-                        functionBody += result_json[function_child?.['order']]?.['indicator_value'];
-                        if (idx < item?.['function_data'].length) {
-                            functionBody += ",";
-                        }
-                    }
-                }
-            } else if (typeof function_child === 'string') {
-                functionBody += function_child;
-                if (idx < item?.['function_data'].length) {
-                    functionBody += ",";
-                }
-            }
-        }
-        return item?.['syntax'] + functionBody + "])";
-    };
-
-    static functionSumItemIf(item, data_form) {
-        let syntax = "sum(";
-        let functionBody = "";
-        let leftValueJSON = null;
-        let rightValue = null;
-        let operator_list = ['===', '!==', '<', '>', '<=', '>='];
-        let condition_operator = operator_list.filter((element) => item?.['function_data'].includes(element))[0];
-        let operatorIndex = item?.['function_data'].indexOf(condition_operator);
-        if (operatorIndex !== -1 && operatorIndex > 0 && operatorIndex < item?.['function_data'].length - 1) {
-            leftValueJSON = item?.['function_data'][operatorIndex - 1];
-            rightValue = item?.['function_data'][operatorIndex + 1];
-        }
-        let lastElement = item?.['function_data'][item?.['function_data'].length - 1];
-        let dataList = [];
-        // Tab Products
-        if (leftValueJSON?.['code'].includes("product_data")) {
-            let dataTarget = [];
-            for (let key in data_form) {
-                if (key.includes("products_data")) {
-                    dataTarget = data_form[key];
-                    break;
-                }
-            }
-            dataList = dataTarget;
-        }
-        if (["expense_data", "expense_item_data"].some(keyword => leftValueJSON?.['code']?.includes(keyword))) {
-            let dataTarget = [];
-            for (let key in data_form) {
-                if (key.includes("expenses_data")) {
-                    dataTarget = data_form[key];
-                    break;
-                }
-            }
-            dataList = dataTarget;
-        }
-        functionBody = indicatorHandle.extractDataToSum(dataList, leftValueJSON, condition_operator, rightValue, lastElement);
-        if (functionBody[functionBody.length - 1] === ",") {
-            let functionBodySlice = functionBody.slice(0, -1);
-            return syntax + functionBodySlice + ")";
-        }
-        return syntax + functionBody + ")";
-    };
-
-    static extractDataToSum(data_list, leftValueJSON, condition_operator, rightValue, lastElement) {
-        let functionBody = "";
-        for (let data of data_list) {
-            if (typeof leftValueJSON === 'object' && leftValueJSON !== null) {
-                let val = indicatorHandle.findKey(data, leftValueJSON?.['code']);
-                if (val) {
-                    if (Array.isArray(val)) {
-                        val = val.map(item => item.replace(/\s/g, "").toLowerCase());
-                        let check = val.includes(rightValue);
-                        if (check === true) {
-                            functionBody += String(data[lastElement?.['code']]);
-                            functionBody += ",";
-                        }
-                        if (check === false) {
-                            functionBody += String(0);
-                            functionBody += ",";
-                        }
-                    }
-                    if (typeof val === 'string') {
-                        let leftValue = val.replace(/\s/g, "").toLowerCase();
-                        let checkExpression = `"${leftValue}" ${condition_operator} "${rightValue}"`;
-                        let check = indicatorHandle.evaluateFormula(checkExpression);
-                        if (check === true) {
-                            let valPush = data[lastElement?.['code']];
-                            if (lastElement?.['code'] === "product_subtotal_price") {
-                                valPush = data[lastElement?.['code']] - (data?.['product_discount_amount_total'] * data?.['product_quantity'])
-                            }
-                            functionBody += String(valPush);
-                            functionBody += ",";
-                        }
-                        if (check === false) {
-                            functionBody += String(0);
-                            functionBody += ",";
-                        }
-                    }
-                }
-            }
-        }
-        return functionBody
-    };
-
-    static checkSpecialCaseIndicator(data_form) {
-        // check if product data has promotion gift then => += vào total_cost_pretax_amount
-        if (data_form.hasOwnProperty('total_cost_pretax_amount')) {
-            let promotion = document.getElementById('datable-quotation-create-product').querySelector('.table-row-promotion');
-            if (promotion) {
-                if (promotion.closest('tr').querySelector('.table-row-description').value === '(Gift)') {
-                    let productGift = promotion.getAttribute('data-id-product');
-                    let product_data_list = [];
-                    if (data_form.hasOwnProperty('quotation_costs_data')) {
-                        product_data_list = data_form['quotation_costs_data'];
-                    } else if (data_form.hasOwnProperty('sale_order_costs_data')) {
-                        product_data_list = data_form['sale_order_costs_data'];
-                    }
-                    for (let product of product_data_list) {
-                        if (product.product === productGift) {
-                            data_form['total_cost_pretax_amount'] += product.product_cost_price;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    static formatExpression(input) {
-        // Replace consecutive subtraction operators with a space before each minus sign
-        return input.replace(/--/g, '+');
-    };
-
-    static findKey(data, key) {
-        if (!key.includes("__")) {
-            return data?.[key];
-        }
-        let listSub = key.split("__");
-        return listSub.reduce((acc, curr) => {
-            if (Array.isArray(acc)) {
-                // If the current accumulator is an array, use flatMap to continue reduction
-                return acc.flatMap(item => {
-                    if (Array.isArray(item?.[curr])) {
-                        // If the current item is also an array, return the array itself
-                        return item?.[curr];
-                    } else {
-                        // If the item is not an array, proceed normally
-                        return item?.[curr];
-                    }
-                });
-            } else {
-                // Regular reduction step if `acc` is not an array
-                return acc?.[curr];
-            }
-        }, data);
     };
 
 }
@@ -7708,41 +7226,29 @@ class QuotationSubmitHandle {
         }
     };
 
-    static setupDataIndicator() {
-        let result = [];
-        let $table = $('#datable-quotation-create-indicator');
-        $table.DataTable().rows().every(function () {
-            let row = this.node();
-            let rowIndex = $table.DataTable().row(row).index();
-            let $row = $table.DataTable().row(rowIndex);
-            let dataRow = $row.data();
-
-            let indicator = row.querySelector('.table-row-title').getAttribute('data-id');
-            let indicator_value = row.querySelector('.table-row-value').getAttribute('data-value');
-            let indicator_rate = row.querySelector('.table-row-rate').getAttribute('data-value');
-            let order = row.querySelector('.table-row-order').getAttribute('data-value');
-            if (!$table.hasClass('sale-order')) { // QUOTATION INDICATOR
-                result.push({
-                    'indicator': indicator,
-                    'indicator_data': dataRow?.['indicator_data'],
-                    'indicator_value': parseFloat(indicator_value),
-                    'indicator_rate': parseFloat(indicator_rate),
-                    'order': parseInt(order),
-                })
-            } else { // SALE ORDER INDICATOR
-                let quotation_indicator_value = row.querySelector('.table-row-quotation-value').getAttribute('data-value');
-                let difference_indicator_rate = row.querySelector('.table-row-difference-value').getAttribute('data-value');
-                result.push({
-                    'quotation_indicator': indicator,
-                    'quotation_indicator_data': dataRow?.['quotation_indicator_data'],
-                    'indicator_value': parseFloat(indicator_value),
-                    'indicator_rate': parseFloat(indicator_rate),
-                    'quotation_indicator_value': parseFloat(quotation_indicator_value),
-                    'difference_indicator_value': parseFloat(difference_indicator_rate) ? difference_indicator_rate : 0,
-                    'order': parseInt(order),
-                })
+    static setupDataIndicator(result) {
+        let quotation_indicators_data = 'quotation_indicators_data';
+        let keyInd = "indicator_data";
+        if (QuotationLoadDataHandle.$form[0].classList.contains('sale-order')) {
+            quotation_indicators_data = 'sale_order_indicators_data';
+            keyInd = "quotation_indicator_data";
+        }
+        let datasDetail = QuotationLoadDataHandle.loadGetDatasDetail();
+        let indicators_data_setup = IndicatorControl.loadIndicator(result, datasDetail);
+        if (indicators_data_setup.length > 0) {
+            result[quotation_indicators_data] = indicators_data_setup;
+            for (let indicator of indicators_data_setup) {
+                if (indicator?.[keyInd]?.['code'] === "IN0001") {
+                    result['indicator_revenue'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                }
+                if (indicator?.[keyInd]?.['code'] === "IN0003") {
+                    result['indicator_gross_profit'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                }
+                if (indicator?.[keyInd]?.['code'] === "IN0006") {
+                    result['indicator_net_income'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                }
             }
-        });
+        }
         return result;
     };
 
@@ -7909,13 +7415,11 @@ class QuotationSubmitHandle {
         let quotation_costs_data = 'quotation_costs_data';
         let quotation_expenses_data = 'quotation_expenses_data';
         let quotation_logistic_data = 'quotation_logistic_data';
-        let quotation_indicators_data = 'quotation_indicators_data';
         if (is_sale_order === true) {
             quotation_products_data = 'sale_order_products_data';
             quotation_costs_data = 'sale_order_costs_data';
             quotation_expenses_data = 'sale_order_expenses_data';
             quotation_logistic_data = 'sale_order_logistic_data';
-            quotation_indicators_data = 'sale_order_indicators_data';
 
             _form.dataForm['quotation_id'] = null;
             if (QuotationLoadDataHandle.quotationSelectEle && QuotationLoadDataHandle.quotationSelectEle.length > 0) {
@@ -8076,27 +7580,6 @@ class QuotationSubmitHandle {
                 }
             }
         }
-        // indicator
-        let quotation_indicators_data_setup = QuotationSubmitHandle.setupDataIndicator();
-        if (quotation_indicators_data_setup.length > 0) {
-            _form.dataForm[quotation_indicators_data] = quotation_indicators_data_setup;
-            let keyInd = "indicator_data";
-            if (is_sale_order === true) {
-                keyInd = "quotation_indicator_data";
-            }
-            for (let indicator of quotation_indicators_data_setup) {
-                if (indicator?.[keyInd]?.['code'] === "IN0001") {
-                    _form.dataForm['indicator_revenue'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
-                }
-                if (indicator?.[keyInd]?.['code'] === "IN0003") {
-                    _form.dataForm['indicator_gross_profit'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
-                }
-                if (indicator?.[keyInd]?.['code'] === "IN0006") {
-                    _form.dataForm['indicator_net_income'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
-                }
-            }
-        }
-
         // payment stage
         if (is_sale_order === true) {
             _form.dataForm['sale_order_payment_stage'] = QuotationSubmitHandle.setupDataPaymentStage();

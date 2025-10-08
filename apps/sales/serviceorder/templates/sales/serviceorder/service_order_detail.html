@@ -31,6 +31,12 @@
     {% include 'extends/systems/page_actions.html' with is_edit=True edit_link=edit_link %}
 {% endblock %}
 
+{% block pageSubAction %}
+    <div class="nav-pills-bfl" role="group" aria-label="Button group with nested dropdown">
+        <button type="button" class="btn nav-link text-green" id="open_indicator" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Indicator' %}"><span class="icon"><i class="fa-solid fa-arrow-trend-up"></i></span></button>
+    </div>
+{% endblock %}
+
 {% block pageContent %}
     <form data-method="GET" id="form-detail-service-order"
           data-url="{% url 'ServiceOrderDetailAPI' data.pk %}">
@@ -45,6 +51,7 @@
     {% include 'sales/task/extend/task-form.html' with not_bastion=True custom_assignee=True %}
     {% include 'extends/product_attribute_extend/canvas.html' %}
     {% include 'extends/files/file_attribute.html' %}
+    {% include 'extends/indicator/all.html' with is_order=True %}
 {% endblock %}
 
 {% block dataHiddenGroup %}
@@ -72,4 +79,5 @@
     <script src="{% static 'assets/sales/serviceorder/js/tab_shipment.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/tab_expense.js' %}"></script>
     <script src="{% static 'assets/sales/serviceorder/js/service_order_detail.js' %}"></script>
+    <script src="{% static 'assets/js/extends/indicator/indicator_common.js' %}"></script>
 {% endblock %}

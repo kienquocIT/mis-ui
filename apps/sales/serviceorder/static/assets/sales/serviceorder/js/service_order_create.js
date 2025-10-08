@@ -4,6 +4,7 @@ function handleServiceDetailTabEvent(){
     ServiceOrder.handleDeleteServiceDetailRow()
     ServiceOrder.handleChangeServicePrice()
     ServiceOrder.handleChangeServiceDetail()
+    ServiceOrder.handleChangeServicePercentage()
 }
 
 function handleWorkOrderDetailTabEvent(){
@@ -23,12 +24,14 @@ function handleModalWorkOrderCostEvent(){
     ServiceOrder.handleSaveWorkOrderCost()
     ServiceOrder.handleChangeWorkOrderCostTitleAndDescription()
     ServiceOrder.handleDeleteWorkOrderCostRow()
+    ServiceOrder.handleSelectWorkOrderCostExpense()
 }
 
 function handleModalWorkOrderContributionEvent(){
     ServiceOrder.handleSaveProductContribution()
     ServiceOrder.handleUncheckContribution()
     ServiceOrder.handleChangeDeliveryCost()
+    ServiceOrder.handleChangeProductContributionPercentage()
 
     ServiceOrder.handleCheckPackage()
     ServiceOrder.handleOpenModalPackage()
@@ -67,13 +70,30 @@ function setUpFormData(formInstance) {
     formInstance.dataForm['payment_data'] = ServiceOrder.getPaymentData()
     formInstance.dataForm['shipment'] = TabShipmentFunction.combineShipmentData()
     formInstance.dataForm['expense'] = TabExpenseFunction.combineExpenseData()
+
+    // total fields
+    let $pretaxPrdEle = $('#service-detail-pretax-value');
+    let $taxPrdEle = $('#service-detail-taxes-value');
+    let $totalPrdEle = $('#service-detail-total-value');
+    if ($pretaxPrdEle.length > 0 && $taxPrdEle.length > 0 && $totalPrdEle.length > 0) {
+        if ($pretaxPrdEle.valCurrency()) {
+            formInstance.dataForm['total_product_pretax_amount'] = parseFloat($pretaxPrdEle.valCurrency());
+            formInstance.dataForm['total_product_revenue_before_tax'] = parseFloat($pretaxPrdEle.valCurrency());
+        }
+        if ($taxPrdEle.valCurrency()) {
+            formInstance.dataForm['total_product_tax'] = parseFloat($taxPrdEle.valCurrency());
+        }
+        if ($totalPrdEle.valCurrency()) {
+            formInstance.dataForm['total_product'] = parseFloat($totalPrdEle.valCurrency());
+        }
+    }
 }
 
 function setUpFormSubmit($form) {
     SetupFormSubmit.call_validate($form, {
         onsubmit: true,
         submitHandler: () => {
-            const isValidData = ServiceOrder.validateDates()
+            const isValidData = ServiceOrder.validateDates() && ServiceOrder.validateTotalServiceDetailPercent()
             if(!isValidData){
                 return false
             }
@@ -87,6 +107,23 @@ function setUpFormSubmit($form) {
                 formInstance.dataForm['attachment'] = []
             }
             setUpFormData(formInstance)
+            // append indicator
+            let keyInd = "quotation_indicator_data";
+            let indicators_data_setup = IndicatorControl.loadIndicator(formInstance?.['dataForm']);
+            if (indicators_data_setup.length > 0) {
+                formInstance.dataForm['service_order_indicators_data'] = indicators_data_setup;
+                for (let indicator of indicators_data_setup) {
+                    if (indicator?.[keyInd]?.['code'] === "IN0001") {
+                        formInstance.dataForm['indicator_revenue'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                    }
+                    if (indicator?.[keyInd]?.['code'] === "IN0003") {
+                        formInstance.dataForm['indicator_gross_profit'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                    }
+                    if (indicator?.[keyInd]?.['code'] === "IN0006") {
+                        formInstance.dataForm['indicator_net_income'] = indicator?.['indicator_value'] ? indicator?.['indicator_value'] : 0;
+                    }
+                }
+            }
             WFRTControl.callWFSubmitForm(formInstance)
         },
     })
@@ -160,6 +197,7 @@ $(document).ready(function () {
 
     ServiceOrder.handleSaveProduct()
     ServiceOrder.handleSaveExchangeRate()
+    ServiceOrder.handleOpportunityChange()
 
     handleServiceDetailTabEvent()
     handleWorkOrderDetailTabEvent()
@@ -169,4 +207,20 @@ $(document).ready(function () {
     handleModalPaymentDetailEvent()
 
     setUpFormSubmit($('#form-create-service-order'))
+
+    IndicatorControl.$openCanvas.on('click', function () {
+        let formInstance = new SetupFormSubmit($('#form-create-service-order'))
+        if (formInstance.dataForm.hasOwnProperty('attachment')) {
+            formInstance.dataForm['attachment'] = $x.cls.file.get_val(
+                formInstance.dataForm?.['attachment'],
+                []
+            )
+        } else {
+            formInstance.dataForm['attachment'] = []
+        }
+        setUpFormData(formInstance);
+        IndicatorControl.loadIndicator(formInstance?.['dataForm']);
+        IndicatorControl.$canvas.offcanvas('show');
+    });
+
 })

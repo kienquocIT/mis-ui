@@ -8,4 +8,5 @@ urlpatterns = [
     # absenceexplanation page
     path('absenceexplanation/', include('apps.hrm.absenceexplanation.urls')),
     path('overtime-request/', include('apps.hrm.overtimerequest.urls')),
+    path('payroll/', include('apps.hrm.payroll.urls')),
 ]

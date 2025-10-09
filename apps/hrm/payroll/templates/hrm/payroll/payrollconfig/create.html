@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+    {% trans 'Payroll Configuration' %}
+{% endblock %}
+{% block cssHeader %}
+    <link href="{% static 'vendors/daterangepicker/daterangepicker.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="{% static 'assets/hrm/css/common.css' %}">
+    <style>
+        .mask-money {
+            text-align: left; !important;
+        }
+        table .select2-selection__rendered {
+            max-width: 250px;
+        }
+    </style>
+{% endblock %}
+{% block pageAction %}
+    {% include 'extends/systems/page_actions.html' with is_save=True save_frm='frm_create_payroll_config' %}
+{% endblock %}
+{% block pageContent %}
+    <form id="frm_create_payroll_config" data-method="POST"
+          data-url="{% url 'PayrollConfigListAPI' %}"
+          data-url-redirect="{% url 'PayrollConfigList' %}">
+        {% csrf_token %}
+        {% include 'hrm/payroll/payrollconfig/tab_data.html' %}
+    </form>
+{% endblock %}
+
+{% block modalData %}
+{% endblock %}
+{% block dataHiddenGroup %}
+{% endblock %}
+{% block jsFooter %}
+    <script src="{% static 'vendors/daterangepicker/daterangepicker.js' %}"></script>
+{% endblock %}

@@ -921,6 +921,16 @@ class MenusHRM:
         name='Overtime request', code='menu_overtime_request', view_name='OvertimeList',
         icon='<i class="fa-solid fa-stopwatch-20"></i>',
     )
+    PAYROLL = MenuCommon(
+        name='Payroll', code='menu_payroll', view_name='',
+        icon='<i class="fas fa-cash-register"></i>',
+        child=[
+            MenuCommon(
+                name='Payroll config', code='menu_payroll_config_list', view_name='PayrollConfigList',
+                icon='<i class="fas fa-cog"></i>',
+            ),
+        ]
+    )
 
 
 class MenusPartnerCenter:
@@ -1127,6 +1137,7 @@ class SpaceItem:
                 MenusHRM.HUMAN_RESOURCES,
                 MenusHRM.ATTENDANCE,
                 MenusHRM.OVERTIME_REQUEST,
+                MenusHRM.PAYROLL
             ],
         ),
         'inventory': SpaceCommon(

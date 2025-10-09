@@ -30,6 +30,7 @@
     {% include 'sales/serviceorder/common/modal_data.html' %}
 {% endblock %}
 {% block dataHiddenGroup %}
+    <input type="hidden" id="url-factory" data-url-create-delivery-service="{% url 'ServiceOrderDetailDeliveryAPI' %}">
 {% endblock %}
 {% block jsFooter %}
     <script src="{% static 'assets/sales/serviceorder/js/service_order_list.js' %}"></script>

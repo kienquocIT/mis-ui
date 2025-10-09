@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from .views import (
     ServiceOrderListAPI, ServiceOrderDetail, ServiceOrderUpdate, ServiceOrderDetailAPI,
-    ServiceOrderDetailDashboardAPI, ServiceOrderDetailDashboard, SVOWorkOrderDetailAPI,
+    ServiceOrderDetailDashboardAPI, ServiceOrderDetailDashboard, SVOWorkOrderDetailAPI, ServiceOrderDetailDeliveryAPI,
 )
 
 urlpatterns = [
@@ -20,4 +20,9 @@ urlpatterns = [
     path('dashboard', ServiceOrderDetailDashboard.as_view(), name='ServiceOrderDetailDashboard'),
     path('dashboard/api/<str:pk>', ServiceOrderDetailDashboardAPI.as_view(), name='ServiceOrderDetailDashboardAPI'),
     path('work-order-detail/api', SVOWorkOrderDetailAPI.as_view(), name='SVOWorkOrderDetailAPI'),
+    path(
+        'delivery/create-delivery-service-order',
+        ServiceOrderDetailDeliveryAPI.as_view(),
+        name='ServiceOrderDetailDeliveryAPI'
+    ),
 ]

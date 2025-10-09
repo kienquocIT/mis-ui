@@ -225,12 +225,30 @@
             </div>
             <div class="modal-body" style="max-height: 70vh; overflow: auto">
                 <div class="nicescroll-bar">
-                    <table class="table nowrap w-100 min-w-1500p" id="modal-table-work-order-cost">
-                        <thead class="bg-secondary-light-5">
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table nowrap w-100" id="modal-table-work-order-cost">
+                                <thead class="bg-secondary-light-5">
+                                        <tr>
+                                            <th style="min-width: 40px"></th>
+                                            <th style="min-width: 40px">{% trans 'Order' %}</th>
+                                            <th style="min-width: 200px">{% trans 'Title' %}</th>
+                                            <th style="min-width: 160px">{% trans 'Description' %}</th>
+                                            <th style="min-width: 160px">{% trans 'Expense Item' %}</th>
+                                            <th style="min-width: 80px">{% trans 'Quantity' %}</th>
+                                            <th style="min-width: 160px">{% trans 'Unit Cost' %}</th>
+                                            <th style="min-width: 80px">{% trans 'Currency' %}</th>
+                                            <th style="min-width: 80px">{% trans 'Tax' %}</th>
+                                            <th style="min-width: 160px">{% trans 'Total Amount' %}</th>
+                                            <th style="min-width: 160px">{% trans 'Total' %}</th>
+                                            <th style="min-width: 80px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="modal-footer">

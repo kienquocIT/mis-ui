@@ -556,3 +556,7 @@ msgstr "Thao tác"
 #
 msgid "Specific serial number"
 msgstr "Serial đích danh"
+
+#
+msgid "Not available"
+msgstr "Không khả dụng"

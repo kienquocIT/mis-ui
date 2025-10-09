@@ -4,6 +4,7 @@ function handleServiceDetailTabEvent(){
     ServiceOrder.handleDeleteServiceDetailRow()
     ServiceOrder.handleChangeServicePrice()
     ServiceOrder.handleChangeServiceDetail()
+    ServiceOrder.handleChangeServicePercentage()
 }
 
 function handleWorkOrderDetailTabEvent(){
@@ -14,6 +15,7 @@ function handleWorkOrderDetailTabEvent(){
     ServiceOrder.handleAddWorkOrderNonItem()
     ServiceOrder.handleClickOpenServiceDelivery()
     ServiceOrder.handleCheckDelivery()
+    ServiceOrder.handleDeleteWorkOrderRow()
 }
 
 function handleModalWorkOrderCostEvent(){
@@ -22,12 +24,14 @@ function handleModalWorkOrderCostEvent(){
     ServiceOrder.handleSaveWorkOrderCost()
     ServiceOrder.handleChangeWorkOrderCostTitleAndDescription()
     ServiceOrder.handleDeleteWorkOrderCostRow()
+    ServiceOrder.handleSelectWorkOrderCostExpense()
 }
 
 function handleModalWorkOrderContributionEvent(){
     ServiceOrder.handleSaveProductContribution()
     ServiceOrder.handleUncheckContribution()
     ServiceOrder.handleChangeDeliveryCost()
+    ServiceOrder.handleChangeProductContributionPercentage()
 
     ServiceOrder.handleCheckPackage()
     ServiceOrder.handleOpenModalPackage()
@@ -89,7 +93,7 @@ function setUpFormSubmit($form) {
     SetupFormSubmit.call_validate($form, {
         onsubmit: true,
         submitHandler: () => {
-            const isValidData = ServiceOrder.validateDates()
+            const isValidData = ServiceOrder.validateDates() && ServiceOrder.validateTotalServiceDetailPercent()
             if(!isValidData){
                 return false
             }
@@ -302,6 +306,7 @@ $(document).ready(function () {
     Promise.all([
         ServiceOrder.loadCurrencyRateData(),
         ServiceOrder.loadTaxData(),
+        ServiceOrder.loadUoMData()
     ]).then(() => {
         DetailDataHandler.loadDetailServiceOrder( "update");
     })
@@ -326,6 +331,7 @@ $(document).ready(function () {
 
     ServiceOrder.handleSaveProduct()
     ServiceOrder.handleSaveExchangeRate()
+    ServiceOrder.handleOpportunityChange()
     handleServiceDetailTabEvent()
     handleWorkOrderDetailTabEvent()
     handleModalWorkOrderCostEvent()

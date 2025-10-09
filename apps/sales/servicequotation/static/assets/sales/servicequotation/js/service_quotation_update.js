@@ -265,6 +265,7 @@ $(document).ready(function () {
     Promise.all([
         ServiceOrder.loadCurrencyRateData(),
         ServiceOrder.loadTaxData(),
+        ServiceOrder.loadUoMData()
     ]).then(() => {
         DetailDataHandler.loadDetailServiceOrder( "update");
     })

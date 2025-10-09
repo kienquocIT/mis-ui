@@ -369,7 +369,7 @@ $(document).ready(function () {
         $table_serial.attr('data-quantity-import', $(this).attr('data-quantity-import') ? $(this).attr('data-quantity-import') : 0)
         $table_serial.attr('data-status', $(this).attr('data-status') === 'true' ? $(this).attr('data-status') : 'false')
         $('#modal-serial .btn-group-import-datatable').closest('.space-import-btn').prop('hidden', $table_serial.attr('data-status') !== 'false')
-        $('#modal-serial .modal-footer').prop('hidden', $table_serial.attr('data-status') !== 'false')
+        // $('#modal-serial .modal-footer').prop('hidden', $table_serial.attr('data-status') !== 'false')
         loadSerialTable()
     })
 
@@ -441,7 +441,7 @@ $(document).ready(function () {
             let warranty_start = $(this).find('.warranty_start').val() ? moment($(this).find('.warranty_start').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
             let warranty_end = $(this).find('.warranty_end').val() ? moment($(this).find('.warranty_end').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
 
-            if (vendor_serial_number && serial_number && $(this).find('.sn-is-delete').length === 0) {
+            if (serial_id && serial_number && $(this).find('.sn-is-delete').length === 0) {
                 frm.dataForm['serial_data'].push({
                     "serial_id": serial_id,
                     "vendor_serial_number": vendor_serial_number,

@@ -157,6 +157,7 @@ $(document).ready(function () {
     Promise.all([
         ServiceOrder.loadCurrencyRateData(),
         ServiceOrder.loadTaxData(),
+        ServiceOrder.loadUoMData()
     ]).then(() => {
         TabShipmentEventHandler.InitPageEvent();
         DetailDataHandler.loadDetailServiceOrder($('#form-detail-service-quotation'), "detail");

@@ -194,3 +194,15 @@ class SVOWorkOrderDetailAPI(APIView):
         params = request.query_params.dict()
         resp = ServerAPI(user=request.user, url=ApiURL.SO_WORK_ORDER_DETAIL).get(params)
         return resp.auto_return(key_success='svo_work_order_detail')
+
+
+class ServiceOrderDetailDeliveryAPI(APIView):
+    @mask_view(
+        auth_require=True,
+        is_api=True,
+    )
+    def post(self, request, *args, **kwargs):
+        resp = ServerAPI(
+            user=request.user, url=ApiURL.DELIVERY_SERVICEORDER_CALL
+        ).post(data=request.data)
+        return resp.auto_return()

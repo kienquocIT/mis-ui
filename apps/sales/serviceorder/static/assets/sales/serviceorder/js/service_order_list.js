@@ -181,7 +181,7 @@ class loadServiceOrderInfo {
 
     static loadTotalDeliveryProduct() {
         // get all product list from selected work order
-        let data_list = loadServiceOrderInfo.combineDeliveryProductData();
+        let data_list = loadServiceOrderInfo.buildDeliveryProductData();
 
         // init DataTable
         const $tb = $('#total_delivery_product');
@@ -216,7 +216,7 @@ class loadServiceOrderInfo {
         })
     }
 
-    static combineDeliveryProductData() {
+    static buildDeliveryProductData() {
         let allProducts = [];
         loadServiceOrderInfo.selectedWorkOrders.forEach(workOrder => {
             if (workOrder.product_list && workOrder.product_list.length > 0) {
@@ -240,6 +240,46 @@ class loadServiceOrderInfo {
         });
         return Object.values(productMap);   // convert to array
     }
+
+    static combineDeliveryProductData() {
+        let dataResults = {
+            'work_order_info': [],
+            'product_data': {}
+        };
+        if (loadServiceOrderInfo.selectedWorkOrders.length > 0) {
+            let work_order_info = [];
+            let product_data = {};
+            loadServiceOrderInfo.selectedWorkOrders.forEach(workOrder => {
+                // store work order info
+                let work_order_data = {
+                    'id': workOrder?.id || '',
+                    'title': workOrder?.title || ''
+                };
+                work_order_info.push(work_order_data);
+
+                // store product list
+                let allProducts = workOrder?.product_list || [];
+                allProducts.forEach(product => {
+                    let productId = product?.id || '';
+                    if (productId in product_data) {
+                        product_data[productId]['delivered_quantity'] += product?.delivered_quantity || 0;
+                    } else {
+                        product_data[productId] = {
+                            'title': product?.title || '',
+                            'code': product?.code || '',
+                            'description': product?.description || '',
+                            'tax': product?.tax || {},
+                            'uom': product?.uom || {},
+                            'delivered_quantity': product?.delivered_quantity || 0
+                        }
+                    }
+                });
+            });
+            dataResults['work_order_info'] = work_order_info;
+            dataResults['product_data'] = product_data;
+        }
+        return dataResults;
+    }
 }
 
 $('document').ready(function () {
@@ -248,16 +288,38 @@ $('document').ready(function () {
     // event when click delivery service button
     $(document).on("click", '.open-delivery-modal', function () {
         loadServiceOrderInfo.selectedWorkOrders = [];
-        $('#delivery_work_order_list').find('.row-checkbox').prop('checked', false);
         let service_order_row_id = $(this).attr('data-id');
+        $('#delivery_work_order_list').find('.row-checkbox').prop('checked', false);
+        $('#delivery_work_order_modal').find('#btn_apply_delivery').attr('data-id', service_order_row_id);
         loadServiceOrderInfo.loadDeliveryWorkOrderList(service_order_row_id);
         loadServiceOrderInfo.loadTotalDeliveryProduct();
     });
 
     // event when save delivery service button
     $(document).on("click", "#btn_apply_delivery", function (){
-        loadServiceOrderInfo.combineDeliveryProductData();
-    })
+        let data_product = loadServiceOrderInfo.combineDeliveryProductData();
+        data_product['service_order_id'] = $(this).attr('data-id');
+
+        WindowControl.showLoading();
+        const url = $('#url-factory').attr('data-url-create-delivery-service');
+        $.fn.callAjax2({
+            url: url,
+            method: 'POST',
+            data: data_product,
+        }).then(
+            (resp) => {
+                let data = $.fn.switcherResp(resp);
+                if (data?.['status'] === 200) {
+                    WindowControl.hideLoading();
+                    $.fn.notifyB({description: data.message}, 'success');
+                }
+            },
+            (errs) => {
+                WindowControl.hideLoading();
+                $.fn.notifyB({description: errs.data.errors}, 'failure');
+            }
+        )
+    });
 
     // baseline events
     $('#table-service-order').on('click', '.btn-view-baseline', function () {

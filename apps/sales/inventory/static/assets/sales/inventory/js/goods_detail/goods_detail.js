@@ -312,9 +312,9 @@ $(document).ready(function () {
                     data: '',
                     className: 'text-center',
                     render: (data, type, row) => {
-                        if (row?.['goods_receipt_id'] !== params?.['goods_receipt_id']) {
-                            return `<span class="small">${$trans_script.attr('data-trans-for-pm')}</span>`
-                        }
+                        // if (row?.['goods_receipt_id'] && params?.['goods_receipt_id'] && row?.['goods_receipt_id'] !== params?.['goods_receipt_id']) {
+                        //     return `<span class="small">${$trans_script.attr('data-trans-for-pm')}</span>`
+                        // }
                         if (row?.['id'] && !row?.['serial_status']) {
                             return `<button type="button" class="btn-edit btn btn-icon btn-flush-primary flush-hover btn-xs">
                                         <span class="icon"><i class="bi bi-pencil-square"></i></span>
@@ -441,7 +441,7 @@ $(document).ready(function () {
             let warranty_start = $(this).find('.warranty_start').val() ? moment($(this).find('.warranty_start').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
             let warranty_end = $(this).find('.warranty_end').val() ? moment($(this).find('.warranty_end').val(), "DD/MM/YYYY").format('YYYY-MM-DD') : null
 
-            if (serial_id && serial_number && $(this).find('.sn-is-delete').length === 0) {
+            if (serial_number && $(this).find('.sn-is-delete').length === 0) {
                 frm.dataForm['serial_data'].push({
                     "serial_id": serial_id,
                     "vendor_serial_number": vendor_serial_number,

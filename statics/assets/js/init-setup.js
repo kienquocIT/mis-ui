@@ -2506,14 +2506,12 @@ class WFRTControl {
                                     WFRTControl.callAjaxWFCreate(_form);
                                 }
                                 if (_form.dataForm['system_status'] === 1) {  // WF
+
                                     // check submit baseline
-                                    if ($formEle.attr('data-baseline') === 'true' && docData?.['id']) {
-                                        let docRootID = docData?.['id'];
-                                        _form.dataMethod = 'POST';
-                                        _form.dataUrl = $formEle.attr('data-url-cr');
-                                        _form.dataForm['is_baseline'] = true;
-                                        _form.dataForm['document_root_id'] = docRootID;
+                                    if ($formEle.attr('data-baseline') === 'true') {
+                                        _form.dataForm['system_status'] = 0;
                                     }
+
                                     WFRTControl.submitCheckAssociation(_form, associationData, 0);
                                 }
                             }
@@ -2545,6 +2543,20 @@ class WFRTControl {
                 if (data && (data['status'] === 201 || data['status'] === 200)) {
                     $.fn.notifyB({description: data.message}, 'success');
                     if (_form?.resetForm) $(_form.formElm)[0].reset()
+
+                    // check submit baseline
+                    let $formEle = _form.formSelected;
+                    let docData = WFRTControl.getRuntimeDocData();
+                    let associationData = WFAssociateControl.checkNextNode(_form.dataForm);
+                    if ($formEle.attr('data-baseline') === 'true' && docData?.['id']) {
+                        let docRootID = docData?.['id'];
+                        _form.dataMethod = 'POST';
+                        _form.dataUrl = $formEle.attr('data-url-cr');
+                        _form.dataForm['document_root_id'] = docRootID;
+                        _form.dataForm['system_status'] = 1;
+                        WFRTControl.submitCheckAssociation(_form, associationData, 0);
+                    }
+
                     setTimeout(() => {
                         window.location.replace(_form.dataUrlRedirect);
                     }, 2000);

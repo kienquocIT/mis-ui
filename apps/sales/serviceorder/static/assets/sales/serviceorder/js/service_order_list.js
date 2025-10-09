@@ -287,11 +287,22 @@ $('document').ready(function () {
                 let data = $.fn.switcherResp(resp);
                 if (data) {
                     if (data.hasOwnProperty('service_order_list') && Array.isArray(data.service_order_list)) {
+                        console.log(data.service_order_list);
                         $(this).find('i').toggleClass('fa-chevron-down fa-chevron-right');
                         // append new row
+                        const filtered = data.service_order_list.filter(item => item.system_status === 3);
+                        const latest = filtered.length
+                            ? filtered.reduce((max, item) =>
+                                item.document_change_order > max.document_change_order ? item : max
+                            )
+                            : null;
                         for (let dataSO of data?.['service_order_list']) {
+                            let clsBg = 'bg-light';
+                            if (dataSO?.['id'] === latest?.['id']) {
+                                clsBg = 'bg-green-light-5';
+                            }
                             let newRow = $('#table-service-order').DataTable().row.add(dataSO).node();
-                            $(newRow).addClass(`${cls} collapse show bg-light`);
+                            $(newRow).addClass(`${cls} collapse show ${clsBg}`);
                             $(newRow).detach().insertAfter(targetRow);
                         }
                         WindowControl.hideLoading();

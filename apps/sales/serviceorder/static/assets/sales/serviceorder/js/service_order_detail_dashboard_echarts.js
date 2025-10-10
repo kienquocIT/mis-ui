@@ -35,6 +35,7 @@ $(document).ready(function () {
 
         let service_detail_list_html = ''
         let avg_svo_detail_percent_completed = 0
+
         for (let i=0; i < data_list.length; i++) {
             let item = data_list[i]
             let avg_wo_percent_completed = 0
@@ -123,7 +124,7 @@ $(document).ready(function () {
                                         </li>`
             }
 
-            avg_svo_detail_percent_completed += avg_wo_percent_completed * item?.['total_contribution_percent'] / 100
+            avg_svo_detail_percent_completed += avg_wo_percent_completed * item?.['service_percent'] / 100
             if (avg_svo_detail_percent_completed === 0) {
                 waiting_svo += 1
             }
@@ -143,7 +144,7 @@ $(document).ready(function () {
                                                             <span class="fw-bold text-muted">
                                                                 <span>${$.fn.gettext('Service value')}:</span> <span class="service-value mask-money" data-init-money="${item?.['total_value'] || 0}"></span>
                                                                 <span class="badge badge-light badge-indicator mx-2"></span>
-                                                                <span>${$.fn.gettext('Weight')}:</span> <span class="service-weight">${item?.['total_contribution_percent'] || '--'}%</span>
+                                                                <span>${$.fn.gettext('Weight')}:</span> <span class="service-weight">${item?.['service_percent'] || '--'}%</span>
                                                             </span>
                                                             <div class="progress progress-bar-rounded my-3" style="min-height: 20px">
                                                                 <div class="progress-bar bg-gradient-primary service-progress-bar" role="progressbar" style="width: ${avg_wo_percent_completed}%;" aria-valuenow="${avg_wo_percent_completed}" aria-valuemin="0" aria-valuemax="100">${avg_wo_percent_completed}%</div>

@@ -1475,6 +1475,7 @@ $(function () {
         return params
     }
     listElm.forEach(function (elm) {
+        if (elm.length > 0) {
         $(elm).initSelect2().on('change.select2', function () {
             const params = rtParams()
             callDataTaskList(kanbanTask, listTask, params)
@@ -1484,6 +1485,7 @@ $(function () {
                 $(elm).addClass('isSelected')
             else $(elm).removeClass('isSelected')
         })
+        }
     })
 
     $clearElm.off().on('click', () => {

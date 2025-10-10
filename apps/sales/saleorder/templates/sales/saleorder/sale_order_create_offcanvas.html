@@ -207,43 +207,35 @@
     </div>
 </div>
 
-<div
-        class="modal fade" id="selectProductModal" tabindex="-1"
-        role="dialog" aria-labelledby="selectProductModal"
-        aria-hidden="true"
->
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><b>{% trans 'Select product' %}</b></h5>
-                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
-            </div>
-            <div class="modal-body">
-                <table
-                        id="table-select-product"
-                        class="table nowrap w-100 mb-5"
-                >
-                    <thead>
-                    <tr class="bg-light">
-                        <th class="w-20">{% trans 'Product name' %}</th>
-                        <th class="w-15">{% trans 'Product code' %}</th>
-                        <th class="w-15">{% trans 'Description' %}</th>
-                        <th class="w-10">{% trans 'Category' %}</th>
-                        <th class="w-10">{% trans 'UoM' %}</th>
-                        <th class="w-10">{% trans 'Duration UoM' %}</th>
-                        <th class="w-10">{% trans 'Status' %}</th>
-                        <th class="w-10">{% trans 'Note' %}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="sale_order_products_data">{% trans 'Close' %}</button>
-                <button type="button" class="btn btn-primary" id="btn-save-select-product" data-bs-dismiss="modal" data-zone="sale_order_products_data">{% trans 'Save' %}</button>
-            </div>
-        </div>
+<div class="offcanvas offcanvas-end w-90" tabindex="-1" id="selectProductCanvas" aria-labelledby="selectProductCanvas">
+    <div class="modal-header">
+        <h5 class="modal-title"><b>{% trans 'Select product' %}</b></h5>
+        <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>
+    </div>
+    <div class="offcanvas-body">
+        <table
+                id="table-select-product"
+                class="table nowrap w-100 mb-5"
+        >
+            <thead>
+            <tr class="bg-light">
+                <th>{% trans 'Product name' %}</th>
+                <th>{% trans 'Product code' %}</th>
+                <th>{% trans 'Description' %}</th>
+                <th>{% trans 'Category' %}</th>
+                <th>{% trans 'UoM' %}</th>
+                <th>{% trans 'Duration UoM' %}</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Note' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" data-zone="sale_order_products_data">{% trans 'Close' %}</button>
+        <button type="button" class="btn btn-primary" id="btn-save-select-product" data-bs-dismiss="offcanvas" data-zone="sale_order_products_data">{% trans 'Save' %}</button>
     </div>
 </div>
 
@@ -405,46 +397,3 @@
         </div>
     </div>
 </div>
-
-
-{#<div#}
-{#        class="modal fade" id="selectSpecProductModal" tabindex="-1"#}
-{#        role="dialog" aria-labelledby="selectSpecProductModal"#}
-{#        aria-hidden="true"#}
-{#>#}
-{#    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">#}
-{#        <div class="modal-content">#}
-{#            <div class="modal-header">#}
-{#                <h5 class="modal-title"><b>{% trans 'Select specific product' %}</b></h5>#}
-{#                <button type="button" class="btn btn-icon btn-rounded btn-flush-light flush-soft-hover btn-lg" data-bs-dismiss="modal"><span class="icon"><i class="far fa-window-close"></i></span></button>#}
-{#            </div>#}
-{#            <div class="modal-body">#}
-{#                <div class="row">#}
-{#                    <b>Product</b>: <span class="product-title"></span>#}
-{#                </div>#}
-{#                <table#}
-{#                        id="table-select-spec-product"#}
-{#                        class="table nowrap w-100 mb-5"#}
-{#                >#}
-{#                    <thead>#}
-{#                    <tr class="bg-light">#}
-{#                        <th class="w-15">{% trans 'Vendor serial no.' %}</th>#}
-{#                        <th class="w-15">{% trans 'Serial no.' %}</th>#}
-{#                        <th class="w-15">{% trans 'Exp date' %}</th>#}
-{#                        <th class="w-15">{% trans 'Mfg date' %}</th>#}
-{#                        <th class="w-15">{% trans 'Warranty start' %}</th>#}
-{#                        <th class="w-15">{% trans 'Warranty end' %}</th>#}
-{#                        <th class="w-15">{% trans 'Cost price' %}</th>#}
-{#                    </tr>#}
-{#                    </thead>#}
-{#                    <tbody>#}
-{#                    </tbody>#}
-{#                </table>#}
-{#            </div>#}
-{#            <div class="modal-footer">#}
-{#                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-zone="sale_order_products_data">{% trans 'Close' %}</button>#}
-{#                <button type="button" class="btn btn-primary" id="btn-save-select-product" data-bs-dismiss="modal" data-zone="sale_order_products_data">{% trans 'Save' %}</button>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#</div>#}
